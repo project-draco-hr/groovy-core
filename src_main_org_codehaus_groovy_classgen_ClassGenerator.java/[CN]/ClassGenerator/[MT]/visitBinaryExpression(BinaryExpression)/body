@@ -68,6 +68,9 @@ evaluateBinaryExpression(matchRegexMethod,expression);
 break;
 case Token.LEFT_SQUARE_BRACKET:
 evaluateBinaryExpression(leftHandExpression ? "set" : "get",expression);
+if (leftHandExpression) {
+cv.visitInsn(POP);
+}
 break;
 default :
 throw new ClassGeneratorException("Operation: " + expression.getOperation() + " not supported");
