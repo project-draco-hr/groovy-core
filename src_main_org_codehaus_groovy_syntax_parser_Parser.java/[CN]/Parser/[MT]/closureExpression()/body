@@ -1,8 +1,9 @@
 {
   CSTNode expr=rootNode(Token.LEFT_CURLY_BRACE);
   expr.addChild(parameterList());
-  consume(Token.PIPE);
-  expr.addChild(statementBlock());
+  CSTNode block=rootNode(Token.PIPE);
+  statementsUntilRightCurly(block);
   consume(Token.RIGHT_CURLY_BRACE);
+  expr.addChild(block);
   return expr;
 }
