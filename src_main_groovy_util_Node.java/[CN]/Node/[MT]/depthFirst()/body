@@ -1,13 +1,6 @@
 {
   List answer=new ArrayList();
-  for (Iterator iter=InvokerHelper.asIterator(value); iter.hasNext(); ) {
-    Object child=iter.next();
-    if (child instanceof Node) {
-      Node childNode=(Node)child;
-      List children=childNode.depthFirst();
-      answer.add(childNode);
-      answer.addAll(children);
-    }
-  }
+  answer.add(this);
+  answer.addAll(depthFirstRest());
   return answer;
 }
