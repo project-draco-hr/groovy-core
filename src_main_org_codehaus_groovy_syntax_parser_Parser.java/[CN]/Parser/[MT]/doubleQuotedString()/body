@@ -2,6 +2,7 @@
   Token token=consume(Token.DOUBLE_QUOTE_STRING);
   String text=token.getText();
   CSTNode expr=new CSTNode(token);
+  int textStart=0;
   int cur=0;
   int len=text.length();
   while (cur < len) {
@@ -15,8 +16,8 @@
         continue;
       }
     }
-    if (exprStart != cur) {
-      expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + cur + 1,text.substring(cur,exprStart))));
+    if (exprStart != textStart) {
+      expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + cur + 1,text.substring(textStart,exprStart))));
     }
     int exprEnd=text.indexOf("}",exprStart);
     String exprText=text.substring(exprStart + 2,exprEnd);
@@ -26,9 +27,10 @@
     CSTNode embeddedExpr=parser.expression();
     expr.addChild(embeddedExpr);
     cur=exprEnd + 1;
+    textStart=cur;
   }
-  if (cur < len) {
-    expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + cur + 1,text.substring(cur))));
+  if (textStart < len) {
+    expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + textStart + 1,text.substring(textStart))));
   }
   return expr;
 }
