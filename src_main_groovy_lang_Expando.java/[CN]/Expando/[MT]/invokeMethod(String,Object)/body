@@ -1,0 +1,16 @@
+{
+  try {
+    return super.invokeMethod(name,args);
+  }
+ catch (  InvokerException e) {
+    Object value=getExpandoProperties().get(name);
+    if (value instanceof Closure) {
+      Closure closure=(Closure)value;
+      closure.setDelegate(this);
+      return closure.call(args);
+    }
+ else {
+      throw e;
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  try {
+    getMetaClass().setProperty(this,property,newValue);
+    return;
+  }
+ catch (  InvokerException e) {
+    Object delegate=getDelegate();
+    if (delegate != this) {
+      try {
+        InvokerHelper.setProperty(delegate,property,newValue);
+        return;
+      }
+ catch (      InvokerException e2) {
+      }
+    }
+    throw e;
+  }
+}
