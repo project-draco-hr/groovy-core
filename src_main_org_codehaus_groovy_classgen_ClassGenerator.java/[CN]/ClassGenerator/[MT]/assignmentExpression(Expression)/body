@@ -1,9 +1,19 @@
 {
   if (expression instanceof BinaryExpression) {
-    BinaryExpression binExp=(BinaryExpression)expression;
-    if (binExp.getOperation().getType() == Token.EQUAL) {
-      return binExp.getLeftExpression();
-    }
+    BinaryExpression binExpr=(BinaryExpression)expression;
+switch (binExpr.getOperation().getType()) {
+case Token.EQUAL:
+case Token.PLUS_EQUAL:
+case Token.MINUS_EQUAL:
+case Token.MULTIPLY_EQUAL:
+case Token.DIVIDE_EQUAL:
+case Token.MOD_EQUAL:
+      return binExpr.getLeftExpression();
   }
-  return null;
+}
+ else if (expression instanceof PrefixExpression) {
+  PrefixExpression expr=(PrefixExpression)expression;
+  return expr.getExpression();
+}
+return null;
 }
