@@ -1,18 +1,23 @@
 {
   onLineNumber(loop);
+  int iIdx=defineVariable(loop.getVariable(),"java.lang.Object",true).getIndex();
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
-  int iteratorIdx=defineVariable(createVariableName("iterator"),"java.util.Iterator",false).getIndex();
+  final int iteratorIdx=defineVariable(createVariableName("iterator"),"java.util.Iterator",false).getIndex();
   cv.visitVarInsn(ASTORE,iteratorIdx);
-  int iIdx=defineVariable(loop.getVariable(),"java.lang.Object",false).getIndex();
   pushBlockScope();
   Label continueLabel=scope.getContinueLabel();
   cv.visitJumpInsn(GOTO,continueLabel);
   Label label2=new Label();
   cv.visitLabel(label2);
-  cv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorNextMethod.call(cv);
-  cv.visitVarInsn(ASTORE,iIdx);
+  BytecodeExpression expression=new BytecodeExpression(){
+    public void visit(    GroovyCodeVisitor visitor){
+      cv.visitVarInsn(ALOAD,iteratorIdx);
+      iteratorNextMethod.call(cv);
+    }
+  }
+;
+  evaluateEqual(new BinaryExpression(new VariableExpression(loop.getVariable()),Token.equal(-1,-1),expression));
   loop.getLoopBlock().visit(this);
   cv.visitLabel(continueLabel);
   cv.visitVarInsn(ALOAD,iteratorIdx);
