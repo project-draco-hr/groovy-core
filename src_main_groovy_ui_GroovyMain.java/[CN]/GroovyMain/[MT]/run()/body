@@ -12,6 +12,10 @@
     return true;
   }
  catch (  Exception e) {
+    if (e instanceof InvokerInvocationException) {
+      InvokerInvocationException iie=(InvokerInvocationException)e;
+      e=(Exception)iie.getCause();
+    }
     System.err.println("Caught: " + e);
     if (debug) {
       e.printStackTrace();
