@@ -1,0 +1,11 @@
+{
+  GroovyShell groovy=new GroovyShell(conf);
+  Script s;
+  if (isScriptFile) {
+    s=groovy.parse(new File(script));
+  }
+ else {
+    s=groovy.parse(script,"main");
+  }
+  new GroovySocketServer(s,port);
+}
