@@ -8,21 +8,10 @@
       char c=this.escapeLookahead ? this.escapeLookaheadChar : charStream.consume();
       this.escapeLookahead=false;
       this.charWidth[this.charsInBuffer]=1;
-      this.isEol[this.charsInBuffer]=false;
       if (c == CharStream.EOS)       this.eosRead=true;
       if (c == '\\') {
         c=charStream.consume();
-        if (c == '\n' || c == '\r') {
-          if (c == '\r') {
-            c=charStream.consume();
-            if (c == '\n')             c=charStream.consume();
-          }
- else {
-            c=charStream.consume();
-          }
-          this.isEol[this.charsInBuffer]=true;
-        }
- else         if (c == 'u') {
+        if (c == 'u') {
           do {
             this.charWidth[this.charsInBuffer]++;
             c=charStream.consume();
