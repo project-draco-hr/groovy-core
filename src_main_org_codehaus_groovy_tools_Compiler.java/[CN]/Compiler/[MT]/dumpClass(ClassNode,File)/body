@@ -1,19 +1,27 @@
 {
-  ClassWriter classWriter=new ClassWriter(true);
-  ClassGenerator classGenerator=new ClassGenerator(classWriter,getClassLoader(),file.getName());
-  classGenerator.visitClass(classNode);
-  byte[] code=classWriter.toByteArray();
-  File outputFile=createOutputFile(classNode.getName());
-  if (!outputFile.getParentFile().exists()) {
-    outputFile.getParentFile().mkdirs();
+  ClassGenerator classGenerator=null;
+  if (debug) {
+    DumpClassVisitor dumpVisitor=new DumpClassVisitor(new PrintWriter(new OutputStreamWriter(System.out)));
+    classGenerator=new ClassGenerator(dumpVisitor,getClassLoader(),file.getName());
+    classGenerator.visitClass(classNode);
   }
-  LOG.info("generating class to: " + outputFile);
-  FileOutputStream out=new FileOutputStream(outputFile);
-  try {
-    out.write(code);
-  }
+ else {
+    ClassWriter classWriter=new ClassWriter(true);
+    classGenerator=new ClassGenerator(classWriter,getClassLoader(),file.getName());
+    classGenerator.visitClass(classNode);
+    byte[] code=classWriter.toByteArray();
+    File outputFile=createOutputFile(classNode.getName());
+    if (!outputFile.getParentFile().exists()) {
+      outputFile.getParentFile().mkdirs();
+    }
+    LOG.info("generating class to: " + outputFile);
+    FileOutputStream out=new FileOutputStream(outputFile);
+    try {
+      out.write(code);
+    }
   finally {
-    out.close();
+      out.close();
+    }
   }
   LinkedList innerClasses=classGenerator.getInnerClasses();
   while (!innerClasses.isEmpty()) {

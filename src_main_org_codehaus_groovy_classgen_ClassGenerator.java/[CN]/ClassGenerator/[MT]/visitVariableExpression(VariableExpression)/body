@@ -4,42 +4,48 @@
     visitFieldExpression(new FieldExpression(field));
   }
  else {
-    String name=expression.getVariable();
-    Variable variable=defineVariable(name,"java.lang.Object");
-    String type=variable.getType();
-    int index=variable.getIndex();
-    if (leftHandExpression) {
-      if (type.equals("double")) {
-        cv.visitVarInsn(DSTORE,index);
-      }
- else       if (type.equals("float")) {
-        cv.visitVarInsn(FSTORE,index);
-      }
- else       if (type.equals("long")) {
-        cv.visitVarInsn(LSTORE,index);
-      }
- else       if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-        cv.visitVarInsn(ISTORE,index);
-      }
- else {
-        cv.visitVarInsn(ASTORE,index);
-      }
+    field=classNode.getOuterField(expression.getVariable());
+    if (field != null) {
+      visitOuterFieldExpression(new FieldExpression(field));
     }
  else {
-      if (type.equals("double")) {
-        cv.visitVarInsn(DLOAD,index);
-      }
- else       if (type.equals("float")) {
-        cv.visitVarInsn(FLOAD,index);
-      }
- else       if (type.equals("long")) {
-        cv.visitVarInsn(LLOAD,index);
-      }
- else       if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-        cv.visitVarInsn(ILOAD,index);
+      String name=expression.getVariable();
+      Variable variable=defineVariable(name,"java.lang.Object");
+      String type=variable.getType();
+      int index=variable.getIndex();
+      if (leftHandExpression) {
+        if (type.equals("double")) {
+          cv.visitVarInsn(DSTORE,index);
+        }
+ else         if (type.equals("float")) {
+          cv.visitVarInsn(FSTORE,index);
+        }
+ else         if (type.equals("long")) {
+          cv.visitVarInsn(LSTORE,index);
+        }
+ else         if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
+          cv.visitVarInsn(ISTORE,index);
+        }
+ else {
+          cv.visitVarInsn(ASTORE,index);
+        }
       }
  else {
-        cv.visitVarInsn(ALOAD,index);
+        if (type.equals("double")) {
+          cv.visitVarInsn(DLOAD,index);
+        }
+ else         if (type.equals("float")) {
+          cv.visitVarInsn(FLOAD,index);
+        }
+ else         if (type.equals("long")) {
+          cv.visitVarInsn(LLOAD,index);
+        }
+ else         if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
+          cv.visitVarInsn(ILOAD,index);
+        }
+ else {
+          cv.visitVarInsn(ALOAD,index);
+        }
       }
     }
   }
