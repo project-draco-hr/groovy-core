@@ -1,7 +1,8 @@
 {
   List statements=new ArrayList();
+  List staticStatements=new ArrayList();
   for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
-    addFieldInitialization(statements,constructorNode,(FieldNode)iter.next());
+    addFieldInitialization(statements,staticStatements,constructorNode,(FieldNode)iter.next());
   }
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
@@ -22,5 +23,8 @@
       statements.addAll(otherStatements);
     }
     constructorNode.setCode(new BlockStatement(statements));
+  }
+  if (!staticStatements.isEmpty()) {
+    node.addStaticInitializerStatements(staticStatements);
   }
 }

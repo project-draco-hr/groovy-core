@@ -8,10 +8,13 @@
     expression.getValue(i).visit(this);
     cv.visitInsn(AASTORE);
   }
+  int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
+  cv.visitVarInsn(ASTORE,paramIdx);
   ClassNode innerClass=createCompositeStringClass(expression);
   innerClasses.add(innerClass);
   String innerClassinternalName=getClassInternalName(innerClass.getName());
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);
+  cv.visitVarInsn(ALOAD,paramIdx);
   cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","([Ljava/lang/Object;)V");
 }

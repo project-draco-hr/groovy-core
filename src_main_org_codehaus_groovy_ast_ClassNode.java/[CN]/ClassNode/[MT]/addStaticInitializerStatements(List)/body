@@ -1,0 +1,19 @@
+{
+  MethodNode method=getMethod("<clinit>");
+  if (method == null) {
+    method=addMethod("<clinit>",ACC_PUBLIC | ACC_STATIC,"void",Parameter.EMPTY_ARRAY,new BlockStatement());
+  }
+  BlockStatement block=null;
+  Statement statement=method.getCode();
+  if (statement == null) {
+    block=new BlockStatement();
+  }
+ else   if (statement instanceof BlockStatement) {
+    block=(BlockStatement)statement;
+  }
+ else {
+    block=new BlockStatement();
+    block.addStatement(statement);
+  }
+  block.addStatements(staticStatements);
+}

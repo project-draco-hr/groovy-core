@@ -1,7 +1,8 @@
 {
   int size=expression.getExpressions().size();
   pushConstant(size);
-  cv.visitTypeInsn(ANEWARRAY,getTypeDescription(expression.getType()));
+  String typeName=getClassInternalName(expression.getType());
+  cv.visitTypeInsn(ANEWARRAY,typeName);
   for (int i=0; i < size; i++) {
     cv.visitInsn(DUP);
     pushConstant(i);
