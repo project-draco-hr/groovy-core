@@ -1,5 +1,18 @@
 {
   String datatype=resolvedQualifiedNameNotNull(expressionRoot.getChild(0));
-  Expression args=actualParameterList(expressionRoot.getChild(1));
-  return new ConstructorCallExpression(datatype,args);
+  CSTNode node=expressionRoot.getChild(1);
+  if (node.getToken().getType() == Token.LEFT_SQUARE_BRACKET) {
+    CSTNode next=expressionRoot.getChild(2);
+    if (next.getToken().getType() == Token.LEFT_CURLY_BRACE) {
+      TupleExpression args=nonNamedActualParameterList(expressionRoot.getChild(3));
+      return new ArrayExpression(datatype,args.getExpressions());
+    }
+ else {
+      return new ArrayExpression(datatype,expression(next));
+    }
+  }
+ else {
+    Expression args=actualParameterList(expressionRoot.getChild(1));
+    return new ConstructorCallExpression(datatype,args);
+  }
 }

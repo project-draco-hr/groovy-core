@@ -1,16 +1,30 @@
 {
   CSTNode expr=rootNode(Token.KEYWORD_NEW);
-  expr.addChild(datatype());
-  CSTNode paramList=null;
+  expr.addChild(datatypeWithoutArray());
   if (lt_bare() == Token.LEFT_PARENTHESIS) {
-    consume(Token.LEFT_PARENTHESIS);
+    consume_bare(Token.LEFT_PARENTHESIS);
     expr.addChild(parameterList(Token.RIGHT_PARENTHESIS));
     consume(Token.RIGHT_PARENTHESIS);
   }
  else   if (lt_bare() == Token.LEFT_CURLY_BRACE) {
-    paramList=parameterList(Token.LEFT_CURLY_BRACE);
+    consume_bare(Token.LEFT_CURLY_BRACE);
+    CSTNode paramList=parameterList(Token.RIGHT_CURLY_BRACE);
     expr.addChild(paramList);
-    expr.addChild(closureExpression());
+    paramList.addChild(closureExpression());
+  }
+ else   if (lt_bare() == Token.LEFT_SQUARE_BRACKET) {
+    expr.addChild(new CSTNode(consume_bare(Token.LEFT_SQUARE_BRACKET)));
+    if (lt_bare() == Token.RIGHT_SQUARE_BRACKET) {
+      consume_bare(Token.RIGHT_SQUARE_BRACKET);
+      expr.addChild(new CSTNode(consume_bare(Token.LEFT_CURLY_BRACE)));
+      CSTNode paramList=parameterList(Token.RIGHT_CURLY_BRACE);
+      consume(Token.RIGHT_CURLY_BRACE);
+      expr.addChild(paramList);
+    }
+ else {
+      expr.addChild(expression());
+      consume_bare(Token.RIGHT_SQUARE_BRACKET);
+    }
   }
   return expr;
 }

@@ -524,7 +524,8 @@ token=Token.doubleQuoteString(getStartLine(),getStartColumn(),stringLiteral.toSt
 break ROOT_SWITCH;
 }
  else {
-throw new UnexpectedCharacterException(getStartLine(),getStartColumn() + 1,c,new char[]{});
+token=Token.leftShift(getStartLine(),getStartColumn());
+break ROOT_SWITCH;
 }
 }
 default :
@@ -545,6 +546,12 @@ case ('='):
 {
 consume();
 token=Token.compareGreaterThanEqual(getStartLine(),getStartColumn());
+break MULTICHAR_SWITCH;
+}
+case ('>'):
+{
+consume();
+token=Token.rightShift(getStartLine(),getStartColumn());
 break MULTICHAR_SWITCH;
 }
 default :

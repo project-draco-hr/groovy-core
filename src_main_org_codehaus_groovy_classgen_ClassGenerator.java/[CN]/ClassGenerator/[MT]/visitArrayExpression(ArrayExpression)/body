@@ -1,18 +1,26 @@
 {
-  int size=expression.getExpressions().size();
-  pushConstant(size);
   String typeName=getClassInternalName(expression.getType());
-  cv.visitTypeInsn(ANEWARRAY,typeName);
-  for (int i=0; i < size; i++) {
-    cv.visitInsn(DUP);
-    pushConstant(i);
-    Expression elementExpression=expression.getExpression(i);
-    if (elementExpression == null) {
-      ConstantExpression.NULL.visit(this);
-    }
+  Expression sizeExpression=expression.getSizeExpression();
+  if (sizeExpression != null) {
+    visitAndAutobox(sizeExpression);
+    asIntMethod.call(cv);
+    cv.visitTypeInsn(ANEWARRAY,typeName);
+  }
  else {
-      visitAndAutobox(elementExpression);
+    int size=expression.getExpressions().size();
+    pushConstant(size);
+    cv.visitTypeInsn(ANEWARRAY,typeName);
+    for (int i=0; i < size; i++) {
+      cv.visitInsn(DUP);
+      pushConstant(i);
+      Expression elementExpression=expression.getExpression(i);
+      if (elementExpression == null) {
+        ConstantExpression.NULL.visit(this);
+      }
+ else {
+        visitAndAutobox(elementExpression);
+      }
+      cv.visitInsn(AASTORE);
     }
-    cv.visitInsn(AASTORE);
   }
 }
