@@ -1,4 +1,5 @@
 {
+  boolean nulls=false;
   String[] strings=gstring.getStrings();
   if (strings.length <= 0) {
     throw new IllegalArgumentException("No SQL specified in GString: " + gstring);
@@ -8,8 +9,18 @@
   for (int i=0; i < strings.length; i++) {
     buffer.append(strings[i]);
     if (i < values.length) {
-      buffer.append("?");
+      if (values[i] != null) {
+        buffer.append("?");
+      }
+ else {
+        nulls=true;
+        buffer.append("?'\"?");
+      }
     }
   }
-  return buffer.toString();
+  String sql=buffer.toString();
+  if (nulls) {
+    sql=nullify(sql);
+  }
+  return sql;
 }

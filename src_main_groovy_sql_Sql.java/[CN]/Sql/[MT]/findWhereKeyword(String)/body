@@ -1,0 +1,29 @@
+{
+  char[] chars=sql.toLowerCase().toCharArray();
+  char[] whereChars="where".toCharArray();
+  int i=0;
+  boolean inString=false;
+  boolean noWhere=true;
+  int inWhere=0;
+  while (i < chars.length && noWhere) {
+switch (chars[i]) {
+case '\'':
+      if (inString) {
+        inString=false;
+      }
+ else {
+        inString=true;
+      }
+    break;
+default :
+  if (!inString && chars[i] == whereChars[inWhere]) {
+    inWhere++;
+    if (inWhere == whereChars.length) {
+      return i;
+    }
+  }
+}
+i++;
+}
+return -1;
+}
