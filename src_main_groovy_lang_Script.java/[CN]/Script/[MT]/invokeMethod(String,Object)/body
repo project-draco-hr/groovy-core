@@ -3,11 +3,21 @@
     return super.invokeMethod(name,args);
   }
  catch (  MissingMethodException mme) {
-    Object boundClosure=binding.getVariable(name);
-    if (boundClosure != null && boundClosure instanceof Closure) {
-      return ((Closure)boundClosure).call(args);
-    }
+    try {
+      if (name.equals(mme.getMethod())) {
+        Object boundClosure=binding.getVariable(name);
+        if (boundClosure != null && boundClosure instanceof Closure) {
+          return ((Closure)boundClosure).call(args);
+        }
  else {
+          throw mme;
+        }
+      }
+ else {
+        throw mme;
+      }
+    }
+ catch (    MissingPropertyException mpe) {
       throw mme;
     }
   }
