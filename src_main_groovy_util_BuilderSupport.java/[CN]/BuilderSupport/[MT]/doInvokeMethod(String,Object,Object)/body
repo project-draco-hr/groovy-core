@@ -1,0 +1,39 @@
+{
+  Object node=null;
+  Closure closure=null;
+  List list=InvokerHelper.asList(args);
+  if (!list.isEmpty()) {
+    Object object=list.get(0);
+    if (object instanceof Map) {
+      node=proxyBuilder.createNode(name,(Map)object);
+    }
+ else     if (object instanceof Closure) {
+      closure=(Closure)object;
+      node=proxyBuilder.createNode(name);
+    }
+ else {
+      node=proxyBuilder.createNode(name,object);
+    }
+    if (list.size() > 1) {
+      object=list.get(1);
+      if (object instanceof Closure) {
+        closure=(Closure)object;
+      }
+    }
+  }
+ else {
+    node=proxyBuilder.createNode(name);
+  }
+  if (current != null) {
+    proxyBuilder.setParent(current,node);
+  }
+  if (closure != null) {
+    Object oldCurrent=current;
+    current=node;
+    closure.setDelegate(this);
+    closure.call();
+    current=oldCurrent;
+  }
+  proxyBuilder.nodeCompleted(node);
+  return node;
+}

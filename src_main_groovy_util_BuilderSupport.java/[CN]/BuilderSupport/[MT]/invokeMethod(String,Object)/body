@@ -1,39 +1,4 @@
 {
-  Object node=null;
-  Closure closure=null;
-  List list=InvokerHelper.asList(args);
-  if (!list.isEmpty()) {
-    Object object=list.get(0);
-    if (object instanceof Map) {
-      node=createNode(name,(Map)object);
-    }
- else     if (object instanceof Closure) {
-      closure=(Closure)object;
-      node=createNode(name);
-    }
- else {
-      node=createNode(name,object);
-    }
-    if (list.size() > 1) {
-      object=list.get(1);
-      if (object instanceof Closure) {
-        closure=(Closure)object;
-      }
-    }
-  }
- else {
-    node=createNode(name);
-  }
-  if (current != null) {
-    setParent(current,node);
-  }
-  if (closure != null) {
-    Object oldCurrent=current;
-    current=node;
-    closure.setDelegate(this);
-    closure.call();
-    current=oldCurrent;
-  }
-  nodeCompleted(node);
-  return node;
+  Object name=getName(methodName);
+  return doInvokeMethod(methodName,name,args);
 }
