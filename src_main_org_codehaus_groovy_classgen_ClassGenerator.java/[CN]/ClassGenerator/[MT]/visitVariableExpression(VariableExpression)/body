@@ -11,6 +11,9 @@
   if (!variableName.equals("this")) {
     String className=resolveClassName(variableName);
     if (className != null) {
+      if (leftHandExpression) {
+        throw new RuntimeParserException("Cannot use a class expression on the left hand side of an assignment",expression);
+      }
       visitClassExpression(new ClassExpression(className));
       return;
     }
