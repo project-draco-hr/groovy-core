@@ -23,6 +23,25 @@
             return;
           }
         }
+        Class parameterType=method.getParameterTypes()[0];
+        if (parameterType.isArray()) {
+          Object objArray=asPrimitiveArray(list,parameterType);
+          doMethodInvoke(object,metaMethod,new Object[]{objArray});
+          return;
+        }
+      }
+      if (newValue.getClass().isArray()) {
+        List list=Arrays.asList((Object[])newValue);
+        Class parameterType=method.getParameterTypes()[0];
+        Class arrayType=parameterType.getComponentType();
+        Object objArray=Array.newInstance(arrayType,list.size());
+        for (int i=0; i < list.size(); i++) {
+          List list2=Arrays.asList((Object[])list.get(i));
+          Object objArray2=asPrimitiveArray(list2,arrayType);
+          Array.set(objArray,i,objArray2);
+        }
+        doMethodInvoke(object,metaMethod,new Object[]{objArray});
+        return;
       }
       throw new MissingPropertyException(property,theClass,e);
     }
