@@ -1,14 +1,20 @@
 {
   onLineNumber(statement);
   statement.getExpression().visit(this);
-  switchVariableIndex=defineVariable(createVariableName("switch"),"java.lang.Object").getIndex();
+  int switchVariableIndex=defineVariable(createVariableName("switch"),"java.lang.Object").getIndex();
   cv.visitVarInsn(ASTORE,switchVariableIndex);
   Label lastBreakLabel=breakLabel;
   breakLabel=new Label();
   List caseStatements=statement.getCaseStatements();
-  for (Iterator iter=caseStatements.iterator(); iter.hasNext(); ) {
+  int caseCount=caseStatements.size();
+  Label[] labels=new Label[caseCount + 1];
+  for (int i=0; i < caseCount; i++) {
+    labels[i]=new Label();
+  }
+  int i=0;
+  for (Iterator iter=caseStatements.iterator(); iter.hasNext(); i++) {
     CaseStatement caseStatement=(CaseStatement)iter.next();
-    visitCaseStatement(caseStatement);
+    visitCaseStatement(caseStatement,switchVariableIndex,labels[i],labels[i + 1]);
   }
   statement.getDefaultStatement().visit(this);
   cv.visitLabel(breakLabel);
