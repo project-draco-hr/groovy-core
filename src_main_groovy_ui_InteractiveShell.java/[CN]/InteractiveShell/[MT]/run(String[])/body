@@ -1,13 +1,14 @@
 {
-  String version=InvokerHelper.getVersion();
-  System.out.println("Lets get Groovy!");
-  System.out.println("================");
-  System.out.println("Version: " + version + " JVM: "+ System.getProperty("java.vm.version"));
-  System.out.println("Type 'exit' to terminate the shell");
-  System.out.println("Type 'help' for command help");
+  final String version=InvokerHelper.getVersion();
+  out.println("Lets get Groovy!");
+  out.println("================");
+  out.println("Version: " + version + " JVM: "+ System.getProperty("java.vm.version"));
+  out.println("Type 'exit' to terminate the shell");
+  out.println("Type 'help' for command help");
   int counter=1;
-  while (true) {
-    String command=read();
+  boolean running=true;
+  while (running) {
+    final String command=read();
     if (command == null) {
       close();
       break;
@@ -15,15 +16,19 @@
     reset();
     if (command.length() > 0) {
       try {
-        Object answer=shell.evaluate(command,"CommandLine" + counter++ + ".groovy");
+        shell.evaluate(command,"CommandLine" + counter++ + ".groovy");
       }
  catch (      Exception e) {
-        new ErrorReporter(e,false).write(System.err);
+        err.println("Exception: " + e.getMessage());
+        e.printStackTrace(err);
+        new ErrorReporter(e,false).write(err);
       }
 catch (      Throwable e) {
-        new ErrorReporter(e,false).write(System.err);
-        System.err.println(">>> exiting");
-        System.exit(1);
+        err.println("Unrecoverable Error: " + e.getMessage());
+        e.printStackTrace(err);
+        new ErrorReporter(e,false).write(err);
+        err.println(">>> exiting");
+        running=false;
       }
     }
   }

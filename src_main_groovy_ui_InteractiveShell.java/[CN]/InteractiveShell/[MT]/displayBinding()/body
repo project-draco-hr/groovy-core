@@ -1,0 +1,15 @@
+{
+  out.println("Avaialble variables in the current binding");
+  Binding context=shell.getContext();
+  Map variables=context.getVariables();
+  Set set=variables.keySet();
+  if (set.isEmpty()) {
+    out.println("The current binding is empty.");
+  }
+ else {
+    for (Iterator it=set.iterator(); it.hasNext(); ) {
+      String key=(String)it.next();
+      out.println(key + " = " + variables.get(key));
+    }
+  }
+}

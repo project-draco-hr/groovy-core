@@ -1,6 +1,6 @@
 {
   reset();
-  System.out.println("");
+  out.println("");
   boolean complete=false;
   boolean done=false;
   while (!done) {
@@ -28,12 +28,15 @@ break;
 case COMMAND_ID_EXPLAIN:
 explainStatement();
 break;
+case COMMAND_ID_BINDING:
+displayBinding();
+break;
 case COMMAND_ID_EXECUTE:
 if (complete) {
 done=true;
 }
  else {
-System.err.println("statement not complete");
+err.println("statement not complete");
 }
 break;
 }
@@ -44,7 +47,7 @@ if (pending.trim() == "") {
 accept();
 continue;
 }
-String code=current();
+final String code=current();
 if (parse(code,1)) {
 accept();
 complete=true;
