@@ -2,10 +2,17 @@
   try {
     ServerSocket serverSocket=new ServerSocket(url.getPort());
     while (true) {
+      Script script;
+      if (isScriptFile) {
+        script=groovy.parse(new File(scriptLocation));
+      }
+ else {
+        script=groovy.parse(scriptLocation,"main");
+      }
       new GroovyClientConnection(script,serverSocket.accept());
     }
   }
- catch (  IOException e) {
+ catch (  Exception e) {
     e.printStackTrace();
   }
 }
