@@ -3,6 +3,7 @@
   String getterName="get" + capitalize(name);
   String setterName="set" + capitalize(name);
   FieldNode field=new FieldNode(name,ACC_PRIVATE,propertyNode.getType(),classNode.getName(),propertyNode.getInitialValueExpression());
+  classNode.addField(field);
   visitField(field);
   Statement getterBlock=propertyNode.getGetterBlock();
   if (getterBlock == null) {
