@@ -2,13 +2,13 @@
   try {
     return getMetaClass().getProperty(this,property);
   }
- catch (  InvokerException e) {
+ catch (  GroovyRuntimeException e) {
     Object delegate=getDelegate();
     if (delegate != this) {
       try {
         return InvokerHelper.getProperty(delegate,property);
       }
- catch (      InvokerException e2) {
+ catch (      GroovyRuntimeException e2) {
       }
     }
     throw e;

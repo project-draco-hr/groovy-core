@@ -1,0 +1,12 @@
+{
+  try {
+    Constructor constructor=scriptClass.getConstructor(new Class[]{});
+    Script script=(Script)constructor.newInstance(new Object[]{});
+    Method setBindings=script.getClass().getMethod("setBindings",new Class[]{Binding.class});
+    setBindings.invoke(script,new Object[]{context});
+    return script;
+  }
+ catch (  Exception e) {
+    throw new GroovyRuntimeException("Failed to create Script instance for class: " + scriptClass + ". Reason: "+ e,e);
+  }
+}

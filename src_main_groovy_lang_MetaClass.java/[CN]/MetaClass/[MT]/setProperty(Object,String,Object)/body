@@ -3,13 +3,13 @@
   if (descriptor != null) {
     Method method=descriptor.getWriteMethod();
     if (method == null) {
-      throw new InvokerException("Cannot set read-only property: " + property);
+      throw new GroovyRuntimeException("Cannot set read-only property: " + property);
     }
     Object[] arguments={newValue};
     try {
       doMethodInvoke(object,method,arguments);
     }
- catch (    InvokerException e) {
+ catch (    GroovyRuntimeException e) {
       if (newValue instanceof List) {
         List list=(List)newValue;
         int params=list.size();

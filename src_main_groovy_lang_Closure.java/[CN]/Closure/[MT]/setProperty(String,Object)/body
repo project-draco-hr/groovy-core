@@ -3,14 +3,14 @@
     getMetaClass().setProperty(this,property,newValue);
     return;
   }
- catch (  InvokerException e) {
+ catch (  GroovyRuntimeException e) {
     Object delegate=getDelegate();
     if (delegate != this) {
       try {
         InvokerHelper.setProperty(delegate,property,newValue);
         return;
       }
- catch (      InvokerException e2) {
+ catch (      GroovyRuntimeException e2) {
       }
     }
     throw e;
