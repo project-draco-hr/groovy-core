@@ -15,7 +15,7 @@
     cv.visitFieldInsn(GETFIELD,internalClassName,"owner",helper.getTypeDescription(outerClassNode.getName()));
   }
   int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
-  String ownerName=helper.getClassInternalName(outerClassNode.getName());
+  String ownerName=BytecodeHelper.getClassInternalName(outerClassNode.getName());
   if (leftHandExpression) {
     cv.visitVarInsn(ALOAD,valueIdx);
     boolean holder=field.isHolder() && !isInClosureConstructor();

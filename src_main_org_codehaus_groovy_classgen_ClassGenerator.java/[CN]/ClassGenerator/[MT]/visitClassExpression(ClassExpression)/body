@@ -2,7 +2,7 @@
   String type=expression.getText();
   if (helper.isPrimitiveType(type)) {
     String objectType=helper.getObjectTypeForPrimitive(type);
-    cv.visitFieldInsn(GETSTATIC,helper.getClassInternalName(objectType),"TYPE","Ljava/lang/Class;");
+    cv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(objectType),"TYPE","Ljava/lang/Class;");
   }
  else {
     final String staticFieldName=(type.equals(classNode.getName())) ? "class$0" : "class$" + type.replace('.','$');

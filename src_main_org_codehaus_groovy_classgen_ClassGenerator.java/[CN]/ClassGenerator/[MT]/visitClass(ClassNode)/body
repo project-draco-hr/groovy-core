@@ -2,15 +2,16 @@
   try {
     syntheticStaticFields.clear();
     this.classNode=classNode;
-    this.internalClassName=helper.getClassInternalName(classNode.getName());
-    this.internalBaseClassName=helper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,helper.getClassInternalNames(classNode.getInterfaces()),sourceFile);
+    this.outermostClass=null;
+    this.internalClassName=BytecodeHelper.getClassInternalName(classNode.getName());
+    this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
+    cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()),sourceFile);
     classNode.visitContents(this);
     createSyntheticStaticFields();
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
       ClassNode innerClass=(ClassNode)iter.next();
       String innerClassName=innerClass.getName();
-      String innerClassInternalName=helper.getClassInternalName(innerClassName);
+      String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
       cw.visitInnerClass(innerClassInternalName,internalClassName,innerClassName,innerClass.getModifiers());
     }
     cw.visitEnd();
