@@ -1,13 +1,11 @@
 {
   if (text == null) {
-    String[] s=getStrings();
-    int numberOfValues=values.length;
-    StringBuffer buffer=new StringBuffer();
-    for (int i=0, size=s.length; i < size; i++) {
-      buffer.append(s[i]);
-      if (i < numberOfValues) {
-        buffer.append(InvokerHelper.toString(values[i]));
-      }
+    StringWriter buffer=new StringWriter();
+    try {
+      writeTo(buffer);
+    }
+ catch (    IOException e) {
+      throw new StringWriterIOException(e);
     }
     text=buffer.toString();
   }
