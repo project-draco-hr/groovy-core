@@ -1,0 +1,9 @@
+{
+  String fileName=System.getProperty("testScript",file);
+  if (fileName == null) {
+    throw new RuntimeException("No filename given so cannot run a Groovy unit test");
+  }
+  System.out.println("Compiling: " + fileName);
+  Class type=compile(fileName);
+  addTestSuite(type);
+}
