@@ -14,7 +14,7 @@
     if (url != null) {
       try {
         InputStream in=url.openStream();
-        CompilerFacade compiler=new CompilerFacade(theClass.getClassLoader(),new CompileUnit(new CompilerConfig())){
+        CompilerFacade compiler=new CompilerFacade(theClass.getClassLoader(),new CompileUnit(getClass().getClassLoader(),new CompilerConfig())){
           protected void onClass(          ClassWriter classWriter,          ClassNode classNode){
             if (classNode.getName().equals(theClass.getName())) {
               MetaClass.this.classNode=classNode;

@@ -1,0 +1,18 @@
+{
+  try {
+    return getClassLoader().loadClass(type);
+  }
+ catch (  ClassNotFoundException e) {
+    try {
+      return getClass().getClassLoader().loadClass(type);
+    }
+ catch (    ClassNotFoundException e2) {
+    }
+    try {
+      return Class.forName(type);
+    }
+ catch (    ClassNotFoundException e2) {
+    }
+    throw e;
+  }
+}
