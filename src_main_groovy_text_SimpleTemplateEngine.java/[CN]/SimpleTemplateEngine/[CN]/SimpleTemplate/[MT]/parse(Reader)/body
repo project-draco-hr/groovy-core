@@ -1,26 +1,31 @@
 {
-  BufferedReader br=new BufferedReader(reader);
+  if (!reader.markSupported()) {
+    reader=new BufferedReader(reader);
+  }
   StringWriter sw=new StringWriter();
   startScript(sw);
   int c;
-  while ((c=br.read()) != -1) {
+  while ((c=reader.read()) != -1) {
     if (c == '<') {
-      c=br.read();
+      c=reader.read();
       if (c != '%') {
         sw.write('<');
       }
  else {
-        br.mark(1);
-        c=br.read();
+        reader.mark(1);
+        c=reader.read();
         if (c == '=') {
-          groovyExpression(br,sw);
+          groovyExpression(reader,sw);
         }
  else {
-          br.reset();
-          groovySection(br,sw);
+          reader.reset();
+          groovySection(reader,sw);
         }
         continue;
       }
+    }
+    if (c == '\"') {
+      sw.write('\\');
     }
     sw.write(c);
   }
