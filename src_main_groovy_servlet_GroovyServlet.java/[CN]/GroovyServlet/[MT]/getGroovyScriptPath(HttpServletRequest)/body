@@ -1,0 +1,8 @@
+{
+  int contextLength=request.getContextPath().length();
+  String scriptFilename=request.getRequestURI().substring(contextLength).substring(1);
+  if (scriptFilename.endsWith(GROOVY_EXTENSION))   return scriptFilename;
+  int lastDot=scriptFilename.lastIndexOf(".");
+  scriptFilename=scriptFilename.substring(0,lastDot) + GROOVY_EXTENSION;
+  return scriptFilename;
+}

@@ -1,7 +1,7 @@
 {
   Binding binding=null;
   try {
-    binding=createBinding(request,response);
+    binding=new ServletBinding(request,response,servletContext);
     setContentType(request,response);
     Template template=handleRequest(request,response,binding);
     merge(template,binding,response);

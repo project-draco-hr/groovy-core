@@ -1,0 +1,13 @@
+{
+  try {
+    if ("out".equals(name))     return response.getWriter();
+    if ("sout".equals(name))     return response.getOutputStream();
+    if ("html".equals(name)) {
+      if (html == null)       html=new MarkupBuilder(response.getWriter());
+      return html;
+    }
+  }
+ catch (  IOException e) {
+  }
+  return binding.getVariable(name);
+}
