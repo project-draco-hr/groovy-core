@@ -1,0 +1,29 @@
+{
+  BufferedReader br=new BufferedReader(reader);
+  StringWriter sw=new StringWriter();
+  startScript(sw);
+  int c;
+  while ((c=br.read()) != -1) {
+    if (c == '<') {
+      c=br.read();
+      if (c != '%') {
+        sw.write('<');
+      }
+ else {
+        br.mark(1);
+        c=br.read();
+        if (c == '=') {
+          groovyExpression(br,sw);
+        }
+ else {
+          br.reset();
+          groovySection(br,sw);
+        }
+        continue;
+      }
+    }
+    sw.write(c);
+  }
+  endScript(sw);
+  return sw.toString();
+}

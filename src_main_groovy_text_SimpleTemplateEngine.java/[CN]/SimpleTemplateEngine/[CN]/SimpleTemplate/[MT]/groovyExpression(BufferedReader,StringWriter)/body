@@ -1,0 +1,20 @@
+{
+  sw.write("\nSECTION);\nresult.write(\"${");
+  int c;
+  while ((c=br.read()) != -1) {
+    if (c == '%') {
+      c=br.read();
+      if (c != '>') {
+        sw.write('%');
+      }
+ else {
+        break;
+      }
+    }
+    if (c == '\"') {
+      sw.write('\\');
+    }
+    sw.write(c);
+  }
+  sw.write("}\");\nresult.write(<<<SECTION\n");
+}
