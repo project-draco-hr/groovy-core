@@ -1,10 +1,7 @@
 {
   this.defaultTag=defaultTag;
-  final Iterator keyIterator=tagMap.keySet().iterator();
-  while (keyIterator.hasNext()) {
-    final Object key=keyIterator.next();
-    this.tagMap.put(key,tagMap.get(key));
-  }
+  this.tagMap.putAll(tagMap);
+  this.namespaceSpecificTags.putAll(namespaceTagMap);
   try {
     this.root=(Closure)root.clone();
   }

@@ -16,15 +16,30 @@
       body=arg;
     }
   }
-  try {
-    if (this.tagMap.containsKey(name)) {
-      return ((Closure)this.tagMap.get(name)).call(new Object[]{this.pendingNamespaces,this.namespaces,this.prefix,attrs,body,this.out});
-    }
- else {
-      return this.defaultTag.call(new Object[]{name,this.pendingNamespaces,this.namespaces,this.prefix,attrs,body,this.out});
+  Map tagMap=this.tagMap;
+  Closure defaultTag=this.defaultTag;
+  if (this.pendingNamespaces.containsKey(this.prefix)) {
+    final Object uri=this.pendingNamespaces.get(this.prefix);
+    if (this.namespaceSpecificTags.containsKey(uri)) {
+      final Object[] info=(Object[])this.namespaceSpecificTags.get(uri);
+      defaultTag=(Closure)info[0];
+      tagMap=(Map)info[1];
     }
   }
-  finally {
-    this.prefix="";
+ else   if (this.namespaces.containsKey(this.prefix)) {
+    final Object uri=this.namespaces.get(this.prefix);
+    if (this.namespaceSpecificTags.containsKey(uri)) {
+      final Object[] info=(Object[])this.namespaceSpecificTags.get(uri);
+      defaultTag=(Closure)info[0];
+      tagMap=(Map)info[1];
+    }
+  }
+  final String prefix=this.prefix;
+  this.prefix="";
+  if (tagMap.containsKey(name)) {
+    return ((Closure)tagMap.get(name)).call(new Object[]{this.pendingNamespaces,this.namespaces,prefix,attrs,body,this.out});
+  }
+ else {
+    return defaultTag.call(new Object[]{name,this.pendingNamespaces,this.namespaces,prefix,attrs,body,this.out});
   }
 }
