@@ -1,0 +1,11 @@
+{
+  MapExpression mapExpression=new MapExpression();
+  CSTNode[] entryRoots=expressionRoot.getChildren();
+  for (int i=0; i < entryRoots.length; ++i) {
+    Expression keyExpression=expression(entryRoots[i].getChild(0));
+    Expression valueExpression=expression(entryRoots[i].getChild(1));
+    MapEntryExpression entryExpression=new MapEntryExpression(keyExpression,valueExpression);
+    mapExpression.addMapEntryExpression(entryExpression);
+  }
+  return mapExpression;
+}

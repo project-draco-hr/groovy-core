@@ -1,0 +1,15 @@
+{
+  CSTNode expr=new CSTNode(Token.syntheticMap());
+  CSTNode entry=rootNode(Token.COLON,key);
+  CSTNode value=expression();
+  entry.addChild(value);
+  expr.addChild(entry);
+  while (lt() == Token.COMMA) {
+    consume(Token.COMMA);
+    key=expression();
+    entry=rootNode(Token.COLON,key);
+    entry.addChild(expression());
+    expr.addChild(entry);
+  }
+  return expr;
+}

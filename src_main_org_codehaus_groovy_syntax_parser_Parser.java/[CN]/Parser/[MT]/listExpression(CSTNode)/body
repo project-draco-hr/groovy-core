@@ -1,0 +1,10 @@
+{
+  CSTNode expr=new CSTNode(Token.syntheticList());
+  expr.addChild(entry);
+  while (lt() == Token.COMMA) {
+    consume(Token.COMMA);
+    entry=expression();
+    expr.addChild(entry);
+  }
+  return expr;
+}
