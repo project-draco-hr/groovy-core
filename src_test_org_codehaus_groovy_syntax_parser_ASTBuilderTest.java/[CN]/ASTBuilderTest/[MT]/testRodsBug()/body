@@ -1,0 +1,10 @@
+{
+  ModuleNode module=parse("class Foo { void testMethod() { if (x) { String n = 'foo' } } }","Dummy.groovy");
+  BlockStatement statement=getCode(module,"testMethod");
+  assertEquals("Statements size: " + statement.getStatements(),1,statement.getStatements().size());
+  System.out.println(statement.getStatements());
+  IfStatement ifStmt=(IfStatement)statement.getStatements().get(0);
+  BlockStatement trueStmt=(BlockStatement)ifStmt.getIfBlock();
+  System.out.println("trueStmt: " + trueStmt);
+  assertEquals(2,trueStmt.getStatements().size());
+}

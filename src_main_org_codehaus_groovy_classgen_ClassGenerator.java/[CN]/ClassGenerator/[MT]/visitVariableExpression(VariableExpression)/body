@@ -25,14 +25,15 @@
  else {
       String name=variableName;
       Variable variable=null;
+      String variableType=expression.getType();
       if (!leftHandExpression) {
         variable=(Variable)variableStack.get(name);
       }
  else {
-        variable=defineVariable(name,"java.lang.Object");
+        variable=defineVariable(name,variableType);
       }
       if (variable == null) {
-        variable=defineVariable(name,"java.lang.Object",false);
+        variable=defineVariable(name,variableType,false);
         visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
         cv.visitInsn(DUP);
         cv.visitVarInsn(ASTORE,variable.getIndex());
@@ -44,7 +45,7 @@
       boolean holder=variable.isHolder() && !passingClosureParams;
       if (leftHandExpression) {
         if (holder) {
-          int tempIndex=defineVariable(createVariableName("reference"),"java.lang.Object",false).getIndex();
+          int tempIndex=defineVariable(createVariableName("reference"),variableType,false).getIndex();
           cv.visitVarInsn(ASTORE,tempIndex);
           cv.visitVarInsn(ALOAD,index);
           cv.visitVarInsn(ALOAD,tempIndex);
