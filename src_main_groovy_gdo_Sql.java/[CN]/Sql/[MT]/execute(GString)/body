@@ -1,0 +1,26 @@
+{
+  Connection connection=createConnection();
+  String sql=asSql(gstring);
+  PreparedStatement statement=connection.prepareStatement(sql);
+  try {
+    log.debug(gstring);
+    setParameters(gstring,statement);
+    return statement.executeUpdate();
+  }
+ catch (  SQLException e) {
+    log.warn("Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    try {
+      statement.close();
+    }
+ catch (    SQLException e) {
+    }
+    try {
+      connection.close();
+    }
+ catch (    SQLException e) {
+    }
+  }
+}

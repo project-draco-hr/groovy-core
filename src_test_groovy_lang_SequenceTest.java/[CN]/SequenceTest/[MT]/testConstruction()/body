@@ -1,0 +1,12 @@
+{
+  Sequence sequence=new Sequence(String.class);
+  sequence.add("James");
+  sequence.add("Bob");
+  assertEquals("Size",2,sequence.size());
+  assertEquals("Element","James",sequence.get(0));
+  assertEquals("Element","Bob",sequence.get(1));
+  List answer=(List)InvokerHelper.invokeMethod(sequence,"startsWith",new Object[]{"Ja"});
+  assertArrayEquals(new Object[]{Boolean.TRUE,Boolean.FALSE},answer.toArray());
+  answer=(List)InvokerHelper.invokeMethod(sequence,"length",null);
+  assertArrayEquals(new Object[]{new Integer(5),new Integer(3)},answer.toArray());
+}

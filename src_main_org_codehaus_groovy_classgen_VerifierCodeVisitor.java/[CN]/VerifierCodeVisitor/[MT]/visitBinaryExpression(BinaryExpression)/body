@@ -1,0 +1,12 @@
+{
+  if (verifier.getClassNode().isScriptClass() && expression.getOperation().getType() == Token.EQUAL) {
+    Expression left=expression.getLeftExpression();
+    if (left instanceof VariableExpression) {
+      VariableExpression varExp=(VariableExpression)left;
+      System.out.println("Converting varriable expression: " + varExp.getVariable());
+      PropertyExpression propExp=new PropertyExpression(new VariableExpression("this"),varExp.getVariable());
+      expression.setLeftExpression(propExp);
+    }
+  }
+  super.visitBinaryExpression(expression);
+}

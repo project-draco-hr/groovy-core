@@ -1,4 +1,5 @@
 {
+  this.methodNode=node;
   if (!node.isVoidMethod()) {
     Statement statement=node.getCode();
     if (statement instanceof ExpressionStatement) {
@@ -34,4 +35,5 @@
       }
     }
   }
+  node.getCode().visit(new VerifierCodeVisitor(this));
 }

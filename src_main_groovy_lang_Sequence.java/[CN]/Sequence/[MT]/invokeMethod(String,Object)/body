@@ -1,0 +1,14 @@
+{
+  try {
+    return getMetaClass().invokeMethod(this,name,args);
+  }
+ catch (  NoSuchMethodException e) {
+    List answer=new ArrayList(size());
+    for (Iterator iter=iterator(); iter.hasNext(); ) {
+      Object element=iter.next();
+      Object value=InvokerHelper.invokeMethod(element,name,args);
+      answer.add(value);
+    }
+    return answer;
+  }
+}

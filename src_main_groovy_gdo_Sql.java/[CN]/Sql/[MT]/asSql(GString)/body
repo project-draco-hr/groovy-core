@@ -1,0 +1,13 @@
+{
+  String[] strings=gstring.getStrings();
+  if (strings.length <= 0) {
+    throw new IllegalArgumentException("No SQL specified in GString: " + gstring);
+  }
+  StringBuffer buffer=new StringBuffer(strings[0]);
+  for (int i=1; i < strings.length; i++) {
+    buffer.append("?");
+    buffer.append(strings[i]);
+  }
+  String sql=buffer.toString();
+  return sql;
+}
