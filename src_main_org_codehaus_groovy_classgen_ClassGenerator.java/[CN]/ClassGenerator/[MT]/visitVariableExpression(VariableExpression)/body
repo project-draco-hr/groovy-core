@@ -1,5 +1,9 @@
 {
   String variableName=expression.getVariable();
+  if (isStaticMethod() && variableName.equals("this")) {
+    visitClassExpression(new ClassExpression(classNode.getName()));
+    return;
+  }
   String className=classNode.getClassNameForExpression(variableName);
   if (className != null) {
     visitClassExpression(new ClassExpression(className));
