@@ -1,15 +1,29 @@
 {
   if (useNewParser) {
+    Class type=null;
+    String name="org.codehaus.groovy.antlr.AntlrParserPluginFactory";
     try {
-      Class type=Class.forName("org.codehaus.groovy.antlr.AntlrParserPluginFactory");
+      type=Class.forName(name);
+    }
+ catch (    ClassNotFoundException e) {
+      try {
+        type=Thread.currentThread().getContextClassLoader().loadClass(name);
+      }
+ catch (      ClassNotFoundException e1) {
+        try {
+          type=ParserPluginFactory.class.getClassLoader().loadClass(name);
+        }
+ catch (        ClassNotFoundException e2) {
+        }
+      }
+    }
+    if (type != null) {
       try {
         return (ParserPluginFactory)type.newInstance();
       }
  catch (      Exception e) {
         throw new RuntimeException("Could not create AntlrParserPluginFactory: " + e,e);
       }
-    }
- catch (    ClassNotFoundException e) {
     }
   }
   return new ClassicParserPluginFactory();
