@@ -7,6 +7,19 @@
     return doMethodInvoke(object,method,arguments);
   }
  else {
-    throw new MissingMethodException(methodName,theClass,arguments);
+    try {
+      Object value=this.getProperty(object,methodName);
+      if (value instanceof Closure) {
+        Closure closure=(Closure)value;
+        closure.setDelegate(this);
+        return closure.call(arguments);
+      }
+ else {
+        throw new MissingMethodException(methodName,theClass,arguments);
+      }
+    }
+ catch (    Exception e) {
+      throw new MissingMethodException(methodName,theClass,arguments);
+    }
   }
 }
