@@ -1,0 +1,66 @@
+{
+  onLineNumber(loop,"visitForLoop");
+  Class elemType=null;
+  if (ENABLE_EARLY_BINDING) {
+    Expression collectionExp=loop.getCollectionExpression();
+    collectionExp.resolve(this);
+    Class cls=collectionExp.getTypeClass();
+    if (cls != null) {
+      if (cls.isArray()) {
+        elemType=cls.getComponentType();
+        if (elemType != null) {
+          Type varType=new Type(elemType.getName());
+          loop.setVariableType(varType);
+        }
+      }
+ else       if (collectionExp instanceof ListExpression) {
+        elemType=((ListExpression)collectionExp).getComponentTypeClass();
+        if (elemType != null) {
+          Type varType=new Type(elemType.getName());
+          loop.setVariableType(varType);
+        }
+      }
+ else       if (collectionExp instanceof RangeExpression) {
+        elemType=((RangeExpression)collectionExp).getFrom().getTypeClass();
+        if (elemType != null) {
+          Type varType=new Type(elemType.getName());
+          loop.setVariableType(varType);
+        }
+      }
+    }
+  }
+  Type variableType=checkValidType(loop.getVariableType(),loop,"for loop variable");
+  Variable variable=defineVariable(loop.getVariable(),variableType,true);
+  if (isInScriptBody()) {
+    variable.setProperty(true);
+  }
+  loop.getCollectionExpression().visit(this);
+  asIteratorMethod.call(cv);
+  final Variable iterTemp=storeInTemp("iterator","java.util.Iterator");
+  final int iteratorIdx=iterTemp.getIndex();
+  pushBlockScope();
+  Label continueLabel=scope.getContinueLabel();
+  cv.visitJumpInsn(GOTO,continueLabel);
+  Label label2=new Label();
+  cv.visitLabel(label2);
+  final Class elemClass=elemType;
+  BytecodeExpression expression=new BytecodeExpression(){
+    public void visit(    GroovyCodeVisitor visitor){
+      cv.visitVarInsn(ALOAD,iteratorIdx);
+      iteratorNextMethod.call(cv);
+    }
+    protected void resolveType(    AsmClassGenerator resolver){
+      setTypeClass(elemClass);
+    }
+  }
+;
+  evaluateEqual(BinaryExpression.newAssignmentExpression(loop.getVariable(),expression));
+  cv.visitInsn(POP);
+  loop.getLoopBlock().visit(this);
+  cv.visitLabel(continueLabel);
+  cv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorHasNextMethod.call(cv);
+  cv.visitJumpInsn(IFNE,label2);
+  cv.visitLabel(scope.getBreakLabel());
+  popScope();
+}
