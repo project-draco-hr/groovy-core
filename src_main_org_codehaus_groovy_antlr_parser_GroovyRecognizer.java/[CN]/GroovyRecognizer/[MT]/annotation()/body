@@ -6,7 +6,9 @@
   AST args_AST=null;
   match(AT);
   identifier();
-  i_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    i_AST=(AST)returnAST;
+  }
 {
 switch (LA(1)) {
 case LPAREN:
@@ -42,7 +44,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
               annotationArguments();
-              args_AST=(AST)returnAST;
+              if (inputState.guessing == 0) {
+                args_AST=(AST)returnAST;
+              }
               break;
             }
 case RPAREN:

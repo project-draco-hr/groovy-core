@@ -6,8 +6,12 @@ switch (LA(1)) {
 case IDENT:
 {
       classTypeSpec(true);
-      astFactory.addASTChild(currentAST,returnAST);
-      typeArgumentSpec_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        typeArgumentSpec_AST=(AST)currentAST.root;
+      }
       break;
     }
 case LITERAL_void:
@@ -22,8 +26,12 @@ case LITERAL_double:
 case LITERAL_any:
 {
     builtInTypeArraySpec(true);
-    astFactory.addASTChild(currentAST,returnAST);
-    typeArgumentSpec_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      typeArgumentSpec_AST=(AST)currentAST.root;
+    }
     break;
   }
 default :

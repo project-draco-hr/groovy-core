@@ -9,26 +9,38 @@
 switch (LA(1)) {
 case BNOT:
 {
-      AST tmp318_AST=null;
-      tmp318_AST=astFactory.create(LT(1));
-      astFactory.makeASTRoot(currentAST,tmp318_AST);
+      AST tmp319_AST=null;
+      if (inputState.guessing == 0) {
+        tmp319_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp319_AST);
+      }
       match(BNOT);
       nls();
       unaryExpression();
-      astFactory.addASTChild(currentAST,returnAST);
-      unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+      }
       break;
     }
 case LNOT:
 {
-    AST tmp319_AST=null;
-    tmp319_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp319_AST);
+    AST tmp320_AST=null;
+    if (inputState.guessing == 0) {
+      tmp320_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp320_AST);
+    }
     match(LNOT);
     nls();
     unaryExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+    }
     break;
   }
 case IDENT:
@@ -52,10 +64,10 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
 {
-    boolean synPredMatched429=false;
+    boolean synPredMatched428=false;
     if (((LA(1) == LPAREN) && ((LA(2) >= LITERAL_void && LA(2) <= LITERAL_any)) && (LA(3) == LBRACK || LA(3) == RPAREN))) {
-      int _m429=mark();
-      synPredMatched429=true;
+      int _m428=mark();
+      synPredMatched428=true;
       inputState.guessing++;
       try {
 {
@@ -66,30 +78,36 @@ case NUM_BIG_DECIMAL:
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched429=false;
+        synPredMatched428=false;
       }
-      rewind(_m429);
+      rewind(_m428);
       inputState.guessing--;
     }
-    if (synPredMatched429) {
+    if (synPredMatched428) {
       lpb=LT(1);
-      lpb_AST=astFactory.create(lpb);
-      astFactory.makeASTRoot(currentAST,lpb_AST);
+      if (inputState.guessing == 0) {
+        lpb_AST=astFactory.create(lpb);
+        astFactory.makeASTRoot(currentAST,lpb_AST);
+      }
       match(LPAREN);
       if (inputState.guessing == 0) {
         lpb_AST.setType(TYPECAST);
       }
       builtInTypeSpec(true);
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       match(RPAREN);
       unaryExpression();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
     }
  else {
-      boolean synPredMatched431=false;
+      boolean synPredMatched430=false;
       if (((LA(1) == LPAREN) && (LA(2) == IDENT) && (_tokenSet_113.member(LA(3))))) {
-        int _m431=mark();
-        synPredMatched431=true;
+        int _m430=mark();
+        synPredMatched430=true;
         inputState.guessing++;
         try {
 {
@@ -100,35 +118,45 @@ case NUM_BIG_DECIMAL:
           }
         }
  catch (        RecognitionException pe) {
-          synPredMatched431=false;
+          synPredMatched430=false;
         }
-        rewind(_m431);
+        rewind(_m430);
         inputState.guessing--;
       }
-      if (synPredMatched431) {
+      if (synPredMatched430) {
         lp=LT(1);
-        lp_AST=astFactory.create(lp);
-        astFactory.makeASTRoot(currentAST,lp_AST);
+        if (inputState.guessing == 0) {
+          lp_AST=astFactory.create(lp);
+          astFactory.makeASTRoot(currentAST,lp_AST);
+        }
         match(LPAREN);
         if (inputState.guessing == 0) {
           lp_AST.setType(TYPECAST);
         }
         classTypeSpec(true);
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         match(RPAREN);
         unaryExpressionNotPlusMinus();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else       if ((_tokenSet_114.member(LA(1))) && (_tokenSet_16.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
         postfixExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
         throw new NoViableAltException(LT(1),getFilename());
       }
     }
   }
-  unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+  }
   break;
 }
 default :

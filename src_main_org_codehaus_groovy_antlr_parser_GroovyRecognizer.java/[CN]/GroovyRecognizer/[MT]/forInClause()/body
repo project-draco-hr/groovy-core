@@ -5,10 +5,10 @@
   Token i=null;
   AST i_AST=null;
 {
-    boolean synPredMatched274=false;
+    boolean synPredMatched273=false;
     if (((_tokenSet_11.member(LA(1))) && (_tokenSet_104.member(LA(2))))) {
-      int _m274=mark();
-      synPredMatched274=true;
+      int _m273=mark();
+      synPredMatched273=true;
       inputState.guessing++;
       try {
 {
@@ -16,19 +16,23 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched274=false;
+        synPredMatched273=false;
       }
-      rewind(_m274);
+      rewind(_m273);
       inputState.guessing--;
     }
-    if (synPredMatched274) {
+    if (synPredMatched273) {
       singleDeclarationNoInit();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
     }
  else     if ((LA(1) == IDENT) && (LA(2) == LITERAL_in)) {
-      AST tmp188_AST=null;
-      tmp188_AST=astFactory.create(LT(1));
-      astFactory.addASTChild(currentAST,tmp188_AST);
+      AST tmp189_AST=null;
+      if (inputState.guessing == 0) {
+        tmp189_AST=astFactory.create(LT(1));
+        astFactory.addASTChild(currentAST,tmp189_AST);
+      }
       match(IDENT);
     }
  else {
@@ -36,14 +40,20 @@
     }
   }
   i=LT(1);
-  i_AST=astFactory.create(i);
-  astFactory.makeASTRoot(currentAST,i_AST);
+  if (inputState.guessing == 0) {
+    i_AST=astFactory.create(i);
+    astFactory.makeASTRoot(currentAST,i_AST);
+  }
   match(LITERAL_in);
   if (inputState.guessing == 0) {
     i_AST.setType(FOR_IN_ITERABLE);
   }
   shiftExpression();
-  astFactory.addASTChild(currentAST,returnAST);
-  forInClause_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    forInClause_AST=(AST)currentAST.root;
+  }
   returnAST=forInClause_AST;
 }

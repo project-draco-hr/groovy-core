@@ -14,8 +14,10 @@ switch (LA(1)) {
 case LAND:
 {
         amp=LT(1);
-        amp_AST=astFactory.create(amp);
-        astFactory.makeASTRoot(currentAST,amp_AST);
+        if (inputState.guessing == 0) {
+          amp_AST=astFactory.create(amp);
+          astFactory.makeASTRoot(currentAST,amp_AST);
+        }
         match(LAND);
         if (inputState.guessing == 0) {
           amp_AST.setType(REFLECT_MEMBER);
@@ -25,8 +27,10 @@ case LAND:
 case AT:
 {
       ats=LT(1);
-      ats_AST=astFactory.create(ats);
-      astFactory.makeASTRoot(currentAST,ats_AST);
+      if (inputState.guessing == 0) {
+        ats_AST=astFactory.create(ats);
+        astFactory.makeASTRoot(currentAST,ats_AST);
+      }
       match(AT);
       if (inputState.guessing == 0) {
         ats_AST.setType(SELECT_SLOT);
@@ -74,17 +78,21 @@ default :
 switch (LA(1)) {
 case IDENT:
 {
-AST tmp256_AST=null;
-tmp256_AST=astFactory.create(LT(1));
-astFactory.addASTChild(currentAST,tmp256_AST);
+AST tmp257_AST=null;
+if (inputState.guessing == 0) {
+  tmp257_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp257_AST);
+}
 match(IDENT);
 break;
 }
 case STRING_LITERAL:
 {
 sl=LT(1);
+if (inputState.guessing == 0) {
 sl_AST=astFactory.create(sl);
 astFactory.addASTChild(currentAST,sl_AST);
+}
 match(STRING_LITERAL);
 if (inputState.guessing == 0) {
 sl_AST.setType(IDENT);
@@ -95,7 +103,9 @@ case LPAREN:
 case STRING_CTOR_START:
 {
 dynamicMemberName();
+if (inputState.guessing == 0) {
 dn_AST=(AST)returnAST;
+}
 if (inputState.guessing == 0) {
 namePart_AST=(AST)currentAST.root;
 namePart_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(DYNAMIC_MEMBER,"DYNAMIC_MEMBER")).add(dn_AST));
@@ -108,7 +118,9 @@ break;
 case LCURLY:
 {
 openBlock();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 break;
 }
 case UNUSED_DO:
@@ -136,7 +148,9 @@ case LITERAL_finally:
 case LITERAL_catch:
 {
 keywordPropertyNames();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 break;
 }
 default :
@@ -145,6 +159,8 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
+if (inputState.guessing == 0) {
 namePart_AST=(AST)currentAST.root;
+}
 returnAST=namePart_AST;
 }

@@ -5,10 +5,10 @@
   AST d_AST=null;
   AST mods_AST=null;
   AST td_AST=null;
-  boolean synPredMatched173=false;
+  boolean synPredMatched172=false;
   if (((_tokenSet_11.member(LA(1))) && (_tokenSet_12.member(LA(2))) && (_tokenSet_59.member(LA(3))))) {
-    int _m173=mark();
-    synPredMatched173=true;
+    int _m172=mark();
+    synPredMatched172=true;
     inputState.guessing++;
     try {
 {
@@ -16,14 +16,16 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched173=false;
+      synPredMatched172=false;
     }
-    rewind(_m173);
+    rewind(_m172);
     inputState.guessing--;
   }
-  if (synPredMatched173) {
+  if (synPredMatched172) {
     declaration();
-    d_AST=(AST)returnAST;
+    if (inputState.guessing == 0) {
+      d_AST=(AST)returnAST;
+    }
     if (inputState.guessing == 0) {
       interfaceField_AST=(AST)currentAST.root;
       interfaceField_AST=d_AST;
@@ -33,10 +35,10 @@
     }
   }
  else {
-    boolean synPredMatched175=false;
+    boolean synPredMatched174=false;
     if (((_tokenSet_20.member(LA(1))) && (_tokenSet_21.member(LA(2))) && (_tokenSet_22.member(LA(3))))) {
-      int _m175=mark();
-      synPredMatched175=true;
+      int _m174=mark();
+      synPredMatched174=true;
       inputState.guessing++;
       try {
 {
@@ -44,17 +46,21 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched175=false;
+        synPredMatched174=false;
       }
-      rewind(_m175);
+      rewind(_m174);
       inputState.guessing--;
     }
-    if (synPredMatched175) {
+    if (synPredMatched174) {
       modifiersOpt();
-      mods_AST=(AST)returnAST;
+      if (inputState.guessing == 0) {
+        mods_AST=(AST)returnAST;
+      }
 {
         typeDefinitionInternal(mods_AST);
-        td_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          td_AST=(AST)returnAST;
+        }
         if (inputState.guessing == 0) {
           interfaceField_AST=(AST)currentAST.root;
           interfaceField_AST=td_AST;

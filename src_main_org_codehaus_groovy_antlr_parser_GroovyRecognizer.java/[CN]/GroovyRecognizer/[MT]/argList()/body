@@ -75,19 +75,23 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         hasLabels=argument();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
 {
-          _loop454:           do {
+          _loop453:           do {
             if ((LA(1) == COMMA) && (_tokenSet_64.member(LA(2))) && (_tokenSet_65.member(LA(3)))) {
               match(COMMA);
               hl2=argument();
-              astFactory.addASTChild(currentAST,returnAST);
+              if (inputState.guessing == 0) {
+                astFactory.addASTChild(currentAST,returnAST);
+              }
               if (inputState.guessing == 0) {
                 hasLabels|=hl2;
               }
             }
  else {
-              break _loop454;
+              break _loop453;
             }
           }
  while (true);
@@ -138,7 +142,9 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
+if (inputState.guessing == 0) {
 argList_AST=(AST)currentAST.root;
+}
 returnAST=argList_AST;
 return hasLabels;
 }

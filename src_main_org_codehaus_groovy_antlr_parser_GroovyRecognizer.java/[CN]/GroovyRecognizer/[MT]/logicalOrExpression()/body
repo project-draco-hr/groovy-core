@@ -3,24 +3,32 @@
   ASTPair currentAST=new ASTPair();
   AST logicalOrExpression_AST=null;
   logicalAndExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop367:     do {
+    _loop366:     do {
       if ((LA(1) == LOR)) {
-        AST tmp279_AST=null;
-        tmp279_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp279_AST);
+        AST tmp280_AST=null;
+        if (inputState.guessing == 0) {
+          tmp280_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp280_AST);
+        }
         match(LOR);
         nls();
         logicalAndExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop367;
+        break _loop366;
       }
     }
  while (true);
   }
-  logicalOrExpression_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    logicalOrExpression_AST=(AST)currentAST.root;
+  }
   returnAST=logicalOrExpression_AST;
 }

@@ -31,7 +31,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         expression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case SEMI:
@@ -51,6 +53,8 @@ currentAST.root=forCond_AST;
 currentAST.child=forCond_AST != null && forCond_AST.getFirstChild() != null ? forCond_AST.getFirstChild() : forCond_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 forCond_AST=(AST)currentAST.root;
+}
 returnAST=forCond_AST;
 }

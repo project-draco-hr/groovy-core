@@ -5,16 +5,22 @@
   Token lc=null;
   AST lc_AST=null;
   lc=LT(1);
-  lc_AST=astFactory.create(lc);
-  astFactory.makeASTRoot(currentAST,lc_AST);
+  if (inputState.guessing == 0) {
+    lc_AST=astFactory.create(lc);
+    astFactory.makeASTRoot(currentAST,lc_AST);
+  }
   match(LCURLY);
   nls();
   if (inputState.guessing == 0) {
     lc_AST.setType(SLIST);
   }
   blockBody(EOF);
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
   match(RCURLY);
-  openBlock_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    openBlock_AST=(AST)currentAST.root;
+  }
   returnAST=openBlock_AST;
 }

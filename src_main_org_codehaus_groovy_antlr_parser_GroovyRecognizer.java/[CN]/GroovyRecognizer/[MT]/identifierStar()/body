@@ -3,24 +3,30 @@
   ASTPair currentAST=new ASTPair();
   AST identifierStar_AST=null;
   AST tmp32_AST=null;
-  tmp32_AST=astFactory.create(LT(1));
-  astFactory.addASTChild(currentAST,tmp32_AST);
+  if (inputState.guessing == 0) {
+    tmp32_AST=astFactory.create(LT(1));
+    astFactory.addASTChild(currentAST,tmp32_AST);
+  }
   match(IDENT);
 {
-    _loop64:     do {
+    _loop63:     do {
       if ((LA(1) == DOT) && (LA(2) == IDENT || LA(2) == NLS) && (_tokenSet_24.member(LA(3)))) {
         AST tmp33_AST=null;
-        tmp33_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp33_AST);
+        if (inputState.guessing == 0) {
+          tmp33_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp33_AST);
+        }
         match(DOT);
         nls();
         AST tmp34_AST=null;
-        tmp34_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp34_AST);
+        if (inputState.guessing == 0) {
+          tmp34_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp34_AST);
+        }
         match(IDENT);
       }
  else {
-        break _loop64;
+        break _loop63;
       }
     }
  while (true);
@@ -30,26 +36,34 @@ switch (LA(1)) {
 case DOT:
 {
         AST tmp35_AST=null;
-        tmp35_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp35_AST);
+        if (inputState.guessing == 0) {
+          tmp35_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp35_AST);
+        }
         match(DOT);
         nls();
         AST tmp36_AST=null;
-        tmp36_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp36_AST);
+        if (inputState.guessing == 0) {
+          tmp36_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp36_AST);
+        }
         match(STAR);
         break;
       }
 case LITERAL_as:
 {
       AST tmp37_AST=null;
-      tmp37_AST=astFactory.create(LT(1));
-      astFactory.makeASTRoot(currentAST,tmp37_AST);
+      if (inputState.guessing == 0) {
+        tmp37_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp37_AST);
+      }
       match(LITERAL_as);
       nls();
       AST tmp38_AST=null;
-      tmp38_AST=astFactory.create(LT(1));
-      astFactory.addASTChild(currentAST,tmp38_AST);
+      if (inputState.guessing == 0) {
+        tmp38_AST=astFactory.create(LT(1));
+        astFactory.addASTChild(currentAST,tmp38_AST);
+      }
       match(IDENT);
       break;
     }
@@ -69,6 +83,8 @@ default :
 }
 }
 }
+if (inputState.guessing == 0) {
 identifierStar_AST=(AST)currentAST.root;
+}
 returnAST=identifierStar_AST;
 }

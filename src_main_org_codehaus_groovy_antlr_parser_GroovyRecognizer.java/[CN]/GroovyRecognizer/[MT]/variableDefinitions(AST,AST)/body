@@ -11,22 +11,28 @@
   AST mb_AST=null;
   if ((LA(1) == IDENT) && (_tokenSet_28.member(LA(2)))) {
     variableDeclarator(getASTFactory().dupTree(mods),getASTFactory().dupTree(t));
-    astFactory.addASTChild(currentAST,returnAST);
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
 {
-      _loop187:       do {
+      _loop186:       do {
         if ((LA(1) == COMMA)) {
           match(COMMA);
           nls();
           variableDeclarator(getASTFactory().dupTree(mods),getASTFactory().dupTree(t));
-          astFactory.addASTChild(currentAST,returnAST);
+          if (inputState.guessing == 0) {
+            astFactory.addASTChild(currentAST,returnAST);
+          }
         }
  else {
-          break _loop187;
+          break _loop186;
         }
       }
  while (true);
     }
-    variableDefinitions_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      variableDefinitions_AST=(AST)currentAST.root;
+    }
   }
  else   if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (LA(2) == LPAREN)) {
 {
@@ -34,16 +40,20 @@ switch (LA(1)) {
 case IDENT:
 {
           id=LT(1);
-          id_AST=astFactory.create(id);
-          astFactory.addASTChild(currentAST,id_AST);
+          if (inputState.guessing == 0) {
+            id_AST=astFactory.create(id);
+            astFactory.addASTChild(currentAST,id_AST);
+          }
           match(IDENT);
           break;
         }
 case STRING_LITERAL:
 {
         qid=LT(1);
-        qid_AST=astFactory.create(qid);
-        astFactory.addASTChild(currentAST,qid_AST);
+        if (inputState.guessing == 0) {
+          qid_AST=astFactory.create(qid);
+          astFactory.addASTChild(currentAST,qid_AST);
+        }
         match(STRING_LITERAL);
         if (inputState.guessing == 0) {
           qid_AST.setType(IDENT);
@@ -58,14 +68,18 @@ default :
 }
 match(LPAREN);
 parameterDeclarationList();
+if (inputState.guessing == 0) {
 param_AST=(AST)returnAST;
+}
 match(RPAREN);
 {
 switch (LA(1)) {
 case LITERAL_throws:
 {
     throwsClause();
-    tc_AST=(AST)returnAST;
+    if (inputState.guessing == 0) {
+      tc_AST=(AST)returnAST;
+    }
     break;
   }
 case EOF:
@@ -91,7 +105,9 @@ switch (LA(1)) {
 case LCURLY:
 {
 openBlock();
+if (inputState.guessing == 0) {
 mb_AST=(AST)returnAST;
+}
 break;
 }
 case EOF:
@@ -118,7 +134,9 @@ currentAST.root=variableDefinitions_AST;
 currentAST.child=variableDefinitions_AST != null && variableDefinitions_AST.getFirstChild() != null ? variableDefinitions_AST.getFirstChild() : variableDefinitions_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 variableDefinitions_AST=(AST)currentAST.root;
+}
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());

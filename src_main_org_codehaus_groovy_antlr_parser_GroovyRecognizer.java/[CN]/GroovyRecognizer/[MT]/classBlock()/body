@@ -36,7 +36,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
         classField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -52,7 +54,7 @@ default :
 }
 }
 {
-_loop108: do {
+_loop107: do {
 if ((LA(1) == SEMI || LA(1) == NLS)) {
   sep();
 {
@@ -88,7 +90,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
         classField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -105,7 +109,7 @@ default :
 }
 }
  else {
-break _loop108;
+break _loop107;
 }
 }
  while (true);
@@ -118,6 +122,8 @@ currentAST.root=classBlock_AST;
 currentAST.child=classBlock_AST != null && classBlock_AST.getFirstChild() != null ? classBlock_AST.getFirstChild() : classBlock_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 classBlock_AST=(AST)currentAST.root;
+}
 returnAST=classBlock_AST;
 }

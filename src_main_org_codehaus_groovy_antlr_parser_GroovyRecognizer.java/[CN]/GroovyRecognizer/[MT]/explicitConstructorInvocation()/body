@@ -12,7 +12,9 @@ switch (LA(1)) {
 case LT:
 {
         typeArguments();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case LITERAL_super:
@@ -32,11 +34,15 @@ case LITERAL_this:
 {
   match(LITERAL_this);
   lp1=LT(1);
-  lp1_AST=astFactory.create(lp1);
-  astFactory.makeASTRoot(currentAST,lp1_AST);
+  if (inputState.guessing == 0) {
+    lp1_AST=astFactory.create(lp1);
+    astFactory.makeASTRoot(currentAST,lp1_AST);
+  }
   match(LPAREN);
   zz=argList();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
   match(RPAREN);
   if (inputState.guessing == 0) {
     lp1_AST.setType(CTOR_CALL);
@@ -47,11 +53,15 @@ case LITERAL_super:
 {
 match(LITERAL_super);
 lp2=LT(1);
-lp2_AST=astFactory.create(lp2);
-astFactory.makeASTRoot(currentAST,lp2_AST);
+if (inputState.guessing == 0) {
+  lp2_AST=astFactory.create(lp2);
+  astFactory.makeASTRoot(currentAST,lp2_AST);
+}
 match(LPAREN);
 zz=argList();
-astFactory.addASTChild(currentAST,returnAST);
+if (inputState.guessing == 0) {
+  astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 if (inputState.guessing == 0) {
   lp2_AST.setType(SUPER_CTOR_CALL);
@@ -64,6 +74,8 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
+if (inputState.guessing == 0) {
 explicitConstructorInvocation_AST=(AST)currentAST.root;
+}
 returnAST=explicitConstructorInvocation_AST;
 }

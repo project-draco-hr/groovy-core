@@ -43,6 +43,12 @@ case '}':
   theRetToken=_returnToken;
   break;
 }
+case ':':
+{
+mCOLON(true);
+theRetToken=_returnToken;
+break;
+}
 case ',':
 {
 mCOMMA(true);
@@ -293,7 +299,7 @@ theRetToken=_returnToken;
 mSTAR_STAR(true);
 theRetToken=_returnToken;
 }
- else if ((LA(1) == ':') && (LA(2) == ':')) {
+ else if ((LA(1) == '-') && (LA(2) == '>')) {
 mCLOSURE_OP(true);
 theRetToken=_returnToken;
 }
@@ -307,10 +313,6 @@ theRetToken=_returnToken;
 }
  else if ((LA(1) == '?') && (true)) {
 mQUESTION(true);
-theRetToken=_returnToken;
-}
- else if ((LA(1) == ':') && (true)) {
-mCOLON(true);
 theRetToken=_returnToken;
 }
  else if ((LA(1) == '.') && (true)) {

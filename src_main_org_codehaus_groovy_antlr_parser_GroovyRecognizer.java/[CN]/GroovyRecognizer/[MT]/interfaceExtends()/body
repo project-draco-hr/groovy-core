@@ -9,21 +9,27 @@ switch (LA(1)) {
 case LITERAL_extends:
 {
         e=LT(1);
-        e_AST=astFactory.create(e);
+        if (inputState.guessing == 0) {
+          e_AST=astFactory.create(e);
+        }
         match(LITERAL_extends);
         nls();
         classOrInterfaceType(false);
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
 {
-          _loop158:           do {
+          _loop157:           do {
             if ((LA(1) == COMMA)) {
               match(COMMA);
               nls();
               classOrInterfaceType(false);
-              astFactory.addASTChild(currentAST,returnAST);
+              if (inputState.guessing == 0) {
+                astFactory.addASTChild(currentAST,returnAST);
+              }
             }
  else {
-              break _loop158;
+              break _loop157;
             }
           }
  while (true);
@@ -48,6 +54,8 @@ currentAST.root=interfaceExtends_AST;
 currentAST.child=interfaceExtends_AST != null && interfaceExtends_AST.getFirstChild() != null ? interfaceExtends_AST.getFirstChild() : interfaceExtends_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 interfaceExtends_AST=(AST)currentAST.root;
+}
 returnAST=interfaceExtends_AST;
 }

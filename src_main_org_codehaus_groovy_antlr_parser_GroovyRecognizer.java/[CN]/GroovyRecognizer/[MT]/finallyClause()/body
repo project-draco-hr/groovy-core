@@ -2,13 +2,19 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST finallyClause_AST=null;
-  AST tmp208_AST=null;
-  tmp208_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp208_AST);
+  AST tmp209_AST=null;
+  if (inputState.guessing == 0) {
+    tmp209_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp209_AST);
+  }
   match(LITERAL_finally);
   nlsWarn();
   compoundStatement();
-  astFactory.addASTChild(currentAST,returnAST);
-  finallyClause_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    finallyClause_AST=(AST)currentAST.root;
+  }
   returnAST=finallyClause_AST;
 }

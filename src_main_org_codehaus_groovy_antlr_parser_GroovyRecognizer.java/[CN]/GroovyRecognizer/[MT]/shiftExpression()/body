@@ -3,9 +3,11 @@
   ASTPair currentAST=new ASTPair();
   AST shiftExpression_AST=null;
   additiveExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop396:     do {
+    _loop395:     do {
       if ((_tokenSet_105.member(LA(1)))) {
 {
 switch (LA(1)) {
@@ -17,25 +19,31 @@ case SL:
 switch (LA(1)) {
 case SL:
 {
-                    AST tmp189_AST=null;
-                    tmp189_AST=astFactory.create(LT(1));
-                    astFactory.makeASTRoot(currentAST,tmp189_AST);
+                    AST tmp190_AST=null;
+                    if (inputState.guessing == 0) {
+                      tmp190_AST=astFactory.create(LT(1));
+                      astFactory.makeASTRoot(currentAST,tmp190_AST);
+                    }
                     match(SL);
                     break;
                   }
 case SR:
 {
-                  AST tmp190_AST=null;
-                  tmp190_AST=astFactory.create(LT(1));
-                  astFactory.makeASTRoot(currentAST,tmp190_AST);
+                  AST tmp191_AST=null;
+                  if (inputState.guessing == 0) {
+                    tmp191_AST=astFactory.create(LT(1));
+                    astFactory.makeASTRoot(currentAST,tmp191_AST);
+                  }
                   match(SR);
                   break;
                 }
 case BSR:
 {
-                AST tmp191_AST=null;
-                tmp191_AST=astFactory.create(LT(1));
-                astFactory.makeASTRoot(currentAST,tmp191_AST);
+                AST tmp192_AST=null;
+                if (inputState.guessing == 0) {
+                  tmp192_AST=astFactory.create(LT(1));
+                  astFactory.makeASTRoot(currentAST,tmp192_AST);
+                }
                 match(BSR);
                 break;
               }
@@ -49,20 +57,24 @@ default :
     }
 case RANGE_INCLUSIVE:
 {
-    AST tmp192_AST=null;
-    tmp192_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp192_AST);
+    AST tmp193_AST=null;
+    if (inputState.guessing == 0) {
+      tmp193_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp193_AST);
+    }
     match(RANGE_INCLUSIVE);
     break;
   }
 case TRIPLE_DOT:
 {
-  AST tmp193_AST=null;
-  tmp193_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp193_AST);
+  AST tmp194_AST=null;
+  if (inputState.guessing == 0) {
+    tmp194_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp194_AST);
+  }
   match(TRIPLE_DOT);
   if (inputState.guessing == 0) {
-    tmp193_AST.setType(RANGE_EXCLUSIVE);
+    tmp194_AST.setType(RANGE_EXCLUSIVE);
   }
   break;
 }
@@ -74,14 +86,18 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 nls();
 additiveExpression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
 }
+}
  else {
-break _loop396;
+break _loop395;
 }
 }
  while (true);
 }
+if (inputState.guessing == 0) {
 shiftExpression_AST=(AST)currentAST.root;
+}
 returnAST=shiftExpression_AST;
 }

@@ -6,15 +6,23 @@ switch (LA(1)) {
 case IDENT:
 {
       identifier();
-      astFactory.addASTChild(currentAST,returnAST);
-      stringConstructorValuePart_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        stringConstructorValuePart_AST=(AST)currentAST.root;
+      }
       break;
     }
 case LCURLY:
 {
     openBlock();
-    astFactory.addASTChild(currentAST,returnAST);
-    stringConstructorValuePart_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      stringConstructorValuePart_AST=(AST)currentAST.root;
+    }
     break;
   }
 default :

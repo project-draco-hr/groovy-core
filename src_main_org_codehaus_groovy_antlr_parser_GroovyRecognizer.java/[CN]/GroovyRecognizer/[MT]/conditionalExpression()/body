@@ -3,22 +3,30 @@
   ASTPair currentAST=new ASTPair();
   AST conditionalExpression_AST=null;
   logicalOrExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
 switch (LA(1)) {
 case QUESTION:
 {
-        AST tmp106_AST=null;
-        tmp106_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp106_AST);
+        AST tmp107_AST=null;
+        if (inputState.guessing == 0) {
+          tmp107_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp107_AST);
+        }
         match(QUESTION);
         nls();
         assignmentExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         match(COLON);
         nls();
         conditionalExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case EOF:
@@ -55,6 +63,8 @@ default :
   }
 }
 }
+if (inputState.guessing == 0) {
 conditionalExpression_AST=(AST)currentAST.root;
+}
 returnAST=conditionalExpression_AST;
 }

@@ -5,56 +5,80 @@
 switch (LA(1)) {
 case INC:
 {
-      AST tmp322_AST=null;
-      tmp322_AST=astFactory.create(LT(1));
-      astFactory.makeASTRoot(currentAST,tmp322_AST);
+      AST tmp323_AST=null;
+      if (inputState.guessing == 0) {
+        tmp323_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp323_AST);
+      }
       match(INC);
       nls();
       unaryExpression();
-      astFactory.addASTChild(currentAST,returnAST);
-      unaryExpression_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        unaryExpression_AST=(AST)currentAST.root;
+      }
       break;
     }
 case DEC:
 {
-    AST tmp323_AST=null;
-    tmp323_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp323_AST);
+    AST tmp324_AST=null;
+    if (inputState.guessing == 0) {
+      tmp324_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp324_AST);
+    }
     match(DEC);
     nls();
     unaryExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    unaryExpression_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      unaryExpression_AST=(AST)currentAST.root;
+    }
     break;
   }
 case MINUS:
 {
-  AST tmp324_AST=null;
-  tmp324_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp324_AST);
+  AST tmp325_AST=null;
+  if (inputState.guessing == 0) {
+    tmp325_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp325_AST);
+  }
   match(MINUS);
   if (inputState.guessing == 0) {
-    tmp324_AST.setType(UNARY_MINUS);
+    tmp325_AST.setType(UNARY_MINUS);
   }
   nls();
   unaryExpression();
-  astFactory.addASTChild(currentAST,returnAST);
-  unaryExpression_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    unaryExpression_AST=(AST)currentAST.root;
+  }
   break;
 }
 case PLUS:
 {
-AST tmp325_AST=null;
-tmp325_AST=astFactory.create(LT(1));
-astFactory.makeASTRoot(currentAST,tmp325_AST);
+AST tmp326_AST=null;
+if (inputState.guessing == 0) {
+  tmp326_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp326_AST);
+}
 match(PLUS);
 if (inputState.guessing == 0) {
-  tmp325_AST.setType(UNARY_PLUS);
+  tmp326_AST.setType(UNARY_PLUS);
 }
 nls();
 unaryExpression();
-astFactory.addASTChild(currentAST,returnAST);
-unaryExpression_AST=(AST)currentAST.root;
+if (inputState.guessing == 0) {
+  astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
+  unaryExpression_AST=(AST)currentAST.root;
+}
 break;
 }
 case IDENT:
@@ -80,8 +104,12 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
 unaryExpressionNotPlusMinus();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 unaryExpression_AST=(AST)currentAST.root;
+}
 break;
 }
 default :

@@ -4,13 +4,21 @@
   AST annotationArguments_AST=null;
   if ((_tokenSet_46.member(LA(1))) && (_tokenSet_47.member(LA(2)))) {
     annotationMemberValueInitializer();
-    astFactory.addASTChild(currentAST,returnAST);
-    annotationArguments_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      annotationArguments_AST=(AST)currentAST.root;
+    }
   }
  else   if ((LA(1) == IDENT) && (LA(2) == ASSIGN)) {
     anntotationMemberValuePairs();
-    astFactory.addASTChild(currentAST,returnAST);
-    annotationArguments_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      annotationArguments_AST=(AST)currentAST.root;
+    }
   }
  else {
     throw new NoViableAltException(LT(1),getFilename());

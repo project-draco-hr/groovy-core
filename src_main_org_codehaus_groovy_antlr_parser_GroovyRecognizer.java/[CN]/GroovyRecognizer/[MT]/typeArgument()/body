@@ -17,13 +17,17 @@ case LITERAL_double:
 case LITERAL_any:
 {
         typeArgumentSpec();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case QUESTION:
 {
       wildcardType();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       break;
     }
 default :
@@ -39,6 +43,8 @@ currentAST.root=typeArgument_AST;
 currentAST.child=typeArgument_AST != null && typeArgument_AST.getFirstChild() != null ? typeArgument_AST.getFirstChild() : typeArgument_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 typeArgument_AST=(AST)currentAST.root;
+}
 returnAST=typeArgument_AST;
 }

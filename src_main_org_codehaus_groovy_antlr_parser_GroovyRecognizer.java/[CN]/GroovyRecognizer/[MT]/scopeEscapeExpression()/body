@@ -2,27 +2,33 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST scopeEscapeExpression_AST=null;
-  AST tmp333_AST=null;
-  tmp333_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp333_AST);
+  AST tmp334_AST=null;
+  if (inputState.guessing == 0) {
+    tmp334_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp334_AST);
+  }
   match(DOLLAR);
   if (inputState.guessing == 0) {
-    tmp333_AST.setType(SCOPE_ESCAPE);
+    tmp334_AST.setType(SCOPE_ESCAPE);
   }
 {
 switch (LA(1)) {
 case IDENT:
 {
-        AST tmp334_AST=null;
-        tmp334_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp334_AST);
+        AST tmp335_AST=null;
+        if (inputState.guessing == 0) {
+          tmp335_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp335_AST);
+        }
         match(IDENT);
         break;
       }
 case DOLLAR:
 {
       scopeEscapeExpression();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       break;
     }
 default :
@@ -31,6 +37,8 @@ default :
   }
 }
 }
+if (inputState.guessing == 0) {
 scopeEscapeExpression_AST=(AST)currentAST.root;
+}
 returnAST=scopeEscapeExpression_AST;
 }

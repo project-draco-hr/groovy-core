@@ -3,24 +3,32 @@
   ASTPair currentAST=new ASTPair();
   AST andExpression_AST=null;
   regexExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop379:     do {
+    _loop378:     do {
       if ((LA(1) == BAND)) {
-        AST tmp283_AST=null;
-        tmp283_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp283_AST);
+        AST tmp284_AST=null;
+        if (inputState.guessing == 0) {
+          tmp284_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp284_AST);
+        }
         match(BAND);
         nls();
         regexExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop379;
+        break _loop378;
       }
     }
  while (true);
   }
-  andExpression_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    andExpression_AST=(AST)currentAST.root;
+  }
   returnAST=andExpression_AST;
 }

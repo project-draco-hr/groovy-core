@@ -3,17 +3,21 @@
   ASTPair currentAST=new ASTPair();
   AST enumConstants_AST=null;
   enumConstant();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop131:     do {
+    _loop130:     do {
       if ((LA(1) == COMMA) && (_tokenSet_62.member(LA(2))) && (_tokenSet_63.member(LA(3)))) {
         match(COMMA);
         nls();
         enumConstant();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop131;
+        break _loop130;
       }
     }
  while (true);
@@ -38,6 +42,8 @@ default :
   }
 }
 }
+if (inputState.guessing == 0) {
 enumConstants_AST=(AST)currentAST.root;
+}
 returnAST=enumConstants_AST;
 }

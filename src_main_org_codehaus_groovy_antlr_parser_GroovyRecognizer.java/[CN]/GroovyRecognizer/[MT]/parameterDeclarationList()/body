@@ -21,17 +21,21 @@ case LITERAL_any:
 case TRIPLE_DOT:
 {
         parameterDeclaration();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
 {
-          _loop205:           do {
+          _loop204:           do {
             if ((LA(1) == COMMA)) {
               match(COMMA);
               nls();
               parameterDeclaration();
-              astFactory.addASTChild(currentAST,returnAST);
+              if (inputState.guessing == 0) {
+                astFactory.addASTChild(currentAST,returnAST);
+              }
             }
  else {
-              break _loop205;
+              break _loop204;
             }
           }
  while (true);
@@ -57,6 +61,8 @@ currentAST.root=parameterDeclarationList_AST;
 currentAST.child=parameterDeclarationList_AST != null && parameterDeclarationList_AST.getFirstChild() != null ? parameterDeclarationList_AST.getFirstChild() : parameterDeclarationList_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 parameterDeclarationList_AST=(AST)currentAST.root;
+}
 returnAST=parameterDeclarationList_AST;
 }

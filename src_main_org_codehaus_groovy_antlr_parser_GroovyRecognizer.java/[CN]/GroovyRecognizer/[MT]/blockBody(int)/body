@@ -71,7 +71,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         statement(prevToken);
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case EOF:
@@ -88,7 +90,7 @@ default :
 }
 }
 {
-_loop245: do {
+_loop244: do {
 if ((LA(1) == SEMI || LA(1) == NLS)) {
   sep();
 {
@@ -160,7 +162,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         statement(sepToken);
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case EOF:
@@ -178,11 +182,13 @@ default :
 }
 }
  else {
-break _loop245;
+break _loop244;
 }
 }
  while (true);
 }
+if (inputState.guessing == 0) {
 blockBody_AST=(AST)currentAST.root;
+}
 returnAST=blockBody_AST;
 }

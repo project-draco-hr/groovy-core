@@ -5,16 +5,24 @@
   Token p=null;
   AST p_AST=null;
   annotationsOpt();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
   p=LT(1);
-  p_AST=astFactory.create(p);
-  astFactory.makeASTRoot(currentAST,p_AST);
+  if (inputState.guessing == 0) {
+    p_AST=astFactory.create(p);
+    astFactory.makeASTRoot(currentAST,p_AST);
+  }
   match(LITERAL_package);
   if (inputState.guessing == 0) {
     p_AST.setType(PACKAGE_DEF);
   }
   identifier();
-  astFactory.addASTChild(currentAST,returnAST);
-  packageDefinition_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    packageDefinition_AST=(AST)currentAST.root;
+  }
   returnAST=packageDefinition_AST;
 }

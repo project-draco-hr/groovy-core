@@ -3,21 +3,27 @@
   ASTPair currentAST=new ASTPair();
   AST anntotationMemberValuePairs_AST=null;
   annotationMemberValuePair();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop82:     do {
+    _loop81:     do {
       if ((LA(1) == COMMA)) {
         match(COMMA);
         nls();
         annotationMemberValuePair();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop82;
+        break _loop81;
       }
     }
  while (true);
   }
-  anntotationMemberValuePairs_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    anntotationMemberValuePairs_AST=(AST)currentAST.root;
+  }
   returnAST=anntotationMemberValuePairs_AST;
 }

@@ -2,10 +2,10 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST closureParametersOpt_AST=null;
-  boolean synPredMatched220=false;
+  boolean synPredMatched219=false;
   if (((_tokenSet_79.member(LA(1))) && (_tokenSet_80.member(LA(2))) && (_tokenSet_16.member(LA(3))))) {
-    int _m220=mark();
-    synPredMatched220=true;
+    int _m219=mark();
+    synPredMatched219=true;
     inputState.guessing++;
     try {
 {
@@ -15,24 +15,28 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched220=false;
+      synPredMatched219=false;
     }
-    rewind(_m220);
+    rewind(_m219);
     inputState.guessing--;
   }
-  if (synPredMatched220) {
+  if (synPredMatched219) {
     parameterDeclarationList();
-    astFactory.addASTChild(currentAST,returnAST);
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
     nls();
     match(CLOSURE_OP);
     nls();
-    closureParametersOpt_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      closureParametersOpt_AST=(AST)currentAST.root;
+    }
   }
  else {
-    boolean synPredMatched222=false;
+    boolean synPredMatched221=false;
     if ((((_tokenSet_81.member(LA(1))) && (_tokenSet_82.member(LA(2))) && (_tokenSet_16.member(LA(3)))) && (compatibilityMode))) {
-      int _m222=mark();
-      synPredMatched222=true;
+      int _m221=mark();
+      synPredMatched221=true;
       inputState.guessing++;
       try {
 {
@@ -40,23 +44,33 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched222=false;
+        synPredMatched221=false;
       }
-      rewind(_m222);
+      rewind(_m221);
       inputState.guessing--;
     }
-    if (synPredMatched222) {
+    if (synPredMatched221) {
       oldClosureParameters();
-      astFactory.addASTChild(currentAST,returnAST);
-      closureParametersOpt_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        closureParametersOpt_AST=(AST)currentAST.root;
+      }
     }
  else     if (((_tokenSet_71.member(LA(1))) && (_tokenSet_16.member(LA(2))) && (_tokenSet_5.member(LA(3)))) && (addImplicit)) {
       implicitParameters();
-      astFactory.addASTChild(currentAST,returnAST);
-      closureParametersOpt_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        closureParametersOpt_AST=(AST)currentAST.root;
+      }
     }
  else     if ((_tokenSet_71.member(LA(1))) && (_tokenSet_16.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
-      closureParametersOpt_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        closureParametersOpt_AST=(AST)currentAST.root;
+      }
     }
  else {
       throw new NoViableAltException(LT(1),getFilename());

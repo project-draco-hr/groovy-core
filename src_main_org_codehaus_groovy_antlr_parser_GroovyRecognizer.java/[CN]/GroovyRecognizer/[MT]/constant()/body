@@ -11,44 +11,64 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
       constantNumber();
-      astFactory.addASTChild(currentAST,returnAST);
-      constant_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        constant_AST=(AST)currentAST.root;
+      }
       break;
     }
 case STRING_LITERAL:
 {
-    AST tmp326_AST=null;
-    tmp326_AST=astFactory.create(LT(1));
-    astFactory.addASTChild(currentAST,tmp326_AST);
+    AST tmp327_AST=null;
+    if (inputState.guessing == 0) {
+      tmp327_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp327_AST);
+    }
     match(STRING_LITERAL);
-    constant_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      constant_AST=(AST)currentAST.root;
+    }
     break;
   }
 case LITERAL_true:
 {
-  AST tmp327_AST=null;
-  tmp327_AST=astFactory.create(LT(1));
-  astFactory.addASTChild(currentAST,tmp327_AST);
+  AST tmp328_AST=null;
+  if (inputState.guessing == 0) {
+    tmp328_AST=astFactory.create(LT(1));
+    astFactory.addASTChild(currentAST,tmp328_AST);
+  }
   match(LITERAL_true);
-  constant_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    constant_AST=(AST)currentAST.root;
+  }
   break;
 }
 case LITERAL_false:
 {
-AST tmp328_AST=null;
-tmp328_AST=astFactory.create(LT(1));
-astFactory.addASTChild(currentAST,tmp328_AST);
+AST tmp329_AST=null;
+if (inputState.guessing == 0) {
+  tmp329_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp329_AST);
+}
 match(LITERAL_false);
-constant_AST=(AST)currentAST.root;
+if (inputState.guessing == 0) {
+  constant_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_null:
 {
-AST tmp329_AST=null;
-tmp329_AST=astFactory.create(LT(1));
-astFactory.addASTChild(currentAST,tmp329_AST);
+AST tmp330_AST=null;
+if (inputState.guessing == 0) {
+tmp330_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp330_AST);
+}
 match(LITERAL_null);
+if (inputState.guessing == 0) {
 constant_AST=(AST)currentAST.root;
+}
 break;
 }
 default :

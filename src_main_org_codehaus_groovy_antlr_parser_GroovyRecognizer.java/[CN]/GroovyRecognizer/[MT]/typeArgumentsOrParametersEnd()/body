@@ -10,7 +10,9 @@ case GT:
         ltCounter-=1;
       }
       nls();
-      typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+      }
       break;
     }
 case SR:
@@ -20,7 +22,9 @@ case SR:
       ltCounter-=2;
     }
     nls();
-    typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+    }
     break;
   }
 case BSR:
@@ -30,7 +34,9 @@ case BSR:
     ltCounter-=3;
   }
   nls();
-  typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    typeArgumentsOrParametersEnd_AST=(AST)currentAST.root;
+  }
   break;
 }
 default :

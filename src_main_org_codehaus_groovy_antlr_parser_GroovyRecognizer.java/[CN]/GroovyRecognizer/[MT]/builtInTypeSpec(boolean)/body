@@ -3,76 +3,44 @@
   ASTPair currentAST=new ASTPair();
   AST builtInTypeSpec_AST=null;
   AST t_AST=null;
-  AST ata_AST=null;
+  Token lb=null;
+  AST lb_AST=null;
   builtInType();
-  t_AST=(AST)returnAST;
-  astFactory.addASTChild(currentAST,returnAST);
-{
-switch (LA(1)) {
-case LBRACK:
-{
-        arrayOrTypeArgs(t_AST);
-        ata_AST=(AST)returnAST;
-        astFactory.addASTChild(currentAST,returnAST);
-        break;
-      }
-case EOF:
-case IDENT:
-case RBRACK:
-case QUESTION:
-case COMMA:
-case RPAREN:
-case ASSIGN:
-case BAND:
-case RCURLY:
-case SEMI:
-case NLS:
-case LITERAL_default:
-case STRING_LITERAL:
-case TRIPLE_DOT:
-case CLOSURE_OP:
-case LOR:
-case BOR:
-case COLON:
-case LITERAL_else:
-case LITERAL_case:
-case PLUS_ASSIGN:
-case MINUS_ASSIGN:
-case STAR_ASSIGN:
-case DIV_ASSIGN:
-case MOD_ASSIGN:
-case SR_ASSIGN:
-case BSR_ASSIGN:
-case SL_ASSIGN:
-case BAND_ASSIGN:
-case BXOR_ASSIGN:
-case BOR_ASSIGN:
-case STAR_STAR_ASSIGN:
-case LAND:
-case BXOR:
-case REGEX_FIND:
-case REGEX_MATCH:
-case NOT_EQUAL:
-case EQUAL:
-case COMPARE_TO:
-{
-      break;
-    }
-default :
-{
-    throw new NoViableAltException(LT(1),getFilename());
+  if (inputState.guessing == 0) {
+    t_AST=(AST)returnAST;
+    astFactory.addASTChild(currentAST,returnAST);
   }
-}
-}
-if (inputState.guessing == 0) {
-builtInTypeSpec_AST=(AST)currentAST.root;
-if (addImagNode) {
-builtInTypeSpec_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(builtInTypeSpec_AST));
-}
-currentAST.root=builtInTypeSpec_AST;
-currentAST.child=builtInTypeSpec_AST != null && builtInTypeSpec_AST.getFirstChild() != null ? builtInTypeSpec_AST.getFirstChild() : builtInTypeSpec_AST;
-currentAST.advanceChildToEnd();
-}
-builtInTypeSpec_AST=(AST)currentAST.root;
-returnAST=builtInTypeSpec_AST;
+{
+    _loop55:     do {
+      if ((LA(1) == LBRACK)) {
+        lb=LT(1);
+        if (inputState.guessing == 0) {
+          lb_AST=astFactory.create(lb);
+          astFactory.makeASTRoot(currentAST,lb_AST);
+        }
+        match(LBRACK);
+        if (inputState.guessing == 0) {
+          lb_AST.setType(ARRAY_DECLARATOR);
+        }
+        match(RBRACK);
+      }
+ else {
+        break _loop55;
+      }
+    }
+ while (true);
+  }
+  if (inputState.guessing == 0) {
+    builtInTypeSpec_AST=(AST)currentAST.root;
+    if (addImagNode) {
+      builtInTypeSpec_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(builtInTypeSpec_AST));
+    }
+    currentAST.root=builtInTypeSpec_AST;
+    currentAST.child=builtInTypeSpec_AST != null && builtInTypeSpec_AST.getFirstChild() != null ? builtInTypeSpec_AST.getFirstChild() : builtInTypeSpec_AST;
+    currentAST.advanceChildToEnd();
+  }
+  if (inputState.guessing == 0) {
+    builtInTypeSpec_AST=(AST)currentAST.root;
+  }
+  returnAST=builtInTypeSpec_AST;
 }

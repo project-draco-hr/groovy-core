@@ -6,12 +6,16 @@
   AST i_AST=null;
   AST v_AST=null;
   i=LT(1);
-  i_AST=astFactory.create(i);
+  if (inputState.guessing == 0) {
+    i_AST=astFactory.create(i);
+  }
   match(IDENT);
   match(ASSIGN);
   nls();
   annotationMemberValueInitializer();
-  v_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    v_AST=(AST)returnAST;
+  }
   if (inputState.guessing == 0) {
     annotationMemberValuePair_AST=(AST)currentAST.root;
     annotationMemberValuePair_AST=(AST)astFactory.make((new ASTArray(3)).add(astFactory.create(ANNOTATION_MEMBER_VALUE_PAIR,"ANNOTATION_MEMBER_VALUE_PAIR")).add(i_AST).add(v_AST));

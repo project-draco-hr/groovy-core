@@ -5,15 +5,21 @@
   Token lp=null;
   AST lp_AST=null;
   lp=LT(1);
-  lp_AST=astFactory.create(lp);
-  astFactory.makeASTRoot(currentAST,lp_AST);
+  if (inputState.guessing == 0) {
+    lp_AST=astFactory.create(lp);
+    astFactory.makeASTRoot(currentAST,lp_AST);
+  }
   match(LPAREN);
   strictContextExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
   match(RPAREN);
   if (inputState.guessing == 0) {
     lp_AST.setType(EXPR);
   }
-  parenthesizedExpression_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    parenthesizedExpression_AST=(AST)currentAST.root;
+  }
   returnAST=parenthesizedExpression_AST;
 }

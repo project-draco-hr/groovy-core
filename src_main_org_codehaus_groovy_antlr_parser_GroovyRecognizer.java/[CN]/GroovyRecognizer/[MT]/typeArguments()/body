@@ -12,14 +12,18 @@
   }
   nls();
   typeArgument();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
     _loop47:     do {
       if (((LA(1) == COMMA) && (_tokenSet_41.member(LA(2))) && (_tokenSet_40.member(LA(3)))) && (inputState.guessing != 0 || ltCounter == currentLtLevel + 1)) {
         match(COMMA);
         nls();
         typeArgument();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
         break _loop47;
@@ -31,7 +35,9 @@
 {
     if (((LA(1) >= GT && LA(1) <= BSR)) && (_tokenSet_39.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
       typeArgumentsOrParametersEnd();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
     }
  else     if ((_tokenSet_39.member(LA(1))) && (_tokenSet_5.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
     }
@@ -47,6 +53,8 @@
     currentAST.child=typeArguments_AST != null && typeArguments_AST.getFirstChild() != null ? typeArguments_AST.getFirstChild() : typeArguments_AST;
     currentAST.advanceChildToEnd();
   }
-  typeArguments_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    typeArguments_AST=(AST)currentAST.root;
+  }
   returnAST=typeArguments_AST;
 }

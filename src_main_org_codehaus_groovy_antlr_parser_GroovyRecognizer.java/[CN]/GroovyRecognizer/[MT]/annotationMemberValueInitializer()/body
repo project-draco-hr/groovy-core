@@ -30,15 +30,23 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
       conditionalExpression();
-      astFactory.addASTChild(currentAST,returnAST);
-      annotationMemberValueInitializer_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        annotationMemberValueInitializer_AST=(AST)currentAST.root;
+      }
       break;
     }
 case AT:
 {
     annotation();
-    astFactory.addASTChild(currentAST,returnAST);
-    annotationMemberValueInitializer_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      annotationMemberValueInitializer_AST=(AST)currentAST.root;
+    }
     break;
   }
 default :

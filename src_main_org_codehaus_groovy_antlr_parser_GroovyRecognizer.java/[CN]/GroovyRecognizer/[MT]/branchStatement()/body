@@ -5,9 +5,11 @@
 switch (LA(1)) {
 case LITERAL_return:
 {
-      AST tmp180_AST=null;
-      tmp180_AST=astFactory.create(LT(1));
-      astFactory.makeASTRoot(currentAST,tmp180_AST);
+      AST tmp181_AST=null;
+      if (inputState.guessing == 0) {
+        tmp181_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp181_AST);
+      }
       match(LITERAL_return);
 {
 switch (LA(1)) {
@@ -38,7 +40,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
             expression();
-            astFactory.addASTChild(currentAST,returnAST);
+            if (inputState.guessing == 0) {
+              astFactory.addASTChild(currentAST,returnAST);
+            }
             break;
           }
 case EOF:
@@ -60,7 +64,9 @@ default :
       }
   }
 }
-branchStatement_AST=(AST)currentAST.root;
+if (inputState.guessing == 0) {
+  branchStatement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_break:
@@ -70,17 +76,21 @@ case LITERAL_continue:
 switch (LA(1)) {
 case LITERAL_break:
 {
-    AST tmp181_AST=null;
-    tmp181_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp181_AST);
+    AST tmp182_AST=null;
+    if (inputState.guessing == 0) {
+      tmp182_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp182_AST);
+    }
     match(LITERAL_break);
     break;
   }
 case LITERAL_continue:
 {
-  AST tmp182_AST=null;
-  tmp182_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp182_AST);
+  AST tmp183_AST=null;
+  if (inputState.guessing == 0) {
+    tmp183_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp183_AST);
+  }
   match(LITERAL_continue);
   break;
 }
@@ -93,7 +103,9 @@ throw new NoViableAltException(LT(1),getFilename());
 {
 if ((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_102.member(LA(3)))) {
 statementLabelPrefix();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else if ((_tokenSet_102.member(LA(1))) && (_tokenSet_17.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
 }
@@ -130,7 +142,9 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 break;
 }
 case EOF:
@@ -152,33 +166,47 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
+if (inputState.guessing == 0) {
 branchStatement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_throw:
 {
-AST tmp183_AST=null;
-tmp183_AST=astFactory.create(LT(1));
-astFactory.makeASTRoot(currentAST,tmp183_AST);
+AST tmp184_AST=null;
+if (inputState.guessing == 0) {
+tmp184_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp184_AST);
+}
 match(LITERAL_throw);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 branchStatement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_assert:
 {
-AST tmp184_AST=null;
-tmp184_AST=astFactory.create(LT(1));
-astFactory.makeASTRoot(currentAST,tmp184_AST);
+AST tmp185_AST=null;
+if (inputState.guessing == 0) {
+tmp185_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp185_AST);
+}
 match(LITERAL_assert);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 {
 if ((LA(1) == COMMA) && (_tokenSet_18.member(LA(2))) && (_tokenSet_16.member(LA(3)))) {
 match(COMMA);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else if ((_tokenSet_103.member(LA(1))) && (_tokenSet_17.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
 }
@@ -186,7 +214,9 @@ astFactory.addASTChild(currentAST,returnAST);
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
+if (inputState.guessing == 0) {
 branchStatement_AST=(AST)currentAST.root;
+}
 break;
 }
 default :

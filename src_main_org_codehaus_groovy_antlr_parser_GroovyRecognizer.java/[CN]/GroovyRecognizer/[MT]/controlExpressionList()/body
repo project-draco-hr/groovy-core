@@ -3,17 +3,21 @@
   ASTPair currentAST=new ASTPair();
   AST controlExpressionList_AST=null;
   controlExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop332:     do {
+    _loop331:     do {
       if ((LA(1) == COMMA)) {
         match(COMMA);
         nls();
         controlExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop332;
+        break _loop331;
       }
     }
  while (true);
@@ -25,6 +29,8 @@
     currentAST.child=controlExpressionList_AST != null && controlExpressionList_AST.getFirstChild() != null ? controlExpressionList_AST.getFirstChild() : controlExpressionList_AST;
     currentAST.advanceChildToEnd();
   }
-  controlExpressionList_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    controlExpressionList_AST=(AST)currentAST.root;
+  }
   returnAST=controlExpressionList_AST;
 }

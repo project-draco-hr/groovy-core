@@ -7,13 +7,17 @@ switch (LA(1)) {
 case LPAREN:
 {
         parenthesizedExpression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case STRING_CTOR_START:
 {
       stringConstructorExpression();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       break;
     }
 default :
@@ -29,6 +33,8 @@ currentAST.root=dynamicMemberName_AST;
 currentAST.child=dynamicMemberName_AST != null && dynamicMemberName_AST.getFirstChild() != null ? dynamicMemberName_AST.getFirstChild() : dynamicMemberName_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 dynamicMemberName_AST=(AST)currentAST.root;
+}
 returnAST=dynamicMemberName_AST;
 }

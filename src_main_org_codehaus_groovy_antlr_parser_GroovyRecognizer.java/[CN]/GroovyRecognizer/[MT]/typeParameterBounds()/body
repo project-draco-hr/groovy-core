@@ -5,17 +5,21 @@
   match(LITERAL_extends);
   nls();
   classOrInterfaceType(false);
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop103:     do {
+    _loop102:     do {
       if ((LA(1) == BAND)) {
         match(BAND);
         nls();
         classOrInterfaceType(false);
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop103;
+        break _loop102;
       }
     }
  while (true);
@@ -27,6 +31,8 @@
     currentAST.child=typeParameterBounds_AST != null && typeParameterBounds_AST.getFirstChild() != null ? typeParameterBounds_AST.getFirstChild() : typeParameterBounds_AST;
     currentAST.advanceChildToEnd();
   }
-  typeParameterBounds_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    typeParameterBounds_AST=(AST)currentAST.root;
+  }
   returnAST=typeParameterBounds_AST;
 }

@@ -3,26 +3,30 @@
   ASTPair currentAST=new ASTPair();
   AST casesGroup_AST=null;
 {
-    int _cnt303=0;
-    _loop303:     do {
+    int _cnt302=0;
+    _loop302:     do {
       if ((LA(1) == LITERAL_default || LA(1) == LITERAL_case)) {
         aCase();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        if (_cnt303 >= 1) {
-          break _loop303;
+        if (_cnt302 >= 1) {
+          break _loop302;
         }
  else {
           throw new NoViableAltException(LT(1),getFilename());
         }
       }
-      _cnt303++;
+      _cnt302++;
     }
  while (true);
   }
   caseSList();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
   if (inputState.guessing == 0) {
     casesGroup_AST=(AST)currentAST.root;
     casesGroup_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(CASE_GROUP,"CASE_GROUP")).add(casesGroup_AST));
@@ -30,6 +34,8 @@
     currentAST.child=casesGroup_AST != null && casesGroup_AST.getFirstChild() != null ? casesGroup_AST.getFirstChild() : casesGroup_AST;
     currentAST.advanceChildToEnd();
   }
-  casesGroup_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    casesGroup_AST=(AST)currentAST.root;
+  }
   returnAST=casesGroup_AST;
 }

@@ -8,10 +8,10 @@
   Token sp=null;
   AST sp_AST=null;
 {
-    boolean synPredMatched459=false;
+    boolean synPredMatched458=false;
     if (((_tokenSet_119.member(LA(1))) && (_tokenSet_120.member(LA(2))) && (_tokenSet_97.member(LA(3))))) {
-      int _m459=mark();
-      synPredMatched459=true;
+      int _m458=mark();
+      synPredMatched458=true;
       inputState.guessing++;
       try {
 {
@@ -19,17 +19,21 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched459=false;
+        synPredMatched458=false;
       }
-      rewind(_m459);
+      rewind(_m458);
       inputState.guessing--;
     }
-    if (synPredMatched459) {
+    if (synPredMatched458) {
       argumentLabel();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       c=LT(1);
-      c_AST=astFactory.create(c);
-      astFactory.makeASTRoot(currentAST,c_AST);
+      if (inputState.guessing == 0) {
+        c_AST=astFactory.create(c);
+        astFactory.makeASTRoot(currentAST,c_AST);
+      }
       match(COLON);
       if (inputState.guessing == 0) {
         c_AST.setType(LABELED_ARG);
@@ -37,8 +41,10 @@
     }
  else     if ((LA(1) == STAR)) {
       sp=LT(1);
-      sp_AST=astFactory.create(sp);
-      astFactory.makeASTRoot(currentAST,sp_AST);
+      if (inputState.guessing == 0) {
+        sp_AST=astFactory.create(sp);
+        astFactory.makeASTRoot(currentAST,sp_AST);
+      }
       match(STAR);
       if (inputState.guessing == 0) {
         sp_AST.setType(SPREAD_ARG);
@@ -51,8 +57,12 @@
     }
   }
   strictContextExpression();
-  astFactory.addASTChild(currentAST,returnAST);
-  argument_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    argument_AST=(AST)currentAST.root;
+  }
   returnAST=argument_AST;
   return hasLabel;
 }

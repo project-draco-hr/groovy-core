@@ -2,10 +2,10 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST checkSuspiciousExpressionStatement_AST=null;
-  boolean synPredMatched295=false;
+  boolean synPredMatched294=false;
   if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3))))) {
-    int _m295=mark();
-    synPredMatched295=true;
+    int _m294=mark();
+    synPredMatched294=true;
     inputState.guessing++;
     try {
 {
@@ -22,12 +22,12 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched295=false;
+      synPredMatched294=false;
     }
-    rewind(_m295);
+    rewind(_m294);
     inputState.guessing--;
   }
-  if (synPredMatched295) {
+  if (synPredMatched294) {
 {
       if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3)))) && (prevToken == NLS)) {
         if (inputState.guessing == 0) {
@@ -40,19 +40,25 @@
         throw new NoViableAltException(LT(1),getFilename());
       }
     }
-    checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    }
   }
  else   if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3)))) && (prevToken == NLS)) {
     if (inputState.guessing == 0) {
-      require(false,"Closure expression looks like it may be an isolated open block, " + "or it may continue a previous statement.","Add an explicit parameter list, as in {it :: ...}, or label it as L:{...}, " + "and also either remove previous newline, or add an explicit semicolon ';'.");
+      require(false,"Closure expression looks like it may be an isolated open block, " + "or it may continue a previous statement.","Add an explicit parameter list, as in {it -> ...}, or label it as L:{...}, " + "and also either remove previous newline, or add an explicit semicolon ';'.");
     }
-    checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    }
   }
  else   if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3)))) && (prevToken != NLS)) {
     if (inputState.guessing == 0) {
-      require(false,"Closure expression looks like it may be an isolated open block.","Add an explicit parameter list, as in {it :: ...}, or label it as L:{...}.");
+      require(false,"Closure expression looks like it may be an isolated open block.","Add an explicit parameter list, as in {it -> ...}, or label it as L:{...}.");
     }
-    checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
+    }
   }
  else {
     throw new NoViableAltException(LT(1),getFilename());

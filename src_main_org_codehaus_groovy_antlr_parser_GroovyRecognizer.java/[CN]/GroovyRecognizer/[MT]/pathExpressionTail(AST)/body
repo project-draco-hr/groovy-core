@@ -5,16 +5,18 @@
   AST pathExpressionTail_AST=null;
   AST pe_AST=null;
 {
-    _loop341:     do {
+    _loop340:     do {
       if ((_tokenSet_109.member(LA(1))) && (_tokenSet_110.member(LA(2))) && (_tokenSet_16.member(LA(3)))) {
         endBrackets=pathElement(result);
-        pe_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          pe_AST=(AST)returnAST;
+        }
         if (inputState.guessing == 0) {
           result=pe_AST;
         }
       }
  else {
-        break _loop341;
+        break _loop340;
       }
     }
  while (true);
@@ -26,7 +28,9 @@
     currentAST.child=pathExpressionTail_AST != null && pathExpressionTail_AST.getFirstChild() != null ? pathExpressionTail_AST.getFirstChild() : pathExpressionTail_AST;
     currentAST.advanceChildToEnd();
   }
-  pathExpressionTail_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    pathExpressionTail_AST=(AST)currentAST.root;
+  }
   returnAST=pathExpressionTail_AST;
   return endBrackets;
 }

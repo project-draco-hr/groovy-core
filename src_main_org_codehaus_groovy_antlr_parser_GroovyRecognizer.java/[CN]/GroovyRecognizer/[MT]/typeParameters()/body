@@ -12,17 +12,21 @@
   }
   nls();
   typeParameter();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop96:     do {
+    _loop95:     do {
       if ((LA(1) == COMMA)) {
         match(COMMA);
         nls();
         typeParameter();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop96;
+        break _loop95;
       }
     }
  while (true);
@@ -35,7 +39,9 @@ case SR:
 case BSR:
 {
         typeArgumentsOrParametersEnd();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case IDENT:
@@ -69,6 +75,8 @@ currentAST.root=typeParameters_AST;
 currentAST.child=typeParameters_AST != null && typeParameters_AST.getFirstChild() != null ? typeParameters_AST.getFirstChild() : typeParameters_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 typeParameters_AST=(AST)currentAST.root;
+}
 returnAST=typeParameters_AST;
 }

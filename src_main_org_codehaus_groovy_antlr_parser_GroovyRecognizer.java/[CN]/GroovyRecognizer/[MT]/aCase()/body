@@ -6,19 +6,25 @@
 switch (LA(1)) {
 case LITERAL_case:
 {
-        AST tmp201_AST=null;
-        tmp201_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp201_AST);
+        AST tmp202_AST=null;
+        if (inputState.guessing == 0) {
+          tmp202_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp202_AST);
+        }
         match(LITERAL_case);
         expression();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case LITERAL_default:
 {
-      AST tmp202_AST=null;
-      tmp202_AST=astFactory.create(LT(1));
-      astFactory.addASTChild(currentAST,tmp202_AST);
+      AST tmp203_AST=null;
+      if (inputState.guessing == 0) {
+        tmp203_AST=astFactory.create(LT(1));
+        astFactory.addASTChild(currentAST,tmp203_AST);
+      }
       match(LITERAL_default);
       break;
     }
@@ -30,6 +36,8 @@ default :
 }
 match(COLON);
 nls();
+if (inputState.guessing == 0) {
 aCase_AST=(AST)currentAST.root;
+}
 returnAST=aCase_AST;
 }

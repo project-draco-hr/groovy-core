@@ -5,10 +5,16 @@
   AST pathExpression_AST=null;
   AST pe_AST=null;
   primaryExpression();
-  pe_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    pe_AST=(AST)returnAST;
+  }
   endBrackets=pathExpressionTail(pe_AST);
-  astFactory.addASTChild(currentAST,returnAST);
-  pathExpression_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    pathExpression_AST=(AST)currentAST.root;
+  }
   returnAST=pathExpression_AST;
   return endBrackets;
 }

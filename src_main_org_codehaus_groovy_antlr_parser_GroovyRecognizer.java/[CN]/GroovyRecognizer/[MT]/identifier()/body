@@ -3,28 +3,36 @@
   ASTPair currentAST=new ASTPair();
   AST identifier_AST=null;
   AST tmp28_AST=null;
-  tmp28_AST=astFactory.create(LT(1));
-  astFactory.addASTChild(currentAST,tmp28_AST);
+  if (inputState.guessing == 0) {
+    tmp28_AST=astFactory.create(LT(1));
+    astFactory.addASTChild(currentAST,tmp28_AST);
+  }
   match(IDENT);
 {
-    _loop61:     do {
+    _loop60:     do {
       if ((LA(1) == DOT)) {
         AST tmp29_AST=null;
-        tmp29_AST=astFactory.create(LT(1));
-        astFactory.makeASTRoot(currentAST,tmp29_AST);
+        if (inputState.guessing == 0) {
+          tmp29_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp29_AST);
+        }
         match(DOT);
         nls();
         AST tmp30_AST=null;
-        tmp30_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp30_AST);
+        if (inputState.guessing == 0) {
+          tmp30_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp30_AST);
+        }
         match(IDENT);
       }
  else {
-        break _loop61;
+        break _loop60;
       }
     }
  while (true);
   }
-  identifier_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    identifier_AST=(AST)currentAST.root;
+  }
   returnAST=identifier_AST;
 }

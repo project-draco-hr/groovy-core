@@ -2,10 +2,14 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST variableName_AST=null;
-  AST tmp153_AST=null;
-  tmp153_AST=astFactory.create(LT(1));
-  astFactory.addASTChild(currentAST,tmp153_AST);
+  AST tmp154_AST=null;
+  if (inputState.guessing == 0) {
+    tmp154_AST=astFactory.create(LT(1));
+    astFactory.addASTChild(currentAST,tmp154_AST);
+  }
   match(IDENT);
-  variableName_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    variableName_AST=(AST)currentAST.root;
+  }
   returnAST=variableName_AST;
 }

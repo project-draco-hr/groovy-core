@@ -3,25 +3,31 @@
   ASTPair currentAST=new ASTPair();
   AST additiveExpression_AST=null;
   multiplicativeExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop400:     do {
+    _loop399:     do {
       if ((LA(1) == PLUS || LA(1) == MINUS)) {
 {
 switch (LA(1)) {
 case PLUS:
 {
-              AST tmp296_AST=null;
-              tmp296_AST=astFactory.create(LT(1));
-              astFactory.makeASTRoot(currentAST,tmp296_AST);
+              AST tmp297_AST=null;
+              if (inputState.guessing == 0) {
+                tmp297_AST=astFactory.create(LT(1));
+                astFactory.makeASTRoot(currentAST,tmp297_AST);
+              }
               match(PLUS);
               break;
             }
 case MINUS:
 {
-            AST tmp297_AST=null;
-            tmp297_AST=astFactory.create(LT(1));
-            astFactory.makeASTRoot(currentAST,tmp297_AST);
+            AST tmp298_AST=null;
+            if (inputState.guessing == 0) {
+              tmp298_AST=astFactory.create(LT(1));
+              astFactory.makeASTRoot(currentAST,tmp298_AST);
+            }
             match(MINUS);
             break;
           }
@@ -33,14 +39,18 @@ default :
   }
   nls();
   multiplicativeExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 }
  else {
-  break _loop400;
+  break _loop399;
 }
 }
  while (true);
 }
+if (inputState.guessing == 0) {
 additiveExpression_AST=(AST)currentAST.root;
+}
 returnAST=additiveExpression_AST;
 }

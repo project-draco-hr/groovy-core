@@ -37,7 +37,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
         enumConstantField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -53,7 +55,7 @@ default :
 }
 }
 {
-_loop146: do {
+_loop145: do {
 if ((LA(1) == SEMI || LA(1) == NLS)) {
   sep();
 {
@@ -90,7 +92,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
         enumConstantField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -107,7 +111,7 @@ default :
 }
 }
  else {
-break _loop146;
+break _loop145;
 }
 }
  while (true);
@@ -120,6 +124,8 @@ currentAST.root=enumConstantBlock_AST;
 currentAST.child=enumConstantBlock_AST != null && enumConstantBlock_AST.getFirstChild() != null ? enumConstantBlock_AST.getFirstChild() : enumConstantBlock_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 enumConstantBlock_AST=(AST)currentAST.root;
+}
 returnAST=enumConstantBlock_AST;
 }

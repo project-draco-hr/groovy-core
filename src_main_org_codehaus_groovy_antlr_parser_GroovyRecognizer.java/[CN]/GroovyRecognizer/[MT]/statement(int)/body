@@ -11,21 +11,27 @@ switch (LA(1)) {
 case LITERAL_if:
 {
       AST tmp4_AST=null;
-      tmp4_AST=astFactory.create(LT(1));
-      astFactory.makeASTRoot(currentAST,tmp4_AST);
+      if (inputState.guessing == 0) {
+        tmp4_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp4_AST);
+      }
       match(LITERAL_if);
       match(LPAREN);
       expression();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
       match(RPAREN);
       nlsWarn();
       compatibleBodyStatement();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
 {
-        boolean synPredMatched262=false;
+        boolean synPredMatched261=false;
         if (((_tokenSet_6.member(LA(1))) && (_tokenSet_7.member(LA(2))) && (_tokenSet_8.member(LA(3))))) {
-          int _m262=mark();
-          synPredMatched262=true;
+          int _m261=mark();
+          synPredMatched261=true;
           inputState.guessing++;
           try {
 {
@@ -51,12 +57,12 @@ default :
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched262=false;
+      synPredMatched261=false;
     }
-    rewind(_m262);
+    rewind(_m261);
     inputState.guessing--;
   }
-  if (synPredMatched262) {
+  if (synPredMatched261) {
 {
 switch (LA(1)) {
 case SEMI:
@@ -78,7 +84,9 @@ default :
 match(LITERAL_else);
 nlsWarn();
 compatibleBodyStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else if ((_tokenSet_9.member(LA(1))) && (_tokenSet_10.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
 }
@@ -86,104 +94,148 @@ astFactory.addASTChild(currentAST,returnAST);
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_for:
 {
 forStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_while:
 {
 AST tmp8_AST=null;
+if (inputState.guessing == 0) {
 tmp8_AST=astFactory.create(LT(1));
 astFactory.makeASTRoot(currentAST,tmp8_AST);
+}
 match(LITERAL_while);
 match(LPAREN);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 nlsWarn();
 compatibleBodyStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_with:
 {
 AST tmp11_AST=null;
+if (inputState.guessing == 0) {
 tmp11_AST=astFactory.create(LT(1));
 astFactory.makeASTRoot(currentAST,tmp11_AST);
+}
 match(LITERAL_with);
 match(LPAREN);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 nlsWarn();
 compoundStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case STAR:
 {
 sp=LT(1);
+if (inputState.guessing == 0) {
 sp_AST=astFactory.create(sp);
 astFactory.makeASTRoot(currentAST,sp_AST);
+}
 match(STAR);
 nls();
 if (inputState.guessing == 0) {
 sp_AST.setType(SPREAD_ARG);
 }
 expressionStatement(EOF);
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_import:
 {
 importStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_switch:
 {
 AST tmp14_AST=null;
+if (inputState.guessing == 0) {
 tmp14_AST=astFactory.create(LT(1));
 astFactory.makeASTRoot(currentAST,tmp14_AST);
+}
 match(LITERAL_switch);
 match(LPAREN);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 nlsWarn();
 match(LCURLY);
 nls();
 {
-_loop265: do {
+_loop264: do {
 if ((LA(1) == LITERAL_default || LA(1) == LITERAL_case)) {
 casesGroup();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
 }
+}
  else {
-break _loop265;
+break _loop264;
 }
 }
  while (true);
 }
 match(RCURLY);
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_try:
 {
 tryBlock();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 case LITERAL_return:
@@ -193,15 +245,19 @@ case LITERAL_throw:
 case LITERAL_assert:
 {
 branchStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 break;
 }
 default :
-boolean synPredMatched253=false;
+boolean synPredMatched252=false;
 if (((_tokenSet_11.member(LA(1))) && (_tokenSet_12.member(LA(2))) && (_tokenSet_13.member(LA(3))))) {
-int _m253=mark();
-synPredMatched253=true;
+int _m252=mark();
+synPredMatched252=true;
 inputState.guessing++;
 try {
 {
@@ -209,21 +265,25 @@ declarationStart();
 }
 }
  catch (RecognitionException pe) {
-synPredMatched253=false;
+synPredMatched252=false;
 }
-rewind(_m253);
+rewind(_m252);
 inputState.guessing--;
 }
-if (synPredMatched253) {
+if (synPredMatched252) {
 declaration();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
 }
+}
  else {
-boolean synPredMatched255=false;
+boolean synPredMatched254=false;
 if (((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_14.member(LA(3))))) {
-int _m255=mark();
-synPredMatched255=true;
+int _m254=mark();
+synPredMatched254=true;
 inputState.guessing++;
 try {
 {
@@ -232,28 +292,32 @@ match(COLON);
 }
 }
  catch (RecognitionException pe) {
-synPredMatched255=false;
+synPredMatched254=false;
 }
-rewind(_m255);
+rewind(_m254);
 inputState.guessing--;
 }
-if (synPredMatched255) {
+if (synPredMatched254) {
 AST tmp19_AST=null;
+if (inputState.guessing == 0) {
 tmp19_AST=astFactory.create(LT(1));
 astFactory.addASTChild(currentAST,tmp19_AST);
+}
 match(IDENT);
 c=LT(1);
+if (inputState.guessing == 0) {
 c_AST=astFactory.create(c);
 astFactory.makeASTRoot(currentAST,c_AST);
+}
 match(COLON);
 if (inputState.guessing == 0) {
 c_AST.setType(LABELED_STAT);
 }
 {
-boolean synPredMatched258=false;
+boolean synPredMatched257=false;
 if (((LA(1) == LCURLY) && (_tokenSet_15.member(LA(2))) && (_tokenSet_16.member(LA(3))))) {
-int _m258=mark();
-synPredMatched258=true;
+int _m257=mark();
+synPredMatched257=true;
 inputState.guessing++;
 try {
 {
@@ -261,50 +325,74 @@ match(LCURLY);
 }
 }
  catch (RecognitionException pe) {
-synPredMatched258=false;
+synPredMatched257=false;
 }
-rewind(_m258);
+rewind(_m257);
 inputState.guessing--;
 }
-if (synPredMatched258) {
+if (synPredMatched257) {
 openOrClosedBlock();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else if ((_tokenSet_14.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_17.member(LA(3)))) {
 statement(COLON);
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 }
  else if ((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3)))) {
 expressionStatement(prevToken);
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 }
  else if ((_tokenSet_20.member(LA(1))) && (_tokenSet_21.member(LA(2))) && (_tokenSet_22.member(LA(3)))) {
 modifiersOpt();
+if (inputState.guessing == 0) {
 m_AST=(AST)returnAST;
+}
 typeDefinitionInternal(m_AST);
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 }
  else if ((LA(1) == LITERAL_synchronized) && (LA(2) == LPAREN)) {
 AST tmp20_AST=null;
+if (inputState.guessing == 0) {
 tmp20_AST=astFactory.create(LT(1));
 astFactory.makeASTRoot(currentAST,tmp20_AST);
+}
 match(LITERAL_synchronized);
 match(LPAREN);
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 nlsWarn();
 compoundStatement();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
+if (inputState.guessing == 0) {
 statement_AST=(AST)currentAST.root;
+}
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());

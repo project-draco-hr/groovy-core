@@ -10,7 +10,9 @@
   AST amvi_AST=null;
   AST v_AST=null;
   modifiersOpt();
-  mods_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    mods_AST=(AST)returnAST;
+  }
 {
 switch (LA(1)) {
 case AT:
@@ -19,7 +21,9 @@ case LITERAL_interface:
 case LITERAL_enum:
 {
         typeDefinitionInternal(mods_AST);
-        td_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          td_AST=(AST)returnAST;
+        }
         if (inputState.guessing == 0) {
           annotationField_AST=(AST)currentAST.root;
           annotationField_AST=td_AST;
@@ -42,12 +46,14 @@ case LITERAL_double:
 case LITERAL_any:
 {
       typeSpec(false);
-      t_AST=(AST)returnAST;
+      if (inputState.guessing == 0) {
+        t_AST=(AST)returnAST;
+      }
 {
-        boolean synPredMatched137=false;
+        boolean synPredMatched136=false;
         if (((LA(1) == IDENT) && (LA(2) == LPAREN) && (LA(3) == RPAREN))) {
-          int _m137=mark();
-          synPredMatched137=true;
+          int _m136=mark();
+          synPredMatched136=true;
           inputState.guessing++;
           try {
 {
@@ -56,14 +62,16 @@ case LITERAL_any:
             }
           }
  catch (          RecognitionException pe) {
-            synPredMatched137=false;
+            synPredMatched136=false;
           }
-          rewind(_m137);
+          rewind(_m136);
           inputState.guessing--;
         }
-        if (synPredMatched137) {
+        if (synPredMatched136) {
           i=LT(1);
-          i_AST=astFactory.create(i);
+          if (inputState.guessing == 0) {
+            i_AST=astFactory.create(i);
+          }
           match(IDENT);
           match(LPAREN);
           match(RPAREN);
@@ -74,7 +82,9 @@ case LITERAL_default:
                 match(LITERAL_default);
                 nls();
                 annotationMemberValueInitializer();
-                amvi_AST=(AST)returnAST;
+                if (inputState.guessing == 0) {
+                  amvi_AST=(AST)returnAST;
+                }
                 break;
               }
 case RCURLY:
@@ -99,7 +109,9 @@ default :
   }
  else   if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (_tokenSet_60.member(LA(2))) && (_tokenSet_61.member(LA(3)))) {
     variableDefinitions(mods_AST,t_AST);
-    v_AST=(AST)returnAST;
+    if (inputState.guessing == 0) {
+      v_AST=(AST)returnAST;
+    }
     if (inputState.guessing == 0) {
       annotationField_AST=(AST)currentAST.root;
       annotationField_AST=v_AST;

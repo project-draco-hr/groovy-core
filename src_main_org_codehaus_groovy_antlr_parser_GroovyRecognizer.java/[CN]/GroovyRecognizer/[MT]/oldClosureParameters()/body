@@ -12,13 +12,15 @@
       currentAST.child=oldClosureParameters_AST != null && oldClosureParameters_AST.getFirstChild() != null ? oldClosureParameters_AST.getFirstChild() : oldClosureParameters_AST;
       currentAST.advanceChildToEnd();
     }
-    oldClosureParameters_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      oldClosureParameters_AST=(AST)currentAST.root;
+    }
   }
  else {
-    boolean synPredMatched228=false;
+    boolean synPredMatched227=false;
     if (((LA(1) == BOR) && (LA(2) == NLS || LA(2) == BOR) && (_tokenSet_83.member(LA(3))))) {
-      int _m228=mark();
-      synPredMatched228=true;
+      int _m227=mark();
+      synPredMatched227=true;
       inputState.guessing++;
       try {
 {
@@ -28,12 +30,12 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched228=false;
+        synPredMatched227=false;
       }
-      rewind(_m228);
+      rewind(_m227);
       inputState.guessing--;
     }
-    if (synPredMatched228) {
+    if (synPredMatched227) {
       match(BOR);
       nls();
       match(BOR);
@@ -45,13 +47,15 @@
         currentAST.child=oldClosureParameters_AST != null && oldClosureParameters_AST.getFirstChild() != null ? oldClosureParameters_AST.getFirstChild() : oldClosureParameters_AST;
         currentAST.advanceChildToEnd();
       }
-      oldClosureParameters_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        oldClosureParameters_AST=(AST)currentAST.root;
+      }
     }
  else {
-      boolean synPredMatched231=false;
+      boolean synPredMatched230=false;
       if (((LA(1) == LPAREN || LA(1) == BOR) && (_tokenSet_84.member(LA(2))) && (_tokenSet_85.member(LA(3))))) {
-        int _m231=mark();
-        synPredMatched231=true;
+        int _m230=mark();
+        synPredMatched230=true;
         inputState.guessing++;
         try {
 {
@@ -81,12 +85,12 @@ default :
     }
   }
  catch (  RecognitionException pe) {
-    synPredMatched231=false;
+    synPredMatched230=false;
   }
-  rewind(_m231);
+  rewind(_m230);
   inputState.guessing--;
 }
-if (synPredMatched231) {
+if (synPredMatched230) {
 {
 switch (LA(1)) {
 case BOR:
@@ -107,18 +111,22 @@ default :
 }
 match(LPAREN);
 parameterDeclarationList();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 match(RPAREN);
 nls();
 match(BOR);
 nls();
+if (inputState.guessing == 0) {
 oldClosureParameters_AST=(AST)currentAST.root;
 }
+}
  else {
-boolean synPredMatched235=false;
+boolean synPredMatched234=false;
 if (((_tokenSet_86.member(LA(1))) && (_tokenSet_87.member(LA(2))) && (_tokenSet_88.member(LA(3))))) {
-int _m235=mark();
-synPredMatched235=true;
+int _m234=mark();
+synPredMatched234=true;
 inputState.guessing++;
 try {
 {
@@ -156,12 +164,12 @@ match(BOR);
 }
 }
  catch (RecognitionException pe) {
-synPredMatched235=false;
+synPredMatched234=false;
 }
-rewind(_m235);
+rewind(_m234);
 inputState.guessing--;
 }
-if (synPredMatched235) {
+if (synPredMatched234) {
 {
 switch (LA(1)) {
 case BOR:
@@ -191,11 +199,15 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 simpleParameterDeclarationList();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 nls();
 match(BOR);
 nls();
+if (inputState.guessing == 0) {
 oldClosureParameters_AST=(AST)currentAST.root;
+}
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());

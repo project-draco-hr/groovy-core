@@ -5,13 +5,17 @@
   AST id_AST=null;
   AST v_AST=null;
   variableName();
-  id_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    id_AST=(AST)returnAST;
+  }
 {
 switch (LA(1)) {
 case ASSIGN:
 {
         varInitializer();
-        v_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          v_AST=(AST)returnAST;
+        }
         break;
       }
 case EOF:

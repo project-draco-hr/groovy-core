@@ -3,33 +3,41 @@
   ASTPair currentAST=new ASTPair();
   AST equalityExpression_AST=null;
   relationalExpression();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop387:     do {
+    _loop386:     do {
       if (((LA(1) >= NOT_EQUAL && LA(1) <= COMPARE_TO))) {
 {
 switch (LA(1)) {
 case NOT_EQUAL:
 {
-              AST tmp286_AST=null;
-              tmp286_AST=astFactory.create(LT(1));
-              astFactory.makeASTRoot(currentAST,tmp286_AST);
+              AST tmp287_AST=null;
+              if (inputState.guessing == 0) {
+                tmp287_AST=astFactory.create(LT(1));
+                astFactory.makeASTRoot(currentAST,tmp287_AST);
+              }
               match(NOT_EQUAL);
               break;
             }
 case EQUAL:
 {
-            AST tmp287_AST=null;
-            tmp287_AST=astFactory.create(LT(1));
-            astFactory.makeASTRoot(currentAST,tmp287_AST);
+            AST tmp288_AST=null;
+            if (inputState.guessing == 0) {
+              tmp288_AST=astFactory.create(LT(1));
+              astFactory.makeASTRoot(currentAST,tmp288_AST);
+            }
             match(EQUAL);
             break;
           }
 case COMPARE_TO:
 {
-          AST tmp288_AST=null;
-          tmp288_AST=astFactory.create(LT(1));
-          astFactory.makeASTRoot(currentAST,tmp288_AST);
+          AST tmp289_AST=null;
+          if (inputState.guessing == 0) {
+            tmp289_AST=astFactory.create(LT(1));
+            astFactory.makeASTRoot(currentAST,tmp289_AST);
+          }
           match(COMPARE_TO);
           break;
         }
@@ -41,14 +49,18 @@ default :
 }
 nls();
 relationalExpression();
-astFactory.addASTChild(currentAST,returnAST);
+if (inputState.guessing == 0) {
+  astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else {
-break _loop387;
+break _loop386;
 }
 }
  while (true);
 }
+if (inputState.guessing == 0) {
 equalityExpression_AST=(AST)currentAST.root;
+}
 returnAST=equalityExpression_AST;
 }

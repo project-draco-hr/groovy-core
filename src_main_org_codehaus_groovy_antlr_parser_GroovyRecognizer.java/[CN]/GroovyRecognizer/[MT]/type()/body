@@ -6,8 +6,12 @@ switch (LA(1)) {
 case IDENT:
 {
       classOrInterfaceType(false);
-      astFactory.addASTChild(currentAST,returnAST);
-      type_AST=(AST)currentAST.root;
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        type_AST=(AST)currentAST.root;
+      }
       break;
     }
 case LITERAL_void:
@@ -22,8 +26,12 @@ case LITERAL_double:
 case LITERAL_any:
 {
     builtInType();
-    astFactory.addASTChild(currentAST,returnAST);
-    type_AST=(AST)currentAST.root;
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      type_AST=(AST)currentAST.root;
+    }
     break;
   }
 default :

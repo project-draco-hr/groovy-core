@@ -35,7 +35,9 @@ case LITERAL_synchronized:
 case LITERAL_volatile:
 {
         annotationField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -51,7 +53,7 @@ default :
 }
 }
 {
-_loop118: do {
+_loop117: do {
 if ((LA(1) == SEMI || LA(1) == NLS)) {
   sep();
 {
@@ -86,7 +88,9 @@ case LITERAL_synchronized:
 case LITERAL_volatile:
 {
         annotationField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -103,7 +107,7 @@ default :
 }
 }
  else {
-break _loop118;
+break _loop117;
 }
 }
  while (true);
@@ -116,6 +120,8 @@ currentAST.root=annotationBlock_AST;
 currentAST.child=annotationBlock_AST != null && annotationBlock_AST.getFirstChild() != null ? annotationBlock_AST.getFirstChild() : annotationBlock_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 annotationBlock_AST=(AST)currentAST.root;
+}
 returnAST=annotationBlock_AST;
 }

@@ -4,10 +4,10 @@
   AST enumBlock_AST=null;
   match(LCURLY);
 {
-    boolean synPredMatched122=false;
+    boolean synPredMatched121=false;
     if (((LA(1) == AT || LA(1) == IDENT) && (_tokenSet_48.member(LA(2))) && (_tokenSet_49.member(LA(3))))) {
-      int _m122=mark();
-      synPredMatched122=true;
+      int _m121=mark();
+      synPredMatched121=true;
       inputState.guessing++;
       try {
 {
@@ -15,14 +15,16 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched122=false;
+        synPredMatched121=false;
       }
-      rewind(_m122);
+      rewind(_m121);
       inputState.guessing--;
     }
-    if (synPredMatched122) {
+    if (synPredMatched121) {
       enumConstants();
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
     }
  else     if ((_tokenSet_50.member(LA(1))) && (_tokenSet_51.member(LA(2))) && (_tokenSet_17.member(LA(3)))) {
 {
@@ -58,7 +60,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
             classField();
-            astFactory.addASTChild(currentAST,returnAST);
+            if (inputState.guessing == 0) {
+              astFactory.addASTChild(currentAST,returnAST);
+            }
             break;
           }
 case RCURLY:
@@ -79,7 +83,7 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 {
-_loop126: do {
+_loop125: do {
 if ((LA(1) == SEMI || LA(1) == NLS)) {
   sep();
 {
@@ -115,7 +119,9 @@ case LITERAL_volatile:
 case LCURLY:
 {
         classField();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
         break;
       }
 case RCURLY:
@@ -132,7 +138,7 @@ default :
 }
 }
  else {
-break _loop126;
+break _loop125;
 }
 }
  while (true);
@@ -145,6 +151,8 @@ currentAST.root=enumBlock_AST;
 currentAST.child=enumBlock_AST != null && enumBlock_AST.getFirstChild() != null ? enumBlock_AST.getFirstChild() : enumBlock_AST;
 currentAST.advanceChildToEnd();
 }
+if (inputState.guessing == 0) {
 enumBlock_AST=(AST)currentAST.root;
+}
 returnAST=enumBlock_AST;
 }

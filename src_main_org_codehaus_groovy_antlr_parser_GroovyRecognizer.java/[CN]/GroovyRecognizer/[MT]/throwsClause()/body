@@ -2,28 +2,36 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST throwsClause_AST=null;
-  AST tmp143_AST=null;
-  tmp143_AST=astFactory.create(LT(1));
-  astFactory.makeASTRoot(currentAST,tmp143_AST);
+  AST tmp144_AST=null;
+  if (inputState.guessing == 0) {
+    tmp144_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp144_AST);
+  }
   match(LITERAL_throws);
   nls();
   identifier();
-  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
 {
-    _loop201:     do {
+    _loop200:     do {
       if ((LA(1) == COMMA)) {
         match(COMMA);
         nls();
         identifier();
-        astFactory.addASTChild(currentAST,returnAST);
+        if (inputState.guessing == 0) {
+          astFactory.addASTChild(currentAST,returnAST);
+        }
       }
  else {
-        break _loop201;
+        break _loop200;
       }
     }
  while (true);
   }
   nls();
-  throwsClause_AST=(AST)currentAST.root;
+  if (inputState.guessing == 0) {
+    throwsClause_AST=(AST)currentAST.root;
+  }
   returnAST=throwsClause_AST;
 }

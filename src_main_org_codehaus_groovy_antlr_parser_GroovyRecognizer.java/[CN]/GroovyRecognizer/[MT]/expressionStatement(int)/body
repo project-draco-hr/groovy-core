@@ -5,10 +5,10 @@
   AST head_AST=null;
   boolean zz;
 {
-    boolean synPredMatched288=false;
+    boolean synPredMatched287=false;
     if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3))))) {
-      int _m288=mark();
-      synPredMatched288=true;
+      int _m287=mark();
+      synPredMatched287=true;
       inputState.guessing++;
       try {
 {
@@ -16,14 +16,16 @@
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched288=false;
+        synPredMatched287=false;
       }
-      rewind(_m288);
+      rewind(_m287);
       inputState.guessing--;
     }
-    if (synPredMatched288) {
+    if (synPredMatched287) {
       checkSuspiciousExpressionStatement(prevToken);
-      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
     }
  else     if ((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3)))) {
     }
@@ -32,10 +34,10 @@
     }
   }
 {
-    boolean synPredMatched292=false;
+    boolean synPredMatched291=false;
     if (((_tokenSet_18.member(LA(1))) && (_tokenSet_8.member(LA(2))) && (_tokenSet_19.member(LA(3))))) {
-      int _m292=mark();
-      synPredMatched292=true;
+      int _m291=mark();
+      synPredMatched291=true;
       inputState.guessing++;
       try {
 {
@@ -71,25 +73,33 @@ default :
 }
 }
  catch (RecognitionException pe) {
-synPredMatched292=false;
+synPredMatched291=false;
 }
-rewind(_m292);
+rewind(_m291);
 inputState.guessing--;
 }
-if (synPredMatched292) {
+if (synPredMatched291) {
 expression();
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else if ((_tokenSet_93.member(LA(1))) && (_tokenSet_94.member(LA(2))) && (_tokenSet_19.member(LA(3)))) {
 zz=pathExpression();
+if (inputState.guessing == 0) {
 head_AST=(AST)returnAST;
+}
 commandArguments(head_AST);
+if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
+}
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
+if (inputState.guessing == 0) {
 expressionStatement_AST=(AST)currentAST.root;
+}
 returnAST=expressionStatement_AST;
 }
