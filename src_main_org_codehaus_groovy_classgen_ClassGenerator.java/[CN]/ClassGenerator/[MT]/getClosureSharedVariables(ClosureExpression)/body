@@ -1,36 +1,32 @@
 {
   List vars=new ArrayList();
-  if (!isInScriptBody()) {
-    VariableScopeCodeVisitor outerVisitor=new VariableScopeCodeVisitor(true);
-    VariableScopeCodeVisitor innerVisitor=new VariableScopeCodeVisitor();
-    if (methodNode != null) {
-      outerVisitor.setParameters(methodNode.getParameters());
-      methodNode.getCode().visit(outerVisitor);
-    }
+  VariableScope outerScope=getVariableScope().createRecursiveParentScope();
+  VariableScope innerScope=expression.getVariableScope();
+  if (innerScope == null) {
+    System.out.println("No variable scope for: " + expression + " method: "+ methodNode+ " constructor: "+ constructorNode);
+    innerScope=new VariableScope(getVariableScope());
+  }
  else {
+    innerScope=innerScope.createRecursiveChildScope();
+  }
+  Set outerDecls=outerScope.getDeclaredVariables();
+  Set outerRefs=outerScope.getReferencedVariables();
+  Set innerDecls=innerScope.getDeclaredVariables();
+  Set innerRefs=innerScope.getReferencedVariables();
+  Set varSet=new HashSet();
+  for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
+    String var=(String)iter.next();
+    if (outerDecls.contains(var) && (classNode.getField(var) == null)) {
+      String type=getVariableType(var);
+      vars.add(new Parameter(type,var));
+      varSet.add(var);
     }
-    expression.getCode().visit(innerVisitor);
-    addFieldsToVisitor(outerVisitor);
-    Set outerDecls=outerVisitor.getDeclaredVariables();
-    outerDecls.addAll(outerVisitor.getParameterSet());
-    Set outerRefs=outerVisitor.getReferencedVariables();
-    Set innerDecls=innerVisitor.getDeclaredVariables();
-    Set innerRefs=innerVisitor.getReferencedVariables();
-    Set varSet=new HashSet();
-    for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
-      String var=(String)iter.next();
-      if (outerDecls.contains(var) && (classNode.getField(var) == null || isInnerClass())) {
-        String type=getVariableType(var);
-        vars.add(new Parameter(type,var));
-        varSet.add(var);
-      }
-    }
-    for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
-      String var=(String)iter.next();
-      if (innerDecls.contains(var) && (classNode.getField(var) == null || isInnerClass()) && !varSet.contains(var)) {
-        String type=getVariableType(var);
-        vars.add(new Parameter(type,var));
-      }
+  }
+  for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
+    String var=(String)iter.next();
+    if (innerDecls.contains(var) && (classNode.getField(var) == null) && !varSet.contains(var)) {
+      String type=getVariableType(var);
+      vars.add(new Parameter(type,var));
     }
   }
   Parameter[] answer=new Parameter[vars.size()];

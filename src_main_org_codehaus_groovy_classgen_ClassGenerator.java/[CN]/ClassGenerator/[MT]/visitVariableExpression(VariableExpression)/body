@@ -45,7 +45,16 @@
           variable=defineVariable(name,variableType);
           variable.setProperty(true);
         }
-        visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
+        if (variable.isHolder() && passingClosureParams && useProperty) {
+          cv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/ScriptReference");
+          cv.visitInsn(DUP);
+          cv.visitVarInsn(ALOAD,0);
+          cv.visitLdcInsn(name);
+          cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
+        }
+ else {
+          visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
+        }
         return;
       }
       String type=variable.getTypeName();
