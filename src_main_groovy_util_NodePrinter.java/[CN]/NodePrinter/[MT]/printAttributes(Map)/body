@@ -11,7 +11,12 @@
     }
     out.print(entry.getKey().toString());
     out.print(":");
-    out.print(InvokerHelper.toString(entry.getValue()));
+    if (entry.getValue() instanceof String) {
+      out.print("'" + entry.getValue() + "'");
+    }
+ else {
+      out.print(InvokerHelper.toString(entry.getValue()));
+    }
   }
   out.print(")");
 }
