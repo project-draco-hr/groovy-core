@@ -1,0 +1,20 @@
+{
+  if ((s == null) || s.equals("")) {
+    throw new IllegalArgumentException("invalid QName literal");
+  }
+  if (s.charAt(0) == '{') {
+    int i=s.indexOf('}');
+    if (i == -1) {
+      throw new IllegalArgumentException("invalid QName literal");
+    }
+    if (i == s.length() - 1) {
+      throw new IllegalArgumentException("invalid QName literal");
+    }
+ else {
+      return new QName(s.substring(1,i),s.substring(i + 1));
+    }
+  }
+ else {
+    return new QName(s);
+  }
+}

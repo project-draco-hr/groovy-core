@@ -1,0 +1,20 @@
+{
+  Element element=(Element)createNode(name);
+  for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String attrName=entry.getKey().toString();
+    Object value=entry.getValue();
+    if ("xmlns".equals(attrName)) {
+      if (value instanceof Map) {
+        appendNamespaceAttributes(element,(Map)value);
+      }
+ else {
+        throw new IllegalArgumentException("The value of the xmlns attribute must be a Map of QNames to String URIs");
+      }
+    }
+ else {
+      element.setAttribute(attrName,value.toString());
+    }
+  }
+  return element;
+}

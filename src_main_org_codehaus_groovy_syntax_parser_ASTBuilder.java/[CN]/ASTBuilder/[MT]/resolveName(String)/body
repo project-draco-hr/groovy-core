@@ -8,6 +8,14 @@
   if (this.imports.containsKey(name)) {
     return (String)this.imports.get(name);
   }
+  if (packageName != null && packageName.length() > 0) {
+    try {
+      getClassLoader().loadClass(packageName + "." + name);
+      return packageName + "." + name;
+    }
+ catch (    ClassNotFoundException e) {
+    }
+  }
   try {
     getClassLoader().loadClass("java.lang." + name);
     return "java.lang." + name;

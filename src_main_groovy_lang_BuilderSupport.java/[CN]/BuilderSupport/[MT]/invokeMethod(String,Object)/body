@@ -1,18 +1,18 @@
 {
-  Node node=null;
+  Object node=null;
   Closure closure=null;
   List list=InvokerHelper.asList(args);
   if (!list.isEmpty()) {
     Object object=list.get(0);
     if (object instanceof Map) {
-      node=new Node(current,name,(Map)object,new ArrayList());
+      node=createNode(name,(Map)object);
     }
  else     if (object instanceof Closure) {
       closure=(Closure)object;
-      node=new Node(current,name,new ArrayList());
+      node=createNode(name);
     }
  else {
-      node=new Node(current,name,object);
+      node=createNode(name,object);
     }
     if (list.size() > 1) {
       object=list.get(1);
@@ -22,23 +22,13 @@
     }
   }
  else {
-    node=new Node(current,name);
+    node=createNode(name);
   }
   if (current != null) {
-    Object parentValue=current.value();
-    List parentList=null;
-    if (parentValue instanceof List) {
-      parentList=(List)parentValue;
-    }
- else {
-      parentList=new ArrayList();
-      parentList.add(parentValue);
-      current.setValue(parentList);
-    }
-    parentList.add(node);
+    setParent(current,node);
   }
   if (closure != null) {
-    Node oldCurrent=current;
+    Object oldCurrent=current;
     current=node;
     closure.setDelegate(this);
     closure.call();
