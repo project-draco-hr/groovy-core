@@ -1,0 +1,19 @@
+{
+  Connection connection=createConnection();
+  PreparedStatement statement=null;
+  ResultSet results=null;
+  try {
+    log.debug(sql);
+    statement=connection.prepareStatement(sql);
+    setParameters(params,statement);
+    results=statement.executeQuery();
+    closure.call(results);
+  }
+ catch (  SQLException e) {
+    log.warn("Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement,results);
+  }
+}

@@ -1,11 +1,13 @@
 {
-  String sql="select * from " + table;
-  if (where != null) {
-    sql+=" where ";
-    if (parent != null && parent.where != null) {
-      sql+=parent.getWhereSql() + " and ";
+  if (sql == null) {
+    sql="select * from " + table;
+    if (where != null) {
+      sql+=" where ";
+      if (parent != null && parent.where != null) {
+        sql+=parent.getSqlVisitor().getWhere() + " and ";
+      }
+      sql+=getSqlVisitor().getWhere();
     }
-    sql+=getWhereSql();
   }
   return sql;
 }

@@ -1,15 +1,5 @@
 {
-  Connection connection=createConnection();
-  PreparedStatement statement=null;
-  try {
-    statement=createPreparedStatement(connection,gstring);
-    return statement.executeUpdate();
-  }
- catch (  SQLException e) {
-    log.warn("Failed to execute: " + gstring,e);
-    throw e;
-  }
- finally {
-    closeResources(connection,statement);
-  }
+  String sql=asSql(gstring);
+  List params=getParameters(gstring);
+  return execute(sql,params);
 }

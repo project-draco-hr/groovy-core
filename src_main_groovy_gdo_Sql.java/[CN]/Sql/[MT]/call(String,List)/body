@@ -1,10 +1,10 @@
 {
   Connection connection=createConnection();
-  Statement statement=null;
+  CallableStatement statement=connection.prepareCall(sql);
   try {
     log.debug(sql);
-    statement=connection.createStatement();
-    return statement.execute(sql);
+    setParameters(params,statement);
+    return statement.executeUpdate();
   }
  catch (  SQLException e) {
     log.warn("Failed to execute: " + sql,e);
