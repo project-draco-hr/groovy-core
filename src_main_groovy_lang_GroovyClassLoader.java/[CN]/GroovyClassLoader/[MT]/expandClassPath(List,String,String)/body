@@ -1,25 +1,33 @@
 {
-  String[] paths=classpath.split(File.pathSeparator);
-  for (int i=0; i < paths.length; i++) {
-    File path=null;
-    if ("".equals(base)) {
-      path=new File(paths[i]);
-    }
- else {
-      path=new File(base,paths[i]);
-    }
-    if (path.exists()) {
-      if (!path.isDirectory()) {
-        try {
-          JarFile jar=new JarFile(path);
-          pathList.add(paths[i]);
+  if (classpath != null) {
+    String[] paths=classpath.split("[\\ ,:;]");
+    for (int i=0; i < paths.length; i++) {
+      if (paths.length > 0) {
+        File path=null;
+        if ("".equals(base)) {
+          path=new File(paths[i]);
         }
- catch (        IOException e) {
-          continue;
-        }
-      }
  else {
-        pathList.add(paths[i]);
+          path=new File(base,paths[i]);
+        }
+        if (path.exists()) {
+          if (!path.isDirectory()) {
+            try {
+              JarFile jar=new JarFile(path);
+              pathList.add(paths[i]);
+              Manifest manifest=jar.getManifest();
+              Attributes classPathAttributes=manifest.getMainAttributes();
+              String manifestClassPath=classPathAttributes.getValue("Class-Path");
+              if (manifestClassPath != null)               expandClassPath(pathList,paths[i],manifestClassPath);
+            }
+ catch (            IOException e) {
+              continue;
+            }
+          }
+ else {
+            pathList.add(paths[i]);
+          }
+        }
       }
     }
   }
