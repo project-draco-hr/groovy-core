@@ -1,3 +1,21 @@
 {
-  return InvokerHelper.invokeMethod(this,"doCall",arguments);
+  try {
+    return InvokerHelper.invokeMethod(this,"doCall",arguments);
+  }
+ catch (  MissingMethodException e) {
+    Class[] expected=null;
+    try {
+      Method[] methods=getClass().getMethods();
+      for (int i=0; i < methods.length; i++) {
+        Method method=methods[i];
+        if (method.getName().equals("doCall")) {
+          expected=method.getParameterTypes();
+          break;
+        }
+      }
+    }
+ catch (    Exception e2) {
+    }
+    throw new IncorrectClosureArgumentsException(this,arguments,expected);
+  }
 }
