@@ -1,5 +1,13 @@
 {
-  String type=helper.getClassInternalName(method.getDeclaringClass().getName());
+  Class ownerClass=method.getInterfaceClass();
+  if (ownerClass == null) {
+    ownerClass=method.getDeclaringClass();
+  }
+ else {
+    System.out.println("#### Using the interface on which this method is defined!");
+    System.out.println("For method: " + method);
+  }
+  String type=helper.getClassInternalName(ownerClass.getName());
   String descriptor=helper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
   if (method.isStatic()) {
     loadParameters(method,3);
@@ -7,7 +15,7 @@
   }
  else {
     cv.visitVarInsn(ALOAD,2);
-    helper.doCast(method.getDeclaringClass());
+    helper.doCast(ownerClass);
     loadParameters(method,3);
     cv.visitMethodInsn(INVOKEVIRTUAL,type,method.getName(),descriptor);
   }

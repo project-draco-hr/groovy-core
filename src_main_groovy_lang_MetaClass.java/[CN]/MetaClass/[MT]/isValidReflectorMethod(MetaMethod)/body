@@ -8,10 +8,10 @@
     for (Iterator iter=list.iterator(); iter.hasNext(); ) {
       MetaMethod aMethod=(MetaMethod)iter.next();
       if (method.isSame(aMethod)) {
-        return true;
+        method.setInterfaceClass(aMethod.getDeclaringClass());
+        return false;
       }
     }
-    log.warning("Cannot invoke method on protected/private class so must use reflection instead: " + method);
     return false;
   }
   return true;
