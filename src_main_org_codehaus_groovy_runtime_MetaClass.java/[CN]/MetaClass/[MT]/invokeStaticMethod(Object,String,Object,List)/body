@@ -6,10 +6,8 @@
       return doMethodInvoke(theClass,method,argumentList.toArray());
     }
   }
-  if (object instanceof Class && object != Class.class) {
+  if (theClass != Class.class) {
     return registry.getMetaClass(Class.class).invokeMethod(object,methodName,arguments,argumentList);
   }
- else {
-    throw new InvokerException("Could not find matching method called: " + methodName + " for class: "+ theClass.getName());
-  }
+  throw new InvokerException("Could not find matching method called: " + methodName + " for class: "+ theClass.getName());
 }
