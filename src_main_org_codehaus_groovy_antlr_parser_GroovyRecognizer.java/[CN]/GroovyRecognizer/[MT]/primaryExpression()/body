@@ -1,0 +1,116 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST primaryExpression_AST=null;
+switch (LA(1)) {
+case IDENT:
+{
+      AST tmp257_AST=null;
+      tmp257_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp257_AST);
+      match(IDENT);
+      primaryExpression_AST=(AST)currentAST.root;
+      break;
+    }
+case STRING_LITERAL:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+    constant();
+    astFactory.addASTChild(currentAST,returnAST);
+    primaryExpression_AST=(AST)currentAST.root;
+    break;
+  }
+case LITERAL_true:
+{
+  AST tmp258_AST=null;
+  tmp258_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp258_AST);
+  match(LITERAL_true);
+  primaryExpression_AST=(AST)currentAST.root;
+  break;
+}
+case LITERAL_false:
+{
+AST tmp259_AST=null;
+tmp259_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp259_AST);
+match(LITERAL_false);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_null:
+{
+AST tmp260_AST=null;
+tmp260_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp260_AST);
+match(LITERAL_null);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_new:
+{
+newExpression();
+astFactory.addASTChild(currentAST,returnAST);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_this:
+{
+AST tmp261_AST=null;
+tmp261_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp261_AST);
+match(LITERAL_this);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_super:
+{
+AST tmp262_AST=null;
+tmp262_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp262_AST);
+match(LITERAL_super);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LPAREN:
+{
+parenthesizedExpression();
+astFactory.addASTChild(currentAST,returnAST);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case STRING_CTOR_START:
+{
+stringConstructorExpression();
+astFactory.addASTChild(currentAST,returnAST);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+{
+builtInType();
+astFactory.addASTChild(currentAST,returnAST);
+primaryExpression_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=primaryExpression_AST;
+}

@@ -1,0 +1,75 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST parameterModifier_AST=null;
+  Token f=null;
+  AST f_AST=null;
+{
+    _loop216:     do {
+      if ((LA(1) == AT) && (LA(2) == IDENT) && (_tokenSet_96.member(LA(3)))) {
+        annotation();
+        astFactory.addASTChild(currentAST,returnAST);
+        nls();
+      }
+ else {
+        break _loop216;
+      }
+    }
+ while (true);
+  }
+{
+switch (LA(1)) {
+case FINAL:
+{
+        f=LT(1);
+        f_AST=astFactory.create(f);
+        astFactory.addASTChild(currentAST,f_AST);
+        match(FINAL);
+        break;
+      }
+case AT:
+case IDENT:
+case QUESTION:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case STAR:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+{
+_loop219: do {
+if ((LA(1) == AT)) {
+  annotation();
+  astFactory.addASTChild(currentAST,returnAST);
+  nls();
+}
+ else {
+  break _loop219;
+}
+}
+ while (true);
+}
+if (inputState.guessing == 0) {
+parameterModifier_AST=(AST)currentAST.root;
+parameterModifier_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(MODIFIERS,"MODIFIERS")).add(parameterModifier_AST));
+currentAST.root=parameterModifier_AST;
+currentAST.child=parameterModifier_AST != null && parameterModifier_AST.getFirstChild() != null ? parameterModifier_AST.getFirstChild() : parameterModifier_AST;
+currentAST.advanceChildToEnd();
+}
+parameterModifier_AST=(AST)currentAST.root;
+returnAST=parameterModifier_AST;
+}

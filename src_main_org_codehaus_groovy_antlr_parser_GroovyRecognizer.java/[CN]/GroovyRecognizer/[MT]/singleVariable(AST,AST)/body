@@ -1,0 +1,16 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST singleVariable_AST=null;
+  AST id_AST=null;
+  variableName();
+  id_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    singleVariable_AST=(AST)currentAST.root;
+    singleVariable_AST=(AST)astFactory.make((new ASTArray(4)).add(astFactory.create(VARIABLE_DEF,"VARIABLE_DEF")).add(mods).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t))).add(id_AST));
+    currentAST.root=singleVariable_AST;
+    currentAST.child=singleVariable_AST != null && singleVariable_AST.getFirstChild() != null ? singleVariable_AST.getFirstChild() : singleVariable_AST;
+    currentAST.advanceChildToEnd();
+  }
+  returnAST=singleVariable_AST;
+}

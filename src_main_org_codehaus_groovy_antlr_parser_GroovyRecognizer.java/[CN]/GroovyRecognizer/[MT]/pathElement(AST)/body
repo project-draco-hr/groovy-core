@@ -1,0 +1,112 @@
+{
+  boolean endBrackets=false;
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST pathElement_AST=null;
+  Token sp=null;
+  AST sp_AST=null;
+  Token op=null;
+  AST op_AST=null;
+  AST mca_AST=null;
+  AST ata_AST=null;
+  boolean zz;
+switch (LA(1)) {
+case DOT:
+case STAR_DOT:
+case QUESTION_DOT:
+{
+      if (inputState.guessing == 0) {
+        pathElement_AST=(AST)currentAST.root;
+        pathElement_AST=prefix;
+        currentAST.root=pathElement_AST;
+        currentAST.child=pathElement_AST != null && pathElement_AST.getFirstChild() != null ? pathElement_AST.getFirstChild() : pathElement_AST;
+        currentAST.advanceChildToEnd();
+      }
+{
+switch (LA(1)) {
+case STAR_DOT:
+{
+            sp=LT(1);
+            sp_AST=astFactory.create(sp);
+            astFactory.makeASTRoot(currentAST,sp_AST);
+            match(STAR_DOT);
+            if (inputState.guessing == 0) {
+              sp_AST.setType(SPREAD_ARG);
+            }
+            break;
+          }
+case QUESTION_DOT:
+{
+          op=LT(1);
+          op_AST=astFactory.create(op);
+          astFactory.makeASTRoot(currentAST,op_AST);
+          match(QUESTION_DOT);
+          if (inputState.guessing == 0) {
+            op_AST.setType(OPTIONAL_ARG);
+          }
+          break;
+        }
+case DOT:
+{
+        AST tmp263_AST=null;
+        tmp263_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp263_AST);
+        match(DOT);
+        break;
+      }
+default :
+{
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+}
+}
+nls();
+namePart();
+astFactory.addASTChild(currentAST,returnAST);
+if (inputState.guessing == 0) {
+endBrackets=false;
+}
+pathElement_AST=(AST)currentAST.root;
+break;
+}
+case LPAREN:
+case LCURLY:
+{
+methodCallArgs(prefix);
+mca_AST=(AST)returnAST;
+astFactory.addASTChild(currentAST,returnAST);
+if (inputState.guessing == 0) {
+pathElement_AST=(AST)currentAST.root;
+pathElement_AST=mca_AST;
+endBrackets=true;
+currentAST.root=pathElement_AST;
+currentAST.child=pathElement_AST != null && pathElement_AST.getFirstChild() != null ? pathElement_AST.getFirstChild() : pathElement_AST;
+currentAST.advanceChildToEnd();
+}
+pathElement_AST=(AST)currentAST.root;
+break;
+}
+case LBRACK:
+{
+arrayOrTypeArgs(prefix);
+ata_AST=(AST)returnAST;
+astFactory.addASTChild(currentAST,returnAST);
+if (inputState.guessing == 0) {
+pathElement_AST=(AST)currentAST.root;
+pathElement_AST=ata_AST;
+endBrackets=false;
+currentAST.root=pathElement_AST;
+currentAST.child=pathElement_AST != null && pathElement_AST.getFirstChild() != null ? pathElement_AST.getFirstChild() : pathElement_AST;
+currentAST.advanceChildToEnd();
+}
+pathElement_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=pathElement_AST;
+return endBrackets;
+}

@@ -1,0 +1,124 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST expressionStatement_AST=null;
+  AST head_AST=null;
+  boolean endBrackets=false;
+switch (LA(1)) {
+case IDENT:
+case LPAREN:
+case LITERAL_super:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case LITERAL_this:
+case STRING_LITERAL:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case STRING_CTOR_START:
+case LITERAL_new:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+      endBrackets=pathExpression();
+      head_AST=(AST)returnAST;
+{
+        if (((_tokenSet_105.member(LA(1))) && (_tokenSet_11.member(LA(2))) && (_tokenSet_7.member(LA(3)))) && (!endBrackets)) {
+          commandArguments(head_AST);
+          astFactory.addASTChild(currentAST,returnAST);
+        }
+ else         if ((_tokenSet_106.member(LA(1))) && (_tokenSet_107.member(LA(2))) && (_tokenSet_7.member(LA(3)))) {
+          assignmentTail(head_AST);
+          astFactory.addASTChild(currentAST,returnAST);
+        }
+ else         if ((_tokenSet_12.member(LA(1)))) {
+          if (inputState.guessing == 0) {
+            expressionStatement_AST=(AST)currentAST.root;
+            expressionStatement_AST=head_AST;
+            currentAST.root=expressionStatement_AST;
+            currentAST.child=expressionStatement_AST != null && expressionStatement_AST.getFirstChild() != null ? expressionStatement_AST.getFirstChild() : expressionStatement_AST;
+            currentAST.advanceChildToEnd();
+          }
+        }
+ else {
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+      }
+      if (inputState.guessing == 0) {
+switch (LA(1)) {
+case RCURLY:
+case RBRACK:
+case RPAREN:
+case SEMI:
+case NLS:
+case EOF:
+          break;
+default :
+        require(false,"command followed by garbage in f...","parenthesize correct argument list f(...) or whole expression (f()...)");
+    }
+  }
+  expressionStatement_AST=(AST)currentAST.root;
+  break;
+}
+case INC:
+case DEC:
+{
+{
+switch (LA(1)) {
+case INC:
+{
+      AST tmp200_AST=null;
+      tmp200_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp200_AST);
+      match(INC);
+      break;
+    }
+case DEC:
+{
+    AST tmp201_AST=null;
+    tmp201_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp201_AST);
+    match(DEC);
+    break;
+  }
+default :
+{
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+endBrackets=pathExpression();
+astFactory.addASTChild(currentAST,returnAST);
+expressionStatement_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_return:
+case LITERAL_break:
+case LITERAL_continue:
+case LITERAL_throw:
+case LITERAL_assert:
+{
+branchExpression();
+astFactory.addASTChild(currentAST,returnAST);
+expressionStatement_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=expressionStatement_AST;
+}

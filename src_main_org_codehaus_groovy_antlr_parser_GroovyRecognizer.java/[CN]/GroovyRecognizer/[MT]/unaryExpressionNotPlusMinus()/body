@@ -1,0 +1,149 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST unaryExpressionNotPlusMinus_AST=null;
+  Token lpb=null;
+  AST lpb_AST=null;
+  Token lp=null;
+  AST lp_AST=null;
+switch (LA(1)) {
+case BNOT:
+{
+      AST tmp318_AST=null;
+      tmp318_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp318_AST);
+      match(BNOT);
+      nls();
+      unaryExpression();
+      astFactory.addASTChild(currentAST,returnAST);
+      unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+      break;
+    }
+case LNOT:
+{
+    AST tmp319_AST=null;
+    tmp319_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp319_AST);
+    match(LNOT);
+    nls();
+    unaryExpression();
+    astFactory.addASTChild(currentAST,returnAST);
+    unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+    break;
+  }
+case LBRACK:
+case IDENT:
+case LPAREN:
+case LITERAL_super:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case LCURLY:
+case LITERAL_this:
+case STRING_LITERAL:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case STRING_CTOR_START:
+case LITERAL_new:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+{
+    boolean synPredMatched426=false;
+    if (((LA(1) == LPAREN) && ((LA(2) >= LITERAL_void && LA(2) <= LITERAL_any)) && (LA(3) == LBRACK || LA(3) == RPAREN))) {
+      int _m426=mark();
+      synPredMatched426=true;
+      inputState.guessing++;
+      try {
+{
+          match(LPAREN);
+          builtInTypeSpec(true);
+          match(RPAREN);
+          unaryExpression();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched426=false;
+      }
+      rewind(_m426);
+      inputState.guessing--;
+    }
+    if (synPredMatched426) {
+      lpb=LT(1);
+      lpb_AST=astFactory.create(lpb);
+      astFactory.makeASTRoot(currentAST,lpb_AST);
+      match(LPAREN);
+      if (inputState.guessing == 0) {
+        lpb_AST.setType(TYPECAST);
+      }
+      builtInTypeSpec(true);
+      astFactory.addASTChild(currentAST,returnAST);
+      match(RPAREN);
+      unaryExpression();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else {
+      boolean synPredMatched428=false;
+      if (((LA(1) == LPAREN) && (LA(2) == IDENT) && (_tokenSet_127.member(LA(3))))) {
+        int _m428=mark();
+        synPredMatched428=true;
+        inputState.guessing++;
+        try {
+{
+            match(LPAREN);
+            classTypeSpec(true);
+            match(RPAREN);
+            unaryExpressionNotPlusMinus();
+          }
+        }
+ catch (        RecognitionException pe) {
+          synPredMatched428=false;
+        }
+        rewind(_m428);
+        inputState.guessing--;
+      }
+      if (synPredMatched428) {
+        lp=LT(1);
+        lp_AST=astFactory.create(lp);
+        astFactory.makeASTRoot(currentAST,lp_AST);
+        match(LPAREN);
+        if (inputState.guessing == 0) {
+          lp_AST.setType(TYPECAST);
+        }
+        classTypeSpec(true);
+        astFactory.addASTChild(currentAST,returnAST);
+        match(RPAREN);
+        unaryExpressionNotPlusMinus();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else       if ((_tokenSet_128.member(LA(1))) && (_tokenSet_129.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+        postfixExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+    }
+  }
+  unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=unaryExpressionNotPlusMinus_AST;
+}

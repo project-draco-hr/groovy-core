@@ -1,0 +1,201 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=ESC;
+  int _saveIndex;
+  if ((LA(1) == '\\') && (LA(2) == '"' || LA(2) == '$' || LA(2) == '\'' || LA(2) == '0' || LA(2) == '1' || LA(2) == '2' || LA(2) == '3' || LA(2) == '4' || LA(2) == '5' || LA(2) == '6' || LA(2) == '7' || LA(2) == '\\' || LA(2) == 'b' || LA(2) == 'f' || LA(2) == 'n' || LA(2) == 'r' || LA(2) == 't' || LA(2) == 'u')) {
+    _saveIndex=text.length();
+    match('\\');
+    text.setLength(_saveIndex);
+{
+switch (LA(1)) {
+case 'n':
+{
+          match('n');
+          if (inputState.guessing == 0) {
+            text.setLength(_begin);
+            text.append("\n");
+          }
+          break;
+        }
+case 'r':
+{
+        match('r');
+        if (inputState.guessing == 0) {
+          text.setLength(_begin);
+          text.append("\r");
+        }
+        break;
+      }
+case 't':
+{
+      match('t');
+      if (inputState.guessing == 0) {
+        text.setLength(_begin);
+        text.append("\t");
+      }
+      break;
+    }
+case 'b':
+{
+    match('b');
+    if (inputState.guessing == 0) {
+      text.setLength(_begin);
+      text.append("\b");
+    }
+    break;
+  }
+case 'f':
+{
+  match('f');
+  if (inputState.guessing == 0) {
+    text.setLength(_begin);
+    text.append("\f");
+  }
+  break;
+}
+case '"':
+{
+match('"');
+break;
+}
+case '\'':
+{
+match('\'');
+break;
+}
+case '\\':
+{
+match('\\');
+break;
+}
+case '$':
+{
+match('$');
+break;
+}
+case 'u':
+{
+{
+int _cnt581=0;
+_loop581: do {
+if ((LA(1) == 'u')) {
+match('u');
+}
+ else {
+if (_cnt581 >= 1) {
+break _loop581;
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+_cnt581++;
+}
+ while (true);
+}
+if (inputState.guessing == 0) {
+text.setLength(_begin);
+text.append("");
+}
+mHEX_DIGIT(false);
+mHEX_DIGIT(false);
+mHEX_DIGIT(false);
+mHEX_DIGIT(false);
+if (inputState.guessing == 0) {
+char ch=(char)Integer.parseInt(new String(text.getBuffer(),_begin,text.length() - _begin),16);
+text.setLength(_begin);
+text.append(ch);
+}
+break;
+}
+case '0':
+case '1':
+case '2':
+case '3':
+{
+matchRange('0','3');
+{
+if (((LA(1) >= '0' && LA(1) <= '7')) && ((LA(2) >= '\u0003' && LA(2) <= '\uffff')) && (true)&& (true)) {
+matchRange('0','7');
+{
+if (((LA(1) >= '0' && LA(1) <= '7')) && ((LA(2) >= '\u0003' && LA(2) <= '\uffff')) && (true)&& (true)) {
+matchRange('0','7');
+}
+ else if (((LA(1) >= '\u0003' && LA(1) <= '\uffff')) && (true) && (true)&& (true)) {
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+ else if (((LA(1) >= '\u0003' && LA(1) <= '\uffff')) && (true) && (true)&& (true)) {
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+if (inputState.guessing == 0) {
+char ch=(char)Integer.parseInt(new String(text.getBuffer(),_begin,text.length() - _begin).substring(1),8);
+text.setLength(_begin);
+text.append(ch);
+}
+break;
+}
+case '4':
+case '5':
+case '6':
+case '7':
+{
+matchRange('4','7');
+{
+if (((LA(1) >= '0' && LA(1) <= '7')) && ((LA(2) >= '\u0003' && LA(2) <= '\uffff')) && (true)&& (true)) {
+matchRange('0','7');
+}
+ else if (((LA(1) >= '\u0003' && LA(1) <= '\uffff')) && (true) && (true)&& (true)) {
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+if (inputState.guessing == 0) {
+char ch=(char)Integer.parseInt(new String(text.getBuffer(),_begin,text.length() - _begin).substring(1),8);
+text.setLength(_begin);
+text.append(ch);
+}
+break;
+}
+default :
+{
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+}
+ else if ((LA(1) == '\\') && (LA(2) == '\n' || LA(2) == '\r')) {
+_saveIndex=text.length();
+match('\\');
+text.setLength(_saveIndex);
+_saveIndex=text.length();
+mONE_NL(false);
+text.setLength(_saveIndex);
+}
+ else if ((LA(1) == '\n' || LA(1) == '\r')) {
+_saveIndex=text.length();
+mONE_NL(false);
+text.setLength(_saveIndex);
+if (inputState.guessing == 0) {
+text.setLength(_begin);
+text.append('\n');
+}
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
+}

@@ -1,0 +1,19 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST openBlock_AST=null;
+  Token lc=null;
+  AST lc_AST=null;
+  lc=LT(1);
+  lc_AST=astFactory.create(lc);
+  astFactory.makeASTRoot(currentAST,lc_AST);
+  match(LCURLY);
+  if (inputState.guessing == 0) {
+    lc_AST.setType(SLIST);
+  }
+  blockBody();
+  astFactory.addASTChild(currentAST,returnAST);
+  match(RCURLY);
+  openBlock_AST=(AST)currentAST.root;
+  returnAST=openBlock_AST;
+}

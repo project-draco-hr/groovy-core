@@ -1,0 +1,46 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST regexExpression_AST=null;
+  equalityExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop380:     do {
+      if ((LA(1) == REGEX_FIND || LA(1) == REGEX_MATCH)) {
+{
+switch (LA(1)) {
+case REGEX_FIND:
+{
+              AST tmp284_AST=null;
+              tmp284_AST=astFactory.create(LT(1));
+              astFactory.makeASTRoot(currentAST,tmp284_AST);
+              match(REGEX_FIND);
+              break;
+            }
+case REGEX_MATCH:
+{
+            AST tmp285_AST=null;
+            tmp285_AST=astFactory.create(LT(1));
+            astFactory.makeASTRoot(currentAST,tmp285_AST);
+            match(REGEX_MATCH);
+            break;
+          }
+default :
+{
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+    }
+  }
+  nls();
+  equalityExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+}
+ else {
+  break _loop380;
+}
+}
+ while (true);
+}
+regexExpression_AST=(AST)currentAST.root;
+returnAST=regexExpression_AST;
+}

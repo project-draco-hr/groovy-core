@@ -1,0 +1,52 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST argumentLabel_AST=null;
+  Token id=null;
+  AST id_AST=null;
+  AST kw_AST=null;
+  boolean synPredMatched455=false;
+  if (((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_133.member(LA(3))))) {
+    int _m455=mark();
+    synPredMatched455=true;
+    inputState.guessing++;
+    try {
+{
+        match(IDENT);
+      }
+    }
+ catch (    RecognitionException pe) {
+      synPredMatched455=false;
+    }
+    rewind(_m455);
+    inputState.guessing--;
+  }
+  if (synPredMatched455) {
+    id=LT(1);
+    id_AST=astFactory.create(id);
+    astFactory.addASTChild(currentAST,id_AST);
+    match(IDENT);
+    if (inputState.guessing == 0) {
+      id_AST.setType(STRING_LITERAL);
+    }
+    argumentLabel_AST=(AST)currentAST.root;
+  }
+ else   if ((_tokenSet_134.member(LA(1))) && (LA(2) == COLON) && (_tokenSet_133.member(LA(3)))) {
+    keywordPropertyNames();
+    kw_AST=(AST)returnAST;
+    astFactory.addASTChild(currentAST,returnAST);
+    if (inputState.guessing == 0) {
+      kw_AST.setType(STRING_LITERAL);
+    }
+    argumentLabel_AST=(AST)currentAST.root;
+  }
+ else   if ((_tokenSet_120.member(LA(1))) && (_tokenSet_132.member(LA(2))) && (_tokenSet_110.member(LA(3)))) {
+    primaryExpression();
+    astFactory.addASTChild(currentAST,returnAST);
+    argumentLabel_AST=(AST)currentAST.root;
+  }
+ else {
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+  returnAST=argumentLabel_AST;
+}

@@ -1,0 +1,53 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST stringConstructorExpression_AST=null;
+  Token cs=null;
+  AST cs_AST=null;
+  Token cm=null;
+  AST cm_AST=null;
+  Token ce=null;
+  AST ce_AST=null;
+  cs=LT(1);
+  cs_AST=astFactory.create(cs);
+  astFactory.addASTChild(currentAST,cs_AST);
+  match(STRING_CTOR_START);
+  if (inputState.guessing == 0) {
+    cs_AST.setType(STRING_LITERAL);
+  }
+  stringConstructorValuePart();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop436:     do {
+      if ((LA(1) == STRING_CTOR_MIDDLE)) {
+        cm=LT(1);
+        cm_AST=astFactory.create(cm);
+        astFactory.addASTChild(currentAST,cm_AST);
+        match(STRING_CTOR_MIDDLE);
+        if (inputState.guessing == 0) {
+          cm_AST.setType(STRING_LITERAL);
+        }
+        stringConstructorValuePart();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop436;
+      }
+    }
+ while (true);
+  }
+  ce=LT(1);
+  ce_AST=astFactory.create(ce);
+  astFactory.addASTChild(currentAST,ce_AST);
+  match(STRING_CTOR_END);
+  if (inputState.guessing == 0) {
+    stringConstructorExpression_AST=(AST)currentAST.root;
+    ce_AST.setType(STRING_LITERAL);
+    stringConstructorExpression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(STRING_CONSTRUCTOR,"STRING_CONSTRUCTOR")).add(stringConstructorExpression_AST));
+    currentAST.root=stringConstructorExpression_AST;
+    currentAST.child=stringConstructorExpression_AST != null && stringConstructorExpression_AST.getFirstChild() != null ? stringConstructorExpression_AST.getFirstChild() : stringConstructorExpression_AST;
+    currentAST.advanceChildToEnd();
+  }
+  stringConstructorExpression_AST=(AST)currentAST.root;
+  returnAST=stringConstructorExpression_AST;
+}

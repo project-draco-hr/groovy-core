@@ -1,0 +1,26 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST stringConstructorValuePart_AST=null;
+switch (LA(1)) {
+case IDENT:
+{
+      identifier();
+      astFactory.addASTChild(currentAST,returnAST);
+      stringConstructorValuePart_AST=(AST)currentAST.root;
+      break;
+    }
+case LCURLY:
+{
+    openBlock();
+    astFactory.addASTChild(currentAST,returnAST);
+    stringConstructorValuePart_AST=(AST)currentAST.root;
+    break;
+  }
+default :
+{
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=stringConstructorValuePart_AST;
+}

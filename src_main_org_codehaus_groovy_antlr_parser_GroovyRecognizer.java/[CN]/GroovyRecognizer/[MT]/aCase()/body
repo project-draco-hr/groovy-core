@@ -1,0 +1,35 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST aCase_AST=null;
+{
+switch (LA(1)) {
+case LITERAL_case:
+{
+        AST tmp234_AST=null;
+        tmp234_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp234_AST);
+        match(LITERAL_case);
+        expression();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case LITERAL_default:
+{
+      AST tmp235_AST=null;
+      tmp235_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp235_AST);
+      match(LITERAL_default);
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+match(COLON);
+nls();
+aCase_AST=(AST)currentAST.root;
+returnAST=aCase_AST;
+}

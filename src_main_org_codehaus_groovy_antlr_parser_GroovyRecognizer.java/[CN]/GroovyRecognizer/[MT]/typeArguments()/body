@@ -1,0 +1,49 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST typeArguments_AST=null;
+  int currentLtLevel=0;
+  if (inputState.guessing == 0) {
+    currentLtLevel=ltCounter;
+  }
+  match(LT);
+  if (inputState.guessing == 0) {
+    ltCounter++;
+  }
+  typeArgument();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop54:     do {
+      if (((LA(1) == COMMA) && (_tokenSet_41.member(LA(2))) && (_tokenSet_40.member(LA(3)))) && (inputState.guessing != 0 || ltCounter == currentLtLevel + 1)) {
+        match(COMMA);
+        typeArgument();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop54;
+      }
+    }
+ while (true);
+  }
+{
+    if (((LA(1) >= GT && LA(1) <= BSR)) && (_tokenSet_39.member(LA(2))) && (_tokenSet_42.member(LA(3)))) {
+      typeArgumentsOrParametersEnd();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else     if ((_tokenSet_39.member(LA(1))) && (_tokenSet_42.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
+  if (!((currentLtLevel != 0) || ltCounter == currentLtLevel))   throw new SemanticException("(currentLtLevel != 0) || ltCounter == currentLtLevel");
+  if (inputState.guessing == 0) {
+    typeArguments_AST=(AST)currentAST.root;
+    typeArguments_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_ARGUMENTS,"TYPE_ARGUMENTS")).add(typeArguments_AST));
+    currentAST.root=typeArguments_AST;
+    currentAST.child=typeArguments_AST != null && typeArguments_AST.getFirstChild() != null ? typeArguments_AST.getFirstChild() : typeArguments_AST;
+    currentAST.advanceChildToEnd();
+  }
+  typeArguments_AST=(AST)currentAST.root;
+  returnAST=typeArguments_AST;
+}

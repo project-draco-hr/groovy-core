@@ -1,0 +1,19 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST parenthesizedExpression_AST=null;
+  Token lp=null;
+  AST lp_AST=null;
+  lp=LT(1);
+  lp_AST=astFactory.create(lp);
+  astFactory.makeASTRoot(currentAST,lp_AST);
+  match(LPAREN);
+  expression();
+  astFactory.addASTChild(currentAST,returnAST);
+  match(RPAREN);
+  if (inputState.guessing == 0) {
+    lp_AST.setType(EXPR);
+  }
+  parenthesizedExpression_AST=(AST)currentAST.root;
+  returnAST=parenthesizedExpression_AST;
+}

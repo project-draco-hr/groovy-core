@@ -1,0 +1,51 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST closedBlock_AST=null;
+  Token lc=null;
+  AST lc_AST=null;
+  lc=LT(1);
+  lc_AST=astFactory.create(lc);
+  astFactory.makeASTRoot(currentAST,lc_AST);
+  match(LCURLY);
+  if (inputState.guessing == 0) {
+    lc_AST.setType(CLOSED_BLOCK);
+  }
+{
+    boolean synPredMatched253=false;
+    if (((_tokenSet_103.member(LA(1))) && (_tokenSet_104.member(LA(2))) && (_tokenSet_88.member(LA(3))))) {
+      int _m253=mark();
+      synPredMatched253=true;
+      inputState.guessing++;
+      try {
+{
+          nls();
+          closureParametersStart();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched253=false;
+      }
+      rewind(_m253);
+      inputState.guessing--;
+    }
+    if (synPredMatched253) {
+      nls();
+      astFactory.addASTChild(currentAST,returnAST);
+      closureParameters();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else     if ((_tokenSet_14.member(LA(1))) && (_tokenSet_88.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+      implicitParameters();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
+  blockBody();
+  astFactory.addASTChild(currentAST,returnAST);
+  match(RCURLY);
+  closedBlock_AST=(AST)currentAST.root;
+  returnAST=closedBlock_AST;
+}

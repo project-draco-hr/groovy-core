@@ -1,0 +1,56 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST balancedBrackets_AST=null;
+switch (LA(1)) {
+case LPAREN:
+{
+      AST tmp340_AST=null;
+      tmp340_AST=astFactory.create(LT(1));
+      match(LPAREN);
+      balancedTokens();
+      AST tmp341_AST=null;
+      tmp341_AST=astFactory.create(LT(1));
+      match(RPAREN);
+      break;
+    }
+case LBRACK:
+{
+    AST tmp342_AST=null;
+    tmp342_AST=astFactory.create(LT(1));
+    match(LBRACK);
+    balancedTokens();
+    AST tmp343_AST=null;
+    tmp343_AST=astFactory.create(LT(1));
+    match(RBRACK);
+    break;
+  }
+case LCURLY:
+{
+  AST tmp344_AST=null;
+  tmp344_AST=astFactory.create(LT(1));
+  match(LCURLY);
+  balancedTokens();
+  AST tmp345_AST=null;
+  tmp345_AST=astFactory.create(LT(1));
+  match(RCURLY);
+  break;
+}
+case STRING_CTOR_START:
+{
+AST tmp346_AST=null;
+tmp346_AST=astFactory.create(LT(1));
+match(STRING_CTOR_START);
+balancedTokens();
+AST tmp347_AST=null;
+tmp347_AST=astFactory.create(LT(1));
+match(STRING_CTOR_END);
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=balancedBrackets_AST;
+}

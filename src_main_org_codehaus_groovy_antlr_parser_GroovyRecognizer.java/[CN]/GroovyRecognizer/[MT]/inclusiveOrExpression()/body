@@ -1,0 +1,26 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST inclusiveOrExpression_AST=null;
+  exclusiveOrExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop370:     do {
+      if ((LA(1) == BOR) && (_tokenSet_125.member(LA(2))) && (_tokenSet_88.member(LA(3)))) {
+        AST tmp281_AST=null;
+        tmp281_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp281_AST);
+        match(BOR);
+        nls();
+        exclusiveOrExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop370;
+      }
+    }
+ while (true);
+  }
+  inclusiveOrExpression_AST=(AST)currentAST.root;
+  returnAST=inclusiveOrExpression_AST;
+}

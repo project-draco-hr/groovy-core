@@ -1,0 +1,46 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST additiveExpression_AST=null;
+  multiplicativeExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop397:     do {
+      if ((LA(1) == PLUS || LA(1) == MINUS)) {
+{
+switch (LA(1)) {
+case PLUS:
+{
+              AST tmp296_AST=null;
+              tmp296_AST=astFactory.create(LT(1));
+              astFactory.makeASTRoot(currentAST,tmp296_AST);
+              match(PLUS);
+              break;
+            }
+case MINUS:
+{
+            AST tmp297_AST=null;
+            tmp297_AST=astFactory.create(LT(1));
+            astFactory.makeASTRoot(currentAST,tmp297_AST);
+            match(MINUS);
+            break;
+          }
+default :
+{
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+    }
+  }
+  nls();
+  multiplicativeExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+}
+ else {
+  break _loop397;
+}
+}
+ while (true);
+}
+additiveExpression_AST=(AST)currentAST.root;
+returnAST=additiveExpression_AST;
+}

@@ -1,0 +1,193 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST assignmentTail_AST=null;
+  Token in=null;
+  AST in_AST=null;
+  Token de=null;
+  AST de_AST=null;
+switch (LA(1)) {
+case ASSIGN:
+case PLUS_ASSIGN:
+case MINUS_ASSIGN:
+case STAR_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case SR_ASSIGN:
+case BSR_ASSIGN:
+case SL_ASSIGN:
+case BAND_ASSIGN:
+case BXOR_ASSIGN:
+case BOR_ASSIGN:
+case STAR_STAR_ASSIGN:
+{
+      if (inputState.guessing == 0) {
+        assignmentTail_AST=(AST)currentAST.root;
+        assignmentTail_AST=head;
+        currentAST.root=assignmentTail_AST;
+        currentAST.child=assignmentTail_AST != null && assignmentTail_AST.getFirstChild() != null ? assignmentTail_AST.getFirstChild() : assignmentTail_AST;
+        currentAST.advanceChildToEnd();
+      }
+{
+switch (LA(1)) {
+case ASSIGN:
+{
+            AST tmp221_AST=null;
+            tmp221_AST=astFactory.create(LT(1));
+            astFactory.makeASTRoot(currentAST,tmp221_AST);
+            match(ASSIGN);
+            break;
+          }
+case PLUS_ASSIGN:
+{
+          AST tmp222_AST=null;
+          tmp222_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp222_AST);
+          match(PLUS_ASSIGN);
+          break;
+        }
+case MINUS_ASSIGN:
+{
+        AST tmp223_AST=null;
+        tmp223_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp223_AST);
+        match(MINUS_ASSIGN);
+        break;
+      }
+case STAR_ASSIGN:
+{
+      AST tmp224_AST=null;
+      tmp224_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp224_AST);
+      match(STAR_ASSIGN);
+      break;
+    }
+case DIV_ASSIGN:
+{
+    AST tmp225_AST=null;
+    tmp225_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp225_AST);
+    match(DIV_ASSIGN);
+    break;
+  }
+case MOD_ASSIGN:
+{
+  AST tmp226_AST=null;
+  tmp226_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp226_AST);
+  match(MOD_ASSIGN);
+  break;
+}
+case SR_ASSIGN:
+{
+AST tmp227_AST=null;
+tmp227_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp227_AST);
+match(SR_ASSIGN);
+break;
+}
+case BSR_ASSIGN:
+{
+AST tmp228_AST=null;
+tmp228_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp228_AST);
+match(BSR_ASSIGN);
+break;
+}
+case SL_ASSIGN:
+{
+AST tmp229_AST=null;
+tmp229_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp229_AST);
+match(SL_ASSIGN);
+break;
+}
+case BAND_ASSIGN:
+{
+AST tmp230_AST=null;
+tmp230_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp230_AST);
+match(BAND_ASSIGN);
+break;
+}
+case BXOR_ASSIGN:
+{
+AST tmp231_AST=null;
+tmp231_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp231_AST);
+match(BXOR_ASSIGN);
+break;
+}
+case BOR_ASSIGN:
+{
+AST tmp232_AST=null;
+tmp232_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp232_AST);
+match(BOR_ASSIGN);
+break;
+}
+case STAR_STAR_ASSIGN:
+{
+AST tmp233_AST=null;
+tmp233_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp233_AST);
+match(STAR_STAR_ASSIGN);
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+nls();
+assignmentExpression();
+astFactory.addASTChild(currentAST,returnAST);
+assignmentTail_AST=(AST)currentAST.root;
+break;
+}
+case INC:
+{
+if (inputState.guessing == 0) {
+assignmentTail_AST=(AST)currentAST.root;
+assignmentTail_AST=head;
+currentAST.root=assignmentTail_AST;
+currentAST.child=assignmentTail_AST != null && assignmentTail_AST.getFirstChild() != null ? assignmentTail_AST.getFirstChild() : assignmentTail_AST;
+currentAST.advanceChildToEnd();
+}
+in=LT(1);
+in_AST=astFactory.create(in);
+astFactory.makeASTRoot(currentAST,in_AST);
+match(INC);
+if (inputState.guessing == 0) {
+in_AST.setType(POST_INC);
+}
+assignmentTail_AST=(AST)currentAST.root;
+break;
+}
+case DEC:
+{
+if (inputState.guessing == 0) {
+assignmentTail_AST=(AST)currentAST.root;
+assignmentTail_AST=head;
+currentAST.root=assignmentTail_AST;
+currentAST.child=assignmentTail_AST != null && assignmentTail_AST.getFirstChild() != null ? assignmentTail_AST.getFirstChild() : assignmentTail_AST;
+currentAST.advanceChildToEnd();
+}
+de=LT(1);
+de_AST=astFactory.create(de);
+astFactory.makeASTRoot(currentAST,de_AST);
+match(DEC);
+if (inputState.guessing == 0) {
+de_AST.setType(POST_DEC);
+}
+assignmentTail_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=assignmentTail_AST;
+}

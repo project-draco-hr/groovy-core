@@ -1,0 +1,110 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST caseSList_AST=null;
+  statement();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop304:     do {
+      if ((LA(1) == SEMI || LA(1) == NLS)) {
+        sep();
+{
+switch (LA(1)) {
+case FINAL:
+case ABSTRACT:
+case STRICTFP:
+case DEF:
+case LITERAL_import:
+case LITERAL_static:
+case AT:
+case LBRACK:
+case IDENT:
+case LPAREN:
+case LITERAL_class:
+case LITERAL_super:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case STAR:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_protected:
+case LITERAL_transient:
+case LITERAL_native:
+case LITERAL_threadsafe:
+case LITERAL_synchronized:
+case LITERAL_volatile:
+case LCURLY:
+case LITERAL_this:
+case STRING_LITERAL:
+case LITERAL_if:
+case LITERAL_while:
+case LITERAL_with:
+case LITERAL_switch:
+case LITERAL_for:
+case LITERAL_return:
+case LITERAL_break:
+case LITERAL_continue:
+case LITERAL_throw:
+case LITERAL_assert:
+case INC:
+case DEC:
+case LITERAL_try:
+case PLUS:
+case MINUS:
+case BNOT:
+case LNOT:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case STRING_CTOR_START:
+case LITERAL_new:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+              statement();
+              astFactory.addASTChild(currentAST,returnAST);
+              break;
+            }
+case RCURLY:
+case SEMI:
+case LITERAL_default:
+case LITERAL_case:
+case NLS:
+{
+            break;
+          }
+default :
+{
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+    }
+  }
+}
+ else {
+  break _loop304;
+}
+}
+ while (true);
+}
+if (inputState.guessing == 0) {
+caseSList_AST=(AST)currentAST.root;
+caseSList_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(SLIST,"SLIST")).add(caseSList_AST));
+currentAST.root=caseSList_AST;
+currentAST.child=caseSList_AST != null && caseSList_AST.getFirstChild() != null ? caseSList_AST.getFirstChild() : caseSList_AST;
+currentAST.advanceChildToEnd();
+}
+caseSList_AST=(AST)currentAST.root;
+returnAST=caseSList_AST;
+}

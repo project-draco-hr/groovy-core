@@ -1,0 +1,27 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST constructorStart_AST=null;
+  Token id=null;
+  AST id_AST=null;
+{
+    _loop30:     do {
+      if ((_tokenSet_32.member(LA(1)))) {
+        modifier();
+      }
+ else {
+        break _loop30;
+      }
+    }
+ while (true);
+  }
+  id=LT(1);
+  id_AST=astFactory.create(id);
+  match(IDENT);
+  if (!(isConstructorIdent(id)))   throw new SemanticException("isConstructorIdent(id)");
+  nls();
+  match(LPAREN);
+  balancedTokens();
+  match(RPAREN);
+  returnAST=constructorStart_AST;
+}

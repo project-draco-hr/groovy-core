@@ -1,0 +1,57 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST commandArguments_AST=null;
+  if (inputState.guessing == 0) {
+    commandArguments_AST=(AST)currentAST.root;
+    commandArguments_AST=head;
+switch (LA(1)) {
+case PLUS:
+case MINUS:
+case INC:
+case DEC:
+case STAR:
+case DIV:
+case MOD:
+case SR:
+case BSR:
+case SL:
+case BAND:
+case BXOR:
+case BOR:
+case STAR_STAR:
+      require(false,"garbage infix or prefix operator after command name f +x","parenthesize either the whole expression (f+x) or the command arguments f(+x)");
+  }
+  currentAST.root=commandArguments_AST;
+  currentAST.child=commandArguments_AST != null && commandArguments_AST.getFirstChild() != null ? commandArguments_AST.getFirstChild() : commandArguments_AST;
+  currentAST.advanceChildToEnd();
+}
+expression();
+astFactory.addASTChild(currentAST,returnAST);
+{
+  _loop321:   do {
+    if ((LA(1) == COMMA)) {
+      match(COMMA);
+      nls();
+      expression();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else {
+      break _loop321;
+    }
+  }
+ while (true);
+}
+if (inputState.guessing == 0) {
+  commandArguments_AST=(AST)currentAST.root;
+  AST headid=getASTFactory().dup(head);
+  headid.setType(METHOD_CALL);
+  headid.setText("<command>");
+  commandArguments_AST=(AST)astFactory.make((new ASTArray(2)).add(headid).add(commandArguments_AST));
+  currentAST.root=commandArguments_AST;
+  currentAST.child=commandArguments_AST != null && commandArguments_AST.getFirstChild() != null ? commandArguments_AST.getFirstChild() : commandArguments_AST;
+  currentAST.advanceChildToEnd();
+}
+commandArguments_AST=(AST)currentAST.root;
+returnAST=commandArguments_AST;
+}

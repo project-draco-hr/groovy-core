@@ -1,0 +1,91 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST annotationBlock_AST=null;
+  match(LCURLY);
+{
+switch (LA(1)) {
+case FINAL:
+case ABSTRACT:
+case STRICTFP:
+case LITERAL_static:
+case AT:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_protected:
+case LITERAL_transient:
+case LITERAL_native:
+case LITERAL_threadsafe:
+case LITERAL_synchronized:
+case LITERAL_volatile:
+{
+        annotationField();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case RCURLY:
+case SEMI:
+case NLS:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+{
+_loop127: do {
+if ((LA(1) == SEMI || LA(1) == NLS)) {
+  sep();
+{
+switch (LA(1)) {
+case FINAL:
+case ABSTRACT:
+case STRICTFP:
+case LITERAL_static:
+case AT:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_protected:
+case LITERAL_transient:
+case LITERAL_native:
+case LITERAL_threadsafe:
+case LITERAL_synchronized:
+case LITERAL_volatile:
+{
+        annotationField();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case RCURLY:
+case SEMI:
+case NLS:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+}
+ else {
+break _loop127;
+}
+}
+ while (true);
+}
+match(RCURLY);
+if (inputState.guessing == 0) {
+annotationBlock_AST=(AST)currentAST.root;
+annotationBlock_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(OBJBLOCK,"OBJBLOCK")).add(annotationBlock_AST));
+currentAST.root=annotationBlock_AST;
+currentAST.child=annotationBlock_AST != null && annotationBlock_AST.getFirstChild() != null ? annotationBlock_AST.getFirstChild() : annotationBlock_AST;
+currentAST.advanceChildToEnd();
+}
+annotationBlock_AST=(AST)currentAST.root;
+returnAST=annotationBlock_AST;
+}

@@ -1,0 +1,32 @@
+{
+  boolean endBrackets=false;
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST pathExpressionTail_AST=null;
+  AST pe_AST=null;
+{
+    _loop338:     do {
+      if ((_tokenSet_122.member(LA(1))) && (_tokenSet_123.member(LA(2))) && (_tokenSet_88.member(LA(3)))) {
+        endBrackets=pathElement(result);
+        pe_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          result=pe_AST;
+        }
+      }
+ else {
+        break _loop338;
+      }
+    }
+ while (true);
+  }
+  if (inputState.guessing == 0) {
+    pathExpressionTail_AST=(AST)currentAST.root;
+    pathExpressionTail_AST=result;
+    currentAST.root=pathExpressionTail_AST;
+    currentAST.child=pathExpressionTail_AST != null && pathExpressionTail_AST.getFirstChild() != null ? pathExpressionTail_AST.getFirstChild() : pathExpressionTail_AST;
+    currentAST.advanceChildToEnd();
+  }
+  pathExpressionTail_AST=(AST)currentAST.root;
+  returnAST=pathExpressionTail_AST;
+  return endBrackets;
+}

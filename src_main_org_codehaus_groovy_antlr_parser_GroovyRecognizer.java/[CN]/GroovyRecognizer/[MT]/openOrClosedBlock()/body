@@ -1,0 +1,37 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST openOrClosedBlock_AST=null;
+  boolean synPredMatched259=false;
+  if (((LA(1) == LCURLY) && (_tokenSet_24.member(LA(2))) && (_tokenSet_25.member(LA(3))))) {
+    int _m259=mark();
+    synPredMatched259=true;
+    inputState.guessing++;
+    try {
+{
+        match(LCURLY);
+        nls();
+        closureParametersStart();
+      }
+    }
+ catch (    RecognitionException pe) {
+      synPredMatched259=false;
+    }
+    rewind(_m259);
+    inputState.guessing--;
+  }
+  if (synPredMatched259) {
+    closedBlock();
+    astFactory.addASTChild(currentAST,returnAST);
+    openOrClosedBlock_AST=(AST)currentAST.root;
+  }
+ else   if ((LA(1) == LCURLY) && (_tokenSet_14.member(LA(2))) && (_tokenSet_11.member(LA(3)))) {
+    openBlock();
+    astFactory.addASTChild(currentAST,returnAST);
+    openOrClosedBlock_AST=(AST)currentAST.root;
+  }
+ else {
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+  returnAST=openOrClosedBlock_AST;
+}

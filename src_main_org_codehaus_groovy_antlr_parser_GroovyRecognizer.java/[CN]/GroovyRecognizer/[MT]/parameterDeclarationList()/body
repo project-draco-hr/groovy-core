@@ -1,0 +1,81 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST parameterDeclarationList_AST=null;
+{
+    boolean synPredMatched205=false;
+    if (((_tokenSet_72.member(LA(1))) && (_tokenSet_73.member(LA(2))) && (_tokenSet_74.member(LA(3))))) {
+      int _m205=mark();
+      synPredMatched205=true;
+      inputState.guessing++;
+      try {
+{
+          parameterDeclaration();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched205=false;
+      }
+      rewind(_m205);
+      inputState.guessing--;
+    }
+    if (synPredMatched205) {
+      parameterDeclaration();
+      astFactory.addASTChild(currentAST,returnAST);
+{
+        _loop207:         do {
+          if ((LA(1) == COMMA) && (_tokenSet_75.member(LA(2))) && (_tokenSet_76.member(LA(3)))) {
+            match(COMMA);
+            nls();
+            parameterDeclaration();
+            astFactory.addASTChild(currentAST,returnAST);
+          }
+ else {
+            break _loop207;
+          }
+        }
+ while (true);
+      }
+{
+switch (LA(1)) {
+case COMMA:
+{
+            match(COMMA);
+            nls();
+            variableLengthParameterDeclaration();
+            astFactory.addASTChild(currentAST,returnAST);
+            break;
+          }
+case RPAREN:
+case BOR:
+case NLS:
+{
+          break;
+        }
+default :
+{
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+  }
+}
+}
+ else if ((_tokenSet_77.member(LA(1))) && (_tokenSet_78.member(LA(2))) && (_tokenSet_79.member(LA(3)))) {
+variableLengthParameterDeclaration();
+astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_80.member(LA(1)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+if (inputState.guessing == 0) {
+parameterDeclarationList_AST=(AST)currentAST.root;
+parameterDeclarationList_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(PARAMETERS,"PARAMETERS")).add(parameterDeclarationList_AST));
+currentAST.root=parameterDeclarationList_AST;
+currentAST.child=parameterDeclarationList_AST != null && parameterDeclarationList_AST.getFirstChild() != null ? parameterDeclarationList_AST.getFirstChild() : parameterDeclarationList_AST;
+currentAST.advanceChildToEnd();
+}
+parameterDeclarationList_AST=(AST)currentAST.root;
+returnAST=parameterDeclarationList_AST;
+}

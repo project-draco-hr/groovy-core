@@ -1,0 +1,48 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST forStatement_AST=null;
+  Token f=null;
+  AST f_AST=null;
+  f=LT(1);
+  f_AST=astFactory.create(f);
+  astFactory.makeASTRoot(currentAST,f_AST);
+  match(LITERAL_for);
+  match(LPAREN);
+{
+    boolean synPredMatched277=false;
+    if (((_tokenSet_108.member(LA(1))) && (_tokenSet_109.member(LA(2))) && (_tokenSet_110.member(LA(3))))) {
+      int _m277=mark();
+      synPredMatched277=true;
+      inputState.guessing++;
+      try {
+{
+          forInit();
+          match(SEMI);
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched277=false;
+      }
+      rewind(_m277);
+      inputState.guessing--;
+    }
+    if (synPredMatched277) {
+      traditionalForClause();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else     if ((_tokenSet_15.member(LA(1))) && (_tokenSet_111.member(LA(2))) && (_tokenSet_112.member(LA(3)))) {
+      forInClause();
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
+  match(RPAREN);
+  nlsWarn();
+  compatibleBodyStatement();
+  astFactory.addASTChild(currentAST,returnAST);
+  forStatement_AST=(AST)currentAST.root;
+  returnAST=forStatement_AST;
+}

@@ -1,0 +1,89 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST conditionalExpression_AST=null;
+  logicalOrExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+switch (LA(1)) {
+case QUESTION:
+{
+        AST tmp106_AST=null;
+        tmp106_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp106_AST);
+        match(QUESTION);
+        nls();
+        assignmentExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+        match(COLON);
+        nls();
+        conditionalExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case EOF:
+case FINAL:
+case ABSTRACT:
+case STRICTFP:
+case DEF:
+case LITERAL_static:
+case AT:
+case RBRACK:
+case IDENT:
+case RPAREN:
+case LITERAL_class:
+case LITERAL_interface:
+case LITERAL_enum:
+case COMMA:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_protected:
+case LITERAL_transient:
+case LITERAL_native:
+case LITERAL_threadsafe:
+case LITERAL_synchronized:
+case LITERAL_volatile:
+case ASSIGN:
+case LCURLY:
+case RCURLY:
+case SEMI:
+case LITERAL_default:
+case BOR:
+case COLON:
+case LITERAL_else:
+case LITERAL_case:
+case PLUS_ASSIGN:
+case MINUS_ASSIGN:
+case STAR_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case SR_ASSIGN:
+case BSR_ASSIGN:
+case SL_ASSIGN:
+case BAND_ASSIGN:
+case BXOR_ASSIGN:
+case BOR_ASSIGN:
+case STAR_STAR_ASSIGN:
+case NLS:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+conditionalExpression_AST=(AST)currentAST.root;
+returnAST=conditionalExpression_AST;
+}

@@ -1,0 +1,29 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST throwsClause_AST=null;
+  AST tmp150_AST=null;
+  tmp150_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp150_AST);
+  match(LITERAL_throws);
+  nls();
+  identifier();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop201:     do {
+      if ((LA(1) == COMMA)) {
+        match(COMMA);
+        nls();
+        identifier();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop201;
+      }
+    }
+ while (true);
+  }
+  nls();
+  throwsClause_AST=(AST)currentAST.root;
+  returnAST=throwsClause_AST;
+}

@@ -1,0 +1,87 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST parameterDeclaration_AST=null;
+  AST pm_AST=null;
+  AST t_AST=null;
+  AST id_AST=null;
+  AST exp_AST=null;
+{
+switch (LA(1)) {
+case DEF:
+{
+        match(DEF);
+        break;
+      }
+case FINAL:
+case AT:
+case IDENT:
+case QUESTION:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case STAR:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+parameterModifier();
+pm_AST=(AST)returnAST;
+{
+if ((_tokenSet_90.member(LA(1))) && (_tokenSet_91.member(LA(2))) && (_tokenSet_92.member(LA(3)))) {
+typeSpec(false);
+t_AST=(AST)returnAST;
+}
+ else if ((_tokenSet_93.member(LA(1))) && (_tokenSet_94.member(LA(2))) && (_tokenSet_95.member(LA(3)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+parameterIdent();
+id_AST=(AST)returnAST;
+{
+switch (LA(1)) {
+case ASSIGN:
+{
+  AST tmp163_AST=null;
+  tmp163_AST=astFactory.create(LT(1));
+  match(ASSIGN);
+  expression();
+  exp_AST=(AST)returnAST;
+  break;
+}
+case RPAREN:
+case COMMA:
+case BOR:
+case NLS:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+parameterDeclaration_AST=(AST)currentAST.root;
+parameterDeclaration_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(PARAMETER_DEF,"PARAMETER_DEF")).add(pm_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t_AST))).add(id_AST).add(exp_AST));
+currentAST.root=parameterDeclaration_AST;
+currentAST.child=parameterDeclaration_AST != null && parameterDeclaration_AST.getFirstChild() != null ? parameterDeclaration_AST.getFirstChild() : parameterDeclaration_AST;
+currentAST.advanceChildToEnd();
+}
+returnAST=parameterDeclaration_AST;
+}

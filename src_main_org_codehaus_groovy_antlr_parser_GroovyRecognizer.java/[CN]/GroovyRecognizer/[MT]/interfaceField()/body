@@ -1,0 +1,81 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST interfaceField_AST=null;
+  AST d_AST=null;
+  AST mods_AST=null;
+  AST td_AST=null;
+  boolean synPredMatched172=false;
+  if (((_tokenSet_15.member(LA(1))) && (_tokenSet_16.member(LA(2))) && (_tokenSet_66.member(LA(3))))) {
+    int _m172=mark();
+    synPredMatched172=true;
+    inputState.guessing++;
+    try {
+{
+        declarationStart();
+      }
+    }
+ catch (    RecognitionException pe) {
+      synPredMatched172=false;
+    }
+    rewind(_m172);
+    inputState.guessing--;
+  }
+  if (synPredMatched172) {
+    declaration();
+    d_AST=(AST)returnAST;
+    if (inputState.guessing == 0) {
+      interfaceField_AST=(AST)currentAST.root;
+      interfaceField_AST=d_AST;
+      currentAST.root=interfaceField_AST;
+      currentAST.child=interfaceField_AST != null && interfaceField_AST.getFirstChild() != null ? interfaceField_AST.getFirstChild() : interfaceField_AST;
+      currentAST.advanceChildToEnd();
+    }
+  }
+ else {
+    boolean synPredMatched174=false;
+    if (((_tokenSet_59.member(LA(1))) && (_tokenSet_60.member(LA(2))) && (_tokenSet_61.member(LA(3))))) {
+      int _m174=mark();
+      synPredMatched174=true;
+      inputState.guessing++;
+      try {
+{
+          typeDeclarationStart();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched174=false;
+      }
+      rewind(_m174);
+      inputState.guessing--;
+    }
+    if (synPredMatched174) {
+{
+        if ((_tokenSet_62.member(LA(1))) && (_tokenSet_60.member(LA(2))) && (_tokenSet_63.member(LA(3)))) {
+          modifiers();
+          mods_AST=(AST)returnAST;
+        }
+ else         if ((_tokenSet_64.member(LA(1))) && (LA(2) == IDENT || LA(2) == LITERAL_interface) && (_tokenSet_65.member(LA(3)))) {
+        }
+ else {
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+      }
+{
+        typeDefinitionInternal(mods_AST);
+        td_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          interfaceField_AST=(AST)currentAST.root;
+          interfaceField_AST=td_AST;
+          currentAST.root=interfaceField_AST;
+          currentAST.child=interfaceField_AST != null && interfaceField_AST.getFirstChild() != null ? interfaceField_AST.getFirstChild() : interfaceField_AST;
+          currentAST.advanceChildToEnd();
+        }
+      }
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
+  returnAST=interfaceField_AST;
+}

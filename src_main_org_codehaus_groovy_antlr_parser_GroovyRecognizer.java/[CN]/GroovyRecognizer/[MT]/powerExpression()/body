@@ -1,0 +1,26 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST powerExpression_AST=null;
+  unaryExpressionNotPlusMinus();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop421:     do {
+      if ((LA(1) == STAR_STAR)) {
+        AST tmp317_AST=null;
+        tmp317_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp317_AST);
+        match(STAR_STAR);
+        nls();
+        unaryExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop421;
+      }
+    }
+ while (true);
+  }
+  powerExpression_AST=(AST)currentAST.root;
+  returnAST=powerExpression_AST;
+}

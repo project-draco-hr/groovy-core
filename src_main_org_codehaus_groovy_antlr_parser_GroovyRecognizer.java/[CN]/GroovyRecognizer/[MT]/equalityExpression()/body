@@ -1,0 +1,54 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST equalityExpression_AST=null;
+  relationalExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop384:     do {
+      if (((LA(1) >= NOT_EQUAL && LA(1) <= COMPARE_TO))) {
+{
+switch (LA(1)) {
+case NOT_EQUAL:
+{
+              AST tmp286_AST=null;
+              tmp286_AST=astFactory.create(LT(1));
+              astFactory.makeASTRoot(currentAST,tmp286_AST);
+              match(NOT_EQUAL);
+              break;
+            }
+case EQUAL:
+{
+            AST tmp287_AST=null;
+            tmp287_AST=astFactory.create(LT(1));
+            astFactory.makeASTRoot(currentAST,tmp287_AST);
+            match(EQUAL);
+            break;
+          }
+case COMPARE_TO:
+{
+          AST tmp288_AST=null;
+          tmp288_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp288_AST);
+          match(COMPARE_TO);
+          break;
+        }
+default :
+{
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+  }
+}
+nls();
+relationalExpression();
+astFactory.addASTChild(currentAST,returnAST);
+}
+ else {
+break _loop384;
+}
+}
+ while (true);
+}
+equalityExpression_AST=(AST)currentAST.root;
+returnAST=equalityExpression_AST;
+}

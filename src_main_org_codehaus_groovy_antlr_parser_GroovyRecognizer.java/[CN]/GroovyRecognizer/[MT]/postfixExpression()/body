@@ -1,0 +1,173 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST postfixExpression_AST=null;
+  Token in=null;
+  AST in_AST=null;
+  Token de=null;
+  AST de_AST=null;
+  boolean zz;
+{
+switch (LA(1)) {
+case IDENT:
+case LPAREN:
+case LITERAL_super:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case LITERAL_this:
+case STRING_LITERAL:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case STRING_CTOR_START:
+case LITERAL_new:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+        zz=pathExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case LBRACK:
+case LCURLY:
+{
+      pathExpressionFromBrackets();
+      astFactory.addASTChild(currentAST,returnAST);
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+{
+switch (LA(1)) {
+case INC:
+{
+  in=LT(1);
+  in_AST=astFactory.create(in);
+  astFactory.makeASTRoot(currentAST,in_AST);
+  match(INC);
+  if (inputState.guessing == 0) {
+    in_AST.setType(POST_INC);
+  }
+  break;
+}
+case DEC:
+{
+de=LT(1);
+de_AST=astFactory.create(de);
+astFactory.makeASTRoot(currentAST,de_AST);
+match(DEC);
+if (inputState.guessing == 0) {
+  de_AST.setType(POST_DEC);
+}
+break;
+}
+case EOF:
+case FINAL:
+case ABSTRACT:
+case STRICTFP:
+case DEF:
+case LITERAL_static:
+case AT:
+case RBRACK:
+case IDENT:
+case RPAREN:
+case LITERAL_class:
+case LITERAL_interface:
+case LITERAL_enum:
+case QUESTION:
+case LT:
+case COMMA:
+case GT:
+case SR:
+case BSR:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+case STAR:
+case LITERAL_as:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_protected:
+case LITERAL_transient:
+case LITERAL_native:
+case LITERAL_threadsafe:
+case LITERAL_synchronized:
+case LITERAL_volatile:
+case ASSIGN:
+case LCURLY:
+case RCURLY:
+case BAND:
+case SEMI:
+case LITERAL_default:
+case TRIPLE_DOT:
+case BOR:
+case LOR:
+case COLON:
+case LITERAL_else:
+case LITERAL_in:
+case LITERAL_case:
+case PLUS_ASSIGN:
+case MINUS_ASSIGN:
+case STAR_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case SR_ASSIGN:
+case BSR_ASSIGN:
+case SL_ASSIGN:
+case BAND_ASSIGN:
+case BXOR_ASSIGN:
+case BOR_ASSIGN:
+case STAR_STAR_ASSIGN:
+case LAND:
+case BXOR:
+case REGEX_FIND:
+case REGEX_MATCH:
+case NOT_EQUAL:
+case EQUAL:
+case COMPARE_TO:
+case LE:
+case GE:
+case LITERAL_instanceof:
+case SL:
+case RANGE_INCLUSIVE:
+case PLUS:
+case MINUS:
+case DIV:
+case MOD:
+case STAR_STAR:
+case NLS:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+postfixExpression_AST=(AST)currentAST.root;
+returnAST=postfixExpression_AST;
+}

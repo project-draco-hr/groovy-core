@@ -1,0 +1,118 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST branchExpression_AST=null;
+switch (LA(1)) {
+case LITERAL_return:
+{
+      AST tmp213_AST=null;
+      tmp213_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp213_AST);
+      match(LITERAL_return);
+{
+        if ((_tokenSet_27.member(LA(1))) && (_tokenSet_88.member(LA(2))) && (_tokenSet_89.member(LA(3)))) {
+          assignmentExpression();
+          astFactory.addASTChild(currentAST,returnAST);
+        }
+ else         if ((_tokenSet_116.member(LA(1))) && (_tokenSet_117.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+        }
+ else {
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+      }
+      branchExpression_AST=(AST)currentAST.root;
+      break;
+    }
+case LITERAL_break:
+case LITERAL_continue:
+{
+{
+switch (LA(1)) {
+case LITERAL_break:
+{
+          AST tmp214_AST=null;
+          tmp214_AST=astFactory.create(LT(1));
+          astFactory.makeASTRoot(currentAST,tmp214_AST);
+          match(LITERAL_break);
+          break;
+        }
+case LITERAL_continue:
+{
+        AST tmp215_AST=null;
+        tmp215_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp215_AST);
+        match(LITERAL_continue);
+        break;
+      }
+default :
+{
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+}
+}
+{
+if ((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_118.member(LA(3)))) {
+  statementLabelPrefix();
+  astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_118.member(LA(1))) && (_tokenSet_89.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+}
+ else {
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+{
+if ((_tokenSet_27.member(LA(1))) && (_tokenSet_88.member(LA(2))) && (_tokenSet_89.member(LA(3)))) {
+  assignmentExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_116.member(LA(1))) && (_tokenSet_117.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+}
+ else {
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+branchExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_throw:
+{
+AST tmp216_AST=null;
+tmp216_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp216_AST);
+match(LITERAL_throw);
+assignmentExpression();
+astFactory.addASTChild(currentAST,returnAST);
+branchExpression_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_assert:
+{
+AST tmp217_AST=null;
+tmp217_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp217_AST);
+match(LITERAL_assert);
+assignmentExpression();
+astFactory.addASTChild(currentAST,returnAST);
+{
+if ((LA(1) == COMMA) && (_tokenSet_27.member(LA(2))) && (_tokenSet_88.member(LA(3)))) {
+match(COMMA);
+assignmentExpression();
+astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_116.member(LA(1))) && (_tokenSet_117.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+branchExpression_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=branchExpression_AST;
+}

@@ -1,0 +1,67 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST enumConstant_AST=null;
+  AST an_AST=null;
+  Token i=null;
+  AST i_AST=null;
+  AST a_AST=null;
+  AST b_AST=null;
+  boolean zz;
+  annotations();
+  an_AST=(AST)returnAST;
+  i=LT(1);
+  i_AST=astFactory.create(i);
+  match(IDENT);
+{
+switch (LA(1)) {
+case LPAREN:
+{
+        match(LPAREN);
+        zz=argList();
+        a_AST=(AST)returnAST;
+        match(RPAREN);
+        break;
+      }
+case COMMA:
+case LCURLY:
+case RCURLY:
+case SEMI:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+{
+switch (LA(1)) {
+case LCURLY:
+{
+  enumConstantBlock();
+  b_AST=(AST)returnAST;
+  break;
+}
+case COMMA:
+case RCURLY:
+case SEMI:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+enumConstant_AST=(AST)currentAST.root;
+enumConstant_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(ENUM_CONSTANT_DEF,"ENUM_CONSTANT_DEF")).add(an_AST).add(i_AST).add(a_AST).add(b_AST));
+currentAST.root=enumConstant_AST;
+currentAST.child=enumConstant_AST != null && enumConstant_AST.getFirstChild() != null ? enumConstant_AST.getFirstChild() : enumConstant_AST;
+currentAST.advanceChildToEnd();
+}
+returnAST=enumConstant_AST;
+}
