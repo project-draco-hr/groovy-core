@@ -1,17 +1,18 @@
 {
   CSTNode expr=rootNode(Token.LEFT_CURLY_BRACE);
-  expr.addChild(parameterDeclarationList());
-  boolean pipeRequired=true;
-  if (expr.getChild(0).getChildren().length > 0) {
+  consume(Token.PIPE);
+  boolean pipeRequired=false;
+  if (lt(2) == Token.PIPE || lt(2) == Token.COMMA || lt(3) == Token.PIPE || lt(3) == Token.COMMA) {
+    expr.addChild(parameterDeclarationList());
     pipeRequired=true;
   }
-  CSTNode block=null;
-  if (pipeRequired || lt() == Token.PIPE) {
-    block=rootNode(Token.PIPE);
-  }
  else {
-    block=new CSTNode();
+    expr.addChild(new CSTNode());
   }
+  if (pipeRequired || lt() == Token.PIPE) {
+    consume(Token.PIPE);
+  }
+  CSTNode block=new CSTNode();
   statementsUntilRightCurly(block);
   consume(Token.RIGHT_CURLY_BRACE);
   expr.addChild(block);

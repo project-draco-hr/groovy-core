@@ -1,0 +1,26 @@
+{
+  CSTNode methodExpr=null;
+  CSTNode paramList=null;
+  if (lt() == Token.LEFT_PARENTHESIS) {
+    methodExpr=rootNode(Token.LEFT_PARENTHESIS);
+    methodExpr.addChild(expr);
+    methodExpr.addChild(identifier);
+    paramList=parameterList(Token.RIGHT_PARENTHESIS);
+    methodExpr.addChild(paramList);
+    consume(Token.RIGHT_PARENTHESIS);
+  }
+  if (isClosure()) {
+    if (methodExpr == null) {
+      methodExpr=new CSTNode(Token.leftParenthesis(-1,-1));
+      methodExpr.addChild(expr);
+      methodExpr.addChild(identifier);
+      paramList=parameterList(Token.LEFT_CURLY_BRACE);
+      methodExpr.addChild(paramList);
+    }
+    paramList.addChild(closureExpression());
+  }
+  if (methodExpr != null) {
+    expr=methodExpr;
+  }
+  return expr;
+}

@@ -60,35 +60,35 @@ default :
 throwExpected(new int[]{});
 }
 }
-if (lt() == Token.LEFT_PARENTHESIS && identifier != null) {
-expr=new CSTNode(Token.keyword(-1,-1,"this"));
-CSTNode methodExpr=rootNode(Token.LEFT_PARENTHESIS);
-methodExpr.addChild(expr);
-methodExpr.addChild(identifier);
-methodExpr.addChild(parameterList(Token.RIGHT_PARENTHESIS));
-consume(Token.RIGHT_PARENTHESIS);
-expr=methodExpr;
+if (identifier != null && (lt() == Token.LEFT_PARENTHESIS || (lt() == Token.LEFT_CURLY_BRACE && lt(2) == Token.PIPE))) {
+if (expr == identifier) {
+CSTNode replacementExpr=new CSTNode();
+CSTNode resultExpr=sugaryMethodCallExpression(replacementExpr,identifier);
+if (resultExpr != replacementExpr) {
+expr=resultExpr;
 }
-DOT_LOOP: while (lt() == Token.DOT) {
-CSTNode dotExpr=rootNode(Token.DOT);
-if (lt() == Token.IDENTIFIER) {
-identifier=rootNode(Token.IDENTIFIER);
-if (lt() == Token.LEFT_PARENTHESIS) {
-CSTNode methodExpr=rootNode(Token.LEFT_PARENTHESIS);
-methodExpr.addChild(expr);
-methodExpr.addChild(identifier);
-methodExpr.addChild(parameterList(Token.RIGHT_PARENTHESIS));
-consume(Token.RIGHT_PARENTHESIS);
-expr=methodExpr;
 }
  else {
+expr=sugaryMethodCallExpression(expr,identifier);
+}
+}
+DOT_LOOP: while (lt() == Token.DOT && lt(2) == Token.IDENTIFIER) {
+CSTNode dotExpr=rootNode(Token.DOT);
+identifier=rootNode(Token.IDENTIFIER);
+DOT_TYPE_SWITCH: switch (lt()) {
+case (Token.LEFT_PARENTHESIS):
+case (Token.LEFT_CURLY_BRACE):
+{
+expr=sugaryMethodCallExpression(expr,identifier);
+break DOT_TYPE_SWITCH;
+}
+default :
+{
 dotExpr.addChild(expr);
 dotExpr.addChild(identifier);
 expr=dotExpr;
+break DOT_TYPE_SWITCH;
 }
-}
- else {
-throwExpected(new int[]{Token.IDENTIFIER});
 }
 }
 return expr;
