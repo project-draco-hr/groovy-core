@@ -9,6 +9,7 @@
  else {
     throw new RuntimeException("Right hand side of the instanceof keyworld must be a class name, not: " + rightExp);
   }
+  className=checkValidType(className,expression,"Must be a valid type name for an instanceof statement");
   String classInternalName=BytecodeHelper.getClassInternalName(className);
   cv.visitTypeInsn(INSTANCEOF,classInternalName);
 }

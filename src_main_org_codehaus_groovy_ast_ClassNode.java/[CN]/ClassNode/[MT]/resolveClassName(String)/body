@@ -1,27 +1,27 @@
 {
+  String answer=null;
   if (type != null) {
     if (getNameWithoutPackage().equals(type)) {
       return getName();
     }
-    for (int i=0; i < 2; i++) {
-      CompileUnit compileUnit=getCompileUnit();
-      if (compileUnit != null) {
-        if (compileUnit.getClass(type) != null) {
-          return type;
-        }
-        try {
-          compileUnit.loadClass(type);
-          return type;
-        }
- catch (        Throwable e) {
-        }
-      }
+    answer=tryResolveClassFromCompileUnit(type);
+    if (answer == null) {
       String packageName=getPackageName();
-      if (packageName == null || packageName.length() <= 0) {
-        break;
+      if (packageName != null && packageName.length() > 0) {
+        answer=tryResolveClassFromCompileUnit(packageName + "." + type);
       }
-      type=packageName + "." + type;
+    }
+    if (answer == null) {
+      if (module != null) {
+        for (Iterator iter=module.getImportPackages().iterator(); iter.hasNext(); ) {
+          String packageName=(String)iter.next();
+          answer=tryResolveClassFromCompileUnit(packageName + type);
+          if (answer != null) {
+            return answer;
+          }
+        }
+      }
     }
   }
-  return null;
+  return answer;
 }
