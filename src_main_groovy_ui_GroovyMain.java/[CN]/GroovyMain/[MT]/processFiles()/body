@@ -1,8 +1,12 @@
 {
   GroovyShell groovy=new GroovyShell(conf);
   Script s=null;
-  if (isScriptFile)   s=groovy.parse(new File(script));
- else   s=groovy.parse(script,"main");
+  if (isScriptFile) {
+    s=groovy.parse(huntForTheScriptFile(script));
+  }
+ else {
+    s=groovy.parse(script,"main");
+  }
   if (args.isEmpty()) {
     BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
     PrintWriter writer=new PrintWriter(System.out);
@@ -12,7 +16,7 @@
     Iterator i=args.iterator();
     while (i.hasNext()) {
       String filename=(String)i.next();
-      File file=new File(filename);
+      File file=huntForTheScriptFile(filename);
       processFile(s,file);
     }
   }
