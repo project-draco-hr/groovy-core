@@ -1,7 +1,7 @@
 {
-  Object[] new_args=getParameters(args);
-  Object[] all_args=new Object[new_args.length + curried_args.length];
-  System.arraycopy(curried_args,0,all_args,0,curried_args.length);
-  System.arraycopy(new_args,0,all_args,curried_args.length,new_args.length);
+  Object[] new_args=(Object[])args;
+  Object[] all_args=new Object[new_args.length + this.curried_args.length];
+  System.arraycopy(this.curried_args,0,all_args,0,this.curried_args.length);
+  System.arraycopy(new_args,0,all_args,this.curried_args.length,new_args.length);
   return this.closure.call(all_args);
 }
