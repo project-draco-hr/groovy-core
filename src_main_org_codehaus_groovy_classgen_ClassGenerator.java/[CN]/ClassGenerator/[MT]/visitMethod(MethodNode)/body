@@ -2,9 +2,7 @@
   this.constructorNode=null;
   this.methodNode=node;
   this.variableScope=null;
-  this.scope=null;
-  pushBlockScope();
-  String methodType=helper.getMethodDescriptor(node.getReturnType(),node.getParameters());
+  String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
   cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,null);
   helper=new BytecodeHelper(cv);
   findMutableVariables();

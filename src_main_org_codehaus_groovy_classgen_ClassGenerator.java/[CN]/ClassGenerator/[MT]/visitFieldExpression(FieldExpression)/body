@@ -21,17 +21,17 @@
     if (leftHandExpression) {
       cv.visitVarInsn(ASTORE,tempIndex);
       cv.visitVarInsn(ALOAD,0);
-      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(type));
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
       cv.visitVarInsn(ALOAD,tempIndex);
       cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
     }
  else {
-      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(type));
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
       cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
     }
   }
  else {
-    cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(type));
+    cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
     if (!leftHandExpression && helper.isPrimitiveType(type)) {
       helper.box(type);
     }

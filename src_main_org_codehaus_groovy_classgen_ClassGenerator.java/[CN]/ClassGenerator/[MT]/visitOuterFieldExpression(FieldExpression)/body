@@ -4,7 +4,7 @@
     visitPropertyExpression(new PropertyExpression(new FieldExpression(classNode.getField("owner")),expression.getFieldName()));
     return;
   }
-  int valueIdx=idx + 1;
+  int valueIdx=defineVariable(createVariableName("temp"),"java.lang.Object",false).getIndex();
   if (leftHandExpression) {
     cv.visitVarInsn(ASTORE,valueIdx);
   }
@@ -12,7 +12,7 @@
   boolean isStatic=field.isStatic();
   if (!isStatic) {
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",helper.getTypeDescription(outerClassNode.getName()));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode.getName()));
   }
   int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=BytecodeHelper.getClassInternalName(outerClassNode.getName());
@@ -23,5 +23,5 @@
       doConvertAndCast(field.getType());
     }
   }
-  cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(field.getType()));
+  cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
 }
