@@ -1,7 +1,8 @@
 {
   onLineNumber(statement);
   statement.getExpression().visit(this);
-  pushBlockScope();
+  pushBlockScope(false,true);
+  scope.setContinueLabel(scope.getParent().getContinueLabel());
   int switchVariableIndex=defineVariable(createVariableName("switch"),"java.lang.Object").getIndex();
   cv.visitVarInsn(ASTORE,switchVariableIndex);
   List caseStatements=statement.getCaseStatements();
