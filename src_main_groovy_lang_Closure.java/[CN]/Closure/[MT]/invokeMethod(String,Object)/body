@@ -1,16 +1,24 @@
 {
-  try {
-    return getMetaClass().invokeMethod(this,method,arguments);
+  if ("doCall".equals(method)) {
+    return call(arguments);
   }
- catch (  MissingMethodException e) {
-    Object delegate=getDelegate();
-    if (delegate != this) {
-      try {
-        return InvokerHelper.invokeMethod(delegate,method,arguments);
-      }
- catch (      GroovyRuntimeException e2) {
-      }
+ else   if ("call".equals(method)) {
+    return call(arguments);
+  }
+ else {
+    try {
+      return getMetaClass().invokeMethod(this,method,arguments);
     }
-    throw e;
+ catch (    MissingMethodException e) {
+      Object delegate=getDelegate();
+      if (delegate != this) {
+        try {
+          return InvokerHelper.invokeMethod(delegate,method,arguments);
+        }
+ catch (        GroovyRuntimeException e2) {
+        }
+      }
+      throw e;
+    }
   }
 }

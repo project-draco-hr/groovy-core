@@ -1,26 +1,25 @@
 {
   try {
-    return InvokerHelper.invokeMethod(this,"doCall",arguments);
-  }
- catch (  MissingMethodException e) {
-    if (Closure.class.isAssignableFrom(e.getType())) {
-      Class[] expected=null;
-      try {
-        Method[] methods=getClass().getMethods();
-        for (int i=0; i < methods.length; i++) {
-          Method method=methods[i];
-          if (method.getName().equals("doCall")) {
-            expected=method.getParameterTypes();
-            break;
-          }
-        }
+    if (arguments instanceof Object[]) {
+      Object[] parameters=(Object[])arguments;
+      if (parameters == null || parameters.length == 0) {
+        return this.doCallMethod.invoke(this,noParameters);
       }
- catch (      Exception e2) {
+ else {
+        return this.doCallMethod.invoke(this,parameters);
       }
-      throw new IncorrectClosureArgumentsException(this,arguments,expected);
     }
  else {
-      throw e;
+      return this.doCallMethod.invoke(this,new Object[]{arguments});
     }
+  }
+ catch (  IllegalArgumentException e) {
+    throw new IncorrectClosureArgumentsException(this,arguments,doCallMethod.getParameterTypes());
+  }
+catch (  IllegalAccessException e) {
+    throw (RuntimeException)e.getCause();
+  }
+catch (  InvocationTargetException e) {
+    throw (RuntimeException)e.getCause();
   }
 }
