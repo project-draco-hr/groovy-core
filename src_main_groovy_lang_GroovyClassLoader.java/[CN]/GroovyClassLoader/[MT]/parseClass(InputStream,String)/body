@@ -1,6 +1,11 @@
 {
-  CompileUnit unit=new CompileUnit();
-  ClassCollector compiler=createCollector(unit);
-  compiler.parseClass(in,file);
-  return compiler.generatedClass;
+  Class answer=(Class)cache.get(file);
+  if (answer == null) {
+    CompileUnit unit=new CompileUnit();
+    ClassCollector compiler=createCollector(unit);
+    compiler.parseClass(in,file);
+    answer=compiler.generatedClass;
+    cache.put(file,answer);
+  }
+  return answer;
 }
