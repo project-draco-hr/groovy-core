@@ -1,0 +1,17 @@
+{
+  Object parent=getCurrent();
+  if (parent instanceof Container) {
+    Object axisObject=properties.remove("axis");
+    int axis=0;
+    if (axisObject != null) {
+      Integer i=(Integer)axisObject;
+      axis=i.intValue();
+    }
+    BoxLayout answer=new BoxLayout((Container)parent,axis);
+    InvokerHelper.setProperty(parent,"layout",answer);
+    return answer;
+  }
+ else {
+    throw new RuntimeException("Must be nested inside a Container");
+  }
+}
