@@ -4,6 +4,7 @@
     Options options=new Options();
     options.addOption(OptionBuilder.withLongOpt("classpath").hasArg().withArgName("classpath").create());
     options.addOption(OptionBuilder.withLongOpt("sourcepath").hasArg().withArgName("sourcepath").create());
+    options.addOption(OptionBuilder.withLongOpt("encoding").hasArg().withArgName("encoding").create());
     options.addOption(OptionBuilder.hasArg().create('d'));
     options.addOption(OptionBuilder.withLongOpt("strict").create('s'));
     options.addOption(OptionBuilder.withLongOpt("help").create('h'));
@@ -24,6 +25,9 @@
     }
     if (cli.hasOption('d')) {
       configuration.setTargetDirectory(cli.getOptionValue('d'));
+    }
+    if (cli.hasOption("encoding")) {
+      configuration.setSourceEncoding(cli.getOptionValue("encoding"));
     }
     displayStackTraceOnError=cli.hasOption('e');
     String[] filenames=cli.getArgs();
