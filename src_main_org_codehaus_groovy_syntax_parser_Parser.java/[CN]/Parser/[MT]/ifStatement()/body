@@ -3,7 +3,7 @@
   consume(Token.LEFT_PARENTHESIS);
   statement.addChild(expression());
   consume(Token.RIGHT_PARENTHESIS);
-  statement.addChild(statementBlock());
+  statement.addChild(statementOrStatementBlock());
   CSTNode cur=statement;
   while (lt() == Token.KEYWORD_ELSE && lt(2) == Token.KEYWORD_IF) {
     consume(Token.KEYWORD_ELSE);
@@ -13,7 +13,7 @@
   }
   if (lt() == Token.KEYWORD_ELSE) {
     CSTNode next=rootNode(Token.KEYWORD_ELSE);
-    next.addChild(statementBlock());
+    next.addChild(statementOrStatementBlock());
     cur.addChild(next);
   }
   return statement;
