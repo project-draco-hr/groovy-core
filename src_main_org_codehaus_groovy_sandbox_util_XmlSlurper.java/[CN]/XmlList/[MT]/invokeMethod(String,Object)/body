@@ -8,6 +8,14 @@
  else   if ("children".equals(name)) {
     return this.children;
   }
+ else   if ("contents".equals(name)) {
+    return new Buildable(){
+      public void build(      GroovyObject builder){
+        buildChildren(builder);
+      }
+    }
+;
+  }
  else   if ("text".equals(name)) {
     final StringBuffer buff=new StringBuffer();
     for (int i=0; i != this.children.length; i++) {
