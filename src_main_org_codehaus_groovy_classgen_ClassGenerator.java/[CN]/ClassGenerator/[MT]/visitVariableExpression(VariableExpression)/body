@@ -41,38 +41,54 @@
       String type=variable.getType();
       int index=variable.getIndex();
       lastVariableIndex=index;
+      boolean holder=variable.isHolder() && !passingClosureParams;
       if (leftHandExpression) {
-        if (type.equals("double")) {
-          cv.visitVarInsn(DSTORE,index);
-        }
- else         if (type.equals("float")) {
-          cv.visitVarInsn(FSTORE,index);
-        }
- else         if (type.equals("long")) {
-          cv.visitVarInsn(LSTORE,index);
-        }
- else         if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-          cv.visitVarInsn(ISTORE,index);
+        if (holder) {
+          int tempIndex=lastVariableIndex + 1;
+          cv.visitVarInsn(ASTORE,tempIndex);
+          cv.visitVarInsn(ALOAD,index);
+          cv.visitVarInsn(ALOAD,tempIndex);
+          cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
         }
  else {
-          cv.visitVarInsn(ASTORE,index);
+          if (type.equals("double")) {
+            cv.visitVarInsn(DSTORE,index);
+          }
+ else           if (type.equals("float")) {
+            cv.visitVarInsn(FSTORE,index);
+          }
+ else           if (type.equals("long")) {
+            cv.visitVarInsn(LSTORE,index);
+          }
+ else           if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
+            cv.visitVarInsn(ISTORE,index);
+          }
+ else {
+            cv.visitVarInsn(ASTORE,index);
+          }
         }
       }
  else {
-        if (type.equals("double")) {
-          cv.visitVarInsn(DLOAD,index);
-        }
- else         if (type.equals("float")) {
-          cv.visitVarInsn(FLOAD,index);
-        }
- else         if (type.equals("long")) {
-          cv.visitVarInsn(LLOAD,index);
-        }
- else         if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-          cv.visitVarInsn(ILOAD,index);
+        if (holder) {
+          cv.visitVarInsn(ALOAD,index);
+          cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
         }
  else {
-          cv.visitVarInsn(ALOAD,index);
+          if (type.equals("double")) {
+            cv.visitVarInsn(DLOAD,index);
+          }
+ else           if (type.equals("float")) {
+            cv.visitVarInsn(FLOAD,index);
+          }
+ else           if (type.equals("long")) {
+            cv.visitVarInsn(LLOAD,index);
+          }
+ else           if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
+            cv.visitVarInsn(ILOAD,index);
+          }
+ else {
+            cv.visitVarInsn(ALOAD,index);
+          }
         }
       }
     }

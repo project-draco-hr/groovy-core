@@ -1,14 +1,31 @@
 {
   FieldNode field=expression.getField();
   boolean isStatic=field.isStatic();
+  boolean holder=field.isHolder() && !isInClosureConstructor();
   if (!isStatic && !leftHandExpression) {
     cv.visitVarInsn(ALOAD,0);
   }
   String type=field.getType();
-  if (leftHandExpression) {
+  int tempIndex=lastVariableIndex + 1;
+  if (leftHandExpression && !holder) {
     doCast(type);
   }
-  int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
+  int opcode=(leftHandExpression && !holder) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : Type.getInternalName(loadClass(field.getOwner()));
-  cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(type));
+  if (holder) {
+    if (leftHandExpression) {
+      cv.visitVarInsn(ASTORE,tempIndex);
+      cv.visitVarInsn(ALOAD,0);
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(type));
+      cv.visitVarInsn(ALOAD,tempIndex);
+      cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
+    }
+ else {
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(type));
+      cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+    }
+  }
+ else {
+    cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(type));
+  }
 }

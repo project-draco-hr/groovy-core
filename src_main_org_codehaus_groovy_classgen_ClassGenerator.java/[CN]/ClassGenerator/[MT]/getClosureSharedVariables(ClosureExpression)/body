@@ -7,15 +7,17 @@
   Set outerRefs=outerVisitor.getReferencedVariables();
   Set innerDecls=innerVisitor.getDeclaredVariables();
   Set innerRefs=innerVisitor.getReferencedVariables();
-  Set parameters=new HashSet();
-  Parameter[] params=expression.getParameters();
-  for (int i=0; i < params.length; i++) {
-    parameters.add(params[i].getName());
-  }
   List vars=new ArrayList();
   for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
     String var=(String)iter.next();
-    if (outerDecls.contains(var) && !parameters.contains(var) && classNode.getField(var) == null) {
+    if (outerDecls.contains(var) && classNode.getField(var) == null) {
+      String type=getVariableType(var);
+      vars.add(new Parameter(type,var));
+    }
+  }
+  for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
+    String var=(String)iter.next();
+    if (innerDecls.contains(var) && classNode.getField(var) == null) {
       String type=getVariableType(var);
       vars.add(new Parameter(type,var));
     }

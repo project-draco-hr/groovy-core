@@ -1,0 +1,16 @@
+{
+  VariableScopeCodeVisitor outerVisitor=new VariableScopeCodeVisitor();
+  node.getCode().visit(outerVisitor);
+  VariableScopeCodeVisitor innerVisitor=outerVisitor.getClosureVisitor();
+  Set outerDecls=outerVisitor.getDeclaredVariables();
+  Set outerRefs=outerVisitor.getReferencedVariables();
+  Set innerDecls=innerVisitor.getDeclaredVariables();
+  Set innerRefs=innerVisitor.getReferencedVariables();
+  mutableVars.clear();
+  for (Iterator iter=innerDecls.iterator(); iter.hasNext(); ) {
+    String var=(String)iter.next();
+    if ((outerDecls.contains(var) || outerRefs.contains(var)) && classNode.getField(var) == null) {
+      mutableVars.add(var);
+    }
+  }
+}
