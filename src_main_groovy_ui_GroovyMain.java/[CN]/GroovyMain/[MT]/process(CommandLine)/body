@@ -1,6 +1,9 @@
 {
   GroovyMain main=new GroovyMain();
   List args=line.getArgList();
+  if (line.hasOption('c')) {
+    main.conf.setSourceEncoding(line.getOptionValue("encoding"));
+  }
   main.isScriptFile=!line.hasOption('e');
   main.processFiles=line.hasOption('p') || line.hasOption('n');
   main.autoOutput=line.hasOption('p');
