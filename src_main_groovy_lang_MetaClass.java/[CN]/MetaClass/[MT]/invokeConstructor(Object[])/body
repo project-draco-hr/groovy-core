@@ -13,12 +13,11 @@
         return bean;
       }
     }
- else     if (firstArgument instanceof GString) {
-      arguments[0]=firstArgument.toString();
-      constructor=(Constructor)chooseMethod("<init>",constructors,arguments);
-      if (constructor != null) {
-        return doConstructorInvoke(constructor,arguments);
-      }
+  }
+  if (coerceGStrings(arguments)) {
+    constructor=(Constructor)chooseMethod("<init>",constructors,arguments);
+    if (constructor != null) {
+      return doConstructorInvoke(constructor,arguments);
     }
   }
   throw new GroovyRuntimeException("Could not find matching constructor for class: " + theClass.getName());
