@@ -3,23 +3,17 @@
   ASTPair currentAST=new ASTPair();
   AST exclusiveOrExpression_AST=null;
   andExpression();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop375:     do {
       if ((LA(1) == BXOR)) {
         AST tmp283_AST=null;
-        if (inputState.guessing == 0) {
-          tmp283_AST=astFactory.create(LT(1));
-          astFactory.makeASTRoot(currentAST,tmp283_AST);
-        }
+        tmp283_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp283_AST);
         match(BXOR);
         nls();
         andExpression();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
       }
  else {
         break _loop375;
@@ -27,8 +21,6 @@
     }
  while (true);
   }
-  if (inputState.guessing == 0) {
-    exclusiveOrExpression_AST=(AST)currentAST.root;
-  }
+  exclusiveOrExpression_AST=(AST)currentAST.root;
   returnAST=exclusiveOrExpression_AST;
 }

@@ -6,18 +6,14 @@
   AST id_AST=null;
 {
     id=LT(1);
-    if (inputState.guessing == 0) {
-      id_AST=astFactory.create(id);
-      astFactory.addASTChild(currentAST,id_AST);
-    }
+    id_AST=astFactory.create(id);
+    astFactory.addASTChild(currentAST,id_AST);
     match(IDENT);
   }
 {
     if ((LA(1) == LITERAL_extends) && (LA(2) == IDENT || LA(2) == NLS) && (_tokenSet_52.member(LA(3)))) {
       typeParameterBounds();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
     }
  else     if ((_tokenSet_53.member(LA(1))) && (_tokenSet_54.member(LA(2))) && (_tokenSet_55.member(LA(3)))) {
     }
@@ -32,8 +28,6 @@
     currentAST.child=typeParameter_AST != null && typeParameter_AST.getFirstChild() != null ? typeParameter_AST.getFirstChild() : typeParameter_AST;
     currentAST.advanceChildToEnd();
   }
-  if (inputState.guessing == 0) {
-    typeParameter_AST=(AST)currentAST.root;
-  }
+  typeParameter_AST=(AST)currentAST.root;
   returnAST=typeParameter_AST;
 }

@@ -8,25 +8,19 @@
   AST tc_AST=null;
   AST cb_AST=null;
   id=LT(1);
-  if (inputState.guessing == 0) {
-    id_AST=astFactory.create(id);
-    astFactory.addASTChild(currentAST,id_AST);
-  }
+  id_AST=astFactory.create(id);
+  astFactory.addASTChild(currentAST,id_AST);
   match(IDENT);
   match(LPAREN);
   parameterDeclarationList();
-  if (inputState.guessing == 0) {
-    param_AST=(AST)returnAST;
-  }
+  param_AST=(AST)returnAST;
   match(RPAREN);
 {
 switch (LA(1)) {
 case LITERAL_throws:
 {
         throwsClause();
-        if (inputState.guessing == 0) {
-          tc_AST=(AST)returnAST;
-        }
+        tc_AST=(AST)returnAST;
         break;
       }
 case LCURLY:
@@ -45,9 +39,7 @@ if (inputState.guessing == 0) {
 isConstructorIdent(id);
 }
 constructorBody();
-if (inputState.guessing == 0) {
 cb_AST=(AST)returnAST;
-}
 if (inputState.guessing == 0) {
 constructorDefinition_AST=(AST)currentAST.root;
 constructorDefinition_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(CTOR_IDENT,"CTOR_IDENT")).add(mods).add(param_AST).add(tc_AST).add(cb_AST));
@@ -55,8 +47,6 @@ currentAST.root=constructorDefinition_AST;
 currentAST.child=constructorDefinition_AST != null && constructorDefinition_AST.getFirstChild() != null ? constructorDefinition_AST.getFirstChild() : constructorDefinition_AST;
 currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
 constructorDefinition_AST=(AST)currentAST.root;
-}
 returnAST=constructorDefinition_AST;
 }

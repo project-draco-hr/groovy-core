@@ -4,19 +4,15 @@
   AST newExpression_AST=null;
   boolean zz;
   AST tmp331_AST=null;
-  if (inputState.guessing == 0) {
-    tmp331_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp331_AST);
-  }
+  tmp331_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp331_AST);
   match(LITERAL_new);
 {
 switch (LA(1)) {
 case LT:
 {
         typeArguments();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case IDENT:
@@ -40,27 +36,21 @@ default :
 }
 }
 type();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
 {
 switch (LA(1)) {
 case LPAREN:
 {
   match(LPAREN);
   zz=argList();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
   match(RPAREN);
   break;
 }
 case LBRACK:
 {
 newArrayDeclarator();
-if (inputState.guessing == 0) {
-  astFactory.addASTChild(currentAST,returnAST);
-}
+astFactory.addASTChild(currentAST,returnAST);
 break;
 }
 default :
@@ -69,8 +59,6 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
-if (inputState.guessing == 0) {
 newExpression_AST=(AST)currentAST.root;
-}
 returnAST=newExpression_AST;
 }

@@ -28,18 +28,14 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         zz=pathExpression();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case LBRACK:
 case LCURLY:
 {
       pathExpressionFromBrackets();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
       break;
     }
 default :
@@ -53,10 +49,8 @@ switch (LA(1)) {
 case INC:
 {
   in=LT(1);
-  if (inputState.guessing == 0) {
-    in_AST=astFactory.create(in);
-    astFactory.makeASTRoot(currentAST,in_AST);
-  }
+  in_AST=astFactory.create(in);
+  astFactory.makeASTRoot(currentAST,in_AST);
   match(INC);
   if (inputState.guessing == 0) {
     in_AST.setType(POST_INC);
@@ -66,10 +60,8 @@ case INC:
 case DEC:
 {
 de=LT(1);
-if (inputState.guessing == 0) {
-  de_AST=astFactory.create(de);
-  astFactory.makeASTRoot(currentAST,de_AST);
-}
+de_AST=astFactory.create(de);
+astFactory.makeASTRoot(currentAST,de_AST);
 match(DEC);
 if (inputState.guessing == 0) {
   de_AST.setType(POST_DEC);
@@ -139,8 +131,6 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 }
 }
-if (inputState.guessing == 0) {
 postfixExpression_AST=(AST)currentAST.root;
-}
 returnAST=postfixExpression_AST;
 }

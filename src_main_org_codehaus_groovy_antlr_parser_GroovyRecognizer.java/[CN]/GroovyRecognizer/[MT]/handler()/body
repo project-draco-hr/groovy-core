@@ -3,24 +3,16 @@
   ASTPair currentAST=new ASTPair();
   AST handler_AST=null;
   AST tmp206_AST=null;
-  if (inputState.guessing == 0) {
-    tmp206_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp206_AST);
-  }
+  tmp206_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp206_AST);
   match(LITERAL_catch);
   match(LPAREN);
   parameterDeclaration();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
   match(RPAREN);
   nlsWarn();
   compoundStatement();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    handler_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  handler_AST=(AST)currentAST.root;
   returnAST=handler_AST;
 }

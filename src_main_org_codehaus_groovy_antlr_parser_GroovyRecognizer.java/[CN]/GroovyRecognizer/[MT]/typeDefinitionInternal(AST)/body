@@ -10,10 +10,8 @@ switch (LA(1)) {
 case LITERAL_class:
 {
       classDefinition(mods);
-      if (inputState.guessing == 0) {
-        cd_AST=(AST)returnAST;
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      cd_AST=(AST)returnAST;
+      astFactory.addASTChild(currentAST,returnAST);
       if (inputState.guessing == 0) {
         typeDefinitionInternal_AST=(AST)currentAST.root;
         typeDefinitionInternal_AST=cd_AST;
@@ -21,18 +19,14 @@ case LITERAL_class:
         currentAST.child=typeDefinitionInternal_AST != null && typeDefinitionInternal_AST.getFirstChild() != null ? typeDefinitionInternal_AST.getFirstChild() : typeDefinitionInternal_AST;
         currentAST.advanceChildToEnd();
       }
-      if (inputState.guessing == 0) {
-        typeDefinitionInternal_AST=(AST)currentAST.root;
-      }
+      typeDefinitionInternal_AST=(AST)currentAST.root;
       break;
     }
 case LITERAL_interface:
 {
     interfaceDefinition(mods);
-    if (inputState.guessing == 0) {
-      id_AST=(AST)returnAST;
-      astFactory.addASTChild(currentAST,returnAST);
-    }
+    id_AST=(AST)returnAST;
+    astFactory.addASTChild(currentAST,returnAST);
     if (inputState.guessing == 0) {
       typeDefinitionInternal_AST=(AST)currentAST.root;
       typeDefinitionInternal_AST=id_AST;
@@ -40,18 +34,14 @@ case LITERAL_interface:
       currentAST.child=typeDefinitionInternal_AST != null && typeDefinitionInternal_AST.getFirstChild() != null ? typeDefinitionInternal_AST.getFirstChild() : typeDefinitionInternal_AST;
       currentAST.advanceChildToEnd();
     }
-    if (inputState.guessing == 0) {
-      typeDefinitionInternal_AST=(AST)currentAST.root;
-    }
+    typeDefinitionInternal_AST=(AST)currentAST.root;
     break;
   }
 case LITERAL_enum:
 {
   enumDefinition(mods);
-  if (inputState.guessing == 0) {
-    ed_AST=(AST)returnAST;
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  ed_AST=(AST)returnAST;
+  astFactory.addASTChild(currentAST,returnAST);
   if (inputState.guessing == 0) {
     typeDefinitionInternal_AST=(AST)currentAST.root;
     typeDefinitionInternal_AST=ed_AST;
@@ -59,18 +49,14 @@ case LITERAL_enum:
     currentAST.child=typeDefinitionInternal_AST != null && typeDefinitionInternal_AST.getFirstChild() != null ? typeDefinitionInternal_AST.getFirstChild() : typeDefinitionInternal_AST;
     currentAST.advanceChildToEnd();
   }
-  if (inputState.guessing == 0) {
-    typeDefinitionInternal_AST=(AST)currentAST.root;
-  }
+  typeDefinitionInternal_AST=(AST)currentAST.root;
   break;
 }
 case AT:
 {
 annotationDefinition(mods);
-if (inputState.guessing == 0) {
-  ad_AST=(AST)returnAST;
-  astFactory.addASTChild(currentAST,returnAST);
-}
+ad_AST=(AST)returnAST;
+astFactory.addASTChild(currentAST,returnAST);
 if (inputState.guessing == 0) {
   typeDefinitionInternal_AST=(AST)currentAST.root;
   typeDefinitionInternal_AST=ad_AST;
@@ -78,9 +64,7 @@ if (inputState.guessing == 0) {
   currentAST.child=typeDefinitionInternal_AST != null && typeDefinitionInternal_AST.getFirstChild() != null ? typeDefinitionInternal_AST.getFirstChild() : typeDefinitionInternal_AST;
   currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
-  typeDefinitionInternal_AST=(AST)currentAST.root;
-}
+typeDefinitionInternal_AST=(AST)currentAST.root;
 break;
 }
 default :

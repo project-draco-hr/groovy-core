@@ -3,23 +3,17 @@
   ASTPair currentAST=new ASTPair();
   AST andExpression_AST=null;
   regexExpression();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop378:     do {
       if ((LA(1) == BAND)) {
         AST tmp284_AST=null;
-        if (inputState.guessing == 0) {
-          tmp284_AST=astFactory.create(LT(1));
-          astFactory.makeASTRoot(currentAST,tmp284_AST);
-        }
+        tmp284_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp284_AST);
         match(BAND);
         nls();
         regexExpression();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
       }
  else {
         break _loop378;
@@ -27,8 +21,6 @@
     }
  while (true);
   }
-  if (inputState.guessing == 0) {
-    andExpression_AST=(AST)currentAST.root;
-  }
+  andExpression_AST=(AST)currentAST.root;
   returnAST=andExpression_AST;
 }

@@ -7,9 +7,7 @@
   AST ib_AST=null;
   match(LITERAL_interface);
   AST tmp42_AST=null;
-  if (inputState.guessing == 0) {
-    tmp42_AST=astFactory.create(LT(1));
-  }
+  tmp42_AST=astFactory.create(LT(1));
   match(IDENT);
   nls();
 {
@@ -17,9 +15,7 @@ switch (LA(1)) {
 case LT:
 {
         typeParameters();
-        if (inputState.guessing == 0) {
-          tp_AST=(AST)returnAST;
-        }
+        tp_AST=(AST)returnAST;
         break;
       }
 case LITERAL_extends:
@@ -34,13 +30,9 @@ default :
 }
 }
 interfaceExtends();
-if (inputState.guessing == 0) {
 ie_AST=(AST)returnAST;
-}
 interfaceBlock();
-if (inputState.guessing == 0) {
 ib_AST=(AST)returnAST;
-}
 if (inputState.guessing == 0) {
 interfaceDefinition_AST=(AST)currentAST.root;
 interfaceDefinition_AST=(AST)astFactory.make((new ASTArray(6)).add(astFactory.create(INTERFACE_DEF,"INTERFACE_DEF")).add(modifiers).add(tmp42_AST).add(tp_AST).add(ie_AST).add(ib_AST));

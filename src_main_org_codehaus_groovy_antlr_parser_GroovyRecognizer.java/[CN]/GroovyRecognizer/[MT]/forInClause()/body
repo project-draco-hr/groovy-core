@@ -23,16 +23,12 @@
     }
     if (synPredMatched273) {
       singleDeclarationNoInit();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
     }
  else     if ((LA(1) == IDENT) && (LA(2) == LITERAL_in)) {
       AST tmp189_AST=null;
-      if (inputState.guessing == 0) {
-        tmp189_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp189_AST);
-      }
+      tmp189_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp189_AST);
       match(IDENT);
     }
  else {
@@ -40,20 +36,14 @@
     }
   }
   i=LT(1);
-  if (inputState.guessing == 0) {
-    i_AST=astFactory.create(i);
-    astFactory.makeASTRoot(currentAST,i_AST);
-  }
+  i_AST=astFactory.create(i);
+  astFactory.makeASTRoot(currentAST,i_AST);
   match(LITERAL_in);
   if (inputState.guessing == 0) {
     i_AST.setType(FOR_IN_ITERABLE);
   }
   shiftExpression();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    forInClause_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  forInClause_AST=(AST)currentAST.root;
   returnAST=forInClause_AST;
 }

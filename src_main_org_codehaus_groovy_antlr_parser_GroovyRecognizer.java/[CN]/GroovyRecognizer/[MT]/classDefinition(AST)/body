@@ -9,9 +9,7 @@
   AST prevCurrentClass=currentClass;
   match(LITERAL_class);
   AST tmp40_AST=null;
-  if (inputState.guessing == 0) {
-    tmp40_AST=astFactory.create(LT(1));
-  }
+  tmp40_AST=astFactory.create(LT(1));
   match(IDENT);
   nls();
   if (inputState.guessing == 0) {
@@ -22,9 +20,7 @@ switch (LA(1)) {
 case LT:
 {
         typeParameters();
-        if (inputState.guessing == 0) {
-          tp_AST=(AST)returnAST;
-        }
+        tp_AST=(AST)returnAST;
         break;
       }
 case LITERAL_extends:
@@ -40,17 +36,11 @@ default :
 }
 }
 superClassClause();
-if (inputState.guessing == 0) {
 sc_AST=(AST)returnAST;
-}
 implementsClause();
-if (inputState.guessing == 0) {
 ic_AST=(AST)returnAST;
-}
 classBlock();
-if (inputState.guessing == 0) {
 cb_AST=(AST)returnAST;
-}
 if (inputState.guessing == 0) {
 classDefinition_AST=(AST)currentAST.root;
 classDefinition_AST=(AST)astFactory.make((new ASTArray(7)).add(astFactory.create(CLASS_DEF,"CLASS_DEF")).add(modifiers).add(tmp40_AST).add(tp_AST).add(sc_AST).add(ic_AST).add(cb_AST));

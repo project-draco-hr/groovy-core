@@ -3,18 +3,12 @@
   ASTPair currentAST=new ASTPair();
   AST varInitializer_AST=null;
   AST tmp51_AST=null;
-  if (inputState.guessing == 0) {
-    tmp51_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp51_AST);
-  }
+  tmp51_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp51_AST);
   match(ASSIGN);
   nls();
   initializer();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    varInitializer_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  varInitializer_AST=(AST)currentAST.root;
   returnAST=varInitializer_AST;
 }

@@ -9,10 +9,8 @@
     _loop471:     do {
       if ((LA(1) == LBRACK) && (_tokenSet_118.member(LA(2))) && (_tokenSet_16.member(LA(3)))) {
         lb=LT(1);
-        if (inputState.guessing == 0) {
-          lb_AST=astFactory.create(lb);
-          astFactory.makeASTRoot(currentAST,lb_AST);
-        }
+        lb_AST=astFactory.create(lb);
+        astFactory.makeASTRoot(currentAST,lb_AST);
         match(LBRACK);
         if (inputState.guessing == 0) {
           lb_AST.setType(ARRAY_DECLARATOR);
@@ -46,9 +44,7 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
               expression();
-              if (inputState.guessing == 0) {
-                astFactory.addASTChild(currentAST,returnAST);
-              }
+              astFactory.addASTChild(currentAST,returnAST);
               break;
             }
 case RBRACK:
@@ -75,8 +71,6 @@ _cnt471++;
 }
  while (true);
 }
-if (inputState.guessing == 0) {
 newArrayDeclarator_AST=(AST)currentAST.root;
-}
 returnAST=newArrayDeclarator_AST;
 }

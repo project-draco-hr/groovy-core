@@ -3,6 +3,7 @@
   Expression leftExpression=expression(leftNode);
   AST rightNode=leftNode.getNextSibling();
   String typeName=resolvedName(rightNode);
+  assertTypeNotNull(typeName,rightNode);
   Expression rightExpression=new ClassExpression(typeName);
   configureAST(rightExpression,rightNode);
   BinaryExpression binaryExpression=new BinaryExpression(leftExpression,makeToken(Types.KEYWORD_INSTANCEOF,node),rightExpression);

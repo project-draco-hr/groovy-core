@@ -26,14 +26,10 @@
     }
     if (synPredMatched458) {
       argumentLabel();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
       c=LT(1);
-      if (inputState.guessing == 0) {
-        c_AST=astFactory.create(c);
-        astFactory.makeASTRoot(currentAST,c_AST);
-      }
+      c_AST=astFactory.create(c);
+      astFactory.makeASTRoot(currentAST,c_AST);
       match(COLON);
       if (inputState.guessing == 0) {
         c_AST.setType(LABELED_ARG);
@@ -41,10 +37,8 @@
     }
  else     if ((LA(1) == STAR)) {
       sp=LT(1);
-      if (inputState.guessing == 0) {
-        sp_AST=astFactory.create(sp);
-        astFactory.makeASTRoot(currentAST,sp_AST);
-      }
+      sp_AST=astFactory.create(sp);
+      astFactory.makeASTRoot(currentAST,sp_AST);
       match(STAR);
       if (inputState.guessing == 0) {
         sp_AST.setType(SPREAD_ARG);
@@ -57,12 +51,8 @@
     }
   }
   strictContextExpression();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    argument_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  argument_AST=(AST)currentAST.root;
   returnAST=argument_AST;
   return hasLabel;
 }

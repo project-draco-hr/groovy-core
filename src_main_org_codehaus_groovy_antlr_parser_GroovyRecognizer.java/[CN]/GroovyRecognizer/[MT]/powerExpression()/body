@@ -3,23 +3,17 @@
   ASTPair currentAST=new ASTPair();
   AST powerExpression_AST=null;
   unaryExpressionNotPlusMinus();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop423:     do {
       if ((LA(1) == STAR_STAR)) {
         AST tmp318_AST=null;
-        if (inputState.guessing == 0) {
-          tmp318_AST=astFactory.create(LT(1));
-          astFactory.makeASTRoot(currentAST,tmp318_AST);
-        }
+        tmp318_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp318_AST);
         match(STAR_STAR);
         nls();
         unaryExpression();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
       }
  else {
         break _loop423;
@@ -27,8 +21,6 @@
     }
  while (true);
   }
-  if (inputState.guessing == 0) {
-    powerExpression_AST=(AST)currentAST.root;
-  }
+  powerExpression_AST=(AST)currentAST.root;
   returnAST=powerExpression_AST;
 }

@@ -5,10 +5,8 @@
   Token lc=null;
   AST lc_AST=null;
   lc=LT(1);
-  if (inputState.guessing == 0) {
-    lc_AST=astFactory.create(lc);
-    astFactory.makeASTRoot(currentAST,lc_AST);
-  }
+  lc_AST=astFactory.create(lc);
+  astFactory.makeASTRoot(currentAST,lc_AST);
   match(LCURLY);
   nls();
   if (inputState.guessing == 0) {
@@ -33,9 +31,7 @@
     }
     if (synPredMatched179) {
       explicitConstructorInvocation();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
 {
 switch (LA(1)) {
 case SEMI:
@@ -43,9 +39,7 @@ case NLS:
 {
             sep();
             blockBody(sepToken);
-            if (inputState.guessing == 0) {
-              astFactory.addASTChild(currentAST,returnAST);
-            }
+            astFactory.addASTChild(currentAST,returnAST);
             break;
           }
 case RCURLY:
@@ -61,17 +55,13 @@ default :
 }
  else if ((_tokenSet_71.member(LA(1))) && (_tokenSet_72.member(LA(2))) && (_tokenSet_17.member(LA(3)))) {
 blockBody(EOF);
-if (inputState.guessing == 0) {
-  astFactory.addASTChild(currentAST,returnAST);
-}
+astFactory.addASTChild(currentAST,returnAST);
 }
  else {
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
 match(RCURLY);
-if (inputState.guessing == 0) {
 constructorBody_AST=(AST)currentAST.root;
-}
 returnAST=constructorBody_AST;
 }

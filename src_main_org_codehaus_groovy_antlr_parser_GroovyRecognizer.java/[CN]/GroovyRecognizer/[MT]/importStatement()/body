@@ -6,10 +6,8 @@
   AST i_AST=null;
   boolean isStatic=false;
   i=LT(1);
-  if (inputState.guessing == 0) {
-    i_AST=astFactory.create(i);
-    astFactory.makeASTRoot(currentAST,i_AST);
-  }
+  i_AST=astFactory.create(i);
+  astFactory.makeASTRoot(currentAST,i_AST);
   match(LITERAL_import);
   if (inputState.guessing == 0) {
     i_AST.setType(IMPORT);
@@ -35,11 +33,7 @@ default :
 }
 }
 identifierStar();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
-if (inputState.guessing == 0) {
 importStatement_AST=(AST)currentAST.root;
-}
 returnAST=importStatement_AST;
 }

@@ -43,9 +43,7 @@ case LITERAL_synchronized:
 case LITERAL_volatile:
 {
       modifiersOpt();
-      if (inputState.guessing == 0) {
-        mods_AST=(AST)returnAST;
-      }
+      mods_AST=(AST)returnAST;
 {
 switch (LA(1)) {
 case AT:
@@ -54,9 +52,7 @@ case LITERAL_interface:
 case LITERAL_enum:
 {
             typeDefinitionInternal(mods_AST);
-            if (inputState.guessing == 0) {
-              td_AST=(AST)returnAST;
-            }
+            td_AST=(AST)returnAST;
             if (inputState.guessing == 0) {
               enumConstantField_AST=(AST)currentAST.root;
               enumConstantField_AST=td_AST;
@@ -84,9 +80,7 @@ switch (LA(1)) {
 case LT:
 {
                 typeParameters();
-                if (inputState.guessing == 0) {
-                  tp_AST=(AST)returnAST;
-                }
+                tp_AST=(AST)returnAST;
                 break;
               }
 case IDENT:
@@ -110,9 +104,7 @@ default :
       }
     }
     typeSpec(false);
-    if (inputState.guessing == 0) {
-      t_AST=(AST)returnAST;
-    }
+    t_AST=(AST)returnAST;
 {
       boolean synPredMatched151=false;
       if (((LA(1) == IDENT) && (LA(2) == LPAREN) && (_tokenSet_66.member(LA(3))))) {
@@ -133,24 +125,18 @@ default :
       }
       if (synPredMatched151) {
         AST tmp140_AST=null;
-        if (inputState.guessing == 0) {
-          tmp140_AST=astFactory.create(LT(1));
-        }
+        tmp140_AST=astFactory.create(LT(1));
         match(IDENT);
         match(LPAREN);
         parameterDeclarationList();
-        if (inputState.guessing == 0) {
-          param_AST=(AST)returnAST;
-        }
+        param_AST=(AST)returnAST;
         match(RPAREN);
 {
 switch (LA(1)) {
 case LITERAL_throws:
 {
               throwsClause();
-              if (inputState.guessing == 0) {
-                tc_AST=(AST)returnAST;
-              }
+              tc_AST=(AST)returnAST;
               break;
             }
 case LCURLY:
@@ -171,9 +157,7 @@ switch (LA(1)) {
 case LCURLY:
 {
         compoundStatement();
-        if (inputState.guessing == 0) {
-          s2_AST=(AST)returnAST;
-        }
+        s2_AST=(AST)returnAST;
         break;
       }
 case RCURLY:
@@ -198,9 +182,7 @@ currentAST.advanceChildToEnd();
 }
  else if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (_tokenSet_60.member(LA(2))) && (_tokenSet_67.member(LA(3)))) {
 variableDefinitions(mods_AST,t_AST);
-if (inputState.guessing == 0) {
 v_AST=(AST)returnAST;
-}
 if (inputState.guessing == 0) {
 enumConstantField_AST=(AST)currentAST.root;
 enumConstantField_AST=v_AST;
@@ -226,9 +208,7 @@ break;
 case LCURLY:
 {
 compoundStatement();
-if (inputState.guessing == 0) {
 s4_AST=(AST)returnAST;
-}
 if (inputState.guessing == 0) {
 enumConstantField_AST=(AST)currentAST.root;
 enumConstantField_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(INSTANCE_INIT,"INSTANCE_INIT")).add(s4_AST));

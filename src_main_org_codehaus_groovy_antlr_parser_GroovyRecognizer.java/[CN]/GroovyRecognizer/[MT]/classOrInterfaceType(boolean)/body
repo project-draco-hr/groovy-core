@@ -3,19 +3,15 @@
   ASTPair currentAST=new ASTPair();
   AST classOrInterfaceType_AST=null;
   AST tmp90_AST=null;
-  if (inputState.guessing == 0) {
-    tmp90_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp90_AST);
-  }
+  tmp90_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp90_AST);
   match(IDENT);
 {
 switch (LA(1)) {
 case LT:
 {
         typeArguments();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case EOF:
@@ -91,25 +87,19 @@ default :
 _loop37: do {
 if ((LA(1) == DOT) && (LA(2) == IDENT) && (_tokenSet_40.member(LA(3)))) {
   AST tmp91_AST=null;
-  if (inputState.guessing == 0) {
-    tmp91_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp91_AST);
-  }
+  tmp91_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp91_AST);
   match(DOT);
   AST tmp92_AST=null;
-  if (inputState.guessing == 0) {
-    tmp92_AST=astFactory.create(LT(1));
-    astFactory.addASTChild(currentAST,tmp92_AST);
-  }
+  tmp92_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp92_AST);
   match(IDENT);
 {
 switch (LA(1)) {
 case LT:
 {
         typeArguments();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case EOF:
@@ -197,8 +187,6 @@ currentAST.root=classOrInterfaceType_AST;
 currentAST.child=classOrInterfaceType_AST != null && classOrInterfaceType_AST.getFirstChild() != null ? classOrInterfaceType_AST.getFirstChild() : classOrInterfaceType_AST;
 currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
 classOrInterfaceType_AST=(AST)currentAST.root;
-}
 returnAST=classOrInterfaceType_AST;
 }

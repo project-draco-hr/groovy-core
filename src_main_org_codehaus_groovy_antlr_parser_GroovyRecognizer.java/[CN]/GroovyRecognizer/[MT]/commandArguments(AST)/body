@@ -27,18 +27,14 @@ case STAR_STAR:
   currentAST.advanceChildToEnd();
 }
 expression();
-if (inputState.guessing == 0) {
-  astFactory.addASTChild(currentAST,returnAST);
-}
+astFactory.addASTChild(currentAST,returnAST);
 {
   _loop325:   do {
     if ((LA(1) == COMMA)) {
       match(COMMA);
       nls();
       expression();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
     }
  else {
       break _loop325;
@@ -56,8 +52,6 @@ if (inputState.guessing == 0) {
   currentAST.child=commandArguments_AST != null && commandArguments_AST.getFirstChild() != null ? commandArguments_AST.getFirstChild() : commandArguments_AST;
   currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
-  commandArguments_AST=(AST)currentAST.root;
-}
+commandArguments_AST=(AST)currentAST.root;
 returnAST=commandArguments_AST;
 }

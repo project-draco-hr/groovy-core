@@ -6,10 +6,8 @@
   AST lcon_AST=null;
   boolean hasLabels=false, hal;
   lcon=LT(1);
-  if (inputState.guessing == 0) {
-    lcon_AST=astFactory.create(lcon);
-    astFactory.makeASTRoot(currentAST,lcon_AST);
-  }
+  lcon_AST=astFactory.create(lcon);
+  astFactory.makeASTRoot(currentAST,lcon_AST);
   match(LBRACK);
 {
 switch (LA(1)) {
@@ -100,9 +98,7 @@ default :
 }
 }
 hal=argList();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
 if (inputState.guessing == 0) {
 hasLabels|=hal;
 }
@@ -110,8 +106,6 @@ match(RBRACK);
 if (inputState.guessing == 0) {
 lcon_AST.setType(hasLabels ? MAP_CONSTRUCTOR : LIST_CONSTRUCTOR);
 }
-if (inputState.guessing == 0) {
 listOrMapConstructorExpression_AST=(AST)currentAST.root;
-}
 returnAST=listOrMapConstructorExpression_AST;
 }

@@ -108,9 +108,7 @@ inputState.guessing--;
 }
 if (synPredMatched5) {
 packageDefinition();
-if (inputState.guessing == 0) {
-  astFactory.addASTChild(currentAST,returnAST);
-}
+astFactory.addASTChild(currentAST,returnAST);
 }
  else if ((_tokenSet_1.member(LA(1))) && (_tokenSet_2.member(LA(2))) && (_tokenSet_3.member(LA(3)))) {
 {
@@ -182,9 +180,7 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
       statement(EOF);
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
       break;
     }
 case EOF:
@@ -277,9 +273,7 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
   statement(sepToken);
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
   break;
 }
 case EOF:
@@ -302,8 +296,6 @@ break _loop9;
  while (true);
 }
 match(Token.EOF_TYPE);
-if (inputState.guessing == 0) {
 compilationUnit_AST=(AST)currentAST.root;
-}
 returnAST=compilationUnit_AST;
 }

@@ -2,18 +2,22 @@
   if (isType(IDENT,qualifiedNameNode)) {
     return qualifiedNameNode.getText();
   }
-  assertNodeType(DOT,qualifiedNameNode);
-  AST node=qualifiedNameNode.getFirstChild();
-  StringBuffer buffer=new StringBuffer();
-  boolean first=true;
-  for (; node != null; node=node.getNextSibling()) {
-    if (first) {
-      first=false;
-    }
+  if (isType(DOT,qualifiedNameNode)) {
+    AST node=qualifiedNameNode.getFirstChild();
+    StringBuffer buffer=new StringBuffer();
+    boolean first=true;
+    for (; node != null; node=node.getNextSibling()) {
+      if (first) {
+        first=false;
+      }
  else {
-      buffer.append(".");
+        buffer.append(".");
+      }
+      buffer.append(qualifiedName(node));
     }
-    buffer.append(qualifiedName(node));
+    return buffer.toString();
   }
-  return buffer.toString();
+ else {
+    return qualifiedNameNode.getText();
+  }
 }

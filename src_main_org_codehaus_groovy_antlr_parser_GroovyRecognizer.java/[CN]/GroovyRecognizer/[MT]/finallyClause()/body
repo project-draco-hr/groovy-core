@@ -3,18 +3,12 @@
   ASTPair currentAST=new ASTPair();
   AST finallyClause_AST=null;
   AST tmp209_AST=null;
-  if (inputState.guessing == 0) {
-    tmp209_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp209_AST);
-  }
+  tmp209_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp209_AST);
   match(LITERAL_finally);
   nlsWarn();
   compoundStatement();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    finallyClause_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  finallyClause_AST=(AST)currentAST.root;
   returnAST=finallyClause_AST;
 }

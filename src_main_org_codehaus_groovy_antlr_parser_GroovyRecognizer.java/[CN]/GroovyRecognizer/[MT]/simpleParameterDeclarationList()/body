@@ -3,18 +3,14 @@
   ASTPair currentAST=new ASTPair();
   AST simpleParameterDeclarationList_AST=null;
   simpleParameterDeclaration();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop213:     do {
       if ((LA(1) == COMMA)) {
         match(COMMA);
         nls();
         simpleParameterDeclaration();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
       }
  else {
         break _loop213;
@@ -29,8 +25,6 @@
     currentAST.child=simpleParameterDeclarationList_AST != null && simpleParameterDeclarationList_AST.getFirstChild() != null ? simpleParameterDeclarationList_AST.getFirstChild() : simpleParameterDeclarationList_AST;
     currentAST.advanceChildToEnd();
   }
-  if (inputState.guessing == 0) {
-    simpleParameterDeclarationList_AST=(AST)currentAST.root;
-  }
+  simpleParameterDeclarationList_AST=(AST)currentAST.root;
   returnAST=simpleParameterDeclarationList_AST;
 }

@@ -17,18 +17,14 @@
     _loop358:     do {
       if ((LA(1) == LBRACK) && (_tokenSet_42.member(LA(2))) && (_tokenSet_43.member(LA(3)))) {
         lb=LT(1);
-        if (inputState.guessing == 0) {
-          lb_AST=astFactory.create(lb);
-          astFactory.makeASTRoot(currentAST,lb_AST);
-        }
+        lb_AST=astFactory.create(lb);
+        astFactory.makeASTRoot(currentAST,lb_AST);
         match(LBRACK);
         if (inputState.guessing == 0) {
           lb_AST.setType(INDEX_OP);
         }
         zz=argList();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         match(RBRACK);
       }
  else {
@@ -43,8 +39,6 @@
     }
  while (true);
   }
-  if (inputState.guessing == 0) {
-    arrayOrTypeArgs_AST=(AST)currentAST.root;
-  }
+  arrayOrTypeArgs_AST=(AST)currentAST.root;
   returnAST=arrayOrTypeArgs_AST;
 }

@@ -9,24 +9,18 @@ switch (LA(1)) {
 case LITERAL_implements:
 {
         i=LT(1);
-        if (inputState.guessing == 0) {
-          i_AST=astFactory.create(i);
-        }
+        i_AST=astFactory.create(i);
         match(LITERAL_implements);
         nls();
         classOrInterfaceType(false);
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
 {
           _loop161:           do {
             if ((LA(1) == COMMA)) {
               match(COMMA);
               nls();
               classOrInterfaceType(false);
-              if (inputState.guessing == 0) {
-                astFactory.addASTChild(currentAST,returnAST);
-              }
+              astFactory.addASTChild(currentAST,returnAST);
             }
  else {
               break _loop161;
@@ -54,8 +48,6 @@ currentAST.root=implementsClause_AST;
 currentAST.child=implementsClause_AST != null && implementsClause_AST.getFirstChild() != null ? implementsClause_AST.getFirstChild() : implementsClause_AST;
 currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
 implementsClause_AST=(AST)currentAST.root;
-}
 returnAST=implementsClause_AST;
 }

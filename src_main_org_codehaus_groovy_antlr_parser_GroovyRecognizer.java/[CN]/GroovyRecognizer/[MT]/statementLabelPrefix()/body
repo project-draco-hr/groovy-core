@@ -5,22 +5,16 @@
   Token c=null;
   AST c_AST=null;
   AST tmp195_AST=null;
-  if (inputState.guessing == 0) {
-    tmp195_AST=astFactory.create(LT(1));
-    astFactory.addASTChild(currentAST,tmp195_AST);
-  }
+  tmp195_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp195_AST);
   match(IDENT);
   c=LT(1);
-  if (inputState.guessing == 0) {
-    c_AST=astFactory.create(c);
-    astFactory.makeASTRoot(currentAST,c_AST);
-  }
+  c_AST=astFactory.create(c);
+  astFactory.makeASTRoot(currentAST,c_AST);
   match(COLON);
   if (inputState.guessing == 0) {
     c_AST.setType(LABELED_STAT);
   }
-  if (inputState.guessing == 0) {
-    statementLabelPrefix_AST=(AST)currentAST.root;
-  }
+  statementLabelPrefix_AST=(AST)currentAST.root;
   returnAST=statementLabelPrefix_AST;
 }

@@ -5,10 +5,8 @@
   Token q=null;
   AST q_AST=null;
   q=LT(1);
-  if (inputState.guessing == 0) {
-    q_AST=astFactory.create(q);
-    astFactory.makeASTRoot(currentAST,q_AST);
-  }
+  q_AST=astFactory.create(q);
+  astFactory.makeASTRoot(currentAST,q_AST);
   match(QUESTION);
   if (inputState.guessing == 0) {
     q_AST.setType(WILDCARD_TYPE);
@@ -47,9 +45,7 @@ inputState.guessing--;
 }
 if (synPredMatched44) {
 typeArgumentBounds();
-if (inputState.guessing == 0) {
-  astFactory.addASTChild(currentAST,returnAST);
-}
+astFactory.addASTChild(currentAST,returnAST);
 }
  else if ((_tokenSet_39.member(LA(1))) && (_tokenSet_5.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
 }
@@ -57,8 +53,6 @@ if (inputState.guessing == 0) {
 throw new NoViableAltException(LT(1),getFilename());
 }
 }
-if (inputState.guessing == 0) {
 wildcardType_AST=(AST)currentAST.root;
-}
 returnAST=wildcardType_AST;
 }

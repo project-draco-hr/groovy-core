@@ -4,9 +4,7 @@
   AST singleDeclaration_AST=null;
   AST sd_AST=null;
   singleDeclarationNoInit();
-  if (inputState.guessing == 0) {
-    sd_AST=(AST)returnAST;
-  }
+  sd_AST=(AST)returnAST;
   if (inputState.guessing == 0) {
     singleDeclaration_AST=(AST)currentAST.root;
     singleDeclaration_AST=sd_AST;
@@ -19,9 +17,7 @@ switch (LA(1)) {
 case ASSIGN:
 {
         varInitializer();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case RBRACK:
@@ -37,8 +33,6 @@ default :
   }
 }
 }
-if (inputState.guessing == 0) {
 singleDeclaration_AST=(AST)currentAST.root;
-}
 returnAST=singleDeclaration_AST;
 }

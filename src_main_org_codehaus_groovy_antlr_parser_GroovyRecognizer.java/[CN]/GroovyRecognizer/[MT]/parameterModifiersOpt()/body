@@ -9,10 +9,8 @@ switch (LA(1)) {
 case FINAL:
 {
           AST tmp156_AST=null;
-          if (inputState.guessing == 0) {
-            tmp156_AST=astFactory.create(LT(1));
-            astFactory.addASTChild(currentAST,tmp156_AST);
-          }
+          tmp156_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp156_AST);
           match(FINAL);
           nls();
           break;
@@ -20,9 +18,7 @@ case FINAL:
 case AT:
 {
         annotation();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         nls();
         break;
       }
@@ -45,8 +41,6 @@ currentAST.root=parameterModifiersOpt_AST;
 currentAST.child=parameterModifiersOpt_AST != null && parameterModifiersOpt_AST.getFirstChild() != null ? parameterModifiersOpt_AST.getFirstChild() : parameterModifiersOpt_AST;
 currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
 parameterModifiersOpt_AST=(AST)currentAST.root;
-}
 returnAST=parameterModifiersOpt_AST;
 }

@@ -6,14 +6,10 @@ switch (LA(1)) {
 case IDENT:
 {
       AST tmp251_AST=null;
-      if (inputState.guessing == 0) {
-        tmp251_AST=astFactory.create(LT(1));
-        astFactory.addASTChild(currentAST,tmp251_AST);
-      }
+      tmp251_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp251_AST);
       match(IDENT);
-      if (inputState.guessing == 0) {
-        primaryExpression_AST=(AST)currentAST.root;
-      }
+      primaryExpression_AST=(AST)currentAST.root;
       break;
     }
 case STRING_LITERAL:
@@ -28,82 +24,54 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
     constant();
-    if (inputState.guessing == 0) {
-      astFactory.addASTChild(currentAST,returnAST);
-    }
-    if (inputState.guessing == 0) {
-      primaryExpression_AST=(AST)currentAST.root;
-    }
+    astFactory.addASTChild(currentAST,returnAST);
+    primaryExpression_AST=(AST)currentAST.root;
     break;
   }
 case LITERAL_new:
 {
   newExpression();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    primaryExpression_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  primaryExpression_AST=(AST)currentAST.root;
   break;
 }
 case LITERAL_this:
 {
 AST tmp252_AST=null;
-if (inputState.guessing == 0) {
-  tmp252_AST=astFactory.create(LT(1));
-  astFactory.addASTChild(currentAST,tmp252_AST);
-}
+tmp252_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp252_AST);
 match(LITERAL_this);
-if (inputState.guessing == 0) {
-  primaryExpression_AST=(AST)currentAST.root;
-}
+primaryExpression_AST=(AST)currentAST.root;
 break;
 }
 case LITERAL_super:
 {
 AST tmp253_AST=null;
-if (inputState.guessing == 0) {
 tmp253_AST=astFactory.create(LT(1));
 astFactory.addASTChild(currentAST,tmp253_AST);
-}
 match(LITERAL_super);
-if (inputState.guessing == 0) {
 primaryExpression_AST=(AST)currentAST.root;
-}
 break;
 }
 case LPAREN:
 {
 parenthesizedExpression();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
-if (inputState.guessing == 0) {
 primaryExpression_AST=(AST)currentAST.root;
-}
 break;
 }
 case STRING_CTOR_START:
 {
 stringConstructorExpression();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
-if (inputState.guessing == 0) {
 primaryExpression_AST=(AST)currentAST.root;
-}
 break;
 }
 case DOLLAR:
 {
 scopeEscapeExpression();
-if (inputState.guessing == 0) {
 astFactory.addASTChild(currentAST,returnAST);
-}
-if (inputState.guessing == 0) {
 primaryExpression_AST=(AST)currentAST.root;
-}
 break;
 }
 default :

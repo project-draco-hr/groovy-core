@@ -49,9 +49,7 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
         controlExpressionList();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
         break;
       }
 case RPAREN:
@@ -71,8 +69,6 @@ currentAST.root=forIter_AST;
 currentAST.child=forIter_AST != null && forIter_AST.getFirstChild() != null ? forIter_AST.getFirstChild() : forIter_AST;
 currentAST.advanceChildToEnd();
 }
-if (inputState.guessing == 0) {
 forIter_AST=(AST)currentAST.root;
-}
 returnAST=forIter_AST;
 }

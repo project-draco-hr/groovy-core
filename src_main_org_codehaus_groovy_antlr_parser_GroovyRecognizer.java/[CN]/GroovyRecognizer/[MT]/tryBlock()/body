@@ -3,24 +3,18 @@
   ASTPair currentAST=new ASTPair();
   AST tryBlock_AST=null;
   AST tmp180_AST=null;
-  if (inputState.guessing == 0) {
-    tmp180_AST=astFactory.create(LT(1));
-    astFactory.makeASTRoot(currentAST,tmp180_AST);
-  }
+  tmp180_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp180_AST);
   match(LITERAL_try);
   nlsWarn();
   compoundStatement();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop317:     do {
       if ((LA(1) == NLS || LA(1) == LITERAL_catch) && (LA(2) == LPAREN || LA(2) == LITERAL_catch) && (_tokenSet_100.member(LA(3)))) {
         nls();
         handler();
-        if (inputState.guessing == 0) {
-          astFactory.addASTChild(currentAST,returnAST);
-        }
+        astFactory.addASTChild(currentAST,returnAST);
       }
  else {
         break _loop317;
@@ -32,9 +26,7 @@
     if ((LA(1) == NLS || LA(1) == LITERAL_finally) && (_tokenSet_101.member(LA(2))) && (_tokenSet_71.member(LA(3)))) {
       nls();
       finallyClause();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
     }
  else     if ((_tokenSet_9.member(LA(1))) && (_tokenSet_10.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
     }
@@ -42,8 +34,6 @@
       throw new NoViableAltException(LT(1),getFilename());
     }
   }
-  if (inputState.guessing == 0) {
-    tryBlock_AST=(AST)currentAST.root;
-  }
+  tryBlock_AST=(AST)currentAST.root;
   returnAST=tryBlock_AST;
 }

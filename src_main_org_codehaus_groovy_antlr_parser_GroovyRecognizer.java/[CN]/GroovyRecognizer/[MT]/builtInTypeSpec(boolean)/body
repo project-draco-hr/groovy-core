@@ -6,18 +6,14 @@
   Token lb=null;
   AST lb_AST=null;
   builtInType();
-  if (inputState.guessing == 0) {
-    t_AST=(AST)returnAST;
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  t_AST=(AST)returnAST;
+  astFactory.addASTChild(currentAST,returnAST);
 {
     _loop55:     do {
       if ((LA(1) == LBRACK)) {
         lb=LT(1);
-        if (inputState.guessing == 0) {
-          lb_AST=astFactory.create(lb);
-          astFactory.makeASTRoot(currentAST,lb_AST);
-        }
+        lb_AST=astFactory.create(lb);
+        astFactory.makeASTRoot(currentAST,lb_AST);
         match(LBRACK);
         if (inputState.guessing == 0) {
           lb_AST.setType(ARRAY_DECLARATOR);
@@ -39,8 +35,6 @@
     currentAST.child=builtInTypeSpec_AST != null && builtInTypeSpec_AST.getFirstChild() != null ? builtInTypeSpec_AST.getFirstChild() : builtInTypeSpec_AST;
     currentAST.advanceChildToEnd();
   }
-  if (inputState.guessing == 0) {
-    builtInTypeSpec_AST=(AST)currentAST.root;
-  }
+  builtInTypeSpec_AST=(AST)currentAST.root;
   returnAST=builtInTypeSpec_AST;
 }

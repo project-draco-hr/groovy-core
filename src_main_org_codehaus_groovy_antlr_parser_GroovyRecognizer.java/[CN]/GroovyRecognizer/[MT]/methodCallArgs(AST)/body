@@ -17,25 +17,19 @@ case LPAREN:
         currentAST.advanceChildToEnd();
       }
       lp=LT(1);
-      if (inputState.guessing == 0) {
-        lp_AST=astFactory.create(lp);
-        astFactory.makeASTRoot(currentAST,lp_AST);
-      }
+      lp_AST=astFactory.create(lp);
+      astFactory.makeASTRoot(currentAST,lp_AST);
       match(LPAREN);
       if (inputState.guessing == 0) {
         lp_AST.setType(METHOD_CALL);
       }
       zz=argList();
-      if (inputState.guessing == 0) {
-        astFactory.addASTChild(currentAST,returnAST);
-      }
+      astFactory.addASTChild(currentAST,returnAST);
       match(RPAREN);
 {
         if ((LA(1) == LCURLY) && (_tokenSet_15.member(LA(2))) && (_tokenSet_16.member(LA(3)))) {
           appendedBlock();
-          if (inputState.guessing == 0) {
-            astFactory.addASTChild(currentAST,returnAST);
-          }
+          astFactory.addASTChild(currentAST,returnAST);
         }
  else         if ((_tokenSet_111.member(LA(1))) && (_tokenSet_5.member(LA(2))) && (_tokenSet_5.member(LA(3)))) {
         }
@@ -43,9 +37,7 @@ case LPAREN:
           throw new NoViableAltException(LT(1),getFilename());
         }
       }
-      if (inputState.guessing == 0) {
-        methodCallArgs_AST=(AST)currentAST.root;
-      }
+      methodCallArgs_AST=(AST)currentAST.root;
       break;
     }
 case LCURLY:
@@ -58,10 +50,8 @@ case LCURLY:
       currentAST.advanceChildToEnd();
     }
     appendedBlock();
-    if (inputState.guessing == 0) {
-      cb_AST=(AST)returnAST;
-      astFactory.addASTChild(currentAST,returnAST);
-    }
+    cb_AST=(AST)returnAST;
+    astFactory.addASTChild(currentAST,returnAST);
     if (inputState.guessing == 0) {
       methodCallArgs_AST=(AST)currentAST.root;
       AST lbrace=getASTFactory().dup(cb_AST);
@@ -71,9 +61,7 @@ case LCURLY:
       currentAST.child=methodCallArgs_AST != null && methodCallArgs_AST.getFirstChild() != null ? methodCallArgs_AST.getFirstChild() : methodCallArgs_AST;
       currentAST.advanceChildToEnd();
     }
-    if (inputState.guessing == 0) {
-      methodCallArgs_AST=(AST)currentAST.root;
-    }
+    methodCallArgs_AST=(AST)currentAST.root;
     break;
   }
 default :

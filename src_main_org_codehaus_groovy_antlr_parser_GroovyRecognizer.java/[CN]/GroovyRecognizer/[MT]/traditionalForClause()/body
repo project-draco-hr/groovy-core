@@ -3,21 +3,13 @@
   ASTPair currentAST=new ASTPair();
   AST traditionalForClause_AST=null;
   forInit();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
   match(SEMI);
   forCond();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
+  astFactory.addASTChild(currentAST,returnAST);
   match(SEMI);
   forIter();
-  if (inputState.guessing == 0) {
-    astFactory.addASTChild(currentAST,returnAST);
-  }
-  if (inputState.guessing == 0) {
-    traditionalForClause_AST=(AST)currentAST.root;
-  }
+  astFactory.addASTChild(currentAST,returnAST);
+  traditionalForClause_AST=(AST)currentAST.root;
   returnAST=traditionalForClause_AST;
 }
