@@ -16,6 +16,13 @@
           return InvokerHelper.invokeMethod(delegate,method,arguments);
         }
  catch (        GroovyRuntimeException e2) {
+          if (owner != this && delegate != owner) {
+            try {
+              return InvokerHelper.invokeMethod(owner,method,arguments);
+            }
+ catch (            GroovyRuntimeException e3) {
+            }
+          }
         }
       }
       throw e;

@@ -11,6 +11,13 @@
         return;
       }
  catch (      GroovyRuntimeException e2) {
+        if (owner != this && delegate != owner) {
+          try {
+            InvokerHelper.setProperty(owner,property,newValue);
+          }
+ catch (          GroovyRuntimeException e3) {
+          }
+        }
       }
     }
     throw e;
