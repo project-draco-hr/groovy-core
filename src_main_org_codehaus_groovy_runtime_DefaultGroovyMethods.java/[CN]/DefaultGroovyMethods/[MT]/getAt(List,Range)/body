@@ -1,3 +1,9 @@
 {
-  return list.subList(InvokerHelper.asInt(range.getFrom()),InvokerHelper.asInt(range.getTo()) + 1);
+  int size=self.size();
+  int from=normaliseIndex(InvokerHelper.asInt(range.getFrom()),size);
+  int to=normaliseIndex(InvokerHelper.asInt(range.getTo()) + 1,size);
+  if (to > size) {
+    to=size;
+  }
+  return self.subList(from,to);
 }
