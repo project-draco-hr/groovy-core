@@ -4,7 +4,8 @@
       if (k > characters.length) {
         throw new GroovyBugError("StringLexer lookahead tolerance exceeded");
       }
-      if (lookahead >= k) {
+      if (lookahead >= k && k >= 1) {
+        lookahead=1;
         return characters[k - 1];
       }
       lookahead=0;
@@ -25,22 +26,16 @@ case CharStream.EOS:
             return c2;
 case '\\':
           c='\\';
-        width=2;
-      break ESCAPE_SWITCH;
-case '$':
-{
-      if (allowGStrings) {
-        c=c1;
-        width=1;
-      }
- else {
-        c=c2;
-        width=2;
-      }
-      break ESCAPE_SWITCH;
-    }
+        characters[0]=c;
+      widths[0]=2;
+    lookahead=1;
+  return c;
+case 'f':
+c='\f';
+width=2;
+break ESCAPE_SWITCH;
 case 'r':
-  c='\r';
+c='\r';
 width=2;
 break ESCAPE_SWITCH;
 case 't':
@@ -51,10 +46,29 @@ case 'n':
 c='\n';
 width=2;
 break ESCAPE_SWITCH;
-default :
+case '$':
+if (allowGStrings) {
+c=c1;
+width=1;
+}
+ else {
 c=c2;
 width=2;
+}
 break ESCAPE_SWITCH;
+case '"':
+case '\'':
+c=c2;
+characters[0]=c;
+widths[0]=2;
+lookahead=1;
+return c;
+default :
+c='\\';
+characters[0]=c;
+widths[0]=1;
+lookahead=1;
+return c;
 }
 break C1_SWITCH;
 }
@@ -62,10 +76,19 @@ default :
 {
 if (c1 == watchFor) {
 boolean atEnd=true;
+if (delimiter.length() == 1) {
+if (source.la(offset) != watchFor) {
+atEnd=false;
+c=c1;
+break C1_SWITCH;
+}
+}
+ else {
 for (int j=1; j < delimiter.length(); j++) {
 if (source.la(offset + j) != delimiter.charAt(j)) {
 atEnd=false;
 break;
+}
 }
 }
 if (atEnd) {
@@ -74,6 +97,9 @@ return CharStream.EOS;
 }
 c=c1;
 width=1;
+if (c == '$' && allowGStrings) {
+lookahead=0;
+}
 break C1_SWITCH;
 }
 }
