@@ -1,0 +1,11 @@
+{
+  verifier.visitClass(classNode);
+  ClassWriter classWriter=new ClassWriter(true);
+  ClassGenerator generator=new ClassGenerator(context,classWriter,classLoader,file);
+  generator.visitClass(classNode);
+  onClass(classWriter,classNode);
+  LinkedList innerClasses=generator.getInnerClasses();
+  while (!innerClasses.isEmpty()) {
+    generateClass(context,(ClassNode)innerClasses.removeFirst(),file);
+  }
+}
