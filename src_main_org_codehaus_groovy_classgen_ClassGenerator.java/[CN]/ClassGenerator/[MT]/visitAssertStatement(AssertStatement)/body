@@ -7,7 +7,40 @@
   Label l1=new Label();
   cv.visitJumpInsn(GOTO,l1);
   cv.visitLabel(l0);
-  cv.visitLdcInsn(booleanExpression.getText());
+  String expressionText=booleanExpression.getText();
+  List list=new ArrayList();
+  addVariableNames(booleanExpression,list);
+  if (list.isEmpty()) {
+    cv.visitLdcInsn(expressionText);
+  }
+ else {
+    int line=statement.getLineNumber();
+    boolean first=true;
+    cv.visitTypeInsn(NEW,"java/lang/StringBuffer");
+    cv.visitInsn(DUP);
+    cv.visitLdcInsn(expressionText + ". Values: ");
+    cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
+    cv.visitVarInsn(ASTORE,++idx);
+    for (Iterator iter=list.iterator(); iter.hasNext(); ) {
+      String name=(String)iter.next();
+      String text=name + " = ";
+      if (first) {
+        first=false;
+      }
+ else {
+        text=", " + name;
+      }
+      cv.visitVarInsn(ALOAD,idx);
+      cv.visitLdcInsn(text);
+      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+      cv.visitInsn(POP);
+      cv.visitVarInsn(ALOAD,idx);
+      new VariableExpression(name).visit(this);
+      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
+      cv.visitInsn(POP);
+    }
+    cv.visitVarInsn(ALOAD,idx);
+  }
   statement.getMessageExpression().visit(this);
   assertFailedMethod.call(cv);
   cv.visitLabel(l1);

@@ -1,0 +1,15 @@
+{
+  if (expression instanceof BooleanExpression) {
+    BooleanExpression boolExp=(BooleanExpression)expression;
+    addVariableNames(boolExp.getExpression(),list);
+  }
+ else   if (expression instanceof BinaryExpression) {
+    BinaryExpression binExp=(BinaryExpression)expression;
+    addVariableNames(binExp.getLeftExpression(),list);
+    addVariableNames(binExp.getRightExpression(),list);
+  }
+ else   if (expression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)expression;
+    list.add(varExp.getVariable());
+  }
+}
