@@ -1,0 +1,17 @@
+{
+  try {
+    Class scriptClass=(Class)execScripts.get(script);
+    if (scriptClass == null) {
+      scriptClass=loader.parseClass(new ByteArrayInputStream(script.toString().getBytes()),source);
+      execScripts.put(script,scriptClass);
+    }
+ else {
+      System.out.println("exec() - Using cached version of class...");
+    }
+    InvokerHelper.invokeMethod(scriptClass,"main",EMPTY_ARGS);
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+    throw new BSFException(BSFException.REASON_EXECUTION_ERROR,"exception from Groovy: " + e,e);
+  }
+}
