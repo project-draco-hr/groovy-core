@@ -42,6 +42,10 @@
     if (object instanceof Object[]) {
       return DefaultGroovyMethods.getAt(Arrays.asList((Object[])object),property);
     }
+    MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
+    if (addListenerMethod != null) {
+      return null;
+    }
     if (lastException == null) {
       throw new MissingPropertyException(property,theClass);
     }
