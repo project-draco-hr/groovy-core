@@ -3,7 +3,7 @@
     return super.invokeMethod(name,args);
   }
  catch (  GroovyRuntimeException e) {
-    Object value=getExpandoProperties().get(name);
+    Object value=this.getProperty(name);
     if (value instanceof Closure) {
       Closure closure=(Closure)value;
       closure.setDelegate(this);
