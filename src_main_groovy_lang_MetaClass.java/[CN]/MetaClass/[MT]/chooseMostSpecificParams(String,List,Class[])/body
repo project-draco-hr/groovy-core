@@ -1,8 +1,34 @@
 {
+  Class[] wrappedArguments=wrap(arguments);
+  LinkedList directMatches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
+    Class[] paramTypes=wrap(getParameterTypes(method));
+    if (Arrays.equals(wrappedArguments,paramTypes))     directMatches.add(method);
+  }
+  if (directMatches.size() > 0) {
+    matchingMethods=directMatches;
+  }
+  if (directMatches.size() > 1) {
+    matchingMethods=directMatches;
+    directMatches=new LinkedList();
+    for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
+      Object method=iter.next();
+      Class[] paramTypes=getParameterTypes(method);
+      if (Arrays.equals(arguments,paramTypes))       directMatches.add(method);
+    }
+    if (directMatches.size() == 1)     matchingMethods=directMatches;
+  }
+  List superclassMatches=new ArrayList(matchingMethods);
+  for (Iterator iter=superclassMatches.iterator(); iter.hasNext(); ) {
+    Object method=iter.next();
     Class[] paramTypes=getParameterTypes(method);
-    if (Arrays.equals(arguments,paramTypes))     return method;
+    for (int i=0; i < paramTypes.length; i++) {
+      if (!isSuperclass(arguments[i],paramTypes[i]))       iter.remove();
+    }
+  }
+  if (superclassMatches.size() != 0) {
+    matchingMethods=superclassMatches;
   }
   Object answer=null;
   int size=arguments.length;
