@@ -34,7 +34,11 @@ case (Token.KEYWORD_FALSE):
 }
 case (Token.DOUBLE_QUOTE_STRING):
 {
-return compositeStringExpression(expressionRoot);
+GStringExpression gstring=compositeStringExpression(expressionRoot);
+if (gstring.isConstantString()) {
+  return gstring.asConstantString();
+}
+return gstring;
 }
 case (Token.IDENTIFIER):
 {
