@@ -44,7 +44,7 @@
       boolean holder=variable.isHolder() && !passingClosureParams;
       if (leftHandExpression) {
         if (holder) {
-          int tempIndex=lastVariableIndex + 1;
+          int tempIndex=defineVariable(createVariableName("reference"),"java.lang.Object",false).getIndex();
           cv.visitVarInsn(ASTORE,tempIndex);
           cv.visitVarInsn(ALOAD,index);
           cv.visitVarInsn(ALOAD,tempIndex);

@@ -19,7 +19,8 @@
     cv.visitInsn(DUP);
     cv.visitLdcInsn(expressionText + ". Values: ");
     cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
-    cv.visitVarInsn(ASTORE,++idx);
+    int tempIndex=defineVariable(createVariableName("assert"),"java.lang.Object",false).getIndex();
+    cv.visitVarInsn(ASTORE,tempIndex);
     for (Iterator iter=list.iterator(); iter.hasNext(); ) {
       String name=(String)iter.next();
       String text=name + " = ";
@@ -29,16 +30,16 @@
  else {
         text=", " + text;
       }
-      cv.visitVarInsn(ALOAD,idx);
+      cv.visitVarInsn(ALOAD,tempIndex);
       cv.visitLdcInsn(text);
       cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
       cv.visitInsn(POP);
-      cv.visitVarInsn(ALOAD,idx);
+      cv.visitVarInsn(ALOAD,tempIndex);
       new VariableExpression(name).visit(this);
       cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
       cv.visitInsn(POP);
     }
-    cv.visitVarInsn(ALOAD,idx);
+    cv.visitVarInsn(ALOAD,tempIndex);
   }
   statement.getMessageExpression().visit(this);
   assertFailedMethod.call(cv);
