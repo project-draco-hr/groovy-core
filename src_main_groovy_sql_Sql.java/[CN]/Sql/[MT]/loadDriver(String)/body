@@ -1,14 +1,14 @@
 {
   try {
-    Thread.currentThread().getContextClassLoader().loadClass(driverClassName);
+    Class.forName(driverClassName);
   }
  catch (  ClassNotFoundException e) {
     try {
-      Sql.class.getClassLoader().loadClass(driverClassName);
+      Thread.currentThread().getContextClassLoader().loadClass(driverClassName);
     }
  catch (    ClassNotFoundException e2) {
       try {
-        Class.forName(driverClassName);
+        Sql.class.getClassLoader().loadClass(driverClassName);
       }
  catch (      ClassNotFoundException e3) {
         throw e;
