@@ -11,6 +11,18 @@
         }
       }
     }
+    if (last instanceof ExceptionMessage) {
+      ExceptionMessage exceptionMessage=(ExceptionMessage)last;
+      Exception cause=exceptionMessage.getCause();
+      if (cause instanceof NoViableAltException) {
+        NoViableAltException antlrException=(NoViableAltException)cause;
+        result=isEofToken(antlrException.token);
+      }
+      if (cause instanceof MismatchedTokenException) {
+        MismatchedTokenException antlrException=(MismatchedTokenException)cause;
+        result=isEofToken(antlrException.token);
+      }
+    }
   }
   return result;
 }
