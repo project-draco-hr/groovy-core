@@ -1,0 +1,20 @@
+{
+  List stringList=new ArrayList();
+  List valueList=new ArrayList();
+  stringList.addAll(Arrays.asList(getStrings()));
+  valueList.addAll(Arrays.asList(getValues()));
+  if (stringList.size() > valueList.size()) {
+    valueList.add("");
+  }
+  stringList.addAll(Arrays.asList(that.getStrings()));
+  valueList.addAll(Arrays.asList(that.getValues()));
+  final String[] newStrings=new String[stringList.size()];
+  stringList.toArray(newStrings);
+  Object[] newValues=valueList.toArray();
+  return new GString(newValues){
+    public String[] getStrings(){
+      return newStrings;
+    }
+  }
+;
+}

@@ -1,0 +1,23 @@
+{
+  String[] currentStrings=getStrings();
+  String[] newStrings=null;
+  if (getValues().length <= getStrings().length) {
+    newStrings=new String[currentStrings.length + 1];
+    int lastIndex=currentStrings.length;
+    System.arraycopy(currentStrings,0,newStrings,0,lastIndex);
+    newStrings[lastIndex]=that;
+  }
+ else {
+    newStrings=new String[currentStrings.length];
+    int lastIndex=currentStrings.length - 1;
+    System.arraycopy(currentStrings,0,newStrings,0,lastIndex);
+    newStrings[lastIndex]=currentStrings[lastIndex] + that;
+  }
+  final String[] finalStrings=newStrings;
+  return new GString(getValues()){
+    public String[] getStrings(){
+      return finalStrings;
+    }
+  }
+;
+}
