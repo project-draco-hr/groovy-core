@@ -1,6 +1,9 @@
 {
   ClassNode owner=classNode;
   boolean parentIsInnerClass=owner instanceof InnerClassNode;
+  while (owner instanceof InnerClassNode) {
+    owner=owner.getOuterClass();
+  }
   String outerClassName=owner.getName();
   String name=outerClassName + "$" + context.getNextInnerClassIdx();
   boolean staticMethodOrInStaticClass=isStaticMethod() || classNode.isStaticClass();

@@ -24,17 +24,26 @@
     visitClassExpression(new ClassExpression(ownerTypeName));
   }
  else {
-    cv.visitVarInsn(ALOAD,0);
+    if (isInnerClass()) {
+      visitFieldExpression(new FieldExpression(classNode.getField("owner")));
+    }
+ else {
+      cv.visitVarInsn(ALOAD,0);
+    }
   }
   if (innerClass.getSuperClass().equals("groovy.lang.Closure")) {
     if (isStaticMethod()) {
       visitClassExpression(new ClassExpression(ownerTypeName));
     }
  else {
-      cv.visitVarInsn(ALOAD,0);
+      if (isInnerClass()) {
+        visitFieldExpression(new FieldExpression(classNode.getField("owner")));
+      }
+ else {
+        cv.visitVarInsn(ALOAD,0);
+      }
     }
   }
-  String prototype="(L" + helper.getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
   for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
@@ -44,8 +53,7 @@
  else {
       visitVariableExpression(new VariableExpression(name));
     }
-    prototype=prototype + "L" + helper.getClassInternalName(param.getType())+ ";";
   }
   passingClosureParams=false;
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",prototype + ")V");
+  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor("void",localVariableParams));
 }

@@ -3,16 +3,15 @@
     return getMetaClass().getProperty(this,property);
   }
  catch (  GroovyRuntimeException e) {
-    Object aDelegate=(delegate != null && delegate != this) ? delegate : owner;
     try {
-      return InvokerHelper.getProperty(aDelegate,property);
+      return InvokerHelper.getProperty(owner,property);
     }
- catch (    GroovyRuntimeException e2) {
-      if (owner != aDelegate) {
+ catch (    GroovyRuntimeException e3) {
+      if (delegate != null && delegate != this && delegate != owner) {
         try {
-          return InvokerHelper.getProperty(owner,property);
+          return InvokerHelper.getProperty(delegate,property);
         }
- catch (        GroovyRuntimeException e3) {
+ catch (        GroovyRuntimeException e2) {
         }
       }
     }
