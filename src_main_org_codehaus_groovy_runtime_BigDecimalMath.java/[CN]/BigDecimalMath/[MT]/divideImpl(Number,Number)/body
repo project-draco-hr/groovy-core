@@ -1,0 +1,6 @@
+{
+  BigDecimal bigLeft=toBigDecimal(left);
+  BigDecimal bigRight=toBigDecimal(right);
+  int scale=Math.max(bigLeft.scale(),bigRight.scale());
+  return normalize(bigLeft.divide(bigRight,Math.max(scale,MAX_DIVISION_SCALE),BigDecimal.ROUND_HALF_UP));
+}
