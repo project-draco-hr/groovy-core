@@ -4,6 +4,9 @@
   if (passThroughNodes.containsKey(name)) {
     widget=attributes.get(name);
     if ((widget != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(widget.getClass())) {
+      if (widget instanceof Window) {
+        containingWindows.add(widget);
+      }
       attributes.remove(name);
     }
  else {

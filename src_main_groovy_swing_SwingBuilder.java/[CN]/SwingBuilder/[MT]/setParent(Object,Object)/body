@@ -30,6 +30,9 @@
     }
     InvokerHelper.setProperty(parent,"layout",child);
   }
+ else   if (child instanceof JToolTip && parent instanceof JComponent) {
+    ((JToolTip)child).setComponent((JComponent)parent);
+  }
  else   if (parent instanceof JTable && child instanceof TableColumn) {
     JTable table=(JTable)parent;
     TableColumn column=(TableColumn)child;
@@ -38,6 +41,8 @@
  else   if (parent instanceof JTabbedPane && child instanceof Component) {
     JTabbedPane tabbedPane=(JTabbedPane)parent;
     tabbedPane.add((Component)child);
+  }
+ else   if (child instanceof Window) {
   }
  else {
     Component component=null;
@@ -59,7 +64,12 @@
       }
  else       if (parent instanceof JScrollPane) {
         JScrollPane scrollPane=(JScrollPane)parent;
-        scrollPane.setViewportView(component);
+        if (child instanceof JViewport) {
+          scrollPane.setViewport((JViewport)component);
+        }
+ else {
+          scrollPane.setViewportView(component);
+        }
       }
  else       if (parent instanceof JSplitPane) {
         JSplitPane splitPane=(JSplitPane)parent;

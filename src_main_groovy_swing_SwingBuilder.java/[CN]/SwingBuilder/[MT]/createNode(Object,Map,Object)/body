@@ -1,5 +1,8 @@
 {
   if (passThroughNodes.containsKey(name) && (value != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(value.getClass())) {
+    if (value instanceof Window) {
+      containingWindows.add(value);
+    }
     handleWidgetAttributes(value,attributes);
     return value;
   }

@@ -1,12 +1,18 @@
 {
+  JDialog dialog;
   Object owner=properties.remove("owner");
+  if ((owner == null) && !containingWindows.isEmpty()) {
+    owner=containingWindows.getLast();
+  }
   if (owner instanceof Frame) {
-    return new JDialog((Frame)owner);
+    dialog=new JDialog((Frame)owner);
   }
  else   if (owner instanceof Dialog) {
-    return new JDialog((Dialog)owner);
+    dialog=new JDialog((Dialog)owner);
   }
  else {
-    return new JDialog();
+    dialog=new JDialog();
   }
+  containingWindows.add(dialog);
+  return dialog;
 }
