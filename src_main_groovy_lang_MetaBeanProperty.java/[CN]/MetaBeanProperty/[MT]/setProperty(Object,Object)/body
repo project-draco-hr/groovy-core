@@ -1,0 +1,11 @@
+{
+  if (setter == null) {
+    throw new GroovyRuntimeException("Cannot set read-only property: " + name);
+  }
+  try {
+    setter.invoke(object,new Object[]{newValue});
+  }
+ catch (  Exception e) {
+    throw new GroovyRuntimeException("Cannot set property: " + name + " reason: "+ e.getMessage(),e);
+  }
+}

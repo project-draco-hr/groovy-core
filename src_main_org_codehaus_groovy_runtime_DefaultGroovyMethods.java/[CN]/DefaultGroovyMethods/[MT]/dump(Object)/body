@@ -8,7 +8,7 @@
   buffer.append("@");
   buffer.append(Integer.toHexString(self.hashCode()));
   boolean groovyObject=self instanceof GroovyObject;
-  while (true) {
+  while (klass != null) {
     Field[] fields=klass.getDeclaredFields();
     for (int i=0; i < fields.length; i++) {
       final Field field=fields[i];
@@ -35,9 +35,6 @@
       }
     }
     klass=klass.getSuperclass();
-    if (klass == null) {
-      break;
-    }
   }
   buffer.append(">");
   return buffer.toString();

@@ -1,0 +1,66 @@
+{
+  MetaProperty mp;
+  Method method;
+  MetaMethod getter=null;
+  MetaMethod setter=null;
+  Class klass;
+  klass=theClass;
+  while (klass != null) {
+    Field[] fields=klass.getDeclaredFields();
+    for (int i=0; i < fields.length; i++) {
+      if ((fields[i].getModifiers() & java.lang.reflect.Modifier.PUBLIC) == 0)       continue;
+      if (propertyMap.get(fields[i].getName()) != null)       continue;
+      propertyMap.put(fields[i].getName(),new MetaFieldProperty(fields[i]));
+    }
+    klass=klass.getSuperclass();
+  }
+  for (int i=0; i < propertyDescriptors.length; i++) {
+    PropertyDescriptor pd=propertyDescriptors[i];
+    if (propertyMap.get(pd.getName()) != null)     continue;
+    if (pd.getPropertyType() == null)     continue;
+    method=pd.getReadMethod();
+    if (method != null)     getter=findMethod(method);
+ else     getter=null;
+    method=pd.getWriteMethod();
+    if (method != null)     setter=findMethod(method);
+ else     setter=null;
+    mp=new MetaBeanProperty(pd.getName(),pd.getPropertyType(),getter,setter);
+    propertyMap.put(pd.getName(),mp);
+  }
+  klass=theClass;
+  while (klass != null) {
+    Method[] methods=klass.getDeclaredMethods();
+    for (int i=0; i < methods.length; i++) {
+      if (Modifier.isPublic(methods[i].getModifiers()) == false)       continue;
+      method=methods[i];
+      String methodName=method.getName();
+      if (methodName.startsWith("get") && methodName.length() > 3 && method.getParameterTypes().length == 0) {
+        String propName=methodName.substring(3).toLowerCase();
+        mp=(MetaProperty)propertyMap.get(propName);
+        if (mp != null) {
+          if (mp instanceof MetaBeanProperty && ((MetaBeanProperty)mp).getGetter() == null) {
+            ((MetaBeanProperty)mp).setGetter(findMethod(method));
+          }
+        }
+ else {
+          MetaBeanProperty mbp=new MetaBeanProperty(propName,method.getReturnType(),findMethod(method),null);
+          propertyMap.put(propName,mbp);
+        }
+      }
+ else       if (methodName.startsWith("set") && methodName.length() > 3 && method.getParameterTypes().length == 1) {
+        String propName=methodName.substring(3).toLowerCase();
+        mp=(MetaProperty)propertyMap.get(propName);
+        if (mp != null) {
+          if (mp instanceof MetaBeanProperty && ((MetaBeanProperty)mp).getSetter() == null) {
+            ((MetaBeanProperty)mp).setSetter(findMethod(method));
+          }
+        }
+ else {
+          MetaBeanProperty mbp=new MetaBeanProperty(propName,method.getParameterTypes()[0],null,findMethod(method));
+          propertyMap.put(propName,mbp);
+        }
+      }
+    }
+    klass=klass.getSuperclass();
+  }
+}

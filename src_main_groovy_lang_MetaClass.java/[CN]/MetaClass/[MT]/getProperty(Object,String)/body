@@ -1,17 +1,11 @@
 {
-  MetaMethod metaMethod=null;
-  PropertyDescriptor descriptor=(PropertyDescriptor)propertyDescriptors.get(property);
-  if (descriptor != null) {
-    Method method=descriptor.getReadMethod();
-    if (method == null) {
+  MetaProperty mp=(MetaProperty)propertyMap.get(property);
+  if (mp != null) {
+    try {
+      return mp.getProperty(object);
+    }
+ catch (    Exception e) {
       throw new GroovyRuntimeException("Cannot read property: " + property);
-    }
-    metaMethod=findMethod(method);
-    if (metaMethod == null) {
-      metaMethod=findGetter(object,"get" + capitalize(property));
-    }
-    if (metaMethod != null) {
-      return doMethodInvoke(object,metaMethod,EMPTY_ARRAY);
     }
   }
   if (genericGetMethod == null) {
@@ -74,11 +68,7 @@
     if (addListenerMethod != null) {
       return null;
     }
-    if (lastException == null) {
-      throw new MissingPropertyException(property,theClass);
-    }
- else {
-      throw new MissingPropertyException(property,theClass,lastException);
-    }
+    if (lastException == null)     throw new MissingPropertyException(property,theClass);
+ else     throw new MissingPropertyException(property,theClass,lastException);
   }
 }
