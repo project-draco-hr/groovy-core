@@ -1,9 +1,22 @@
 {
-  CSTNode datatype=rootNode(Token.IDENTIFIER);
-  while (lt() == Token.DOT) {
-    CSTNode dot=rootNode(Token.DOT,datatype);
-    consume(dot,Token.IDENTIFIER);
-    datatype=dot;
+  CSTNode datatype=null;
+switch (lt()) {
+case (Token.KEYWORD_VOID):
+case (Token.KEYWORD_INT):
+case (Token.KEYWORD_FLOAT):
+{
+      datatype=rootNode(lt());
+      break;
+    }
+default :
+{
+    datatype=rootNode(Token.IDENTIFIER);
+    while (lt() == Token.DOT) {
+      CSTNode dot=rootNode(Token.DOT,datatype);
+      consume(dot,Token.IDENTIFIER);
+      datatype=dot;
+    }
   }
-  return datatype;
+}
+return datatype;
 }
