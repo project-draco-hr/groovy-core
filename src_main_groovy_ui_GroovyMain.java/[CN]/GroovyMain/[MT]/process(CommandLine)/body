@@ -1,0 +1,21 @@
+{
+  GroovyMain main=new GroovyMain();
+  List args=line.getArgList();
+  main.isScriptFile=!line.hasOption('e');
+  main.processFiles=line.hasOption('p') || line.hasOption('n');
+  main.autoOutput=line.hasOption('p');
+  main.editFiles=line.hasOption('i');
+  if (main.editFiles) {
+    main.backupExtension=line.getOptionValue('i');
+  }
+  if (main.isScriptFile) {
+    if (args.isEmpty())     throw new ParseException("neither -e or filename provided");
+    main.script=(String)args.remove(0);
+    if (main.script.endsWith(".java"))     throw new ParseException("error: cannot compile file with .java extension: " + main.script);
+  }
+ else {
+    main.script=line.getOptionValue('e');
+  }
+  main.args=args;
+  main.run();
+}

@@ -1,0 +1,18 @@
+{
+  MetaClass.setUseReflection(true);
+  Options options=buildOptions();
+  try {
+    CommandLine cmd=parseCommandLine(options,args);
+    if (cmd.hasOption('h')) {
+      HelpFormatter formatter=new HelpFormatter();
+      formatter.printHelp("groovy",options);
+    }
+ else {
+      process(cmd);
+    }
+  }
+ catch (  ParseException pe) {
+    System.out.println("error: " + pe.getMessage());
+    System.out.println("usage: groovy [-e 'script'] [groovyScript] [arguments]");
+  }
+}
