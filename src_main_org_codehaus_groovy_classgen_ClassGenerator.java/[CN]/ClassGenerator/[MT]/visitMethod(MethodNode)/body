@@ -4,8 +4,8 @@
   String methodType=helper.getMethodDescriptor(node.getReturnType(),node.getParameters());
   cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,null);
   helper=new BytecodeHelper(cv);
-  resetVariableStack(node.getParameters());
   findMutableVariables(node);
+  resetVariableStack(node.getParameters());
   outputReturn=false;
   node.getCode().visit(this);
   if (!outputReturn) {

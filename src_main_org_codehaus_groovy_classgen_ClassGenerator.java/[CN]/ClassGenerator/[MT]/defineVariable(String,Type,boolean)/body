@@ -7,17 +7,28 @@
       answer.setHolder(true);
     }
     variableStack.put(name,answer);
-    if (define && !definingParameters) {
-      if (answer.isHolder()) {
-        cv.visitTypeInsn(NEW,"groovy/lang/Reference");
-        cv.visitInsn(DUP);
-        cv.visitMethodInsn(INVOKESPECIAL,"groovy/lang/Reference","<init>","()V");
-        cv.visitVarInsn(ASTORE,idx);
+    if (define) {
+      if (definingParameters) {
+        if (answer.isHolder()) {
+          cv.visitTypeInsn(NEW,"groovy/lang/Reference");
+          cv.visitInsn(DUP);
+          cv.visitVarInsn(ALOAD,idx);
+          cv.visitMethodInsn(INVOKESPECIAL,"groovy/lang/Reference","<init>","(Ljava/lang/Object;)V");
+          cv.visitVarInsn(ASTORE,idx);
+        }
       }
  else {
-        if (!leftHandExpression) {
-          cv.visitInsn(ACONST_NULL);
+        if (answer.isHolder()) {
+          cv.visitTypeInsn(NEW,"groovy/lang/Reference");
+          cv.visitInsn(DUP);
+          cv.visitMethodInsn(INVOKESPECIAL,"groovy/lang/Reference","<init>","()V");
           cv.visitVarInsn(ASTORE,idx);
+        }
+ else {
+          if (!leftHandExpression) {
+            cv.visitInsn(ACONST_NULL);
+            cv.visitVarInsn(ASTORE,idx);
+          }
         }
       }
     }
