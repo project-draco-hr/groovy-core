@@ -53,12 +53,6 @@ expr=new CSTNode(Token.keyword(-1,-1,"super"));
 identifier=rootNode(lt_bare());
 break PREFIX_SWITCH;
 }
-case (Token.IDENTIFIER):
-{
-identifier=rootNode(lt_bare());
-expr=identifier;
-break PREFIX_SWITCH;
-}
 case (Token.PATTERN_REGEX):
 {
 expr=regexPattern();
@@ -66,7 +60,11 @@ break PREFIX_SWITCH;
 }
 default :
 {
-throwExpected(new int[]{});
+expectIdentifier();
+Token token=consume(lt_bare());
+identifier=new CSTNode(Token.identifier(token.getStartLine(),token.getStartColumn(),token.getText()));
+expr=identifier;
+break PREFIX_SWITCH;
 }
 }
 if (identifier != null) {
