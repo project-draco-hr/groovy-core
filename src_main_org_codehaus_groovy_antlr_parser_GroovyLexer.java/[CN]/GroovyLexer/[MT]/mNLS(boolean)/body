@@ -4,53 +4,64 @@
   int _begin=text.length();
   _ttype=NLS;
   int _saveIndex;
+  mONE_NL(false);
 {
-    int _cnt555=0;
-    _loop555:     do {
-      if ((LA(1) == '\n' || LA(1) == '\r')) {
-        mONE_NL(false);
+    if (((LA(1) == '\t' || LA(1) == '\n' || LA(1) == '\u000c' || LA(1) == '\r' || LA(1) == ' ' || LA(1) == '/')) && (!whitespaceIncluded)) {
 {
-          _loop554:           do {
-            if ((LA(1) == '/') && (LA(2) == '/')) {
-              mSL_COMMENT(false);
+        int _cnt558=0;
+        _loop558:         do {
+switch (LA(1)) {
+case '\n':
+case '\r':
+{
+              mONE_NL(false);
+              break;
             }
- else             if ((LA(1) == '/') && (LA(2) == '*')) {
-              mML_COMMENT(false);
-            }
- else             if ((LA(1) == '\t' || LA(1) == '\u000c' || LA(1) == ' ')) {
-              mWS(false);
-            }
- else {
-              break _loop554;
-            }
+case '\t':
+case '\u000c':
+case ' ':
+{
+            mWS(false);
+            break;
           }
+default :
+        if ((LA(1) == '/') && (LA(2) == '/')) {
+          mSL_COMMENT(false);
+        }
+ else         if ((LA(1) == '/') && (LA(2) == '*')) {
+          mML_COMMENT(false);
+        }
+ else {
+          if (_cnt558 >= 1) {
+            break _loop558;
+          }
+ else {
+            throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+          }
+        }
+    }
+    _cnt558++;
+  }
  while (true);
-        }
-      }
+}
+}
  else {
-        if (_cnt555 >= 1) {
-          break _loop555;
-        }
+}
+}
+if (inputState.guessing == 0) {
+if (whitespaceIncluded) {
+}
+ else if (parenLevel != 0) {
+_ttype=Token.SKIP;
+}
  else {
-          throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
-        }
-      }
-      _cnt555++;
-    }
- while (true);
-  }
-  if (inputState.guessing == 0) {
-    if (parenLevel != 0) {
-      _ttype=Token.SKIP;
-    }
- else {
-      text.setLength(_begin);
-      text.append("<newline>");
-    }
-  }
-  if (_createToken && _token == null && _ttype != Token.SKIP) {
-    _token=makeToken(_ttype);
-    _token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
-  }
-  _returnToken=_token;
+text.setLength(_begin);
+text.append("<newline>");
+}
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
 }

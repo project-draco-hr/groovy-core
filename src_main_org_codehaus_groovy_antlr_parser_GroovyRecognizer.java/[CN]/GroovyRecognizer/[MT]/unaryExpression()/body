@@ -57,21 +57,6 @@ astFactory.addASTChild(currentAST,returnAST);
 unaryExpression_AST=(AST)currentAST.root;
 break;
 }
-case DOLLAR:
-{
-AST tmp326_AST=null;
-tmp326_AST=astFactory.create(LT(1));
-astFactory.makeASTRoot(currentAST,tmp326_AST);
-match(DOLLAR);
-if (inputState.guessing == 0) {
-tmp326_AST.setType(SCOPE_ESCAPE);
-}
-nls();
-unaryExpression();
-astFactory.addASTChild(currentAST,returnAST);
-unaryExpression_AST=(AST)currentAST.root;
-break;
-}
 case IDENT:
 case LBRACK:
 case LPAREN:
@@ -81,6 +66,7 @@ case LITERAL_this:
 case STRING_LITERAL:
 case BNOT:
 case LNOT:
+case DOLLAR:
 case STRING_CTOR_START:
 case LITERAL_new:
 case LITERAL_true:

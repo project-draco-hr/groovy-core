@@ -6,7 +6,7 @@
   int _saveIndex;
   match("/*");
 {
-    _loop566:     do {
+    _loop569:     do {
       if ((LA(1) == '\r') && (LA(2) == '\n') && ((LA(3) >= '\u0003' && LA(3) <= '\uffff'))&& ((LA(4) >= '\u0003' && LA(4) <= '\uffff'))) {
         match('\r');
         match('\n');
@@ -15,10 +15,10 @@
         }
       }
  else {
-        boolean synPredMatched564=false;
+        boolean synPredMatched567=false;
         if (((LA(1) == '*') && ((LA(2) >= '\u0003' && LA(2) <= '\uffff')) && ((LA(3) >= '\u0003' && LA(3) <= '\uffff'))&& (true))) {
-          int _m564=mark();
-          synPredMatched564=true;
+          int _m567=mark();
+          synPredMatched567=true;
           inputState.guessing++;
           try {
 {
@@ -27,12 +27,12 @@
             }
           }
  catch (          RecognitionException pe) {
-            synPredMatched564=false;
+            synPredMatched567=false;
           }
-          rewind(_m564);
+          rewind(_m567);
           inputState.guessing--;
         }
-        if (synPredMatched564) {
+        if (synPredMatched567) {
           match('*');
         }
  else         if ((LA(1) == '\r') && ((LA(2) >= '\u0003' && LA(2) <= '\uffff')) && ((LA(3) >= '\u0003' && LA(3) <= '\uffff'))&& (true)) {
@@ -53,7 +53,7 @@
           }
         }
  else {
-          break _loop566;
+          break _loop569;
         }
       }
     }
@@ -61,7 +61,7 @@
   }
   match("*/");
   if (inputState.guessing == 0) {
-    _ttype=Token.SKIP;
+    if (!whitespaceIncluded)     _ttype=Token.SKIP;
   }
   if (_createToken && _token == null && _ttype != Token.SKIP) {
     _token=makeToken(_ttype);
