@@ -2,20 +2,27 @@
   CSTNode expr=null;
 switch (lt()) {
 case (Token.NOT):
-case (Token.PLUS_PLUS):
 case (Token.PLUS):
-case (Token.MINUS_MINUS):
 case (Token.MINUS):
 {
       expr=rootNode(lt());
-      expr.addChild(unaryExpression());
+      expr.addChild(postfixExpression());
       break;
     }
-default :
+case (Token.PLUS_PLUS):
+case (Token.MINUS_MINUS):
 {
-    expr=primaryExpression();
+    expr=new CSTNode(Token.syntheticPrefix());
+    CSTNode prefixExpr=rootNode(lt());
+    expr.addChild(prefixExpr);
+    prefixExpr.addChild(primaryExpression());
     break;
   }
+default :
+{
+  expr=postfixExpression();
+  break;
+}
 }
 return expr;
 }

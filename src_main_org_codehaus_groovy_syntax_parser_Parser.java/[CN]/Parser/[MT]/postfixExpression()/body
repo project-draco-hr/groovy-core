@@ -1,12 +1,16 @@
 {
   CSTNode expr=primaryExpression();
-switch (lt()) {
+  Token laToken=la();
+  if (laToken != null) {
+switch (laToken.getType()) {
 case (Token.PLUS_PLUS):
 case (Token.MINUS_MINUS):
 {
-      expr=rootNode(lt(),expr);
-      break;
-    }
+        CSTNode primaryExpr=expr;
+        expr=new CSTNode(Token.syntheticPostfix());
+        expr.addChild(rootNode(lt(),primaryExpr));
+      }
+  }
 }
 return expr;
 }
