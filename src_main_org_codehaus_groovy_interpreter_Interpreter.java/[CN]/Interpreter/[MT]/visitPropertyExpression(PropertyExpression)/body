@@ -1,0 +1,13 @@
+{
+  Object value=evaluate(expression.getObjectExpression());
+  if (value == null) {
+    throw new InterpreterException("Cannot invoke property: " + expression.getProperty() + " on null object expression: "+ expression.getObjectExpression());
+  }
+  try {
+    Object answer=invoker.getProperty(value,expression.getProperty());
+    pushExpressionValue(answer);
+  }
+ catch (  InvokerInvocationException e) {
+    throw new InterpreterException("Exception occurred when invoking property: " + expression.getProperty() + " on: "+ value+ " reason: "+ e,e);
+  }
+}

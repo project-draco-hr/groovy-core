@@ -1,0 +1,18 @@
+{
+  PropertyDescriptor descriptor=(PropertyDescriptor)propertyDescriptors.get(property);
+  if (descriptor != null) {
+    Method method=descriptor.getWriteMethod();
+    if (method == null) {
+      throw new InvokerException("Cannot set read-only property: " + property);
+    }
+    Object[] arguments={newValue};
+    doMethodInvoke(method,object,arguments);
+    return;
+  }
+  if (genericSetMethod != null) {
+    Object[] arguments={property,newValue};
+    doMethodInvoke(genericSetMethod,object,arguments);
+    return;
+  }
+  throw new InvokerException("No such property: " + property);
+}

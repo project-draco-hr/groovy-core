@@ -1,0 +1,15 @@
+{
+  CSTNode compilationUnit=new CSTNode();
+  compilationUnit.addChild(packageDeclaration());
+  consume(Token.SEMICOLON);
+  CSTNode imports=new CSTNode();
+  compilationUnit.addChild(imports);
+  while (lt() == Token.KEYWORD_IMPORT) {
+    imports.addChild(importStatement());
+    consume(Token.SEMICOLON);
+  }
+  while (lt() != -1) {
+    compilationUnit.addChild(typeDeclaration());
+  }
+  return compilationUnit;
+}

@@ -1,0 +1,21 @@
+{
+  String qualifiedName="";
+  if (matches(nameRoot,Token.DOT)) {
+    CSTNode cur=nameRoot;
+    while (matches(cur,Token.DOT)) {
+      qualifiedName="." + cur.getChild(1).getToken().getText() + qualifiedName;
+      cur=cur.getChild(0);
+    }
+    qualifiedName=cur.getToken().getText() + qualifiedName;
+  }
+ else {
+    Token token=nameRoot.getToken();
+    if (token == null) {
+      qualifiedName="java.lang.Object";
+    }
+ else {
+      qualifiedName=token.getText();
+    }
+  }
+  return qualifiedName;
+}

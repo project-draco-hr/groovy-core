@@ -1,0 +1,10 @@
+{
+  RuntimeContext parent=new RuntimeContext();
+  RuntimeContext context=new RuntimeContext(parent);
+  assertContextVariable(context,"x",null);
+  parent.setVariable("x","abcdef");
+  assertContextVariable(context,"x","abcdef");
+  context.setVariable("x","xyz");
+  assertContextVariable(context,"x","xyz");
+  assertContextVariable(context,"y",null);
+}

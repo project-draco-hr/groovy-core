@@ -1,0 +1,58 @@
+{
+  CSTNode statement=null;
+switch (lt()) {
+case (Token.KEYWORD_FOR):
+{
+      statement=forStatement();
+      break;
+    }
+case (Token.KEYWORD_WHILE):
+{
+    break;
+  }
+case (Token.KEYWORD_CONTINUE):
+{
+  break;
+}
+case (Token.KEYWORD_BREAK):
+{
+break;
+}
+case (Token.KEYWORD_IF):
+{
+break;
+}
+case (Token.KEYWORD_TRY):
+{
+break;
+}
+case (Token.KEYWORD_THROW):
+{
+break;
+}
+case (Token.KEYWORD_SYNCHRONIZED):
+{
+break;
+}
+case (Token.KEYWORD_SWITCH):
+{
+break;
+}
+case (Token.KEYWORD_RETURN):
+{
+break;
+}
+case (Token.KEYWORD_ASSERT):
+{
+statement=assertStatement();
+consume(Token.SEMICOLON);
+break;
+}
+default :
+{
+statement=expression();
+consume(Token.SEMICOLON);
+}
+}
+return statement;
+}

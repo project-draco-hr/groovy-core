@@ -1,0 +1,18 @@
+{
+  if (k > buf.length) {
+    throw new LookAheadExhaustionException(k);
+  }
+  if (k > this.avail) {
+    int numToPopulate=k - this.avail;
+    for (int i=0; i < numToPopulate; ++i) {
+      if (this.first < 0) {
+        this.first=0;
+      }
+      int pop=((this.first + this.avail) % this.buf.length);
+      this.buf[pop]=nextToken();
+      ++this.avail;
+    }
+  }
+  int pos=((k + this.first - 1) % this.buf.length);
+  return this.buf[pos];
+}

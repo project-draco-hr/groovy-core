@@ -1,0 +1,18 @@
+{
+  Object[] argumentArray=EMPTY_ARRAY;
+  int length=method.getParameterTypes().length;
+  if (length > 0) {
+    if (length == 1) {
+      if (argumentList.isEmpty()) {
+        argumentArray=ARRAY_WITH_NULL;
+      }
+ else       if (argumentList.size() > 0) {
+        argumentArray=new Object[]{arguments};
+      }
+    }
+ else {
+      argumentArray=argumentList.toArray();
+    }
+  }
+  return doMethodInvoke(method,object,argumentArray);
+}

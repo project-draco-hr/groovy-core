@@ -1,0 +1,17 @@
+{
+  loop.getCollectionExpression().visit(this);
+  asIteratorMethod.call(cv);
+  cv.visitVarInsn(ASTORE,++idx);
+  Label label1=new Label();
+  cv.visitJumpInsn(GOTO,label1);
+  Label label2=new Label();
+  cv.visitLabel(label2);
+  cv.visitVarInsn(ALOAD,idx);
+  iteratorNextMethod.call(cv);
+  cv.visitVarInsn(ASTORE,++idx);
+  loop.getLoopBlock().visit(this);
+  cv.visitLabel(label1);
+  cv.visitVarInsn(ALOAD,--idx);
+  iteratorHasNextMethod.call(cv);
+  cv.visitJumpInsn(IFNE,label2);
+}

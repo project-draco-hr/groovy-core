@@ -1,0 +1,15 @@
+{
+  Parser parser=newParser("public class Cheese { }");
+  CSTNode root=parser.typeDeclaration();
+  assertNode(root,"class",Token.KEYWORD_CLASS,5);
+{
+    assertNullNode(root.getChild(0),1);
+{
+      assertNode(root.getChild(0).getChild(0),"public",Token.KEYWORD_PUBLIC,0);
+    }
+    assertNode(root.getChild(1),"Cheese",Token.IDENTIFIER,0);
+    assertNullNode(root.getChild(2),0);
+    assertNullNode(root.getChild(3),0);
+    assertNullNode(root.getChild(4),0);
+  }
+}

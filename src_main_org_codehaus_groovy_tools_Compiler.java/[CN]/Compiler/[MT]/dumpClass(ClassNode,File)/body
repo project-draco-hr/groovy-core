@@ -1,0 +1,18 @@
+{
+  ClassWriter classWriter=new ClassWriter(true);
+  ClassGenerator classGenerator=new ClassGenerator(classWriter,getClassLoader(),file.getName());
+  classGenerator.visitClass(classNode);
+  byte[] code=classWriter.toByteArray();
+  File outputFile=createOutputFile(classNode.getName());
+  if (!outputFile.getParentFile().exists()) {
+    outputFile.getParentFile().mkdirs();
+  }
+  LOG.info("generating class to: " + outputFile);
+  FileOutputStream out=new FileOutputStream(outputFile);
+  try {
+    out.write(code);
+  }
+  finally {
+    out.close();
+  }
+}

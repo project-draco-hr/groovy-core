@@ -1,0 +1,22 @@
+{
+  statement.getExpression().visit(this);
+  Class c=getExpressionType(statement.getExpression());
+  if (!c.isPrimitive()) {
+    cv.visitInsn(ARETURN);
+  }
+ else {
+    if (c == double.class) {
+      cv.visitInsn(DRETURN);
+    }
+ else     if (c == float.class) {
+      cv.visitInsn(FRETURN);
+    }
+ else     if (c == long.class) {
+      cv.visitInsn(LRETURN);
+    }
+ else {
+      cv.visitInsn(IRETURN);
+    }
+  }
+  outputReturn=true;
+}

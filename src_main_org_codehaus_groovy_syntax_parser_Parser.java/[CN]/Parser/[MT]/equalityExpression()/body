@@ -1,0 +1,14 @@
+{
+  CSTNode expr=relationalExpression();
+switch (lt()) {
+case (Token.COMPARE_EQUAL):
+case (Token.COMPARE_NOT_EQUAL):
+case (Token.COMPARE_IDENTICAL):
+{
+      expr=rootNode(lt(),expr);
+      expr.addChild(relationalExpression());
+      break;
+    }
+}
+return expr;
+}

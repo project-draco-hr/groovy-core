@@ -1,0 +1,14 @@
+{
+  CSTNode statementBlock=rootNode(Token.LEFT_CURLY_BRACE);
+  while (lt() != Token.RIGHT_CURLY_BRACE) {
+    statementBlock.addChild(statement());
+    if (lt() == Token.RIGHT_CURLY_BRACE) {
+      break;
+    }
+ else     if (lt() == -1) {
+      throwExpected(new int[]{Token.RIGHT_CURLY_BRACE});
+    }
+  }
+  consume(Token.RIGHT_CURLY_BRACE);
+  return statementBlock;
+}

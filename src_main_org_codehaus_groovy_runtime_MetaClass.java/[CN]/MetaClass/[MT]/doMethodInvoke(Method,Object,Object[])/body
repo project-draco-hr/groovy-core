@@ -1,0 +1,11 @@
+{
+  try {
+    return method.invoke(object,argumentArray);
+  }
+ catch (  InvocationTargetException e) {
+    throw new InvokerInvocationException(e);
+  }
+catch (  Exception e) {
+    throw new InvokerException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+}

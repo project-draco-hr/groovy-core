@@ -1,0 +1,32 @@
+{
+  int compareToValue=0;
+switch (expression.getOperation().getType()) {
+case Token.COMPARE_IDENTICAL:
+    compareIdentical(expression);
+  break;
+case Token.COMPARE_EQUAL:
+compareEqual(expression);
+break;
+case Token.COMPARE_NOT_EQUAL:
+compareNotEqual(expression);
+break;
+case Token.COMPARE_GREATER_THAN:
+compareToValue=compareTo(expression);
+pushBooleanExpressionValue(compareToValue > 0);
+break;
+case Token.COMPARE_GREATER_THAN_EQUAL:
+compareToValue=compareTo(expression);
+pushBooleanExpressionValue(compareToValue >= 0);
+break;
+case Token.COMPARE_LESS_THAN:
+compareToValue=compareTo(expression);
+pushBooleanExpressionValue(compareToValue < 0);
+break;
+case Token.COMPARE_LESS_THAN_EQUAL:
+compareToValue=compareTo(expression);
+pushBooleanExpressionValue(compareToValue <= 0);
+break;
+default :
+throw new InterpreterException("Operation: " + expression.getOperation() + " not supported");
+}
+}

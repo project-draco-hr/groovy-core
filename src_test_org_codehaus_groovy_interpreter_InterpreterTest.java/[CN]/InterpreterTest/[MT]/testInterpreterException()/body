@@ -1,0 +1,15 @@
+{
+  try {
+    throw new InterpreterException("message");
+  }
+ catch (  InterpreterException e) {
+    assertEquals("message",e.getMessage());
+  }
+  try {
+    throw new InterpreterException("message",new NullPointerException());
+  }
+ catch (  InterpreterException e) {
+    assertEquals("message",e.getMessage());
+    assertTrue(e.getCause() instanceof NullPointerException);
+  }
+}

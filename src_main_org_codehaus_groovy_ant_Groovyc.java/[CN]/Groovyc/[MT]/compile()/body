@@ -1,0 +1,26 @@
+{
+  Compiler compiler=new Compiler();
+  if (compileList.length > 0) {
+    log("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ (destDir != null ? " to " + destDir : ""));
+    if (listFiles) {
+      for (int i=0; i < compileList.length; i++) {
+        String filename=compileList[i].getAbsolutePath();
+        log(filename);
+      }
+    }
+    try {
+      compiler.setClasspath(getClasspath().toString());
+      compiler.setOutputDir(destDir);
+      compiler.compile(compileList);
+    }
+ catch (    Exception e) {
+      String message="Compile failed: " + e;
+      if (failOnError) {
+        throw new BuildException(message,e,getLocation());
+      }
+ else {
+        log(message,Project.MSG_ERR);
+      }
+    }
+  }
+}

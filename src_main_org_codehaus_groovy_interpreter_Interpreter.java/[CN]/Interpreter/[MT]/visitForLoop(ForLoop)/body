@@ -1,0 +1,8 @@
+{
+  Statement block=forLoop.getLoopBlock();
+  Iterator iter=createIterator(forLoop.getCollectionExpression());
+  while (iter.hasNext()) {
+    context.setVariable(forLoop.getVariable(),iter.next());
+    block.visit(this);
+  }
+}

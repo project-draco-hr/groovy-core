@@ -1,0 +1,14 @@
+{
+  Object value=evaluate(call.getObjectExpression());
+  if (value == null) {
+    throw new InterpreterException("Cannot invoke method: " + call.getMethod() + " on null object expression: "+ call.getObjectExpression());
+  }
+  Object arguments=evaluate(call.getArguments());
+  try {
+    Object answer=invoker.invokeMethod(value,call.getMethod(),arguments);
+    pushExpressionValue(answer);
+  }
+ catch (  InvokerInvocationException e) {
+    throw new InterpreterException("Exception occurred when invoking method: " + call.getMethod() + " on: "+ value+ " reason: "+ e,e);
+  }
+}

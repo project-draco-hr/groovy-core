@@ -1,0 +1,14 @@
+{
+  buffer=new StringBuffer();
+  List list=new ArrayList();
+  list.add("abc");
+  list.add("def");
+  invoker.invokeMethod(list,"each",new Closure(){
+    public Object call(    Object arguments){
+      buffer.append(arguments.toString());
+      return null;
+    }
+  }
+);
+  assertEquals("buffer","abcdef",buffer.toString());
+}

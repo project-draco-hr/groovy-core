@@ -1,0 +1,19 @@
+{
+  CSTNode statement=rootNode(Token.KEYWORD_FOR);
+  boolean rightRequired=false;
+  if (lt() == Token.LEFT_PARENTHESIS) {
+    consume(Token.LEFT_PARENTHESIS);
+    rightRequired=true;
+  }
+  consume(statement,Token.IDENTIFIER);
+  Token potentialIn=consume(Token.IDENTIFIER);
+  if (!potentialIn.getText().equals("in")) {
+    throw new UnexpectedTokenException(potentialIn,new int[]{});
+  }
+  statement.addChild(expression());
+  if (rightRequired) {
+    consume(Token.RIGHT_PARENTHESIS);
+  }
+  statement.addChild(statementBlock());
+  return statement;
+}

@@ -1,0 +1,9 @@
+{
+  if (object == null) {
+    throw new InvokerException("Cannot invoke method: " + methodName + " on null object");
+  }
+  Class theClass=object.getClass();
+  List argumentList=asList(arguments);
+  MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+  return metaClass.invokeMethod(object,methodName,arguments,argumentList);
+}

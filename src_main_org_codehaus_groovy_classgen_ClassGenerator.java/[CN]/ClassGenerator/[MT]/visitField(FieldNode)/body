@@ -1,0 +1,12 @@
+{
+  Object fieldValue=null;
+  Expression expression=fieldNode.getInitialValueExpression();
+  if (expression instanceof ConstantExpression) {
+    ConstantExpression constantExp=(ConstantExpression)expression;
+    Object value=constantExp.getValue();
+    if (isPrimitiveFieldType(value)) {
+      fieldValue=value;
+    }
+  }
+  classVisitor.visitField(fieldNode.getModifiers(),fieldNode.getName(),getTypeDescription(fieldNode.getType()),fieldValue);
+}

@@ -1,0 +1,19 @@
+{
+  CSTNode importStatement=rootNode(Token.KEYWORD_IMPORT);
+  CSTNode cur=rootNode(Token.IDENTIFIER);
+  while (lt() == Token.DOT) {
+    CSTNode dot=rootNode(Token.DOT,cur);
+    consume(dot,Token.IDENTIFIER);
+    cur=dot;
+  }
+  importStatement.addChild(cur);
+  if (lt() == Token.KEYWORD_AS) {
+    CSTNode as=rootNode(Token.KEYWORD_AS);
+    consume(as,Token.IDENTIFIER);
+    importStatement.addChild(as);
+  }
+ else {
+    importStatement.addChild(new CSTNode());
+  }
+  return importStatement;
+}

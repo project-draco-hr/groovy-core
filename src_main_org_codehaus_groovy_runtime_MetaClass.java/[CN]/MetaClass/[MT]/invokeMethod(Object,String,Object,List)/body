@@ -1,0 +1,25 @@
+{
+  if (object == null) {
+    throw new InvokerException("Cannot invoke method: " + methodName + " on null object");
+  }
+  Class theClass=object.getClass();
+  List methods=getMethods(methodName);
+  if (!methods.isEmpty()) {
+    Method method=chooseMethod(methods,arguments,argumentList);
+    if (method != null) {
+      return doMethodInvoke(object,method,arguments,argumentList);
+    }
+  }
+  List staticMethods=getStaticMethods(methodName);
+  List staticArgumentList=new ArrayList(argumentList.size() + 1);
+  staticArgumentList.add(object);
+  staticArgumentList.addAll(argumentList);
+  Method method=chooseMethod(staticMethods,staticArgumentList,staticArgumentList);
+  if (method == null) {
+    method=findStaticMethod(methodName,staticArgumentList);
+  }
+  if (method != null) {
+    return doMethodInvoke(null,method,arguments,staticArgumentList);
+  }
+  throw new InvokerException("Could not find matching method called: " + methodName);
+}

@@ -1,0 +1,11 @@
+{
+  List expressions=expression.getMapEntryExpressions();
+  Object[] values=new Object[expressions.size() * 2];
+  int idx=0;
+  for (Iterator iter=expressions.iterator(); iter.hasNext(); ) {
+    MapEntryExpression entryExpression=(MapEntryExpression)iter.next();
+    values[idx++]=evaluate(entryExpression.getKeyExpression());
+    values[idx++]=evaluate(entryExpression.getValueExpression());
+  }
+  pushExpressionValue(InvokerHelper.createMap(values));
+}

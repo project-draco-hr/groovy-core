@@ -1,0 +1,13 @@
+{
+  try {
+    this.lexer.nextToken();
+    fail("should have thrown UnexpectedCharacterException");
+  }
+ catch (  UnexpectedCharacterException e) {
+    assertEquals(c,e.getCharacter());
+    assertEquals(line,e.getLine());
+    assertEquals(column,e.getColumn());
+    return e.getExpected();
+  }
+  return new char[]{};
+}

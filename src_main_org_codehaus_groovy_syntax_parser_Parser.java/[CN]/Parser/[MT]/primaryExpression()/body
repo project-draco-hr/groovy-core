@@ -1,0 +1,40 @@
+{
+  CSTNode expr=null;
+switch (lt()) {
+case (Token.KEYWORD_THIS):
+case (Token.KEYWORD_SUPER):
+case (Token.KEYWORD_TRUE):
+case (Token.KEYWORD_FALSE):
+{
+      expr=rootNode(lt());
+      break;
+    }
+case (Token.LEFT_PARENTHESIS):
+{
+    consume(Token.LEFT_PARENTHESIS);
+    expr=expression();
+    consume(Token.RIGHT_PARENTHESIS);
+    break;
+  }
+case (Token.IDENTIFIER):
+{
+  CSTNode cur=rootNode(Token.IDENTIFIER);
+  while (lt() == Token.DOT) {
+    cur=rootNode(Token.DOT,cur);
+    consume(cur,Token.IDENTIFIER);
+  }
+  if (lt() == Token.LEFT_PARENTHESIS) {
+    cur=rootNode(Token.LEFT_PARENTHESIS,cur);
+    cur.addChild(argumentList());
+    consume(Token.RIGHT_PARENTHESIS);
+  }
+  expr=cur;
+  break;
+}
+default :
+{
+throwExpected(new int[]{});
+}
+}
+return expr;
+}

@@ -1,0 +1,12 @@
+{
+  CSTNode statement=rootNode(Token.KEYWORD_ASSERT);
+  statement.addChild(conditionalExpression());
+  if (lt() == Token.COLON) {
+    consume(Token.COLON);
+    statement.addChild(expression());
+  }
+ else {
+    statement.addChild(new CSTNode());
+  }
+  return statement;
+}

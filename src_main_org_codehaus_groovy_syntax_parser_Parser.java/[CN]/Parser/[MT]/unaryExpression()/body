@@ -1,0 +1,20 @@
+{
+  CSTNode expr=null;
+switch (lt()) {
+case (Token.PLUS_PLUS):
+case (Token.PLUS):
+case (Token.MINUS_MINUS):
+case (Token.MINUS):
+{
+      expr=rootNode(lt());
+      expr.addChild(unaryExpression());
+      break;
+    }
+default :
+{
+    expr=primaryExpression();
+    break;
+  }
+}
+return expr;
+}

@@ -1,0 +1,9 @@
+{
+  Parser parser=newParser("import Cheese");
+  CSTNode root=parser.importStatement();
+  assertNode(root,"import",Token.KEYWORD_IMPORT,2);
+{
+    assertNode(root.getChild(0),"Cheese",Token.IDENTIFIER,0);
+    assertNullNode(root.getChild(1),0);
+  }
+}

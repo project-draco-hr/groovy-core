@@ -1,0 +1,10 @@
+{
+  Parser parser=newParser("property cheese;");
+  CSTNode root=parser.bodyStatement();
+  assertNode(root,"property",Token.KEYWORD_PROPERTY,3);
+{
+    assertNullNode(root.getChild(0),0);
+    assertNode(root.getChild(1),"cheese",Token.IDENTIFIER,0);
+    assertNullNode(root.getChild(2),0);
+  }
+}

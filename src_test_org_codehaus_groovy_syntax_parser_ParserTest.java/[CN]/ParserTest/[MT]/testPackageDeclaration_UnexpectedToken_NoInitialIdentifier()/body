@@ -1,0 +1,12 @@
+{
+  Parser parser=newParser("package .");
+  try {
+    parser.packageDeclaration();
+    fail("should have thrown UnexpectedTokenException");
+  }
+ catch (  UnexpectedTokenException e) {
+    assertToken(e.getToken(),".",Token.DOT);
+    assertLength(1,e.getExpectedTypes());
+    assertContains(Token.IDENTIFIER,e.getExpectedTypes());
+  }
+}

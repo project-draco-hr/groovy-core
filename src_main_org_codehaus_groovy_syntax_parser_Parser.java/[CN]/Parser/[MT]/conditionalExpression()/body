@@ -1,0 +1,10 @@
+{
+  CSTNode expr=logicalOrExpression();
+  if (lt() == Token.QUESTION) {
+    rootNode(Token.QUESTION,expr);
+    expr.addChild(assignmentExpression());
+    consume(Token.COLON);
+    expr.addChild(conditionalExpression());
+  }
+  return expr;
+}

@@ -1,0 +1,12 @@
+{
+  Object value=expression.getValue();
+  if (value == null) {
+    cv.visitInsn(ACONST_NULL);
+  }
+ else   if (value instanceof String) {
+    cv.visitLdcInsn((String)value);
+  }
+ else {
+    throw new ClassGeneratorException("Cannot generate constant expression for value: " + value);
+  }
+}

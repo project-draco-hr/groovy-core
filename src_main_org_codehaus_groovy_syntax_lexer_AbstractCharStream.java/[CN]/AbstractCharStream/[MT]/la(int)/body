@@ -1,0 +1,13 @@
+{
+  if (k > buf.length) {
+    throw new LookAheadExhaustionException(k);
+  }
+  int pos=this.cur + k - 1;
+  pos%=buf.length;
+  if (pos == this.limit) {
+    this.buf[pos]=nextChar();
+    ++this.limit;
+    this.limit%=buf.length;
+  }
+  return this.buf[pos];
+}

@@ -1,0 +1,37 @@
+{
+  CSTNode[] modifierNodes=modifiersRoot.getChildren();
+  int modifiers=0;
+  for (int i=0; i < modifierNodes.length; ++i) {
+    SWITCH: switch (modifierNodes[i].getToken().getType()) {
+case (Token.KEYWORD_PUBLIC):
+{
+        modifiers|=Constants.ACC_PUBLIC;
+        break SWITCH;
+      }
+case (Token.KEYWORD_PROTECTED):
+{
+      modifiers|=Constants.ACC_PROTECTED;
+      break SWITCH;
+    }
+case (Token.KEYWORD_PRIVATE):
+{
+    modifiers|=Constants.ACC_PRIVATE;
+    break SWITCH;
+  }
+case (Token.KEYWORD_STATIC):
+{
+  modifiers|=Constants.ACC_STATIC;
+  break SWITCH;
+}
+case (Token.KEYWORD_ABSTRACT):
+{
+modifiers|=Constants.ACC_ABSTRACT;
+break SWITCH;
+}
+}
+}
+if (modifiers == 0) {
+modifiers=Constants.ACC_PUBLIC;
+}
+return modifiers;
+}

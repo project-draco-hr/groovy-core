@@ -1,0 +1,12 @@
+{
+  Parser parser=newParser("cheeseIt() { }");
+  CSTNode modifiers=new CSTNode();
+  CSTNode root=parser.methodDeclaration(modifiers);
+  assertNode(root,"<synthetic>",Token.SYNTH_METHOD,5);
+{
+    assertNullNode(root.getChild(0),0);
+    assertNode(root.getChild(1),"cheeseIt",Token.IDENTIFIER,0);
+    assertNullNode(root.getChild(2),0);
+    assertNode(root.getChild(3),"(",Token.LEFT_PARENTHESIS,0);
+  }
+}

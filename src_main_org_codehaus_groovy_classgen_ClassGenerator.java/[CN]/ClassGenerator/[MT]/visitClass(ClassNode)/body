@@ -1,0 +1,20 @@
+{
+  this.classNode=classNode;
+  this.internalClassName=getClassInternalName(classNode.getName());
+  this.internalBaseClassName=getClassInternalName(classNode.getSuperClass());
+  classVisitor.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,getClassInternalNames(classNode.getInterfaces()),sourceFile);
+  ensureClassNodeHasConstructor(classNode);
+  for (Iterator iter=classNode.getFields().iterator(); iter.hasNext(); ) {
+    visitField((FieldNode)iter.next());
+  }
+  for (Iterator iter=classNode.getProperties().iterator(); iter.hasNext(); ) {
+    visitProperty((PropertyNode)iter.next());
+  }
+  for (Iterator iter=classNode.getConstructors().iterator(); iter.hasNext(); ) {
+    visitConstructor((ConstructorNode)iter.next());
+  }
+  for (Iterator iter=classNode.getMethods().iterator(); iter.hasNext(); ) {
+    visitMethod((MethodNode)iter.next());
+  }
+  classVisitor.visitEnd();
+}

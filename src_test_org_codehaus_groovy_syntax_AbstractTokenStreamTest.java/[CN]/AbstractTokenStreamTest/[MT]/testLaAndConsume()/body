@@ -1,0 +1,14 @@
+{
+  Token[] tokens=new Token[]{Token.leftParenthesis(1,1),Token.rightParenthesis(1,2)};
+  MockTokenStream in=new MockTokenStream(tokens);
+  assertSame(tokens[0],in.la());
+  assertSame(tokens[0],in.la());
+  assertSame(tokens[0],in.la(1));
+  assertSame(tokens[0],in.la(1));
+  assertSame(tokens[1],in.la(2));
+  in.consume(Token.LEFT_PARENTHESIS);
+  assertSame(tokens[1],in.la());
+  assertSame(tokens[1],in.la());
+  assertSame(tokens[1],in.la(1));
+  assertSame(tokens[1],in.la(1));
+}

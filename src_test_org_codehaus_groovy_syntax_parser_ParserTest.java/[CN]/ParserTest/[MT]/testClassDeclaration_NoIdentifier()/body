@@ -1,0 +1,12 @@
+{
+  Parser parser=newParser("class {");
+  CSTNode modifiers=new CSTNode();
+  try {
+    parser.classDeclaration(modifiers);
+  }
+ catch (  UnexpectedTokenException e) {
+    assertToken(e.getToken(),"{",Token.LEFT_CURLY_BRACE);
+    assertLength(1,e.getExpectedTypes());
+    assertContains(Token.IDENTIFIER,e.getExpectedTypes());
+  }
+}

@@ -1,0 +1,44 @@
+{
+  CSTNode methodDeclaration=new CSTNode(Token.syntheticMethod());
+  methodDeclaration.addChild(modifiers);
+  CSTNode type=null;
+switch (lt(2)) {
+case (Token.LEFT_PARENTHESIS):
+{
+      type=new CSTNode();
+      break;
+    }
+default :
+{
+    type=datatype();
+  }
+}
+consume(methodDeclaration,Token.IDENTIFIER);
+methodDeclaration.addChild(type);
+CSTNode paramsRoot=rootNode(Token.LEFT_PARENTHESIS);
+methodDeclaration.addChild(paramsRoot);
+while (lt() != Token.RIGHT_PARENTHESIS) {
+switch (lt(2)) {
+case (Token.DOT):
+case (Token.IDENTIFIER):
+{
+    type=datatype();
+    break;
+  }
+default :
+{
+  type=new CSTNode();
+}
+}
+CSTNode param=new CSTNode();
+paramsRoot.addChild(param);
+consume(param,Token.IDENTIFIER);
+param.addChild(type);
+if (lt() == Token.COMMA) {
+consume(Token.COMMA);
+}
+}
+consume(Token.RIGHT_PARENTHESIS);
+methodDeclaration.addChild(statementBlock());
+return methodDeclaration;
+}

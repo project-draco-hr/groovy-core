@@ -1,0 +1,24 @@
+{
+  CSTNode declaration=null;
+  CSTNode modifiers=new CSTNode();
+  while (isModifier(lt())) {
+    consume(modifiers,lt());
+  }
+switch (lt()) {
+case (Token.KEYWORD_CLASS):
+{
+      declaration=classDeclaration(modifiers);
+      break;
+    }
+case (Token.KEYWORD_INTERFACE):
+{
+    declaration=interfaceDeclaration(modifiers);
+    break;
+  }
+default :
+{
+  throwExpected(new int[]{Token.KEYWORD_CLASS,Token.KEYWORD_INTERFACE});
+}
+}
+return declaration;
+}

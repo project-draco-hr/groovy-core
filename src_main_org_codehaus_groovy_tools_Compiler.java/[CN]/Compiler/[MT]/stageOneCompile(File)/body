@@ -1,0 +1,14 @@
+{
+  LOG.info("stage-1 compiling: " + file);
+  FileInputStream fileIn=new FileInputStream(file);
+  BufferedInputStream bufferedIn=new BufferedInputStream(fileIn);
+  InputStreamCharStream charStream=new InputStreamCharStream(bufferedIn);
+  try {
+    Lexer lexer=new Lexer(charStream);
+    Parser parser=new Parser(new LexerTokenStream(lexer));
+    return parser.compilationUnit();
+  }
+  finally {
+    charStream.close();
+  }
+}

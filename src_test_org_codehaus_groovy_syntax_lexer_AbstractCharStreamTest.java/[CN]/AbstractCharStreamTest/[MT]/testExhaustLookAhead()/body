@@ -1,0 +1,17 @@
+{
+  MockCharStream in=new MockCharStream("123456789");
+  assertEquals('1',in.la(1));
+  assertEquals('2',in.la(2));
+  assertEquals('3',in.la(3));
+  assertEquals('4',in.la(4));
+  assertEquals('5',in.la(5));
+  in.consume();
+  assertEquals('6',in.la(5));
+  try {
+    in.la(6);
+    fail("should have thrown LookAheadExhaustionException");
+  }
+ catch (  LookAheadExhaustionException e) {
+    assertEquals(6,e.getLookAhead());
+  }
+}

@@ -1,0 +1,10 @@
+{
+  Token token=la();
+  if (token.getType() != type) {
+    throw new TokenMismatchException(token,type);
+  }
+  ++this.first;
+  --this.avail;
+  this.first%=this.buf.length;
+  return token;
+}

@@ -1,0 +1,13 @@
+{
+  Parser parser=newParser("cheese");
+  try {
+    parser.typeDeclaration();
+    fail("should have thrown UnexpectedTokenException");
+  }
+ catch (  UnexpectedTokenException e) {
+    assertToken(e.getToken(),"cheese",Token.IDENTIFIER);
+    assertLength(2,e.getExpectedTypes());
+    assertContains(Token.KEYWORD_CLASS,e.getExpectedTypes());
+    assertContains(Token.KEYWORD_INTERFACE,e.getExpectedTypes());
+  }
+}

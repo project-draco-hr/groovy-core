@@ -1,0 +1,24 @@
+{
+  if (name.indexOf(".") >= 0) {
+    return name;
+  }
+  if ("void".equals(name)) {
+    return name;
+  }
+  if (this.imports.containsKey(name)) {
+    return (String)this.imports.get(name);
+  }
+  try {
+    getClassLoader().loadClass("java.lang." + name);
+    return "java.lang." + name;
+  }
+ catch (  ClassNotFoundException e) {
+    try {
+      getClassLoader().loadClass("groovy.lang." + name);
+      return "groovy.lang." + name;
+    }
+ catch (    ClassNotFoundException ee) {
+    }
+  }
+  return null;
+}

@@ -1,0 +1,13 @@
+{
+  Parser parser=newParser("class Cheese { }");
+  CSTNode modifiers=new CSTNode();
+  CSTNode root=parser.classDeclaration(modifiers);
+  assertNode(root,"class",Token.KEYWORD_CLASS,5);
+{
+    assertSame(modifiers,root.getChild(0));
+    assertNode(root.getChild(1),"Cheese",Token.IDENTIFIER,0);
+    assertNullNode(root.getChild(2),0);
+    assertNullNode(root.getChild(3),0);
+    assertNullNode(root.getChild(4),0);
+  }
+}

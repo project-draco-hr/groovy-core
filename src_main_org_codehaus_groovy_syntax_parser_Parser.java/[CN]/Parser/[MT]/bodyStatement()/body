@@ -1,0 +1,24 @@
+{
+  CSTNode bodyStatement=null;
+  CSTNode modifiers=new CSTNode();
+  while (isModifier(lt())) {
+    consume(modifiers,lt());
+  }
+switch (lt()) {
+case (Token.KEYWORD_PROPERTY):
+{
+      bodyStatement=propertyDeclaration(modifiers);
+      consume(Token.SEMICOLON);
+      break;
+    }
+case (Token.IDENTIFIER):
+{
+    bodyStatement=methodDeclaration(modifiers);
+    break;
+  }
+default :
+{
+}
+}
+return bodyStatement;
+}

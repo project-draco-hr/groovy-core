@@ -1,0 +1,11 @@
+{
+  String methodType=getMethodDescriptor(node.getReturnType(),node.getParameters());
+  cv=classVisitor.visitMethod(node.getModifiers(),node.getName(),methodType,null);
+  resetVariableStack(node.getParameters());
+  outputReturn=false;
+  node.getCode().visit(this);
+  if (!outputReturn) {
+    cv.visitInsn(RETURN);
+  }
+  cv.visitMaxs(0,0);
+}

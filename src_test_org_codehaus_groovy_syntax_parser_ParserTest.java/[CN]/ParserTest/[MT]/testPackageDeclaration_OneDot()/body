@@ -1,0 +1,12 @@
+{
+  Parser parser=newParser("package cheese.toast");
+  CSTNode root=parser.packageDeclaration();
+  assertNode(root,"package",Token.KEYWORD_PACKAGE,1);
+{
+    assertNode(root.getChild(0),".",Token.DOT,2);
+{
+      assertNode(root.getChild(0).getChild(0),"cheese",Token.IDENTIFIER,0);
+      assertNode(root.getChild(0).getChild(1),"toast",Token.IDENTIFIER,0);
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  CSTNode expr=unaryExpression();
+switch (lt()) {
+case (Token.MULTIPLY):
+case (Token.DIVIDE):
+case (Token.MOD):
+{
+      expr=rootNode(lt(),expr);
+      expr.addChild(unaryExpression());
+      break;
+    }
+}
+return expr;
+}

@@ -1,0 +1,23 @@
+{
+  String sql=null;
+  ResultSet results=null;
+  PreparedStatement statement=connection.prepareStatement(sql);
+  try {
+    results=statement.executeQuery();
+    closure.call(results);
+  }
+  finally {
+    if (results != null) {
+      try {
+        results.close();
+      }
+ catch (      SQLException e) {
+      }
+    }
+    try {
+      statement.close();
+    }
+ catch (    SQLException e) {
+    }
+  }
+}

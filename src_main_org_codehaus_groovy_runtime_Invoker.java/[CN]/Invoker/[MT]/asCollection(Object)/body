@@ -1,0 +1,18 @@
+{
+  if (value == null) {
+    return Collections.EMPTY_LIST;
+  }
+ else   if (value instanceof Collection) {
+    return (Collection)value;
+  }
+ else   if (value instanceof Map) {
+    Map map=(Map)value;
+    return map.entrySet();
+  }
+ else   if (value.getClass().isArray()) {
+    return Arrays.asList((Object[])value);
+  }
+ else {
+    return Collections.singletonList(value);
+  }
+}
