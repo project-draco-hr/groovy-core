@@ -1,8 +1,7 @@
 {
   CSTNode parameterList=new CSTNode(Token.syntheticList());
   while (lt() != endOfListDemarc) {
-    expectIdentifier();
-    CSTNode name=rootNode(lt_bare());
+    CSTNode name=nameReference(true);
     CSTNode namedParam=rootNode_bare(Token.COLON,name);
     namedParam.addChild(expression());
     parameterList.addChild(namedParam);

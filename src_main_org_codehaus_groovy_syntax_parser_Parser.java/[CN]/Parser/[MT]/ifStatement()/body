@@ -1,20 +1,25 @@
 {
   CSTNode statement=rootNode(Token.KEYWORD_IF);
   consume(Token.LEFT_PARENTHESIS);
-  statement.addChild(expression());
-  consume(Token.RIGHT_PARENTHESIS);
-  statement.addChild(statementOrStatementBlock());
-  CSTNode cur=statement;
-  while (lt() == Token.KEYWORD_ELSE && lt(2) == Token.KEYWORD_IF) {
-    consume(Token.KEYWORD_ELSE);
-    CSTNode next=ifStatement();
-    cur.addChild(next);
-    cur=next;
+  try {
+    statement.addChild(expression());
   }
+ catch (  SyntaxException e) {
+    collector.add(e);
+    recover(GENERAL_CLAUSE_TERMINATOR);
+  }
+  consume(Token.RIGHT_PARENTHESIS);
+  statement.addChild(statementBody(false));
   if (lt() == Token.KEYWORD_ELSE) {
-    CSTNode next=rootNode(Token.KEYWORD_ELSE);
-    next.addChild(statementOrStatementBlock());
-    cur.addChild(next);
+    if (lt(2) == Token.KEYWORD_IF) {
+      consume(Token.KEYWORD_ELSE);
+      statement.addChild(ifStatement());
+    }
+ else {
+      CSTNode last=rootNode(Token.KEYWORD_ELSE);
+      statement.addChild(last);
+      last.addChild(statementBody(false));
+    }
   }
   return statement;
 }

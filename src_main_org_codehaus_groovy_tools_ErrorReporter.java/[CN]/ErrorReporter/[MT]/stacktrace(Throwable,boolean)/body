@@ -1,6 +1,11 @@
 {
   if (debug || always) {
-    stream.println(">>> stacktrace:");
-    e.printStackTrace(stream);
+    println(">>> stacktrace:");
+    if (output instanceof PrintStream) {
+      e.printStackTrace((PrintStream)output);
+    }
+ else {
+      e.printStackTrace((PrintWriter)output);
+    }
   }
 }

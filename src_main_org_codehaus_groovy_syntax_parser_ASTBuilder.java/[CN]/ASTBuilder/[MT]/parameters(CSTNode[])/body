@@ -3,7 +3,14 @@
   for (int i=0; i < paramRoots.length; ++i) {
     String identifier=paramRoots[i].getChild(1).getToken().getText();
     String type=resolvedQualifiedName(paramRoots[i].getChild(0));
-    parameters[i]=new Parameter(type,identifier);
+    CSTNode defaultNode=paramRoots[i].getChild(2);
+    if (defaultNode == null || defaultNode.isEmpty()) {
+      parameters[i]=new Parameter(type,identifier);
+    }
+ else {
+      Expression defaultExpression=expression(defaultNode);
+      parameters[i]=new Parameter(type,identifier,defaultExpression);
+    }
   }
   return parameters;
 }

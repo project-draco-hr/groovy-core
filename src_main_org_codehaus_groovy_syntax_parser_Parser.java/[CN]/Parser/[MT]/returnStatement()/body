@@ -1,5 +1,8 @@
 {
   CSTNode statement=rootNode(Token.KEYWORD_RETURN);
-  statement.addChild(expression());
+  if (lt_bare() != -1 && !la_bare().isA(STATEMENT_TERMINATORS)) {
+    statement.addChild(expression());
+  }
+  endOfStatement();
   return statement;
 }

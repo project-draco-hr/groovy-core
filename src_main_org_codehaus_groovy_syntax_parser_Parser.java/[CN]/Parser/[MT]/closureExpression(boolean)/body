@@ -1,0 +1,31 @@
+{
+  CSTNode expr=rootNode(Token.LEFT_CURLY_BRACE);
+  expr.getToken().setInterpretation(Token.SYNTH_CLOSURE);
+  int value=lt(1);
+  boolean canBeParamList=false;
+  if (lt() != -1 && la().isIdentifierOrPrimitiveTypeKeyword()) {
+    if (lt(2) != -1 && la(2).isIdentifierOrPrimitiveTypeKeyword()) {
+      canBeParamList=lt(3) == Token.PIPE || lt(3) == Token.COMMA;
+    }
+ else {
+      canBeParamList=lt(2) == Token.PIPE || lt(2) == Token.COMMA;
+    }
+  }
+  if (canBeParamList) {
+    expr.addChild(parameterDeclarationList());
+    pipeRequired=true;
+  }
+ else {
+    expr.addChild(new CSTNode());
+  }
+  CSTNode block=new CSTNode();
+  if (lt_bare() != Token.RIGHT_CURLY_BRACE) {
+    if (pipeRequired || lt() == Token.PIPE) {
+      consume(Token.PIPE);
+    }
+    statementsUntilRightCurly(block);
+  }
+  consume(Token.RIGHT_CURLY_BRACE);
+  expr.addChild(block);
+  return expr;
+}

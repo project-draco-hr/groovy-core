@@ -1,6 +1,8 @@
 {
   CSTNode statement=rootNode(Token.KEYWORD_SYNCHRONIZED);
+  consume(Token.LEFT_PARENTHESIS);
   statement.addChild(expression());
-  statement.addChild(statementBlock());
+  consume(Token.RIGHT_PARENTHESIS);
+  statement.addChild(statementBody(true));
   return statement;
 }

@@ -101,6 +101,7 @@ break ROOT_SWITCH;
 case ('#'):
 {
 consume();
+token=Token.newline(getStartLine(),getStartColumn() - 1);
 CONSUME_LOOP: while (true) {
 switch (la()) {
 case ('\r'):
@@ -128,7 +129,6 @@ consume();
 }
 }
 }
-token=null;
 break ROOT_SWITCH;
 }
 case ('/'):
@@ -146,6 +146,7 @@ break MULTICHAR_SWITCH;
 case ('/'):
 {
 consume();
+token=Token.newline(getStartLine(),getStartColumn() - 2);
 CONSUME_LOOP: while (true) {
 switch (la()) {
 case ('\r'):
@@ -173,7 +174,6 @@ consume();
 }
 }
 }
-token=null;
 break MULTICHAR_SWITCH;
 }
 case ('*'):

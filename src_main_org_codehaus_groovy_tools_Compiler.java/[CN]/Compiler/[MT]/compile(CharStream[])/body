@@ -20,6 +20,9 @@
         throw failures;
       }
     }
+catch (    Exception e) {
+      throw new CompilerBugException(descriptors[i],"parse",e);
+    }
  finally {
       try {
         sources[i].close();
@@ -43,6 +46,9 @@
         failures.add(descriptors[i],e);
       }
     }
+catch (    Exception e) {
+      throw new CompilerBugException(descriptors[i],"AST creation",e);
+    }
   }
   for (Iterator iter=unit.getModules().iterator(); iter.hasNext(); ) {
     ModuleNode module=(ModuleNode)iter.next();
@@ -60,6 +66,9 @@
       if (!e.isEmpty()) {
         failures.add(module.getDescription(),e);
       }
+    }
+catch (    Exception e) {
+      throw new CompilerBugException(module.getDescription(),"class generation",e);
     }
   }
   if (!failures.isEmpty()) {

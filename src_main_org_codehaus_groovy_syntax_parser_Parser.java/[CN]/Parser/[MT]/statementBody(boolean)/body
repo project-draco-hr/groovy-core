@@ -1,0 +1,17 @@
+{
+  CSTNode body=null;
+  if (lt() == Token.LEFT_CURLY_BRACE) {
+    body=statementsUntilRightCurly(rootNode(Token.LEFT_CURLY_BRACE));
+    body.getToken().setInterpretation(Token.SYNTH_BLOCK);
+    consume(Token.RIGHT_CURLY_BRACE);
+  }
+ else {
+    if (requireBraces) {
+      throwExpected(new int[]{Token.LEFT_CURLY_BRACE});
+    }
+ else {
+      body=statement();
+    }
+  }
+  return body;
+}

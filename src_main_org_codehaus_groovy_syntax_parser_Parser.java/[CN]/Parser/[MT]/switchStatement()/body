@@ -4,32 +4,25 @@
   statement.addChild(expression());
   consume(Token.RIGHT_PARENTHESIS);
   consume(Token.LEFT_CURLY_BRACE);
-  while (lt() == Token.KEYWORD_CASE) {
-    CSTNode caseBlock=rootNode(Token.KEYWORD_CASE);
-    caseBlock.addChild(expression());
-    consume(Token.COLON);
-    while (lt() != Token.RIGHT_CURLY_BRACE && lt() != Token.KEYWORD_CASE && lt() != Token.KEYWORD_DEFAULT) {
-      caseBlock.addChild(statement());
-      if (lt() == Token.RIGHT_CURLY_BRACE) {
-        break;
-      }
- else       if (lt() == -1) {
-        throwExpected(new int[]{Token.RIGHT_CURLY_BRACE});
-      }
+  boolean defaultFound=false;
+  while (lt() == Token.KEYWORD_CASE || lt() == Token.KEYWORD_DEFAULT) {
+    CSTNode caseBlock=null;
+    if (lt() == Token.KEYWORD_CASE) {
+      caseBlock=rootNode(Token.KEYWORD_CASE);
+      caseBlock.addChild(expression());
     }
-    statement.addChild(caseBlock);
-  }
-  if (lt() == Token.KEYWORD_DEFAULT) {
-    CSTNode caseBlock=rootNode(Token.KEYWORD_DEFAULT);
+ else {
+      if (defaultFound) {
+        throw new ParserException("duplicate default entry in switch",la());
+      }
+      caseBlock=rootNode(Token.KEYWORD_DEFAULT);
+      defaultFound=true;
+    }
     consume(Token.COLON);
-    while (lt() != Token.RIGHT_CURLY_BRACE) {
-      caseBlock.addChild(statement());
-      if (lt() == Token.RIGHT_CURLY_BRACE) {
-        break;
-      }
- else       if (lt() == -1) {
-        throwExpected(new int[]{Token.RIGHT_CURLY_BRACE});
-      }
+    boolean first=true;
+    while (lt() != -1 && !la().isA(SWITCH_STATEMENT_BLOCK_TERMINATORS)) {
+      caseBlock.addChild(statement(first));
+      first=false;
     }
     statement.addChild(caseBlock);
   }

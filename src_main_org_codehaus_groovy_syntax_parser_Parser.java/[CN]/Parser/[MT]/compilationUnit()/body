@@ -4,11 +4,10 @@
   if (lt() == Token.KEYWORD_PACKAGE) {
     try {
       packageDeclaration=packageDeclaration();
-      optionalSemicolon();
     }
  catch (    SyntaxException e) {
       collector.add(e);
-      errorCorrect();
+      recover();
     }
   }
   if (packageDeclaration == null) {
@@ -21,11 +20,10 @@
   while (lt() == Token.KEYWORD_IMPORT) {
     try {
       imports.addChild(importStatement());
-      optionalSemicolon();
     }
  catch (    SyntaxException e) {
       collector.add(e);
-      errorCorrect();
+      recover();
     }
   }
   while (lt() != -1) {
@@ -34,7 +32,7 @@
     }
  catch (    SyntaxException e) {
       collector.add(e);
-      errorCorrect();
+      recover();
     }
   }
   return compilationUnit;

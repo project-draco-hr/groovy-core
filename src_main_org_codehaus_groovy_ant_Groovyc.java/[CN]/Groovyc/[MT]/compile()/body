@@ -16,7 +16,9 @@
       compiler.compile(compileList);
     }
  catch (    Exception e) {
-      String message="Compile failed: " + e;
+      StringWriter writer=new StringWriter();
+      new ErrorReporter(e,false).write(new PrintWriter(writer));
+      String message=writer.toString();
       if (failOnError) {
         throw new BuildException(message,e,getLocation());
       }

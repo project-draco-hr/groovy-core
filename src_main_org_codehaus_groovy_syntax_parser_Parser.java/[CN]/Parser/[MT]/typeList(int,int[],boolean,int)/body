@@ -13,17 +13,18 @@
  catch (      SyntaxException e) {
         collector.add(e);
         if (limit > 0 && typeList.children() >= limit) {
-          while (lt() != -1 && !Parser.ofType(lt(),until)) {
-            consume(lt());
-          }
+          recover(until);
         }
  else {
-          while (lt() != -1 && lt() != Token.COMMA && !Parser.ofType(lt(),until)) {
-            consume(lt());
+          int[] safe=new int[until.length + 1];
+          safe[0]=Token.COMMA;
+          for (int i=0; i < until.length; i++) {
+            safe[i + 1]=until[i];
           }
+          recover(safe);
         }
       }
-      if (Parser.ofType(lt(),until)) {
+      if (lt() == -1 || la().isA(until)) {
         break;
       }
     }

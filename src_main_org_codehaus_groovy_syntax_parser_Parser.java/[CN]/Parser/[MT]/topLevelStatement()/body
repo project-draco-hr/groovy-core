@@ -4,10 +4,10 @@
     consume(lt());
     CSTNode modifiers=modifierList(false,false);
     CSTNode type=optionalDatatype(false,true);
-    CSTNode identifier=identifier(false);
+    CSTNode identifier=nameDeclaration(false);
     result=methodDeclaration(modifiers,type,identifier,false);
   }
- else   if (isModifier(lt()) || lt() == Token.KEYWORD_CLASS || lt() == Token.KEYWORD_INTERFACE) {
+ else   if (lt() != -1 && (la().isModifier() || lt() == Token.KEYWORD_CLASS || lt() == Token.KEYWORD_INTERFACE)) {
     CSTNode modifiers=modifierList(true,true);
 switch (lt()) {
 case Token.KEYWORD_CLASS:

@@ -1,19 +1,30 @@
 {
   CSTNode statement=rootNode(Token.KEYWORD_TRY);
-  statement.addChild(statementBlock());
+  statement.addChild(statementBody(true));
   CSTNode catches=new CSTNode();
   while (lt() == Token.KEYWORD_CATCH) {
-    CSTNode catchBlock=rootNode(Token.KEYWORD_CATCH);
-    consume(Token.LEFT_PARENTHESIS);
-    catchBlock.addChild(datatype(false));
-    consume(catchBlock,Token.IDENTIFIER);
-    consume(Token.RIGHT_PARENTHESIS);
-    catchBlock.addChild(statementBlock());
-    catches.addChild(catchBlock);
+    try {
+      CSTNode catchBlock=rootNode(Token.KEYWORD_CATCH);
+      consume(Token.LEFT_PARENTHESIS);
+      try {
+        catchBlock.addChild(datatype(false));
+        consume(catchBlock,Token.IDENTIFIER);
+      }
+ catch (      SyntaxException e) {
+        collector.add(e);
+        recover(GENERAL_CLAUSE_TERMINATOR);
+      }
+      consume(Token.RIGHT_PARENTHESIS);
+      catchBlock.addChild(statementBody(true));
+      catches.addChild(catchBlock);
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+    }
   }
   if (lt() == Token.KEYWORD_FINALLY) {
     consume(Token.KEYWORD_FINALLY);
-    statement.addChild(statementBlock());
+    statement.addChild(statementBody(true));
   }
  else {
     statement.addChild(new CSTNode());

@@ -1,6 +1,6 @@
 {
   Statement statement=null;
-switch (statementRoot.getToken().getType()) {
+switch (statementRoot.getToken().getInterpretation()) {
 case (Token.KEYWORD_ASSERT):
 {
       statement=assertStatement(statementRoot);
@@ -59,6 +59,23 @@ break;
 case (Token.KEYWORD_SYNCHRONIZED):
 {
 statement=synchronizedStatement(statementRoot);
+break;
+}
+case (Token.SYNTH_BLOCK):
+case (Token.LEFT_CURLY_BRACE):
+{
+statement=statementBlock(statementRoot);
+break;
+}
+case (Token.SYNTH_CLOSURE):
+{
+statement=expressionStatement(statementRoot);
+break;
+}
+case (Token.SYNTH_LABEL):
+{
+statement=statement(statementRoot.getChild(1));
+statement.setStatementLabel(statementRoot.getChild(0).getToken().getText());
 break;
 }
 default :

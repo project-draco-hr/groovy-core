@@ -1,0 +1,114 @@
+{
+  CSTNode statement=null;
+  CSTNode label=null;
+  if (lt() == Token.IDENTIFIER && lt(2) == Token.COLON) {
+    label=rootNode(Token.COLON,rootNode(lt()));
+    label.getToken().setInterpretation(Token.SYNTH_LABEL);
+  }
+switch (lt()) {
+case (Token.KEYWORD_FOR):
+{
+      statement=forStatement();
+      break;
+    }
+case (Token.KEYWORD_WHILE):
+{
+    statement=whileStatement();
+    break;
+  }
+case (Token.KEYWORD_DO):
+{
+  statement=doWhileStatement();
+  break;
+}
+case (Token.KEYWORD_CONTINUE):
+{
+statement=continueStatement();
+break;
+}
+case (Token.KEYWORD_BREAK):
+{
+statement=breakStatement();
+break;
+}
+case (Token.KEYWORD_IF):
+{
+statement=ifStatement();
+break;
+}
+case (Token.KEYWORD_TRY):
+{
+statement=tryStatement();
+break;
+}
+case (Token.KEYWORD_THROW):
+{
+statement=throwStatement();
+break;
+}
+case (Token.KEYWORD_SYNCHRONIZED):
+{
+statement=synchronizedStatement();
+break;
+}
+case (Token.KEYWORD_SWITCH):
+{
+statement=switchStatement();
+break;
+}
+case (Token.KEYWORD_RETURN):
+{
+statement=returnStatement();
+break;
+}
+case (Token.KEYWORD_ASSERT):
+{
+statement=assertStatement();
+break;
+}
+case (Token.SEMICOLON):
+{
+Token token=consume(lt());
+token.setInterpretation(Token.SYNTH_BLOCK);
+statement=new CSTNode(token);
+}
+case (Token.LEFT_CURLY_BRACE):
+{
+statement=expression();
+if (statement.getToken().isA(Token.LEFT_CURLY_BRACE)) {
+if (statement.getChild(0).isEmpty()) {
+CSTNode block=new CSTNode(statement.getToken());
+block.getToken().setInterpretation(Token.SYNTH_BLOCK);
+Iterator children=statement.getChild(1).childIterator();
+while (children.hasNext()) {
+block.addChild((CSTNode)children.next());
+}
+statement=block;
+if (label == null && !allowUnlabelledBlocks) {
+collector.add(new ParserException("groovy does not support anonymous blocks; please add a label",statement.getToken()));
+}
+}
+}
+ else {
+endOfStatement();
+}
+break;
+}
+default :
+{
+try {
+statement=expression();
+endOfStatement();
+}
+ catch (SyntaxException e) {
+collector.add(e);
+recover();
+}
+}
+}
+if (label != null) {
+label.addChild(statement);
+statement=label;
+}
+return statement;
+}

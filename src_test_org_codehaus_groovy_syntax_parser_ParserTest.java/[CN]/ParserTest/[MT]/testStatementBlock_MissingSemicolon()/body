@@ -1,0 +1,14 @@
+{
+  Parser parser=newParser("keys = answer.collect( { entry | return entry.key } )  values = answer.collect( { entry | return entry.value })");
+  try {
+    try {
+      parser.statement();
+      fail("should have thrown UnexpectedTokenException");
+    }
+ catch (    ExceptionCollector e) {
+      e.throwFirstChild();
+    }
+  }
+ catch (  UnexpectedTokenException e) {
+  }
+}

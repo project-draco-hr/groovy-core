@@ -1,6 +1,6 @@
 {
   CSTNode modifiers=new CSTNode();
-  while (isModifier(lt())) {
+  while (lt() != -1 && la().isModifier()) {
     if (lt() == Token.KEYWORD_ABSTRACT && !allowAbstract) {
       collector.add(new ParserException("keyword 'abstract' not valid in this setting",la()));
     }

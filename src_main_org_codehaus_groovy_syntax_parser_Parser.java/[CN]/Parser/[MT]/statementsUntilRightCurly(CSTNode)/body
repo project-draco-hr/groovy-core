@@ -1,17 +1,12 @@
 {
   while (lt() != Token.RIGHT_CURLY_BRACE) {
-    root.addChild(statement());
-    if (lt_bare() == Token.RIGHT_CURLY_BRACE) {
-      break;
+    try {
+      root.addChild(statement());
     }
- else {
-      optionalSemicolon();
-      if (lt_bare() == -1) {
-        throwExpected(new int[]{Token.RIGHT_CURLY_BRACE});
-      }
-      if (!lastTokenStatementSeparator) {
-        throwExpected(new int[]{Token.NEWLINE,Token.SEMICOLON,Token.RIGHT_CURLY_BRACE});
-      }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      recover();
     }
   }
+  return root;
 }

@@ -17,13 +17,15 @@
   }
   if (emptyOnly) {
     method.addChild(new CSTNode());
-    optionalSemicolon();
     if (lt() == Token.LEFT_CURLY_BRACE) {
-      collector.add(new ParserException("method cannot have a body",la()));
+      collector.add(new ParserException("abstract and interface methods cannot have a body",la()));
+    }
+ else {
+      endOfStatement();
     }
   }
  else {
-    method.addChild(statementBlock());
+    method.addChild(statementBody(true));
   }
   method.addChild(throwsClause);
   return method;

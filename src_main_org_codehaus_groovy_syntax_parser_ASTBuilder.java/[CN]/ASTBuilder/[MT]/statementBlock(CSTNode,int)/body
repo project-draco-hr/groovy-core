@@ -3,9 +3,11 @@
   CSTNode[] statementRoots=blockRoot.getChildren();
   for (int i=startIndex; i < statementRoots.length; ++i) {
     CSTNode statementRoot=statementRoots[i];
-    Statement statement=statement(statementRoot);
-    statementBlock.addStatement(statement);
-    statement.setCSTNode(statementRoot);
+    if (statementRoot.getToken() != null) {
+      Statement statement=statement(statementRoot);
+      statementBlock.addStatement(statement);
+      statement.setCSTNode(statementRoot);
+    }
   }
   return statementBlock;
 }
