@@ -58,7 +58,11 @@
         return new Float(n.floatValue());
       }
       if (type == double.class) {
-        return new Double(n.doubleValue());
+        Double answer=new Double(n.doubleValue());
+        if (!(n instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
+          throw new GroovyRuntimeException("Automatic coercion of " + n.getClass().getName() + " value "+ n+ " to double failed.  Value is out of range.");
+        }
+        return answer;
       }
     }
  else {
@@ -82,7 +86,11 @@
           return new Float(n.floatValue());
         }
         if (type == Double.class) {
-          return new Double(n.doubleValue());
+          Double answer=new Double(n.doubleValue());
+          if (!(n instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
+            throw new GroovyRuntimeException("Automatic coercion of " + n.getClass().getName() + " value "+ n+ " to double failed.  Value is out of range.");
+          }
+          return answer;
         }
       }
     }
