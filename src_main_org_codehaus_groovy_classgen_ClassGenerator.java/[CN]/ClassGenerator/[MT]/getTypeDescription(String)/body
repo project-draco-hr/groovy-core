@@ -2,5 +2,10 @@
   if (name.equals("void")) {
     return "V";
   }
-  return "L" + name.replace('.','/') + ";";
+  String prefix="";
+  if (name.endsWith("[]")) {
+    prefix="[";
+    name=name.substring(0,name.length() - 2);
+  }
+  return prefix + "L" + name.replace('.','/')+ ";";
 }

@@ -1,2 +1,11 @@
 {
+  int size=expression.getExpressions().size();
+  pushConstant(size);
+  cv.visitTypeInsn(ANEWARRAY,getTypeDescription(expression.getType()));
+  for (int i=0; i < size; i++) {
+    cv.visitInsn(DUP);
+    pushConstant(i);
+    expression.getExpression(i).visit(this);
+    cv.visitInsn(AASTORE);
+  }
 }
