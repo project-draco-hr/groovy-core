@@ -1,0 +1,21 @@
+{
+  reader=new BufferedReader(new InputStreamReader(System.in));
+  System.out.println("Lets gets get Groovy!");
+  System.out.println("Hit carriage return twice to execute a command");
+  System.out.println("The command 'quit' will terminate the shell");
+  int counter=1;
+  while (true) {
+    String command=readCommand();
+    if (command == null || command.equals("quit")) {
+      break;
+    }
+    try {
+      Object answer=shell.evaluate(command,"CommandLine" + counter++ + ".groovy");
+      System.out.println(InvokerHelper.toString(answer));
+    }
+ catch (    Exception e) {
+      System.out.println("Caught: " + e);
+      e.printStackTrace();
+    }
+  }
+}
