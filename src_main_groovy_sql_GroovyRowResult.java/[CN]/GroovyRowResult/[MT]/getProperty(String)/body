@@ -1,0 +1,13 @@
+{
+  try {
+    Object value=result.get(property);
+    if (value == null) {
+      value=result.get(property.toUpperCase());
+      if (value == null)       throw new MissingPropertyException(property,GroovyRowResult.class);
+    }
+    return (value);
+  }
+ catch (  Exception e) {
+    throw new MissingPropertyException(property,GroovyRowResult.class,e);
+  }
+}
