@@ -1,35 +1,7 @@
 {
   this.registry=registry;
   this.theClass=theClass;
-  Method[] methodArray=theClass.getMethods();
-  for (int i=0; i < methodArray.length; i++) {
-    Method method=methodArray[i];
-    String name=method.getName();
-    if (MethodHelper.isPublic(method)) {
-      if (isGenericGetMethod(method)) {
-        genericGetMethod=method;
-      }
- else       if (isGenericSetMethod(method)) {
-        genericSetMethod=method;
-      }
-      if (MethodHelper.isPublicStatic(method)) {
-        List list=(List)staticMethodIndex.get(name);
-        if (list == null) {
-          list=new ArrayList();
-          staticMethodIndex.put(name,list);
-        }
-        list.add(method);
-      }
- else {
-        List list=(List)methodIndex.get(name);
-        if (list == null) {
-          list=new ArrayList();
-          methodIndex.put(name,list);
-        }
-        list.add(method);
-      }
-    }
-  }
+  addMethods(theClass);
   BeanInfo info=Introspector.getBeanInfo(theClass);
   PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
   for (int i=0; i < descriptors.length; i++) {
@@ -47,5 +19,6 @@
       break;
     }
     addNewStaticMethodsFrom(c);
+    addMethods(c);
   }
 }
