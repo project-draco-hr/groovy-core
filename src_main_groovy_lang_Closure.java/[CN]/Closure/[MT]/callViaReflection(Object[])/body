@@ -1,0 +1,16 @@
+{
+  try {
+    return this.doCallMethod.invoke(this,params);
+  }
+ catch (  final IllegalArgumentException e) {
+    throw new IncorrectClosureArgumentsException(this,params,this.parameterTypes);
+  }
+catch (  final IllegalAccessException e) {
+    final Throwable cause=e.getCause();
+    return throwRuntimeException((cause == null) ? e : cause);
+  }
+catch (  final InvocationTargetException e) {
+    final Throwable cause=e.getCause();
+    return throwRuntimeException((cause == null) ? e : cause);
+  }
+}

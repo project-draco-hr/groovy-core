@@ -1,3 +1,30 @@
 {
-  return doInvokeMethod(method,arguments,this);
+  if ("doCall".equals(method) || "call".equals(method)) {
+    return call(arguments);
+  }
+ else   if ("curry".equals(method)) {
+    return curry((Object[])arguments);
+  }
+ else {
+    try {
+      return getMetaClass().invokeMethod(this,method,arguments);
+    }
+ catch (    MissingMethodException e) {
+      if (owner != this) {
+        try {
+          return InvokerHelper.invokeMethod(this.owner,method,arguments);
+        }
+ catch (        GroovyRuntimeException e1) {
+          if (this.delegate != null && this.delegate != this && this.delegate != this.owner) {
+            try {
+              return InvokerHelper.invokeMethod(this.delegate,method,arguments);
+            }
+ catch (            GroovyRuntimeException e2) {
+            }
+          }
+        }
+      }
+      throw e;
+    }
+  }
 }

@@ -5,16 +5,16 @@
   }
  catch (  GroovyRuntimeException e) {
     try {
-      InvokerHelper.setProperty(owner,property,newValue);
+      InvokerHelper.setProperty(this.owner,property,newValue);
+      return;
     }
- catch (    GroovyRuntimeException e3) {
-      if (delegate != null & delegate != this && delegate != owner) {
+ catch (    GroovyRuntimeException e1) {
+      if (this.delegate != null && this.delegate != this && this.delegate != this.owner) {
         try {
-          InvokerHelper.setProperty(delegate,property,newValue);
+          InvokerHelper.setProperty(this.delegate,property,newValue);
           return;
         }
  catch (        GroovyRuntimeException e2) {
-          System.out.println("Caught e2: " + e2);
         }
       }
       throw e;

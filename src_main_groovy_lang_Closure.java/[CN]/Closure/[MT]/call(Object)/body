@@ -1,42 +1,49 @@
 {
-  MetaMethod method=getDoCallMethod();
-  Class[] formalParameters=method.getParameterTypes();
-  Object[] parameters;
-  if (arguments instanceof Object[] && ((Object[])arguments).length == 0 && formalParameters.length == 1 && formalParameters[0] == Object[].class) {
-    parameters=zeroLengthObjectArray;
+  final Object params[];
+  if (this.curriedParams.length != 0) {
+    final Object args[];
+    if (arguments instanceof Object[]) {
+      args=(Object[])arguments;
+    }
+ else {
+      args=new Object[]{arguments};
+    }
+    params=new Object[this.curriedParams.length + args.length];
+    System.arraycopy(this.curriedParams,0,params,0,this.curriedParams.length);
+    System.arraycopy(args,0,params,this.curriedParams.length,args.length);
   }
  else {
-    parameters=getParameters(arguments);
-  }
-  try {
-    try {
-      method.checkParameters(parameters);
-      return method.invoke(this,parameters);
+    if (arguments instanceof Object[]) {
+      params=(Object[])arguments;
     }
- catch (    IllegalArgumentException e) {
-      if (formalParameters[formalParameters.length - 1] == Object[].class) {
-        if (formalParameters.length - 1 <= parameters.length) {
-          Object[] newParameters=new Object[formalParameters.length];
-          Object[] restOfTheParameters=new Object[parameters.length - formalParameters.length + 1];
-          System.arraycopy(parameters,0,newParameters,0,newParameters.length - 1);
-          System.arraycopy(parameters,newParameters.length - 1,restOfTheParameters,0,restOfTheParameters.length);
-          newParameters[newParameters.length - 1]=restOfTheParameters;
-          try {
-            method.checkParameters(newParameters);
-            return method.invoke(this,newParameters);
-          }
- catch (          IllegalArgumentException e1) {
-          }
-        }
-      }
-      throw new IncorrectClosureArgumentsException(this,arguments,method.getParameterTypes());
+ else {
+      return doCall(arguments);
     }
   }
- catch (  Exception e) {
-    Throwable cause=e.getCause();
-    if (cause == null) {
-      cause=e;
+  final int lastParam=this.numberOfParameters - 1;
+  if (this.supportsVarargs && !(this.numberOfParameters == params.length && (params[lastParam] == null || params[lastParam].getClass() == Object[].class))) {
+    final Object actualParameters[]=new Object[this.numberOfParameters];
+    if (params.length < lastParam) {
+      throw new IncorrectClosureArgumentsException(this,params,this.parameterTypes);
     }
-    return throwRuntimeException(cause);
+ else {
+      final Object rest[]=new Object[params.length - lastParam];
+      System.arraycopy(params,0,actualParameters,0,lastParam);
+      System.arraycopy(params,lastParam,rest,0,rest.length);
+      actualParameters[lastParam]=rest;
+      return callViaReflection(actualParameters);
+    }
+  }
+  if (params.length == 0) {
+    return doCall(null);
+  }
+ else   if (params.length == 1) {
+    return doCall(params[0]);
+  }
+ else   if (params.length == 2) {
+    return doCall(params[0],params[1]);
+  }
+ else {
+    return callViaReflection(params);
   }
 }
