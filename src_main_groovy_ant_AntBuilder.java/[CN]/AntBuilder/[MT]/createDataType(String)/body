@@ -1,0 +1,31 @@
+{
+  Object dataType=null;
+  Class type=(Class)getAntProject().getDataTypeDefinitions().get(name);
+  if (type != null) {
+    Constructor ctor=null;
+    boolean noArg=false;
+    try {
+      ctor=type.getConstructor(new Class[0]);
+      noArg=true;
+    }
+ catch (    NoSuchMethodException nse) {
+      try {
+        ctor=type.getConstructor(new Class[]{Project.class});
+        noArg=false;
+      }
+ catch (      NoSuchMethodException nsme) {
+        log.info("datatype '" + name + "' didn't have a constructor with an Ant Project",nsme);
+      }
+    }
+    if (noArg) {
+      dataType=createDataType(ctor,new Object[0],name,"no-arg constructor");
+    }
+ else {
+      dataType=createDataType(ctor,new Object[]{getAntProject()},name,"an Ant project");
+    }
+    if (dataType != null) {
+      ((DataType)dataType).setProject(getAntProject());
+    }
+  }
+  return dataType;
+}

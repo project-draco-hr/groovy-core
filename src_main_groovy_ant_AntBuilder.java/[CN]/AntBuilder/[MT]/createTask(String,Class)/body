@@ -1,0 +1,24 @@
+{
+  if (taskType == null) {
+    return null;
+  }
+  try {
+    Object o=taskType.newInstance();
+    Task task=null;
+    if (o instanceof Task) {
+      task=(Task)o;
+    }
+ else {
+      TaskAdapter taskA=new TaskAdapter();
+      taskA.setProxy(o);
+      task=taskA;
+    }
+    task.setProject(getAntProject());
+    task.setTaskName(taskName);
+    return task;
+  }
+ catch (  Exception e) {
+    log.warn("Could not create task: " + taskName + ". Reason: "+ e,e);
+    return null;
+  }
+}

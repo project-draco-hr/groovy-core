@@ -1,0 +1,20 @@
+{
+  if (log.isDebugEnabled()) {
+    log.debug("Setting bean property on: " + object + " name: "+ name+ " value: "+ value);
+  }
+  IntrospectionHelper ih=IntrospectionHelper.getHelper(object.getClass());
+  if (value instanceof String) {
+    try {
+      ih.setAttribute(getAntProject(),object,name.toLowerCase(),(String)value);
+      return;
+    }
+ catch (    Exception e) {
+    }
+  }
+  try {
+    ih.storeElement(getAntProject(),object,value,name);
+  }
+ catch (  Exception e) {
+    InvokerHelper.setProperty(object,name,value);
+  }
+}

@@ -1,0 +1,18 @@
+{
+  Object dataType=null;
+  if (object != null) {
+    IntrospectionHelper ih=IntrospectionHelper.getHelper(object.getClass());
+    if (ih != null) {
+      try {
+        dataType=ih.createElement(getAntProject(),object,name.toLowerCase());
+      }
+ catch (      BuildException be) {
+        log.error(be);
+      }
+    }
+  }
+  if (dataType == null) {
+    dataType=createDataType(name);
+  }
+  return dataType;
+}
