@@ -1,0 +1,12 @@
+{
+  URL url=resolveTemplateName(request.getServletPath());
+  if (url == null) {
+    url=resolveTemplateName(request.getRequestURI());
+  }
+  if (url == null) {
+    String uri=request.getRequestURI();
+    servletContext.log("Resource \"" + uri + "\" not found.");
+    throw new FileNotFoundException(uri);
+  }
+  return getTemplate(url);
+}

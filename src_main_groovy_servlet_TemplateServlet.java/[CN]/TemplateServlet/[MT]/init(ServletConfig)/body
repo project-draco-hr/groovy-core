@@ -1,8 +1,13 @@
 {
-  templateEngine=createTemplateEngine(config);
+  String className=getClass().getName();
+  servletContext.log("Initializing on " + className + "...");
+  this.servletContext=config.getServletContext();
+  this.bindDefaultVariables=init(config,"bindDefaultVariables",false);
+  this.bindRequestParameters=init(config,"bindRequestParameters",false);
+  this.templateEngine=createTemplateEngine(config);
   if (templateEngine == null) {
     throw new RuntimeException("Template engine not instantiated.");
   }
-  servletContext=config.getServletContext();
-  servletContext.log(getClass().getName() + " initialized. (" + templateEngine+ ")");
+  String engineName=templateEngine.getClass().getName();
+  servletContext.log(className + " initialized on " + engineName+ ".");
 }
