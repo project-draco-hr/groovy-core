@@ -1,0 +1,28 @@
+{
+  final BufferedReader br=new BufferedReader(reader);
+  return new Writable(){
+    public Writer writeTo(    Writer out) throws IOException {
+      BufferedWriter bw=new BufferedWriter(out);
+      String line;
+      while ((line=br.readLine()) != null) {
+        if (InvokerHelper.asBool(closure.call(line))) {
+          bw.write(line);
+          bw.newLine();
+        }
+      }
+      bw.flush();
+      return out;
+    }
+    public String toString(){
+      StringWriter buffer=new StringWriter();
+      try {
+        writeTo(buffer);
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+      return buffer.toString();
+    }
+  }
+;
+}
