@@ -11,13 +11,13 @@
       arguments=(Expression)tupleExpression.getExpressions().get(0);
     }
   }
-  if (arguments instanceof TupleExpression) {
-    int parametersItx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
+  if (argumentsUseStack(arguments)) {
+    int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
     arguments.visit(this);
-    cv.visitVarInsn(ASTORE,parametersItx);
+    cv.visitVarInsn(ASTORE,paramIdx);
     call.getObjectExpression().visit(this);
     cv.visitLdcInsn(call.getMethod());
-    cv.visitVarInsn(ALOAD,parametersItx);
+    cv.visitVarInsn(ALOAD,paramIdx);
     idx--;
   }
  else {
