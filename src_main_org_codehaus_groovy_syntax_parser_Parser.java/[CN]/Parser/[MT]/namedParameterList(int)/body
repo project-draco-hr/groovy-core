@@ -1,10 +1,10 @@
 {
-  if (lt() == Token.IDENTIFIER && lt(2) == Token.COLON) {
-    return namedParameterList(endOfListDemarc);
-  }
   CSTNode parameterList=new CSTNode(Token.syntheticList());
   while (lt() != endOfListDemarc) {
-    parameterList.addChild(expression());
+    CSTNode name=rootNode(Token.IDENTIFIER);
+    CSTNode namedParam=rootNode(Token.COLON,name);
+    namedParam.addChild(expression());
+    parameterList.addChild(namedParam);
     if (lt() == Token.COMMA) {
       consume(Token.COMMA);
     }
