@@ -2,6 +2,9 @@
   if (registry.useAccessible()) {
     method.setAccessible(true);
   }
+  if (useReflection) {
+    return new ReflectionMetaMethod(method);
+  }
   MetaMethod answer=new MetaMethod(method);
   if (isValidReflectorMethod(answer)) {
     allMethods.add(answer);
