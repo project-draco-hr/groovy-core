@@ -19,9 +19,7 @@
         continue;
       }
     }
-    if (exprStart != textStart) {
-      expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + cur + 1,text.substring(textStart,exprStart))));
-    }
+    expr.addChild(new CSTNode(Token.singleQuoteString(token.getStartLine(),token.getStartColumn() + cur + 1,text.substring(textStart,exprStart))));
     int exprEnd=text.indexOf("}",exprStart);
     String exprText=text.substring(exprStart + 2,exprEnd);
     StringCharStream exprStream=new StringCharStream(exprText);
