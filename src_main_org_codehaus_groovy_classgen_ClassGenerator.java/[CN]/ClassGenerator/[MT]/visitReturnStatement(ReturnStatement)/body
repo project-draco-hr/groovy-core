@@ -17,6 +17,10 @@
     cv.visitInsn(ARETURN);
   }
  else   if (!c.isPrimitive()) {
+    String returnType=methodNode.getReturnType();
+    if (returnType != null && !returnType.equals("java.lang.Object")) {
+      doCast(returnType);
+    }
     cv.visitInsn(ARETURN);
   }
  else {
