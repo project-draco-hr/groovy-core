@@ -1,5 +1,8 @@
 {
   reflector=loadReflector(allMethods);
+  if (reflector == null) {
+    throw new RuntimeException("Should have a reflector!");
+  }
   for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
     MetaMethod metaMethod=(MetaMethod)iter.next();
     metaMethod.setReflector(reflector);
