@@ -5,12 +5,11 @@
       return getName();
     }
     answer=tryResolveClassAndInnerClass(type);
-    if (answer == null) {
-      if (type.indexOf('.') > -1) {
-        int lastPoint=type.lastIndexOf('.');
-        String replacedPointType=new StringBuffer().append(type.substring(0,lastPoint)).append("$").append(type.substring(lastPoint + 1)).toString();
-        answer=tryResolveClassAndInnerClass(replacedPointType);
-      }
+    String replacedPointType=type;
+    while (answer == null && replacedPointType.indexOf('.') > -1) {
+      int lastPoint=replacedPointType.lastIndexOf('.');
+      replacedPointType=new StringBuffer().append(replacedPointType.substring(0,lastPoint)).append("$").append(replacedPointType.substring(lastPoint + 1)).toString();
+      answer=tryResolveClassAndInnerClass(replacedPointType);
     }
   }
   return answer;
