@@ -14,5 +14,8 @@ catch (  TokenStreamException e) {
     sourceUnit.addException(e);
   }
   ast=parser.getAST();
+  if ("xml".equals(System.getProperty("antlr.ast"))) {
+    saveAsXML(sourceUnit.getName(),ast);
+  }
   return null;
 }
