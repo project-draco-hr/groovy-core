@@ -1,0 +1,13 @@
+{
+  try {
+    return getClass().getClassLoader().loadClass(type);
+  }
+ catch (  ClassNotFoundException e) {
+    try {
+      return Thread.currentThread().getContextClassLoader().loadClass(type);
+    }
+ catch (    ClassNotFoundException e2) {
+      throw new InvokerException("Could not load type: " + type,e);
+    }
+  }
+}

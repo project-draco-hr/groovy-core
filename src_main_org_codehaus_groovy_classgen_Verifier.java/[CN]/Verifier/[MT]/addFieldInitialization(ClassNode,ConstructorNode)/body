@@ -1,0 +1,17 @@
+{
+  List statements=new ArrayList();
+  for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
+    addFieldInitialization(statements,constructorNode,(FieldNode)iter.next());
+  }
+  if (!statements.isEmpty()) {
+    Statement code=constructorNode.getCode();
+    if (code instanceof StatementBlock) {
+      StatementBlock block=(StatementBlock)code;
+      statements.addAll(block.getStatements());
+    }
+ else     if (code != null) {
+      statements.add(code);
+    }
+    constructorNode.setCode(new StatementBlock(statements));
+  }
+}

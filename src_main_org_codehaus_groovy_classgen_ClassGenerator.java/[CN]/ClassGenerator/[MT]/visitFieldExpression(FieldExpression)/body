@@ -4,6 +4,9 @@
   if (!isStatic && !leftHandExpression) {
     cv.visitVarInsn(ALOAD,0);
   }
+  if (leftHandExpression) {
+    cv.visitTypeInsn(CHECKCAST,getClassInternalName(field.getType()));
+  }
   int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : Type.getInternalName(loadClass(field.getOwner()));
   cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(field.getType()));

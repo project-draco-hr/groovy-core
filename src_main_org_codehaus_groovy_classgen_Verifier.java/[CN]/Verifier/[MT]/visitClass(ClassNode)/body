@@ -1,0 +1,9 @@
+{
+  node.addInterface(GroovyObject.class.getName());
+  FieldNode metaClassField=node.addField("metaClass",ACC_PUBLIC | ACC_FINAL,MetaClass.class.getName(),new StaticMethodCallExpression(InvokerHelper.class.getName(),"getMetaClass",new VariableExpression("this")));
+  node.addMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"name"),new Parameter(Object.class.getName(),"arguments")},new ReturnStatement(new MethodCallExpression(new FieldExpression(metaClassField),"invokeMethod",new ArgumentListExpression(new Expression[]{new VariableExpression("this"),new VariableExpression("name"),new VariableExpression("arguments")}))));
+  if (node.getConstructors().isEmpty()) {
+    node.addConstructor(new ConstructorNode(ACC_PUBLIC,null));
+  }
+  addFieldInitialization(node);
+}
