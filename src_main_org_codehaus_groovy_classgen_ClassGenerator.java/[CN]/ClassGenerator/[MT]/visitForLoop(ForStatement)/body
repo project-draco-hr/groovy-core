@@ -1,7 +1,10 @@
 {
   onLineNumber(loop);
   Type variableType=checkValidType(loop.getVariableType(),loop,"for loop variable");
-  int iIdx=defineVariable(loop.getVariable(),variableType,true).getIndex();
+  Variable variable=defineVariable(loop.getVariable(),variableType,true);
+  if (isInScriptBody()) {
+    variable.setProperty(true);
+  }
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
   final int iteratorIdx=defineVariable(createVariableName("iterator"),"java.util.Iterator",false).getIndex();
@@ -18,7 +21,7 @@
     }
   }
 ;
-  evaluateEqual(new BinaryExpression(new VariableExpression(loop.getVariable()),Token.newSymbol(Types.EQUAL,-1,-1),expression));
+  evaluateEqual(BinaryExpression.newAssignmentExpression(loop.getVariable(),expression));
   loop.getLoopBlock().visit(this);
   cv.visitLabel(continueLabel);
   cv.visitVarInsn(ALOAD,iteratorIdx);

@@ -1,0 +1,40 @@
+{
+  String type=variable.getTypeName();
+  int index=variable.getIndex();
+  boolean holder=variable.isHolder() && !passingClosureParams;
+  if (leftHandExpression) {
+    if (holder) {
+      int tempIndex=defineVariable(createVariableName("reference"),type,false).getIndex();
+      cv.visitVarInsn(ASTORE,tempIndex);
+      cv.visitVarInsn(ALOAD,index);
+      cv.visitVarInsn(ALOAD,tempIndex);
+      cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
+    }
+ else {
+      if (type.equals("double")) {
+        cv.visitVarInsn(DSTORE,index);
+      }
+ else       if (type.equals("float")) {
+        cv.visitVarInsn(FSTORE,index);
+      }
+ else       if (type.equals("long")) {
+        cv.visitVarInsn(LSTORE,index);
+      }
+ else       if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
+        cv.visitVarInsn(ISTORE,index);
+      }
+ else {
+        cv.visitVarInsn(ASTORE,index);
+      }
+    }
+  }
+ else {
+    if (holder) {
+      cv.visitVarInsn(ALOAD,index);
+      cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+    }
+ else {
+      cv.visitVarInsn(ALOAD,index);
+    }
+  }
+}

@@ -18,83 +18,42 @@
       return;
     }
   }
-  FieldNode field=classNode.getField(variableName);
-  if (field != null && variableStack.get(variableName) == null) {
-    visitFieldExpression(new FieldExpression(field));
-  }
- else {
-    field=classNode.getOuterField(variableName);
-    if (field != null) {
-      visitOuterFieldExpression(new FieldExpression(field));
+  boolean handled=false;
+  Variable variable=(Variable)variableStack.get(variableName);
+  if (variable != null) {
+    if (variable.isProperty()) {
+      processPropertyVariable(variableName,variable);
     }
  else {
-      String name=variableName;
-      Variable variable=null;
-      String variableType=expression.getType();
-      boolean useProperty=isInScriptBody();
-      if (!leftHandExpression) {
-        variable=(Variable)variableStack.get(name);
+      processStackVariable(variableName,variable);
+    }
+    handled=true;
+  }
+ else {
+    int steps=0;
+    ClassNode current=classNode;
+    FieldNode field=null;
+    do {
+      if ((field=current.getField(variableName)) != null) {
+        break;
       }
+      steps++;
+    }
+ while ((current=current.getOuterClass()) != null);
+    if (field != null) {
+      processFieldAccess(variableName,field,steps);
+      handled=true;
+    }
+  }
+  if (!handled) {
+    String variableType=expression.getType();
+    variable=defineVariable(variableName,variableType);
+    if (isInScriptBody() || !leftHandExpression) {
+      variable.setProperty(true);
+      processPropertyVariable(variableName,variable);
+    }
  else {
-        if (!useProperty) {
-          variable=defineVariable(name,variableType);
-        }
-      }
-      if (variable == null || variable.isProperty()) {
-        if (variable == null) {
-          variable=defineVariable(name,variableType);
-          variable.setProperty(true);
-        }
-        if (variable.isHolder() && passingClosureParams && useProperty) {
-          cv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/ScriptReference");
-          cv.visitInsn(DUP);
-          loadThisOrOwner();
-          cv.visitLdcInsn(name);
-          cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
-        }
- else {
-          visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
-        }
-        return;
-      }
-      String type=variable.getTypeName();
-      int index=variable.getIndex();
-      boolean holder=variable.isHolder() && !passingClosureParams;
-      if (leftHandExpression) {
-        if (holder) {
-          int tempIndex=defineVariable(createVariableName("reference"),variableType,false).getIndex();
-          cv.visitVarInsn(ASTORE,tempIndex);
-          cv.visitVarInsn(ALOAD,index);
-          cv.visitVarInsn(ALOAD,tempIndex);
-          cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
-        }
- else {
-          if (type.equals("double")) {
-            cv.visitVarInsn(DSTORE,index);
-          }
- else           if (type.equals("float")) {
-            cv.visitVarInsn(FSTORE,index);
-          }
- else           if (type.equals("long")) {
-            cv.visitVarInsn(LSTORE,index);
-          }
- else           if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-            cv.visitVarInsn(ISTORE,index);
-          }
- else {
-            cv.visitVarInsn(ASTORE,index);
-          }
-        }
-      }
- else {
-        if (holder) {
-          cv.visitVarInsn(ALOAD,index);
-          cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
-        }
- else {
-          cv.visitVarInsn(ALOAD,index);
-        }
-      }
+      processStackVariable(variableName,variable);
     }
   }
 }
