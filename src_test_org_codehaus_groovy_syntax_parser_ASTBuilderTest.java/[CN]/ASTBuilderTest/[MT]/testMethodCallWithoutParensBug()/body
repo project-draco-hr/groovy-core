@@ -1,0 +1,12 @@
+{
+  try {
+    ModuleNode module=parse("class Foo { void testMethod() { println 3 } }","Dummy.groovy");
+    BlockStatement statement=getCode(module,"testMethod");
+    assertEquals("Statements size: " + statement.getStatements(),2,statement.getStatements().size());
+    System.out.println(statement.getStatements());
+    fail("Should have thrown a compiler error message");
+  }
+ catch (  Exception e) {
+    System.out.println("Caught: " + e);
+  }
+}

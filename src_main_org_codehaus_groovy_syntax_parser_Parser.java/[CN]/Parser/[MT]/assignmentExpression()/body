@@ -1,5 +1,13 @@
 {
-  CSTNode expr=conditionalExpression();
+  CSTNode expr=null;
+  if (lt_bare() == Token.IDENTIFIER && lt_bare(2) == Token.IDENTIFIER && lt_bare(3) == Token.EQUAL) {
+    CSTNode typeExpr=new CSTNode(consume_bare(lt_bare()));
+    expr=new CSTNode(consume_bare(lt_bare()));
+    expr.addChild(typeExpr);
+  }
+ else {
+    expr=conditionalExpression();
+  }
 switch (lt_bare()) {
 case (Token.EQUAL):
 case (Token.PLUS_EQUAL):
