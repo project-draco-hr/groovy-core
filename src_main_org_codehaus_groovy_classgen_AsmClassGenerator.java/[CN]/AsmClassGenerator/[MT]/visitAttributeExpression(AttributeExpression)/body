@@ -1,0 +1,32 @@
+{
+  Expression objectExpression=expression.getObjectExpression();
+  if (isThisExpression(objectExpression)) {
+    String name=expression.getProperty();
+    FieldNode field=classNode.getField(name);
+    if (field != null) {
+      visitFieldExpression(new FieldExpression(field));
+      return;
+    }
+  }
+  boolean left=leftHandExpression;
+  leftHandExpression=false;
+  objectExpression.visit(this);
+  leftHandExpression=left;
+  cv.visitLdcInsn(expression.getProperty());
+  if (expression.isSafe()) {
+    if (left) {
+      setAttributeSafeMethod2.call(cv);
+    }
+ else {
+      getAttributeSafeMethod.call(cv);
+    }
+  }
+ else {
+    if (left) {
+      setAttributeMethod2.call(cv);
+    }
+ else {
+      getAttributeMethod.call(cv);
+    }
+  }
+}

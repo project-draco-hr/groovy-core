@@ -1,0 +1,13 @@
+{
+  try {
+    Field field=theClass.getDeclaredField(attribute);
+    field.setAccessible(true);
+    return field.get(object);
+  }
+ catch (  NoSuchFieldException e) {
+    throw new MissingFieldException(attribute,theClass);
+  }
+catch (  IllegalAccessException e) {
+    throw new MissingFieldException(attribute,theClass,e);
+  }
+}

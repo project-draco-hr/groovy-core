@@ -190,6 +190,7 @@
   boolean left=leftHandExpression;
   leftHandExpression=false;
   objectExpression.visit(this);
+  leftHandExpression=left;
   cv.visitLdcInsn(expression.getProperty());
   if (isGroovyObject(objectExpression) && !expression.isSafe()) {
     if (left) {
