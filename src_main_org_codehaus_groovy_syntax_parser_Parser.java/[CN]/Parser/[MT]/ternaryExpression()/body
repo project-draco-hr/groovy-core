@@ -1,13 +1,13 @@
 {
   CSTNode expr=logicalOrExpression();
   if (lt_bare() == Token.QUESTION) {
-    rootNode(Token.QUESTION,expr);
+    expr=rootNode(Token.QUESTION,expr);
     optionalNewlines();
     expr.addChild(assignmentExpression());
     optionalNewlines();
     consume(Token.COLON);
     optionalNewlines();
-    expr.addChild(conditionalExpression());
+    expr.addChild(ternaryExpression());
   }
   return expr;
 }
