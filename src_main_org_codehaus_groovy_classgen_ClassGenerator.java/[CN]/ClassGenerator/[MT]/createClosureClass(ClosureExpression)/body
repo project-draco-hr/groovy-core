@@ -36,12 +36,13 @@
     if (holder) {
       initialValue=new VariableExpression(paramName);
       type=Reference.class.getName();
+      param.makeReference();
     }
     FieldNode paramField=null;
     if (holder) {
       paramField=answer.addField(paramName,ACC_PRIVATE,type,initialValue);
       paramField.setHolder(true);
-      String realType=param.getType();
+      String realType=param.getRealType();
       String methodName=Verifier.capitalize(paramName);
       Expression fieldExp=new FieldExpression(paramField);
       answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,new ReturnStatement(fieldExp));

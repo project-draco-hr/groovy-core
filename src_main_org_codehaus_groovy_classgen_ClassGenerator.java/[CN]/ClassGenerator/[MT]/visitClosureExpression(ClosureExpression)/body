@@ -8,8 +8,10 @@
     ownerTypeName="java.lang.Class";
   }
   passingClosureParams=true;
-  Parameter[] localVariableParams=getClosureSharedVariables(expression);
-  for (int i=0; i < localVariableParams.length; i++) {
+  List constructors=innerClass.getConstructors();
+  ConstructorNode node=(ConstructorNode)constructors.get(0);
+  Parameter[] localVariableParams=node.getParameters();
+  for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (variableStack.get(name) == null && classNode.getField(name) == null) {
@@ -33,7 +35,7 @@
     }
   }
   String prototype="(L" + helper.getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
-  for (int i=0; i < localVariableParams.length; i++) {
+  for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (variableStack.get(name) == null) {
