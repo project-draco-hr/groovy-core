@@ -2,20 +2,7 @@
   if (expression instanceof BinaryExpression) {
     BinaryExpression binExpr=(BinaryExpression)expression;
     if (binExpr.getOperation().isAssignmentToken()) {
-      return binExpr.getLeftExpression().transformExpression(new ExpressionTransformer(){
-        public Expression transform(        Expression expression){
-          if (expression instanceof PostfixExpression) {
-            PostfixExpression postfixExp=(PostfixExpression)expression;
-            return postfixExp.getExpression();
-          }
- else           if (expression instanceof PrefixExpression) {
-            PrefixExpression prefixExp=(PrefixExpression)expression;
-            return prefixExp.getExpression();
-          }
-          return expression;
-        }
-      }
-);
+      return createReusableExpression(binExpr.getLeftExpression());
     }
   }
   return null;

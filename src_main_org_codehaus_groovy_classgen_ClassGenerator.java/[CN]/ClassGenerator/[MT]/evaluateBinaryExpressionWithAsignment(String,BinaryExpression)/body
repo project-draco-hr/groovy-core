@@ -1,6 +1,16 @@
 {
-  evaluateBinaryExpression(method,expression);
   Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof BinaryExpression) {
+    BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
+    if (leftBinExpr.getOperation().getType() == Token.LEFT_SQUARE_BRACKET) {
+      MethodCallExpression methodCall=new MethodCallExpression(expression.getLeftExpression(),method,new ArgumentListExpression(new Expression[]{expression.getRightExpression()}));
+      Expression safeIndexExpr=createReusableExpression(leftBinExpr.getRightExpression());
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"put",new ArgumentListExpression(new Expression[]{safeIndexExpr,methodCall})));
+      cv.visitInsn(POP);
+      return;
+    }
+  }
+  evaluateBinaryExpression(method,expression);
   leftHandExpression=true;
   leftExpression.visit(this);
   leftHandExpression=false;

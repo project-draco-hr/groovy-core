@@ -67,9 +67,11 @@ case Token.MATCH_REGEX:
 evaluateBinaryExpression(matchRegexMethod,expression);
 break;
 case Token.LEFT_SQUARE_BRACKET:
-evaluateBinaryExpression(leftHandExpression ? "set" : "get",expression);
 if (leftHandExpression) {
-cv.visitInsn(POP);
+throw new RuntimeException("Should not be called");
+}
+ else {
+evaluateBinaryExpression("get",expression);
 }
 break;
 default :
