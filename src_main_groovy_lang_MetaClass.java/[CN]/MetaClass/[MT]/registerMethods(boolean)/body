@@ -1,0 +1,18 @@
+{
+  Method[] methods=theClass.getMethods();
+  for (int i=0; i < methods.length; i++) {
+    Method method=methods[i];
+    if (MethodHelper.isStatic(method)) {
+      Class[] paramTypes=method.getParameterTypes();
+      if (paramTypes.length > 0) {
+        Class owner=paramTypes[0];
+        if (instanceMethods) {
+          registry.lookup(owner).addNewInstanceMethod(method);
+        }
+ else {
+          registry.lookup(owner).addNewStaticMethod(method);
+        }
+      }
+    }
+  }
+}

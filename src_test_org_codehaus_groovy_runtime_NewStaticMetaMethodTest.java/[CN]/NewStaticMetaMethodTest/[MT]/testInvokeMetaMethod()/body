@@ -1,7 +1,7 @@
 {
   Method method=getClass().getMethod("dummyMethod",new Class[]{String.class,String.class});
   assertTrue("Should have found a method",method != null);
-  NewStaticMetaMethod metaMethod=createNewMetaMethod(method);
+  NewInstanceMetaMethod metaMethod=createNewMetaMethod(method);
   Object answer=metaMethod.invoke("abc",new Object[]{"xyz"});
   assertEquals("def",answer);
   assertTrue("Should not appear as static method",metaMethod.isStatic() == false);
