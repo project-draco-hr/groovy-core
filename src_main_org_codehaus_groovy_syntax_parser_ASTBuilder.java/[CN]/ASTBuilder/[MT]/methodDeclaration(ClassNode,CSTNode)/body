@@ -5,11 +5,12 @@
   Parameter[] parameters=parameters(methodRoot.getChild(3).getChildren());
   if (identifier.equals(classNode.getNameWithoutPackage())) {
     ConstructorNode constructorNode=new ConstructorNode(modifiers,parameters,statementBlock(methodRoot.getChild(4)));
+    constructorNode.setCSTNode(methodRoot.getChild(1));
     classNode.addConstructor(constructorNode);
   }
  else {
     MethodNode methodNode=new MethodNode(identifier,modifiers,returnType,parameters,statementBlock(methodRoot.getChild(4)));
-    methodNode.setCSTNode(methodRoot);
+    methodNode.setCSTNode(methodRoot.getChild(1));
     classNode.addMethod(methodNode);
   }
 }
