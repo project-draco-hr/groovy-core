@@ -11,8 +11,7 @@
       arguments=(Expression)tupleExpression.getExpressions().get(0);
     }
   }
-  String type=call.getType();
-  checkValidType(type,call,"in constructor call");
+  String type=checkValidType(call.getType(),call,"in constructor call");
   cv.visitLdcInsn(type);
   arguments.visit(this);
   invokeConstructorMethod.call(cv);

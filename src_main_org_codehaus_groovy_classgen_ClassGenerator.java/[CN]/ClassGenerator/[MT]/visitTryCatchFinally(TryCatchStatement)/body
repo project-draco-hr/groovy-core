@@ -1,8 +1,7 @@
 {
   onLineNumber(statement);
   CatchStatement catchStatement=statement.getCatchStatement(0);
-  String exceptionType=catchStatement.getExceptionType();
-  checkValidType(exceptionType,catchStatement,"in catch statement");
+  String exceptionType=checkValidType(catchStatement.getExceptionType(),catchStatement,"in catch statement");
   String exceptionVar=(catchStatement != null) ? catchStatement.getVariable() : createExceptionVariableName();
   int exceptionIndex=defineVariable(exceptionVar,exceptionType,false).getIndex();
   int index2=exceptionIndex + 1;

@@ -3,7 +3,12 @@
   for (Iterator iter=coll.iterator(); iter.hasNext(); ) {
     Object item=iter.next();
     Object value=InvokerHelper.getProperty(item,property);
-    answer.add(value);
+    if (value instanceof Collection) {
+      answer.addAll((Collection)value);
+    }
+ else {
+      answer.add(value);
+    }
   }
   return answer;
 }
