@@ -1,0 +1,51 @@
+{
+  boolean hasAttribute=false;
+  NamedNodeMap attributes=element.getAttributes();
+  int length=attributes.getLength();
+  if (length > 0) {
+    StringBuffer buffer=new StringBuffer();
+    for (int i=0; i < length; i++) {
+      Attr attribute=(Attr)attributes.item(i);
+      String prefix=attribute.getPrefix();
+      if (prefix != null && prefix.length() > 0) {
+        if (buffer.length() > 0) {
+          buffer.append(", ");
+          buffer.append(prefix);
+          buffer.append(".");
+          buffer.append(getLocalName(attribute));
+          buffer.append(":'");
+          buffer.append(attribute.getValue());
+          buffer.append("'");
+        }
+      }
+    }
+    print("(");
+    for (int i=0; i < length; i++) {
+      Attr attribute=(Attr)attributes.item(i);
+      String prefix=attribute.getPrefix();
+      if (prefix == null || prefix.length() == 0) {
+        if (!hasAttribute) {
+          hasAttribute=true;
+        }
+ else {
+          print(", ");
+        }
+        print(getLocalName(attribute));
+        print(":'");
+        print(attribute.getValue());
+        print("'");
+      }
+    }
+    if (buffer.length() > 0) {
+      if (hasAttribute) {
+        print(", ");
+      }
+      print("xmlns=[");
+      print(buffer.toString());
+      print("]");
+      hasAttribute=true;
+    }
+    print(")");
+  }
+  return hasAttribute;
+}

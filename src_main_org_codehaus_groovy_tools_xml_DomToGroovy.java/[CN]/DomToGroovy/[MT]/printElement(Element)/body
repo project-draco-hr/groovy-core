@@ -1,0 +1,39 @@
+{
+  element.normalize();
+  printIndent();
+  String prefix=element.getPrefix();
+  if (prefix != null && prefix.length() > 0) {
+    print(prefix);
+    print(".");
+  }
+  print(getLocalName(element));
+  boolean hasAttributes=printAttributes(element);
+  NodeList list=element.getChildNodes();
+  int length=list.getLength();
+  if (length == 0) {
+    println("();");
+  }
+ else {
+    Node node=list.item(0);
+    if (length == 1 && node instanceof Text) {
+      Text textNode=(Text)node;
+      String text=textNode.getData().trim();
+      if (hasAttributes) {
+        print(".append('");
+      }
+ else {
+        print("('");
+      }
+      print(text);
+      println("');");
+    }
+ else {
+      println(" {");
+      ++indent;
+      printChildren(element);
+      --indent;
+      printIndent();
+      println("}");
+    }
+  }
+}
