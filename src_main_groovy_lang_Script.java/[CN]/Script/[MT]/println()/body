@@ -1,9 +1,11 @@
 {
-  Object object=getProperty("out");
-  if (object != null) {
-    InvokerHelper.invokeMethod(object,"println",ArgumentListExpression.EMPTY_ARRAY);
+  Object object;
+  try {
+    object=getProperty("out");
   }
- else {
+ catch (  MissingPropertyException e) {
     System.out.println();
+    return;
   }
+  InvokerHelper.invokeMethod(object,"println",ArgumentListExpression.EMPTY_ARRAY);
 }

@@ -1,3 +1,7 @@
 {
-  return variables.get(name);
+  Object result=variables.get(name);
+  if (result == null && !variables.containsKey(name)) {
+    throw new MissingPropertyException(name,Binding.class);
+  }
+  return result;
 }

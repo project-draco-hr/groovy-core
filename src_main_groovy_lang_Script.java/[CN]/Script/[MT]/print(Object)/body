@@ -1,9 +1,11 @@
 {
-  Object object=getProperty("out");
-  if (object != null) {
-    InvokerHelper.invokeMethod(object,"print",new Object[]{value});
+  Object object;
+  try {
+    object=getProperty("out");
   }
- else {
+ catch (  MissingPropertyException e) {
     System.out.print(value);
+    return;
   }
+  InvokerHelper.invokeMethod(object,"print",new Object[]{value});
 }
