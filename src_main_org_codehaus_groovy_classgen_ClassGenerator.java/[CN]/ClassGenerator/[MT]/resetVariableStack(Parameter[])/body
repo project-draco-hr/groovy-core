@@ -11,7 +11,7 @@
     Parameter parameter=parameters[i];
     String type=parameter.getType();
     int idx=defineVariable(parameter.getName(),type).getIndex();
-    if (helper.isPrimitiveType(type)) {
+    if (BytecodeHelper.isPrimitiveType(type)) {
       helper.load(type,idx);
       helper.box(type);
       cv.visitVarInsn(ASTORE,idx);

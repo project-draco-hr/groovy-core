@@ -1,5 +1,6 @@
 {
-  String typeName=BytecodeHelper.getClassInternalName(expression.getType());
+  String type=expression.getType();
+  String typeName=BytecodeHelper.getClassInternalName(type);
   Expression sizeExpression=expression.getSizeExpression();
   if (sizeExpression != null) {
     visitAndAutobox(sizeExpression);
@@ -18,7 +19,12 @@
         ConstantExpression.NULL.visit(this);
       }
  else {
-        visitAndAutobox(elementExpression);
+        if (!type.equals(elementExpression.getClass().getName())) {
+          visitCastExpression(new CastExpression(type,elementExpression));
+        }
+ else {
+          visitAndAutobox(elementExpression);
+        }
       }
       cv.visitInsn(AASTORE);
     }
