@@ -2,10 +2,12 @@
   onLineNumber(loop);
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
-  int iteratorIdx=defineVariable(createIteratorName(),"java.util.Iterator",false).getIndex();
+  int iteratorIdx=defineVariable(createVariableName("iterator"),"java.util.Iterator",false).getIndex();
   cv.visitVarInsn(ASTORE,iteratorIdx);
   int iIdx=defineVariable(loop.getVariable(),"java.lang.Object",false).getIndex();
   Label label1=new Label();
+  Label previousContinueLable=continueLabel;
+  continueLabel=label1;
   cv.visitJumpInsn(GOTO,label1);
   Label label2=new Label();
   cv.visitLabel(label2);
@@ -17,4 +19,5 @@
   cv.visitVarInsn(ALOAD,iteratorIdx);
   iteratorHasNextMethod.call(cv);
   cv.visitJumpInsn(IFNE,label2);
+  continueLabel=previousContinueLable;
 }

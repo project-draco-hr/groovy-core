@@ -1,6 +1,8 @@
 {
   onLineNumber(loop);
   Label l0=new Label();
+  Label previousContinueLable=continueLabel;
+  continueLabel=l0;
   cv.visitJumpInsn(GOTO,l0);
   Label l1=new Label();
   cv.visitLabel(l1);
@@ -8,4 +10,5 @@
   cv.visitLabel(l0);
   loop.getBooleanExpression().visit(this);
   cv.visitJumpInsn(IFNE,l1);
+  continueLabel=previousContinueLable;
 }

@@ -1,6 +1,7 @@
 {
+  onLineNumber(statement);
   statement.getExpression().visit(this);
-  int index=defineVariable(createSynchronizedVariableName(),"java.lang.Integer").getIndex();
+  int index=defineVariable(createVariableName("synchronized"),"java.lang.Integer").getIndex();
   cv.visitVarInsn(ASTORE,index);
   cv.visitInsn(MONITORENTER);
   final Label l0=new Label();

@@ -1,2 +1,16 @@
 {
+  onLineNumber(statement);
+  statement.getExpression().visit(this);
+  switchVariableIndex=defineVariable(createVariableName("switch"),"java.lang.Object").getIndex();
+  cv.visitVarInsn(ASTORE,switchVariableIndex);
+  Label lastBreakLabel=breakLabel;
+  breakLabel=new Label();
+  List caseStatements=statement.getCaseStatements();
+  for (Iterator iter=caseStatements.iterator(); iter.hasNext(); ) {
+    CaseStatement caseStatement=(CaseStatement)iter.next();
+    visitCaseStatement(caseStatement);
+  }
+  statement.getDefaultStatement().visit(this);
+  cv.visitLabel(breakLabel);
+  breakLabel=lastBreakLabel;
 }
