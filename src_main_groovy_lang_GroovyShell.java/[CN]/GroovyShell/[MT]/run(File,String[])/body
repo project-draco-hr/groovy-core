@@ -34,11 +34,6 @@ class DoSetContext implements PrivilegedAction {
       throw (RuntimeException)pae.getException();
     }
   }
-  if (isUnitTestCase(scriptClass)) {
-    runTest(scriptClass);
-  }
- else {
-    InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
-  }
+  runMainOrTestOrRunnable(scriptClass,args);
   AccessController.doPrivileged(new DoSetContext(currentClassLoader));
 }

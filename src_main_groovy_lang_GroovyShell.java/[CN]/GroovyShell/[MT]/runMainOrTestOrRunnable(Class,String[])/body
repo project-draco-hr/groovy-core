@@ -1,0 +1,47 @@
+{
+  try {
+    InvokerHelper.invokeMethod(scriptClass,"main",args);
+  }
+ catch (  MissingMethodException e) {
+    if (isUnitTestCase(scriptClass)) {
+      runTest(scriptClass);
+    }
+ else     if (Runnable.class.isAssignableFrom(scriptClass)) {
+      Constructor constructor=null;
+      Runnable runnable=null;
+      Throwable reason=null;
+      try {
+        constructor=scriptClass.getConstructor(new Class[]{(new String[]{}).getClass()});
+        try {
+          runnable=(Runnable)constructor.newInstance(new Object[]{args});
+        }
+ catch (        Throwable t) {
+          reason=t;
+        }
+      }
+ catch (      NoSuchMethodException e1) {
+        try {
+          constructor=scriptClass.getConstructor(new Class[]{});
+          try {
+            runnable=(Runnable)constructor.newInstance(new Object[]{});
+          }
+ catch (          Throwable t) {
+            reason=t;
+          }
+        }
+ catch (        NoSuchMethodException nsme) {
+          reason=nsme;
+        }
+      }
+      if (constructor != null && runnable != null) {
+        runnable.run();
+      }
+ else {
+        throw new GroovyRuntimeException("This script or class could not be run. ",reason);
+      }
+    }
+ else {
+      throw new GroovyRuntimeException("This script or class could not be run. \n" + "It should either: \n" + "- have a main method, \n"+ "- be a class extending GroovyTestCase, \n"+ "- or implement the Runnable interface.");
+    }
+  }
+}
