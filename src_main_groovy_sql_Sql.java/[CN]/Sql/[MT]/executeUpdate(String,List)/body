@@ -5,7 +5,8 @@
     log.fine(sql);
     statement=connection.prepareStatement(sql);
     setParameters(params,statement);
-    return statement.executeUpdate();
+    this.updateCount=statement.executeUpdate();
+    return this.updateCount;
   }
  catch (  SQLException e) {
     log.log(Level.WARNING,"Failed to execute: " + sql,e);

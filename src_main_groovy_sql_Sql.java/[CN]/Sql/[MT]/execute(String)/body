@@ -4,7 +4,9 @@
   try {
     log.fine(sql);
     statement=connection.createStatement();
-    return statement.execute(sql);
+    boolean isResultSet=statement.execute(sql);
+    this.updateCount=statement.getUpdateCount();
+    return isResultSet;
   }
  catch (  SQLException e) {
     log.log(Level.WARNING,"Failed to execute: " + sql,e);
