@@ -32,9 +32,10 @@
         variable=defineVariable(name,"java.lang.Object");
       }
       if (variable == null) {
-        visitPropertyExpression(new PropertyExpression(new VariableExpression("this"),variableName));
+        variable=defineVariable(name,"java.lang.Object",false);
+        visitPropertyExpression(new PropertyExpression(new VariableExpression("this"),name));
         cv.visitInsn(DUP);
-        cv.visitVarInsn(ASTORE,idx + 1);
+        cv.visitVarInsn(ASTORE,variable.getIndex());
         return;
       }
       String type=variable.getType();

@@ -1,4 +1,8 @@
 {
+  if (parent == null) {
+    parent=Thread.currentThread().getContextClassLoader();
+    if (parent == null)     parent=GroovyShell.class.getClassLoader();
+  }
   this.loader=new GroovyClassLoader(parent);
   this.context=binding;
 }

@@ -1,16 +1,11 @@
 {
   boolean left=leftHandExpression;
   leftHandExpression=false;
-  int i=idx + 1;
-  if (left) {
-    cv.visitVarInsn(ASTORE,i);
-  }
   Expression objectExpression=expression.getObjectExpression();
   objectExpression.visit(this);
   cv.visitLdcInsn(expression.getProperty());
   if (left) {
-    cv.visitVarInsn(ALOAD,i);
-    setPropertyMethod.call(cv);
+    setPropertyMethod2.call(cv);
   }
  else {
     getPropertyMethod.call(cv);
