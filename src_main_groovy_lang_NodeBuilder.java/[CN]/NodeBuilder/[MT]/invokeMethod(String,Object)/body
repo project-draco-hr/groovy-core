@@ -1,0 +1,48 @@
+{
+  Node node=null;
+  Closure closure=null;
+  List list=InvokerHelper.asList(args);
+  if (!list.isEmpty()) {
+    Object object=list.get(0);
+    if (object instanceof Map) {
+      node=new Node(current,name,(Map)object,new ArrayList());
+    }
+ else     if (object instanceof Closure) {
+      closure=(Closure)object;
+      node=new Node(current,name,new ArrayList());
+    }
+ else {
+      node=new Node(current,name,object);
+    }
+    if (list.size() > 1) {
+      object=list.get(1);
+      if (object instanceof Closure) {
+        closure=(Closure)object;
+      }
+    }
+  }
+ else {
+    node=new Node(current,name);
+  }
+  if (current != null) {
+    Object parentValue=current.getValue();
+    List parentList=null;
+    if (parentValue instanceof List) {
+      parentList=(List)parentValue;
+    }
+ else {
+      parentList=new ArrayList();
+      parentList.add(parentValue);
+      current.setValue(parentList);
+    }
+    parentList.add(node);
+  }
+  System.out.println("Created node: " + node);
+  if (closure != null) {
+    Node oldCurrent=current;
+    current=node;
+    closure.call();
+    current=oldCurrent;
+  }
+  return node;
+}
