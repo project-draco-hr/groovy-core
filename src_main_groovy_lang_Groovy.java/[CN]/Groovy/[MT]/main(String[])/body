@@ -1,0 +1,20 @@
+{
+  int length=args.length;
+  if (length <= 0) {
+    System.out.println("Usage: Groovy groovyScript [arguments]");
+    return;
+  }
+  String script=args[0];
+  String[] newArgs=new String[length - 1];
+  if (length > 1) {
+    System.arraycopy(args,1,newArgs,0,length - 1);
+  }
+  try {
+    Groovy groovy=new Groovy();
+    groovy.run(script,newArgs);
+  }
+ catch (  Exception e) {
+    System.out.println("Caught: " + e);
+    e.printStackTrace();
+  }
+}

@@ -5,6 +5,9 @@
   }
   String outerClassName=owner.getName();
   String name=outerClassName + "$" + context.getNextInnerClassIdx();
+  if (isStaticMethod()) {
+    outerClassName="java.lang.Class";
+  }
   Parameter[] parameters=expression.getParameters();
   if (parameters == null || parameters.length == 0) {
     parameters=new Parameter[]{new Parameter("it")};

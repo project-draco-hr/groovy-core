@@ -3,10 +3,14 @@
   addInnerClass(innerClass);
   String innerClassinternalName=getClassInternalName(innerClass.getName());
   ClassNode owner=innerClass.getOuterClass();
+  String ownerTypeName=owner.getName();
+  if (isStaticMethod()) {
+    ownerTypeName="java.lang.Class";
+  }
   if (classNode instanceof InnerClassNode) {
     int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(owner.getName()));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(ownerTypeName));
     cv.visitVarInsn(ASTORE,paramIdx);
     cv.visitTypeInsn(NEW,innerClassinternalName);
     cv.visitInsn(DUP);
@@ -15,10 +19,20 @@
  else {
     cv.visitTypeInsn(NEW,innerClassinternalName);
     cv.visitInsn(DUP);
-    cv.visitVarInsn(ALOAD,0);
+    if (isStaticMethod()) {
+      visitClassExpression(new ClassExpression(ownerTypeName));
+    }
+ else {
+      cv.visitVarInsn(ALOAD,0);
+    }
   }
   if (innerClass.getSuperClass().equals("groovy.lang.Closure")) {
-    cv.visitVarInsn(ALOAD,0);
+    if (isStaticMethod()) {
+      visitClassExpression(new ClassExpression(ownerTypeName));
+    }
+ else {
+      cv.visitVarInsn(ALOAD,0);
+    }
   }
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","(L" + getClassInternalName(owner.getName()) + ";Ljava/lang/Object;)V");
+  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","(L" + getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;)V");
 }
