@@ -1,0 +1,10 @@
+{
+  List methods=shell.getMetaClass().getMetaMethods();
+  for (Iterator i=methods.iterator(); i.hasNext(); ) {
+    MetaMethod method=(MetaMethod)i.next();
+    if (method.getName().startsWith(complete)) {
+      if (method.getParameterTypes().length > 0)       completions.add(method.getName() + "(");
+ else       completions.add(method.getName() + "()");
+    }
+  }
+}
