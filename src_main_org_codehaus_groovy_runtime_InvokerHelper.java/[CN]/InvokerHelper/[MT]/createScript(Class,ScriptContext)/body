@@ -1,0 +1,9 @@
+{
+  try {
+    Constructor constructor=scriptClass.getConstructor(new Class[]{ScriptContext.class});
+    return (Script)constructor.newInstance(new Object[]{context});
+  }
+ catch (  Exception e) {
+    throw new InvokerException("Failed to create Script instance for class: " + scriptClass + ". Reason: "+ e,e);
+  }
+}

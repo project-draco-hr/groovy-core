@@ -10,10 +10,11 @@
     throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
   }
   name+=extractClassFromFileDescription();
-  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,"java.lang.Object");
-  if (!statementBlock.isEmpty()) {
-    classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"java.lang.Object",new Parameter[]{new Parameter("java.lang.String[]","args")},statementBlock));
-  }
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,Script.class.getName());
+  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,Object.class.getName(),new Parameter[]{new Parameter("java.lang.String[]","args")},new ReturnStatement(new MethodCallExpression(new ClassExpression(InvokerHelper.class.getName()),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode.getName()),new VariableExpression("args")})))));
+  classNode.addMethod(new MethodNode("run",ACC_PUBLIC,Object.class.getName(),Parameter.EMPTY_ARRAY,statementBlock));
+  classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,new BlockStatement());
+  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ScriptContext.class.getName(),"context")},new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("context"))));
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode node=(MethodNode)iter.next();
     int modifiers=node.getModifiers();
