@@ -1,21 +1,27 @@
 {
   if (typename.charAt(0) == '[') {
-    return cleanupTypeName(typename.substring(1)) + "[]";
+    return ensureJavaTypeNameSyntax(typename.substring(1)) + "[]";
   }
   if (typename.length() == 1) {
 switch (typename.charAt(0)) {
-case 'J':
-      return "long";
-case 'I':
-    return "int";
+case 'B':
+      return "byte";
 case 'C':
-  return "char";
+    return "char";
+case 'D':
+  return "double";
 case 'F':
 return "float";
+case 'J':
+return "long";
+case 'I':
+return "int";
+case 'S':
+return "short";
 case 'V':
 return "void";
-case 'D':
-return "double";
+case 'Z':
+return "boolean";
 }
 }
 if (typename.endsWith(";")) {

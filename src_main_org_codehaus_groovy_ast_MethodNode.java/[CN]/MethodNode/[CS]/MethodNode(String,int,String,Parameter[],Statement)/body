@@ -1,11 +1,13 @@
 {
   this.name=name;
   this.modifiers=modifiers;
-  this.returnType=returnType;
   this.parameters=parameters;
   this.code=code;
   if (returnType == null) {
     this.returnType="java.lang.Object";
     this.dynamicReturnType=true;
+  }
+ else {
+    this.returnType=ensureJavaTypeNameSyntax(returnType);
   }
 }
