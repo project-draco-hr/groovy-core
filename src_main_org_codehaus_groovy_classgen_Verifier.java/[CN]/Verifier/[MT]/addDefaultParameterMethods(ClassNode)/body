@@ -1,2 +1,15 @@
 {
+  List methods=new ArrayList(node.getMethods());
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode method=(MethodNode)iter.next();
+    Parameter[] parameters=method.getParameters();
+    int size=parameters.length;
+    for (int i=0; i < size; i++) {
+      Parameter parameter=parameters[i];
+      Expression exp=parameter.getDefaultValue();
+      if (exp != null) {
+        addDefaultParameterMethod(node,method,parameters,i);
+      }
+    }
+  }
 }
