@@ -7,6 +7,15 @@
   if (isStaticMethod()) {
     ownerTypeName="java.lang.Class";
   }
+  passingClosureParams=true;
+  Parameter[] localVariableParams=getClosureSharedVariables(expression);
+  for (int i=0; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    String name=param.getName();
+    if (variableStack.get(name) == null) {
+      defineVariable(name,"java.lang.Object");
+    }
+  }
   if (classNode instanceof InnerClassNode) {
     int paramIdx=defineVariable(createVariableName("iterator"),"java.lang.Object",false).getIndex();
     cv.visitVarInsn(ALOAD,0);
@@ -35,14 +44,9 @@
     }
   }
   String prototype="(L" + getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
-  passingClosureParams=true;
-  Parameter[] localVariableParams=getClosureSharedVariables(expression);
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    if (variableStack.get(name) == null) {
-      defineVariable(name,"java.lang.Object");
-    }
     visitVariableExpression(new VariableExpression(name));
     prototype=prototype + "L" + getClassInternalName(param.getType())+ ";";
   }
