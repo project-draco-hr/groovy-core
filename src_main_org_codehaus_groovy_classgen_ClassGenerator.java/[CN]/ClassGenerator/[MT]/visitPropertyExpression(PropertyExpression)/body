@@ -34,20 +34,30 @@
   leftHandExpression=false;
   objectExpression.visit(this);
   cv.visitLdcInsn(expression.getProperty());
-  if (expression.isSafe()) {
+  if (isGroovyObject(objectExpression) && !expression.isSafe()) {
     if (left) {
-      setPropertySafeMethod2.call(cv);
+      setGroovyObjectPropertyMethod.call(cv);
     }
  else {
-      getPropertySafeMethod.call(cv);
+      getGroovyObjectPropertyMethod.call(cv);
     }
   }
  else {
-    if (left) {
-      setPropertyMethod2.call(cv);
+    if (expression.isSafe()) {
+      if (left) {
+        setPropertySafeMethod2.call(cv);
+      }
+ else {
+        getPropertySafeMethod.call(cv);
+      }
     }
  else {
-      getPropertyMethod.call(cv);
+      if (left) {
+        setPropertyMethod2.call(cv);
+      }
+ else {
+        getPropertyMethod.call(cv);
+      }
     }
   }
 }
