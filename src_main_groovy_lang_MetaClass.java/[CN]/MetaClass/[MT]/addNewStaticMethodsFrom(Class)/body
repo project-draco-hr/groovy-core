@@ -1,21 +1,10 @@
 {
   MetaClass interfaceMetaClass=registry.getMetaClass(theClass);
   interfaceMetaClass.checkInitialised();
-  Iterator iter=interfaceMetaClass.newStaticInstanceMethodIndex.entrySet().iterator();
+  Iterator iter=interfaceMetaClass.newGroovyMethodsList.iterator();
   while (iter.hasNext()) {
-    Map.Entry entry=(Map.Entry)iter.next();
-    String name=(String)entry.getKey();
-    List values=(List)entry.getValue();
-    for (Iterator iter2=values.iterator(); iter2.hasNext(); ) {
-      addMethod((MetaMethod)iter2.next());
-    }
-    if (values != null) {
-      List list=(List)newStaticInstanceMethodIndex.get(name);
-      if (list == null) {
-        list=new ArrayList();
-        newStaticInstanceMethodIndex.put(name,list);
-      }
-      list.addAll(values);
-    }
+    MetaMethod method=(MetaMethod)iter.next();
+    addMethod(method);
+    newGroovyMethodsList.add(method);
   }
 }

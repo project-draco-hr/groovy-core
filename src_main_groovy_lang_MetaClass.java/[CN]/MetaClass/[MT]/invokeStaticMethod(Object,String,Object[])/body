@@ -1,18 +1,15 @@
 {
   checkInitialised();
-  List methods=getStaticMethods(methodName);
-  if (!methods.isEmpty()) {
-    MetaMethod method=(MetaMethod)chooseMethod(methodName,methods,arguments,false);
+  MethodKey methodKey=new TemporaryMethodKey(methodName,arguments);
+  MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
+  if (method == null) {
+    method=pickStaticMethod(object,methodName,arguments);
     if (method != null) {
-      return doMethodInvoke(theClass,method,arguments);
+      staticMethodCache.put(methodKey.createCopy(),method);
     }
   }
-  if (theClass != Class.class) {
-    try {
-      return registry.getMetaClass(Class.class).invokeMethod(object,methodName,arguments);
-    }
- catch (    GroovyRuntimeException e) {
-    }
+  if (method != null) {
+    return doMethodInvoke(object,method,arguments);
   }
   throw new MissingMethodException(methodName,theClass,arguments);
 }

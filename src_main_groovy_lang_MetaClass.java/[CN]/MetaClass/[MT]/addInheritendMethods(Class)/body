@@ -14,8 +14,10 @@
   for (int i=0; i < interfaces.length; i++) {
     addNewStaticMethodsFrom(interfaces[i]);
   }
-  addMethods(Object.class);
-  addNewStaticMethodsFrom(Object.class);
+  if (theClass != Object.class) {
+    addMethods(Object.class);
+    addNewStaticMethodsFrom(Object.class);
+  }
   if (theClass.isArray() && !theClass.equals(Object[].class)) {
     addNewStaticMethodsFrom(Object[].class);
   }

@@ -1,0 +1,12 @@
+{
+  MethodKey a=new DefaultMethodKey("foo",new Class[]{Object.class,Integer.class});
+  MethodKey a2=new TemporaryMethodKey("foo",new Object[]{new Object(),new Integer(1)});
+  MethodKey b=new TemporaryMethodKey("foo",new Object[]{new Object()});
+  MethodKey c=new TemporaryMethodKey("bar",new Object[]{new Object(),new Integer(1)});
+  assertCompare(a,a,true);
+  assertCompare(a,a2,true);
+  assertCompare(b,b,true);
+  assertCompare(a,b,false);
+  assertCompare(a,c,false);
+  assertCompare(b,c,false);
+}

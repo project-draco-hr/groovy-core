@@ -19,17 +19,15 @@
       }
     }
   }
+  List list=(List)methodIndex.get(name);
+  if (list == null) {
+    list=new ArrayList();
+    methodIndex.put(name,list);
+    list.add(method);
+  }
  else {
-    List list=(List)methodIndex.get(name);
-    if (list == null) {
-      list=new ArrayList();
-      methodIndex.put(name,list);
+    if (!containsMatchingMethod(list,method)) {
       list.add(method);
-    }
- else {
-      if (!containsMatchingMethod(list,method)) {
-        list.add(method);
-      }
     }
   }
 }
