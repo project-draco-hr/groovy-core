@@ -12,6 +12,7 @@
           code.visit(visitor);
         }
       }
+      addFieldsToVisitor(variableScope);
     }
  else     if (constructorNode != null) {
       variableScope=new VariableScope();
@@ -22,11 +23,11 @@
       if (code != null) {
         code.visit(visitor);
       }
+      addFieldsToVisitor(variableScope);
     }
  else {
       throw new RuntimeException("Can't create a variable scope outside of a method or constructor");
     }
-    addFieldsToVisitor(variableScope);
   }
   return variableScope;
 }
