@@ -1,0 +1,10 @@
+{
+  FileCharStream[] fileCharStreams=new FileCharStream[files.length];
+  for (int i=0; i < fileCharStreams.length; ++i) {
+    fileCharStreams[i]=new FileCharStream(files[i]);
+  }
+  GroovyClass[] classes=getCompiler().compile(fileCharStreams);
+  for (int i=0; i < classes.length; ++i) {
+    dumpClassFile(classes[i]);
+  }
+}

@@ -1,0 +1,25 @@
+{
+  List results=new ArrayList();
+  ClassGenerator classGenerator=null;
+  verifier.visitClass(classNode);
+  if (false) {
+    DumpClassVisitor dumpVisitor=new DumpClassVisitor(new PrintWriter(new OutputStreamWriter(System.out)));
+    classGenerator=new ClassGenerator(context,dumpVisitor,getClassLoader(),sourceLocator);
+    classGenerator.visitClass(classNode);
+  }
+ else {
+    ClassWriter classWriter=new ClassWriter(true);
+    classGenerator=new ClassGenerator(context,classWriter,getClassLoader(),sourceLocator);
+    classGenerator.visitClass(classNode);
+    byte[] bytes=classWriter.toByteArray();
+    results.add(new GroovyClass(classNode.getName(),bytes));
+  }
+  LinkedList innerClasses=classGenerator.getInnerClasses();
+  while (!innerClasses.isEmpty()) {
+    GroovyClass[] classes=generateClasses(context,(ClassNode)innerClasses.removeFirst(),sourceLocator);
+    for (int i=0; i < classes.length; ++i) {
+      results.add(classes[i]);
+    }
+  }
+  return (GroovyClass[])results.toArray(GroovyClass.EMPTY_ARRAY);
+}

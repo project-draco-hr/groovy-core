@@ -1,0 +1,30 @@
+{
+  CSTNode[] compilationUnits=new CSTNode[sources.length];
+  for (int i=0; i < sources.length; ++i) {
+    try {
+      compilationUnits[i]=stageOneCompile(sources[i]);
+    }
+ catch (    Exception e) {
+      this.errors.add(e);
+    }
+ finally {
+      try {
+        sources[i].close();
+      }
+ catch (      IOException e) {
+      }
+    }
+  }
+  if (!this.errors.isEmpty()) {
+    throw new MultiException((Exception[])this.errors.toArray(EMPTY_EXCEPTION_ARRAY));
+  }
+  stageTwoCompile(compilationUnits);
+  List results=new ArrayList();
+  for (int i=0; i < compilationUnits.length; ++i) {
+    GroovyClass[] classes=stageThreeCompile(compilationUnits[i],sources[i]);
+    for (int j=0; j < classes.length; ++j) {
+      results.add(classes[j]);
+    }
+  }
+  return (GroovyClass[])results.toArray(GroovyClass.EMPTY_ARRAY);
+}

@@ -1,0 +1,12 @@
+{
+  ASTBuilder astBuilder=new ASTBuilder(getClassLoader());
+  ClassNode[] classNodes=astBuilder.build(compilationUnit);
+  List results=new ArrayList();
+  for (int i=0; i < classNodes.length; ++i) {
+    GroovyClass[] classes=generateClasses(new GeneratorContext(),classNodes[i],charStream.getDescription());
+    for (int j=0; j < classes.length; ++j) {
+      results.add(classes[j]);
+    }
+  }
+  return (GroovyClass[])results.toArray(GroovyClass.EMPTY_ARRAY);
+}
