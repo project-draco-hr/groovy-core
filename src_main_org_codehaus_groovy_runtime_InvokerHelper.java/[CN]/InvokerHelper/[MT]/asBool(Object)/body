@@ -3,9 +3,17 @@
     Boolean booleanValue=(Boolean)object;
     return booleanValue.booleanValue();
   }
+ else   if (object instanceof Matcher) {
+    Matcher matcher=(Matcher)object;
+    return matcher.find();
+  }
+ else   if (object instanceof Collection) {
+    Collection collection=(Collection)object;
+    return !collection.isEmpty();
+  }
  else   if (object instanceof String) {
     String text=(String)object;
-    return text.equals("true");
+    return text.equalsIgnoreCase("true");
   }
-  return false;
+  throw new InvokerException(object.getClass().getName() + "(" + object+ ") cannot be converted to a boolean.");
 }

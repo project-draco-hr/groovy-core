@@ -2,5 +2,33 @@
   if (value instanceof Iterator) {
     return (Iterator)value;
   }
+ else   if (value instanceof Matcher) {
+    final Matcher matcher=(Matcher)value;
+    return new Iterator(){
+      private boolean found=false;
+      private boolean done=false;
+      public boolean hasNext(){
+        if (done)         return false;
+        if (!found) {
+          found=matcher.find();
+          if (!found)           done=true;
+        }
+        return found;
+      }
+      public Object next(){
+        if (!found) {
+          if (!hasNext()) {
+            throw new NoSuchElementException();
+          }
+        }
+        found=false;
+        return matcher.group();
+      }
+      public void remove(){
+        throw new NotImplementedException();
+      }
+    }
+;
+  }
   return asCollection(value).iterator();
 }
