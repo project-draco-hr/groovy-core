@@ -29,9 +29,11 @@
       return answer;
     }
   }
-  List methods=getMethods(property);
-  if (!methods.isEmpty()) {
-    return new MethodClosure(object,property);
+  if (!CompilerConfiguration.isJsrGroovy()) {
+    List methods=getMethods(property);
+    if (!methods.isEmpty()) {
+      return new MethodClosure(object,property);
+    }
   }
   Exception lastException=null;
   try {
