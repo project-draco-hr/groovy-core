@@ -1,6 +1,11 @@
 {
   onLineNumber(statement);
   statement.getExpression().visit(this);
+  Expression assignExpr=assignmentExpression(statement.getExpression());
+  if (assignExpr != null) {
+    leftHandExpression=false;
+    assignExpr.visit(this);
+  }
   Class c=getExpressionType(statement.getExpression());
   if (c == Boolean.class) {
     Label l0=new Label();

@@ -1,0 +1,12 @@
+{
+  InvocationHandler handler=new InvocationHandler(){
+    public Object invoke(    Object object,    Method method,    Object[] arguments) throws Throwable {
+      if (listenerMethodName.equals(method.getName())) {
+        closure.call(arguments[0]);
+      }
+      return null;
+    }
+  }
+;
+  return Proxy.newProxyInstance(listenerType.getClassLoader(),new Class[]{listenerType},handler);
+}

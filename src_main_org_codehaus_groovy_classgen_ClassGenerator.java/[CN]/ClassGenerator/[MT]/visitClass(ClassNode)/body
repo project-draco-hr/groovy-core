@@ -4,18 +4,7 @@
   this.internalClassName=getClassInternalName(classNode.getName());
   this.internalBaseClassName=getClassInternalName(classNode.getSuperClass());
   cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,getClassInternalNames(classNode.getInterfaces()),sourceFile);
-  for (Iterator iter=classNode.getProperties().iterator(); iter.hasNext(); ) {
-    visitProperty((PropertyNode)iter.next());
-  }
-  for (Iterator iter=classNode.getFields().iterator(); iter.hasNext(); ) {
-    visitField((FieldNode)iter.next());
-  }
-  for (Iterator iter=classNode.getConstructors().iterator(); iter.hasNext(); ) {
-    visitConstructor((ConstructorNode)iter.next());
-  }
-  for (Iterator iter=classNode.getMethods().iterator(); iter.hasNext(); ) {
-    visitMethod((MethodNode)iter.next());
-  }
+  classNode.visitContents(this);
   createSyntheticStaticFields();
   for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
     ClassNode innerClass=(ClassNode)iter.next();

@@ -6,7 +6,7 @@
   if (classNode instanceof InnerClassNode) {
     int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"__outerInstance",getTypeDescription(owner.getName()));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(owner.getName()));
     cv.visitVarInsn(ASTORE,paramIdx);
     cv.visitTypeInsn(NEW,innerClassinternalName);
     cv.visitInsn(DUP);

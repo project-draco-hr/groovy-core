@@ -8,7 +8,7 @@
   Parameter[] parameters=expression.getParameters();
   InnerClassNode answer=new InnerClassNode(owner,name,ACC_PUBLIC,"groovy.lang.Closure");
   answer.addMethod("doCall",ACC_PUBLIC,"java.lang.Object",parameters,expression.getCode());
-  FieldNode field=answer.addField("__outerInstance",ACC_PRIVATE,outerClassName,null);
+  FieldNode field=answer.addField("owner",ACC_PRIVATE,outerClassName,null);
   BlockStatement block=new BlockStatement();
   block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("outerInstance"))));
   block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.equal(-1,-1),new VariableExpression("outerInstance"))));

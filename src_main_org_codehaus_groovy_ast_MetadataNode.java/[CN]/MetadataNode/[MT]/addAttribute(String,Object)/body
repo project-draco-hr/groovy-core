@@ -1,0 +1,18 @@
+{
+  Object oldValue=attributes.get(name);
+  if (oldValue == null) {
+    attributes.put(name,value);
+  }
+ else {
+    List list=null;
+    if (oldValue instanceof List) {
+      list=(List)oldValue;
+    }
+ else {
+      list=new ArrayList();
+      list.add(oldValue);
+      attributes.put(name,list);
+    }
+    list.add(value);
+  }
+}

@@ -1,0 +1,50 @@
+{
+  constraints=attributes.remove("constraints");
+  Object widget=null;
+  Factory factory=(Factory)factories.get(name);
+  if (factory != null) {
+    try {
+      widget=factory.newInstance(attributes);
+      if (widget == null) {
+        log.warn("Factory for name: " + name + " returned null");
+      }
+ else {
+        if (log.isDebugEnabled()) {
+          log.debug("For name: " + name + " created widget: "+ widget);
+        }
+      }
+    }
+ catch (    Exception e) {
+      throw new RuntimeException("Failed to create component for" + name + " reason: "+ e,e);
+    }
+  }
+ else {
+    log.warn("Could not find match for name: " + name);
+  }
+  if (widget != null) {
+    if (widget instanceof Action) {
+      Action action=(Action)widget;
+      Closure closure=(Closure)attributes.remove("closure");
+      if (closure != null && action instanceof DefaultAction) {
+        DefaultAction defaultAction=(DefaultAction)action;
+        defaultAction.setClosure(closure);
+      }
+      for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+        Map.Entry entry=(Map.Entry)iter.next();
+        String actionName=(String)entry.getKey();
+        actionName=capitalize(actionName);
+        Object value=entry.getValue();
+        action.putValue(actionName,value);
+      }
+    }
+ else {
+      for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+        Map.Entry entry=(Map.Entry)iter.next();
+        String property=entry.getKey().toString();
+        Object value=entry.getValue();
+        InvokerHelper.setProperty(widget,property,value);
+      }
+    }
+  }
+  return widget;
+}

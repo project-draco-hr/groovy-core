@@ -2,9 +2,12 @@
   if (index < 0) {
     throw new IndexOutOfBoundsException("Index: " + index + " should not be negative");
   }
-  int value=index + from;
-  if (value >= to) {
-    throw new IndexOutOfBoundsException("Index: " + index + " too big for range: "+ this);
+  Object value=from;
+  for (int i=0; i < index; i++) {
+    value=increment(value);
   }
-  return new Integer(value);
+  if (index >= size()) {
+    throw new IndexOutOfBoundsException("Index: " + index + " is too big for range: "+ this);
+  }
+  return value;
 }

@@ -1,3 +1,6 @@
 {
-  return new Range(asInt(from),asInt(to));
+  if (from instanceof Integer && to instanceof Integer) {
+    return new IntRange(asInt(from),asInt(to));
+  }
+  return new Range((Comparable)from,(Comparable)to);
 }

@@ -1,0 +1,16 @@
+{
+  Object items=properties.remove("items");
+  if (items instanceof Vector) {
+    return new JComboBox((Vector)items);
+  }
+ else   if (items instanceof List) {
+    List list=(List)items;
+    return new JComboBox(list.toArray());
+  }
+ else   if (items instanceof Object[]) {
+    return new JComboBox((Object[])items);
+  }
+ else {
+    return new JComboBox();
+  }
+}

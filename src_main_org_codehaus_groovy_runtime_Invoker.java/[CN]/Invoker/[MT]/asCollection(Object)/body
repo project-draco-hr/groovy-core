@@ -12,6 +12,12 @@
  else   if (value.getClass().isArray()) {
     return Arrays.asList((Object[])value);
   }
+ else   if (value instanceof MethodClosure) {
+    MethodClosure method=(MethodClosure)value;
+    IteratorClosureAdapter adapter=new IteratorClosureAdapter(method.getDelegate());
+    method.call(adapter);
+    return adapter.asList();
+  }
  else {
     return Collections.singletonList(value);
   }

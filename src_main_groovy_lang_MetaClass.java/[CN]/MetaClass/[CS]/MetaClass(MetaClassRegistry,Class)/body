@@ -9,6 +9,15 @@
     PropertyDescriptor descriptor=descriptors[i];
     propertyDescriptors.put(descriptor.getName(),descriptor);
   }
+  EventSetDescriptor[] eventDescriptors=info.getEventSetDescriptors();
+  for (int i=0; i < eventDescriptors.length; i++) {
+    EventSetDescriptor descriptor=eventDescriptors[i];
+    Method[] listenerMethods=descriptor.getListenerMethods();
+    for (int j=0; j < listenerMethods.length; j++) {
+      Method listenerMethod=listenerMethods[j];
+      listeners.put(listenerMethod.getName(),descriptor.getAddListenerMethod());
+    }
+  }
   Class[] interfaces=theClass.getInterfaces();
   for (int i=0; i < interfaces.length; i++) {
     addNewStaticMethodsFrom(interfaces[i]);

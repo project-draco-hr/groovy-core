@@ -6,7 +6,31 @@
       throw new InvokerException("Cannot set read-only property: " + property);
     }
     Object[] arguments={newValue};
-    doMethodInvoke(object,method,arguments);
+    try {
+      doMethodInvoke(object,method,arguments);
+    }
+ catch (    InvokerException e) {
+      if (newValue instanceof List) {
+        List list=(List)newValue;
+        int params=list.size();
+        Constructor[] constructors=descriptor.getPropertyType().getConstructors();
+        for (int i=0; i < constructors.length; i++) {
+          Constructor constructor=constructors[i];
+          if (constructor.getParameterTypes().length == params) {
+            Object value=doConstructorInvoke(constructor,list.toArray());
+            doMethodInvoke(object,method,new Object[]{value});
+            return;
+          }
+        }
+      }
+      throw e;
+    }
+    return;
+  }
+  Method addListenerMethod=(Method)listeners.get(property);
+  if (addListenerMethod != null && newValue instanceof Closure) {
+    Object proxy=createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
+    doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
     return;
   }
   if (genericSetMethod != null) {
@@ -14,5 +38,6 @@
     doMethodInvoke(object,genericSetMethod,arguments);
     return;
   }
-  throw new InvokerException("No such property: " + property);
+  String method="set" + property.substring(0,1).toUpperCase() + property.substring(1,property.length());
+  invokeMethod(object,method,newValue);
 }
