@@ -1,7 +1,8 @@
 {
+  this();
   String text=null;
   int numeric=0;
-  numeric=WarningMessage.LIKELY_ERRORS;
+  numeric=getWarningLevel();
   try {
     text=configuration.getProperty("groovy.warnings","likely errors");
     numeric=Integer.parseInt(text);
@@ -24,26 +25,25 @@
     }
   }
   setWarningLevel(numeric);
-  text=configuration.getProperty("groovy.source.encoding",System.getProperty("file.encoding"));
-  setSourceEncoding(text);
-  setOutput(null);
-  text=configuration.getProperty("groovy.target.directory",System.getProperty("user.dir"));
-  setTargetDirectory(text);
-  text=configuration.getProperty("groovy.classpath",System.getProperty("java.class.path"));
-  setClasspath(text);
-  text=configuration.getProperty("groovy.output.verbose","false");
-  if (text.equals("true")) {
+  text=configuration.getProperty("groovy.source.encoding");
+  if (text != null) {
+    setSourceEncoding(text);
+  }
+  text=configuration.getProperty("groovy.target.directory");
+  if (text != null) {
+    setTargetDirectory(text);
+  }
+  text=configuration.getProperty("groovy.classpath");
+  if (text != null) {
+    setClasspath(text);
+  }
+  text=configuration.getProperty("groovy.output.verbose");
+  if (text != null && text.equals("true")) {
     setVerbose(true);
   }
- else {
-    setVerbose(false);
-  }
-  text=configuration.getProperty("groovy.output.debug","false");
-  if (text.equals("true")) {
+  text=configuration.getProperty("groovy.output.debug");
+  if (text != null && text.equals("true")) {
     setDebug(true);
-  }
- else {
-    setDebug(false);
   }
   numeric=10;
   try {
@@ -54,6 +54,6 @@
     throw new ConfigurationException(e);
   }
   setTolerance(numeric);
-  text=configuration.getProperty("groovy.script.base",null);
+  text=configuration.getProperty("groovy.script.base");
   setScriptBaseClass(text);
 }

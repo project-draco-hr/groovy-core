@@ -9,7 +9,7 @@
     String name=gclass.getName().replace('.',File.separatorChar) + ".class";
     File path=new File(configuration.getTargetDirectory(),name);
     File directory=path.getParentFile();
-    if (!directory.exists()) {
+    if (directory != null && !directory.exists()) {
       directory.mkdirs();
     }
     byte[] bytes=gclass.getBytes();

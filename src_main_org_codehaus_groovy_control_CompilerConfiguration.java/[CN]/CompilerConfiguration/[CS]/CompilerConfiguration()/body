@@ -1,11 +1,15 @@
 {
+  setWarningLevel(WarningMessage.LIKELY_ERRORS);
+  setSourceEncoding("US-ASCII");
+  setOutput(null);
+  setTargetDirectory((File)null);
+  setClasspath("");
+  setVerbose(false);
+  setDebug(false);
+  setTolerance(10);
+  setScriptBaseClass(null);
   try {
-    setWarningLevel(WarningMessage.LIKELY_ERRORS);
-  }
- catch (  Exception e) {
-  }
-  try {
-    setSourceEncoding(System.getProperty("file.encoding"));
+    setSourceEncoding(System.getProperty("file.encoding","US-ASCII"));
   }
  catch (  Exception e) {
   }
@@ -15,32 +19,15 @@
  catch (  Exception e) {
   }
   try {
-    setTargetDirectory(System.getProperty("groovy.target.directory"));
-  }
- catch (  Exception e) {
-  }
-  try {
     setClasspath(System.getProperty("java.class.path"));
   }
  catch (  Exception e) {
   }
   try {
-    setVerbose(false);
-  }
- catch (  Exception e) {
-  }
-  try {
-    setDebug(false);
-  }
- catch (  Exception e) {
-  }
-  try {
-    setTolerance(10);
-  }
- catch (  Exception e) {
-  }
-  try {
-    setScriptBaseClass(null);
+    String target=System.getProperty("groovy.target.directory");
+    if (target != null) {
+      setTargetDirectory(target);
+    }
   }
  catch (  Exception e) {
   }
