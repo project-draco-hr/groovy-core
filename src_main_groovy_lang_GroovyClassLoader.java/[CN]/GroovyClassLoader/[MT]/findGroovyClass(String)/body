@@ -23,11 +23,9 @@
                 return parseClass(files[j]);
               }
  catch (              CompilationFailedException e) {
-                e.printStackTrace();
                 throw new ClassNotFoundException("Syntax error in groovy file: " + files[j].getAbsolutePath(),e);
               }
 catch (              IOException e) {
-                e.printStackTrace();
                 throw new ClassNotFoundException("Error reading groovy file: " + files[j].getAbsolutePath(),e);
               }
             }
@@ -45,11 +43,9 @@ catch (              IOException e) {
               return parseClass(new GroovyCodeSource(new ByteArrayInputStream(bytes),filename,path,certs));
             }
  catch (            CompilationFailedException e1) {
-              e1.printStackTrace();
               throw new ClassNotFoundException("Syntax error in groovy file: " + filename,e1);
             }
 catch (            IOException e1) {
-              e1.printStackTrace();
               throw new ClassNotFoundException("Error reading groovy file: " + filename,e1);
             }
           }
