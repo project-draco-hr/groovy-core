@@ -8,8 +8,8 @@
   Reader reader=null;
   try {
     reader=source.getReader();
-    parserPlugin=null;
-    cst=getParserPlugin().parseCST(this,reader);
+    parserPlugin=pluginFactory.createParserPlugin();
+    cst=parserPlugin.parseCST(this,reader);
     completePhase();
   }
  catch (  IOException e) {

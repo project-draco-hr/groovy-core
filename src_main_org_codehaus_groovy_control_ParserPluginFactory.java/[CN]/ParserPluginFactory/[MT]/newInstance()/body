@@ -1,0 +1,14 @@
+{
+  try {
+    Class type=Class.forName("org.codehaus.groovy.antlr.AntlrParserPluginFactory");
+    try {
+      return (ParserPluginFactory)type.newInstance();
+    }
+ catch (    Exception e) {
+      throw new RuntimeException("Could not create AntlrParserPluginFactory: " + e,e);
+    }
+  }
+ catch (  ClassNotFoundException e) {
+  }
+  return new ClassicParserPluginFactory();
+}
