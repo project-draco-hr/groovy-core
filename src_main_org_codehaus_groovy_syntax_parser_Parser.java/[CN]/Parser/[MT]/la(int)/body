@@ -1,3 +1,10 @@
 {
-  return getTokenStream().la(k);
+  Token token=null;
+  for (int pivot=1, count=0; count < k; pivot++) {
+    token=getTokenStream().la(pivot);
+    if (token == null || token.getType() != Token.NEWLINE) {
+      count++;
+    }
+  }
+  return token;
 }
