@@ -1,0 +1,18 @@
+{
+  InputStream in=getClass().getResourceAsStream("Main.groovy");
+  assertTrue(in != null);
+  Class groovyClass=null;
+  try {
+    groovyClass=loader.parseClass(new InputStreamCharStream(in));
+  }
+  finally {
+    try {
+      in.close();
+    }
+ catch (    Exception e) {
+    }
+  }
+  Object object=groovyClass.newInstance();
+  System.out.println("Invoking main...");
+  InvokerHelper.invokeMethod(object,"main",null);
+}
