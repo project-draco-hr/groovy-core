@@ -24,24 +24,27 @@ case '\\':
 case CharStream.EOS:
             return c2;
 case '\\':
+          c='\\';
+        width=2;
+      break ESCAPE_SWITCH;
 case '$':
 {
-            if (allowGStrings) {
-              c=c1;
-              width=1;
-            }
+      if (allowGStrings) {
+        c=c1;
+        width=1;
+      }
  else {
-              c=c2;
-              width=2;
-            }
-            break ESCAPE_SWITCH;
-          }
+        c=c2;
+        width=2;
+      }
+      break ESCAPE_SWITCH;
+    }
 case 'r':
-        c='\r';
-      width=2;
-    break ESCAPE_SWITCH;
+  c='\r';
+width=2;
+break ESCAPE_SWITCH;
 case 't':
-  c='\t';
+c='\t';
 width=2;
 break ESCAPE_SWITCH;
 case 'n':
