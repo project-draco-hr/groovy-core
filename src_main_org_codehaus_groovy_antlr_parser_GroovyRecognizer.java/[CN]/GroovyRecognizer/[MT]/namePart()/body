@@ -33,7 +33,8 @@ case AT:
       }
       break;
     }
-case DEF:
+case UNUSED_DO:
+case LITERAL_def:
 case IDENT:
 case LPAREN:
 case LITERAL_class:
@@ -47,9 +48,18 @@ case LITERAL_float:
 case LITERAL_long:
 case LITERAL_double:
 case LITERAL_any:
+case LITERAL_as:
 case LCURLY:
 case STRING_LITERAL:
+case LITERAL_if:
+case LITERAL_else:
+case LITERAL_while:
+case LITERAL_switch:
+case LITERAL_for:
 case LITERAL_in:
+case LITERAL_try:
+case LITERAL_finally:
+case LITERAL_catch:
 case STRING_CTOR_START:
 {
     break;
@@ -64,9 +74,9 @@ default :
 switch (LA(1)) {
 case IDENT:
 {
-AST tmp266_AST=null;
-tmp266_AST=astFactory.create(LT(1));
-astFactory.addASTChild(currentAST,tmp266_AST);
+AST tmp256_AST=null;
+tmp256_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp256_AST);
 match(IDENT);
 break;
 }
@@ -101,7 +111,8 @@ openBlock();
 astFactory.addASTChild(currentAST,returnAST);
 break;
 }
-case DEF:
+case UNUSED_DO:
+case LITERAL_def:
 case LITERAL_class:
 case LITERAL_void:
 case LITERAL_boolean:
@@ -113,7 +124,16 @@ case LITERAL_float:
 case LITERAL_long:
 case LITERAL_double:
 case LITERAL_any:
+case LITERAL_as:
+case LITERAL_if:
+case LITERAL_else:
+case LITERAL_while:
+case LITERAL_switch:
+case LITERAL_for:
 case LITERAL_in:
+case LITERAL_try:
+case LITERAL_finally:
+case LITERAL_catch:
 {
 keywordPropertyNames();
 astFactory.addASTChild(currentAST,returnAST);

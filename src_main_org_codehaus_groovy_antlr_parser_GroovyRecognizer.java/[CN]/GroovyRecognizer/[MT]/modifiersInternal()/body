@@ -1,0 +1,36 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST modifiersInternal_AST=null;
+  int seenDef=0;
+{
+    int _cnt68=0;
+    _loop68:     do {
+      if (((LA(1) == LITERAL_def)) && (seenDef++ == 0)) {
+        match(LITERAL_def);
+      }
+ else       if ((_tokenSet_46.member(LA(1)))) {
+        modifier();
+        astFactory.addASTChild(currentAST,returnAST);
+        nls();
+      }
+ else       if (((LA(1) == AT) && (LA(2) == IDENT) && (_tokenSet_47.member(LA(3)))) && (LA(1) == AT && !LT(2).getText().equals("interface"))) {
+        annotation();
+        astFactory.addASTChild(currentAST,returnAST);
+        nls();
+      }
+ else {
+        if (_cnt68 >= 1) {
+          break _loop68;
+        }
+ else {
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+      }
+      _cnt68++;
+    }
+ while (true);
+  }
+  modifiersInternal_AST=(AST)currentAST.root;
+  returnAST=modifiersInternal_AST;
+}

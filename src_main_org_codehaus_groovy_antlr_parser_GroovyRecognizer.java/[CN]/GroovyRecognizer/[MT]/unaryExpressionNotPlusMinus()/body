@@ -31,28 +31,18 @@ case LNOT:
     unaryExpressionNotPlusMinus_AST=(AST)currentAST.root;
     break;
   }
-case LBRACK:
 case IDENT:
+case LBRACK:
 case LPAREN:
 case LITERAL_super:
-case LITERAL_void:
-case LITERAL_boolean:
-case LITERAL_byte:
-case LITERAL_char:
-case LITERAL_short:
-case LITERAL_int:
-case LITERAL_float:
-case LITERAL_long:
-case LITERAL_double:
-case LITERAL_any:
 case LCURLY:
 case LITERAL_this:
 case STRING_LITERAL:
+case STRING_CTOR_START:
+case LITERAL_new:
 case LITERAL_true:
 case LITERAL_false:
 case LITERAL_null:
-case STRING_CTOR_START:
-case LITERAL_new:
 case NUM_INT:
 case NUM_FLOAT:
 case NUM_LONG:
@@ -61,10 +51,10 @@ case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
 {
-    boolean synPredMatched426=false;
+    boolean synPredMatched428=false;
     if (((LA(1) == LPAREN) && ((LA(2) >= LITERAL_void && LA(2) <= LITERAL_any)) && (LA(3) == LBRACK || LA(3) == RPAREN))) {
-      int _m426=mark();
-      synPredMatched426=true;
+      int _m428=mark();
+      synPredMatched428=true;
       inputState.guessing++;
       try {
 {
@@ -75,12 +65,12 @@ case NUM_BIG_DECIMAL:
         }
       }
  catch (      RecognitionException pe) {
-        synPredMatched426=false;
+        synPredMatched428=false;
       }
-      rewind(_m426);
+      rewind(_m428);
       inputState.guessing--;
     }
-    if (synPredMatched426) {
+    if (synPredMatched428) {
       lpb=LT(1);
       lpb_AST=astFactory.create(lpb);
       astFactory.makeASTRoot(currentAST,lpb_AST);
@@ -95,10 +85,10 @@ case NUM_BIG_DECIMAL:
       astFactory.addASTChild(currentAST,returnAST);
     }
  else {
-      boolean synPredMatched428=false;
-      if (((LA(1) == LPAREN) && (LA(2) == IDENT) && (_tokenSet_126.member(LA(3))))) {
-        int _m428=mark();
-        synPredMatched428=true;
+      boolean synPredMatched430=false;
+      if (((LA(1) == LPAREN) && (LA(2) == IDENT) && (_tokenSet_116.member(LA(3))))) {
+        int _m430=mark();
+        synPredMatched430=true;
         inputState.guessing++;
         try {
 {
@@ -109,12 +99,12 @@ case NUM_BIG_DECIMAL:
           }
         }
  catch (        RecognitionException pe) {
-          synPredMatched428=false;
+          synPredMatched430=false;
         }
-        rewind(_m428);
+        rewind(_m430);
         inputState.guessing--;
       }
-      if (synPredMatched428) {
+      if (synPredMatched430) {
         lp=LT(1);
         lp_AST=astFactory.create(lp);
         astFactory.makeASTRoot(currentAST,lp_AST);
@@ -128,7 +118,7 @@ case NUM_BIG_DECIMAL:
         unaryExpressionNotPlusMinus();
         astFactory.addASTChild(currentAST,returnAST);
       }
- else       if ((_tokenSet_127.member(LA(1))) && (_tokenSet_128.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+ else       if ((_tokenSet_117.member(LA(1))) && (_tokenSet_118.member(LA(2))) && (_tokenSet_6.member(LA(3)))) {
         postfixExpression();
         astFactory.addASTChild(currentAST,returnAST);
       }

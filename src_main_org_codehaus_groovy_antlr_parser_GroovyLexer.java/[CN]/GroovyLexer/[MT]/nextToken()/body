@@ -43,12 +43,6 @@ case '}':
   theRetToken=_returnToken;
   break;
 }
-case ':':
-{
-mCOLON(true);
-theRetToken=_returnToken;
-break;
-}
 case ',':
 {
 mCOMMA(true);
@@ -299,6 +293,10 @@ theRetToken=_returnToken;
 mSTAR_STAR(true);
 theRetToken=_returnToken;
 }
+ else if ((LA(1) == '-' || LA(1) == ':' || LA(1) == '=') && (LA(2) == ':' || LA(2) == '>')) {
+mCLOSURE_OP(true);
+theRetToken=_returnToken;
+}
  else if ((LA(1) == '/') && (LA(2) == '/')) {
 mSL_COMMENT(true);
 theRetToken=_returnToken;
@@ -309,6 +307,10 @@ theRetToken=_returnToken;
 }
  else if ((LA(1) == '?') && (true)) {
 mQUESTION(true);
+theRetToken=_returnToken;
+}
+ else if ((LA(1) == ':') && (true)) {
+mCOLON(true);
 theRetToken=_returnToken;
 }
  else if ((LA(1) == '.') && (true)) {
@@ -361,6 +363,10 @@ theRetToken=_returnToken;
 }
  else if ((LA(1) == '&') && (true)) {
 mBAND(true);
+theRetToken=_returnToken;
+}
+ else if (((LA(1) == '#')) && (getLine() == 1 && getColumn() == 1)) {
+mSH_COMMENT(true);
 theRetToken=_returnToken;
 }
  else {

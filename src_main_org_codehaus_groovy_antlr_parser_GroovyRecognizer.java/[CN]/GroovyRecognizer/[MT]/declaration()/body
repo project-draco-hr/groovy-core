@@ -3,15 +3,16 @@
   ASTPair currentAST=new ASTPair();
   AST declaration_AST=null;
   AST m_AST=null;
+  AST t_AST=null;
   AST v_AST=null;
   AST t2_AST=null;
   AST v2_AST=null;
-{
 switch (LA(1)) {
 case FINAL:
 case ABSTRACT:
 case STRICTFP:
 case LITERAL_static:
+case LITERAL_def:
 case AT:
 case LITERAL_private:
 case LITERAL_public:
@@ -22,48 +23,30 @@ case LITERAL_threadsafe:
 case LITERAL_synchronized:
 case LITERAL_volatile:
 {
-        modifiers();
-        m_AST=(AST)returnAST;
-        break;
-      }
-case DEF:
-case IDENT:
-case LITERAL_void:
-case LITERAL_boolean:
-case LITERAL_byte:
-case LITERAL_char:
-case LITERAL_short:
-case LITERAL_int:
-case LITERAL_float:
-case LITERAL_long:
-case LITERAL_double:
-case LITERAL_any:
+      modifiers();
+      m_AST=(AST)returnAST;
 {
+        if ((_tokenSet_26.member(LA(1))) && (_tokenSet_27.member(LA(2)))) {
+          typeSpec(false);
+          t_AST=(AST)returnAST;
+        }
+ else         if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (_tokenSet_28.member(LA(2)))) {
+        }
+ else {
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+      }
+      variableDefinitions(m_AST,t_AST);
+      v_AST=(AST)returnAST;
+      if (inputState.guessing == 0) {
+        declaration_AST=(AST)currentAST.root;
+        declaration_AST=v_AST;
+        currentAST.root=declaration_AST;
+        currentAST.child=declaration_AST != null && declaration_AST.getFirstChild() != null ? declaration_AST.getFirstChild() : declaration_AST;
+        currentAST.advanceChildToEnd();
+      }
       break;
     }
-default :
-{
-    throw new NoViableAltException(LT(1),getFilename());
-  }
-}
-}
-{
-switch (LA(1)) {
-case DEF:
-{
-  match(DEF);
-  nls();
-  variableDefinitions(m_AST,null);
-  v_AST=(AST)returnAST;
-  if (inputState.guessing == 0) {
-    declaration_AST=(AST)currentAST.root;
-    declaration_AST=v_AST;
-    currentAST.root=declaration_AST;
-    currentAST.child=declaration_AST != null && declaration_AST.getFirstChild() != null ? declaration_AST.getFirstChild() : declaration_AST;
-    currentAST.advanceChildToEnd();
-  }
-  break;
-}
 case IDENT:
 case LITERAL_void:
 case LITERAL_boolean:
@@ -76,23 +59,22 @@ case LITERAL_long:
 case LITERAL_double:
 case LITERAL_any:
 {
-typeSpec(false);
-t2_AST=(AST)returnAST;
-variableDefinitions(m_AST,t2_AST);
-v2_AST=(AST)returnAST;
-if (inputState.guessing == 0) {
-  declaration_AST=(AST)currentAST.root;
-  declaration_AST=v2_AST;
-  currentAST.root=declaration_AST;
-  currentAST.child=declaration_AST != null && declaration_AST.getFirstChild() != null ? declaration_AST.getFirstChild() : declaration_AST;
-  currentAST.advanceChildToEnd();
-}
-break;
-}
+    typeSpec(false);
+    t2_AST=(AST)returnAST;
+    variableDefinitions(null,t2_AST);
+    v2_AST=(AST)returnAST;
+    if (inputState.guessing == 0) {
+      declaration_AST=(AST)currentAST.root;
+      declaration_AST=v2_AST;
+      currentAST.root=declaration_AST;
+      currentAST.child=declaration_AST != null && declaration_AST.getFirstChild() != null ? declaration_AST.getFirstChild() : declaration_AST;
+      currentAST.advanceChildToEnd();
+    }
+    break;
+  }
 default :
 {
-throw new NoViableAltException(LT(1),getFilename());
-}
+  throw new NoViableAltException(LT(1),getFilename());
 }
 }
 returnAST=declaration_AST;

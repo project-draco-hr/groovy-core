@@ -4,30 +4,34 @@
   AST parameterDeclaration_AST=null;
   AST pm_AST=null;
   AST t_AST=null;
+  Token id=null;
   AST id_AST=null;
   AST exp_AST=null;
+  boolean spreadParam=false;
+  parameterModifiersOpt();
+  pm_AST=(AST)returnAST;
+{
+    if ((_tokenSet_26.member(LA(1))) && (_tokenSet_76.member(LA(2))) && (_tokenSet_77.member(LA(3)))) {
+      typeSpec(false);
+      t_AST=(AST)returnAST;
+    }
+ else     if ((LA(1) == IDENT || LA(1) == TRIPLE_DOT) && (_tokenSet_78.member(LA(2))) && (_tokenSet_79.member(LA(3)))) {
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
 {
 switch (LA(1)) {
-case DEF:
+case TRIPLE_DOT:
 {
-        match(DEF);
+        match(TRIPLE_DOT);
+        if (inputState.guessing == 0) {
+          spreadParam=true;
+        }
         break;
       }
-case FINAL:
-case AT:
 case IDENT:
-case QUESTION:
-case LITERAL_void:
-case LITERAL_boolean:
-case LITERAL_byte:
-case LITERAL_char:
-case LITERAL_short:
-case LITERAL_int:
-case LITERAL_float:
-case LITERAL_long:
-case LITERAL_double:
-case LITERAL_any:
-case STAR:
 {
       break;
     }
@@ -37,36 +41,21 @@ default :
   }
 }
 }
-parameterModifier();
-pm_AST=(AST)returnAST;
-{
-if ((_tokenSet_89.member(LA(1))) && (_tokenSet_90.member(LA(2))) && (_tokenSet_91.member(LA(3)))) {
-typeSpec(false);
-t_AST=(AST)returnAST;
-}
- else if ((_tokenSet_92.member(LA(1))) && (_tokenSet_93.member(LA(2))) && (_tokenSet_94.member(LA(3)))) {
-}
- else {
-throw new NoViableAltException(LT(1),getFilename());
-}
-}
-parameterIdent();
-id_AST=(AST)returnAST;
+id=LT(1);
+id_AST=astFactory.create(id);
+match(IDENT);
 {
 switch (LA(1)) {
 case ASSIGN:
 {
-  AST tmp163_AST=null;
-  tmp163_AST=astFactory.create(LT(1));
-  match(ASSIGN);
-  expression();
+  varInitializer();
   exp_AST=(AST)returnAST;
   break;
 }
-case RPAREN:
 case COMMA:
-case BOR:
+case RPAREN:
 case NLS:
+case CLOSURE_OP:
 {
 break;
 }
@@ -78,7 +67,12 @@ throw new NoViableAltException(LT(1),getFilename());
 }
 if (inputState.guessing == 0) {
 parameterDeclaration_AST=(AST)currentAST.root;
+if (spreadParam) {
+parameterDeclaration_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(VARIABLE_PARAMETER_DEF,"VARIABLE_PARAMETER_DEF")).add(pm_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t_AST))).add(id_AST).add(exp_AST));
+}
+ else {
 parameterDeclaration_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(PARAMETER_DEF,"PARAMETER_DEF")).add(pm_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t_AST))).add(id_AST).add(exp_AST));
+}
 currentAST.root=parameterDeclaration_AST;
 currentAST.child=parameterDeclaration_AST != null && parameterDeclaration_AST.getFirstChild() != null ? parameterDeclaration_AST.getFirstChild() : parameterDeclaration_AST;
 currentAST.advanceChildToEnd();

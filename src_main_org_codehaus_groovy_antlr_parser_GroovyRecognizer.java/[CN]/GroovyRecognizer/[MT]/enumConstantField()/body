@@ -16,7 +16,23 @@ case FINAL:
 case ABSTRACT:
 case STRICTFP:
 case LITERAL_static:
+case LITERAL_def:
 case AT:
+case IDENT:
+case LITERAL_class:
+case LITERAL_interface:
+case LITERAL_enum:
+case LT:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
 case LITERAL_private:
 case LITERAL_public:
 case LITERAL_protected:
@@ -26,7 +42,7 @@ case LITERAL_threadsafe:
 case LITERAL_synchronized:
 case LITERAL_volatile:
 {
-      modifiers();
+      modifiersOpt();
       mods_AST=(AST)returnAST;
 {
 switch (LA(1)) {
@@ -90,9 +106,26 @@ default :
     typeSpec(false);
     t_AST=(AST)returnAST;
 {
-      if ((LA(1) == IDENT) && (LA(2) == LPAREN) && (_tokenSet_70.member(LA(3)))) {
-        AST tmp143_AST=null;
-        tmp143_AST=astFactory.create(LT(1));
+      boolean synPredMatched152=false;
+      if (((LA(1) == IDENT) && (LA(2) == LPAREN) && (_tokenSet_68.member(LA(3))))) {
+        int _m152=mark();
+        synPredMatched152=true;
+        inputState.guessing++;
+        try {
+{
+            match(IDENT);
+            match(LPAREN);
+          }
+        }
+ catch (        RecognitionException pe) {
+          synPredMatched152=false;
+        }
+        rewind(_m152);
+        inputState.guessing--;
+      }
+      if (synPredMatched152) {
+        AST tmp139_AST=null;
+        tmp139_AST=astFactory.create(LT(1));
         match(IDENT);
         match(LPAREN);
         parameterDeclarationList();
@@ -107,7 +140,9 @@ case LITERAL_throws:
               break;
             }
 case LCURLY:
+case RCURLY:
 case SEMI:
+case NLS:
 {
             break;
           }
@@ -125,11 +160,10 @@ case LCURLY:
         s2_AST=(AST)returnAST;
         break;
       }
+case RCURLY:
 case SEMI:
+case NLS:
 {
-      AST tmp146_AST=null;
-      tmp146_AST=astFactory.create(LT(1));
-      match(SEMI);
       break;
     }
 default :
@@ -140,18 +174,15 @@ default :
 }
 if (inputState.guessing == 0) {
 enumConstantField_AST=(AST)currentAST.root;
-enumConstantField_AST=(AST)astFactory.make((new ASTArray(8)).add(astFactory.create(METHOD_DEF,"METHOD_DEF")).add(mods_AST).add(tp_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t_AST))).add(tmp143_AST).add(param_AST).add(tc_AST).add(s2_AST));
+enumConstantField_AST=(AST)astFactory.make((new ASTArray(8)).add(astFactory.create(METHOD_DEF,"METHOD_DEF")).add(mods_AST).add(tp_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(t_AST))).add(tmp139_AST).add(param_AST).add(tc_AST).add(s2_AST));
 currentAST.root=enumConstantField_AST;
 currentAST.child=enumConstantField_AST != null && enumConstantField_AST.getFirstChild() != null ? enumConstantField_AST.getFirstChild() : enumConstantField_AST;
 currentAST.advanceChildToEnd();
 }
 }
- else if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (_tokenSet_66.member(LA(2))) && (_tokenSet_67.member(LA(3)))) {
+ else if ((LA(1) == IDENT || LA(1) == STRING_LITERAL) && (_tokenSet_62.member(LA(2))) && (_tokenSet_69.member(LA(3)))) {
 variableDefinitions(mods_AST,t_AST);
 v_AST=(AST)returnAST;
-AST tmp147_AST=null;
-tmp147_AST=astFactory.create(LT(1));
-match(SEMI);
 if (inputState.guessing == 0) {
 enumConstantField_AST=(AST)currentAST.root;
 enumConstantField_AST=v_AST;

@@ -1,0 +1,66 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST constantNumber_AST=null;
+switch (LA(1)) {
+case NUM_INT:
+{
+      AST tmp338_AST=null;
+      tmp338_AST=astFactory.create(LT(1));
+      astFactory.addASTChild(currentAST,tmp338_AST);
+      match(NUM_INT);
+      constantNumber_AST=(AST)currentAST.root;
+      break;
+    }
+case NUM_FLOAT:
+{
+    AST tmp339_AST=null;
+    tmp339_AST=astFactory.create(LT(1));
+    astFactory.addASTChild(currentAST,tmp339_AST);
+    match(NUM_FLOAT);
+    constantNumber_AST=(AST)currentAST.root;
+    break;
+  }
+case NUM_LONG:
+{
+  AST tmp340_AST=null;
+  tmp340_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp340_AST);
+  match(NUM_LONG);
+  constantNumber_AST=(AST)currentAST.root;
+  break;
+}
+case NUM_DOUBLE:
+{
+AST tmp341_AST=null;
+tmp341_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp341_AST);
+match(NUM_DOUBLE);
+constantNumber_AST=(AST)currentAST.root;
+break;
+}
+case NUM_BIG_INT:
+{
+AST tmp342_AST=null;
+tmp342_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp342_AST);
+match(NUM_BIG_INT);
+constantNumber_AST=(AST)currentAST.root;
+break;
+}
+case NUM_BIG_DECIMAL:
+{
+AST tmp343_AST=null;
+tmp343_AST=astFactory.create(LT(1));
+astFactory.addASTChild(currentAST,tmp343_AST);
+match(NUM_BIG_DECIMAL);
+constantNumber_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=constantNumber_AST;
+}

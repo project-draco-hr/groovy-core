@@ -2,24 +2,48 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST annotationMemberValueInitializer_AST=null;
-  if ((_tokenSet_27.member(LA(1))) && (_tokenSet_46.member(LA(2))) && (_tokenSet_47.member(LA(3)))) {
-    conditionalExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    annotationMemberValueInitializer_AST=(AST)currentAST.root;
-  }
- else   if ((LA(1) == AT)) {
+switch (LA(1)) {
+case IDENT:
+case LBRACK:
+case LPAREN:
+case LITERAL_super:
+case LCURLY:
+case LITERAL_this:
+case STRING_LITERAL:
+case PLUS:
+case MINUS:
+case INC:
+case DEC:
+case BNOT:
+case LNOT:
+case STRING_CTOR_START:
+case LITERAL_new:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+      conditionalExpression();
+      astFactory.addASTChild(currentAST,returnAST);
+      annotationMemberValueInitializer_AST=(AST)currentAST.root;
+      break;
+    }
+case AT:
+{
     annotation();
     astFactory.addASTChild(currentAST,returnAST);
-    nls();
     annotationMemberValueInitializer_AST=(AST)currentAST.root;
+    break;
   }
- else   if ((LA(1) == LCURLY) && (_tokenSet_48.member(LA(2))) && (_tokenSet_46.member(LA(3)))) {
-    annotationMemberArrayInitializer();
-    astFactory.addASTChild(currentAST,returnAST);
-    annotationMemberValueInitializer_AST=(AST)currentAST.root;
-  }
- else {
-    throw new NoViableAltException(LT(1),getFilename());
-  }
-  returnAST=annotationMemberValueInitializer_AST;
+default :
+{
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=annotationMemberValueInitializer_AST;
 }

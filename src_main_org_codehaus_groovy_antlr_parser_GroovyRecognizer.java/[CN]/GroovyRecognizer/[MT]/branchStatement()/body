@@ -1,0 +1,196 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST branchStatement_AST=null;
+switch (LA(1)) {
+case LITERAL_return:
+{
+      AST tmp180_AST=null;
+      tmp180_AST=astFactory.create(LT(1));
+      astFactory.makeASTRoot(currentAST,tmp180_AST);
+      match(LITERAL_return);
+{
+switch (LA(1)) {
+case IDENT:
+case LBRACK:
+case LPAREN:
+case LITERAL_super:
+case LCURLY:
+case LITERAL_this:
+case STRING_LITERAL:
+case PLUS:
+case MINUS:
+case INC:
+case DEC:
+case BNOT:
+case LNOT:
+case STRING_CTOR_START:
+case LITERAL_new:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+            expression();
+            astFactory.addASTChild(currentAST,returnAST);
+            break;
+          }
+case EOF:
+case RBRACK:
+case COMMA:
+case RPAREN:
+case RCURLY:
+case SEMI:
+case NLS:
+case LITERAL_default:
+case LITERAL_else:
+case LITERAL_case:
+{
+          break;
+        }
+default :
+{
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+  }
+}
+branchStatement_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_break:
+case LITERAL_continue:
+{
+{
+switch (LA(1)) {
+case LITERAL_break:
+{
+    AST tmp181_AST=null;
+    tmp181_AST=astFactory.create(LT(1));
+    astFactory.makeASTRoot(currentAST,tmp181_AST);
+    match(LITERAL_break);
+    break;
+  }
+case LITERAL_continue:
+{
+  AST tmp182_AST=null;
+  tmp182_AST=astFactory.create(LT(1));
+  astFactory.makeASTRoot(currentAST,tmp182_AST);
+  match(LITERAL_continue);
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+if ((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_104.member(LA(3)))) {
+statementLabelPrefix();
+astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_104.member(LA(1))) && (_tokenSet_18.member(LA(2))) && (_tokenSet_6.member(LA(3)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+{
+switch (LA(1)) {
+case IDENT:
+case LBRACK:
+case LPAREN:
+case LITERAL_super:
+case LCURLY:
+case LITERAL_this:
+case STRING_LITERAL:
+case PLUS:
+case MINUS:
+case INC:
+case DEC:
+case BNOT:
+case LNOT:
+case STRING_CTOR_START:
+case LITERAL_new:
+case LITERAL_true:
+case LITERAL_false:
+case LITERAL_null:
+case NUM_INT:
+case NUM_FLOAT:
+case NUM_LONG:
+case NUM_DOUBLE:
+case NUM_BIG_INT:
+case NUM_BIG_DECIMAL:
+{
+expression();
+astFactory.addASTChild(currentAST,returnAST);
+break;
+}
+case EOF:
+case RBRACK:
+case COMMA:
+case RPAREN:
+case RCURLY:
+case SEMI:
+case NLS:
+case LITERAL_default:
+case LITERAL_else:
+case LITERAL_case:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+branchStatement_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_throw:
+{
+AST tmp183_AST=null;
+tmp183_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp183_AST);
+match(LITERAL_throw);
+expression();
+astFactory.addASTChild(currentAST,returnAST);
+branchStatement_AST=(AST)currentAST.root;
+break;
+}
+case LITERAL_assert:
+{
+AST tmp184_AST=null;
+tmp184_AST=astFactory.create(LT(1));
+astFactory.makeASTRoot(currentAST,tmp184_AST);
+match(LITERAL_assert);
+expression();
+astFactory.addASTChild(currentAST,returnAST);
+{
+if ((LA(1) == COMMA) && (_tokenSet_19.member(LA(2))) && (_tokenSet_17.member(LA(3)))) {
+match(COMMA);
+expression();
+astFactory.addASTChild(currentAST,returnAST);
+}
+ else if ((_tokenSet_105.member(LA(1))) && (_tokenSet_106.member(LA(2))) && (_tokenSet_6.member(LA(3)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+branchStatement_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=branchStatement_AST;
+}

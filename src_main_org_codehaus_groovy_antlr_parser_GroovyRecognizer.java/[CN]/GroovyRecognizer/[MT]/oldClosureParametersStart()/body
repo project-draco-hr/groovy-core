@@ -1,0 +1,59 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST oldClosureParametersStart_AST=null;
+switch (LA(1)) {
+case BOR:
+{
+      AST tmp159_AST=null;
+      tmp159_AST=astFactory.create(LT(1));
+      match(BOR);
+      break;
+    }
+case LOR:
+{
+    AST tmp160_AST=null;
+    tmp160_AST=astFactory.create(LT(1));
+    match(LOR);
+    break;
+  }
+case LPAREN:
+{
+  AST tmp161_AST=null;
+  tmp161_AST=astFactory.create(LT(1));
+  match(LPAREN);
+  balancedTokens();
+  AST tmp162_AST=null;
+  tmp162_AST=astFactory.create(LT(1));
+  match(RPAREN);
+  nls();
+  AST tmp163_AST=null;
+  tmp163_AST=astFactory.create(LT(1));
+  match(BOR);
+  break;
+}
+case IDENT:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+{
+simpleParameterDeclarationList();
+AST tmp164_AST=null;
+tmp164_AST=astFactory.create(LT(1));
+match(BOR);
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=oldClosureParametersStart_AST;
+}

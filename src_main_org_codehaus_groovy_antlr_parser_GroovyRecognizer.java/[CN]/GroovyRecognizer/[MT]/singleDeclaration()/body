@@ -12,8 +12,27 @@
     currentAST.child=singleDeclaration_AST != null && singleDeclaration_AST.getFirstChild() != null ? singleDeclaration_AST.getFirstChild() : singleDeclaration_AST;
     currentAST.advanceChildToEnd();
   }
-  varInitializer();
-  astFactory.addASTChild(currentAST,returnAST);
-  singleDeclaration_AST=(AST)currentAST.root;
-  returnAST=singleDeclaration_AST;
+{
+switch (LA(1)) {
+case ASSIGN:
+{
+        varInitializer();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case RBRACK:
+case COMMA:
+case RPAREN:
+case SEMI:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+singleDeclaration_AST=(AST)currentAST.root;
+returnAST=singleDeclaration_AST;
 }

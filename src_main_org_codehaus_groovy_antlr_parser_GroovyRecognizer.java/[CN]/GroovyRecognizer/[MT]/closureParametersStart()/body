@@ -2,70 +2,20 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST closureParametersStart_AST=null;
-switch (LA(1)) {
-case BOR:
 {
-      AST tmp178_AST=null;
-      tmp178_AST=astFactory.create(LT(1));
-      match(BOR);
-      break;
+    if ((_tokenSet_83.member(LA(1))) && (_tokenSet_91.member(LA(2))) && (_tokenSet_92.member(LA(3)))) {
+      oldClosureParametersStart();
     }
-case LOR:
-{
-    AST tmp179_AST=null;
-    tmp179_AST=astFactory.create(LT(1));
-    match(LOR);
-    break;
-  }
-case IDENT:
-case QUESTION:
-case STAR:
-{
-  parameterIdent();
-  nls();
-{
-switch (LA(1)) {
-case BOR:
-{
-        AST tmp180_AST=null;
-        tmp180_AST=astFactory.create(LT(1));
-        match(BOR);
-        break;
-      }
-case COMMA:
-{
-      AST tmp181_AST=null;
-      tmp181_AST=astFactory.create(LT(1));
-      match(COMMA);
-      break;
+ else     if ((_tokenSet_81.member(LA(1))) && (_tokenSet_93.member(LA(2))) && (_tokenSet_94.member(LA(3)))) {
+      parameterDeclarationList();
+      nls();
+      AST tmp174_AST=null;
+      tmp174_AST=astFactory.create(LT(1));
+      match(CLOSURE_OP);
     }
-default :
-{
-    throw new NoViableAltException(LT(1),getFilename());
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
   }
-}
-}
-break;
-}
-case LPAREN:
-{
-AST tmp182_AST=null;
-tmp182_AST=astFactory.create(LT(1));
-match(LPAREN);
-balancedTokens();
-AST tmp183_AST=null;
-tmp183_AST=astFactory.create(LT(1));
-match(RPAREN);
-nls();
-AST tmp184_AST=null;
-tmp184_AST=astFactory.create(LT(1));
-match(BOR);
-break;
-}
-default :
-{
-throw new NoViableAltException(LT(1),getFilename());
-}
-}
-returnAST=closureParametersStart_AST;
+  returnAST=closureParametersStart_AST;
 }

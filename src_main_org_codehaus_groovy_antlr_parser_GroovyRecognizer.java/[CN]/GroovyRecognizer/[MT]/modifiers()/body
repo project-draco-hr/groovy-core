@@ -2,31 +2,8 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST modifiers_AST=null;
-{
-    int _cnt75=0;
-    _loop75:     do {
-      if ((_tokenSet_32.member(LA(1)))) {
-        modifier();
-        astFactory.addASTChild(currentAST,returnAST);
-        nls();
-      }
- else       if (((LA(1) == AT) && (LA(2) == IDENT) && (_tokenSet_33.member(LA(3)))) && (LA(1) == AT && !LT(2).getText().equals("interface"))) {
-        annotation();
-        astFactory.addASTChild(currentAST,returnAST);
-        nls();
-      }
- else {
-        if (_cnt75 >= 1) {
-          break _loop75;
-        }
- else {
-          throw new NoViableAltException(LT(1),getFilename());
-        }
-      }
-      _cnt75++;
-    }
- while (true);
-  }
+  modifiersInternal();
+  astFactory.addASTChild(currentAST,returnAST);
   if (inputState.guessing == 0) {
     modifiers_AST=(AST)currentAST.root;
     modifiers_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(MODIFIERS,"MODIFIERS")).add(modifiers_AST));

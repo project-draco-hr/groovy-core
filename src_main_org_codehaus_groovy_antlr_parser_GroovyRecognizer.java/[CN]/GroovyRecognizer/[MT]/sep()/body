@@ -6,22 +6,52 @@ switch (LA(1)) {
 case SEMI:
 {
       match(SEMI);
-      nls();
+{
+        _loop479:         do {
+          if ((LA(1) == NLS) && (_tokenSet_24.member(LA(2))) && (_tokenSet_20.member(LA(3)))) {
+            match(NLS);
+          }
+ else {
+            break _loop479;
+          }
+        }
+ while (true);
+      }
+      if (inputState.guessing == 0) {
+        sepToken=SEMI;
+      }
       break;
     }
 case NLS:
 {
     match(NLS);
+    if (inputState.guessing == 0) {
+      sepToken=NLS;
+    }
 {
-      if ((LA(1) == SEMI) && (_tokenSet_6.member(LA(2))) && (_tokenSet_7.member(LA(3)))) {
-        match(SEMI);
-        nls();
-      }
- else       if ((_tokenSet_6.member(LA(1))) && (_tokenSet_7.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
-      }
+      _loop483:       do {
+        if ((LA(1) == SEMI) && (_tokenSet_24.member(LA(2))) && (_tokenSet_20.member(LA(3)))) {
+          match(SEMI);
+{
+            _loop482:             do {
+              if ((LA(1) == NLS) && (_tokenSet_24.member(LA(2))) && (_tokenSet_20.member(LA(3)))) {
+                match(NLS);
+              }
  else {
-        throw new NoViableAltException(LT(1),getFilename());
+                break _loop482;
+              }
+            }
+ while (true);
+          }
+          if (inputState.guessing == 0) {
+            sepToken=SEMI;
+          }
+        }
+ else {
+          break _loop483;
+        }
       }
+ while (true);
     }
     break;
   }

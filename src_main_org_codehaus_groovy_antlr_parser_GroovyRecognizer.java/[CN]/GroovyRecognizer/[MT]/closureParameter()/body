@@ -2,9 +2,11 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST closureParameter_AST=null;
+  Token id=null;
   AST id_AST=null;
-  parameterIdent();
-  id_AST=(AST)returnAST;
+  id=LT(1);
+  id_AST=astFactory.create(id);
+  match(IDENT);
   if (inputState.guessing == 0) {
     closureParameter_AST=(AST)currentAST.root;
     closureParameter_AST=(AST)astFactory.make((new ASTArray(4)).add(astFactory.create(PARAMETER_DEF,"PARAMETER_DEF")).add((AST)astFactory.make((new ASTArray(1)).add(astFactory.create(MODIFIERS,"MODIFIERS")))).add((AST)astFactory.make((new ASTArray(1)).add(astFactory.create(TYPE,"TYPE")))).add(id_AST));

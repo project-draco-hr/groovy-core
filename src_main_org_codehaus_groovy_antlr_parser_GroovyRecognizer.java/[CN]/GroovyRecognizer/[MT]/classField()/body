@@ -9,10 +9,10 @@
   AST td_AST=null;
   AST s3_AST=null;
   AST s4_AST=null;
-  boolean synPredMatched162=false;
-  if (((_tokenSet_54.member(LA(1))) && (_tokenSet_55.member(LA(2))) && (_tokenSet_56.member(LA(3))))) {
-    int _m162=mark();
-    synPredMatched162=true;
+  boolean synPredMatched165=false;
+  if (((_tokenSet_58.member(LA(1))) && (_tokenSet_59.member(LA(2))) && (_tokenSet_60.member(LA(3))))) {
+    int _m165=mark();
+    synPredMatched165=true;
     inputState.guessing++;
     try {
 {
@@ -20,148 +20,111 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched162=false;
+      synPredMatched165=false;
     }
-    rewind(_m162);
+    rewind(_m165);
     inputState.guessing--;
   }
-  if (synPredMatched162) {
-{
-switch (LA(1)) {
-case FINAL:
-case ABSTRACT:
-case STRICTFP:
-case LITERAL_static:
-case AT:
-case LITERAL_private:
-case LITERAL_public:
-case LITERAL_protected:
-case LITERAL_transient:
-case LITERAL_native:
-case LITERAL_threadsafe:
-case LITERAL_synchronized:
-case LITERAL_volatile:
-{
-          modifiers();
-          mc_AST=(AST)returnAST;
-          break;
-        }
-case IDENT:
-{
-        break;
-      }
-default :
-{
-      throw new NoViableAltException(LT(1),getFilename());
-    }
-}
-}
-constructorDefinition(mc_AST);
-ctor_AST=(AST)returnAST;
-if (inputState.guessing == 0) {
-classField_AST=(AST)currentAST.root;
-classField_AST=ctor_AST;
-currentAST.root=classField_AST;
-currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
-currentAST.advanceChildToEnd();
-}
-}
- else {
-boolean synPredMatched165=false;
-if (((_tokenSet_15.member(LA(1))) && (_tokenSet_16.member(LA(2))) && (_tokenSet_57.member(LA(3))))) {
-int _m165=mark();
-synPredMatched165=true;
-inputState.guessing++;
-try {
-{
-    declarationStart();
-  }
-}
- catch (RecognitionException pe) {
-  synPredMatched165=false;
-}
-rewind(_m165);
-inputState.guessing--;
-}
-if (synPredMatched165) {
-declaration();
-d_AST=(AST)returnAST;
-if (inputState.guessing == 0) {
-  classField_AST=(AST)currentAST.root;
-  classField_AST=d_AST;
-  currentAST.root=classField_AST;
-  currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
-  currentAST.advanceChildToEnd();
-}
-}
- else {
-boolean synPredMatched167=false;
-if (((_tokenSet_58.member(LA(1))) && (_tokenSet_59.member(LA(2))) && (_tokenSet_60.member(LA(3))))) {
-  int _m167=mark();
-  synPredMatched167=true;
-  inputState.guessing++;
-  try {
-{
-      typeDeclarationStart();
-    }
-  }
- catch (  RecognitionException pe) {
-    synPredMatched167=false;
-  }
-  rewind(_m167);
-  inputState.guessing--;
-}
-if (synPredMatched167) {
-{
-    if ((_tokenSet_61.member(LA(1))) && (_tokenSet_59.member(LA(2))) && (_tokenSet_62.member(LA(3)))) {
-      modifiers();
-      mods_AST=(AST)returnAST;
-    }
- else     if ((_tokenSet_63.member(LA(1))) && (LA(2) == IDENT || LA(2) == LITERAL_interface) && (_tokenSet_64.member(LA(3)))) {
-    }
- else {
-      throw new NoViableAltException(LT(1),getFilename());
-    }
-  }
-{
-    typeDefinitionInternal(mods_AST);
-    td_AST=(AST)returnAST;
+  if (synPredMatched165) {
+    modifiersOpt();
+    mc_AST=(AST)returnAST;
+    constructorDefinition(mc_AST);
+    ctor_AST=(AST)returnAST;
     if (inputState.guessing == 0) {
       classField_AST=(AST)currentAST.root;
-      classField_AST=td_AST;
+      classField_AST=ctor_AST;
       currentAST.root=classField_AST;
       currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
       currentAST.advanceChildToEnd();
     }
   }
-}
- else if ((LA(1) == LITERAL_static) && (LA(2) == LCURLY)) {
-  match(LITERAL_static);
-  compoundStatement();
-  s3_AST=(AST)returnAST;
-  if (inputState.guessing == 0) {
-    classField_AST=(AST)currentAST.root;
-    classField_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(STATIC_INIT,"STATIC_INIT")).add(s3_AST));
-    currentAST.root=classField_AST;
-    currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
-    currentAST.advanceChildToEnd();
-  }
-}
- else if ((LA(1) == LCURLY)) {
-  compoundStatement();
-  s4_AST=(AST)returnAST;
-  if (inputState.guessing == 0) {
-    classField_AST=(AST)currentAST.root;
-    classField_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(INSTANCE_INIT,"INSTANCE_INIT")).add(s4_AST));
-    currentAST.root=classField_AST;
-    currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
-    currentAST.advanceChildToEnd();
-  }
-}
  else {
-  throw new NoViableAltException(LT(1),getFilename());
-}
-}
-}
-returnAST=classField_AST;
+    boolean synPredMatched167=false;
+    if (((_tokenSet_12.member(LA(1))) && (_tokenSet_13.member(LA(2))) && (_tokenSet_61.member(LA(3))))) {
+      int _m167=mark();
+      synPredMatched167=true;
+      inputState.guessing++;
+      try {
+{
+          declarationStart();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched167=false;
+      }
+      rewind(_m167);
+      inputState.guessing--;
+    }
+    if (synPredMatched167) {
+      declaration();
+      d_AST=(AST)returnAST;
+      if (inputState.guessing == 0) {
+        classField_AST=(AST)currentAST.root;
+        classField_AST=d_AST;
+        currentAST.root=classField_AST;
+        currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
+        currentAST.advanceChildToEnd();
+      }
+    }
+ else {
+      boolean synPredMatched169=false;
+      if (((_tokenSet_21.member(LA(1))) && (_tokenSet_22.member(LA(2))) && (_tokenSet_23.member(LA(3))))) {
+        int _m169=mark();
+        synPredMatched169=true;
+        inputState.guessing++;
+        try {
+{
+            typeDeclarationStart();
+          }
+        }
+ catch (        RecognitionException pe) {
+          synPredMatched169=false;
+        }
+        rewind(_m169);
+        inputState.guessing--;
+      }
+      if (synPredMatched169) {
+        modifiersOpt();
+        mods_AST=(AST)returnAST;
+{
+          typeDefinitionInternal(mods_AST);
+          td_AST=(AST)returnAST;
+          if (inputState.guessing == 0) {
+            classField_AST=(AST)currentAST.root;
+            classField_AST=td_AST;
+            currentAST.root=classField_AST;
+            currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
+            currentAST.advanceChildToEnd();
+          }
+        }
+      }
+ else       if ((LA(1) == LITERAL_static) && (LA(2) == LCURLY)) {
+        match(LITERAL_static);
+        compoundStatement();
+        s3_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          classField_AST=(AST)currentAST.root;
+          classField_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(STATIC_INIT,"STATIC_INIT")).add(s3_AST));
+          currentAST.root=classField_AST;
+          currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
+          currentAST.advanceChildToEnd();
+        }
+      }
+ else       if ((LA(1) == LCURLY)) {
+        compoundStatement();
+        s4_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          classField_AST=(AST)currentAST.root;
+          classField_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(INSTANCE_INIT,"INSTANCE_INIT")).add(s4_AST));
+          currentAST.root=classField_AST;
+          currentAST.child=classField_AST != null && classField_AST.getFirstChild() != null ? classField_AST.getFirstChild() : classField_AST;
+          currentAST.advanceChildToEnd();
+        }
+      }
+ else {
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+    }
+  }
+  returnAST=classField_AST;
 }

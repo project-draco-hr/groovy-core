@@ -3,17 +3,33 @@
   ASTPair currentAST=new ASTPair();
   AST nlsWarn_AST=null;
 {
-    if ((LA(1) == NLS) && (_tokenSet_6.member(LA(2))) && (_tokenSet_7.member(LA(3)))) {
-      match(NLS);
+    boolean synPredMatched489=false;
+    if (((_tokenSet_75.member(LA(1))) && (_tokenSet_20.member(LA(2))) && (_tokenSet_6.member(LA(3))))) {
+      int _m489=mark();
+      synPredMatched489=true;
+      inputState.guessing++;
+      try {
+{
+          match(NLS);
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched489=false;
+      }
+      rewind(_m489);
+      inputState.guessing--;
     }
- else     if ((_tokenSet_6.member(LA(1))) && (_tokenSet_7.member(LA(2))) && (_tokenSet_8.member(LA(3)))) {
+    if (synPredMatched489) {
+      if (inputState.guessing == 0) {
+        addWarning("A newline at this point does not follow the Groovy Coding Conventions.","Keep this statement on one line, or use curly braces to break across multiple lines.");
+      }
+    }
+ else     if ((_tokenSet_75.member(LA(1))) && (_tokenSet_20.member(LA(2))) && (_tokenSet_6.member(LA(3)))) {
     }
  else {
       throw new NoViableAltException(LT(1),getFilename());
     }
   }
-  if (inputState.guessing == 0) {
-    addWarning("A newline at this point does not follow the Groovy Coding Conventions.","Keep this statement on one line, or use curly braces to break across multiple lines.");
-  }
+  nls();
   returnAST=nlsWarn_AST;
 }

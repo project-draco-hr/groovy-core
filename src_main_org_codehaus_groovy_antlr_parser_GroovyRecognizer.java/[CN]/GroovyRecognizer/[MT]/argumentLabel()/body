@@ -5,10 +5,10 @@
   Token id=null;
   AST id_AST=null;
   AST kw_AST=null;
-  boolean synPredMatched455=false;
-  if (((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_132.member(LA(3))))) {
-    int _m455=mark();
-    synPredMatched455=true;
+  boolean synPredMatched459=false;
+  if (((LA(1) == IDENT) && (LA(2) == COLON) && (_tokenSet_125.member(LA(3))))) {
+    int _m459=mark();
+    synPredMatched459=true;
     inputState.guessing++;
     try {
 {
@@ -16,12 +16,12 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched455=false;
+      synPredMatched459=false;
     }
-    rewind(_m455);
+    rewind(_m459);
     inputState.guessing--;
   }
-  if (synPredMatched455) {
+  if (synPredMatched459) {
     id=LT(1);
     id_AST=astFactory.create(id);
     astFactory.addASTChild(currentAST,id_AST);
@@ -31,22 +31,40 @@
     }
     argumentLabel_AST=(AST)currentAST.root;
   }
- else   if ((_tokenSet_133.member(LA(1))) && (LA(2) == COLON) && (_tokenSet_132.member(LA(3)))) {
-    keywordPropertyNames();
-    kw_AST=(AST)returnAST;
-    astFactory.addASTChild(currentAST,returnAST);
-    if (inputState.guessing == 0) {
-      kw_AST.setType(STRING_LITERAL);
-    }
-    argumentLabel_AST=(AST)currentAST.root;
-  }
- else   if ((_tokenSet_119.member(LA(1))) && (_tokenSet_131.member(LA(2))) && (_tokenSet_109.member(LA(3)))) {
-    primaryExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    argumentLabel_AST=(AST)currentAST.root;
-  }
  else {
-    throw new NoViableAltException(LT(1),getFilename());
+    boolean synPredMatched461=false;
+    if (((_tokenSet_126.member(LA(1))))) {
+      int _m461=mark();
+      synPredMatched461=true;
+      inputState.guessing++;
+      try {
+{
+          keywordPropertyNames();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched461=false;
+      }
+      rewind(_m461);
+      inputState.guessing--;
+    }
+    if (synPredMatched461) {
+      keywordPropertyNames();
+      kw_AST=(AST)returnAST;
+      astFactory.addASTChild(currentAST,returnAST);
+      if (inputState.guessing == 0) {
+        kw_AST.setType(STRING_LITERAL);
+      }
+      argumentLabel_AST=(AST)currentAST.root;
+    }
+ else     if ((_tokenSet_95.member(LA(1))) && (_tokenSet_124.member(LA(2))) && (_tokenSet_99.member(LA(3)))) {
+      primaryExpression();
+      astFactory.addASTChild(currentAST,returnAST);
+      argumentLabel_AST=(AST)currentAST.root;
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
   }
   returnAST=argumentLabel_AST;
 }

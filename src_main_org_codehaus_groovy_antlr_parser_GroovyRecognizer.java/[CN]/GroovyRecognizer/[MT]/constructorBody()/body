@@ -8,13 +8,13 @@
   lc_AST=astFactory.create(lc);
   astFactory.makeASTRoot(currentAST,lc_AST);
   match(LCURLY);
+  nls();
   if (inputState.guessing == 0) {
     lc_AST.setType(SLIST);
   }
-  nls();
 {
     boolean synPredMatched180=false;
-    if (((_tokenSet_80.member(LA(1))) && (_tokenSet_81.member(LA(2))) && (_tokenSet_82.member(LA(3))))) {
+    if (((_tokenSet_70.member(LA(1))) && (_tokenSet_71.member(LA(2))) && (_tokenSet_72.member(LA(3))))) {
       int _m180=mark();
       synPredMatched180=true;
       inputState.guessing++;
@@ -38,7 +38,7 @@ case SEMI:
 case NLS:
 {
             sep();
-            blockBody();
+            blockBody(sepToken);
             astFactory.addASTChild(currentAST,returnAST);
             break;
           }
@@ -53,8 +53,8 @@ default :
   }
 }
 }
- else if ((_tokenSet_14.member(LA(1))) && (_tokenSet_83.member(LA(2))) && (_tokenSet_84.member(LA(3)))) {
-blockBody();
+ else if ((_tokenSet_73.member(LA(1))) && (_tokenSet_74.member(LA(2))) && (_tokenSet_18.member(LA(3)))) {
+blockBody(EOF);
 astFactory.addASTChild(currentAST,returnAST);
 }
  else {

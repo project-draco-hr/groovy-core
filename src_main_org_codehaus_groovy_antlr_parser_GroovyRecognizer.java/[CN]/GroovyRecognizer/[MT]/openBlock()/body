@@ -8,10 +8,11 @@
   lc_AST=astFactory.create(lc);
   astFactory.makeASTRoot(currentAST,lc_AST);
   match(LCURLY);
+  nls();
   if (inputState.guessing == 0) {
     lc_AST.setType(SLIST);
   }
-  blockBody();
+  blockBody(EOF);
   astFactory.addASTChild(currentAST,returnAST);
   match(RCURLY);
   openBlock_AST=(AST)currentAST.root;

@@ -1,0 +1,30 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST simpleParameterDeclarationList_AST=null;
+  simpleParameterDeclaration();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop214:     do {
+      if ((LA(1) == COMMA)) {
+        match(COMMA);
+        nls();
+        simpleParameterDeclaration();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop214;
+      }
+    }
+ while (true);
+  }
+  if (inputState.guessing == 0) {
+    simpleParameterDeclarationList_AST=(AST)currentAST.root;
+    simpleParameterDeclarationList_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(PARAMETERS,"PARAMETERS")).add(simpleParameterDeclarationList_AST));
+    currentAST.root=simpleParameterDeclarationList_AST;
+    currentAST.child=simpleParameterDeclarationList_AST != null && simpleParameterDeclarationList_AST.getFirstChild() != null ? simpleParameterDeclarationList_AST.getFirstChild() : simpleParameterDeclarationList_AST;
+    currentAST.advanceChildToEnd();
+  }
+  simpleParameterDeclarationList_AST=(AST)currentAST.root;
+  returnAST=simpleParameterDeclarationList_AST;
+}

@@ -1,0 +1,46 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST parameterModifiersOpt_AST=null;
+  int seenDef=0;
+{
+    _loop217:     do {
+switch (LA(1)) {
+case FINAL:
+{
+          AST tmp155_AST=null;
+          tmp155_AST=astFactory.create(LT(1));
+          astFactory.addASTChild(currentAST,tmp155_AST);
+          match(FINAL);
+          nls();
+          break;
+        }
+case AT:
+{
+        annotation();
+        astFactory.addASTChild(currentAST,returnAST);
+        nls();
+        break;
+      }
+default :
+    if (((LA(1) == LITERAL_def)) && (seenDef++ == 0)) {
+      match(LITERAL_def);
+      nls();
+    }
+ else {
+      break _loop217;
+    }
+}
+}
+ while (true);
+}
+if (inputState.guessing == 0) {
+parameterModifiersOpt_AST=(AST)currentAST.root;
+parameterModifiersOpt_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(MODIFIERS,"MODIFIERS")).add(parameterModifiersOpt_AST));
+currentAST.root=parameterModifiersOpt_AST;
+currentAST.child=parameterModifiersOpt_AST != null && parameterModifiersOpt_AST.getFirstChild() != null ? parameterModifiersOpt_AST.getFirstChild() : parameterModifiersOpt_AST;
+currentAST.advanceChildToEnd();
+}
+parameterModifiersOpt_AST=(AST)currentAST.root;
+returnAST=parameterModifiersOpt_AST;
+}

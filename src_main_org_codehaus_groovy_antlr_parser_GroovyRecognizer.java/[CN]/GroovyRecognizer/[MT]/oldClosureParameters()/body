@@ -1,0 +1,207 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST oldClosureParameters_AST=null;
+  if ((LA(1) == LOR)) {
+    match(LOR);
+    nls();
+    if (inputState.guessing == 0) {
+      oldClosureParameters_AST=(AST)currentAST.root;
+      oldClosureParameters_AST=(AST)astFactory.make((new ASTArray(1)).add(astFactory.create(PARAMETERS,"PARAMETERS")));
+      currentAST.root=oldClosureParameters_AST;
+      currentAST.child=oldClosureParameters_AST != null && oldClosureParameters_AST.getFirstChild() != null ? oldClosureParameters_AST.getFirstChild() : oldClosureParameters_AST;
+      currentAST.advanceChildToEnd();
+    }
+    oldClosureParameters_AST=(AST)currentAST.root;
+  }
+ else {
+    boolean synPredMatched227=false;
+    if (((LA(1) == BOR) && (LA(2) == NLS || LA(2) == BOR) && (_tokenSet_85.member(LA(3))))) {
+      int _m227=mark();
+      synPredMatched227=true;
+      inputState.guessing++;
+      try {
+{
+          match(BOR);
+          nls();
+          match(BOR);
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched227=false;
+      }
+      rewind(_m227);
+      inputState.guessing--;
+    }
+    if (synPredMatched227) {
+      match(BOR);
+      nls();
+      match(BOR);
+      nls();
+      if (inputState.guessing == 0) {
+        oldClosureParameters_AST=(AST)currentAST.root;
+        oldClosureParameters_AST=(AST)astFactory.make((new ASTArray(1)).add(astFactory.create(PARAMETERS,"PARAMETERS")));
+        currentAST.root=oldClosureParameters_AST;
+        currentAST.child=oldClosureParameters_AST != null && oldClosureParameters_AST.getFirstChild() != null ? oldClosureParameters_AST.getFirstChild() : oldClosureParameters_AST;
+        currentAST.advanceChildToEnd();
+      }
+      oldClosureParameters_AST=(AST)currentAST.root;
+    }
+ else {
+      boolean synPredMatched230=false;
+      if (((LA(1) == LPAREN || LA(1) == BOR) && (_tokenSet_86.member(LA(2))) && (_tokenSet_87.member(LA(3))))) {
+        int _m230=mark();
+        synPredMatched230=true;
+        inputState.guessing++;
+        try {
+{
+{
+switch (LA(1)) {
+case BOR:
+{
+                  match(BOR);
+                  nls();
+                  break;
+                }
+case LPAREN:
+{
+                break;
+              }
+default :
+{
+              throw new NoViableAltException(LT(1),getFilename());
+            }
+        }
+      }
+      match(LPAREN);
+      parameterDeclarationList();
+      match(RPAREN);
+      nls();
+      match(BOR);
+    }
+  }
+ catch (  RecognitionException pe) {
+    synPredMatched230=false;
+  }
+  rewind(_m230);
+  inputState.guessing--;
+}
+if (synPredMatched230) {
+{
+switch (LA(1)) {
+case BOR:
+{
+        match(BOR);
+        nls();
+        break;
+      }
+case LPAREN:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+match(LPAREN);
+parameterDeclarationList();
+astFactory.addASTChild(currentAST,returnAST);
+match(RPAREN);
+nls();
+match(BOR);
+nls();
+oldClosureParameters_AST=(AST)currentAST.root;
+}
+ else {
+boolean synPredMatched234=false;
+if (((_tokenSet_88.member(LA(1))) && (_tokenSet_89.member(LA(2))) && (_tokenSet_90.member(LA(3))))) {
+int _m234=mark();
+synPredMatched234=true;
+inputState.guessing++;
+try {
+{
+{
+switch (LA(1)) {
+case BOR:
+{
+        match(BOR);
+        nls();
+        break;
+      }
+case IDENT:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+simpleParameterDeclarationList();
+nls();
+match(BOR);
+}
+}
+ catch (RecognitionException pe) {
+synPredMatched234=false;
+}
+rewind(_m234);
+inputState.guessing--;
+}
+if (synPredMatched234) {
+{
+switch (LA(1)) {
+case BOR:
+{
+match(BOR);
+nls();
+break;
+}
+case IDENT:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LITERAL_any:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+simpleParameterDeclarationList();
+astFactory.addASTChild(currentAST,returnAST);
+nls();
+match(BOR);
+nls();
+oldClosureParameters_AST=(AST)currentAST.root;
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+}
+returnAST=oldClosureParameters_AST;
+}

@@ -15,34 +15,24 @@ case LPAREN:
 {
 switch (LA(1)) {
 case AT:
-case LBRACK:
 case IDENT:
+case LBRACK:
 case LPAREN:
 case LITERAL_super:
-case LITERAL_void:
-case LITERAL_boolean:
-case LITERAL_byte:
-case LITERAL_char:
-case LITERAL_short:
-case LITERAL_int:
-case LITERAL_float:
-case LITERAL_long:
-case LITERAL_double:
-case LITERAL_any:
 case LCURLY:
 case LITERAL_this:
 case STRING_LITERAL:
-case INC:
-case DEC:
 case PLUS:
 case MINUS:
+case INC:
+case DEC:
 case BNOT:
 case LNOT:
+case STRING_CTOR_START:
+case LITERAL_new:
 case LITERAL_true:
 case LITERAL_false:
 case LITERAL_null:
-case STRING_CTOR_START:
-case LITERAL_new:
 case NUM_INT:
 case NUM_FLOAT:
 case NUM_LONG:
@@ -67,19 +57,19 @@ default :
   match(RPAREN);
   break;
 }
+case EOF:
 case FINAL:
 case ABSTRACT:
 case STRICTFP:
-case DEF:
 case LITERAL_package:
 case LITERAL_static:
+case LITERAL_def:
 case AT:
 case IDENT:
-case RPAREN:
+case RBRACK:
 case LITERAL_class:
 case LITERAL_interface:
 case LITERAL_enum:
-case QUESTION:
 case LT:
 case COMMA:
 case LITERAL_void:
@@ -92,7 +82,6 @@ case LITERAL_float:
 case LITERAL_long:
 case LITERAL_double:
 case LITERAL_any:
-case STAR:
 case LITERAL_private:
 case LITERAL_public:
 case LITERAL_protected:
@@ -101,9 +90,12 @@ case LITERAL_native:
 case LITERAL_threadsafe:
 case LITERAL_synchronized:
 case LITERAL_volatile:
+case RPAREN:
 case RCURLY:
 case SEMI:
 case NLS:
+case STRING_LITERAL:
+case TRIPLE_DOT:
 {
 break;
 }

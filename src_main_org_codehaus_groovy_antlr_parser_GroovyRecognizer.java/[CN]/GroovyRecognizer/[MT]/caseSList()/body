@@ -2,10 +2,10 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST caseSList_AST=null;
-  statement();
+  statement(COLON);
   astFactory.addASTChild(currentAST,returnAST);
 {
-    _loop304:     do {
+    _loop308:     do {
       if ((LA(1) == SEMI || LA(1) == NLS)) {
         sep();
 {
@@ -13,14 +13,16 @@ switch (LA(1)) {
 case FINAL:
 case ABSTRACT:
 case STRICTFP:
-case DEF:
 case LITERAL_import:
 case LITERAL_static:
+case LITERAL_def:
 case AT:
-case LBRACK:
 case IDENT:
+case LBRACK:
 case LPAREN:
 case LITERAL_class:
+case LITERAL_interface:
+case LITERAL_enum:
 case LITERAL_super:
 case LITERAL_void:
 case LITERAL_boolean:
@@ -54,18 +56,18 @@ case LITERAL_break:
 case LITERAL_continue:
 case LITERAL_throw:
 case LITERAL_assert:
-case INC:
-case DEC:
-case LITERAL_try:
 case PLUS:
 case MINUS:
+case LITERAL_try:
+case INC:
+case DEC:
 case BNOT:
 case LNOT:
+case STRING_CTOR_START:
+case LITERAL_new:
 case LITERAL_true:
 case LITERAL_false:
 case LITERAL_null:
-case STRING_CTOR_START:
-case LITERAL_new:
 case NUM_INT:
 case NUM_FLOAT:
 case NUM_LONG:
@@ -73,15 +75,15 @@ case NUM_DOUBLE:
 case NUM_BIG_INT:
 case NUM_BIG_DECIMAL:
 {
-              statement();
+              statement(sepToken);
               astFactory.addASTChild(currentAST,returnAST);
               break;
             }
 case RCURLY:
 case SEMI:
+case NLS:
 case LITERAL_default:
 case LITERAL_case:
-case NLS:
 {
             break;
           }
@@ -93,7 +95,7 @@ default :
   }
 }
  else {
-  break _loop304;
+  break _loop308;
 }
 }
  while (true);

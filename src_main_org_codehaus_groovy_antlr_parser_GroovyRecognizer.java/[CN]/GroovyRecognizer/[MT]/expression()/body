@@ -2,46 +2,15 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST expression_AST=null;
-  boolean synPredMatched326=false;
-  if (((_tokenSet_15.member(LA(1))) && (_tokenSet_85.member(LA(2))) && (_tokenSet_86.member(LA(3))))) {
-    int _m326=mark();
-    synPredMatched326=true;
-    inputState.guessing++;
-    try {
-{
-        declarationStart();
-      }
-    }
- catch (    RecognitionException pe) {
-      synPredMatched326=false;
-    }
-    rewind(_m326);
-    inputState.guessing--;
-  }
-  if (synPredMatched326) {
-    singleDeclaration();
-    astFactory.addASTChild(currentAST,returnAST);
+  assignmentExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
     expression_AST=(AST)currentAST.root;
+    expression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(EXPR,"EXPR")).add(expression_AST));
+    currentAST.root=expression_AST;
+    currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
+    currentAST.advanceChildToEnd();
   }
- else   if (((LA(1) >= LITERAL_return && LA(1) <= LITERAL_assert))) {
-    branchExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    expression_AST=(AST)currentAST.root;
-  }
- else   if ((_tokenSet_27.member(LA(1))) && (_tokenSet_87.member(LA(2))) && (_tokenSet_88.member(LA(3)))) {
-    assignmentExpression();
-    astFactory.addASTChild(currentAST,returnAST);
-    if (inputState.guessing == 0) {
-      expression_AST=(AST)currentAST.root;
-      expression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(EXPR,"EXPR")).add(expression_AST));
-      currentAST.root=expression_AST;
-      currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
-      currentAST.advanceChildToEnd();
-    }
-    expression_AST=(AST)currentAST.root;
-  }
- else {
-    throw new NoViableAltException(LT(1),getFilename());
-  }
+  expression_AST=(AST)currentAST.root;
   returnAST=expression_AST;
 }
