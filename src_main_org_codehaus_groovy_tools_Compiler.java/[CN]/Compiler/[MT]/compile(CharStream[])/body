@@ -19,7 +19,9 @@
     }
   }
   if (!this.errors.isEmpty()) {
-    throw new MultiException((Exception[])this.errors.toArray(EMPTY_EXCEPTION_ARRAY));
+    MultiException exception=new MultiException((Exception[])this.errors.toArray(EMPTY_EXCEPTION_ARRAY));
+    this.errors.clear();
+    throw exception;
   }
   List results=new ArrayList();
   CompileUnit unit=new CompileUnit();
