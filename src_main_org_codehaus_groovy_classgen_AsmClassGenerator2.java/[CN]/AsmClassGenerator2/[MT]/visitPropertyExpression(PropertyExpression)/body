@@ -72,6 +72,7 @@
             }
  else             if (setter != null) {
               helper.quickUnboxIfNecessary(setter.getParameterTypes()[0]);
+              cast(setter.getParameterTypes()[0]);
               helper.invoke(setter);
             }
  else {
@@ -113,6 +114,13 @@
               cv.visitFieldInsn(PUTFIELD,BytecodeHelper.getClassInternalName(ownerType),propName,BytecodeHelper.getTypeDescription(propertyType));
             }
  else             if (setter != null) {
+              Method m=setter;
+              Class[] paramTypes=m.getParameterTypes();
+              if (paramTypes.length != 1) {
+                throw new RuntimeException("setter should take a single parameter");
+              }
+              Class paramType=paramTypes[0];
+              cast(paramType);
               helper.invoke(setter);
             }
  else {
