@@ -1,7 +1,14 @@
 {
   StringBuffer buffer=new StringBuffer();
   for (Iterator iter=strings.iterator(); iter.hasNext(); ) {
-    buffer.append(iter.next());
+    ConstantExpression expression=(ConstantExpression)iter.next();
+    Object value=expression.getValue();
+    if (value != null) {
+      buffer.append(value);
+    }
+ else {
+      log.warn("null expression in GString",new Exception());
+    }
   }
   return new ConstantExpression(buffer.toString());
 }

@@ -1,4 +1,10 @@
 {
   this.type=type;
   this.expressions=expressions;
+  for (Iterator iter=expressions.iterator(); iter.hasNext(); ) {
+    Object item=iter.next();
+    if (!(item instanceof Expression)) {
+      throw new ClassCastException("Item: " + item + " is not an Expression");
+    }
+  }
 }

@@ -4,14 +4,9 @@
   for (int i=0; i < children.length; ++i) {
     if (matches(children[0],Token.SINGLE_QUOTE_STRING)) {
       ConstantExpression expression=constantExpression(children[i]);
-      String text="";
       if (expression != null) {
-        Object value=expression.getValue();
-        if (value != null) {
-          text=value.toString();
-        }
+        expr.addString(expression);
       }
-      expr.addString(text);
     }
  else {
       expr.addValue(expression(children[i]));
