@@ -3,9 +3,7 @@
   PropertyNode metaClassProperty=node.addProperty("metaClass",ACC_PUBLIC,MetaClass.class.getName(),new StaticMethodCallExpression(InvokerHelper.class.getName(),"getMetaClass",new VariableExpression("this")),null,null);
   FieldNode metaClassField=metaClassProperty.getField();
   boolean addDelegateObject=node instanceof InnerClassNode && node.getSuperClass().equals("groovy.lang.Closure");
-  if (addDelegateObject) {
-  }
- else {
+  if (!addDelegateObject) {
     node.addMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"method"),new Parameter(Object.class.getName(),"arguments")},new ReturnStatement(new MethodCallExpression(new FieldExpression(metaClassField),"invokeMethod",new ArgumentListExpression(new Expression[]{new VariableExpression("this"),new VariableExpression("method"),new VariableExpression("arguments")}))));
     if (!node.getSuperClass().equals(Script.class.getName())) {
       node.addMethod("getProperty",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"property")},new ReturnStatement(new MethodCallExpression(new FieldExpression(metaClassField),"getProperty",new ArgumentListExpression(new Expression[]{new VariableExpression("this"),new VariableExpression("property")}))));
