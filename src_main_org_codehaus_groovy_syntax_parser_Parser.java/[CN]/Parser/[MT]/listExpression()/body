@@ -1,0 +1,14 @@
+{
+  CSTNode expr=rootNode(Token.LEFT_SQUARE_BRACKET);
+  while (lt() != Token.RIGHT_SQUARE_BRACKET) {
+    expr.addChild(expression());
+    if (lt() == Token.COMMA) {
+      consume(Token.COMMA);
+    }
+ else {
+      break;
+    }
+  }
+  consume(Token.RIGHT_SQUARE_BRACKET);
+  return expr;
+}
