@@ -8,6 +8,13 @@
  else   if (value.getClass().isArray()) {
     return Arrays.asList((Object[])value);
   }
+ else   if (value instanceof Enumeration) {
+    List answer=new ArrayList();
+    for (Enumeration e=(Enumeration)value; e.hasMoreElements(); ) {
+      answer.add(e.nextElement());
+    }
+    return answer;
+  }
  else {
     return Collections.singletonList(value);
   }
