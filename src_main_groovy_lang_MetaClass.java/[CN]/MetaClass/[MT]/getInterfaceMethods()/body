@@ -1,0 +1,16 @@
+{
+  if (interfaceMethods == null) {
+    interfaceMethods=new ArrayList();
+    Class type=theClass;
+    while (type != null) {
+      Class[] interfaces=type.getInterfaces();
+      for (int i=0; i < interfaces.length; i++) {
+        Class iface=interfaces[i];
+        Method[] methods=iface.getMethods();
+        addInterfaceMethods(interfaceMethods,methods);
+      }
+      type=type.getSuperclass();
+    }
+  }
+  return interfaceMethods;
+}
