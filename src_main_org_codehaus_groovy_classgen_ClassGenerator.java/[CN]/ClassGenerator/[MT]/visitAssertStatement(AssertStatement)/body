@@ -1,2 +1,13 @@
 {
+  BooleanExpression booleanExpression=statement.getBooleanExpression();
+  booleanExpression.visit(this);
+  Label l0=new Label();
+  cv.visitJumpInsn(IFEQ,l0);
+  Label l1=new Label();
+  cv.visitJumpInsn(GOTO,l1);
+  cv.visitLabel(l0);
+  cv.visitLdcInsn(booleanExpression);
+  statement.getMessageExpression().visit(this);
+  assertFailedMethod.call(cv);
+  cv.visitLabel(l1);
 }
