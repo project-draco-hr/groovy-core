@@ -9,9 +9,10 @@
       MetaMethod aMethod=(MetaMethod)iter.next();
       if (method.isSame(aMethod)) {
         method.setInterfaceClass(aMethod.getDeclaringClass());
-        return false;
+        return true;
       }
     }
+    log.warning("Cannot invoke method on protected/private class which isn't visible on an interface so must use reflection instead: " + method);
     return false;
   }
   return true;
