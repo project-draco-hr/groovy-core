@@ -1,0 +1,9 @@
+{
+  try {
+    throw new GroovyRuntimeException("message",new NullPointerException());
+  }
+ catch (  GroovyRuntimeException e) {
+    assertEquals("message",e.getMessage());
+    assertTrue(e.getCause() instanceof NullPointerException);
+  }
+}

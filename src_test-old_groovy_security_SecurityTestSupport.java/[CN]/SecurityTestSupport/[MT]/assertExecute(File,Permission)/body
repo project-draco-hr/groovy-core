@@ -1,0 +1,13 @@
+{
+  if (!isSecurityAvailable()) {
+    return;
+  }
+  GroovyCodeSource gcs=null;
+  try {
+    gcs=new GroovyCodeSource(file);
+  }
+ catch (  FileNotFoundException fnfe) {
+    fail(fnfe.toString());
+  }
+  parseAndExecute(gcs,missingPermission);
+}

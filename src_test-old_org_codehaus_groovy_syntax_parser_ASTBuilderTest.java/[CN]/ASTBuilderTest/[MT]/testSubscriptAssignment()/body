@@ -1,0 +1,17 @@
+{
+  ModuleNode module=parse("class Foo { void testMethod() { x[12] = 'abc' } }","Dummy.groovy");
+  BlockStatement statement=getCode(module,"testMethod");
+  assertEquals("Statements size: " + statement.getStatements(),1,statement.getStatements().size());
+  ExpressionStatement exprStmt=(ExpressionStatement)statement.getStatements().get(0);
+  Expression exp=exprStmt.getExpression();
+  System.out.println(exp);
+  assertTrue(exp instanceof BinaryExpression);
+  BinaryExpression binExpr=(BinaryExpression)exp;
+  assertTrue("RHS is constant",binExpr.getRightExpression() instanceof ConstantExpression);
+  Expression lhs=binExpr.getLeftExpression();
+  assertTrue("LHS is binary expression",lhs instanceof BinaryExpression);
+  BinaryExpression lhsBinExpr=(BinaryExpression)lhs;
+  assertEquals(Types.LEFT_SQUARE_BRACKET,lhsBinExpr.getOperation().getType());
+  assertTrue("Left of LHS is a variable",lhsBinExpr.getLeftExpression() instanceof VariableExpression);
+  assertTrue("Right of LHS is a constant",lhsBinExpr.getRightExpression() instanceof ConstantExpression);
+}

@@ -1,0 +1,13 @@
+{
+  try {
+    ModuleNode module=parse(script,"Dummy.groovy");
+  }
+ catch (  CompilationFailedException e) {
+    SyntaxException cause=e.getUnit().getSyntaxError(0);
+    if (cause != null && cause instanceof ParserException && cause.getMessage().indexOf("out of range") >= 0) {
+      return;
+    }
+    fail(script + " should fail with a ParserException: " + e.getMessage());
+  }
+  fail(script + " should fail because the number is out of range.");
+}

@@ -1,0 +1,11 @@
+{
+  Document document=parse(name);
+  PrintWriter writer=new PrintWriter(new FileWriter(new File(dir,output)));
+  converter=new DomToGroovy(writer);
+  writer.println("#!/bin/groovy");
+  writer.println();
+  writer.println("// generated from " + name);
+  writer.println();
+  converter.print(document);
+  writer.close();
+}
