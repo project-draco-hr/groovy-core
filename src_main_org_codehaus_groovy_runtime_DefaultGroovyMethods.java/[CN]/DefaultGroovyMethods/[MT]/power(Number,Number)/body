@@ -1,22 +1,15 @@
 {
-  double dexp=exponent.doubleValue();
-  int iexp=(int)dexp;
-  if (NumberMath.isBigDecimal(self)) {
-    BigDecimal number=(BigDecimal)self;
-    if (iexp == dexp)     return number.pow(iexp);
+  double base, exp, answer;
+  base=self.doubleValue();
+  exp=exponent.doubleValue();
+  answer=Math.pow(base,exp);
+  if ((double)((int)answer) == answer) {
+    return new Integer((int)answer);
   }
- else   if (NumberMath.isBigInteger(self)) {
-    BigInteger number=(BigInteger)self;
-    if (iexp == dexp)     return number.pow(iexp);
-  }
-  double answer=Math.pow(self.doubleValue(),dexp);
-  if (NumberMath.isFloatingPoint(self) || NumberMath.isBigDecimal(self) || NumberMath.isFloatingPoint(exponent)|| answer < 1) {
-    return new Double(answer);
-  }
- else   if (NumberMath.isLong(self) || NumberMath.isBigDecimal(self) || NumberMath.isLong(exponent)|| answer > Integer.MAX_VALUE) {
+ else   if ((double)((long)answer) == answer) {
     return new Long((long)answer);
   }
  else {
-    return new Integer((int)answer);
+    return new Double(answer);
   }
 }
