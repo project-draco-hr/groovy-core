@@ -1,0 +1,22 @@
+{
+  Object value=null;
+switch (expressionRoot.getToken().getType()) {
+case (Token.SINGLE_QUOTE_STRING):
+case (Token.DOUBLE_QUOTE_STRING):
+{
+      value=expressionRoot.getToken().getText();
+      break;
+    }
+case (Token.INTEGER_NUMBER):
+{
+    value=new Long(expressionRoot.getToken().getText());
+    break;
+  }
+case (Token.FLOAT_NUMBER):
+{
+  value=new Double(expressionRoot.getToken().getText());
+  break;
+}
+}
+return new ConstantExpression(value);
+}
