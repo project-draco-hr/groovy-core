@@ -69,7 +69,8 @@ default :
 throwExpected(new int[]{});
 }
 }
-if (identifier != null && (lt_bare() == Token.LEFT_PARENTHESIS || lt_bare() == Token.LEFT_CURLY_BRACE)) {
+if (identifier != null) {
+if (lt_bare() == Token.LEFT_PARENTHESIS || lt_bare() == Token.LEFT_CURLY_BRACE) {
 if (expr == identifier) {
 CSTNode replacementExpr=new CSTNode();
 CSTNode resultExpr=sugaryMethodCallExpression(replacementExpr,identifier,null);
@@ -79,6 +80,13 @@ expr=resultExpr;
 }
  else {
 expr=sugaryMethodCallExpression(expr,identifier,null);
+}
+}
+ else {
+CSTNode methodCall=tryParseMethodCallWithoutParenthesis(expr,identifier);
+if (methodCall != null) {
+expr=methodCall;
+}
 }
 }
 while (lt_bare() == Token.LEFT_SQUARE_BRACKET || lookAheadForMethodCall()) {

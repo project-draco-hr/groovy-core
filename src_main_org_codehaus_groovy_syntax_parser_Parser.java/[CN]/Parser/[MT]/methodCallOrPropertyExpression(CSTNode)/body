@@ -1,6 +1,6 @@
 {
-  CSTNode dotExpr=rootNode(lt_bare());
-  CSTNode identifier=rootNode(lt_bare());
+  CSTNode dotExpr=rootNode_bare(lt_bare());
+  CSTNode identifier=rootNode_bare(lt_bare());
 switch (lt_bare()) {
 case (Token.LEFT_PARENTHESIS):
 case (Token.LEFT_CURLY_BRACE):
@@ -10,9 +10,15 @@ case (Token.LEFT_CURLY_BRACE):
     }
 default :
 {
-    dotExpr.addChild(expr);
-    dotExpr.addChild(identifier);
-    expr=dotExpr;
+    CSTNode methodCall=tryParseMethodCallWithoutParenthesis(expr,identifier);
+    if (methodCall != null) {
+      expr=methodCall;
+    }
+ else {
+      dotExpr.addChild(expr);
+      dotExpr.addChild(identifier);
+      expr=dotExpr;
+    }
     break;
   }
 }

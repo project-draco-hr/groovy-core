@@ -2,11 +2,12 @@
   CSTNode parameterList=new CSTNode(Token.syntheticList());
   while (lt() != endOfListDemarc) {
     CSTNode name=rootNode(Token.IDENTIFIER);
-    CSTNode namedParam=rootNode(Token.COLON,name);
+    CSTNode namedParam=rootNode_bare(Token.COLON,name);
     namedParam.addChild(expression());
     parameterList.addChild(namedParam);
-    if (lt() == Token.COMMA) {
-      consume(Token.COMMA);
+    if (lt_bare() == Token.COMMA) {
+      consume_bare(Token.COMMA);
+      optionalNewlines();
     }
  else {
       break;

@@ -1,0 +1,14 @@
+{
+  CSTNode methodExpr=new CSTNode(Token.leftParenthesis(-1,-1));
+  methodExpr.addChild(expr);
+  methodExpr.addChild(identifier);
+  CSTNode parameterList=new CSTNode(Token.syntheticList());
+  parameterList.addChild(expression());
+  while (lt_bare() == Token.COMMA) {
+    consume_bare(lt_bare());
+    optionalNewlines();
+    parameterList.addChild(expression());
+  }
+  methodExpr.addChild(parameterList);
+  return methodExpr;
+}
