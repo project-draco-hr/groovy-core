@@ -3,6 +3,7 @@
     throw new GroovyRuntimeException("Cannot set read-only property: " + name);
   }
   try {
+    if (getType() == String.class && !(newValue instanceof String))     newValue=newValue.toString();
     setter.invoke(object,new Object[]{newValue});
   }
  catch (  Exception e) {
