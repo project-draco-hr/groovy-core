@@ -24,24 +24,14 @@
     visitClassExpression(new ClassExpression(ownerTypeName));
   }
  else {
-    if (isInnerClass()) {
-      visitFieldExpression(new FieldExpression(classNode.getField("owner")));
-    }
- else {
-      cv.visitVarInsn(ALOAD,0);
-    }
+    loadThisOrOwner();
   }
   if (innerClass.getSuperClass().equals("groovy.lang.Closure")) {
     if (isStaticMethod()) {
       visitClassExpression(new ClassExpression(ownerTypeName));
     }
  else {
-      if (isInnerClass()) {
-        visitFieldExpression(new FieldExpression(classNode.getField("owner")));
-      }
- else {
-        cv.visitVarInsn(ALOAD,0);
-      }
+      loadThisOrOwner();
     }
   }
   for (int i=2; i < localVariableParams.length; i++) {

@@ -48,7 +48,7 @@
         if (variable.isHolder() && passingClosureParams && useProperty) {
           cv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/ScriptReference");
           cv.visitInsn(DUP);
-          cv.visitVarInsn(ALOAD,0);
+          loadThisOrOwner();
           cv.visitLdcInsn(name);
           cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
         }
