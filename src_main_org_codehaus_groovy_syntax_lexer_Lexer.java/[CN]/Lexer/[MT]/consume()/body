@@ -1,4 +1,6 @@
 {
-  char c=getCharStream().consume();
-  return c;
+  if (this.charsInBuffer == 0)   fillBuffer();
+  this.charsInBuffer--;
+  this.column+=this.charWidth[this.cur];
+  return this.buf[this.cur++];
 }
