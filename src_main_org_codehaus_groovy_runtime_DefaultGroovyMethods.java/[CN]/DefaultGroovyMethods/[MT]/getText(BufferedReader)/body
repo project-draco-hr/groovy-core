@@ -1,0 +1,17 @@
+{
+  StringBuffer answer=new StringBuffer();
+  char[] charBuffer=new char[4096];
+  int nbCharRead=0;
+  while ((nbCharRead=reader.read(charBuffer)) != -1) {
+    if (nbCharRead == charBuffer.length) {
+      answer.append(charBuffer);
+    }
+ else {
+      char[] endBuffer=new char[nbCharRead];
+      System.arraycopy(charBuffer,0,endBuffer,0,nbCharRead);
+      answer.append(endBuffer);
+    }
+  }
+  reader.close();
+  return answer.toString();
+}

@@ -1,5 +1,7 @@
 {
-  IteratorClosureAdapter closure=new IteratorClosureAdapter(file);
-  eachByte(file,closure);
-  return closure.asList();
+  byte[] bytes=new byte[(int)file.length()];
+  FileInputStream fileInputStream=new FileInputStream(file);
+  fileInputStream.read(bytes);
+  fileInputStream.close();
+  return bytes;
 }
