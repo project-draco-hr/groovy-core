@@ -2,14 +2,50 @@
   if (arguments == null) {
     return EMPTY_ARGUMENTS;
   }
-  if (arguments instanceof Tuple) {
+ else   if (arguments instanceof Tuple) {
     Tuple tuple=(Tuple)arguments;
-    return tuple.toArray();
+    Object[] objects=tuple.toArray();
+    ArrayList array=new ArrayList();
+    for (int i=0; i < objects.length; i++) {
+      if ((objects[i] instanceof Spreadable) && (objects[i] instanceof SpreadList)) {
+        SpreadList slist=(SpreadList)objects[i];
+        for (int j=0; j < slist.size(); j++) {
+          array.add(slist.get(j));
+        }
+      }
+ else {
+        array.add(objects[i]);
+      }
+    }
+    return array.toArray();
   }
-  if (arguments instanceof Object[]) {
-    return (Object[])arguments;
+ else   if (arguments instanceof Object[]) {
+    Object[] objects=(Object[])arguments;
+    ArrayList array=new ArrayList();
+    for (int i=0; i < objects.length; i++) {
+      if ((objects[i] instanceof Spreadable) && (objects[i] instanceof SpreadList)) {
+        SpreadList slist=(SpreadList)objects[i];
+        for (int j=0; j < slist.size(); j++) {
+          array.add(slist.get(j));
+        }
+      }
+ else {
+        array.add(objects[i]);
+      }
+    }
+    return array.toArray();
   }
  else {
-    return new Object[]{arguments};
+    if ((arguments instanceof Spreadable) && (arguments instanceof SpreadList)) {
+      ArrayList array=new ArrayList();
+      SpreadList slist=(SpreadList)arguments;
+      for (int j=0; j < slist.size(); j++) {
+        array.add(slist.get(j));
+      }
+      return array.toArray();
+    }
+ else {
+      return new Object[]{arguments};
+    }
   }
 }

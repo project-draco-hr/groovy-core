@@ -1,0 +1,14 @@
+{
+  if (value instanceof ArrayList) {
+    Object[] values=new Object[((ArrayList)value).size()];
+    int index=0;
+    Iterator it=((ArrayList)value).iterator();
+    for (; it.hasNext(); ) {
+      values[index++]=it.next();
+    }
+    return new SpreadList(values);
+  }
+ else {
+    throw new SpreadListEvaluatingException("Cannot spread the type " + value.getClass().getName() + ", value "+ value);
+  }
+}
