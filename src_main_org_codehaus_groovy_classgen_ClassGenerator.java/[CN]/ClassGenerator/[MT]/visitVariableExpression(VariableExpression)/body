@@ -37,7 +37,11 @@
           variable=defineVariable(name,variableType);
         }
       }
-      if (variable == null) {
+      if (variable == null || variable.isProperty()) {
+        if (variable == null) {
+          variable=defineVariable(name,variableType);
+          variable.setProperty(true);
+        }
         visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
         return;
       }
