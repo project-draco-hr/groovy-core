@@ -10,20 +10,34 @@
   }
   if (left instanceof Comparable) {
     if (left instanceof Number) {
+      if (isValidCharacterString(right)) {
+        return asCharacter((Number)left).compareTo(asCharacter((String)right));
+      }
       return DefaultGroovyMethods.compareTo((Number)left,asNumber(right));
     }
+ else     if (left instanceof Character) {
+      if (isValidCharacterString(right)) {
+        return ((Character)left).compareTo(asCharacter((String)right));
+      }
+ else       if (right instanceof Number) {
+        return DefaultGroovyMethods.compareTo((Number)left,asNumber(right));
+      }
+    }
  else     if (right instanceof Number) {
+      if (isValidCharacterString(left)) {
+        return asCharacter((String)left).compareTo(asCharacter((Number)right));
+      }
       return DefaultGroovyMethods.compareTo(asNumber(left),(Number)right);
     }
- else {
-      try {
-        return DefaultGroovyMethods.compareTo(asNumber(left),asNumber(right));
-      }
- catch (      Exception e) {
-        Comparable comparable=(Comparable)left;
-        return comparable.compareTo(right);
-      }
+    Comparable comparable=(Comparable)left;
+    return comparable.compareTo(right);
+  }
+  if (left.getClass().isArray()) {
+    Collection leftList=asCollection(left);
+    if (right.getClass().isArray()) {
+      right=asCollection(right);
     }
+    return ((Comparable)leftList).compareTo(right);
   }
   throw new GroovyRuntimeException("Cannot compare values: " + left + " and "+ right);
 }
