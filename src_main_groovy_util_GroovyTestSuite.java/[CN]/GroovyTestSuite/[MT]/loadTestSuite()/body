@@ -5,5 +5,11 @@
   }
   System.out.println("Compiling: " + fileName);
   Class type=compile(fileName);
-  addTestSuite(type);
+  String[] args={};
+  if (!Test.class.isAssignableFrom(type) && Script.class.isAssignableFrom(type)) {
+    addTest(new ScriptTestAdapter(type,args));
+  }
+ else {
+    addTestSuite(type);
+  }
 }
