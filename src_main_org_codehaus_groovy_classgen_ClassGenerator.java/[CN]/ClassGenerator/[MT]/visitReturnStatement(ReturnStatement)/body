@@ -7,34 +7,44 @@
     assignExpr.visit(this);
   }
   Class c=getExpressionType(statement.getExpression());
-  if (c == Boolean.class) {
-    Label l0=new Label();
-    cv.visitJumpInsn(IFEQ,l0);
-    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
-    cv.visitInsn(ARETURN);
-    cv.visitLabel(l0);
-    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
-    cv.visitInsn(ARETURN);
+  String returnType=methodNode.getReturnType();
+  if (returnType.equals("double")) {
+    MethodCaller.newVirtual(Double.class,"doubleValue").call(cv);
+    cv.visitInsn(DRETURN);
   }
- else   if (!c.isPrimitive()) {
-    String returnType=methodNode.getReturnType();
-    if (returnType != null && !returnType.equals("java.lang.Object")) {
-      doCast(returnType);
-    }
-    cv.visitInsn(ARETURN);
+ else   if (returnType.equals("float")) {
+    MethodCaller.newVirtual(Double.class,"doubleValue").call(cv);
+    cv.visitInsn(D2F);
+    cv.visitInsn(FRETURN);
+  }
+ else   if (returnType.equals("long")) {
+    MethodCaller.newVirtual(Integer.class,"intValue").call(cv);
+    cv.visitInsn(I2L);
+    cv.visitInsn(LRETURN);
+  }
+ else   if (returnType.equals("boolean")) {
+    MethodCaller.newVirtual(Boolean.class,"booleanValue").call(cv);
+    cv.visitInsn(IRETURN);
+  }
+ else   if (returnType.equals("char") || returnType.equals("byte") || returnType.equals("int")|| returnType.equals("short")) {
+    MethodCaller.newVirtual(Integer.class,"intValue").call(cv);
+    cv.visitInsn(IRETURN);
   }
  else {
-    if (c == double.class) {
-      cv.visitInsn(DRETURN);
-    }
- else     if (c == float.class) {
-      cv.visitInsn(FRETURN);
-    }
- else     if (c == long.class) {
-      cv.visitInsn(LRETURN);
+    if (c == Boolean.class) {
+      Label l0=new Label();
+      cv.visitJumpInsn(IFEQ,l0);
+      cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
+      cv.visitInsn(ARETURN);
+      cv.visitLabel(l0);
+      cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
+      cv.visitInsn(ARETURN);
     }
  else {
-      cv.visitInsn(IRETURN);
+      if (returnType != null && !returnType.equals("java.lang.Object") && !returnType.equals(c.getName())) {
+        doCast(returnType);
+      }
+      cv.visitInsn(ARETURN);
     }
   }
   outputReturn=true;
