@@ -1,12 +1,14 @@
 {
+  if (isNonStaticField(expression) && !isHolderVariable(expression) && !isStaticMethod()) {
+    cv.visitVarInsn(ALOAD,0);
+  }
   leftHandExpression=false;
   expression.visit(this);
   int tempIdx=defineVariable(createVariableName("postfix"),"java.lang.Object",false).getIndex();
   cv.visitVarInsn(ASTORE,tempIdx);
   cv.visitVarInsn(ALOAD,tempIdx);
   cv.visitLdcInsn(method);
-  ArgumentListExpression.EMPTY_ARGUMENTS.visit(this);
-  invokeMethodMethod.call(cv);
+  invokeNoArgumentsMethod.call(cv);
   leftHandExpression=true;
   expression.visit(this);
   leftHandExpression=false;

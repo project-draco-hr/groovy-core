@@ -5,12 +5,14 @@
   }
   if (expression instanceof VariableExpression) {
     VariableExpression varExp=(VariableExpression)expression;
-    FieldNode field=classNode.getField(varExp.getVariable());
     Variable variable=(Variable)variableStack.get(varExp.getVariable());
-    if (field != null && variable == null) {
+    if (variable != null) {
+      return variable.isHolder();
+    }
+    FieldNode field=classNode.getField(varExp.getVariable());
+    if (field != null) {
       return field.isHolder();
     }
-    return variable.isHolder();
   }
   return false;
 }
