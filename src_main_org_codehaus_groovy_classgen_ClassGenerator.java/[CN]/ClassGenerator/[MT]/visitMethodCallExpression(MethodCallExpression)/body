@@ -11,19 +11,26 @@
       arguments=(Expression)tupleExpression.getExpressions().get(0);
     }
   }
-  if (argumentsUseStack(arguments)) {
-    int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
-    arguments.visit(this);
-    cv.visitVarInsn(ASTORE,paramIdx);
-    call.getObjectExpression().visit(this);
-    cv.visitLdcInsn(call.getMethod());
-    cv.visitVarInsn(ALOAD,paramIdx);
-    idx--;
+  if (MethodCallExpression.isSuperMethodCall(call)) {
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitVarInsn(ALOAD,1);
+    cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
   }
  else {
-    call.getObjectExpression().visit(this);
-    cv.visitLdcInsn(call.getMethod());
-    arguments.visit(this);
+    if (argumentsUseStack(arguments)) {
+      int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
+      arguments.visit(this);
+      cv.visitVarInsn(ASTORE,paramIdx);
+      call.getObjectExpression().visit(this);
+      cv.visitLdcInsn(call.getMethod());
+      cv.visitVarInsn(ALOAD,paramIdx);
+      idx--;
+    }
+ else {
+      call.getObjectExpression().visit(this);
+      cv.visitLdcInsn(call.getMethod());
+      arguments.visit(this);
+    }
+    invokeMethodMethod.call(cv);
   }
-  invokeMethodMethod.call(cv);
 }

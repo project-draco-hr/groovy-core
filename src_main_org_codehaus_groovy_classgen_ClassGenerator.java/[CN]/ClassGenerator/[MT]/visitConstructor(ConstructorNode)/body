@@ -2,9 +2,11 @@
   String methodType=getMethodDescriptor("void",node.getParameters());
   cv=cw.visitMethod(node.getModifiers(),"<init>",methodType,null);
   resetVariableStack(node.getParameters());
-  cv.visitVarInsn(ALOAD,0);
-  cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
   Statement code=node.getCode();
+  if (code == null || !firstStatementIsSuperMethodCall(code)) {
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
+  }
   if (code != null) {
     code.visit(this);
   }

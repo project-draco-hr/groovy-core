@@ -10,8 +10,9 @@
   answer.addMethod("doCall",ACC_PUBLIC,"java/lang/Object",parameters,expression.getCode());
   FieldNode field=answer.addField("__outerInstance",ACC_PRIVATE,outerClassName,null);
   StatementBlock block=new StatementBlock();
+  block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("outerInstance"))));
   block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.equal(-1,-1),new VariableExpression("outerInstance"))));
-  Parameter[] contructorParams=new Parameter[]{new Parameter(outerClassName,"outerInstance",null)};
+  Parameter[] contructorParams=new Parameter[]{new Parameter(outerClassName,"outerInstance"),new Parameter("java/lang/Object","delegate")};
   answer.addConstructor(ACC_PUBLIC,contructorParams,block);
   return answer;
 }

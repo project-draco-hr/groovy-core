@@ -5,12 +5,21 @@
   }
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
+    List otherStatements=new ArrayList();
     if (code instanceof StatementBlock) {
       StatementBlock block=(StatementBlock)code;
-      statements.addAll(block.getStatements());
+      otherStatements.addAll(block.getStatements());
     }
  else     if (code != null) {
-      statements.add(code);
+      otherStatements.add(code);
+    }
+    if (!otherStatements.isEmpty()) {
+      Statement first=(Statement)otherStatements.get(0);
+      if (isSuperMethodCall(first)) {
+        otherStatements.remove(0);
+        statements.add(0,first);
+      }
+      statements.addAll(otherStatements);
     }
     constructorNode.setCode(new StatementBlock(statements));
   }

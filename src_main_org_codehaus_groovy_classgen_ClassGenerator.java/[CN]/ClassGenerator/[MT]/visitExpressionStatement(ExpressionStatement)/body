@@ -2,7 +2,7 @@
   onLineNumber(statement);
   Expression expression=statement.getExpression();
   expression.visit(this);
-  if (expression instanceof MethodCallExpression) {
+  if (expression instanceof MethodCallExpression && !MethodCallExpression.isSuperMethodCall((MethodCallExpression)expression)) {
     cv.visitInsn(POP);
   }
 }

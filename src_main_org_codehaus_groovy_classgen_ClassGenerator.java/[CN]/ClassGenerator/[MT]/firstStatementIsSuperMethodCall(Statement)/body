@@ -1,0 +1,16 @@
+{
+  if (code instanceof StatementBlock) {
+    StatementBlock block=(StatementBlock)code;
+    if (!block.getStatements().isEmpty()) {
+      Object expr=block.getStatements().get(0);
+      if (expr instanceof ExpressionStatement) {
+        ExpressionStatement expStmt=(ExpressionStatement)expr;
+        expr=expStmt.getExpression();
+        if (expr instanceof MethodCallExpression) {
+          return MethodCallExpression.isSuperMethodCall((MethodCallExpression)expr);
+        }
+      }
+    }
+  }
+  return false;
+}
