@@ -13,7 +13,7 @@
   boolean addDelegateObject=(node instanceof InnerClassNode && superClass.equals(Closure.class.getName())) || superClass.equals(GString.class.getName());
   if (!addDelegateObject) {
     node.addSyntheticMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"method"),new Parameter(Object.class.getName(),"arguments")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"invokeMethod",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("method"),new VariableExpression("arguments")})))}));
-    if (!superClass.equals(Script.class.getName())) {
+    if (!node.isScript()) {
       node.addSyntheticMethod("getProperty",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"property")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"getProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property")})))}));
       node.addSyntheticMethod("setProperty",ACC_PUBLIC,"void",new Parameter[]{new Parameter(String.class.getName(),"property"),new Parameter(Object.class.getName(),"value")},new BlockStatement(new Statement[]{initMetaClassField,new ExpressionStatement(new MethodCallExpression(metaClassVar,"setProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property"),new VariableExpression("value")})))}));
     }

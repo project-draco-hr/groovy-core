@@ -1,11 +1,3 @@
 {
-  if (verifier.getClassNode().isScriptClass() && expression.getOperation().getType() == Token.EQUAL) {
-    Expression left=expression.getLeftExpression();
-    if (left instanceof VariableExpression) {
-      VariableExpression varExp=(VariableExpression)left;
-      PropertyExpression propExp=new PropertyExpression(VariableExpression.THIS_EXPRESSION,varExp.getVariable());
-      expression.setLeftExpression(propExp);
-    }
-  }
   super.visitBinaryExpression(expression);
 }

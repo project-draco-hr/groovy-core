@@ -10,7 +10,15 @@
     throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
   }
   name+=extractClassFromFileDescription();
-  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,Script.class.getName());
+  String baseClass=null;
+  if (unit != null) {
+    baseClass=unit.getConfig().getScriptBaseClass();
+  }
+  if (baseClass == null) {
+    baseClass=Script.class.getName();
+  }
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
+  classNode.setScript(true);
   classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"void",new Parameter[]{new Parameter("java.lang.String[]","args")},new ExpressionStatement(new MethodCallExpression(new ClassExpression(InvokerHelper.class.getName()),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode.getName()),new VariableExpression("args")})))));
   classNode.addMethod(new MethodNode("run",ACC_PUBLIC,Object.class.getName(),Parameter.EMPTY_ARRAY,statementBlock));
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,new BlockStatement());

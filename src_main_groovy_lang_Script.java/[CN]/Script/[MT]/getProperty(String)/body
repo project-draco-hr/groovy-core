@@ -1,3 +1,11 @@
 {
-  return binding.getVariable(property);
+  Object answer=binding.getVariable(property);
+  if (answer == null) {
+    try {
+      return super.getProperty(property);
+    }
+ catch (    MissingPropertyException e) {
+    }
+  }
+  return answer;
 }
