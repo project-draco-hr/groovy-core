@@ -2,6 +2,9 @@
   onLineNumber(statement);
   String returnType=methodNode.getReturnType();
   if (returnType.equals("void")) {
+    if (!(statement == ReturnStatement.RETURN_NULL_OR_VOID)) {
+      throw new RuntimeParserException("Cannot use return statement with an expression on a method that returns void",statement);
+    }
     cv.visitInsn(RETURN);
     outputReturn=true;
     return;
