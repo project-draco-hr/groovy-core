@@ -1,0 +1,12 @@
+{
+  try {
+    ModuleNode module=parse("x = 2.3e;","Dummy.groovy");
+  }
+ catch (  ExceptionCollector e) {
+    if (e.get(0) instanceof UnexpectedCharacterException) {
+      return;
+    }
+    fail("x = 2.3e should fail with an UnexpectedCharacterException");
+  }
+  fail("x = 2.3e, should fail because no exponent is specified.");
+}

@@ -1,0 +1,14 @@
+{
+  Token token=reduction.getRoot();
+  String text=reduction.getRootText();
+  String signed=negate ? "-" + text : text;
+  boolean isInteger=(token.getMeaning() == Types.INTEGER_NUMBER);
+  try {
+    Number number=isInteger ? Numbers.parseInteger(signed) : Numbers.parseDecimal(signed);
+    return new ConstantExpression(number);
+  }
+ catch (  NumberFormatException e) {
+    error("numeric literal [" + signed + "] invalid or out of range for its type",token);
+  }
+  throw new GroovyBugError("this should never happen");
+}

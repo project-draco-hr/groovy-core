@@ -551,7 +551,6 @@ break ROOT_SWITCH;
 }
 StringBuffer numericLiteral=new StringBuffer();
 boolean isDecimal=false;
-NUMBER_PROCESSING: do {
 char c2=la(2);
 if (c == '0' && (c2 == 'X' || c2 == 'x' || Numbers.isDigit(c2))) {
 numericLiteral.append(consume());
@@ -574,8 +573,8 @@ if (Numbers.isDigit(la())) {
 unexpected(la(),numericLiteral.length(),"expected octal digit");
 }
 }
-break NUMBER_PROCESSING;
 }
+ else {
 while (Numbers.isDigit(la())) {
 numericLiteral.append(consume());
 }
@@ -587,6 +586,9 @@ numericLiteral.append(consume());
 }
 if ((c=la()) == 'e' || c == 'E') {
 numericLiteral.append(consume());
+if (la() == '+' || la() == '-') {
+numericLiteral.append(consume());
+}
 if (Numbers.isDigit(la())) {
 while (Numbers.isDigit(la())) {
 numericLiteral.append(consume());
@@ -597,11 +599,10 @@ unexpected(la(),numericLiteral.length(),"expected exponent");
 }
 }
 }
+}
 if (Numbers.isNumericTypeSpecifier(la(),isDecimal)) {
 numericLiteral.append(consume());
 }
-}
- while (false);
 if (Character.isJavaIdentifierPart(c=la())) {
 unexpected(c,numericLiteral.length(),"expected end of numeric literal");
 }

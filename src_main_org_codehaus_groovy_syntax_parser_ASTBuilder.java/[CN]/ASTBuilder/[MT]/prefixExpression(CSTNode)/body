@@ -1,19 +1,24 @@
 {
   Expression expression=null;
-  Expression body=expression(reduction.get(1));
+  CSTNode body=reduction.get(1);
   int type=reduction.getMeaning();
 switch (type) {
 case Types.PREFIX_MINUS:
-    expression=new NegationExpression(body);
+    if (body.size() == 1 && body.isA(Types.NUMBER)) {
+      expression=numericExpression(body,true);
+    }
+ else {
+      expression=new NegationExpression(expression(body));
+    }
   break;
 case Types.PREFIX_PLUS:
-expression=body;
+expression=expression(body);
 break;
 case Types.NOT:
-expression=new NotExpression(body);
+expression=new NotExpression(expression(body));
 break;
 default :
-expression=new PrefixExpression(reduction.getRoot(),body);
+expression=new PrefixExpression(reduction.getRoot(),expression(body));
 break;
 }
 return expression;

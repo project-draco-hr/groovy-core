@@ -1,22 +1,25 @@
 {
-  if (text.charAt(0) == '.') {
-    text="0" + text;
-  }
-  char type='x';
   int length=text.length();
+  char type='x';
   if (isNumericTypeSpecifier(text.charAt(length - 1),true)) {
     type=Character.toLowerCase(text.charAt(length - 1));
-    text=text.substring(0,length);
+    text=text.substring(0,length - 1);
     length-=1;
   }
   BigDecimal value=new BigDecimal(text);
 switch (type) {
 case 'f':
-    return new Float(value.floatValue());
+    if (value.compareTo(MAX_FLOAT) <= 0 && value.compareTo(MIN_FLOAT) >= 0) {
+      return new Float(text);
+    }
+  throw new NumberFormatException("out of range");
 case 'd':
-  return new Double(value.doubleValue());
-case 'g':
-return value;
+if (value.compareTo(MAX_DOUBLE) <= 0 && value.compareTo(MIN_DOUBLE) >= 0) {
+  return new Double(text);
 }
-return value;
+throw new NumberFormatException("out of range");
+case 'g':
+default :
+return new BigDecimal(text);
+}
 }
