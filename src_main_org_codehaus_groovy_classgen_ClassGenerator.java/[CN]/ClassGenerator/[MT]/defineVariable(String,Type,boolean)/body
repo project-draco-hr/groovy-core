@@ -1,8 +1,8 @@
 {
   Variable answer=(Variable)variableStack.get(name);
   if (answer == null) {
-    idx=getNextVariableID();
-    answer=new Variable(idx,type,name);
+    lastVariableIndex=getNextVariableID();
+    answer=new Variable(lastVariableIndex,type,name);
     if (mutableVars.contains(name)) {
       answer.setHolder(true);
     }
@@ -12,9 +12,9 @@
         if (answer.isHolder()) {
           cv.visitTypeInsn(NEW,"groovy/lang/Reference");
           cv.visitInsn(DUP);
-          cv.visitVarInsn(ALOAD,idx);
+          cv.visitVarInsn(ALOAD,lastVariableIndex);
           cv.visitMethodInsn(INVOKESPECIAL,"groovy/lang/Reference","<init>","(Ljava/lang/Object;)V");
-          cv.visitVarInsn(ASTORE,idx);
+          cv.visitVarInsn(ASTORE,lastVariableIndex);
         }
       }
  else {
@@ -22,12 +22,12 @@
           cv.visitTypeInsn(NEW,"groovy/lang/Reference");
           cv.visitInsn(DUP);
           cv.visitMethodInsn(INVOKESPECIAL,"groovy/lang/Reference","<init>","()V");
-          cv.visitVarInsn(ASTORE,idx);
+          cv.visitVarInsn(ASTORE,lastVariableIndex);
         }
  else {
           if (!leftHandExpression) {
             cv.visitInsn(ACONST_NULL);
-            cv.visitVarInsn(ASTORE,idx);
+            cv.visitVarInsn(ASTORE,lastVariableIndex);
           }
         }
       }

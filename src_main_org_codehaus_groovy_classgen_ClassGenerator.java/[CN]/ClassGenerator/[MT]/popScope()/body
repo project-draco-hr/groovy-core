@@ -1,3 +1,16 @@
 {
+  int lastID=scope.getLastVariableIndex();
+  List removeKeys=new ArrayList();
+  for (Iterator iter=variableStack.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String name=(String)entry.getKey();
+    Variable value=(Variable)entry.getValue();
+    if (value.getIndex() >= lastID) {
+      removeKeys.add(name);
+    }
+  }
+  for (Iterator iter=removeKeys.iterator(); iter.hasNext(); ) {
+    variableStack.remove(iter.next());
+  }
   scope=scope.getParent();
 }
