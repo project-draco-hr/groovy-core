@@ -1,6 +1,6 @@
 {
   CSTNode parameterDeclarationList=new CSTNode();
-  while (lt() == Token.IDENTIFIER || lt() == Token.KEYWORD_BOOLEAN || lt() == Token.KEYWORD_BYTE || lt() == Token.KEYWORD_CHAR || lt() == Token.KEYWORD_DOUBLE || lt() == Token.KEYWORD_FLOAT || lt() == Token.KEYWORD_INT || lt() == Token.KEYWORD_LONG || lt() == Token.KEYWORD_SHORT) {
+  while (lt() == Token.IDENTIFIER || isIdentifierOrPrimtiveTypeKeyword(lt())) {
     parameterDeclarationList.addChild(parameterDeclaration());
     if (lt() == Token.COMMA) {
       consume(Token.COMMA);

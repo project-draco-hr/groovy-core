@@ -1,0 +1,12 @@
+{
+  ModuleNode module=parse("class Foo { void testMethod() { ['x':{a}, 'd':123] } }","Dummy.groovy");
+  BlockStatement statement=getCode(module,"testMethod");
+  assertEquals("Statements size: " + statement.getStatements(),1,statement.getStatements().size());
+  System.out.println(statement.getStatements());
+  ExpressionStatement exprStmt=(ExpressionStatement)statement.getStatements().get(0);
+  MapExpression mapExp=(MapExpression)exprStmt.getExpression();
+  MapEntryExpression entryExp=(MapEntryExpression)mapExp.getMapEntryExpressions().get(0);
+  ClosureExpression closureExp=(ClosureExpression)entryExp.getValueExpression();
+  assertEquals("Parameters on closure",0,closureExp.getParameters().length);
+  System.out.println("expr: " + closureExp);
+}

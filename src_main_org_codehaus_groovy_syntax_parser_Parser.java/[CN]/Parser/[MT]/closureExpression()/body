@@ -1,18 +1,30 @@
 {
   CSTNode expr=rootNode(Token.LEFT_CURLY_BRACE);
   boolean pipeRequired=false;
-  if (lt(1) == Token.KEYWORD_BOOLEAN || lt(1) == Token.KEYWORD_BYTE || lt(1) == Token.KEYWORD_CHAR || lt(1) == Token.KEYWORD_DOUBLE || lt(1) == Token.KEYWORD_FLOAT || lt(1) == Token.KEYWORD_INT || lt(1) == Token.KEYWORD_LONG || lt(1) == Token.KEYWORD_SHORT || lt(2) == Token.PIPE || lt(2) == Token.COMMA || lt(3) == Token.PIPE || lt(3) == Token.COMMA) {
+  int value=lt(1);
+  boolean canBeParamList=false;
+  if (isIdentifierOrPrimtiveTypeKeyword(lt())) {
+    if (isIdentifierOrPrimtiveTypeKeyword(lt(2))) {
+      canBeParamList=lt(3) == Token.PIPE || lt(3) == Token.COMMA;
+    }
+ else {
+      canBeParamList=lt(2) == Token.PIPE || lt(2) == Token.COMMA;
+    }
+  }
+  if (canBeParamList) {
     expr.addChild(parameterDeclarationList());
     pipeRequired=true;
   }
  else {
     expr.addChild(new CSTNode());
   }
-  if (pipeRequired || lt() == Token.PIPE) {
-    consume(Token.PIPE);
-  }
   CSTNode block=new CSTNode();
-  statementsUntilRightCurly(block);
+  if (lt_bare() != Token.RIGHT_CURLY_BRACE) {
+    if (pipeRequired || lt() == Token.PIPE) {
+      consume(Token.PIPE);
+    }
+    statementsUntilRightCurly(block);
+  }
   consume(Token.RIGHT_CURLY_BRACE);
   expr.addChild(block);
   return expr;
