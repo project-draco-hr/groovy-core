@@ -3,7 +3,7 @@
   System.out.println("");
   boolean complete=false;
   boolean done=false;
-  while (!complete && !done) {
+  while (!done) {
     System.out.print(line + "> ");
     try {
       pending=reader.readLine();
@@ -28,6 +28,14 @@ displayStatement();
 break;
 case COMMAND_ID_EXPLAIN:
 explainStatement();
+break;
+case COMMAND_ID_EXECUTE:
+if (complete) {
+done=true;
+}
+ else {
+System.err.println("statement not complete");
+}
 break;
 }
 continue;
