@@ -179,6 +179,10 @@ if ((LA(1) == '>') && (LA(2) == '>') && (LA(3) == '>')&& (LA(4) == '=')) {
 mBSR_ASSIGN(true);
 theRetToken=_returnToken;
 }
+ else if ((LA(1) == '/') && (LA(2) == '*') && ((LA(3) >= '\u0003' && LA(3) <= '\uffff'))&& ((LA(4) >= '\u0003' && LA(4) <= '\uffff'))) {
+mML_COMMENT(true);
+theRetToken=_returnToken;
+}
  else if ((LA(1) == '<') && (LA(2) == '=') && (LA(3) == '>')) {
 mCOMPARE_TO(true);
 theRetToken=_returnToken;
@@ -215,7 +219,7 @@ theRetToken=_returnToken;
 mNOT_EQUAL(true);
 theRetToken=_returnToken;
 }
- else if ((LA(1) == '/') && (LA(2) == '=')) {
+ else if ((LA(1) == '/') && (LA(2) == '=') && (true)&& (true)) {
 mDIV_ASSIGN(true);
 theRetToken=_returnToken;
 }
@@ -299,14 +303,6 @@ theRetToken=_returnToken;
 mSTAR_STAR(true);
 theRetToken=_returnToken;
 }
- else if ((LA(1) == '/') && (LA(2) == '/')) {
-mSL_COMMENT(true);
-theRetToken=_returnToken;
-}
- else if ((LA(1) == '/') && (LA(2) == '*')) {
-mML_COMMENT(true);
-theRetToken=_returnToken;
-}
  else if ((LA(1) == '?') && (true)) {
 mQUESTION(true);
 theRetToken=_returnToken;
@@ -323,7 +319,7 @@ theRetToken=_returnToken;
 mLNOT(true);
 theRetToken=_returnToken;
 }
- else if ((LA(1) == '/') && (true)) {
+ else if ((LA(1) == '/') && (true) && (true)&& (true)) {
 mDIV(true);
 theRetToken=_returnToken;
 }
@@ -361,6 +357,10 @@ theRetToken=_returnToken;
 }
  else if ((LA(1) == '&') && (true)) {
 mBAND(true);
+theRetToken=_returnToken;
+}
+ else if ((LA(1) == '#' || LA(1) == '/') && (true) && (true)&& (true)) {
+mSL_COMMENT(true);
 theRetToken=_returnToken;
 }
  else {
