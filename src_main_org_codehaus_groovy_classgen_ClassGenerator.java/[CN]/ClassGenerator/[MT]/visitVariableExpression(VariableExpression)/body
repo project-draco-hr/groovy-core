@@ -8,10 +8,12 @@
     visitClassExpression(new ClassExpression(classNode.getSuperClass()));
     return;
   }
-  String className=classNode.getClassNameForExpression(variableName);
-  if (className != null) {
-    visitClassExpression(new ClassExpression(className));
-    return;
+  if (!variableName.equals("this")) {
+    String className=resolveClassName(variableName);
+    if (className != null) {
+      visitClassExpression(new ClassExpression(className));
+      return;
+    }
   }
   FieldNode field=classNode.getField(variableName);
   if (field != null && variableStack.get(variableName) == null) {
