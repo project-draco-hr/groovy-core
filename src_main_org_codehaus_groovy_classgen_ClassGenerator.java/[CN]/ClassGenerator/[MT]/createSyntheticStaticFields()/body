@@ -1,10 +1,10 @@
 {
   for (Iterator iter=syntheticStaticFields.iterator(); iter.hasNext(); ) {
     String staticFieldName=(String)iter.next();
-    cw.visitField(ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null);
+    cw.visitField(ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null,null);
   }
   if (!syntheticStaticFields.isEmpty()) {
-    cv=cw.visitMethod(ACC_STATIC + ACC_SYNTHETIC,"class$","(Ljava/lang/String;)Ljava/lang/Class;",null);
+    cv=cw.visitMethod(ACC_STATIC + ACC_SYNTHETIC,"class$","(Ljava/lang/String;)Ljava/lang/Class;",null,null);
     Label l0=new Label();
     cv.visitLabel(l0);
     cv.visitVarInsn(ALOAD,0);
