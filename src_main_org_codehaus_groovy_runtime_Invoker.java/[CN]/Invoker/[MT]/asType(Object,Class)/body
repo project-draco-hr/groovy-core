@@ -118,5 +118,20 @@
   if (type == Boolean.class) {
     return asBool(object) ? Boolean.TRUE : Boolean.FALSE;
   }
+  Object[] args=null;
+  if (object instanceof Collection) {
+    Collection list=(Collection)object;
+    args=list.toArray();
+  }
+ else   if (object instanceof Object[]) {
+    args=(Object[])object;
+  }
+  if (args != null) {
+    try {
+      return invokeConstructorOf(type,args);
+    }
+ catch (    Exception e) {
+    }
+  }
   return object;
 }
