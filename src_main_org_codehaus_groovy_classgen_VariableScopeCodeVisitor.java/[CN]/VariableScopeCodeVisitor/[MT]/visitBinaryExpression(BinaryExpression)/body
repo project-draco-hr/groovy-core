@@ -1,0 +1,11 @@
+{
+  Expression leftExpression=expression.getLeftExpression();
+  if (expression.getOperation().getType() == Token.EQUAL && leftExpression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)leftExpression;
+    declaredVariables.add(varExp.getVariable());
+  }
+ else {
+    leftExpression.visit(this);
+  }
+  expression.getRightExpression().visit(this);
+}

@@ -3,10 +3,22 @@
   ClassWriter classWriter=new ClassWriter(true);
   ClassGenerator generator=new ClassGenerator(context,classWriter,classLoader,file);
   generator.visitClass(classNode);
-  onClass(classWriter,classNode);
+  if (DEBUGGING) {
+    try {
+      onClass(classWriter,classNode);
+    }
+ catch (    Throwable t) {
+      System.out.println("Caught: " + t);
+      t.printStackTrace();
+    }
+  }
+ else {
+    onClass(classWriter,classNode);
+  }
   LinkedList innerClasses=new LinkedList(generator.getInnerClasses());
   generator.getInnerClasses().clear();
   while (!innerClasses.isEmpty()) {
-    generateClass(context,(ClassNode)innerClasses.removeFirst(),file);
+    ClassNode innerNode=(ClassNode)innerClasses.removeFirst();
+    generateClass(context,innerNode,file);
   }
 }

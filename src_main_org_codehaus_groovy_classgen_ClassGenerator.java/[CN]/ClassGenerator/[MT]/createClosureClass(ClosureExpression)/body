@@ -12,6 +12,7 @@
   if (parameters == null || parameters.length == 0) {
     parameters=new Parameter[]{new Parameter("it")};
   }
+  Parameter[] localVariableParams=getClosureSharedVariables(expression);
   InnerClassNode answer=new InnerClassNode(owner,name,ACC_PUBLIC,"groovy.lang.Closure");
   answer.addMethod("doCall",ACC_PUBLIC,"java.lang.Object",parameters,expression.getCode());
   if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && !parameters[0].getType().equals("java.lang.Object"))) {
@@ -19,9 +20,18 @@
   }
   FieldNode field=answer.addField("owner",ACC_PRIVATE,outerClassName,null);
   BlockStatement block=new BlockStatement();
-  block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("outerInstance"))));
-  block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.equal(-1,-1),new VariableExpression("outerInstance"))));
-  Parameter[] contructorParams=new Parameter[]{new Parameter(outerClassName,"outerInstance"),new Parameter("java.lang.Object","delegate")};
-  answer.addConstructor(ACC_PUBLIC,contructorParams,block);
+  block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("_outerInstance"))));
+  block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.equal(-1,-1),new VariableExpression("_outerInstance"))));
+  for (int i=0; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    String paramName=param.getName();
+    FieldNode paramField=answer.addField(paramName,ACC_PRIVATE,param.getType(),null);
+    block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(paramField),Token.equal(-1,-1),new VariableExpression(paramName))));
+  }
+  Parameter[] params=new Parameter[2 + localVariableParams.length];
+  params[0]=new Parameter(outerClassName,"_outerInstance");
+  params[1]=new Parameter("java.lang.Object","_delegate");
+  System.arraycopy(localVariableParams,0,params,2,localVariableParams.length);
+  answer.addConstructor(ACC_PUBLIC,params,block);
   return answer;
 }

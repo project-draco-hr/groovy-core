@@ -1,0 +1,26 @@
+{
+  VariableScopeCodeVisitor outerVisitor=new VariableScopeCodeVisitor();
+  VariableScopeCodeVisitor innerVisitor=new VariableScopeCodeVisitor();
+  methodNode.getCode().visit(outerVisitor);
+  expression.getCode().visit(innerVisitor);
+  Set outerDecls=outerVisitor.getDeclaredVariables();
+  Set outerRefs=outerVisitor.getReferencedVariables();
+  Set innerDecls=innerVisitor.getDeclaredVariables();
+  Set innerRefs=innerVisitor.getReferencedVariables();
+  Set parameters=new HashSet();
+  Parameter[] params=expression.getParameters();
+  for (int i=0; i < params.length; i++) {
+    parameters.add(params[i].getName());
+  }
+  List vars=new ArrayList();
+  for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
+    String var=(String)iter.next();
+    if (outerDecls.contains(var) && !parameters.contains(var) && classNode.getField(var) == null) {
+      String type=getVariableType(var);
+      vars.add(new Parameter(type,var));
+    }
+  }
+  Parameter[] answer=new Parameter[vars.size()];
+  vars.toArray(answer);
+  return answer;
+}

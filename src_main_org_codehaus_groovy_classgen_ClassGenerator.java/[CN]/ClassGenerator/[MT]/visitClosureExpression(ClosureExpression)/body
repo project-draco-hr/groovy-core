@@ -34,5 +34,12 @@
       cv.visitVarInsn(ALOAD,0);
     }
   }
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","(L" + getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;)V");
+  String prototype="(L" + getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
+  Parameter[] localVariableParams=getClosureSharedVariables(expression);
+  for (int i=0; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    visitVariableExpression(new VariableExpression(param.getName()));
+    prototype=prototype + "L" + getClassInternalName(param.getType())+ ";";
+  }
+  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",prototype + ")V");
 }
