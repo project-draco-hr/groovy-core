@@ -2,6 +2,13 @@
   Expression leftExpression=expression.getLeftExpression();
   leftHandExpression=false;
   leftExpression.visit(this);
-  expression.getRightExpression().visit(this);
+  if (isComparisonExpression(leftExpression)) {
+    helper.boxBoolean();
+  }
+  Expression rightExpression=expression.getRightExpression();
+  rightExpression.visit(this);
+  if (isComparisonExpression(rightExpression)) {
+    helper.boxBoolean();
+  }
   compareToMethod.call(cv);
 }
