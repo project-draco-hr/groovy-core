@@ -1,0 +1,19 @@
+{
+  if (inName == null || inName == "") {
+    return "_";
+  }
+  StringBuffer output=new StringBuffer(inName.length());
+  boolean firstChar=true;
+  for (int i=0; i < inName.length(); ++i) {
+    char ch=inName.charAt(i);
+    if (firstChar && !Character.isJavaIdentifierStart(ch)) {
+      ch='_';
+    }
+ else     if (!firstChar && !(Character.isJavaIdentifierPart(ch) || ch == '.')) {
+      ch='_';
+    }
+    firstChar=(ch == '.');
+    output.append(ch);
+  }
+  return output.toString();
+}
