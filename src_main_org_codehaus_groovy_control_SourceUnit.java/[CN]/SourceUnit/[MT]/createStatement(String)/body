@@ -1,8 +1,12 @@
 {
   ModuleNode module=createModule(code);
   BlockStatement block=module.getStatementBlock();
-  if (block == null)   throw new RuntimeException("no proper statement block is created.");
+  if (block == null) {
+    throw new RuntimeException("no proper statement block is created.");
+  }
   List stats=block.getStatements();
-  if (stats == null || stats.size() != 1)   throw new RuntimeException("no proper statement node is created.");
+  if (stats == null || stats.size() != 1) {
+    throw new RuntimeException("no proper statement node is created.");
+  }
   return (Statement)stats.get(0);
 }
