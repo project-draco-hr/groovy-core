@@ -1,0 +1,22 @@
+{
+  Map attributes=new HashMap();
+  attributes.put("a","xyz");
+  List children=new ArrayList();
+  children.add("someText");
+  Node node1=new Node(null,"person","James");
+  children.add(node1);
+  children.add("moreText");
+  Node node2=new Node(null,"person","Bob");
+  children.add(node2);
+  children.add("moreText");
+  Node attribute=new Node(null,"foo",attributes,children);
+  assertEquals("name","foo",attribute.name());
+  assertEquals("attributes",1,attribute.attributes().size());
+  assertEquals("value",5,attribute.children().size());
+  assertEquals("text","someTextmoreTextmoreText",attribute.text());
+  List list=(List)attribute.get("person");
+  assertEquals("Expected list size: " + list,2,list.size());
+  assertEquals("Node1",node1,list.get(0));
+  assertEquals("Node2",node2,list.get(1));
+  dump(attribute);
+}
