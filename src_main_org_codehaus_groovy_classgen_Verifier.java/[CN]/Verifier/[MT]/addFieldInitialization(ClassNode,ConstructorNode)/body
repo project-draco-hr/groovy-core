@@ -6,8 +6,8 @@
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
     List otherStatements=new ArrayList();
-    if (code instanceof StatementBlock) {
-      StatementBlock block=(StatementBlock)code;
+    if (code instanceof BlockStatement) {
+      BlockStatement block=(BlockStatement)code;
       otherStatements.addAll(block.getStatements());
     }
  else     if (code != null) {
@@ -21,6 +21,6 @@
       }
       statements.addAll(otherStatements);
     }
-    constructorNode.setCode(new StatementBlock(statements));
+    constructorNode.setCode(new BlockStatement(statements));
   }
 }

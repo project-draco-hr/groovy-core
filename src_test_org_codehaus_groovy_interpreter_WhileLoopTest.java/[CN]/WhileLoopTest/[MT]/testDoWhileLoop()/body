@@ -1,7 +1,7 @@
 {
   Statement statement=new ExpressionStatement(new MethodCallExpression(new VariableExpression("bean"),"foo",new VariableExpression("x")));
   BooleanExpression expression=new BooleanExpression(new MethodCallExpression(new VariableExpression("counter"),"isCounting",ConstantExpression.NULL));
-  DoWhileLoop loop=new DoWhileLoop(expression,statement);
+  DoWhileStatement loop=new DoWhileStatement(expression,statement);
   loop.visit(visitor);
   assertEquals("invocations count","AAAAAA",bean.getBuffer());
 }

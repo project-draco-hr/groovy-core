@@ -1,11 +1,11 @@
 {
   ClassNode classNode=new ClassNode("Foo",ACC_PUBLIC,"java.lang.Object");
   classNode.addConstructor(new ConstructorNode(ACC_PUBLIC,null));
-  classNode.addProperty(new PropertyNode("bar",ACC_PUBLIC,"java.lang.String",null,null,null));
+  classNode.addProperty(new PropertyNode("bar",ACC_PUBLIC,"java.lang.String","Foo",null,null,null));
   Statement loopStatement=createPrintlnStatement(new VariableExpression("i"));
-  StatementBlock block=new StatementBlock();
+  BlockStatement block=new BlockStatement();
   block.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("list"),Token.newToken(Token.EQUAL,0,0),listExpression)));
-  block.addStatement(new ForLoop("i",new VariableExpression("list"),loopStatement));
+  block.addStatement(new ForStatement("i",new VariableExpression("list"),loopStatement));
   classNode.addMethod(new MethodNode(methodName,ACC_PUBLIC,"void",Parameter.EMPTY_ARRAY,block));
   Class fooClass=loadClass(classNode);
   assertTrue("Loaded a new class",fooClass != null);

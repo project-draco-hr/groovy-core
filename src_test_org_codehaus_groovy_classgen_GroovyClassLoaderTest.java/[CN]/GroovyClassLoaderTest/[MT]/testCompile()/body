@@ -3,11 +3,7 @@
   System.out.println("Invoking main...");
   GroovyObject object=(GroovyObject)groovyClass.newInstance();
   assertTrue(object != null);
-  Field field=object.getClass().getDeclaredField("metaClass");
-  assertTrue("Found metaclass field",field != null);
-  Object metaClassObject=field.get(object);
-  assertTrue("Found metaclass",metaClassObject != null && metaClassObject instanceof MetaClass);
-  MetaClass metaClass=(MetaClass)metaClassObject;
+  MetaClass metaClass=object.getMetaClass();
   System.out.println("Metaclass: " + metaClass);
   Class type=object.getClass();
   System.out.println("Type: " + type);
