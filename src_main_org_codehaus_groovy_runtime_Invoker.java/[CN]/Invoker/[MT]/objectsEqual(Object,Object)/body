@@ -3,18 +3,14 @@
     return true;
   }
   if (left != null) {
+    if (right == null) {
+      return false;
+    }
+    if (left instanceof Number) {
+      return DefaultGroovyMethods.compareTo((Number)left,asNumber(right)) == 0;
+    }
     if (left.equals(right)) {
       return true;
-    }
-    if (left instanceof Number && right instanceof Number) {
-      Number leftNumber=(Number)left;
-      Number rightNumber=(Number)right;
-      if (leftNumber.byteValue() != rightNumber.byteValue() || leftNumber.intValue() != rightNumber.intValue() || leftNumber.shortValue() != rightNumber.shortValue() || leftNumber.longValue() != rightNumber.longValue() || leftNumber.floatValue() != rightNumber.floatValue() || leftNumber.doubleValue() != rightNumber.doubleValue()) {
-        return false;
-      }
- else {
-        return true;
-      }
     }
   }
   return false;
