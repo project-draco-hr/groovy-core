@@ -1,7 +1,11 @@
 {
   VariableScopeCodeVisitor outerVisitor=new VariableScopeCodeVisitor();
   VariableScopeCodeVisitor innerVisitor=new VariableScopeCodeVisitor();
-  methodNode.getCode().visit(outerVisitor);
+  if (methodNode != null) {
+    methodNode.getCode().visit(outerVisitor);
+  }
+ else {
+  }
   expression.getCode().visit(innerVisitor);
   Set outerDecls=outerVisitor.getDeclaredVariables();
   Set outerRefs=outerVisitor.getReferencedVariables();
