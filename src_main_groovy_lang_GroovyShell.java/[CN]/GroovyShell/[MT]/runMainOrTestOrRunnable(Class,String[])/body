@@ -3,6 +3,7 @@
     InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
   }
  catch (  MissingMethodException e) {
+    if (!"main".equals(e.getMethod()))     throw e;
     if (isUnitTestCase(scriptClass)) {
       runTest(scriptClass);
     }
