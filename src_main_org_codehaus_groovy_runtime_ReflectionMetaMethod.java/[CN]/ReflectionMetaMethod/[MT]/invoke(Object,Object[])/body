@@ -1,10 +1,13 @@
 {
-  AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
-      method.setAccessible(true);
-      return null;
+  if (!alreadySetAccessible) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
     }
-  }
 );
+    alreadySetAccessible=true;
+  }
   return method.invoke(object,arguments);
 }
