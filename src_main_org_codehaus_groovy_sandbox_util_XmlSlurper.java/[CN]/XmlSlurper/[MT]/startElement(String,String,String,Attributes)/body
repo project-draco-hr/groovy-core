@@ -1,0 +1,16 @@
+{
+  addNonWhitespaceCdata();
+  final Map attributes=new HashMap();
+  for (int i=atts.getLength() - 1; i != -1; i--) {
+    if (atts.getURI(i).length() == 0) {
+      attributes.put(atts.getQName(i),atts.getValue(i));
+    }
+ else {
+      attributes.put(atts.getLocalName(i),atts.getValue(i));
+    }
+  }
+  final List newBody=new LinkedList();
+  newBody.add(attributes);
+  newBody.add(this.body);
+  this.body=newBody;
+}

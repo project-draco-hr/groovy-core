@@ -1,0 +1,31 @@
+{
+  return new ElementIterator(this.parents,this.nextParentElements){
+    protected void findNextChild(){
+      this.nextParentElements[0]=this.parents[0].getNextXmlElement(ComplexElementCollection.this.parentElementNames[0],this.nextParentElements[0]);
+      while (this.nextParentElements[0] == -1) {
+        this.parents[0]=findNextParent(1);
+        if (this.parents[0] == null) {
+          return;
+        }
+ else {
+          this.nextParentElements[0]=this.parents[0].getNextXmlElement(ComplexElementCollection.this.parentElementNames[0],-1);
+        }
+      }
+    }
+    private XmlList findNextParent(    final int i){
+      if (i == this.nextParentElements.length)       return null;
+      this.nextParentElements[i]=this.parents[i].getNextXmlElement(ComplexElementCollection.this.parentElementNames[i],this.nextParentElements[i]);
+      while (this.nextParentElements[i] == -1) {
+        this.parents[i]=findNextParent(i + 1);
+        if (this.parents[i] == null) {
+          return null;
+        }
+ else {
+          this.nextParentElements[i]=this.parents[i].getNextXmlElement(ComplexElementCollection.this.parentElementNames[i],-1);
+        }
+      }
+      return (XmlList)this.parents[i].children[this.nextParentElements[i]];
+    }
+  }
+;
+}

@@ -1,0 +1,12 @@
+{
+  addNonWhitespaceCdata();
+  final List children=this.body;
+  final Map attributes=(Map)this.body.remove(0);
+  this.body=(List)this.body.remove(0);
+  if (namespaceURI.length() == 0) {
+    this.body.add(new XmlList(qName,attributes,children,namespaceURI));
+  }
+ else {
+    this.body.add(new XmlList(localName,attributes,children,namespaceURI));
+  }
+}
