@@ -11,14 +11,34 @@
     String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
     cv.visitTypeInsn(NEW,className);
     cv.visitInsn(DUP);
-    String methodType="(I)V";
+    String methodType;
     if (n instanceof Double) {
+      cv.visitLdcInsn(n);
       methodType="(D)V";
     }
  else     if (n instanceof Float) {
+      cv.visitLdcInsn(n);
       methodType="(F)V";
     }
-    cv.visitLdcInsn(n);
+ else     if (value instanceof Long) {
+      cv.visitLdcInsn(n);
+      methodType="(J)V";
+    }
+ else     if (value instanceof BigDecimal) {
+      cv.visitLdcInsn(n.toString());
+      methodType="(Ljava/lang/String;)V";
+    }
+ else     if (value instanceof BigInteger) {
+      cv.visitLdcInsn(n.toString());
+      methodType="(Ljava/lang/String;)V";
+    }
+ else     if (value instanceof Integer) {
+      cv.visitLdcInsn(n);
+      methodType="(I)V";
+    }
+ else {
+      throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ value.getClass().getName()+ ".  Numeric constant type not supported.");
+    }
     cv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
   }
  else   if (value instanceof Boolean) {
