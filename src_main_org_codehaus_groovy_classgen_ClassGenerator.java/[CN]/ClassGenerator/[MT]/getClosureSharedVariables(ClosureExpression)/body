@@ -10,6 +10,7 @@
  else {
     }
     expression.getCode().visit(innerVisitor);
+    addFieldsToVisitor(outerVisitor);
     Set outerDecls=outerVisitor.getDeclaredVariables();
     outerDecls.addAll(outerVisitor.getParameterSet());
     Set outerRefs=outerVisitor.getReferencedVariables();
@@ -18,7 +19,7 @@
     Set varSet=new HashSet();
     for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
       String var=(String)iter.next();
-      if (outerDecls.contains(var) && classNode.getField(var) == null) {
+      if (outerDecls.contains(var) && (classNode.getField(var) == null || isInnerClass())) {
         String type=getVariableType(var);
         vars.add(new Parameter(type,var));
         varSet.add(var);
@@ -26,7 +27,7 @@
     }
     for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
       String var=(String)iter.next();
-      if (innerDecls.contains(var) && classNode.getField(var) == null && !varSet.contains(var)) {
+      if (innerDecls.contains(var) && (classNode.getField(var) == null || isInnerClass()) && !varSet.contains(var)) {
         String type=getVariableType(var);
         vars.add(new Parameter(type,var));
       }

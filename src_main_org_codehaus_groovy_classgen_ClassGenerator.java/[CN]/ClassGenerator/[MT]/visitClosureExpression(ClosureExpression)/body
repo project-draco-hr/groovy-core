@@ -12,7 +12,7 @@
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    if (variableStack.get(name) == null) {
+    if (variableStack.get(name) == null && classNode.getField(name) == null) {
       defineVariable(name,"java.lang.Object");
     }
   }
@@ -47,7 +47,12 @@
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    visitVariableExpression(new VariableExpression(name));
+    if (variableStack.get(name) == null) {
+      visitFieldExpression(new FieldExpression(classNode.getField(name)));
+    }
+ else {
+      visitVariableExpression(new VariableExpression(name));
+    }
     prototype=prototype + "L" + helper.getClassInternalName(param.getType())+ ";";
   }
   passingClosureParams=false;

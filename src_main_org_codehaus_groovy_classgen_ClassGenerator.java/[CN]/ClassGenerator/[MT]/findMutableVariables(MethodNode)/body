@@ -1,6 +1,7 @@
 {
   VariableScopeCodeVisitor outerVisitor=new VariableScopeCodeVisitor(true);
   node.getCode().visit(outerVisitor);
+  addFieldsToVisitor(outerVisitor);
   VariableScopeCodeVisitor innerVisitor=outerVisitor.getClosureVisitor();
   Set outerDecls=outerVisitor.getDeclaredVariables();
   Set outerRefs=outerVisitor.getReferencedVariables();
