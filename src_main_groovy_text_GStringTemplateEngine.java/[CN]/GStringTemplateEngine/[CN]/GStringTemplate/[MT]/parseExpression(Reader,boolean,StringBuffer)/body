@@ -1,6 +1,8 @@
 {
-  templateGString.append("${$var" + varNumber).append("}");
-  templateExpressions.append("$var" + varNumber).append(" = (");
+  if (!writingString) {
+    templateExpressions.append("out << \"");
+  }
+  templateExpressions.append("${");
   while (true) {
     int c=reader.read();
     if (c == -1)     break;
@@ -10,5 +12,5 @@
     }
     templateExpressions.append((char)c);
   }
-  templateExpressions.append("); ");
+  templateExpressions.append('}');
 }

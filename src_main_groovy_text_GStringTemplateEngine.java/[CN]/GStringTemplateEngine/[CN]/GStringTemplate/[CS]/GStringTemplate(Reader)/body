@@ -1,45 +1,40 @@
 {
-  final StringBuffer templateExpressions=new StringBuffer("class C { getTemplate() { { |out| ");
-  final StringBuffer templateGString=new StringBuffer("out << \"");
-  int varNumber=1;
+  final StringBuffer templateExpressions=new StringBuffer("class C { getTemplate() { { |out| out << \"");
+  boolean writingString=true;
   while (true) {
     int c=reader.read();
+    if (c == -1)     break;
     if (c == '<') {
       c=reader.read();
       if (c == '%') {
         c=reader.read();
         if (c == '=') {
-          parseExpression(reader,varNumber++,templateExpressions,templateGString);
+          parseExpression(reader,writingString,templateExpressions);
+          writingString=true;
           continue;
         }
  else {
-          parseSection(reader,templateExpressions);
+          parseSection(reader,writingString,templateExpressions);
+          writingString=false;
           continue;
         }
       }
  else {
-        templateGString.append('<');
+        appendCharacter('<',templateExpressions,writingString);
+        writingString=true;
       }
     }
- else     if (c == '$') {
-      c=reader.read();
-      if (c == '{') {
-        parseGStringEpression(reader,varNumber++,templateExpressions,templateGString);
-        continue;
-      }
- else {
-        templateGString.append('$');
-      }
+ else     if (c == '"') {
+      appendCharacter('\\',templateExpressions,writingString);
+      writingString=true;
     }
-    if (c == '"') {
-      templateGString.append('\\');
-    }
-    if (c == -1) {
-      break;
-    }
-    templateGString.append((char)c);
+    appendCharacter((char)c,templateExpressions,writingString);
+    writingString=true;
   }
-  templateExpressions.append(templateGString).append("\"}.asWritable()}}");
+  if (writingString) {
+    templateExpressions.append("\"");
+  }
+  templateExpressions.append("}.asWritable()}}");
   final ClassLoader parentLoader=getClass().getClassLoader();
   final GroovyClassLoader loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
