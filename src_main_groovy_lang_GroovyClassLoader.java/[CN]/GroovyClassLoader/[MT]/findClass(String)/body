@@ -1,0 +1,49 @@
+{
+  String filename=name.replace('.',File.separatorChar) + ".groovy";
+  String[] paths=getClassPath();
+  for (int i=0; i < paths.length; i++) {
+    String pathName=paths[i];
+    File path=new File(pathName);
+    if (path.exists()) {
+      if (path.isDirectory()) {
+        File file=new File(path,filename);
+        if (file.exists()) {
+          try {
+            return parseClass(file);
+          }
+ catch (          SyntaxException e) {
+            e.printStackTrace();
+            throw new ClassNotFoundException("Syntax error in groovy file: " + filename,e);
+          }
+catch (          IOException e) {
+            e.printStackTrace();
+            throw new ClassNotFoundException("Error reading groovy file: " + filename,e);
+          }
+        }
+      }
+ else {
+        try {
+          JarFile jarFile=new JarFile(path);
+          ZipEntry entry=jarFile.getEntry(filename);
+          if (entry != null) {
+            InputStream is=jarFile.getInputStream(entry);
+            try {
+              return parseClass(is,filename);
+            }
+ catch (            SyntaxException e1) {
+              e1.printStackTrace();
+              throw new ClassNotFoundException("Syntax error in groovy file: " + filename,e1);
+            }
+catch (            IOException e1) {
+              e1.printStackTrace();
+              throw new ClassNotFoundException("Error reading groovy file: " + filename,e1);
+            }
+          }
+        }
+ catch (        IOException e) {
+        }
+      }
+    }
+  }
+  throw new ClassNotFoundException(name);
+}
