@@ -5,4 +5,12 @@
   ExpressionStatement exprStmt=(ExpressionStatement)statement.getStatements().get(0);
   Expression exp=exprStmt.getExpression();
   assertTrue(exp instanceof BinaryExpression);
+  BinaryExpression binExpr=(BinaryExpression)exp;
+  assertTrue("RHS is constant",binExpr.getRightExpression() instanceof ConstantExpression);
+  Expression lhs=binExpr.getLeftExpression();
+  assertTrue("LHS is binary expression",lhs instanceof BinaryExpression);
+  BinaryExpression lhsBinExpr=(BinaryExpression)lhs;
+  assertEquals(Token.LEFT_SQUARE_BRACKET,lhsBinExpr.getOperation().getType());
+  assertTrue("Left of LHS is a variable",lhsBinExpr.getLeftExpression() instanceof VariableExpression);
+  assertTrue("Right of LHS is a constant",lhsBinExpr.getRightExpression() instanceof ConstantExpression);
 }
