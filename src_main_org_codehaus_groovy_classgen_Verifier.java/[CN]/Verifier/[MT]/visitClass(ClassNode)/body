@@ -3,22 +3,25 @@
   node.addInterface(GroovyObject.class.getName());
   StaticMethodCallExpression initMetaClassCall=new StaticMethodCallExpression(InvokerHelper.class.getName(),"getMetaClass",VariableExpression.THIS_EXPRESSION);
   PropertyNode metaClassProperty=node.addProperty("metaClass",ACC_PUBLIC,MetaClass.class.getName(),initMetaClassCall,null,null);
+  metaClassProperty.setSynthetic(true);
   FieldNode metaClassField=metaClassProperty.getField();
   metaClassField.setModifiers(metaClassField.getModifiers() | ACC_TRANSIENT);
   FieldExpression metaClassVar=new FieldExpression(metaClassField);
   IfStatement initMetaClassField=new IfStatement(new BooleanExpression(new BinaryExpression(metaClassVar,Token.compareEqual(-1,-1),ConstantExpression.NULL)),new ExpressionStatement(new BinaryExpression(metaClassVar,Token.equal(-1,-1),initMetaClassCall)),EmptyStatement.INSTANCE);
-  node.addMethod("getMetaClass",ACC_PUBLIC,MetaClass.class.getName(),Parameter.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(metaClassVar)}));
+  node.addSyntheticMethod("getMetaClass",ACC_PUBLIC,MetaClass.class.getName(),Parameter.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(metaClassVar)}));
   String superClass=node.getSuperClass();
   boolean addDelegateObject=(node instanceof InnerClassNode && superClass.equals(Closure.class.getName())) || superClass.equals(GString.class.getName());
   if (!addDelegateObject) {
-    node.addMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"method"),new Parameter(Object.class.getName(),"arguments")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"invokeMethod",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("method"),new VariableExpression("arguments")})))}));
+    node.addSyntheticMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"method"),new Parameter(Object.class.getName(),"arguments")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"invokeMethod",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("method"),new VariableExpression("arguments")})))}));
     if (!superClass.equals(Script.class.getName())) {
-      node.addMethod("getProperty",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"property")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"getProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property")})))}));
-      node.addMethod("setProperty",ACC_PUBLIC,"void",new Parameter[]{new Parameter(String.class.getName(),"property"),new Parameter(Object.class.getName(),"value")},new BlockStatement(new Statement[]{initMetaClassField,new ExpressionStatement(new MethodCallExpression(metaClassVar,"setProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property"),new VariableExpression("value")})))}));
+      node.addSyntheticMethod("getProperty",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"property")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"getProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property")})))}));
+      node.addSyntheticMethod("setProperty",ACC_PUBLIC,"void",new Parameter[]{new Parameter(String.class.getName(),"property"),new Parameter(Object.class.getName(),"value")},new BlockStatement(new Statement[]{initMetaClassField,new ExpressionStatement(new MethodCallExpression(metaClassVar,"setProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property"),new VariableExpression("value")})))}));
     }
   }
   if (node.getConstructors().isEmpty()) {
-    node.addConstructor(new ConstructorNode(ACC_PUBLIC,null));
+    ConstructorNode constructor=new ConstructorNode(ACC_PUBLIC,null);
+    constructor.setSynthetic(true);
+    node.addConstructor(constructor);
   }
   addFieldInitialization(node);
   node.visitContents(this);

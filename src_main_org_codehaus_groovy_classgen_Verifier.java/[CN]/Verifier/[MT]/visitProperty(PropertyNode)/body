@@ -17,12 +17,14 @@
   }
   if (getterBlock != null) {
     MethodNode getter=new MethodNode(getterName,node.getModifiers(),node.getType(),Parameter.EMPTY_ARRAY,getterBlock);
+    getter.setSynthetic(true);
     classNode.addMethod(getter);
     visitMethod(getter);
   }
   if (setterBlock != null) {
     Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};
     MethodNode setter=new MethodNode(setterName,node.getModifiers(),"void",setterParameterTypes,setterBlock);
+    setter.setSynthetic(true);
     classNode.addMethod(setter);
     visitMethod(setter);
   }
