@@ -1,0 +1,10 @@
+{
+  List methods=getStaticMethods(methodName);
+  if (!methods.isEmpty()) {
+    Method method=chooseMethod(methods,arguments,argumentList);
+    if (method != null) {
+      return doMethodInvoke(null,method,argumentList.toArray());
+    }
+  }
+  throw new InvokerException("Could not find matching method called: " + methodName);
+}

@@ -2,6 +2,10 @@
   if (object == null) {
     throw new InvokerException("Cannot get property on null object");
   }
+ else   if (object instanceof Class) {
+    Class theClass=(Class)object;
+    return metaRegistry.getMetaClass(theClass).getStaticProperty(property);
+  }
  else   if (object instanceof Map) {
     Map map=(Map)object;
     return map.get(property);

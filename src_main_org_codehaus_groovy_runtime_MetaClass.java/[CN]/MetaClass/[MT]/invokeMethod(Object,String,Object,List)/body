@@ -10,13 +10,13 @@
       return doMethodInvoke(object,method,arguments,argumentList);
     }
   }
-  List staticMethods=getStaticMethods(methodName);
+  List newStaticInstanceMethods=getNewStaticInstanceMethods(methodName);
   List staticArgumentList=new ArrayList(argumentList.size() + 1);
   staticArgumentList.add(object);
   staticArgumentList.addAll(argumentList);
-  Method method=chooseMethod(staticMethods,staticArgumentList,staticArgumentList);
+  Method method=chooseMethod(newStaticInstanceMethods,staticArgumentList,staticArgumentList);
   if (method == null) {
-    method=findStaticMethod(methodName,staticArgumentList);
+    method=findNewStaticInstanceMethod(methodName,staticArgumentList);
   }
   if (method != null) {
     return doMethodInvoke(null,method,staticArgumentList.toArray());

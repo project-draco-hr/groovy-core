@@ -3,6 +3,11 @@
     return method.invoke(object,argumentArray);
   }
  catch (  InvocationTargetException e) {
+    Throwable t=e.getTargetException();
+    if (t instanceof Error) {
+      Error error=(Error)t;
+      throw error;
+    }
     throw new InvokerInvocationException(e);
   }
 catch (  Exception e) {

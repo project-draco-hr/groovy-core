@@ -3,13 +3,13 @@
     return null;
   }
   MetaClass superClass=registry.getMetaClass(theClass.getSuperclass());
-  List list=superClass.getStaticMethods(methodName);
+  List list=superClass.getNewStaticInstanceMethods(methodName);
   if (!list.isEmpty()) {
     Method method=chooseMethod(list,staticArgumentList,staticArgumentList);
     if (method != null) {
-      addStaticMethod(method);
+      addNewStaticInstanceMethod(method);
     }
     return method;
   }
-  return superClass.findStaticMethod(methodName,staticArgumentList);
+  return superClass.findNewStaticInstanceMethod(methodName,staticArgumentList);
 }

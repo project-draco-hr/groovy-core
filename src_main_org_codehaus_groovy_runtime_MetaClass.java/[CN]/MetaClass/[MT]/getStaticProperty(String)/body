@@ -1,0 +1,12 @@
+{
+  try {
+    Field field=theClass.getField(property);
+    if (field != null) {
+      return field.get(null);
+    }
+  }
+ catch (  Exception e) {
+    throw new InvokerException("Could not evaluate property: " + property,e);
+  }
+  throw new InvokerException("No such property: " + property);
+}

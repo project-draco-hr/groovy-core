@@ -1,0 +1,17 @@
+{
+  String type=expression.getText();
+  final String staticFieldName="class$" + type.replace('.','$');
+  syntheticStaticFields.add(staticFieldName);
+  cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+  Label l0=new Label();
+  cv.visitJumpInsn(IFNONNULL,l0);
+  cv.visitLdcInsn(type);
+  cv.visitMethodInsn(INVOKESTATIC,internalClassName,"class$","(Ljava/lang/String;)Ljava/lang/Class;");
+  cv.visitInsn(DUP);
+  cv.visitFieldInsn(PUTSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+  Label l1=new Label();
+  cv.visitJumpInsn(GOTO,l1);
+  cv.visitLabel(l0);
+  cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+  cv.visitLabel(l1);
+}

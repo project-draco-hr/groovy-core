@@ -12,13 +12,23 @@
  else       if (isGenericSetMethod(method)) {
         genericSetMethod=method;
       }
+      if (MethodHelper.isPublicStatic(method)) {
+        List list=(List)staticMethodIndex.get(name);
+        if (list == null) {
+          list=new ArrayList();
+          staticMethodIndex.put(name,list);
+        }
+        list.add(method);
+      }
+ else {
+        List list=(List)methodIndex.get(name);
+        if (list == null) {
+          list=new ArrayList();
+          methodIndex.put(name,list);
+        }
+        list.add(method);
+      }
     }
-    List list=(List)methodIndex.get(name);
-    if (list == null) {
-      list=new ArrayList();
-      methodIndex.put(name,list);
-    }
-    list.add(method);
   }
   BeanInfo info=Introspector.getBeanInfo(theClass);
   PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
