@@ -6,5 +6,7 @@
   if (expressionNode == null) {
     throw new ASTRuntimeException(node,"No expression available");
   }
-  return new ThrowStatement(expression(expressionNode));
+  ThrowStatement throwStatement=new ThrowStatement(expression(expressionNode));
+  configureAST(throwStatement,node);
+  return throwStatement;
 }

@@ -11,11 +11,16 @@
   String name=identifier(node);
   node=node.getNextSibling();
   Expression leftExpression=new VariableExpression(name,type);
+  configureAST(leftExpression,variableDef);
   Expression rightExpression=ConstantExpression.NULL;
   if (node != null) {
     assertNodeType(ASSIGN,node);
     rightExpression=expression(node.getFirstChild());
   }
   Token token=makeToken(Types.ASSIGN,variableDef);
-  return new ExpressionStatement(new BinaryExpression(leftExpression,token,rightExpression));
+  BinaryExpression expression=new BinaryExpression(leftExpression,token,rightExpression);
+  configureAST(expression,variableDef);
+  ExpressionStatement expressionStatement=new ExpressionStatement(expression);
+  configureAST(expressionStatement,variableDef);
+  return expressionStatement;
 }

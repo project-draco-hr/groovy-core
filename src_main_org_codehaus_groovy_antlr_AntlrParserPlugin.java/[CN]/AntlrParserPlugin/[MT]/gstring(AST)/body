@@ -8,12 +8,16 @@
 switch (type) {
 case STRING_LITERAL:
       text=node.getText();
-    strings.add(new ConstantExpression(text));
-  buffer.append(text);
+    ConstantExpression constantExpression=new ConstantExpression(text);
+  configureAST(constantExpression,node);
+strings.add(constantExpression);
+buffer.append(text);
 break;
 case IDENT:
 text=node.getText();
-values.add(new VariableExpression(text));
+VariableExpression variableExpression=new VariableExpression(text);
+configureAST(variableExpression,node);
+values.add(variableExpression);
 buffer.append("$");
 buffer.append(text);
 break;
@@ -38,5 +42,7 @@ default :
 unknownAST(node);
 }
 }
-return new GStringExpression(buffer.toString(),strings,values);
+GStringExpression gStringExpression=new GStringExpression(buffer.toString(),strings,values);
+configureAST(gStringExpression,gstringNode);
+return gStringExpression;
 }

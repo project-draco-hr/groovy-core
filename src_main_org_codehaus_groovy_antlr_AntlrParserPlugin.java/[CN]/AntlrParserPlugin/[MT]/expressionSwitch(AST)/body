@@ -53,7 +53,9 @@ return ConstantExpression.FALSE;
 case LITERAL_null:
 return ConstantExpression.NULL;
 case STRING_LITERAL:
-return new ConstantExpression(node.getText());
+ConstantExpression constantExpression=new ConstantExpression(node.getText());
+configureAST(constantExpression,node);
+return constantExpression;
 case STRING_CONSTRUCTOR:
 return gstring(node);
 case NUM_DOUBLE:
@@ -69,11 +71,15 @@ return VariableExpression.THIS_EXPRESSION;
 case LITERAL_super:
 return VariableExpression.SUPER_EXPRESSION;
 case LNOT:
-return new NotExpression(expression(node.getFirstChild()));
+NotExpression notExpression=new NotExpression(expression(node.getFirstChild()));
+configureAST(notExpression,node);
+return notExpression;
 case UNARY_MINUS:
 return negateExpression(node);
 case BNOT:
-return new BitwiseNegExpression(expression(node.getFirstChild()));
+BitwiseNegExpression bitwiseNegExpression=new BitwiseNegExpression(expression(node.getFirstChild()));
+configureAST(bitwiseNegExpression,node);
+return bitwiseNegExpression;
 case UNARY_PLUS:
 return expression(node.getFirstChild());
 case INC:

@@ -23,13 +23,20 @@
       if (!argumentList.isEmpty()) {
         expressionList.removeAll(argumentList);
         MapExpression mapExpression=new MapExpression(expressionList);
+        configureAST(mapExpression,elist);
         argumentList.add(0,mapExpression);
-        return new ArgumentListExpression(argumentList);
+        ArgumentListExpression argumentListExpression=new ArgumentListExpression(argumentList);
+        configureAST(argumentListExpression,elist);
+        return argumentListExpression;
       }
     }
-    return new NamedArgumentListExpression(expressionList);
+    NamedArgumentListExpression namedArgumentListExpression=new NamedArgumentListExpression(expressionList);
+    configureAST(namedArgumentListExpression,elist);
+    return namedArgumentListExpression;
   }
  else {
-    return new ArgumentListExpression(expressionList);
+    ArgumentListExpression argumentListExpression=new ArgumentListExpression(expressionList);
+    configureAST(argumentListExpression,elist);
+    return argumentListExpression;
   }
 }

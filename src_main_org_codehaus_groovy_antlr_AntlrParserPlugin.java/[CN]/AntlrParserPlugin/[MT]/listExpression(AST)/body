@@ -9,13 +9,17 @@
       node=node.getNextSibling();
     }
  while (isType(LABELED_ARG,node));
-    return new MapExpression(expressions);
+    MapExpression mapExpression=new MapExpression(expressions);
+    configureAST(mapExpression,listNode);
+    return mapExpression;
   }
  else {
     while (node != null) {
       expressions.add(expression(node));
       node=node.getNextSibling();
     }
-    return new ListExpression(expressions);
+    ListExpression listExpression=new ListExpression(expressions);
+    configureAST(listExpression,listNode);
+    return listExpression;
   }
 }

@@ -2,5 +2,7 @@
   AST node=rangeNode.getFirstChild();
   Expression left=expression(node);
   Expression right=expression(node.getNextSibling());
-  return new RangeExpression(left,right,inclusive);
+  RangeExpression rangeExpression=new RangeExpression(left,right,inclusive);
+  configureAST(rangeExpression,rangeNode);
+  return rangeExpression;
 }

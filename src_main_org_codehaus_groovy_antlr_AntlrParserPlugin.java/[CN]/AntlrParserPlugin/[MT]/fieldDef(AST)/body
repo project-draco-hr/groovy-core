@@ -29,7 +29,9 @@
     if (!hasVisibility(modifiers)) {
       modifiers|=Constants.ACC_PUBLIC;
     }
-    classNode.addProperty(new PropertyNode(fieldNode,modifiers,null,null));
+    PropertyNode propertyNode=new PropertyNode(fieldNode,modifiers,null,null);
+    configureAST(propertyNode,fieldDef);
+    classNode.addProperty(propertyNode);
   }
  else {
     fieldNode.setModifiers(modifiers);

@@ -3,5 +3,7 @@
   String typeName=resolvedName(node);
   AST expressionNode=node.getNextSibling();
   Expression expression=expression(expressionNode);
-  return new CastExpression(typeName,expression);
+  CastExpression castExpression=new CastExpression(typeName,expression);
+  configureAST(castExpression,castNode);
+  return castExpression;
 }

@@ -2,9 +2,13 @@
   String text=node.getText();
   String newText=resolveTypeName(text,false);
   if (newText == null) {
-    return new VariableExpression(text);
+    VariableExpression variableExpression=new VariableExpression(text);
+    configureAST(variableExpression,node);
+    return variableExpression;
   }
  else {
-    return new ClassExpression(newText);
+    ClassExpression classExpression=new ClassExpression(newText);
+    configureAST(classExpression,node);
+    return classExpression;
   }
 }

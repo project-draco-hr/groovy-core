@@ -7,7 +7,9 @@
   AST elist=node.getNextSibling();
   if (isType(ARRAY_DECLARATOR,elist)) {
     Expression size=expression(elist.getFirstChild());
-    return new ArrayExpression(name,size);
+    ArrayExpression arrayExpression=new ArrayExpression(name,size);
+    configureAST(arrayExpression,node);
+    return arrayExpression;
   }
   Expression arguments=arguments(elist);
   ConstructorCallExpression expression=new ConstructorCallExpression(name,arguments);

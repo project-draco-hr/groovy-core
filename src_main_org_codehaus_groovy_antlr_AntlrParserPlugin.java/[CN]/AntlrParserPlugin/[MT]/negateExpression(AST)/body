@@ -5,12 +5,18 @@ switch (node.getType()) {
 case NUM_DOUBLE:
 case NUM_FLOAT:
 case NUM_BIG_DECIMAL:
-    return new ConstantExpression(Numbers.parseDecimal("-" + text));
+    ConstantExpression constantExpression=new ConstantExpression(Numbers.parseDecimal("-" + text));
+  configureAST(constantExpression,negateExpr);
+return constantExpression;
 case NUM_BIG_INT:
 case NUM_INT:
 case NUM_LONG:
-  return new ConstantExpression(Numbers.parseInteger("-" + text));
+ConstantExpression constantLongExpression=new ConstantExpression(Numbers.parseInteger("-" + text));
+configureAST(constantLongExpression,negateExpr);
+return constantLongExpression;
 default :
-return new NegationExpression(expression(node));
+NegationExpression negationExpression=new NegationExpression(expression(node));
+configureAST(negationExpression,negateExpr);
+return negationExpression;
 }
 }

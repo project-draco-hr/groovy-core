@@ -6,10 +6,14 @@
       Expression leftExpression=expression(leftNode);
       if (isType(SELECT_SLOT,identifierNode)) {
         String field=identifier(identifierNode.getFirstChild());
-        return new AttributeExpression(leftExpression,field);
+        AttributeExpression attributeExpression=new AttributeExpression(leftExpression,field);
+        configureAST(attributeExpression,node);
+        return attributeExpression;
       }
       String property=identifier(identifierNode);
-      return new PropertyExpression(leftExpression,property,node.getType() == OPTIONAL_ARG);
+      PropertyExpression propertyExpression=new PropertyExpression(leftExpression,property,node.getType() == OPTIONAL_ARG);
+      configureAST(propertyExpression,node);
+      return propertyExpression;
     }
   }
   return methodCallExpression(node);
