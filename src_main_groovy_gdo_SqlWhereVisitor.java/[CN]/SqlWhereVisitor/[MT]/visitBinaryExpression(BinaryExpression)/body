@@ -4,13 +4,7 @@
   left.visit(this);
   buffer.append(" ");
   Token token=expression.getOperation();
-switch (token.getType()) {
-case Token.COMPARE_EQUAL:
-    buffer.append("=");
-  break;
-default :
-buffer.append(token.getText());
-}
-buffer.append(" ");
-right.visit(this);
+  buffer.append(tokenAsSql(token));
+  buffer.append(" ");
+  right.visit(this);
 }
