@@ -1,0 +1,18 @@
+{
+  if (this.imports.containsKey(name)) {
+    return true;
+  }
+  try {
+    getClassLoader().loadClass("java.lang." + name);
+    return true;
+  }
+ catch (  ClassNotFoundException e) {
+    try {
+      getClassLoader().loadClass("groovy.lang." + name);
+      return true;
+    }
+ catch (    ClassNotFoundException ee) {
+    }
+  }
+  return false;
+}
