@@ -1,0 +1,16 @@
+{
+  String text=bodyText.toString();
+  if (trimWhitespace) {
+    text=text.trim();
+  }
+  if (text.length() > 0) {
+    parent.children().add(text);
+  }
+  if (!stack.isEmpty()) {
+    stack.remove(stack.size() - 1);
+    if (!stack.isEmpty()) {
+      parent=(Node)stack.get(stack.size() - 1);
+    }
+  }
+  bodyText=(StringBuffer)bodyTexts.remove(bodyTexts.size() - 1);
+}
