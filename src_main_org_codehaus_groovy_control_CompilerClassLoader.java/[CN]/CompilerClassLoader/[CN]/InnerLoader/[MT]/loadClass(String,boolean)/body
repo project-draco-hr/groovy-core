@@ -1,0 +1,14 @@
+{
+  Class c=(Class)map.get(name);
+  if (c != null)   return c;
+  try {
+    c=super.findClass(name);
+    map.put(name,c);
+    return c;
+  }
+ catch (  ClassNotFoundException cnfe) {
+    c=parent.loadClass(name);
+    map.put(name,c);
+    return c;
+  }
+}
