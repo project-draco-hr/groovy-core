@@ -1,7 +1,6 @@
 {
   try {
-    Constructor constructor=scriptClass.getConstructor(new Class[]{});
-    final GroovyObject object=(GroovyObject)constructor.newInstance(new Object[]{});
+    final GroovyObject object=(GroovyObject)scriptClass.newInstance();
     Script script=null;
     if (object instanceof Script) {
       script=(Script)object;
@@ -15,8 +14,7 @@
       }
 ;
     }
-    Method setBindings=script.getClass().getMethod("setBindings",new Class[]{Binding.class});
-    setBindings.invoke(script,new Object[]{context});
+    script.setBinding(context);
     return script;
   }
  catch (  Exception e) {
