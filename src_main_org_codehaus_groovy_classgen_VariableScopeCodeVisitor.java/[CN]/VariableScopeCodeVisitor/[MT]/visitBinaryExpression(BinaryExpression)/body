@@ -1,11 +1,7 @@
 {
   Expression leftExpression=expression.getLeftExpression();
   if (expression.getOperation().getType() == Token.EQUAL && leftExpression instanceof VariableExpression) {
-    VariableExpression varExp=(VariableExpression)leftExpression;
-    String variable=varExp.getVariable();
-    if (!parameterSet.contains(variable)) {
-      declaredVariables.add(variable);
-    }
+    declareVariable((VariableExpression)leftExpression);
   }
  else {
     leftExpression.visit(this);
