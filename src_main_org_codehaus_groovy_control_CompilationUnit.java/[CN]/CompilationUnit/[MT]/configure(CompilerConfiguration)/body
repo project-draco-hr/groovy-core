@@ -1,0 +1,17 @@
+{
+  super.configure(configuration);
+  this.debug=configuration.getDebug();
+  if (!this.configured && this.classLoader instanceof CompilerClassLoader) {
+    CompilerClassLoader loader=(CompilerClassLoader)this.classLoader;
+    Iterator iterator=configuration.getClasspath().iterator();
+    while (iterator.hasNext()) {
+      try {
+        this.configured=true;
+        loader.addPath((String)iterator.next());
+      }
+ catch (      MalformedURLException e) {
+        throw new ConfigurationException(e);
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  if (this.phase != Phases.OUTPUT && !(this.phase == Phases.CLASS_GENERATION && this.phaseComplete)) {
+    throw new GroovyBugError("CompilationUnit not ready for output()");
+  }
+  boolean failures=false;
+  Iterator iterator=this.classes.iterator();
+  while (iterator.hasNext()) {
+    GroovyClass gclass=(GroovyClass)iterator.next();
+    String name=gclass.getName().replace('.',File.separatorChar) + ".class";
+    File path=new File(configuration.getTargetDirectory(),name);
+    File directory=path.getParentFile();
+    if (!directory.exists()) {
+      directory.mkdirs();
+    }
+    byte[] bytes=gclass.getBytes();
+    FileOutputStream stream=null;
+    try {
+      stream=new FileOutputStream(path);
+      stream.write(bytes,0,bytes.length);
+    }
+ catch (    IOException e) {
+      addError(Message.create(e.getMessage()));
+      failures=true;
+    }
+ finally {
+      if (stream != null) {
+        try {
+          stream.close();
+        }
+ catch (        Exception e) {
+        }
+      }
+    }
+  }
+  if (failures) {
+    fail();
+  }
+  completePhase();
+  applyToSourceUnits(mark);
+}

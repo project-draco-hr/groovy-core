@@ -1,0 +1,31 @@
+{
+  if (lineSource != null && number > lineNumber) {
+    cleanup();
+  }
+  if (lineSource == null) {
+    try {
+      lineSource=new BufferedReader(getReader());
+    }
+ catch (    Exception e) {
+    }
+    number=0;
+  }
+  if (lineSource != null) {
+    while (number < lineNumber) {
+      try {
+        line=lineSource.readLine();
+        number++;
+      }
+ catch (      IOException e) {
+        cleanup();
+      }
+    }
+    if (janitor == null) {
+      cleanup();
+    }
+ else {
+      janitor.register(this);
+    }
+  }
+  return line;
+}

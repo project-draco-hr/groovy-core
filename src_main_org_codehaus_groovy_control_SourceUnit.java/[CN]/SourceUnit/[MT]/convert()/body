@@ -1,0 +1,17 @@
+{
+  if (this.phase == Phases.PARSING && this.phaseComplete) {
+    gotoPhase(Phases.CONVERSION);
+  }
+  if (this.phase != Phases.CONVERSION) {
+    throw new GroovyBugError("SourceUnit not ready for convert()");
+  }
+  try {
+    ASTBuilder builder=new ASTBuilder(this,this.classLoader);
+    this.ast=builder.build(this.cst);
+    this.ast.setDescription(this.name);
+  }
+ catch (  SyntaxException e) {
+    addError(new SyntaxErrorMessage(e));
+  }
+  completePhase();
+}

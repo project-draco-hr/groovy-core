@@ -16,7 +16,7 @@ class DoSetContext implements PrivilegedAction {
   Class scriptClass;
   try {
     scriptClass=(Class)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws SyntaxException, IOException {
+      public Object run() throws CompilationFailedException, IOException {
         return loader.parseClass(scriptFile);
       }
     }
@@ -24,8 +24,8 @@ class DoSetContext implements PrivilegedAction {
   }
  catch (  PrivilegedActionException pae) {
     Exception e=pae.getException();
-    if (e instanceof SyntaxException) {
-      throw (SyntaxException)e;
+    if (e instanceof CompilationFailedException) {
+      throw (CompilationFailedException)e;
     }
  else     if (e instanceof IOException) {
       throw (IOException)e;

@@ -1,0 +1,29 @@
+{
+  if (this.phase > Phases.PARSING) {
+    throw new GroovyBugError("parsing is already complete");
+  }
+  if (this.phase == Phases.INITIALIZATION) {
+    nextPhase();
+  }
+  Reader reader=null;
+  try {
+    reader=source.getReader();
+    GroovyLexer lexer=new GroovyLexer(new ReaderCharStream(reader));
+    TokenStream stream=new LexerTokenStream(lexer);
+    Parser parser=new Parser(this,stream);
+    this.cst=parser.parse();
+    completePhase();
+  }
+ catch (  IOException e) {
+    addFatalError(new SimpleMessage(e.getMessage()));
+  }
+ finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      IOException e) {
+      }
+    }
+  }
+}

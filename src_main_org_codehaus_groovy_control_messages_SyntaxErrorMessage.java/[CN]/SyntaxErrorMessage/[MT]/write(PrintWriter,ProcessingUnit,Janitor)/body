@@ -1,0 +1,12 @@
+{
+  SourceUnit source=(SourceUnit)context;
+  String name=source.getName();
+  int line=getCause().getStartLine();
+  int column=getCause().getStartColumn();
+  String sample=source.getSample(line,column,janitor);
+  output.println(name + ": " + line+ ": "+ getCause().getMessage());
+  if (sample != null) {
+    output.println(source.getSample(line,column,janitor));
+  }
+  output.println("");
+}

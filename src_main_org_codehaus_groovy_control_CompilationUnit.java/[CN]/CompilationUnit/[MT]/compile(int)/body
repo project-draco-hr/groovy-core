@@ -1,0 +1,30 @@
+{
+  gotoPhase(Phases.INITIALIZATION);
+  do {
+    if (throughPhase < Phases.PARSING) {
+      break;
+    }
+    gotoPhase(Phases.PARSING);
+    parse();
+    if (throughPhase < Phases.CONVERSION) {
+      break;
+    }
+    gotoPhase(Phases.CONVERSION);
+    convert();
+    if (throughPhase < Phases.CLASS_GENERATION) {
+      break;
+    }
+    gotoPhase(Phases.CLASS_GENERATION);
+    classgen();
+    if (throughPhase < Phases.OUTPUT) {
+      break;
+    }
+    gotoPhase(Phases.OUTPUT);
+    output();
+    if (throughPhase < Phases.FINALIZATION) {
+      break;
+    }
+    gotoPhase(Phases.FINALIZATION);
+  }
+ while (false);
+}

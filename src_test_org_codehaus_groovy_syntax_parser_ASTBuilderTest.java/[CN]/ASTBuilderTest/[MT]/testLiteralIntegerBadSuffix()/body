@@ -2,8 +2,9 @@
   try {
     ModuleNode module=parse("x = 2147483648J;","Dummy.groovy");
   }
- catch (  ExceptionCollector e) {
-    if (e.get(0) instanceof UnexpectedCharacterException) {
+ catch (  CompilationFailedException e) {
+    SyntaxException cause=e.getUnit().getSyntaxError(0);
+    if (cause instanceof UnexpectedCharacterException) {
       return;
     }
     fail("x = 2147483648J should fail with an UnexpectedCharacterException");

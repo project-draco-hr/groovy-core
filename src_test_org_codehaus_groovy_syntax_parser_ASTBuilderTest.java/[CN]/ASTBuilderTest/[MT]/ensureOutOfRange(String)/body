@@ -2,8 +2,9 @@
   try {
     ModuleNode module=parse(script,"Dummy.groovy");
   }
- catch (  ExceptionCollector e) {
-    if (e.get(0) instanceof ParserException && e.get(0).getMessage().indexOf("out of range") >= 0) {
+ catch (  CompilationFailedException e) {
+    SyntaxException cause=e.getUnit().getSyntaxError(0);
+    if (cause != null && cause instanceof ParserException && cause.getMessage().indexOf("out of range") >= 0) {
       return;
     }
     fail(script + " should fail with a ParserException: " + e.getMessage());

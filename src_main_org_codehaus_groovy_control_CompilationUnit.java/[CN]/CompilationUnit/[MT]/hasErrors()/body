@@ -1,0 +1,13 @@
+{
+  boolean hasErrors=false;
+  Iterator keys=names.iterator();
+  while (keys.hasNext()) {
+    String name=(String)keys.next();
+    SourceUnit source=(SourceUnit)sources.get(name);
+    if (source.hasErrors()) {
+      hasErrors=true;
+      break;
+    }
+  }
+  return hasErrors || super.hasErrors();
+}

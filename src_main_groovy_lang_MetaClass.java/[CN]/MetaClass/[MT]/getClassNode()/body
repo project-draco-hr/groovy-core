@@ -13,16 +13,18 @@
     }
     if (url != null) {
       try {
-        InputStream in=url.openStream();
-        CompilerFacade compiler=new CompilerFacade(theClass.getClassLoader(),new CompileUnit(getClass().getClassLoader(),new CompilerConfig())){
-          protected void onClass(          ClassWriter classWriter,          ClassNode classNode){
-            if (classNode.getName().equals(theClass.getName())) {
-              MetaClass.this.classNode=classNode;
+        CompilationUnit.ClassgenCallback search=new CompilationUnit.ClassgenCallback(){
+          public void call(          ClassVisitor writer,          ClassNode node){
+            if (node.getName().equals(theClass.getName())) {
+              MetaClass.this.classNode=node;
             }
           }
         }
 ;
-        compiler.parseClass(in,groovyFile);
+        CompilationUnit unit=new CompilationUnit(getClass().getClassLoader());
+        unit.setClassgenCallback(search);
+        unit.addSource(url);
+        unit.compile(Phases.CLASS_GENERATION);
       }
  catch (      Exception e) {
         throw new GroovyRuntimeException("Exception thrown parsing: " + groovyFile + ". Reason: "+ e,e);

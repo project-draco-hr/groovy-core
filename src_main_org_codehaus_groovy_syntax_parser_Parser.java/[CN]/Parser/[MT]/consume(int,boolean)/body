@@ -1,11 +1,17 @@
 {
-  if (!la(significantNewlines).isA(type)) {
-    error(type);
-  }
-  if (!significantNewlines) {
-    while (lt(true) == Types.NEWLINE) {
-      getTokenStream().consume(Types.NEWLINE);
+  try {
+    if (!la(significantNewlines).isA(type)) {
+      error(type);
     }
+    if (!significantNewlines) {
+      while (lt(true) == Types.NEWLINE) {
+        getTokenStream().consume(Types.NEWLINE);
+      }
+    }
+    return getTokenStream().consume(type);
   }
-  return getTokenStream().consume(type);
+ catch (  ReadException e) {
+    controller.addFatalError(new SimpleMessage(e.getMessage()));
+  }
+  throw new GroovyBugError("this should never happen");
 }

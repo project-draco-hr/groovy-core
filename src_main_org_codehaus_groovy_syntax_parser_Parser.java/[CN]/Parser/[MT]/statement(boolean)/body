@@ -82,7 +82,7 @@ Reduction block=statement.getRoot().asReduction();
 block.setMeaning(Types.SYNTH_BLOCK);
 block.addChildrenOf(statement.get(2));
 if (label == null && !allowUnlabelledBlocks) {
-collector.add(new ParserException("groovy does not support anonymous blocks; please add a label",statement.getRoot()));
+controller.addError("groovy does not support anonymous blocks; please add a label",statement.getRoot());
 }
 statement=block;
 }
@@ -99,7 +99,7 @@ statement=expression();
 endOfStatement();
 }
  catch (SyntaxException e) {
-collector.add(e);
+controller.addError(e);
 recover();
 }
 }

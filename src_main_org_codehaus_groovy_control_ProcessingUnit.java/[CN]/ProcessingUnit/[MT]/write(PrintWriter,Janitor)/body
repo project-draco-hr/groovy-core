@@ -1,0 +1,18 @@
+{
+  if (this.warnings != null) {
+    Iterator iterator=this.warnings.iterator();
+    while (iterator.hasNext()) {
+      WarningMessage warning=(WarningMessage)iterator.next();
+      warning.write(writer,this,janitor);
+    }
+    this.warnings=null;
+  }
+  if (this.errors != null) {
+    Iterator iterator=this.errors.iterator();
+    while (iterator.hasNext()) {
+      Message message=(Message)iterator.next();
+      message.write(writer,this,janitor);
+    }
+    this.errors=null;
+  }
+}

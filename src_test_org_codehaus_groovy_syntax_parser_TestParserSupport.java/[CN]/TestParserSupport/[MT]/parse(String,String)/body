@@ -1,5 +1,6 @@
 {
-  Parser parser=Parser.create(text,1);
-  ModuleNode module=parser.parse(getClass().getClassLoader(),description);
-  return module;
+  SourceUnit unit=SourceUnit.create(description,text);
+  unit.parse();
+  unit.convert();
+  return unit.getAST();
 }

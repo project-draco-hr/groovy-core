@@ -1,0 +1,16 @@
+{
+  boolean result=false;
+  if (this.errors != null) {
+    Message last=(Message)errors.get(errors.size() - 1);
+    if (last instanceof SyntaxErrorMessage) {
+      SyntaxException cause=((SyntaxErrorMessage)last).getCause();
+      if (cause instanceof UnexpectedTokenException) {
+        Token unexpected=((UnexpectedTokenException)cause).getUnexpectedToken();
+        if (unexpected.isA(Types.EOF)) {
+          result=true;
+        }
+      }
+    }
+  }
+  return result;
+}

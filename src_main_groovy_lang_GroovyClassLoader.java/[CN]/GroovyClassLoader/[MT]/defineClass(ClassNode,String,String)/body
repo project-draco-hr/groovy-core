@@ -5,8 +5,15 @@
   }
  catch (  MalformedURLException e) {
   }
-  CompileUnit unit=new CompileUnit(getParent(),codeSource,config);
-  ClassCollector compiler=createCollector(unit);
-  compiler.generateClass(new GeneratorContext(unit),classNode,file);
-  return compiler.generatedClass;
+  CompilationUnit unit=new CompilationUnit(config,codeSource,getParent());
+  try {
+    ClassCollector collector=createCollector(unit);
+    unit.addClassNode(classNode);
+    unit.setClassgenCallback(collector);
+    unit.compile(Phases.CLASS_GENERATION);
+    return collector.generatedClass;
+  }
+ catch (  CompilationFailedException e) {
+    throw new RuntimeException(e);
+  }
 }

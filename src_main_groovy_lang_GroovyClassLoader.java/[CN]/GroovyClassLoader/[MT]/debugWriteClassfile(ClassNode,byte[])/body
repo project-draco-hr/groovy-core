@@ -1,6 +1,6 @@
 {
-  String outputDir=config.getOutputDir();
-  if (outputDir != null) {
+  File targetDir=config.getTargetDirectory();
+  if (targetDir != null) {
     String filename=classNode.getName().replace('.',File.separatorChar) + ".class";
     int index=filename.lastIndexOf(File.separator);
     String dirname;
@@ -10,10 +10,10 @@
  else {
       dirname="";
     }
-    File outputFile=new File(new File(outputDir),filename);
+    File outputFile=new File(targetDir,filename);
     System.err.println("Writing: " + outputFile);
     try {
-      new File(new File(outputDir),dirname).mkdirs();
+      new File(targetDir,dirname).mkdirs();
       FileOutputStream fos=new FileOutputStream(outputFile);
       fos.write(code,0,code.length);
       fos.close();

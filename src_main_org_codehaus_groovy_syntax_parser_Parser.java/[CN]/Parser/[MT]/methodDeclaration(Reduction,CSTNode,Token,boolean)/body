@@ -8,13 +8,13 @@
     method.add(typeList(Types.KEYWORD_THROWS,true,0));
   }
  catch (  SyntaxException e) {
-    collector.add(e);
+    controller.addError(e);
     method.add(Reduction.EMPTY);
   }
   CSTNode body=null;
   if (emptyOnly) {
     if (lt() == Types.LEFT_CURLY_BRACE) {
-      collector.add(new ParserException("abstract and interface methods cannot have a body",la()));
+      controller.addError("abstract and interface methods cannot have a body",la());
     }
  else {
       body=Reduction.EMPTY;

@@ -3,9 +3,13 @@
     assertCompileWorks(code);
     fail("Should have thrown an exception");
   }
- catch (  MissingClassException e) {
-    System.out.println("Worked, threw: " + e);
-    return e;
+ catch (  CompilationFailedException e) {
+    Exception cause=e.getUnit().getException(0);
+    if (cause instanceof MissingClassException) {
+      System.out.println("Worked, threw: " + cause);
+      return (MissingClassException)cause;
+    }
+    throw e;
   }
   return null;
 }

@@ -2,7 +2,7 @@
   Reduction statement=null;
   if (lt() == Types.KEYWORD_STATIC && lt(2) == Types.LEFT_CURLY_BRACE) {
     if (!allowStatic) {
-      collector.add(new ParserException("static initializers not valid in this context",la()));
+      controller.addError("static initializers not valid in this context",la());
     }
     Reduction modifiers=modifierList(true,false);
     Token identifier=Token.NULL;

@@ -5,25 +5,13 @@
   error=null;
   tree=null;
   try {
-    parser=Parser.create(code,tolerance);
-    stream=parser.getTokenStream();
-    tree=parser.module();
-    if (stream.atEnd()) {
-      parsed=true;
-    }
+    parser=SourceUnit.create("groovysh script",code,tolerance);
+    parser.parse();
+    tree=parser.getCST();
+    parsed=true;
   }
- catch (  ExceptionCollector e) {
-    if (!stream.atEnd()) {
-      if (tolerance == 1) {
-        error=(Exception)e.get(0);
-      }
- else {
-        error=e;
-      }
-    }
-  }
-catch (  SyntaxException e) {
-    if (!stream.atEnd()) {
+ catch (  CompilationFailedException e) {
+    if (parser.getErrorCount() > 1 || !parser.failedWithUnexpectedEOF()) {
       error=e;
     }
   }

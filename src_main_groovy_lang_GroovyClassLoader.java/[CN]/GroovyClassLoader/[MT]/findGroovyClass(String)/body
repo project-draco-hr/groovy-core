@@ -11,7 +11,7 @@
           try {
             return parseClass(file);
           }
- catch (          SyntaxException e) {
+ catch (          CompilationFailedException e) {
             e.printStackTrace();
             throw new ClassNotFoundException("Syntax error in groovy file: " + filename,e);
           }
@@ -31,7 +31,7 @@ catch (          IOException e) {
             try {
               return parseClass(new GroovyCodeSource(new ByteArrayInputStream(bytes),filename,path,certs));
             }
- catch (            SyntaxException e1) {
+ catch (            CompilationFailedException e1) {
               e1.printStackTrace();
               throw new ClassNotFoundException("Syntax error in groovy file: " + filename,e1);
             }

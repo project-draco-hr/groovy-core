@@ -6,7 +6,7 @@
       packageDeclaration=packageDeclaration();
     }
  catch (    SyntaxException e) {
-      collector.add(e);
+      controller.addError(e);
       recover();
     }
   }
@@ -15,12 +15,13 @@
   }
   module.add(packageDeclaration);
   Reduction imports=(Reduction)module.add(Reduction.newContainer());
+  Object collector;
   while (lt() == Types.KEYWORD_IMPORT) {
     try {
       imports.add(importStatement());
     }
  catch (    SyntaxException e) {
-      collector.add(e);
+      controller.addError(e);
       recover();
     }
   }
@@ -29,7 +30,7 @@
       module.add(topLevelStatement());
     }
  catch (    SyntaxException e) {
-      collector.add(e);
+      controller.addError(e);
       recover();
     }
   }

@@ -1,0 +1,22 @@
+{
+  boolean failures=false;
+  Iterator keys=names.iterator();
+  while (keys.hasNext()) {
+    String name=(String)keys.next();
+    SourceUnit source=(SourceUnit)sources.get(name);
+    if (source.phase <= phase) {
+      try {
+        body.call(source);
+      }
+ catch (      CompilationFailedException e) {
+        failures=true;
+      }
+catch (      Exception e) {
+        throw new GroovyBugError(e);
+      }
+    }
+  }
+  if (failures) {
+    fail();
+  }
+}

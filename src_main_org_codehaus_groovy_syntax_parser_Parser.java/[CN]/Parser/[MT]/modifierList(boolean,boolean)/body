@@ -2,10 +2,10 @@
   Reduction modifiers=Reduction.newContainer();
   while (la().isA(Types.DECLARATION_MODIFIER)) {
     if (lt() == Types.KEYWORD_ABSTRACT && !allowAbstract) {
-      collector.add(new ParserException("keyword 'abstract' not valid in this setting",la()));
+      controller.addError("keyword 'abstract' not valid in this setting",la());
     }
  else     if (lt() == Types.KEYWORD_STATIC && !allowStatic) {
-      collector.add(new ParserException("keyword 'static' not valid in this setting",la()));
+      controller.addError("keyword 'static' not valid in this setting",la());
     }
     modifiers.add(consume());
   }

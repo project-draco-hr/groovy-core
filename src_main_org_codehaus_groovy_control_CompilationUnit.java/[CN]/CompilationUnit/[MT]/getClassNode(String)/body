@@ -1,0 +1,17 @@
+{
+  final ClassNode[] result=new ClassNode[]{null};
+  LoopBodyForPrimaryClassNodeOperations handler=new LoopBodyForPrimaryClassNodeOperations(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode){
+      if (classNode.getName().equals(name)) {
+        result[0]=classNode;
+      }
+    }
+  }
+;
+  try {
+    applyToPrimaryClassNodes(handler);
+  }
+ catch (  CompilationFailedException e) {
+  }
+  return result[0];
+}

@@ -10,10 +10,12 @@
     try {
       Path classpath=getClasspath();
       if (classpath != null) {
-        compiler.setClasspath(classpath.toString());
+        configuration.setClasspath(classpath.toString());
       }
-      compiler.setOutputDir(destDir);
-      compiler.compile(compileList);
+      configuration.setTargetDirectory(destDir);
+      CompilationUnit unit=new CompilationUnit(configuration);
+      unit.addSources(compileList);
+      unit.compile();
     }
  catch (    Exception e) {
       StringWriter writer=new StringWriter();

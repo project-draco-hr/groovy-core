@@ -11,10 +11,12 @@ synchronized (cache) {
     }
   }
   try {
-    CompileUnit unit=new CompileUnit(this,codeSource.getCodeSource(),config);
-    ClassCollector compiler=createCollector(unit);
-    compiler.parseClass(codeSource.getInputStream(),name);
-    answer=compiler.generatedClass;
+    CompilationUnit unit=new CompilationUnit(config,codeSource.getCodeSource(),this);
+    ClassCollector collector=createCollector(unit);
+    unit.addSource(name,codeSource.getInputStream());
+    unit.setClassgenCallback(collector);
+    unit.compile(Phases.CLASS_GENERATION);
+    answer=collector.generatedClass;
   }
   finally {
 synchronized (cache) {
