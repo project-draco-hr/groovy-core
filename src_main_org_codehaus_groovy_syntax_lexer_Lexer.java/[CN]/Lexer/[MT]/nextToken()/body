@@ -422,6 +422,53 @@ consume();
 token=Token.compareLessThanEqual(getStartLine(),getStartColumn());
 break MULTICHAR_SWITCH;
 }
+case ('<'):
+{
+consume();
+c=la();
+if (c == '<') {
+consume();
+StringBuffer marker=new StringBuffer();
+while ((c=la()) != '\n') {
+marker.append(c);
+consume();
+}
+consume();
+eol();
+mark();
+StringBuffer stringLiteral=new StringBuffer();
+LITERAL_LOOP: while (true) {
+c=la();
+LITERAL_SWITCH: switch (c) {
+case ('\n'):
+{
+eol();
+StringBuffer markerBuffer=new StringBuffer();
+markerBuffer.append(consume());
+for (int i=0; i < marker.length(); i++) {
+if (la() != marker.charAt(i)) {
+stringLiteral.append(markerBuffer);
+continue LITERAL_LOOP;
+}
+c=consume();
+markerBuffer.append(c);
+}
+break LITERAL_LOOP;
+}
+case (CharStream.EOS):
+{
+throw new UnterminatedStringLiteralException(getStartLine(),getStartColumn());
+}
+}
+stringLiteral.append(consume());
+}
+token=Token.doubleQuoteString(getStartLine(),getStartColumn(),stringLiteral.toString());
+break ROOT_SWITCH;
+}
+ else {
+throw new UnexpectedCharacterException(getStartLine(),getStartColumn() + 1,c,new char[]{});
+}
+}
 default :
 {
 token=Token.compareLessThan(getStartLine(),getStartColumn());
