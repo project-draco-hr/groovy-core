@@ -1,5 +1,5 @@
 {
-  String typeName=getClassInternalName(expression.getType());
+  String typeName=helper.getClassInternalName(expression.getType());
   Expression sizeExpression=expression.getSizeExpression();
   if (sizeExpression != null) {
     visitAndAutobox(sizeExpression);
@@ -8,11 +8,11 @@
   }
  else {
     int size=expression.getExpressions().size();
-    pushConstant(size);
+    helper.pushConstant(size);
     cv.visitTypeInsn(ANEWARRAY,typeName);
     for (int i=0; i < size; i++) {
       cv.visitInsn(DUP);
-      pushConstant(i);
+      helper.pushConstant(i);
       Expression elementExpression=expression.getExpression(i);
       if (elementExpression == null) {
         ConstantExpression.NULL.visit(this);

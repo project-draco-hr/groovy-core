@@ -1,0 +1,32 @@
+{
+  int minMethodIndex=1;
+  int methodCount=methods.size();
+  int maxMethodIndex=methodCount;
+  cv=cw.visitMethod(ACC_PUBLIC,"invoke","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+  helper=new BytecodeHelper(cv);
+  cv.visitVarInsn(ALOAD,minMethodIndex);
+  cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/MetaMethod","getMethodIndex","()I");
+  Label defaultLabel=new Label();
+  Label[] labels=new Label[methodCount];
+  for (int i=0; i < methodCount; i++) {
+    labels[i]=new Label();
+  }
+  cv.visitTableSwitchInsn(minMethodIndex,maxMethodIndex,defaultLabel,labels);
+  for (int i=0; i < methodCount; i++) {
+    labels[i]=new Label();
+    cv.visitLabel(labels[i]);
+    MetaMethod method=(MetaMethod)methods.get(i);
+    method.setMethodIndex(i);
+    invokeMethod(method);
+    cv.visitInsn(ARETURN);
+  }
+  cv.visitLabel(defaultLabel);
+  cv.visitVarInsn(ALOAD,0);
+  cv.visitVarInsn(ALOAD,1);
+  cv.visitVarInsn(ALOAD,2);
+  cv.visitVarInsn(ALOAD,3);
+  cv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/classgen/DummyReflector","noSuchMethod","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  cv.visitInsn(ARETURN);
+  cv.visitMaxs(4,4);
+  cw.visitEnd();
+}

@@ -8,10 +8,10 @@
   boolean isStatic=field.isStatic();
   if (!isStatic) {
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(outerClassNode.getName()));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",helper.getTypeDescription(outerClassNode.getName()));
   }
   int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
-  String ownerName=getClassInternalName(outerClassNode.getName());
+  String ownerName=helper.getClassInternalName(outerClassNode.getName());
   if (leftHandExpression) {
     cv.visitVarInsn(ALOAD,valueIdx);
     boolean holder=field.isHolder() && !isInClosureConstructor();
@@ -19,5 +19,5 @@
       doConvertAndCast(field.getType());
     }
   }
-  cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(field.getType()));
+  cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(field.getType()));
 }

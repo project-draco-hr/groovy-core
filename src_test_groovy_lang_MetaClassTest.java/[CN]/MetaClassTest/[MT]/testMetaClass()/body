@@ -1,0 +1,13 @@
+{
+  Class foo=String[].class;
+  System.out.println(foo + " name: " + foo.getName());
+  try {
+    MetaClass metaClass=InvokerHelper.getMetaClass(this);
+    assertTrue("got metaclass",metaClass != null);
+    metaClass.invokeMethod(this,"doSomething",new Object[0]);
+  }
+ catch (  Exception e) {
+    System.out.println("Caught: " + e);
+    e.printStackTrace();
+  }
+}

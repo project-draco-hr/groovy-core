@@ -1,0 +1,14 @@
+{
+  String type=helper.getClassInternalName(method.getDeclaringClass().getName());
+  String descriptor=helper.getMethodDescriptor(method.getReturnType().getName(),method.getParameterTypes());
+  if (method.isStatic()) {
+    loadParameters(method);
+    cv.visitMethodInsn(INVOKESTATIC,type,method.getName(),descriptor);
+  }
+ else {
+    cv.visitVarInsn(ALOAD,2);
+    loadParameters(method);
+    cv.visitMethodInsn(INVOKEVIRTUAL,type,method.getName(),descriptor);
+  }
+  helper.toObject(method.getReturnType());
+}

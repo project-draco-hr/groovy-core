@@ -1,8 +1,9 @@
 {
   this.constructorNode=null;
   this.methodNode=node;
-  String methodType=getMethodDescriptor(node.getReturnType(),node.getParameters());
+  String methodType=helper.getMethodDescriptor(node.getReturnType(),node.getParameters());
   cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,null);
+  helper=new BytecodeHelper(cv);
   resetVariableStack(node.getParameters());
   findMutableVariables(node);
   outputReturn=false;

@@ -1,0 +1,25 @@
+{
+  ReflectorGenerator generator=new ReflectorGenerator(methods);
+  String className=theClass.getName();
+  String name="gjdk.reflector." + className;
+  if (theClass.isArray()) {
+    name="gjdk.reflector." + theClass.getComponentType().getName() + "Array";
+  }
+  byte[] bytecode=generator.generate(name);
+  try {
+    Class type=registry.loadClass(name,bytecode);
+    return (Reflector)type.newInstance();
+  }
+ catch (  LinkageError e) {
+    try {
+      Class type=registry.loadClass(name);
+      return (Reflector)type.newInstance();
+    }
+ catch (    Exception e2) {
+      throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e2,e2);
+    }
+  }
+catch (  Exception e) {
+    throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e,e);
+  }
+}

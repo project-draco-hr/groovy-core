@@ -1,7 +1,7 @@
 {
   ClassNode innerClass=createClosureClass(expression);
   addInnerClass(innerClass);
-  String innerClassinternalName=getClassInternalName(innerClass.getName());
+  String innerClassinternalName=helper.getClassInternalName(innerClass.getName());
   ClassNode owner=innerClass.getOuterClass();
   String ownerTypeName=owner.getName();
   if (classNode.isStaticClass() || isStaticMethod()) {
@@ -19,7 +19,7 @@
   if (classNode instanceof InnerClassNode) {
     int paramIdx=defineVariable(createVariableName("iterator"),"java.lang.Object",false).getIndex();
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(ownerTypeName));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",helper.getTypeDescription(ownerTypeName));
     cv.visitVarInsn(ASTORE,paramIdx);
     cv.visitTypeInsn(NEW,innerClassinternalName);
     cv.visitInsn(DUP);
@@ -43,12 +43,12 @@
       cv.visitVarInsn(ALOAD,0);
     }
   }
-  String prototype="(L" + getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
+  String prototype="(L" + helper.getClassInternalName(ownerTypeName) + ";Ljava/lang/Object;";
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
     visitVariableExpression(new VariableExpression(name));
-    prototype=prototype + "L" + getClassInternalName(param.getType())+ ";";
+    prototype=prototype + "L" + helper.getClassInternalName(param.getType())+ ";";
   }
   passingClosureParams=false;
   cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",prototype + ")V");
