@@ -1,9 +1,19 @@
 {
   int size=self.size();
   int from=normaliseIndex(InvokerHelper.asInt(range.getFrom()),size);
-  int to=normaliseIndex(InvokerHelper.asInt(range.getTo()) + 1,size);
-  if (to > size) {
+  int to=normaliseIndex(InvokerHelper.asInt(range.getTo()),size);
+  boolean reverse=range.isReverse();
+  if (from > to) {
+    int tmp=to;
+    to=from;
+    from=tmp;
+  }
+  if (++to > size) {
     to=size;
   }
-  return self.subList(from,to);
+  List answer=self.subList(from,to);
+  if (reverse) {
+    answer=reverse(answer);
+  }
+  return answer;
 }
