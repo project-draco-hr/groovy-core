@@ -1,6 +1,12 @@
 {
   if (this.charsInBuffer == 0)   fillBuffer();
   this.charsInBuffer--;
-  this.column+=this.charWidth[this.cur];
+  if (this.isEol[this.cur]) {
+    this.line++;
+    this.column=1;
+  }
+ else {
+    this.column+=this.charWidth[this.cur];
+  }
   return this.buf[this.cur++];
 }
