@@ -1,0 +1,14 @@
+{
+  StringBuffer buf=new StringBuffer();
+  buf.append(dynamicReturnType ? "$dynamic" : cleanupTypeName(returnType));
+  buf.append(' ');
+  buf.append(name);
+  buf.append('(');
+  for (int i=0; i < parameters.length; i++) {
+    if (i > 0)     buf.append(',');
+    Parameter param=parameters[i];
+    buf.append(cleanupTypeName(param.getType()));
+  }
+  buf.append(')');
+  return buf.toString();
+}

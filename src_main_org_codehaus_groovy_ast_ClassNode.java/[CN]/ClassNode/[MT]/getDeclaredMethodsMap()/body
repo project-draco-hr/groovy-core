@@ -1,0 +1,32 @@
+{
+  ClassNode parent=getSuperClassNode();
+  Map result=null;
+  if (parent != null)   result=parent.getDeclaredMethodsMap();
+ else   result=new HashMap();
+  for (int i=0; i < interfaces.length; i++) {
+    String interfaceName=interfaces[i];
+    ClassNode iface=findClassNode(interfaceName);
+    Map ifaceMethodsMap=iface.getDeclaredMethodsMap();
+    for (Iterator iter=ifaceMethodsMap.keySet().iterator(); iter.hasNext(); ) {
+      String methSig=(String)iter.next();
+      if (!result.containsKey(methSig)) {
+        MethodNode methNode=(MethodNode)ifaceMethodsMap.get(methSig);
+        result.put(methSig,methNode);
+      }
+    }
+  }
+  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
+    MethodNode method=(MethodNode)iter.next();
+    String sig=method.getTypeDescriptor();
+    if (result.containsKey(sig)) {
+      MethodNode inheritedMethod=(MethodNode)result.get(sig);
+      if (inheritedMethod.isAbstract()) {
+        result.put(sig,method);
+      }
+    }
+ else {
+      result.put(sig,method);
+    }
+  }
+  return result;
+}
