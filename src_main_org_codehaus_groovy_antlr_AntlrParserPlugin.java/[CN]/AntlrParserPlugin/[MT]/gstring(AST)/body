@@ -1,0 +1,42 @@
+{
+  List strings=new ArrayList();
+  List values=new ArrayList();
+  StringBuffer buffer=new StringBuffer();
+  for (AST node=gstringNode.getFirstChild(); node != null; node=node.getNextSibling()) {
+    int type=node.getType();
+    String text=null;
+switch (type) {
+case STRING_LITERAL:
+      text=node.getText();
+    strings.add(new ConstantExpression(text));
+  buffer.append(text);
+break;
+case IDENT:
+text=node.getText();
+values.add(new VariableExpression(text));
+buffer.append("$");
+buffer.append(text);
+break;
+case DOT:
+{
+Expression expression=expression(node);
+values.add(expression);
+buffer.append("$");
+buffer.append(expression.getText());
+}
+break;
+case SLIST:
+{
+Expression valueExpression=expression(node.getFirstChild());
+values.add(valueExpression);
+buffer.append("${");
+buffer.append(valueExpression.getText());
+buffer.append("}");
+}
+break;
+default :
+unknownAST(node);
+}
+}
+return new GStringExpression(buffer.toString(),strings,values);
+}

@@ -1,0 +1,38 @@
+{
+  List annotations=new ArrayList();
+  AST node=fieldDef.getFirstChild();
+  int modifiers=0;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  String type=null;
+  if (isType(TYPE,node)) {
+    type=typeName(node);
+    node=node.getNextSibling();
+  }
+  String name=identifier(node);
+  node=node.getNextSibling();
+  Expression initialValue=null;
+  if (node != null) {
+    assertNodeType(ASSIGN,node);
+    initialValue=expression(node);
+  }
+  FieldNode fieldNode=new FieldNode(name,modifiers,type,classNode,initialValue);
+  fieldNode.addAnnotations(annotations);
+  configureAST(fieldNode,fieldDef);
+  if (fieldNode.getAnnotations("Property") != null) {
+    int fieldModifiers=0;
+    int flags=Constants.ACC_STATIC | Constants.ACC_TRANSIENT | Constants.ACC_VOLATILE| Constants.ACC_FINAL;
+    fieldModifiers|=(modifiers & flags);
+    fieldNode.setModifiers(fieldModifiers);
+    if (!hasVisibility(modifiers)) {
+      modifiers|=Constants.ACC_PUBLIC;
+    }
+    classNode.addProperty(new PropertyNode(fieldNode,modifiers,null,null));
+  }
+ else {
+    fieldNode.setModifiers(modifiers);
+    classNode.addField(fieldNode);
+  }
+}

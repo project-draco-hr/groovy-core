@@ -1,0 +1,25 @@
+{
+  while (node != null) {
+    int type=node.getType();
+switch (type) {
+case PACKAGE_DEF:
+      packageDef(node);
+    break;
+case IMPORT:
+  importDef(node);
+break;
+case CLASS_DEF:
+classDef(node);
+break;
+case METHOD_DEF:
+methodDef(node);
+break;
+default :
+{
+Statement statement=statement(node);
+output.addStatement(statement);
+}
+}
+node=node.getNextSibling();
+}
+}

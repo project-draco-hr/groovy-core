@@ -1,0 +1,35 @@
+{
+  List expressionList=new ArrayList();
+  boolean namedArguments=false;
+  for (AST node=elist; node != null; node=node.getNextSibling()) {
+    if (isType(ELIST,node)) {
+      for (AST child=node.getFirstChild(); child != null; child=child.getNextSibling()) {
+        namedArguments|=addArgumentExpression(child,expressionList);
+      }
+    }
+ else {
+      namedArguments|=addArgumentExpression(node,expressionList);
+    }
+  }
+  if (namedArguments) {
+    if (!expressionList.isEmpty()) {
+      List argumentList=new ArrayList();
+      for (Iterator iter=expressionList.iterator(); iter.hasNext(); ) {
+        Expression expression=(Expression)iter.next();
+        if (!(expression instanceof MapEntryExpression)) {
+          argumentList.add(expression);
+        }
+      }
+      if (!argumentList.isEmpty()) {
+        expressionList.removeAll(argumentList);
+        MapExpression mapExpression=new MapExpression(expressionList);
+        argumentList.add(0,mapExpression);
+        return new ArgumentListExpression(argumentList);
+      }
+    }
+    return new NamedArgumentListExpression(expressionList);
+  }
+ else {
+    return new ArgumentListExpression(expressionList);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  Token token=(Token)((JComponent)ae.getSource()).getClientProperty("token");
+  if (token.getType() == Token.EOF_TYPE) {
+    scriptPane.select(0,0);
+    return;
+  }
+  try {
+    int start=scriptPane.getLineStartOffset(token.getLine() - 1) + token.getColumn() - 1;
+    scriptPane.select(start,start + token.getText().length());
+    scriptPane.requestFocus();
+  }
+ catch (  BadLocationException ex) {
+  }
+}

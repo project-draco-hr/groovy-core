@@ -1,0 +1,20 @@
+{
+  AST tryNode=tryStatementNode.getFirstChild();
+  Statement tryStatement=statement(tryNode);
+  Statement finallyStatement=EmptyStatement.INSTANCE;
+  AST node=tryNode.getNextSibling();
+  List catches=new ArrayList();
+  for (; node != null && isType(LITERAL_catch,node); node=node.getNextSibling()) {
+    catches.add(catchStatement(node));
+  }
+  if (isType(LITERAL_finally,node)) {
+    finallyStatement=statement(node);
+    node=node.getNextSibling();
+  }
+  TryCatchStatement tryCatchStatement=new TryCatchStatement(tryStatement,finallyStatement);
+  for (Iterator iter=catches.iterator(); iter.hasNext(); ) {
+    CatchStatement statement=(CatchStatement)iter.next();
+    tryCatchStatement.addCatch(statement);
+  }
+  return tryCatchStatement;
+}

@@ -1,0 +1,35 @@
+{
+  List annotations=new ArrayList();
+  AST node=methodDef.getFirstChild();
+  int modifiers=Constants.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  String returnType=null;
+  if (isType(TYPE,node)) {
+    returnType=typeName(node);
+    node=node.getNextSibling();
+  }
+  String name=identifier(node);
+  if (classNode != null) {
+    if (classNode.getNameWithoutPackage().equals(name)) {
+      throw new ASTRuntimeException(methodDef,"Invalid constructor format. Try remove the 'def' expression?");
+    }
+  }
+  node=node.getNextSibling();
+  assertNodeType(PARAMETERS,node);
+  Parameter[] parameters=parameters(node);
+  node=node.getNextSibling();
+  assertNodeType(SLIST,node);
+  Statement code=statementList(node);
+  MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,code);
+  methodNode.addAnnotations(annotations);
+  configureAST(methodNode,methodDef);
+  if (classNode != null) {
+    classNode.addMethod(methodNode);
+  }
+ else {
+    output.addMethod(methodNode);
+  }
+}

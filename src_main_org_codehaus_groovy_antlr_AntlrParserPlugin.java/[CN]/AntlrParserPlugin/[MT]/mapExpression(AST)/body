@@ -1,0 +1,9 @@
+{
+  List expressions=new ArrayList();
+  AST elist=mapNode.getFirstChild();
+  assertNodeType(ELIST,elist);
+  for (AST node=elist.getFirstChild(); node != null; node=node.getNextSibling()) {
+    expressions.add(mapEntryExpression(node));
+  }
+  return new MapExpression(expressions);
+}

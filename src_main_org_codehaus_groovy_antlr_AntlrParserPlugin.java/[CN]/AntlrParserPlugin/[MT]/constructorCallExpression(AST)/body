@@ -1,0 +1,16 @@
+{
+  if (isType(CTOR_CALL,node) || isType(LITERAL_new,node)) {
+    node=node.getFirstChild();
+  }
+  AST constructorCallNode=node;
+  String name=resolvedName(node);
+  AST elist=node.getNextSibling();
+  if (isType(ARRAY_DECLARATOR,elist)) {
+    Expression size=expression(elist.getFirstChild());
+    return new ArrayExpression(name,size);
+  }
+  Expression arguments=arguments(elist);
+  ConstructorCallExpression expression=new ConstructorCallExpression(name,arguments);
+  configureAST(expression,constructorCallNode);
+  return expression;
+}

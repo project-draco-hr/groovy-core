@@ -1,0 +1,21 @@
+{
+  AST node=variableDef.getFirstChild();
+  String type=null;
+  if (isType(MODIFIERS,node)) {
+    node=node.getNextSibling();
+  }
+  if (isType(TYPE,node)) {
+    type=typeName(node);
+    node=node.getNextSibling();
+  }
+  String name=identifier(node);
+  node=node.getNextSibling();
+  Expression leftExpression=new VariableExpression(name,type);
+  Expression rightExpression=ConstantExpression.NULL;
+  if (node != null) {
+    assertNodeType(ASSIGN,node);
+    rightExpression=expression(node.getFirstChild());
+  }
+  Token token=makeToken(Types.ASSIGN,variableDef);
+  return new ExpressionStatement(new BinaryExpression(leftExpression,token,rightExpression));
+}

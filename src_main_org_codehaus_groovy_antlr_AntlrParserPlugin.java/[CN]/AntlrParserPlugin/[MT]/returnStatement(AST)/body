@@ -1,0 +1,19 @@
+{
+  AST exprNode=node.getFirstChild();
+  if (exprNode == null) {
+    exprNode=node.getNextSibling();
+  }
+  if (exprNode != null) {
+    Expression expression=expression(exprNode);
+    if (expression instanceof ConstantExpression) {
+      ConstantExpression constantExpr=(ConstantExpression)expression;
+      if (constantExpr.getValue() == null) {
+        return ReturnStatement.RETURN_NULL_OR_VOID;
+      }
+    }
+    return new ReturnStatement(expression);
+  }
+ else {
+    return ReturnStatement.RETURN_NULL_OR_VOID;
+  }
+}

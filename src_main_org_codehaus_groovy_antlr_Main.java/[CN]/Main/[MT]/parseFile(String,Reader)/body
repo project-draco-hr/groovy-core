@@ -1,0 +1,13 @@
+{
+  try {
+    GroovyRecognizer parser=GroovyRecognizer.make(r);
+    parser.setFilename(f);
+    parser.compilationUnit();
+    System.out.println("parseFile " + f + " => "+ parser.getAST());
+    doTreeAction(f,parser.getAST(),parser.getTokenNames());
+  }
+ catch (  Exception e) {
+    System.err.println("parser exception: " + e);
+    e.printStackTrace();
+  }
+}

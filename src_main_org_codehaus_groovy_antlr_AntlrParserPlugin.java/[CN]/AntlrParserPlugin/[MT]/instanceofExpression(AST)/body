@@ -1,0 +1,8 @@
+{
+  AST leftNode=node.getFirstChild();
+  Expression leftExpression=expression(leftNode);
+  AST rightNode=leftNode.getNextSibling();
+  String typeName=resolvedName(rightNode);
+  Expression rightExpression=new ClassExpression(typeName);
+  return new BinaryExpression(leftExpression,makeToken(Types.KEYWORD_INSTANCEOF,node),rightExpression);
+}

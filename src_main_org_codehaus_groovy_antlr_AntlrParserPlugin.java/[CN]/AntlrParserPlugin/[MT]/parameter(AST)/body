@@ -1,0 +1,20 @@
+{
+  List annotations=new ArrayList();
+  AST node=paramNode.getFirstChild();
+  int modifiers=0;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  assertNodeType(TYPE,node);
+  String type=typeName(node);
+  node=node.getNextSibling();
+  String name=identifier(node);
+  Expression defaultValue=null;
+  node=node.getNextSibling();
+  if (node != null) {
+    defaultValue=expression(node);
+  }
+  Parameter parameter=new Parameter(type,name,defaultValue);
+  return parameter;
+}

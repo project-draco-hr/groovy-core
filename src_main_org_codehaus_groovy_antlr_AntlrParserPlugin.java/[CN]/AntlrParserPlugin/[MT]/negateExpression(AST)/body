@@ -1,0 +1,16 @@
+{
+  AST node=negateExpr.getFirstChild();
+  String text=node.getText();
+switch (node.getType()) {
+case NUM_DOUBLE:
+case NUM_FLOAT:
+case NUM_BIG_DECIMAL:
+    return new ConstantExpression(Numbers.parseDecimal("-" + text));
+case NUM_BIG_INT:
+case NUM_INT:
+case NUM_LONG:
+  return new ConstantExpression(Numbers.parseInteger("-" + text));
+default :
+return new NegationExpression(expression(node));
+}
+}

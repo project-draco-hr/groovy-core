@@ -1,0 +1,13 @@
+{
+  AST node=assertNode.getFirstChild();
+  BooleanExpression booleanExpression=booleanExpression(node);
+  Expression messageExpression=null;
+  node=node.getNextSibling();
+  if (node != null) {
+    messageExpression=expression(node);
+  }
+ else {
+    messageExpression=ConstantExpression.NULL;
+  }
+  return new AssertStatement(booleanExpression,messageExpression);
+}

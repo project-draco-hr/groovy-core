@@ -1,0 +1,17 @@
+{
+  AST node=parametersNode.getFirstChild();
+  if (node == null) {
+    return Parameter.EMPTY_ARRAY;
+  }
+ else {
+    List parameters=new ArrayList();
+    do {
+      parameters.add(parameter(node));
+      node=node.getNextSibling();
+    }
+ while (node != null);
+    Parameter[] answer=new Parameter[parameters.size()];
+    parameters.toArray(answer);
+    return answer;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  AST expressionNode=node.getFirstChild();
+  if (expressionNode == null) {
+    expressionNode=node.getNextSibling();
+  }
+  if (expressionNode == null) {
+    throw new ASTRuntimeException(node,"No expression available");
+  }
+  return new ThrowStatement(expression(expressionNode));
+}

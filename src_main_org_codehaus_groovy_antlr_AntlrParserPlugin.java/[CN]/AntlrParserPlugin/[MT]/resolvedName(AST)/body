@@ -1,0 +1,31 @@
+{
+  if (isType(TYPE,node)) {
+    node=node.getFirstChild();
+  }
+  String answer=null;
+  if (isType(DOT,node)) {
+    answer=qualifiedName(node);
+  }
+ else   if (isPrimitiveTypeLiteral(node)) {
+    answer=node.getText();
+  }
+ else   if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
+    AST child=node.getFirstChild();
+    String text=resolvedName(child);
+    if (text.endsWith("[]")) {
+      return text;
+    }
+    return text + "[]";
+  }
+ else {
+    String identifier=identifier(node);
+    answer=resolveTypeName(identifier);
+  }
+  AST nextSibling=node.getNextSibling();
+  if (isType(INDEX_OP,nextSibling) || isType(ARRAY_DECLARATOR,node)) {
+    return answer + "[]";
+  }
+ else {
+    return answer;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  Token token=makeToken(type,node);
+  AST leftNode=node.getFirstChild();
+  Expression leftExpression=expression(leftNode);
+  AST rightNode=leftNode.getNextSibling();
+  if (rightNode == null) {
+    rightNode=leftNode.getFirstChild();
+  }
+  if (rightNode == null) {
+    throw new NullPointerException("No rightNode associated with binary expression");
+  }
+  Expression rightExpression=expression(rightNode);
+  return new BinaryExpression(leftExpression,token,rightExpression);
+}

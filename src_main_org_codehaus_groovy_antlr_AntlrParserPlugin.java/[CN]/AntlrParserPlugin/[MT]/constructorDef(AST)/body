@@ -1,0 +1,17 @@
+{
+  List annotations=new ArrayList();
+  AST node=constructorDef.getFirstChild();
+  int modifiers=Constants.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  assertNodeType(PARAMETERS,node);
+  Parameter[] parameters=parameters(node);
+  node=node.getNextSibling();
+  assertNodeType(SLIST,node);
+  Statement code=statementList(node);
+  ConstructorNode constructorNode=classNode.addConstructor(modifiers,parameters,code);
+  constructorNode.addAnnotations(annotations);
+  configureAST(constructorNode,constructorDef);
+}

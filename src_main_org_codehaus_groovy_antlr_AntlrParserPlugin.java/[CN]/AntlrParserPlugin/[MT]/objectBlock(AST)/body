@@ -1,0 +1,21 @@
+{
+  for (AST node=objectBlock.getFirstChild(); node != null; node=node.getNextSibling()) {
+    int type=node.getType();
+switch (type) {
+case OBJBLOCK:
+      objectBlock(node);
+    break;
+case METHOD_DEF:
+  methodDef(node);
+break;
+case CTOR_IDENT:
+constructorDef(node);
+break;
+case VARIABLE_DEF:
+fieldDef(node);
+break;
+default :
+unknownAST(node);
+}
+}
+}

@@ -1,0 +1,34 @@
+{
+  List annotations=new ArrayList();
+  AST node=classDef.getFirstChild();
+  int modifiers=Constants.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  String name=identifier(node);
+  node=node.getNextSibling();
+  String superClass=null;
+  if (isType(EXTENDS_CLAUSE,node)) {
+    superClass=typeName(node);
+    node=node.getNextSibling();
+  }
+  if (superClass == null) {
+    superClass="java.lang.Object";
+  }
+  String[] interfaces={};
+  if (isType(IMPLEMENTS_CLAUSE,node)) {
+    interfaces=interfaces(node);
+    node=node.getNextSibling();
+  }
+  MixinNode[] mixins={};
+  addNewClassName(name);
+  String fullClassName=dot(getPackageName(),name);
+  classNode=new ClassNode(fullClassName,modifiers,superClass,interfaces,mixins);
+  classNode.addAnnotations(annotations);
+  configureAST(classNode,classDef);
+  assertNodeType(OBJBLOCK,node);
+  objectBlock(node);
+  output.addClass(classNode);
+  classNode=null;
+}

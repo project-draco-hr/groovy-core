@@ -1,0 +1,18 @@
+{
+  AST node=annotationNode.getFirstChild();
+  String name=identifier(node);
+  AnnotationNode annotatedNode=new AnnotationNode(name);
+  while (true) {
+    node=node.getNextSibling();
+    if (isType(ANNOTATION_MEMBER_VALUE_PAIR,node)) {
+      AST memberNode=node.getFirstChild();
+      String param=identifier(memberNode);
+      Expression expression=expression(memberNode.getNextSibling());
+      annotatedNode.addMember(param,expression);
+    }
+ else {
+      break;
+    }
+  }
+  return annotatedNode;
+}

@@ -1,0 +1,21 @@
+{
+  List expressions=new ArrayList();
+  AST elist=listNode.getFirstChild();
+  assertNodeType(ELIST,elist);
+  AST node=elist.getFirstChild();
+  if (isType(LABELED_ARG,node)) {
+    do {
+      expressions.add(mapEntryExpression(node));
+      node=node.getNextSibling();
+    }
+ while (isType(LABELED_ARG,node));
+    return new MapExpression(expressions);
+  }
+ else {
+    while (node != null) {
+      expressions.add(expression(node));
+      node=node.getNextSibling();
+    }
+    return new ListExpression(expressions);
+  }
+}

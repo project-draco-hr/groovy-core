@@ -1,0 +1,19 @@
+{
+  if (isType(IDENT,qualifiedNameNode)) {
+    return qualifiedNameNode.getText();
+  }
+  assertNodeType(DOT,qualifiedNameNode);
+  AST node=qualifiedNameNode.getFirstChild();
+  StringBuffer buffer=new StringBuffer();
+  boolean first=true;
+  for (; node != null; node=node.getNextSibling()) {
+    if (first) {
+      first=false;
+    }
+ else {
+      buffer.append(".");
+    }
+    buffer.append(qualifiedName(node));
+  }
+  return buffer.toString();
+}

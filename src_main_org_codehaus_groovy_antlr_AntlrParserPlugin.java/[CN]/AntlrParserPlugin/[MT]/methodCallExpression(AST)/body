@@ -1,0 +1,37 @@
+{
+  AST node=methodCallNode.getFirstChild();
+  if (isType(METHOD_CALL,node)) {
+    return methodCallExpression(node);
+  }
+  Expression objectExpression=VariableExpression.THIS_EXPRESSION;
+  AST elist=null;
+  if (isType(DOT,node)) {
+    AST objectNode=node.getFirstChild();
+    elist=node.getNextSibling();
+    objectExpression=expression(objectNode);
+    node=objectNode.getNextSibling();
+  }
+  String name=null;
+  if (isType(LITERAL_super,node)) {
+    name="super";
+    if (objectExpression == VariableExpression.THIS_EXPRESSION) {
+      objectExpression=VariableExpression.SUPER_EXPRESSION;
+    }
+  }
+ else   if (isType(LITERAL_new,node)) {
+    return constructorCallExpression(node);
+  }
+ else   if (isPrimitiveTypeLiteral(node)) {
+    throw new ASTRuntimeException(node,"Primitive type literal: " + node.getText() + " cannot be used as a method name; maybe you need to use a double || with a closure expression? {|int x| ..} rather than {int x|...}");
+  }
+ else {
+    name=identifier(node);
+  }
+  if (elist == null) {
+    elist=node.getNextSibling();
+  }
+  Expression arguments=arguments(elist);
+  MethodCallExpression expression=new MethodCallExpression(objectExpression,name,arguments);
+  configureAST(expression,methodCallNode);
+  return expression;
+}

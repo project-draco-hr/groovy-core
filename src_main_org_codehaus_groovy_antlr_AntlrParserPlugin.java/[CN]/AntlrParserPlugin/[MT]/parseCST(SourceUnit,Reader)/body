@@ -1,0 +1,18 @@
+{
+  ast=null;
+  setController(sourceUnit);
+  GroovyLexer lexer=new GroovyLexer(reader);
+  GroovyRecognizer parser=GroovyRecognizer.make(lexer);
+  parser.setFilename(sourceUnit.getName());
+  try {
+    parser.compilationUnit();
+  }
+ catch (  RecognitionException e) {
+    sourceUnit.addException(e);
+  }
+catch (  TokenStreamException e) {
+    sourceUnit.addException(e);
+  }
+  ast=parser.getAST();
+  return null;
+}

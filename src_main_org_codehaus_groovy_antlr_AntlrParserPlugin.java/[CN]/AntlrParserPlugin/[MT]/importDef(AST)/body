@@ -1,0 +1,24 @@
+{
+  AST node=importNode.getFirstChild();
+  if (isType(LITERAL_as,node)) {
+    AST dotNode=node.getFirstChild();
+    AST packageNode=dotNode.getFirstChild();
+    AST classNode=packageNode.getNextSibling();
+    String packageName=qualifiedName(packageNode);
+    String name=qualifiedName(classNode);
+    String alias=identifier(dotNode.getNextSibling());
+    importClass(packageName,name,alias);
+  }
+ else {
+    AST packageNode=node.getFirstChild();
+    String packageName=qualifiedName(packageNode);
+    AST nameNode=packageNode.getNextSibling();
+    if (isType(STAR,nameNode)) {
+      importPackageWithStar(packageName);
+    }
+ else {
+      String name=qualifiedName(nameNode);
+      importClass(packageName,name,name);
+    }
+  }
+}

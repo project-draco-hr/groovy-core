@@ -1,0 +1,19 @@
+{
+  AST node=switchNode.getFirstChild();
+  Expression expression=expression(node);
+  Statement defaultStatement=EmptyStatement.INSTANCE;
+  List list=new ArrayList();
+  for (node=node.getNextSibling(); isType(CASE_GROUP,node); node=node.getNextSibling()) {
+    AST child=node.getFirstChild();
+    if (isType(LITERAL_case,child)) {
+      list.add(caseStatement(child));
+    }
+ else {
+      defaultStatement=statement(child.getNextSibling());
+    }
+  }
+  if (node != null) {
+    unknownAST(node);
+  }
+  return new SwitchStatement(expression,list,defaultStatement);
+}
