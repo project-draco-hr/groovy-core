@@ -1,20 +1,63 @@
 {
   StringBuffer buffer=new StringBuffer(self);
-  char lastCh=lastCharacter();
-  for (int idx=buffer.length() - 1; idx >= 0; idx--) {
-    char ch=previous(buffer.charAt(idx));
-    if (ch != ZERO_CHAR) {
-      buffer.setCharAt(idx,ch);
+  if (buffer.length() == 0)   return self;
+  if (buffer.length() == 1) {
+    int last=buffer.length() - 1;
+    char ch=buffer.charAt(last);
+    ch--;
+    buffer.setCharAt(last,ch);
+    return buffer.toString();
+  }
+  boolean digit=false;
+  boolean upperCaseLetter=false;
+  boolean carry=buffer.length() > 0;
+  boolean decremented=false;
+  int fill=0;
+  char oldChar=' ';
+  char ch=' ';
+  for (int idx=buffer.length() - 1; idx >= 0 && carry; idx--) {
+    oldChar=ch;
+    ch=buffer.charAt(idx);
+    if (!isLetterOrDigit(ch)) {
+      if (!decremented)       continue;
+      if (fill > 1) {
+        buffer.deleteCharAt(idx + 1);
+      }
+ else {
+        oldChar--;
+        buffer.setCharAt(idx + 1,oldChar);
+      }
+      carry=false;
       break;
     }
- else {
-      if (idx == 0) {
-        return null;
-      }
- else {
-        buffer.setCharAt(idx,lastCh);
-      }
+    digit=isDigit(ch);
+    upperCaseLetter=isUpperCase(ch);
+    char newCh=ch;
+    newCh--;
+    fill++;
+    decremented=true;
+    if (newCh == '0' && fill > 1) {
+      buffer.deleteCharAt(idx);
+      carry=false;
+      break;
     }
+    if (isLetterOrDigit(newCh)) {
+      carry=false;
+    }
+ else {
+      newCh=lastCharacter(digit,upperCaseLetter);
+    }
+    buffer.setCharAt(idx,newCh);
+  }
+  if (!carry)   return buffer.toString();
+  if (decremented) {
+    buffer.deleteCharAt(0);
+  }
+ else {
+    int last=buffer.length() - 1;
+    ch=buffer.charAt(last);
+    ch--;
+    buffer.setCharAt(last,ch);
   }
   return buffer.toString();
 }
