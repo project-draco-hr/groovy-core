@@ -1,3 +1,7 @@
 {
-  assertExecute(new File("src/test/groovy/bugs/ConstructorBug.groovy"),null);
+  String fileName=System.getProperty("script",file);
+  if (fileName == null) {
+    throw new RuntimeException("No filename given in the 'script' system property so cannot run a Groovy script");
+  }
+  assertExecute(new File(fileName),null);
 }

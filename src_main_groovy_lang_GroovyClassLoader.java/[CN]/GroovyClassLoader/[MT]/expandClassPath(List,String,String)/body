@@ -1,5 +1,5 @@
 {
-  paths=classpath.split(File.pathSeparator);
+  String[] paths=classpath.split(File.pathSeparator);
   for (int i=0; i < paths.length; i++) {
     File path=null;
     if ("".equals(base)) {
@@ -13,10 +13,6 @@
         try {
           JarFile jar=new JarFile(path);
           pathList.add(paths[i]);
-          Manifest manifest=jar.getManifest();
-          Attributes classPathAttributes=manifest.getMainAttributes();
-          String manifestClassPath=classPathAttributes.getValue("Class-Path");
-          if (manifestClassPath != null)           expandClassPath(pathList,paths[i],manifestClassPath);
         }
  catch (        IOException e) {
           continue;
