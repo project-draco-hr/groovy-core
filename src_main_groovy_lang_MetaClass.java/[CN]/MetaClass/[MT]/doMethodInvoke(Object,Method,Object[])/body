@@ -3,7 +3,10 @@
     if (registry.useAccessible()) {
       method.setAccessible(true);
     }
-    if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
+    if (argumentArray == null) {
+      argumentArray=EMPTY_ARRAY;
+    }
+ else     if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
       argumentArray=ARRAY_WITH_NULL;
     }
     return method.invoke(object,argumentArray);

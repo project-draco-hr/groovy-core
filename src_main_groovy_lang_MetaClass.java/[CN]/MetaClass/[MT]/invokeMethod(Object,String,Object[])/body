@@ -10,9 +10,12 @@
     }
   }
   List newStaticInstanceMethods=getNewStaticInstanceMethods(methodName);
-  Object[] staticArguments=new Object[arguments.length + 1];
+  int size=(arguments != null) ? arguments.length : 0;
+  Object[] staticArguments=new Object[size + 1];
   staticArguments[0]=object;
-  System.arraycopy(arguments,0,staticArguments,1,arguments.length);
+  if (size > 0) {
+    System.arraycopy(arguments,0,staticArguments,1,size);
+  }
   Method method=null;
   if (!newStaticInstanceMethods.isEmpty()) {
     method=(Method)chooseMethod(methodName,newStaticInstanceMethods,staticArguments);
