@@ -10,6 +10,9 @@
     return map.entrySet();
   }
  else   if (value.getClass().isArray()) {
+    if (value.getClass().getComponentType().isPrimitive()) {
+      return InvokerHelper.primitiveArrayToList(value);
+    }
     return Arrays.asList((Object[])value);
   }
  else   if (value instanceof MethodClosure) {
