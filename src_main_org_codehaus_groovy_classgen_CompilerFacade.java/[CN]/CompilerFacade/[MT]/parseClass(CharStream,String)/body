@@ -4,7 +4,8 @@
   CSTNode compilationUnit=parser.compilationUnit();
   ASTBuilder astBuilder=new ASTBuilder(classLoader);
   ModuleNode module=astBuilder.build(compilationUnit);
-  GeneratorContext context=new GeneratorContext();
+  unit.addModule(module);
+  GeneratorContext context=new GeneratorContext(unit);
   for (Iterator iter=module.getClasses().iterator(); iter.hasNext(); ) {
     generateClass(context,(ClassNode)iter.next(),file);
   }

@@ -23,11 +23,10 @@
   }
   stageTwoCompile(compilationUnits);
   List results=new ArrayList();
+  CompileUnit unit=new CompileUnit();
   for (int i=0; i < compilationUnits.length; ++i) {
-    GroovyClass[] classes=stageThreeCompile(compilationUnits[i],sources[i]);
-    for (int j=0; j < classes.length; ++j) {
-      results.add(classes[j]);
-    }
+    stageThreeCompile(unit,compilationUnits[i],sources[i]);
   }
+  stageFourCompile(results,unit);
   return (GroovyClass[])results.toArray(GroovyClass.EMPTY_ARRAY);
 }

@@ -1,0 +1,18 @@
+{
+  String importName=qualifiedName(importRoot.getChild(0));
+  String asName=null;
+  if (matches(importRoot.getChild(1),Token.KEYWORD_AS)) {
+    asName=identifier(importRoot.getChild(1).getChild(0));
+  }
+ else {
+    int lastDot=importName.lastIndexOf(".");
+    if (lastDot < 0) {
+      asName=importName;
+    }
+ else {
+      asName=importName.substring(lastDot + 1);
+    }
+  }
+  addImport(importName,asName);
+  node.addImport(asName,importName);
+}

@@ -1,0 +1,15 @@
+{
+  for (Iterator iter=unit.getModules().iterator(); iter.hasNext(); ) {
+    ModuleNode module=(ModuleNode)iter.next();
+    for (Iterator iter2=module.getClasses().iterator(); iter2.hasNext(); ) {
+      ClassNode classNode=(ClassNode)iter2.next();
+      if (verbose) {
+        System.out.println("Generating class: " + classNode.getName());
+      }
+      GroovyClass[] classes=generateClasses(new GeneratorContext(unit),classNode,module.getDescription());
+      for (int j=0; j < classes.length; ++j) {
+        results.add(classes[j]);
+      }
+    }
+  }
+}
