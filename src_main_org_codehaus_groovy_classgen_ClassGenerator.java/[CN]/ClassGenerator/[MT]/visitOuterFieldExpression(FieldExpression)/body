@@ -1,5 +1,9 @@
 {
   ClassNode outerClassNode=classNode.getOuterClass();
+  if (outerClassNode instanceof InnerClassNode) {
+    visitPropertyExpression(new PropertyExpression(new FieldExpression(classNode.getField("owner")),expression.getFieldName()));
+    return;
+  }
   int valueIdx=idx + 1;
   if (leftHandExpression) {
     cv.visitVarInsn(ASTORE,valueIdx);

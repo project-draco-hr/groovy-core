@@ -16,24 +16,13 @@
       defineVariable(name,"java.lang.Object");
     }
   }
-  if (classNode instanceof InnerClassNode) {
-    int paramIdx=defineVariable(createVariableName("iterator"),"java.lang.Object",false).getIndex();
-    cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",helper.getTypeDescription(ownerTypeName));
-    cv.visitVarInsn(ASTORE,paramIdx);
-    cv.visitTypeInsn(NEW,innerClassinternalName);
-    cv.visitInsn(DUP);
-    cv.visitVarInsn(ALOAD,paramIdx);
+  cv.visitTypeInsn(NEW,innerClassinternalName);
+  cv.visitInsn(DUP);
+  if (isStaticMethod() || classNode.isStaticClass()) {
+    visitClassExpression(new ClassExpression(ownerTypeName));
   }
  else {
-    cv.visitTypeInsn(NEW,innerClassinternalName);
-    cv.visitInsn(DUP);
-    if (isStaticMethod()) {
-      visitClassExpression(new ClassExpression(ownerTypeName));
-    }
- else {
-      cv.visitVarInsn(ALOAD,0);
-    }
+    cv.visitVarInsn(ALOAD,0);
   }
   if (innerClass.getSuperClass().equals("groovy.lang.Closure")) {
     if (isStaticMethod()) {

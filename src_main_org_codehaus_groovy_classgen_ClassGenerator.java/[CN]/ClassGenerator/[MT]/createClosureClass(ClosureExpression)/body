@@ -1,8 +1,6 @@
 {
   ClassNode owner=classNode;
-  if (owner instanceof InnerClassNode) {
-    owner=owner.getOuterClass();
-  }
+  boolean parentIsInnerClass=owner instanceof InnerClassNode;
   String outerClassName=owner.getName();
   String name=outerClassName + "$" + context.getNextInnerClassIdx();
   boolean staticMethodOrInStaticClass=isStaticMethod() || classNode.isStaticClass();
@@ -39,11 +37,20 @@
       initialValue=new VariableExpression(paramName);
       type=Reference.class.getName();
     }
-    FieldNode paramField=answer.addField(paramName,ACC_PRIVATE,type,initialValue);
+    FieldNode paramField=null;
     if (holder) {
+      paramField=answer.addField(paramName,ACC_PRIVATE,type,initialValue);
       paramField.setHolder(true);
+      String realType=param.getType();
+      String methodName=Verifier.capitalize(paramName);
+      Expression fieldExp=new FieldExpression(paramField);
+      answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,new ReturnStatement(fieldExp));
     }
  else {
+      PropertyNode propertyNode=answer.addProperty(paramName,ACC_PUBLIC,type,initialValue,null,null);
+      paramField=propertyNode.getField();
+    }
+    if (!holder) {
       block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(paramField),Token.equal(-1,-1),new VariableExpression(paramName))));
     }
   }
