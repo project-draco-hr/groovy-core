@@ -1,8 +1,29 @@
 {
   this.leftHandExpression=false;
-  call.getObjectExpression().visit(this);
-  cv.visitLdcInsn(call.getMethod());
-  call.getArguments().visit(this);
+  Expression arguments=call.getArguments();
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)arguments;
+    int size=tupleExpression.getExpressions().size();
+    if (size == 0) {
+      arguments=ConstantExpression.NULL;
+    }
+ else     if (size == 1) {
+      arguments=(Expression)tupleExpression.getExpressions().get(0);
+    }
+  }
+  if (arguments instanceof TupleExpression) {
+    int parametersItx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
+    arguments.visit(this);
+    cv.visitVarInsn(ASTORE,parametersItx);
+    call.getObjectExpression().visit(this);
+    cv.visitLdcInsn(call.getMethod());
+    cv.visitVarInsn(ALOAD,parametersItx);
+    idx--;
+  }
+ else {
+    call.getObjectExpression().visit(this);
+    cv.visitLdcInsn(call.getMethod());
+    arguments.visit(this);
+  }
   invokeMethodMethod.call(cv);
-  cv.visitInsn(POP);
 }

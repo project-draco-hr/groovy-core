@@ -1,4 +1,8 @@
 {
   onLineNumber(statement);
-  statement.getExpression().visit(this);
+  Expression expression=statement.getExpression();
+  expression.visit(this);
+  if (expression instanceof MethodCallExpression) {
+    cv.visitInsn(POP);
+  }
 }

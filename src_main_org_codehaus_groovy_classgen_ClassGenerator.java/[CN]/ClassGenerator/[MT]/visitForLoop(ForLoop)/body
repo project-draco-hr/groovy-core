@@ -1,10 +1,10 @@
 {
   onLineNumber(loop);
-  int iIdx=defineVariable(loop.getVariable(),"java.lang.Object").getIndex();
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
   int iteratorIdx=defineVariable(createIteratorName(),"java.util.Iterator",false).getIndex();
   cv.visitVarInsn(ASTORE,iteratorIdx);
+  int iIdx=defineVariable(loop.getVariable(),"java.lang.Object",false).getIndex();
   Label label1=new Label();
   cv.visitJumpInsn(GOTO,label1);
   Label label2=new Label();
