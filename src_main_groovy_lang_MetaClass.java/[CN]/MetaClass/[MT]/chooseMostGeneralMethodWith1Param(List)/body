@@ -1,13 +1,13 @@
 {
   Class closestClass=null;
-  Method answer=null;
+  Object answer=null;
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    Method method=(Method)iter.next();
-    Class[] paramTypes=method.getParameterTypes();
+    Object method=iter.next();
+    Class[] paramTypes=getParameterTypes(method);
     int paramLength=paramTypes.length;
     if (paramLength == 1) {
       Class theType=paramTypes[0];
-      if (closestClass == null || isAssignableFrom(theType,closestClass)) {
+      if (closestClass == null || theType.isAssignableFrom(closestClass)) {
         closestClass=theType;
         answer=method;
       }

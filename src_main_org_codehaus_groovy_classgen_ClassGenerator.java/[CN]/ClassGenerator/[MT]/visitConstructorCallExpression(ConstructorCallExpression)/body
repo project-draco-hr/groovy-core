@@ -1,2 +1,17 @@
 {
+  this.leftHandExpression=false;
+  Expression arguments=call.getArguments();
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)arguments;
+    int size=tupleExpression.getExpressions().size();
+    if (size == 0) {
+      arguments=ConstantExpression.EMPTY_ARRAY;
+    }
+ else     if (size == 1) {
+      arguments=(Expression)tupleExpression.getExpressions().get(0);
+    }
+  }
+  cv.visitLdcInsn(call.getType());
+  arguments.visit(this);
+  invokeConstructorMethod.call(cv);
 }

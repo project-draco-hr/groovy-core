@@ -5,7 +5,7 @@
   Class theClass=object.getClass();
   List methods=getMethods(methodName);
   if (!methods.isEmpty()) {
-    Method method=chooseMethod(methods,arguments,argumentList);
+    Method method=(Method)chooseMethod(methods,arguments,argumentList);
     if (method != null) {
       return doMethodInvoke(object,method,arguments,argumentList);
     }
@@ -14,7 +14,7 @@
   List staticArgumentList=new ArrayList(argumentList.size() + 1);
   staticArgumentList.add(object);
   staticArgumentList.addAll(argumentList);
-  Method method=chooseMethod(newStaticInstanceMethods,staticArgumentList,staticArgumentList);
+  Method method=(Method)chooseMethod(newStaticInstanceMethods,staticArgumentList,staticArgumentList);
   if (method == null) {
     method=findNewStaticInstanceMethod(methodName,staticArgumentList);
   }

@@ -6,7 +6,7 @@
  else   if (methodCount == 1) {
     return (Method)methods.get(0);
   }
-  Method answer=null;
+  Object answer=null;
   if (arguments == null) {
     answer=chooseMostGeneralMethodWith1Param(methods);
   }
@@ -15,15 +15,15 @@
   }
  else {
     Class closestClass=null;
-    Method singleParameterMatch=null;
+    Object singleParameterMatch=null;
     boolean wasMethodWithMultiArgs=false;
     for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-      Method method=(Method)iter.next();
-      Class[] paramTypes=method.getParameterTypes();
+      Object method=iter.next();
+      Class[] paramTypes=getParameterTypes(method);
       if (paramTypes.length == 1) {
         Class theType=paramTypes[0];
         if (isCompatibleInstance(theType,arguments)) {
-          if (closestClass == null || !isAssignableFrom(theType,closestClass)) {
+          if (closestClass == null || !theType.isAssignableFrom(closestClass)) {
             closestClass=theType;
             singleParameterMatch=method;
           }
@@ -33,13 +33,13 @@
         }
       }
     }
-    Method multiParamMatch=null;
+    Object multiParamMatch=null;
     int size=argumentList.size();
     int matches=0;
     if (size > 1) {
       for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-        Method method=(Method)iter.next();
-        Class[] paramTypes=method.getParameterTypes();
+        Object method=iter.next();
+        Class[] paramTypes=getParameterTypes(method);
         if (paramTypes.length == size) {
           boolean validMethod=true;
           for (int i=0; i < size; i++) {
@@ -59,8 +59,8 @@
       if (multiParamMatch == null) {
         return singleParameterMatch;
       }
-      int answerSize=singleParameterMatch.getParameterTypes().length;
-      int matchingArgSize=multiParamMatch.getParameterTypes().length;
+      int answerSize=getParameterTypes(singleParameterMatch).length;
+      int matchingArgSize=getParameterTypes(multiParamMatch).length;
       if (answerSize == matchingArgSize) {
         return singleParameterMatch;
       }

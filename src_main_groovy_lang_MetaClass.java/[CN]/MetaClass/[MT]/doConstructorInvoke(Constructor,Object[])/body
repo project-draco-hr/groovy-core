@@ -1,0 +1,19 @@
+{
+  try {
+    return constructor.newInstance(argumentArray);
+  }
+ catch (  InvocationTargetException e) {
+    Throwable t=e.getTargetException();
+    if (t instanceof Error) {
+      Error error=(Error)t;
+      throw error;
+    }
+    throw new InvokerInvocationException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new InvokerException("could not access constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+catch (  Exception e) {
+    throw new InvokerException("failed to invoke constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+}
