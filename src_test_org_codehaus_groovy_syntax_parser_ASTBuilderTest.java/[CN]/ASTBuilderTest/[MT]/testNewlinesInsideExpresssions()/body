@@ -1,0 +1,8 @@
+{
+  ModuleNode module=parse("class Foo { void testMethod() { x = 1 +\n 5 * \n 2 / \n 5 } }","Dummy.groovy");
+  BlockStatement statement=getCode(module,"testMethod");
+  assertEquals("Statements size: " + statement.getStatements(),1,statement.getStatements().size());
+  for (Iterator iter=statement.getStatements().iterator(); iter.hasNext(); ) {
+    System.out.println(iter.next());
+  }
+}

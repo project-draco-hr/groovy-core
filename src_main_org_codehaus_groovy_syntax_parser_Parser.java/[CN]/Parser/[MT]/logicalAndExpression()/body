@@ -1,7 +1,8 @@
 {
   CSTNode expr=equalityExpression();
-  while (lt() == Token.LOGICAL_AND) {
+  while (lt_bare() == Token.LOGICAL_AND) {
     expr=rootNode(Token.LOGICAL_AND,expr);
+    optionalNewlines();
     expr.addChild(equalityExpression());
   }
   return expr;

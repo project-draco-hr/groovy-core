@@ -1,12 +1,12 @@
 {
   CSTNode expr=null;
   CSTNode identifier=null;
-  PREFIX_SWITCH: switch (lt()) {
+  PREFIX_SWITCH: switch (lt_bare()) {
 case (Token.KEYWORD_TRUE):
 case (Token.KEYWORD_FALSE):
 case (Token.KEYWORD_NULL):
 {
-      expr=rootNode(lt());
+      expr=rootNode(lt_bare());
       break PREFIX_SWITCH;
     }
 case (Token.KEYWORD_NEW):
@@ -23,7 +23,7 @@ case (Token.INTEGER_NUMBER):
 case (Token.FLOAT_NUMBER):
 case (Token.SINGLE_QUOTE_STRING):
 {
-expr=rootNode(lt());
+expr=rootNode(lt_bare());
 break PREFIX_SWITCH;
 }
 case (Token.DOUBLE_QUOTE_STRING):
@@ -44,18 +44,18 @@ break PREFIX_SWITCH;
 case (Token.KEYWORD_THIS):
 {
 expr=new CSTNode(Token.keyword(-1,-1,"this"));
-identifier=rootNode(lt());
+identifier=rootNode(lt_bare());
 break PREFIX_SWITCH;
 }
 case (Token.KEYWORD_SUPER):
 {
 expr=new CSTNode(Token.keyword(-1,-1,"super"));
-identifier=rootNode(lt());
+identifier=rootNode(lt_bare());
 break PREFIX_SWITCH;
 }
 case (Token.IDENTIFIER):
 {
-identifier=rootNode(lt());
+identifier=rootNode(lt_bare());
 expr=identifier;
 break PREFIX_SWITCH;
 }
@@ -69,7 +69,7 @@ default :
 throwExpected(new int[]{});
 }
 }
-if (identifier != null && (lt() == Token.LEFT_PARENTHESIS || lt() == Token.LEFT_CURLY_BRACE)) {
+if (identifier != null && (lt_bare() == Token.LEFT_PARENTHESIS || lt_bare() == Token.LEFT_CURLY_BRACE)) {
 if (expr == identifier) {
 CSTNode replacementExpr=new CSTNode();
 CSTNode resultExpr=sugaryMethodCallExpression(replacementExpr,identifier,null);
@@ -81,10 +81,10 @@ expr=resultExpr;
 expr=sugaryMethodCallExpression(expr,identifier,null);
 }
 }
-DOT_LOOP: while ((lt() == Token.DOT || lt() == Token.NAVIGATE) && (lt(2) == Token.IDENTIFIER || lt(2) == Token.KEYWORD_CLASS)) {
-CSTNode dotExpr=rootNode(lt());
-identifier=rootNode(lt());
-DOT_TYPE_SWITCH: switch (lt()) {
+DOT_LOOP: while ((lt_bare() == Token.DOT || lt_bare() == Token.NAVIGATE) && (lt(2) == Token.IDENTIFIER || lt(2) == Token.KEYWORD_CLASS)) {
+CSTNode dotExpr=rootNode(lt_bare());
+identifier=rootNode(lt_bare());
+DOT_TYPE_SWITCH: switch (lt_bare()) {
 case (Token.LEFT_PARENTHESIS):
 case (Token.LEFT_CURLY_BRACE):
 {

@@ -1,7 +1,7 @@
 {
   CSTNode methodExpr=null;
   CSTNode paramList=null;
-  if (lt() == Token.LEFT_PARENTHESIS) {
+  if (lt_bare() == Token.LEFT_PARENTHESIS) {
     methodExpr=rootNode(Token.LEFT_PARENTHESIS);
     methodExpr.addChild(expr);
     methodExpr.addChild(identifier);
@@ -9,7 +9,7 @@
     methodExpr.addChild(paramList);
     consume(Token.RIGHT_PARENTHESIS);
   }
-  if (lt() == Token.LEFT_CURLY_BRACE) {
+  if (lt_bare() == Token.LEFT_CURLY_BRACE) {
     if (methodExpr == null) {
       methodExpr=new CSTNode(Token.leftParenthesis(-1,-1));
       methodExpr.addChild(expr);
