@@ -3,5 +3,13 @@
   if (constructor != null) {
     return doConstructorInvoke(constructor,arguments);
   }
+  if (arguments.length == 1 && arguments[0] instanceof Map) {
+    constructor=(Constructor)chooseMethod("<init>",constructors,EMPTY_ARRAY);
+    if (constructor != null) {
+      Object bean=doConstructorInvoke(constructor,EMPTY_ARRAY);
+      setProperties(bean,((Map)arguments[0]));
+      return bean;
+    }
+  }
   throw new GroovyRuntimeException("Could not find matching constructor for class: " + theClass.getName());
 }

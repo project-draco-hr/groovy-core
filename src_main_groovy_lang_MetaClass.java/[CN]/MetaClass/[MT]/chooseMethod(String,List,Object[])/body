@@ -4,7 +4,11 @@
     return null;
   }
  else   if (methodCount == 1) {
-    return methods.get(0);
+    Object method=methods.get(0);
+    if (isValidMethod(method,arguments,true)) {
+      return method;
+    }
+    return null;
   }
   Object answer=null;
   if (arguments.length == 1 && arguments[0] == null) {
@@ -14,22 +18,12 @@
     answer=chooseEmptyMethodParams(methods);
   }
  else {
-    int size=arguments.length;
     List matchingMethods=new ArrayList();
     for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
       Object method=iter.next();
-      Class[] paramTypes=getParameterTypes(method);
-      if (paramTypes.length == size) {
-        boolean validMethod=true;
-        for (int i=0; i < size; i++) {
-          Object value=arguments[i];
-          if (!isCompatibleInstance(paramTypes[i],value)) {
-            validMethod=false;
-          }
-        }
-        if (validMethod) {
-          matchingMethods.add(method);
-        }
+      Class[] paramTypes;
+      if (isValidMethod(method,arguments,false)) {
+        matchingMethods.add(method);
       }
     }
     if (matchingMethods.isEmpty()) {

@@ -1,6 +1,12 @@
 {
   try {
-    return type.getMethod(name,EMPTY_TYPE_ARRAY);
+    Method method=type.getMethod(name,EMPTY_TYPE_ARRAY);
+    if ((method.getModifiers() & Modifier.STATIC) != 0) {
+      return method;
+    }
+ else {
+      return null;
+    }
   }
  catch (  Exception e) {
     return null;

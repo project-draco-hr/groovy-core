@@ -20,5 +20,10 @@
  catch (  GroovyRuntimeException e) {
     throw new MissingPropertyException(property,aClass,e);
   }
-  throw new MissingPropertyException(property,aClass,lastException);
+  if (lastException == null) {
+    throw new MissingPropertyException(property,aClass);
+  }
+ else {
+    throw new MissingPropertyException(property,aClass,lastException);
+  }
 }

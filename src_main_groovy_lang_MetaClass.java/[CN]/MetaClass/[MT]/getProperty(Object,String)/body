@@ -18,6 +18,16 @@
   if (!methods.isEmpty()) {
     return new MethodClosure(object,property);
   }
+  Exception lastException=null;
+  try {
+    Method method=findGetter(object,"get" + capitalize(property));
+    if (method != null) {
+      return doMethodInvoke(object,method,EMPTY_ARRAY);
+    }
+  }
+ catch (  GroovyRuntimeException e) {
+    lastException=e;
+  }
   if (genericGetMethod != null) {
     return null;
   }
@@ -31,6 +41,11 @@
     if (object instanceof Object[]) {
       return DefaultGroovyMethods.get(Arrays.asList((Object[])object),property);
     }
-    throw new MissingPropertyException(property,theClass);
+    if (lastException == null) {
+      throw new MissingPropertyException(property,theClass);
+    }
+ else {
+      throw new MissingPropertyException(property,theClass,lastException);
+    }
   }
 }
