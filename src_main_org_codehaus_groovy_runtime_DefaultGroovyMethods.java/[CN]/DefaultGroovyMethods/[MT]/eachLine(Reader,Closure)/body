@@ -1,0 +1,27 @@
+{
+  BufferedReader br=null;
+  if (self instanceof BufferedReader)   br=(BufferedReader)self;
+ else   br=new BufferedReader(self);
+  try {
+    while (true) {
+      String line=br.readLine();
+      if (line == null) {
+        break;
+      }
+ else {
+        closure.call(line);
+      }
+    }
+    br.close();
+  }
+ catch (  IOException e) {
+    if (self != null) {
+      try {
+        br.close();
+      }
+ catch (      Exception e2) {
+      }
+      throw e;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  BufferedReader br=null;
+  if (self instanceof BufferedReader)   br=(BufferedReader)self;
+ else   br=new BufferedReader(self);
+  List args=new ArrayList();
+  try {
+    while (true) {
+      String line=br.readLine();
+      if (line == null) {
+        break;
+      }
+ else {
+        List vals=Arrays.asList(line.split(sep));
+        args.clear();
+        args.add(vals);
+        closure.call(args);
+      }
+    }
+    br.close();
+  }
+ catch (  IOException e) {
+    if (self != null) {
+      try {
+        br.close();
+      }
+ catch (      Exception e2) {
+      }
+      throw e;
+    }
+  }
+}
