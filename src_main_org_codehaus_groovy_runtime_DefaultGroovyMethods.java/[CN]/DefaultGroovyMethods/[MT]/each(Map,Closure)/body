@@ -1,5 +1,13 @@
 {
-  for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
-    closure.call(iter.next());
+  if (closure.getParameterTypes().length == 2) {
+    for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
+      Map.Entry entry=(Map.Entry)iter.next();
+      closure.call(new Object[]{entry.getKey(),entry.getValue()});
+    }
+  }
+ else {
+    for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
+      closure.call(iter.next());
+    }
   }
 }
