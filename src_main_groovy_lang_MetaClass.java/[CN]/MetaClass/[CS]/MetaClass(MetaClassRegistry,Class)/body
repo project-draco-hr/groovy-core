@@ -19,20 +19,4 @@
       listeners.put(listenerMethod.getName(),metaMethod);
     }
   }
-  Class[] interfaces=theClass.getInterfaces();
-  for (int i=0; i < interfaces.length; i++) {
-    addNewStaticMethodsFrom(interfaces[i]);
-  }
-  if (theClass.isArray() && !theClass.equals(Object[].class)) {
-    addNewStaticMethodsFrom(Object[].class);
-  }
-  Class c=theClass;
-  while (true) {
-    c=c.getSuperclass();
-    if (c == null) {
-      break;
-    }
-    addNewStaticMethodsFrom(c);
-    addMethods(c);
-  }
 }

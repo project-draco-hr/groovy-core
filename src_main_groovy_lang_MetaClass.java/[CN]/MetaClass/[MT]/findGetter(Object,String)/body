@@ -1,8 +1,9 @@
 {
   checkInitialised();
-  for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
+  List methods=getMethods(name);
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MetaMethod method=(MetaMethod)iter.next();
-    if (!method.isStatic() && method.getName().equals(name) && method.getParameterTypes().length == 0) {
+    if (method.getParameterTypes().length == 0) {
       return method;
     }
   }

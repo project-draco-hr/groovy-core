@@ -3,6 +3,8 @@
     throw new RuntimeException("Already initialized, cannot add new method: " + method);
   }
  else {
-    addNewStaticInstanceMethod(createMetaMethod(method));
+    NewStaticMetaMethod newMethod=new NewStaticMetaMethod(createMetaMethod(method));
+    addMethod(newMethod);
+    addNewStaticInstanceMethod(newMethod);
   }
 }

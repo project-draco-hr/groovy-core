@@ -6,7 +6,6 @@
  else     if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
       argumentArray=ARRAY_WITH_NULL;
     }
-    Reflector reflector=method.getReflector();
     return method.invoke(object,argumentArray);
   }
  catch (  ClassCastException e) {
@@ -35,6 +34,7 @@ catch (  IllegalAccessException e) {
     throw new GroovyRuntimeException("could not access method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
 catch (  IllegalArgumentException e) {
+    e.printStackTrace();
     if (coerceGStrings(argumentArray)) {
       try {
         return doMethodInvoke(object,method,argumentArray);

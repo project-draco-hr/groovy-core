@@ -2,38 +2,6 @@
   Method[] methodArray=theClass.getDeclaredMethods();
   for (int i=0; i < methodArray.length; i++) {
     MetaMethod method=createMetaMethod(methodArray[i]);
-    String name=method.getName();
-    if (isGenericGetMethod(method) && genericGetMethod == null) {
-      genericGetMethod=method;
-    }
- else     if (isGenericSetMethod(method) && genericSetMethod == null) {
-      genericSetMethod=method;
-    }
-    if (method.isStatic()) {
-      List list=(List)staticMethodIndex.get(name);
-      if (list == null) {
-        list=new ArrayList();
-        staticMethodIndex.put(name,list);
-        list.add(method);
-      }
- else {
-        if (!containsMatchingMethod(list,method)) {
-          list.add(method);
-        }
-      }
-    }
- else {
-      List list=(List)methodIndex.get(name);
-      if (list == null) {
-        list=new ArrayList();
-        methodIndex.put(name,list);
-        list.add(method);
-      }
- else {
-        if (!containsMatchingMethod(list,method)) {
-          list.add(method);
-        }
-      }
-    }
+    addMethod(method);
   }
 }
