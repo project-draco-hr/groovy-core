@@ -1,0 +1,8 @@
+{
+  if (object == null) {
+    throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
+  }
+  Class theClass=object.getClass();
+  MetaClass metaClass=metaRegistry.getMetaClass(theClass.getSuperclass());
+  return metaClass.invokeMethod(object,methodName,asArray(arguments));
+}
