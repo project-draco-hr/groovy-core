@@ -41,7 +41,18 @@
       return;
     }
     String method="set" + capitalize(property);
-    invokeMethod(object,method,new Object[]{newValue});
+    try {
+      invokeMethod(object,method,new Object[]{newValue});
+    }
+ catch (    MissingMethodException e1) {
+      try {
+        Field field=object.getClass().getDeclaredField(property);
+        field.set(object,newValue);
+      }
+ catch (      Exception e2) {
+        throw new MissingPropertyException(property,theClass,e2);
+      }
+    }
   }
  catch (  GroovyRuntimeException e) {
     throw new MissingPropertyException(property,theClass,e);
