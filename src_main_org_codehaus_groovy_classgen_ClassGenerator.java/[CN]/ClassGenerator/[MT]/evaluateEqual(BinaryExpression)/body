@@ -1,5 +1,12 @@
 {
   Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof BinaryExpression) {
+    BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
+    if (leftBinExpr.getOperation().getType() == Token.LEFT_SQUARE_BRACKET) {
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"put",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),expression.getRightExpression()})));
+      return;
+    }
+  }
   if (isNonStaticField(leftExpression)) {
     cv.visitVarInsn(ALOAD,0);
   }
