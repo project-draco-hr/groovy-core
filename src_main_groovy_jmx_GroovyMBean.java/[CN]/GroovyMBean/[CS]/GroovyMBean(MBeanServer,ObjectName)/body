@@ -1,0 +1,10 @@
+{
+  this.server=server;
+  this.name=name;
+  this.beanInfo=server.getMBeanInfo(name);
+  MBeanOperationInfo[] operationInfos=beanInfo.getOperations();
+  for (int i=0; i < operationInfos.length; i++) {
+    MBeanOperationInfo info=operationInfos[i];
+    operations.put(info.getName(),createSignature(info));
+  }
+}

@@ -1,0 +1,24 @@
+{
+  String[] signature=(String[])operations.get(method);
+  if (signature != null) {
+    Object[] argArray=null;
+    if (arguments instanceof Object[]) {
+      argArray=(Object[])arguments;
+    }
+ else {
+      argArray=new Object[]{arguments};
+    }
+    try {
+      return server.invoke(name,method,argArray,signature);
+    }
+ catch (    MBeanException e) {
+      throw new InvokerException("Could not invoke method: " + method + ". Reason: "+ e,e.getTargetException());
+    }
+catch (    Exception e) {
+      throw new InvokerException("Could not invoke method: " + method + ". Reason: "+ e,e);
+    }
+  }
+ else {
+    return super.invokeMethod(method,arguments);
+  }
+}
