@@ -1,9 +1,8 @@
 {
-  String[] tokenNames=BaseAST.getTokenNames();
   if (node == null) {
-    throw new ASTRuntimeException(node,"No child node available in AST when expecting type: " + tokenNames[type]);
+    throw new ASTRuntimeException(node,"No child node available in AST when expecting type: " + getTokenName(type));
   }
   if (node.getType() != type) {
-    throw new ASTRuntimeException(node,"Unexpected node type: " + tokenNames[node.getType()] + " found when expecting type: "+ tokenNames[type]);
+    throw new ASTRuntimeException(node,"Unexpected node type: " + getTokenName(node) + " found when expecting type: "+ getTokenName(type));
   }
 }
