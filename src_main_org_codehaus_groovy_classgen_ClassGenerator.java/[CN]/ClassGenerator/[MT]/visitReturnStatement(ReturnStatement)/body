@@ -1,8 +1,13 @@
 {
   onLineNumber(statement);
+  String returnType=methodNode.getReturnType();
+  if (returnType.equals("void")) {
+    cv.visitInsn(RETURN);
+    outputReturn=true;
+    return;
+  }
   Expression expression=statement.getExpression();
   evaluateExpression(expression);
-  String returnType=methodNode.getReturnType();
   helper.unbox(returnType);
   if (returnType.equals("double")) {
     cv.visitInsn(DRETURN);
@@ -18,9 +23,6 @@
   }
  else   if (returnType.equals("char") || returnType.equals("byte") || returnType.equals("int")|| returnType.equals("short")) {
     cv.visitInsn(IRETURN);
-  }
- else   if (returnType.equals("void")) {
-    cv.visitInsn(RETURN);
   }
  else {
     doConvertAndCast(returnType,expression);
