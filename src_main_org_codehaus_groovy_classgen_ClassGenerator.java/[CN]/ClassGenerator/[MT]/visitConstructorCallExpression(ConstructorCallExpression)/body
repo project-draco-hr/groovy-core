@@ -11,7 +11,9 @@
       arguments=(Expression)tupleExpression.getExpressions().get(0);
     }
   }
-  cv.visitLdcInsn(call.getType());
+  String type=call.getType();
+  checkValidType(type);
+  cv.visitLdcInsn(type);
   arguments.visit(this);
   invokeConstructorMethod.call(cv);
 }
