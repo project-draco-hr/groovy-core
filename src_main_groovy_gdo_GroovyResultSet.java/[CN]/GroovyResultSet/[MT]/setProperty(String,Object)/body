@@ -1,3 +1,9 @@
 {
-  super.setProperty(property,newValue);
+  try {
+    resultSet.updateObject(property,newValue);
+    updated=true;
+  }
+ catch (  SQLException e) {
+    throw new NoSuchPropertyException(property,GroovyResultSet.class,e);
+  }
 }
