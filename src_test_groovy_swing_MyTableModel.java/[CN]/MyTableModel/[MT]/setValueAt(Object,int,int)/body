@@ -1,6 +1,6 @@
 {
-  if (log.isDebugEnabled()) {
-    log.debug("Setting value at " + row + ","+ col+ " to "+ value+ " (an instance of "+ value.getClass()+ ")");
+  if (log.isLoggable(Level.FINE)) {
+    log.fine("Setting value at " + row + ","+ col+ " to "+ value+ " (an instance of "+ value.getClass()+ ")");
   }
   if (data[0][col] instanceof Integer && !(value instanceof Integer)) {
     try {
@@ -8,7 +8,7 @@
       fireTableCellUpdated(row,col);
     }
  catch (    NumberFormatException e) {
-      log.error("The \"" + getColumnName(col) + "\" column accepts only integer values.");
+      log.log(Level.SEVERE,"The \"" + getColumnName(col) + "\" column accepts only integer values.");
     }
   }
  else {

@@ -6,11 +6,11 @@
     try {
       widget=factory.newInstance(attributes);
       if (widget == null) {
-        log.warn("Factory for name: " + name + " returned null");
+        log.log(Level.WARNING,"Factory for name: " + name + " returned null");
       }
  else {
-        if (log.isDebugEnabled()) {
-          log.debug("For name: " + name + " created widget: "+ widget);
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("For name: " + name + " created widget: "+ widget);
         }
       }
     }
@@ -19,7 +19,7 @@
     }
   }
  else {
-    log.warn("Could not find match for name: " + name);
+    log.log(Level.WARNING,"Could not find match for name: " + name);
   }
   if (widget != null) {
     if (widget instanceof Action) {

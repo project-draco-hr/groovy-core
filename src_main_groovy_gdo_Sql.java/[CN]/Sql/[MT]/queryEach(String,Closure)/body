@@ -3,7 +3,7 @@
   Statement statement=connection.createStatement();
   ResultSet results=null;
   try {
-    log.debug(sql);
+    log.fine(sql);
     results=statement.executeQuery(sql);
     GroovyResultSet groovyRS=new GroovyResultSet(results);
     while (groovyRS.next()) {
@@ -11,7 +11,7 @@
     }
   }
  catch (  SQLException e) {
-    log.warn("Failed to execute: " + sql,e);
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
     throw e;
   }
  finally {

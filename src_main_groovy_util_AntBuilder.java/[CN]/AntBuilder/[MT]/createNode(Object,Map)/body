@@ -14,8 +14,8 @@
   if (nested == null) {
     task=createTask(tagName);
     if (task != null) {
-      if (log.isDebugEnabled()) {
-        log.debug("Creating an ant Task for name: " + tagName);
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("Creating an ant Task for name: " + tagName);
       }
       if (task instanceof TaskAdapter) {
         answer=((TaskAdapter)task).getProxy();
@@ -33,14 +33,14 @@
   }
   if (task == null) {
     if (nested == null) {
-      if (log.isDebugEnabled()) {
-        log.debug("Trying to create a data type for tag: " + tagName);
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("Trying to create a data type for tag: " + tagName);
       }
       nested=createDataType(tagName);
     }
  else {
-      if (log.isDebugEnabled()) {
-        log.debug("Created nested property tag: " + tagName);
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("Created nested property tag: " + tagName);
       }
     }
     if (nested != null) {
@@ -58,24 +58,24 @@
       if (parentObject != null) {
         IntrospectionHelper ih=IntrospectionHelper.getHelper(parentObject.getClass());
         try {
-          if (log.isDebugEnabled()) {
-            log.debug("About to set the: " + tagName + " property on: "+ parentObject+ " to value: "+ nested+ " with type: "+ nested.getClass());
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("About to set the: " + tagName + " property on: "+ parentObject+ " to value: "+ nested+ " with type: "+ nested.getClass());
           }
           ih.storeElement(project,parentObject,nested,(String)tagName);
         }
  catch (        Exception e) {
-          log.warn("Caught exception setting nested: " + tagName,e);
+          log.log(Level.WARNING,"Caught exception setting nested: " + tagName,e);
         }
         try {
           InvokerHelper.setProperty(parentObject,tagName,nested);
         }
  catch (        Exception e) {
-          log.debug("Caught exception trying to set property: " + tagName + " on: "+ parentObject);
+          log.fine("Caught exception trying to set property: " + tagName + " on: "+ parentObject);
         }
       }
     }
  else {
-      log.warn("Could not convert tag: " + tagName + " into an Ant task, data type or property");
+      log.log(Level.WARNING,"Could not convert tag: " + tagName + " into an Ant task, data type or property");
     }
   }
   return answer;

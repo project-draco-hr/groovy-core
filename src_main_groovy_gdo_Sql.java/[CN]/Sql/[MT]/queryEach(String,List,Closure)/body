@@ -3,7 +3,7 @@
   PreparedStatement statement=null;
   ResultSet results=null;
   try {
-    log.debug(sql);
+    log.fine(sql);
     statement=connection.prepareStatement(sql);
     setParameters(params,statement);
     results=statement.executeQuery();
@@ -13,7 +13,7 @@
     }
   }
  catch (  SQLException e) {
-    log.warn("Failed to execute: " + sql,e);
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
     throw e;
   }
  finally {

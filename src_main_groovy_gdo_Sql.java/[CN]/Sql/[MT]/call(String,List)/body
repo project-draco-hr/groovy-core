@@ -2,12 +2,12 @@
   Connection connection=createConnection();
   CallableStatement statement=connection.prepareCall(sql);
   try {
-    log.debug(sql);
+    log.fine(sql);
     setParameters(params,statement);
     return statement.executeUpdate();
   }
  catch (  SQLException e) {
-    log.warn("Failed to execute: " + sql,e);
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
     throw e;
   }
  finally {

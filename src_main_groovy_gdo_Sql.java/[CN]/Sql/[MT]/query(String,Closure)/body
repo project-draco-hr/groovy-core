@@ -3,12 +3,12 @@
   Statement statement=connection.createStatement();
   ResultSet results=null;
   try {
-    log.debug(sql);
+    log.fine(sql);
     results=statement.executeQuery(sql);
     closure.call(results);
   }
  catch (  SQLException e) {
-    log.warn("Failed to execute: " + sql,e);
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
     throw e;
   }
  finally {
