@@ -54,7 +54,21 @@
       doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
       return;
     }
-    if (genericSetMethod != null) {
+    if (genericGetMethod == null) {
+      List possibleGenericMethods=getMethods("set");
+      if (possibleGenericMethods != null) {
+        for (Iterator i=possibleGenericMethods.iterator(); i.hasNext(); ) {
+          MetaMethod mmethod=(MetaMethod)i.next();
+          Class[] paramTypes=mmethod.getParameterTypes();
+          if (paramTypes.length == 2 && paramTypes[0] == String.class) {
+            Object[] arguments={property,newValue};
+            Object answer=doMethodInvoke(object,mmethod,arguments);
+            return;
+          }
+        }
+      }
+    }
+ else {
       Object[] arguments={property,newValue};
       doMethodInvoke(object,genericSetMethod,arguments);
       return;
