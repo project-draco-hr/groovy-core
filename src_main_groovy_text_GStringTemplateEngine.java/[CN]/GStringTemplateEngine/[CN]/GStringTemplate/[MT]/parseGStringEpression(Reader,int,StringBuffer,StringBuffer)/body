@@ -1,0 +1,13 @@
+{
+  templateGString.append("${$var" + varNumber).append("}");
+  templateExpressions.append("$var" + varNumber).append(" = (");
+  int nestDepth=0;
+  while (true) {
+    int c=reader.read();
+    if (c == -1)     break;
+    if (c == '}' && nestDepth-- == 0)     break;
+    if (c == '{')     nestDepth++;
+    templateExpressions.append((char)c);
+  }
+  templateExpressions.append("); ");
+}

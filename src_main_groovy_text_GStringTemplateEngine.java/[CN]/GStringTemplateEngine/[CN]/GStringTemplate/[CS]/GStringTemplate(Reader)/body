@@ -1,0 +1,61 @@
+{
+  final StringBuffer templateExpressions=new StringBuffer("class C { getTemplate() { { |out| ");
+  final StringBuffer templateGString=new StringBuffer("out << \"");
+  int varNumber=1;
+  while (true) {
+    int c=reader.read();
+    if (c == '<') {
+      c=reader.read();
+      if (c == '%') {
+        c=reader.read();
+        if (c == '=') {
+          parseExpression(reader,varNumber++,templateExpressions,templateGString);
+          continue;
+        }
+ else {
+          parseSection(reader,templateExpressions);
+          continue;
+        }
+      }
+ else {
+        templateGString.append('<');
+      }
+    }
+ else     if (c == '$') {
+      c=reader.read();
+      if (c == '{') {
+        parseGStringEpression(reader,varNumber++,templateExpressions,templateGString);
+        continue;
+      }
+ else {
+        templateGString.append('$');
+      }
+    }
+    if (c == '"') {
+      templateGString.append('\\');
+    }
+    if (c == -1) {
+      break;
+    }
+    templateGString.append((char)c);
+  }
+  templateExpressions.append(templateGString).append("\"}.asWritable()}}");
+  final ClassLoader parentLoader=getClass().getClassLoader();
+  final GroovyClassLoader loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyClassLoader(parentLoader);
+    }
+  }
+);
+  final Class groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"C","x"));
+  try {
+    final GroovyObject object=(GroovyObject)groovyClass.newInstance();
+    this.template=(Closure)object.invokeMethod("getTemplate",null);
+  }
+ catch (  InstantiationException e) {
+    throw new ClassNotFoundException(e.getMessage());
+  }
+catch (  IllegalAccessException e) {
+    throw new ClassNotFoundException(e.getMessage());
+  }
+}
