@@ -7,6 +7,9 @@
     CSTNode identifier=nameDeclaration(false);
     result=methodDeclaration(modifiers,type,identifier,false);
   }
+ else   if (lt() == Token.KEYWORD_SYNCHRONIZED && lt(2) == Token.LEFT_PARENTHESIS) {
+    result=synchronizedStatement();
+  }
  else   if (lt() != -1 && (la().isModifier() || lt() == Token.KEYWORD_CLASS || lt() == Token.KEYWORD_INTERFACE)) {
     CSTNode modifiers=modifierList(true,true);
 switch (lt()) {
