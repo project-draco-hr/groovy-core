@@ -1,0 +1,14 @@
+{
+  try {
+    return super.invokeMethod(name,args);
+  }
+ catch (  MissingMethodException mme) {
+    Object boundClosure=binding.getVariable(name);
+    if (boundClosure != null && boundClosure instanceof Closure) {
+      return ((Closure)boundClosure).call(args);
+    }
+ else {
+      throw new MissingMethodException(name,this.getClass(),(Object[])args);
+    }
+  }
+}
