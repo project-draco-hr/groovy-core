@@ -1,32 +1,3 @@
 {
-  String name=codeSource.getName();
-  Class answer=null;
-synchronized (cache) {
-    answer=(Class)cache.get(name);
-    if (answer != null) {
-      return (answer == PARSING.class ? null : answer);
-    }
- else {
-      cache.put(name,PARSING.class);
-    }
-  }
-  try {
-    CompilationUnit unit=new CompilationUnit(config,codeSource.getCodeSource(),this);
-    ClassCollector collector=createCollector(unit);
-    unit.addSource(name,codeSource.getInputStream());
-    unit.setClassgenCallback(collector);
-    unit.compile(Phases.CLASS_GENERATION);
-    answer=collector.generatedClass;
-  }
-  finally {
-synchronized (cache) {
-      if (answer == null) {
-        cache.remove(name);
-      }
- else {
-        cache.put(name,answer);
-      }
-    }
-  }
-  return answer;
+  return parseClass(codeSource,true);
 }
