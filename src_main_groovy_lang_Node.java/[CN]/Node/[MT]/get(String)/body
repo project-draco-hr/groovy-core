@@ -1,0 +1,18 @@
+{
+  if (key.charAt(0) == '@') {
+    String attributeName=key.substring(1);
+    return attributes().get(attributeName);
+  }
+ else {
+    for (Iterator iter=children().iterator(); iter.hasNext(); ) {
+      Object child=iter.next();
+      if (child instanceof Node) {
+        Node childNode=(Node)child;
+        if (key.equals(childNode.name())) {
+          return childNode;
+        }
+      }
+    }
+    return InvokerHelper.getProperty(value,key);
+  }
+}
