@@ -1,12 +1,24 @@
 {
+  Exception lastException=null;
   try {
     Field field=aClass.getField(property);
     if (field != null) {
-      return field.get(null);
+      if ((field.getModifiers() & Modifier.STATIC) != 0) {
+        return field.get(null);
+      }
     }
   }
  catch (  Exception e) {
-    throw new GroovyRuntimeException("Could not evaluate property: " + property,e);
+    lastException=e;
   }
-  throw new GroovyRuntimeException("No such property: " + property);
+  try {
+    Method method=findStaticGetter(aClass,"get" + capitalize(property));
+    if (method != null) {
+      return doMethodInvoke(aClass,method,EMPTY_ARRAY);
+    }
+  }
+ catch (  GroovyRuntimeException e) {
+    throw new MissingPropertyException(property,aClass,e);
+  }
+  throw new MissingPropertyException(property,aClass,lastException);
 }
