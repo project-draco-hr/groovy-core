@@ -16,12 +16,7 @@
   }
   List methods=getMethods(property);
   if (!methods.isEmpty()) {
-    return new Closure(){
-      public Object call(      Object args){
-        return InvokerHelper.invokeMethod(object,property,args);
-      }
-    }
-;
+    return new MethodClosure(object,property);
   }
   if (genericGetMethod != null) {
     return null;
