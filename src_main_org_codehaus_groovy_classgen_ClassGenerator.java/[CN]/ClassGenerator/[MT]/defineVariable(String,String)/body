@@ -1,13 +1,3 @@
 {
-  Variable answer=(Variable)variableStack.get(name);
-  if (answer == null) {
-    idx=Math.max(idx,variableStack.size());
-    answer=new Variable(idx,type,name);
-    variableStack.put(name,answer);
-    if (!definingParameters && !leftHandExpression) {
-      cv.visitInsn(ACONST_NULL);
-      cv.visitVarInsn(ASTORE,idx);
-    }
-  }
-  return answer;
+  return defineVariable(name,type,true);
 }

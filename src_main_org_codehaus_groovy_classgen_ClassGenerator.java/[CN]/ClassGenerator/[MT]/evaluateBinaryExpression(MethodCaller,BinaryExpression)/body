@@ -1,6 +1,10 @@
 {
+  Expression leftExpression=expression.getLeftExpression();
+  if (isNonStaticField(leftExpression)) {
+    cv.visitVarInsn(ALOAD,0);
+  }
   leftHandExpression=false;
-  expression.getLeftExpression().visit(this);
+  leftExpression.visit(this);
   leftHandExpression=false;
   expression.getRightExpression().visit(this);
   compareMethod.call(cv);
