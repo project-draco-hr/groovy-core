@@ -6,7 +6,7 @@
     fileName=className.substring(idx + 1);
   }
   fileName+=".java";
-  classInternalName=helper.getClassInternalName(className);
+  classInternalName=BytecodeHelper.getClassInternalName(className);
   cw.visit(ACC_PUBLIC + ACC_SUPER,classInternalName,"org/codehaus/groovy/runtime/Reflector",null,fileName);
   cv=cw.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
   cv.visitVarInsn(ALOAD,0);

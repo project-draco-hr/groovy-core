@@ -15,33 +15,48 @@
       invokeClosureMethod.call(cv);
     }
  else {
-      if (emptyArguments(arguments) && !call.isSafe()) {
-        call.getObjectExpression().visit(this);
-        cv.visitLdcInsn(method);
-        invokeNoArgumentsMethod.call(cv);
+      if (superMethodCall) {
+        if (method.equals("super") || method.equals("<init>")) {
+          ConstructorNode constructorNode=findSuperConstructor(call);
+          cv.visitVarInsn(ALOAD,0);
+          loadArguments(constructorNode.getParameters(),arguments);
+          String descriptor=BytecodeHelper.getMethodDescriptor("void",constructorNode.getParameters());
+          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>",descriptor);
+        }
+ else {
+          MethodNode methodNode=findSuperMethod(call);
+          cv.visitVarInsn(ALOAD,0);
+          loadArguments(methodNode.getParameters(),arguments);
+          String descriptor=BytecodeHelper.getMethodDescriptor(methodNode.getReturnType(),methodNode.getParameters());
+          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(methodNode.getDeclaringClass().getName()),method,descriptor);
+        }
       }
  else {
-        if (argumentsUseStack(arguments)) {
-          int paramIdx=defineVariable(createVariableName("temp"),"java.lang.Object",false).getIndex();
-          arguments.visit(this);
-          cv.visitVarInsn(ASTORE,paramIdx);
+        if (emptyArguments(arguments) && !call.isSafe()) {
           call.getObjectExpression().visit(this);
           cv.visitLdcInsn(method);
-          cv.visitVarInsn(ALOAD,paramIdx);
+          invokeNoArgumentsMethod.call(cv);
         }
  else {
-          call.getObjectExpression().visit(this);
-          cv.visitLdcInsn(method);
-          arguments.visit(this);
-        }
-        if (superMethodCall) {
-          invokeSuperMethodMethod.call(cv);
-        }
- else         if (call.isSafe()) {
-          invokeMethodSafeMethod.call(cv);
-        }
+          if (argumentsUseStack(arguments)) {
+            int paramIdx=defineVariable(createVariableName("temp"),"java.lang.Object",false).getIndex();
+            arguments.visit(this);
+            cv.visitVarInsn(ASTORE,paramIdx);
+            call.getObjectExpression().visit(this);
+            cv.visitLdcInsn(method);
+            cv.visitVarInsn(ALOAD,paramIdx);
+          }
  else {
-          invokeMethodMethod.call(cv);
+            call.getObjectExpression().visit(this);
+            cv.visitLdcInsn(method);
+            arguments.visit(this);
+          }
+          if (call.isSafe()) {
+            invokeMethodSafeMethod.call(cv);
+          }
+ else {
+            invokeMethodMethod.call(cv);
+          }
         }
       }
     }

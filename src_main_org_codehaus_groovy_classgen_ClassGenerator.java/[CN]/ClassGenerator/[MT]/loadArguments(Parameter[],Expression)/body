@@ -1,0 +1,10 @@
+{
+  TupleExpression argListExp=(TupleExpression)expression;
+  List arguments=argListExp.getExpressions();
+  for (int i=0, size=arguments.size(); i < size; i++) {
+    Expression argExp=argListExp.getExpression(i);
+    Parameter param=parameters[i];
+    visitAndAutobox(argExp);
+    doConvertAndCast(param.getType(),argExp);
+  }
+}

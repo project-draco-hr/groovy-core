@@ -5,6 +5,15 @@
   for (int i=0; i < size; i++) {
     interfaceNames[i]=interfaces[i].getName();
   }
-  ClassNode answer=new ClassNode(theClass.getName(),theClass.getModifiers(),theClass.getSuperclass().getName(),interfaceNames,MixinNode.EMPTY_ARRAY);
+  String name=null;
+  if (theClass.getSuperclass() != null) {
+    name=theClass.getSuperclass().getName();
+  }
+  ClassNode answer=new ClassNode(theClass.getName(),theClass.getModifiers(),name,interfaceNames,MixinNode.EMPTY_ARRAY);
+  answer.compileUnit=getCompileUnit();
+  Method[] methods=theClass.getDeclaredMethods();
+  for (int i=0; i < methods.length; i++) {
+    answer.addMethod(createMethodNode(methods[i]));
+  }
   return answer;
 }

@@ -1,7 +1,11 @@
 {
-  MethodNode method=getMethod("<clinit>");
-  if (method == null) {
+  MethodNode method=null;
+  List methods=getDeclaredMethods("<clinit>");
+  if (methods.isEmpty()) {
     method=addMethod("<clinit>",ACC_PUBLIC | ACC_STATIC,"void",Parameter.EMPTY_ARRAY,new BlockStatement());
+  }
+ else {
+    method=(MethodNode)methods.get(0);
   }
   BlockStatement block=null;
   Statement statement=method.getCode();

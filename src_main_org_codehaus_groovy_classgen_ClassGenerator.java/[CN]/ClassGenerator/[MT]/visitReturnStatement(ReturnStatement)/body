@@ -1,12 +1,7 @@
 {
   onLineNumber(statement);
-  statement.getExpression().visit(this);
-  Expression assignExpr=createReturnLHSExpression(statement.getExpression());
-  if (assignExpr != null) {
-    leftHandExpression=false;
-    assignExpr.visit(this);
-  }
-  Class c=getExpressionType(statement.getExpression());
+  Expression expression=statement.getExpression();
+  evaluateExpression(expression);
   String returnType=methodNode.getReturnType();
   helper.unbox(returnType);
   if (returnType.equals("double")) {
@@ -25,21 +20,8 @@
     cv.visitInsn(IRETURN);
   }
  else {
-    if (c == Boolean.class) {
-      Label l0=new Label();
-      cv.visitJumpInsn(IFEQ,l0);
-      cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
-      cv.visitInsn(ARETURN);
-      cv.visitLabel(l0);
-      cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
-      cv.visitInsn(ARETURN);
-    }
- else {
-      if (isValidTypeForCast(returnType) && !returnType.equals(c.getName())) {
-        doConvertAndCast(returnType);
-      }
-      cv.visitInsn(ARETURN);
-    }
+    doConvertAndCast(returnType,expression);
+    cv.visitInsn(ARETURN);
   }
   outputReturn=true;
 }

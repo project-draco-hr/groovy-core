@@ -1,15 +1,21 @@
 {
-  if (code instanceof BlockStatement) {
+  ExpressionStatement expStmt=null;
+  if (code instanceof ExpressionStatement) {
+    expStmt=(ExpressionStatement)code;
+  }
+ else   if (code instanceof BlockStatement) {
     BlockStatement block=(BlockStatement)code;
     if (!block.getStatements().isEmpty()) {
       Object expr=block.getStatements().get(0);
       if (expr instanceof ExpressionStatement) {
-        ExpressionStatement expStmt=(ExpressionStatement)expr;
-        expr=expStmt.getExpression();
-        if (expr instanceof MethodCallExpression) {
-          return MethodCallExpression.isSuperMethodCall((MethodCallExpression)expr);
-        }
+        expStmt=(ExpressionStatement)expr;
       }
+    }
+  }
+  if (expStmt != null) {
+    Expression expr=expStmt.getExpression();
+    if (expr instanceof MethodCallExpression) {
+      return MethodCallExpression.isSuperMethodCall((MethodCallExpression)expr);
     }
   }
   return false;

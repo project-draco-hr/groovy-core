@@ -1,6 +1,16 @@
 {
   if (comparisonExpression(expression)) {
-    return Boolean.class;
+    return "boolean";
   }
-  return Object.class;
+  if (expression instanceof VariableExpression) {
+    VariableExpression varExpr=(VariableExpression)expression;
+    Variable variable=(Variable)variableStack.get(varExpr.getVariable());
+    if (variable != null && !variable.isHolder()) {
+      Type type=variable.getType();
+      if (!type.isDynamic()) {
+        return type.getName();
+      }
+    }
+  }
+  return null;
 }

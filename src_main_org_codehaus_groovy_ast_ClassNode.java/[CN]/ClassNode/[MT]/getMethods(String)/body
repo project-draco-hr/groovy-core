@@ -1,0 +1,15 @@
+{
+  List answer=new ArrayList();
+  ClassNode node=this;
+  do {
+    for (Iterator iter=node.methods.iterator(); iter.hasNext(); ) {
+      MethodNode method=(MethodNode)iter.next();
+      if (name.equals(method.getName())) {
+        answer.add(method);
+      }
+    }
+    node=node.getSuperClassNode();
+  }
+ while (node != null);
+  return answer;
+}

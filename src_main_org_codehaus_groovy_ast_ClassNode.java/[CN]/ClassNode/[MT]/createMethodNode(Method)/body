@@ -1,0 +1,12 @@
+{
+  Parameter[] parameters=Parameter.EMPTY_ARRAY;
+  Class[] types=method.getParameterTypes();
+  int size=types.length;
+  if (size > 0) {
+    parameters=new Parameter[size];
+    for (int i=0; i < size; i++) {
+      parameters[i]=createParameter(method,types[i],i);
+    }
+  }
+  return new MethodNode(method.getName(),method.getModifiers(),method.getReturnType().getName(),parameters,EmptyStatement.INSTANCE);
+}

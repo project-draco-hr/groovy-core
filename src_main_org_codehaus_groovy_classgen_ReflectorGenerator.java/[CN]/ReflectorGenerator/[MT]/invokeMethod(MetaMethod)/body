@@ -7,8 +7,8 @@
  else {
     useInterface=true;
   }
-  String type=helper.getClassInternalName(ownerClass.getName());
-  String descriptor=helper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
+  String type=BytecodeHelper.getClassInternalName(ownerClass.getName());
+  String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
   if (method.isStatic()) {
     loadParameters(method,3);
     cv.visitMethodInsn(INVOKESTATIC,type,method.getName(),descriptor);
