@@ -1,25 +1,27 @@
 {
+  MetaMethod method=getDoCallMethod();
   try {
     if (arguments instanceof Object[]) {
       Object[] parameters=(Object[])arguments;
       if (parameters == null || parameters.length == 0) {
-        return this.doCallMethod.invoke(this,noParameters);
+        return method.invoke(this,noParameters);
       }
  else {
-        return this.doCallMethod.invoke(this,parameters);
+        return method.invoke(this,parameters);
       }
     }
  else {
-      return this.doCallMethod.invoke(this,new Object[]{arguments});
+      return method.invoke(this,new Object[]{arguments});
     }
   }
  catch (  IllegalArgumentException e) {
-    throw new IncorrectClosureArgumentsException(this,arguments,doCallMethod.getParameterTypes());
+    throw new IncorrectClosureArgumentsException(this,arguments,method.getParameterTypes());
   }
-catch (  IllegalAccessException e) {
-    return throwRuntimeException(e.getCause());
-  }
-catch (  InvocationTargetException e) {
-    return throwRuntimeException(e.getCause());
+catch (  Exception e) {
+    Throwable cause=e.getCause();
+    if (cause == null) {
+      cause=e;
+    }
+    return throwRuntimeException(cause);
   }
 }

@@ -1,5 +1,8 @@
 {
   if (reflector != null) {
+    if (!MetaClass.isValidMethod(getParameterTypes(),arguments,false)) {
+      throw new IllegalArgumentException("Parameters to method: " + getName() + " do not match types: "+ InvokerHelper.toString(getParameterTypes())+ " for arguments: "+ InvokerHelper.toString(arguments));
+    }
     return reflector.invoke(this,object,arguments);
   }
  else {
