@@ -29,7 +29,7 @@ return specific == EQUAL || (specific >= PLUS_EQUAL && specific <= MOD_EQUAL) ||
 case COMPARISON_OPERATOR:
 return specific >= COMPARE_NOT_EQUAL && specific <= COMPARE_TO;
 case MATH_OPERATOR:
-return (specific >= PLUS && specific <= RIGHT_SHIFT) || (specific >= NOT && specific <= LOGICAL_AND);
+return (specific >= PLUS && specific <= RIGHT_SHIFT_UNSIGNED) || (specific >= NOT && specific <= LOGICAL_AND);
 case LOGICAL_OPERATOR:
 return specific >= NOT && specific <= LOGICAL_AND;
 case RANGE_OPERATOR:
@@ -74,6 +74,7 @@ case LOGICAL_OR:
 case LOGICAL_AND:
 case LEFT_SHIFT:
 case RIGHT_SHIFT:
+case RIGHT_SHIFT_UNSIGNED:
 case FIND_REGEX:
 case MATCH_REGEX:
 case DOT_DOT:
@@ -251,7 +252,7 @@ return false;
 }
 return !ofType(specific,COMPLEX_EXPRESSION);
 case OPERATOR_EXPRESSION:
-return specific >= DOT && specific <= RIGHT_SHIFT;
+return specific >= DOT && specific <= RIGHT_SHIFT_UNSIGNED;
 case SYNTH_EXPRESSION:
 switch (specific) {
 case SYNTH_CAST:
@@ -277,7 +278,7 @@ return specific >= STRING && specific <= DECIMAL_NUMBER;
 case ARRAY_EXPRESSION:
 return specific == LEFT_SQUARE_BRACKET;
 case EXPRESSION:
-if (specific >= DOT && specific <= RIGHT_SHIFT) {
+if (specific >= DOT && specific <= RIGHT_SHIFT_UNSIGNED) {
 return true;
 }
 if (specific >= STRING && specific <= DECIMAL_NUMBER) {
