@@ -1,0 +1,27 @@
+{
+  String className=null;
+  if (module != null) {
+    className=module.getImport(identifier);
+    if (className == null) {
+      if (module.getUnit().getClass(identifier) != null) {
+        className=identifier;
+      }
+ else {
+        String packageName=getPackageName();
+        if (packageName != null) {
+          String guessName=packageName + "." + identifier;
+          if (module.getUnit().getClass(guessName) != null) {
+            className=guessName;
+          }
+ else           if (guessName.equals(name)) {
+            className=name;
+          }
+        }
+      }
+    }
+  }
+ else {
+    System.out.println("No module for class: " + getName());
+  }
+  return className;
+}

@@ -11,7 +11,7 @@
   int paramIdx=defineVariable(createArgumentsName(),"java.lang.Object",false).getIndex();
   cv.visitVarInsn(ASTORE,paramIdx);
   ClassNode innerClass=createGStringClass(expression);
-  innerClasses.add(innerClass);
+  addInnerClass(innerClass);
   String innerClassinternalName=getClassInternalName(innerClass.getName());
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);

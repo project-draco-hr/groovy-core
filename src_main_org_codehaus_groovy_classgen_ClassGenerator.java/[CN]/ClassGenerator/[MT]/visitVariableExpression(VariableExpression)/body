@@ -1,15 +1,21 @@
 {
-  FieldNode field=classNode.getField(expression.getVariable());
+  String variableName=expression.getVariable();
+  String className=classNode.getClassNameForExpression(variableName);
+  if (className != null) {
+    visitClassExpression(new ClassExpression(className));
+    return;
+  }
+  FieldNode field=classNode.getField(variableName);
   if (field != null) {
     visitFieldExpression(new FieldExpression(field));
   }
  else {
-    field=classNode.getOuterField(expression.getVariable());
+    field=classNode.getOuterField(variableName);
     if (field != null) {
       visitOuterFieldExpression(new FieldExpression(field));
     }
  else {
-      String name=expression.getVariable();
+      String name=variableName;
       Variable variable=defineVariable(name,"java.lang.Object");
       String type=variable.getType();
       int index=variable.getIndex();
