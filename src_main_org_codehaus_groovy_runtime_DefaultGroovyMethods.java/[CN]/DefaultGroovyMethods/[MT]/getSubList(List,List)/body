@@ -1,0 +1,12 @@
+{
+  if (splice.size() != 2) {
+    throw new IllegalArgumentException("You must specify a list of 2 indexes to create a sub-list");
+  }
+  int left=InvokerHelper.asInt(splice.get(0));
+  int right=InvokerHelper.asInt(splice.get(1));
+  int size=self.size();
+  left=normaliseIndex(left,size);
+  right=normaliseIndex(right,size);
+  List sublist=self.subList(left,right + 1);
+  return sublist;
+}
