@@ -6,6 +6,21 @@
     Writable writable=(Writable)object;
     writable.writeTo(out);
   }
+ else   if (object instanceof InputStream || object instanceof Reader) {
+    Reader reader;
+    if (object instanceof InputStream) {
+      reader=new InputStreamReader((InputStream)object);
+    }
+ else {
+      reader=(Reader)object;
+    }
+    char[] chars=new char[8192];
+    int i;
+    while ((i=reader.read(chars)) != -1) {
+      out.write(chars,0,i);
+    }
+    reader.close();
+  }
  else {
     out.write(toString(object));
   }
