@@ -1,13 +1,19 @@
 {
   MetaMethod method=getDoCallMethod();
-  Object[] parameters=getParameters(arguments);
+  Class[] formalParameters=method.getParameterTypes();
+  Object[] parameters;
+  if (arguments instanceof Object[] && ((Object[])arguments).length == 0 && formalParameters.length == 1 && formalParameters[0] == Object[].class) {
+    parameters=zeroLengthObjectArray;
+  }
+ else {
+    parameters=getParameters(arguments);
+  }
   try {
     try {
       method.checkParameters(parameters);
       return method.invoke(this,parameters);
     }
  catch (    IllegalArgumentException e) {
-      Class[] formalParameters=method.getParameterTypes();
       if (formalParameters[formalParameters.length - 1] == Object[].class) {
         if (formalParameters.length - 1 <= parameters.length) {
           Object[] newParameters=new Object[formalParameters.length];
