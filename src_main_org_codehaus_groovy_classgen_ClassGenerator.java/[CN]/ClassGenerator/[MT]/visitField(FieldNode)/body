@@ -5,8 +5,15 @@
   if (expression instanceof ConstantExpression) {
     ConstantExpression constantExp=(ConstantExpression)expression;
     Object value=constantExp.getValue();
-    if (isPrimitiveFieldType(value)) {
-      fieldValue=value;
+    if (isPrimitiveFieldType(fieldNode.getType())) {
+      Class type=null;
+      try {
+        type=loadClass(fieldNode.getType());
+        fieldValue=InvokerHelper.asType(value,type);
+      }
+ catch (      Exception e) {
+        log.warning("Caught unexpected: " + e);
+      }
     }
   }
   cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),getTypeDescription(fieldNode.getType()),fieldValue,null);

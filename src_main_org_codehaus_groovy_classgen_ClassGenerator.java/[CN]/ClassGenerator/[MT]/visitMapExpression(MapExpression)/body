@@ -8,11 +8,11 @@
     MapEntryExpression entry=(MapEntryExpression)iter.next();
     cv.visitInsn(DUP);
     pushConstant(i++);
-    entry.getKeyExpression().visit(this);
+    visitAndAutobox(entry.getKeyExpression());
     cv.visitInsn(AASTORE);
     cv.visitInsn(DUP);
     pushConstant(i++);
-    entry.getValueExpression().visit(this);
+    visitAndAutobox(entry.getValueExpression());
     cv.visitInsn(AASTORE);
   }
   createMapMethod.call(cv);

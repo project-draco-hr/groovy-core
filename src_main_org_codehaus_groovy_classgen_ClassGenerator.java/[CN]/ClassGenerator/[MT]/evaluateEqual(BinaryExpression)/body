@@ -12,16 +12,12 @@
   }
   leftHandExpression=false;
   Expression rightExpression=expression.getRightExpression();
-  rightExpression.visit(this);
-  if (comparisonExpression(rightExpression)) {
-    Label l0=new Label();
-    cv.visitJumpInsn(IFEQ,l0);
-    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
-    Label l1=new Label();
-    cv.visitJumpInsn(GOTO,l1);
-    cv.visitLabel(l0);
-    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
-    cv.visitLabel(l1);
+  String type=getLHSType(leftExpression);
+  if (type != null) {
+    visitCastExpression(new CastExpression(type,rightExpression));
+  }
+ else {
+    visitAndAutobox(rightExpression);
   }
   leftHandExpression=true;
   leftExpression.visit(this);

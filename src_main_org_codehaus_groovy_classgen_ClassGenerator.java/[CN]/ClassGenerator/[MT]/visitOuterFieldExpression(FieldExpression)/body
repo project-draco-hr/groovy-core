@@ -14,7 +14,7 @@
     cv.visitVarInsn(ALOAD,valueIdx);
     boolean holder=field.isHolder() && !isInClosureConstructor();
     if (!holder) {
-      doCast(field.getType());
+      doConvertAndCast(field.getType());
     }
   }
   cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),getTypeDescription(field.getType()));

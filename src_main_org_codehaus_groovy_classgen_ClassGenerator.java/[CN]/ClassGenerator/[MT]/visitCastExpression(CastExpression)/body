@@ -1,8 +1,6 @@
 {
   String type=expression.getType();
   type=checkValidType(type,expression,"in cast");
-  visitClassExpression(new ClassExpression(type));
-  expression.getExpression().visit(this);
-  asTypeMethod.call(cv);
-  doCast(type);
+  visitAndAutobox(expression.getExpression());
+  doConvertAndCast(type);
 }

@@ -1,0 +1,33 @@
+{
+  if (leftExpression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)leftExpression;
+    String type=varExp.getType();
+    if (type != null && !type.equals("java.lang.Object")) {
+      return type;
+    }
+    String variableName=varExp.getVariable();
+    Variable variable=(Variable)variableStack.get(variableName);
+    if (variable != null) {
+      if (variable.isHolder()) {
+        return null;
+      }
+      type=variable.getType();
+      if (type != null && !type.equals("java.lang.Object")) {
+        return type;
+      }
+    }
+ else {
+      FieldNode field=classNode.getField(variableName);
+      if (field == null) {
+        field=classNode.getOuterField(variableName);
+      }
+      if (field != null) {
+        type=field.getType();
+        if (!field.isHolder() && type != null && !type.equals("java.lang.Object")) {
+          return type;
+        }
+      }
+    }
+  }
+  return null;
+}

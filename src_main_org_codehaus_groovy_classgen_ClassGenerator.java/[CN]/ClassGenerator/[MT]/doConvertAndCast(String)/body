@@ -1,0 +1,9 @@
+{
+  if (!type.equals("java.lang.Object")) {
+    if (!type.endsWith("[]")) {
+      visitClassExpression(new ClassExpression(type));
+      asTypeMethod.call(cv);
+    }
+    cv.visitTypeInsn(CHECKCAST,type.endsWith("[]") ? getTypeDescription(type) : getClassInternalName(type));
+  }
+}

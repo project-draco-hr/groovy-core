@@ -1,0 +1,13 @@
+{
+  expression.visit(this);
+  if (comparisonExpression(expression)) {
+    Label l0=new Label();
+    cv.visitJumpInsn(IFEQ,l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
+    Label l1=new Label();
+    cv.visitJumpInsn(GOTO,l1);
+    cv.visitLabel(l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
+    cv.visitLabel(l1);
+  }
+}
