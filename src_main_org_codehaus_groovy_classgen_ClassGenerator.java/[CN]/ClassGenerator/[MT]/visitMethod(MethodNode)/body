@@ -7,5 +7,10 @@
   if (!outputReturn) {
     cv.visitInsn(RETURN);
   }
+  for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
+    Runnable runnable=(Runnable)iter.next();
+    runnable.run();
+  }
+  exceptionBlocks.clear();
   cv.visitMaxs(0,0);
 }

@@ -1,0 +1,55 @@
+{
+  namespaces=defineNamespaces(element,namespaces);
+  element.normalize();
+  printIndent();
+  String prefix=element.getPrefix();
+  if (prefix != null && prefix.length() > 0) {
+    print(prefix);
+    print(".");
+  }
+  print(getLocalName(element));
+  boolean hasAttributes=printAttributes(element);
+  NodeList list=element.getChildNodes();
+  int length=list.getLength();
+  if (length == 0) {
+    printEnd("",endWithComma);
+  }
+ else {
+    Node node=list.item(0);
+    if (length == 1 && node instanceof Text) {
+      Text textNode=(Text)node;
+      String text=getTextNodeData(textNode);
+      if (hasAttributes) {
+        print(" [\"");
+        print(text);
+        printEnd("\"]",endWithComma);
+      }
+ else {
+        print("(\"");
+        print(text);
+        printEnd("\")",endWithComma);
+      }
+    }
+ else     if (mixedContent(list)) {
+      println(" [");
+      ++indent;
+      boolean first=true;
+      int idx=0;
+      for (node=element.getFirstChild(); node != null; node=node.getNextSibling()) {
+        boolean useComma=node.getNextSibling() != null;
+        print(node,namespaces,useComma);
+      }
+      --indent;
+      printIndent();
+      printEnd("]",endWithComma);
+    }
+ else {
+      println(" {");
+      ++indent;
+      printChildren(element,namespaces);
+      --indent;
+      printIndent();
+      printEnd("}",endWithComma);
+    }
+  }
+}

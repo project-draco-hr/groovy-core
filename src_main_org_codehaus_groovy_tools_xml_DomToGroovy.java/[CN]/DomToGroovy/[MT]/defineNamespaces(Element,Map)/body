@@ -1,0 +1,21 @@
+{
+  Map answer=null;
+  String prefix=element.getPrefix();
+  if (prefix != null && prefix.length() > 0 && !namespaces.containsKey(prefix)) {
+    answer=new HashMap(namespaces);
+    defineNamespace(answer,prefix,element.getNamespaceURI());
+  }
+  NamedNodeMap attributes=element.getAttributes();
+  int length=attributes.getLength();
+  for (int i=0; i < length; i++) {
+    Attr attribute=(Attr)attributes.item(i);
+    prefix=attribute.getPrefix();
+    if (prefix != null && prefix.length() > 0 && !namespaces.containsKey(prefix)) {
+      if (answer == null) {
+        answer=new HashMap(namespaces);
+      }
+      defineNamespace(answer,prefix,attribute.getNamespaceURI());
+    }
+  }
+  return (answer != null) ? answer : namespaces;
+}
