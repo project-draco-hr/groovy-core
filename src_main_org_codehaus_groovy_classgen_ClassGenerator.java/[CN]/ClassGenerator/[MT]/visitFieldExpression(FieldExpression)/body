@@ -16,7 +16,7 @@
     }
   }
   int opcode=(leftHandExpression && !holder) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
-  String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : Type.getInternalName(loadClass(field.getOwner()));
+  String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
   if (holder) {
     if (leftHandExpression) {
       cv.visitVarInsn(ASTORE,tempIndex);

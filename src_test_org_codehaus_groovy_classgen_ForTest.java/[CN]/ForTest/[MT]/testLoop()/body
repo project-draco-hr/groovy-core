@@ -4,7 +4,7 @@
   classNode.addProperty(new PropertyNode("bar",ACC_PUBLIC,"java.lang.String","Foo",null,null,null));
   Parameter[] parameters={new Parameter("coll")};
   Statement loopStatement=createPrintlnStatement(new VariableExpression("i"));
-  ForStatement statement=new ForStatement("i",new VariableExpression("coll"),loopStatement);
+  ForStatement statement=new ForStatement("i",Type.DYNAMIC_TYPE,new VariableExpression("coll"),loopStatement);
   classNode.addMethod(new MethodNode("iterateDemo",ACC_PUBLIC,"void",parameters,statement));
   Class fooClass=loadClass(classNode);
   assertTrue("Loaded a new class",fooClass != null);

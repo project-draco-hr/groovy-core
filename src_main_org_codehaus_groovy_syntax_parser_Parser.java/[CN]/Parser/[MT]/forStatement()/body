@@ -1,11 +1,28 @@
 {
   CSTNode statement=rootNode(Token.KEYWORD_FOR);
   consume(Token.LEFT_PARENTHESIS);
-  consume(statement,Token.IDENTIFIER);
-  Token potentialIn=consume(Token.IDENTIFIER);
-  if (!potentialIn.getText().equals("in")) {
-    throw new UnexpectedTokenException(potentialIn,new int[]{});
+  CSTNode identifierOrType=new CSTNode(consume(Token.IDENTIFIER));
+  if (la_bare().getType() == Token.COLON) {
+    consume(Token.COLON);
   }
+ else {
+    Token potentialIn=consume(Token.IDENTIFIER);
+    if (!potentialIn.getText().equals("in")) {
+      if (la_bare().getType() == Token.COLON) {
+        consume(Token.COLON);
+      }
+ else {
+        Token inToken=consume(Token.IDENTIFIER);
+        if (!inToken.getText().equals("in")) {
+          throw new UnexpectedTokenException(inToken,new int[]{Token.COLON,Token.IDENTIFIER});
+        }
+      }
+      CSTNode identifier=new CSTNode(potentialIn);
+      identifier.addChild(identifierOrType);
+      identifierOrType=identifier;
+    }
+  }
+  statement.addChild(identifierOrType);
   CSTNode expr=expression();
   statement.addChild(expr);
   consume(Token.RIGHT_PARENTHESIS);

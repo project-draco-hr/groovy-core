@@ -1,4 +1,9 @@
 {
-  getClosureVisitor().setParameters(expression.getParameters());
-  expression.getCode().visit(getClosureVisitor());
+  VariableScopeCodeVisitor visitor=getClosureVisitor();
+  visitor.setParameters(expression.getParameters());
+  expression.getCode().visit(visitor);
+  if (!outer) {
+    referencedVariables.addAll(visitor.referencedVariables);
+    declaredVariables.addAll(visitor.declaredVariables);
+  }
 }

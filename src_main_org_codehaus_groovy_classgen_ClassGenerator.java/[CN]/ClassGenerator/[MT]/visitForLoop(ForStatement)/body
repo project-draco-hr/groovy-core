@@ -1,6 +1,7 @@
 {
   onLineNumber(loop);
-  int iIdx=defineVariable(loop.getVariable(),"java.lang.Object",true).getIndex();
+  Type variableType=checkValidType(loop.getVariableType(),loop,"for loop variable");
+  int iIdx=defineVariable(loop.getVariable(),variableType,true).getIndex();
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
   final int iteratorIdx=defineVariable(createVariableName("iterator"),"java.util.Iterator",false).getIndex();
