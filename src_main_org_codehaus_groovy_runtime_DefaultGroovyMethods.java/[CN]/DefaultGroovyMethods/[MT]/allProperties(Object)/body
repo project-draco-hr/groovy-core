@@ -1,7 +1,13 @@
 {
   List props=new ArrayList();
   MetaClass metaClass=InvokerHelper.getMetaClass(self);
-  List mps=metaClass.getProperties();
+  List mps;
+  if (self instanceof groovy.util.Expando) {
+    mps=((groovy.util.Expando)self).getProperties();
+  }
+ else {
+    mps=metaClass.getProperties();
+  }
   for (Iterator itr=mps.iterator(); itr.hasNext(); ) {
     MetaProperty mp=(MetaProperty)itr.next();
     PropertyValue pv=new PropertyValue(self,mp);
