@@ -1,27 +1,19 @@
 {
-  CSTNode packageNode=importRoot.getChild(0);
-  String packageName=null;
-  if (packageNode.isEmpty()) {
-    packageName="";
-  }
- else {
-    packageName=qualifiedName(packageNode) + ".";
-  }
-  int current=1;
-  if (importRoot.getChild(current).getToken().getType() == Token.MULTIPLY) {
-    String[] classes=node.addImportPackage(packageName);
+  String importPackage=makeName(reduction.get(1),null);
+  if (reduction.get(2).isA(Types.STAR)) {
+    String[] classes=module.addImportPackage(dot(importPackage));
     for (int i=0; i < classes.length; i++) {
-      addImport(packageName + classes[i],classes[i]);
+      imports.put(classes[i],dot(importPackage,classes[i]));
     }
   }
  else {
-    while (current < importRoot.children()) {
-      CSTNode clause=importRoot.getChild(current);
+    for (int i=2; i < reduction.size(); i++) {
+      CSTNode clause=reduction.get(i);
       String name=identifier(clause);
-      String as=(clause.children() > 0 ? identifier(clause.getChild(0)) : name);
-      addImport(packageName + name,as);
-      node.addImport(as,name);
-      current++;
+      String as=(clause.hasChildren() ? identifier(clause.get(1)) : name);
+      module.addImport(as,name);
+      name=dot(importPackage,name);
+      imports.put(as,name);
     }
   }
 }

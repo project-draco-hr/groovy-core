@@ -1,15 +1,10 @@
 {
   CSTNode datatype=null;
-  if (lt() != -1 && la().isPrimitiveTypeKeyword(allowVoid)) {
-    datatype=rootNode(lt());
+  if (la().isA(allowVoid ? Types.PRIMITIVE_TYPE : Types.CREATABLE_PRIMITIVE_TYPE)) {
+    datatype=consume();
   }
  else {
-    datatype=rootNode(Token.IDENTIFIER);
-    while (lt() == Token.DOT) {
-      CSTNode dot=rootNode(Token.DOT,datatype);
-      consume(dot,Token.IDENTIFIER);
-      datatype=dot;
-    }
+    datatype=dottedIdentifier();
   }
   return datatype;
 }

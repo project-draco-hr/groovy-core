@@ -1,19 +1,15 @@
 {
-  Token leading=(useBare ? la_bare() : la());
-  while ((useBare ? lt_bare() : lt()) != -1 && !(useBare ? la_bare() : la()).isA(safe)) {
-    if (useBare) {
-      consume_bare(lt_bare());
+  Token leading=la(ignoreNewlines);
+  while (true) {
+    Token next=la(ignoreNewlines);
+    if (next.isA(Types.EOF) || next.isOneOf(safe)) {
+      break;
     }
  else {
-      consume(lt());
+      consume(ignoreNewlines);
     }
   }
-  if ((useBare ? la_bare() : la()) == leading) {
-    if (useBare) {
-      consume_bare(lt_bare());
-    }
- else {
-      consume(lt());
-    }
+  if (la(ignoreNewlines) == leading) {
+    consume(ignoreNewlines);
   }
 }

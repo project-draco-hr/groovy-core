@@ -1,0 +1,14 @@
+{
+  Reduction data=consume(Types.LEFT_CURLY_BRACE).asReduction();
+  data.setMeaning(Types.SYNTH_TUPLE);
+  if (lt() != Types.RIGHT_CURLY_BRACE) {
+    int child=level + 1;
+    boolean leaf=(child == depth);
+    do {
+      data.add(leaf ? expression() : tupleExpression(child,depth));
+    }
+ while (lt() == Types.COMMA && (consume() != null));
+  }
+  consume(Types.RIGHT_CURLY_BRACE);
+  return data;
+}

@@ -1,0 +1,37 @@
+{
+  int length=text.length();
+  if (text.charAt(0) == '0' && length > 1) {
+    char c;
+    if ((c=text.charAt(1)) == 'X' || c == 'x') {
+      return parseHexadecimalInteger(text.substring(2,length));
+    }
+ else {
+      return parseOctalInteger(text.substring(1,length));
+    }
+  }
+  char type='x';
+  if (isNumericTypeSpecifier(text.charAt(length - 1),false)) {
+    type=Character.toLowerCase(text.charAt(length - 1));
+    text=text.substring(0,length);
+    length-=1;
+  }
+  BigInteger value=new BigInteger(text);
+switch (type) {
+case 'i':
+    return new Integer(value.intValue());
+case 'l':
+  return new Long(value.longValue());
+case 'g':
+return value;
+default :
+if (value.compareTo(MAX_LONG) < 0 && value.compareTo(MIN_LONG) >= 0) {
+if (value.compareTo(MAX_INTEGER) < 0 && value.compareTo(MIN_INTEGER) >= 0) {
+  return new Integer(value.intValue());
+}
+ else {
+  return new Long(value.longValue());
+}
+}
+}
+return value;
+}

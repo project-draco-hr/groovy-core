@@ -1,0 +1,16 @@
+{
+  if (emptyString) {
+    emptyString=false;
+    return Token.newString("",getStartLine(),getStartColumn());
+  }
+ else   if (finished) {
+    return null;
+  }
+ else {
+    StringBuffer string=new StringBuffer();
+    while (la(1) != CharStream.EOS) {
+      string.append(consume());
+    }
+    return Token.newString(string.toString(),getStartLine(),getStartColumn());
+  }
+}

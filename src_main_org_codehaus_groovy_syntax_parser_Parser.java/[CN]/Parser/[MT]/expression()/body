@@ -1,4 +1,365 @@
 {
-  optionalNewlines();
-  return assignmentExpression();
+  ExpressionStack stack=new ExpressionStack(this);
+  CSTNode expression=null;
+  boolean bareMode=false;
+  MAIN_LOOP:   do {
+    Token next=la(stack);
+    int type=next.getMeaningAs(EXPRESSION_SHIFT_HANDLERS);
+    SHIFT: switch (type) {
+case Types.GSTRING_START:
+{
+        if (stack.topIsAnExpression()) {
+          error("gstring cannot directly follow another expression");
+        }
+        stack.push(gstring());
+        break;
+      }
+case Types.CREATABLE_PRIMITIVE_TYPE:
+{
+      if (stack.atStartOfExpression()) {
+        stack.push(variableDeclarationExpression(consume()));
+      }
+ else {
+        error("type name not valid in this context");
+      }
+      break;
+    }
+case Types.SIMPLE_EXPRESSION:
+{
+    stack.shiftUnlessTopIsAnExpression("literal cannot directly follow another expression");
+    break;
+  }
+case Types.KEYWORD_IDENTIFIER:
+{
+  if (stack.top().isA(Types.DEREFERENCE_OPERATOR) && stack.topIsAnOperator()) {
+    la().setMeaning(Types.IDENTIFIER);
+    stack.shift();
+  }
+ else {
+    error("not valid as an identifier in this context");
+  }
+  break;
+}
+case Types.ASSIGNMENT_OPERATOR:
+{
+stack.shiftIf(stack.topIsAModifiableExpression(),"left-hand-side of assignment must be modifiable");
+break;
+}
+case Types.PREFIX_OR_INFIX_OPERATOR:
+{
+if (stack.topIsAnOperator(0,true)) {
+Types.makePrefix(next,false);
+}
+stack.shift();
+break;
+}
+case Types.PREFIX_OPERATOR:
+{
+Types.makePrefix(next,false);
+stack.shift();
+break;
+}
+case Types.QUESTION:
+case Types.INFIX_OPERATOR:
+{
+stack.shiftIfTopIsAnExpression("infix operators may only follow expressions");
+break;
+}
+case Types.LEFT_PARENTHESIS:
+{
+boolean condition=stack.atStartOfExpression() || (stack.topIsAnOperator() && !stack.top().isA(Types.DEREFERENCE_OPERATOR));
+stack.shiftIf(condition,"sub-expression not valid at this position");
+break;
+}
+case Types.LEFT_CURLY_BRACE:
+{
+if (stack.atStartOfExpression() || stack.topIsAnOperator() || stack.top().isA(Types.SYNTH_METHOD_CALL)) {
+stack.push(closureExpression());
+}
+ else {
+error("closure not valid in this context");
+}
+break;
+}
+case Types.LEFT_SQUARE_BRACKET:
+{
+boolean isMap=false, insist=false;
+if (stack.topIsAnExpression()) {
+insist=true;
+}
+stack.push(listOrMapExpression(isMap,insist));
+break;
+}
+case Types.KEYWORD_NEW:
+{
+if (stack.atStartOfExpression() || stack.topIsAnOperator()) {
+stack.push(newExpression());
+}
+ else {
+error("new can follow the start of an expression or another operator");
+}
+break;
+}
+case Types.KEYWORD_INSTANCEOF:
+{
+stack.shiftIf(stack.topIsAnExpression(),"instanceof may only follow an expression");
+break;
+}
+default :
+{
+if (stack.size() == 1 && stack.topIsAnExpression()) {
+break MAIN_LOOP;
+}
+ else {
+error();
+}
+}
+}
+boolean checkAgain=false, skipPatterns=false;
+CSTNode top0=null, top1=null, top2=null;
+int nextPrecedence=0, top1Precedence=0;
+REDUCE: do {
+if (!stack.topIsAnExpression()) {
+break;
+}
+checkAgain=false;
+skipPatterns=false;
+top0=stack.top();
+top1=stack.top(1);
+top2=stack.top(2);
+next=la(stack);
+nextPrecedence=Types.getPrecedence(next.getMeaning(),false);
+top1Precedence=Types.getPrecedence(top1.getMeaning(),false);
+if (top1.isA(Types.LEFT_PARENTHESIS)) {
+if (next.isA(Types.RIGHT_PARENTHESIS)) {
+consume();
+next=la(true);
+boolean castPrecluded=next.isA(Types.NEWLINE) || next.isA(Types.PRECLUDES_CAST_OPERATOR);
+if (ExpressionSupport.isAPotentialTypeName(top0,false) && !castPrecluded) {
+CSTNode name=stack.pop();
+Reduction cast=((Token)stack.pop()).asReduction(name);
+cast.setMeaning(Types.SYNTH_CAST);
+stack.push(cast);
+}
+ else {
+CSTNode subexpression=stack.pop();
+stack.pop();
+stack.push(subexpression);
+}
+checkAgain=true;
+continue;
+}
+ else {
+skipPatterns=true;
+}
+}
+if (top0.isA(Types.KEYWORD_NEW) && !top0.isAnExpression()) {
+top0.markAsExpression();
+if (top1.isA(Types.DOT)) {
+CSTNode theNew=stack.pop();
+CSTNode theDot=stack.pop();
+CSTNode context=stack.pop();
+theNew.set(1,context);
+stack.push(theNew);
+checkAgain=true;
+continue;
+}
+}
+if (top1.isA(Types.DEREFERENCE_OPERATOR) && !top0.hasChildren()) {
+stack.reduce(3,1,true);
+checkAgain=true;
+continue;
+}
+if (top0.isA(Types.SYNTH_LIST) && top1.isAnExpression()) {
+if (!top0.hasChildren()) {
+boolean typePreceeds=ExpressionSupport.isAPotentialTypeName(top1,false);
+boolean potentialCast=top2.isA(Types.LEFT_PARENTHESIS);
+boolean potentialDecl=top2.isA(Types.LEFT_PARENTHESIS) || top2.isA(Types.UNKNOWN);
+boolean classReference=next.isA(Types.DOT) && la(2).isA(Types.KEYWORD_CLASS);
+if (!(typePreceeds && (potentialCast || potentialDecl || classReference))) {
+error("empty square brackets are only valid on type names");
+}
+Reduction array=stack.pop().asReduction();
+array.setMeaning(Types.LEFT_SQUARE_BRACKET);
+array.add(stack.pop());
+while (lt(true) == Types.LEFT_SQUARE_BRACKET) {
+array=consume(Types.LEFT_SQUARE_BRACKET).asReduction(array);
+consume(Types.RIGHT_SQUARE_BRACKET);
+}
+if (classReference) {
+CSTNode reference=consume(Types.DOT).asReduction(array,consume(Types.KEYWORD_CLASS));
+reference.markAsExpression();
+stack.push(reference);
+}
+ else if (lt(true) == Types.IDENTIFIER && lt(2) == Types.EQUAL) {
+stack.push(variableDeclarationExpression(array));
+}
+ else if (stack.top().isA(Types.LEFT_PARENTHESIS) && la(true).isA(Types.RIGHT_PARENTHESIS)) {
+CSTNode cast=((Token)stack.pop()).asReduction(array);
+cast.setMeaning(Types.SYNTH_CAST);
+stack.push(cast);
+consume(Types.RIGHT_PARENTHESIS);
+}
+ else {
+error("found array type where none expected");
+}
+}
+ else {
+CSTNode list=stack.pop();
+CSTNode base=stack.pop();
+Reduction result=((Token)list.get(0)).dup().asReduction();
+result.setMeaning(Types.LEFT_SQUARE_BRACKET);
+result.add(base);
+if (list.children() == 1) {
+result.add(list.get(1));
+}
+ else {
+result.add(list);
+}
+result.markAsExpression();
+stack.push(result);
+}
+checkAgain=true;
+continue;
+}
+if (la(true).isA(Types.IDENTIFIER) && lt(2) == Types.EQUALS && ExpressionSupport.isAPotentialTypeName(top0,false)) {
+stack.push(variableDeclarationExpression(stack.pop()));
+checkAgain=true;
+continue;
+}
+if (top1.isA(Types.SYNTH_METHOD_CALL) && top0.isA(Types.SYNTH_CLOSURE)) {
+CSTNode parameters=top1.get(2);
+int last=parameters.size() - 1;
+if (last > 0 && parameters.get(last).isA(Types.SYNTH_CLOSURE)) {
+error("you may only pass one closure to a method implicitly");
+}
+parameters.add(stack.pop());
+checkAgain=true;
+continue;
+}
+if (ExpressionSupport.isInvokable(top0) && (next.isA(Types.LEFT_CURLY_BRACE) || la(true).isA(Types.METHOD_CALL_STARTERS))) {
+CSTNode name=stack.pop();
+Reduction method=null;
+switch (next.getMeaning()) {
+case Types.LEFT_PARENTHESIS:
+method=consume().asReduction();
+method.add(name);
+method.add(la().isA(Types.RIGHT_PARENTHESIS) ? Reduction.newContainer() : parameterList());
+consume(Types.RIGHT_PARENTHESIS);
+break;
+case Types.LEFT_CURLY_BRACE:
+method=Token.newSymbol(Types.LEFT_PARENTHESIS,next.getStartLine(),next.getStartColumn()).asReduction();
+method.add(name);
+method.add(Reduction.newContainer());
+break;
+default :
+method=Token.newSymbol(Types.LEFT_PARENTHESIS,next.getStartLine(),next.getStartColumn()).asReduction();
+method.add(name);
+method.add(parameterList());
+break;
+}
+method.setMeaning(Types.SYNTH_METHOD_CALL);
+method.markAsExpression();
+stack.push(method);
+if (lt() != Types.LEFT_CURLY_BRACE) {
+checkAgain=true;
+}
+continue;
+}
+if (next.isA(Types.POSTFIX_OPERATOR) && stack.topIsAnExpression()) {
+if (!ExpressionSupport.isAVariable(stack.top())) {
+error("increment/decrement operators can only be applied to variables");
+}
+Types.makePostfix(next,true);
+stack.shift();
+stack.reduce(2,0,true);
+checkAgain=true;
+continue;
+}
+if (top1.isA(Types.QUESTION)) {
+boolean reduce=false;
+if (la().isA(Types.COLON)) {
+if (top1.hasChildren()) {
+error("ternary operator can have only three clauses");
+}
+consume();
+stack.reduce(3,1,false);
+checkAgain=true;
+}
+ else if (Types.getPrecedence(next.getMeaning(),false) < 10) {
+stack.reduce(2,1,false);
+stack.top().setMeaning(Types.SYNTH_TERNARY);
+checkAgain=true;
+}
+if (checkAgain) {
+continue;
+}
+}
+if (skipPatterns || !ExpressionSupport.isAnOperator(top1,false)) {
+break;
+}
+switch (top1.getMeaningAs(EXPRESSION_REDUCE_HANDLERS)) {
+case Types.PREFIX_PLUS_PLUS:
+case Types.PREFIX_MINUS_MINUS:
+{
+if (nextPrecedence < top1Precedence) {
+if (!ExpressionSupport.isAVariable(stack.top())) {
+error("increment/decrement operators can only be applied to variables");
+}
+stack.reduce(2,1,true);
+checkAgain=true;
+}
+break;
+}
+case Types.PURE_PREFIX_OPERATOR:
+{
+if (nextPrecedence < top1Precedence) {
+stack.reduce(2,1,true);
+checkAgain=true;
+}
+break;
+}
+case Types.ASSIGNMENT_OPERATOR:
+{
+if (nextPrecedence < top1Precedence) {
+stack.reduce(3,1,true);
+checkAgain=true;
+}
+break;
+}
+case Types.KEYWORD_INSTANCEOF:
+{
+if (nextPrecedence < top1Precedence) {
+if (!ExpressionSupport.isAPotentialTypeName(top0,false)) {
+error("instanceof right-hand side must be a valid type name");
+}
+stack.reduce(3,1,true);
+checkAgain=true;
+}
+break;
+}
+case Types.INFIX_OPERATOR:
+{
+if (nextPrecedence <= top1Precedence) {
+stack.reduce(3,1,true);
+checkAgain=true;
+}
+break;
+}
+default :
+{
+throw new GroovyBugError("found unexpected token during REDUCE [" + top1.getMeaning() + "]");
+}
+}
+}
+ while (checkAgain);
+}
+ while (true);
+if (stack.size() == 1 && stack.topIsAnExpression()) {
+expression=stack.pop();
+}
+ else {
+error("expression incomplete");
+}
+return expression;
 }

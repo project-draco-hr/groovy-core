@@ -1,21 +1,25 @@
 {
-  CSTNode type=new CSTNode();
-  Token la=(useBare ? la_bare() : la());
-  if (la == null) {
-  }
- else   if (la.isA(Token.IDENTIFIER)) {
-    if (useBare) {
-      if (lt_bare(2) != -1 && la_bare(2).isA(OPTIONAL_DATATYPE_FOLLOWER)) {
-        type=datatype(allowVoid);
-      }
+  CSTNode type=Reduction.EMPTY;
+  Token next=la(significantNewlines);
+  if (next.isA(Types.IDENTIFIER)) {
+    if (lt(2,significantNewlines) == Types.IDENTIFIER) {
+      type=datatype(allowVoid);
     }
  else {
-      if (lt(2) != -1 && la(2).isA(OPTIONAL_DATATYPE_FOLLOWER)) {
+      getTokenStream().checkpoint();
+      try {
         type=datatype(allowVoid);
+        if (lt(significantNewlines) != Types.IDENTIFIER) {
+          throw new Exception();
+        }
+      }
+ catch (      Exception e) {
+        getTokenStream().restore();
+        type=Reduction.EMPTY;
       }
     }
   }
- else   if (la.isPrimitiveTypeKeyword(true)) {
+ else   if (next.isA(Types.PRIMITIVE_TYPE)) {
     type=datatype(allowVoid);
   }
   return type;

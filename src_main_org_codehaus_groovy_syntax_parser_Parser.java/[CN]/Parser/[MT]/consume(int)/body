@@ -1,13 +1,3 @@
 {
-  if (lt() != type) {
-    throw new UnexpectedTokenException(la(),type);
-  }
-  while (true) {
-    Token token=getTokenStream().la();
-    if (token == null || token.getType() != Token.NEWLINE) {
-      break;
-    }
-    getTokenStream().consume(Token.NEWLINE);
-  }
-  return getTokenStream().consume(type);
+  return consume(type,type == Types.NEWLINE);
 }

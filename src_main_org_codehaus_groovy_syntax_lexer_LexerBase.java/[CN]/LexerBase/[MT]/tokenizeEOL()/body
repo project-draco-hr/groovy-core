@@ -1,0 +1,14 @@
+{
+  Token token=null;
+  char c=la();
+switch (c) {
+case '\r':
+case '\n':
+    token=symbol(Types.NEWLINE);
+  consume();
+if (c == '\r' && la() == '\n') {
+  consume();
+}
+}
+return token;
+}

@@ -1,0 +1,14 @@
+{
+  String name=identifier(reduction);
+  int modifiers=modifiers(reduction.get(1));
+  String parent=resolveName(reduction.get(2).get(1));
+  CSTNode interfaceReduction=reduction.get(3);
+  String[] interfaces=new String[interfaceReduction.children()];
+  for (int i=1; i < interfaceReduction.size(); i++) {
+    interfaces[i - 1]=resolveName(interfaceReduction.get(i));
+  }
+  ClassNode classNode=(context == null ? new ClassNode(dot(packageName,name),modifiers,parent,interfaces,MixinNode.EMPTY_ARRAY) : new InnerClassNode(context,dot(packageName,name),modifiers,parent,interfaces,MixinNode.EMPTY_ARRAY));
+  classNode.setCSTNode(reduction.get(0));
+  typeBody(classNode,reduction.get(4),0,0);
+  return classNode;
+}

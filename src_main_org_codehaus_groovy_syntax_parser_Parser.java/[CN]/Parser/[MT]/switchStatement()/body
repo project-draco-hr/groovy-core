@@ -1,31 +1,34 @@
 {
-  CSTNode statement=rootNode(Token.KEYWORD_SWITCH);
-  consume(Token.LEFT_PARENTHESIS);
-  statement.addChild(expression());
-  consume(Token.RIGHT_PARENTHESIS);
-  consume(Token.LEFT_CURLY_BRACE);
+  Reduction statement=consume(Types.KEYWORD_SWITCH).asReduction();
+  consume(Types.LEFT_PARENTHESIS);
+  statement.add(expression());
+  consume(Types.RIGHT_PARENTHESIS);
+  consume(Types.LEFT_CURLY_BRACE);
   boolean defaultFound=false;
-  while (lt() == Token.KEYWORD_CASE || lt() == Token.KEYWORD_DEFAULT) {
-    CSTNode caseBlock=null;
-    if (lt() == Token.KEYWORD_CASE) {
-      caseBlock=rootNode(Token.KEYWORD_CASE);
-      caseBlock.addChild(expression());
+  while (lt() == Types.KEYWORD_CASE || lt() == Types.KEYWORD_DEFAULT) {
+    Reduction caseBlock=null;
+    if (lt() == Types.KEYWORD_CASE) {
+      caseBlock=consume(Types.KEYWORD_CASE).asReduction(expression());
     }
- else {
+ else     if (lt() == Types.KEYWORD_DEFAULT) {
       if (defaultFound) {
         collector.add(new ParserException("duplicate default entry in switch",la()));
       }
-      caseBlock=rootNode(Token.KEYWORD_DEFAULT);
+      caseBlock=consume(Types.KEYWORD_DEFAULT).asReduction();
       defaultFound=true;
     }
-    consume(Token.COLON);
+ else {
+      error(new int[]{Types.KEYWORD_DEFAULT,Types.KEYWORD_CASE});
+      recover(Types.SWITCH_ENTRIES);
+    }
+    consume(Types.COLON);
     boolean first=true;
-    while (lt() != -1 && !la().isA(SWITCH_STATEMENT_BLOCK_TERMINATORS)) {
-      caseBlock.addChild(statement(first));
+    while (!la().isA(Types.SWITCH_BLOCK_TERMINATORS)) {
+      caseBlock.add(statement(first));
       first=false;
     }
-    statement.addChild(caseBlock);
+    statement.add(caseBlock);
   }
-  consume(Token.RIGHT_CURLY_BRACE);
+  consume(Types.RIGHT_CURLY_BRACE);
   return statement;
 }

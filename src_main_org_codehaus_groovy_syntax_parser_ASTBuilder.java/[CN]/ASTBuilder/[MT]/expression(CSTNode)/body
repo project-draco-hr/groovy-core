@@ -1,5 +1,57 @@
 {
-  Expression expression=makeExpression(expressionRoot);
-  expression.setCSTNode(expressionRoot);
-  return expression;
+  Expression expression=null;
+  int type=reduction.getMeaningAs(EXPRESSION_HANDLERS);
+switch (type) {
+case Types.SYNTHETIC:
+{
+      expression=syntheticExpression(reduction);
+      break;
+    }
+case Types.RANGE_OPERATOR:
+{
+    Expression from=expression(reduction.get(1));
+    Expression to=expression(reduction.get(2));
+    expression=new RangeExpression(from,to,reduction.getMeaning() == Types.DOT_DOT);
+    break;
+  }
+case Types.LEFT_SQUARE_BRACKET:
+case Types.INFIX_OPERATOR:
+{
+  expression=infixExpression(reduction);
+  break;
+}
+case Types.REGEX_PATTERN:
+{
+expression=new RegexExpression(expression(reduction.get(1)));
+break;
+}
+case Types.PREFIX_OPERATOR:
+{
+expression=prefixExpression(reduction);
+break;
+}
+case Types.POSTFIX_OPERATOR:
+{
+Expression body=expression(reduction.get(1));
+expression=new PostfixExpression(body,reduction.getRoot());
+break;
+}
+case Types.SIMPLE_EXPRESSION:
+{
+expression=simpleExpression(reduction);
+break;
+}
+case Types.KEYWORD_NEW:
+{
+expression=newExpression(reduction);
+break;
+}
+default :
+throw new GroovyBugError("unhandled CST: [" + reduction.toString() + "]");
+}
+if (expression == null) {
+throw new GroovyBugError("expression produced null: [" + reduction.toString() + "]");
+}
+expression.setCSTNode(reduction);
+return expression;
 }

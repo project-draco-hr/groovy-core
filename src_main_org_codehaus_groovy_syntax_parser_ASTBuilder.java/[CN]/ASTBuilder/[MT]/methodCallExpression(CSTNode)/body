@@ -1,23 +1,48 @@
 {
-  CSTNode objectExpressionRoot=expressionRoot.getChild(0);
-  Expression objectExpression=null;
-  boolean implicitThis=false;
-  if (objectExpressionRoot.getToken() == null) {
-    objectExpression=VariableExpression.THIS_EXPRESSION;
-    implicitThis=true;
-  }
- else {
-    objectExpression=expression(expressionRoot.getChild(0));
-  }
-  String methodName=expressionRoot.getChild(1).getToken().getText();
-  Expression paramList=actualParameterList(expressionRoot.getChild(2));
-  MethodCallExpression answer=new MethodCallExpression(objectExpression,methodName,paramList);
-  answer.setImplicitThis(implicitThis);
-  if (expressionRoot.getChildren().length > 3) {
-    CSTNode notExpr=expressionRoot.getChild(3);
-    if (notExpr != null && notExpr.getToken().getType() == Token.NAVIGATE) {
-      answer.setSafe(true);
+  MethodCallExpression call=null;
+  CSTNode descriptor=reduction.get(1);
+  Expression context=null;
+  boolean implicit=false;
+  String method="call";
+  boolean safe=false;
+  int type=descriptor.getMeaning();
+switch (type) {
+case Types.KEYWORD_SUPER:
+{
+      context=variableExpression(descriptor);
+      method=identifier(descriptor);
+      break;
     }
+case Types.KEYWORD_THIS:
+{
+    context=VariableExpression.THIS_EXPRESSION;
+    method=identifier(descriptor);
+    break;
   }
-  return answer;
+case Types.IDENTIFIER:
+{
+  context=VariableExpression.THIS_EXPRESSION;
+  method=identifier(descriptor);
+  implicit=true;
+  break;
+}
+case Types.DOT:
+case Types.NAVIGATE:
+{
+context=expression(descriptor.get(1));
+method=identifier(descriptor.get(2));
+safe=type == Types.NAVIGATE;
+break;
+}
+default :
+{
+context=expression(descriptor);
+break;
+}
+}
+Expression parameters=parameterList(reduction.get(2));
+call=new MethodCallExpression(context,method,parameters);
+call.setImplicitThis(implicit);
+call.setSafe(safe);
+return call;
 }

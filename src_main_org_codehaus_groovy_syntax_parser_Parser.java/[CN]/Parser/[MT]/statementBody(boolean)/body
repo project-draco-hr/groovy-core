@@ -1,13 +1,15 @@
 {
   CSTNode body=null;
-  if (lt() == Token.LEFT_CURLY_BRACE) {
-    body=statementsUntilRightCurly(rootNode(Token.LEFT_CURLY_BRACE));
-    body.getToken().setInterpretation(Token.SYNTH_BLOCK);
-    consume(Token.RIGHT_CURLY_BRACE);
+  if (lt() == Types.LEFT_CURLY_BRACE) {
+    Token brace=consume(Types.LEFT_CURLY_BRACE);
+    brace.setMeaning(Types.SYNTH_BLOCK);
+    body=statementsUntilRightCurly();
+    body.set(0,brace);
+    consume(Types.RIGHT_CURLY_BRACE);
   }
  else {
     if (requireBraces) {
-      throwExpected(new int[]{Token.LEFT_CURLY_BRACE});
+      error(Types.LEFT_CURLY_BRACE);
     }
  else {
       body=statement();

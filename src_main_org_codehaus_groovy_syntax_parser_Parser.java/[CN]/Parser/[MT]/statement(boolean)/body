@@ -1,93 +1,90 @@
 {
   CSTNode statement=null;
   CSTNode label=null;
-  if (lt() == Token.IDENTIFIER && lt(2) == Token.COLON) {
-    label=rootNode(Token.COLON,rootNode(lt()));
-    label.getToken().setInterpretation(Token.SYNTH_LABEL);
+  if (lt() == Types.IDENTIFIER && lt(2) == Types.COLON) {
+    label=consume(Types.IDENTIFIER).asReduction();
+    label.setMeaning(Types.SYNTH_LABEL);
+    consume(Types.COLON);
   }
 switch (lt()) {
-case (Token.KEYWORD_FOR):
+case Types.KEYWORD_ASSERT:
 {
-      statement=forStatement();
+      statement=assertStatement();
       break;
     }
-case (Token.KEYWORD_WHILE):
+case Types.KEYWORD_BREAK:
 {
-    statement=whileStatement();
+    statement=breakStatement();
     break;
   }
-case (Token.KEYWORD_DO):
+case Types.KEYWORD_CONTINUE:
 {
-  statement=doWhileStatement();
+  statement=continueStatement();
   break;
 }
-case (Token.KEYWORD_CONTINUE):
-{
-statement=continueStatement();
-break;
-}
-case (Token.KEYWORD_BREAK):
-{
-statement=breakStatement();
-break;
-}
-case (Token.KEYWORD_IF):
+case Types.KEYWORD_IF:
 {
 statement=ifStatement();
 break;
 }
-case (Token.KEYWORD_TRY):
-{
-statement=tryStatement();
-break;
-}
-case (Token.KEYWORD_THROW):
-{
-statement=throwStatement();
-break;
-}
-case (Token.KEYWORD_SYNCHRONIZED):
-{
-statement=synchronizedStatement();
-break;
-}
-case (Token.KEYWORD_SWITCH):
-{
-statement=switchStatement();
-break;
-}
-case (Token.KEYWORD_RETURN):
+case Types.KEYWORD_RETURN:
 {
 statement=returnStatement();
 break;
 }
-case (Token.KEYWORD_ASSERT):
+case Types.KEYWORD_SWITCH:
 {
-statement=assertStatement();
+statement=switchStatement();
 break;
 }
-case (Token.SEMICOLON):
+case Types.KEYWORD_SYNCHRONIZED:
 {
-Token token=consume(lt());
-token.setInterpretation(Token.SYNTH_BLOCK);
-statement=new CSTNode(token);
+statement=synchronizedStatement();
 break;
 }
-case (Token.LEFT_CURLY_BRACE):
+case Types.KEYWORD_THROW:
+{
+statement=throwStatement();
+break;
+}
+case Types.KEYWORD_TRY:
+{
+statement=tryStatement();
+break;
+}
+case Types.KEYWORD_FOR:
+{
+statement=forStatement();
+break;
+}
+case Types.KEYWORD_DO:
+{
+statement=doWhileStatement();
+break;
+}
+case Types.KEYWORD_WHILE:
+{
+statement=whileStatement();
+break;
+}
+case Types.SEMICOLON:
+{
+statement=consume().asReduction();
+statement.setMeaning(Types.SYNTH_BLOCK);
+break;
+}
+case Types.LEFT_CURLY_BRACE:
 {
 statement=expression();
-if (statement.getToken().isA(Token.LEFT_CURLY_BRACE)) {
-if (statement.getChild(0).isEmpty()) {
-CSTNode block=new CSTNode(statement.getToken());
-block.getToken().setInterpretation(Token.SYNTH_BLOCK);
-Iterator children=statement.getChild(1).childIterator();
-while (children.hasNext()) {
-block.addChild((CSTNode)children.next());
+if (statement.isA(Types.SYNTH_CLOSURE)) {
+if (!statement.get(1).hasChildren()) {
+Reduction block=statement.getRoot().asReduction();
+block.setMeaning(Types.SYNTH_BLOCK);
+block.addChildrenOf(statement.get(2));
+if (label == null && !allowUnlabelledBlocks) {
+collector.add(new ParserException("groovy does not support anonymous blocks; please add a label",statement.getRoot()));
 }
 statement=block;
-if (label == null && !allowUnlabelledBlocks) {
-collector.add(new ParserException("groovy does not support anonymous blocks; please add a label",statement.getToken()));
-}
 }
 }
  else {
@@ -108,7 +105,7 @@ recover();
 }
 }
 if (label != null) {
-label.addChild(statement);
+label.add(statement);
 statement=label;
 }
 return statement;

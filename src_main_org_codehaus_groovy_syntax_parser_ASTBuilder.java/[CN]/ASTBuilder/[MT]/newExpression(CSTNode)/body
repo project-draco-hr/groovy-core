@@ -1,18 +1,37 @@
 {
-  String datatype=resolvedQualifiedNameNotNull(expressionRoot.getChild(0));
-  CSTNode node=expressionRoot.getChild(1);
-  if (node.getToken().getType() == Token.LEFT_SQUARE_BRACKET) {
-    CSTNode next=expressionRoot.getChild(2);
-    if (next.getToken().getType() == Token.LEFT_CURLY_BRACE) {
-      TupleExpression args=nonNamedActualParameterList(expressionRoot.getChild(3));
-      return new ArrayExpression(datatype,args.getExpressions());
+  Expression expression=null;
+  CSTNode typeNode=reduction.get(1);
+  String type=resolveName(typeNode);
+  if (typeNode.getMeaning() == Types.LEFT_SQUARE_BRACKET) {
+    CSTNode dimensions=reduction.get(2);
+    if (typeNode.get(1).getMeaning() == Types.LEFT_SQUARE_BRACKET) {
+      throw new GroovyBugError("NOT YET IMPLEMENTED: multidimensional arrays");
     }
  else {
-      return new ArrayExpression(datatype,expression(next));
+      type=resolveName(typeNode.get(1));
+    }
+    if (dimensions.isEmpty()) {
+      CSTNode data=reduction.get(3);
+      if (data.get(1,true).getMeaning() == Types.SYNTH_TUPLE) {
+        throw new GroovyBugError("NOT YET IMPLEMENTED: multidimensional arrays");
+      }
+      expression=new ArrayExpression(type,tupleExpression(data).getExpressions());
+    }
+ else {
+      if (dimensions.size() > 2) {
+        throw new GroovyBugError("NOT YET IMPLEMENTED: multidimensional arrays");
+      }
+ else {
+        expression=new ArrayExpression(type,expression(dimensions.get(1)));
+      }
     }
   }
  else {
-    Expression args=actualParameterList(expressionRoot.getChild(1));
-    return new ConstructorCallExpression(datatype,args);
+    Expression parameters=parameterList(reduction.get(2));
+    if (reduction.size() > 3) {
+      throw new GroovyBugError("NOT YET IMPLEMENTED: anonymous classes");
+    }
+    expression=new ConstructorCallExpression(type,parameters);
   }
+  return expression;
 }

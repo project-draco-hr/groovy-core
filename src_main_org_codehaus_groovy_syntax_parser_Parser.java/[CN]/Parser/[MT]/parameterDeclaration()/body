@@ -1,6 +1,6 @@
 {
-  CSTNode parameter=new CSTNode(Token.syntheticParameterDeclaration());
-  parameter.addChild(optionalDatatype(false,false));
-  parameter.addChild(nameDeclaration(false));
+  CSTNode type=optionalDatatype(false,false);
+  Reduction parameter=nameDeclaration(false).asReduction(type);
+  parameter.setMeaning(Types.SYNTH_PARAMETER_DECLARATION);
   return parameter;
 }

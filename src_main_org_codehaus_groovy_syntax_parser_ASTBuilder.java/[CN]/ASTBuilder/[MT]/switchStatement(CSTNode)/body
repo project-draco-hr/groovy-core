@@ -1,19 +1,17 @@
 {
-  CSTNode[] children=statementRoot.getChildren();
-  Expression expression=expression(children[0]);
-  SwitchStatement answer=new SwitchStatement(expression);
-  Statement defaultBlock=null;
-  for (int i=1; i < children.length; i++) {
-    CSTNode child=children[i];
-    if (matches(child,Token.KEYWORD_CASE)) {
-      answer.addCase(caseStatement(child));
-    }
- else     if (matches(child,Token.KEYWORD_DEFAULT)) {
-      answer.setDefaultStatement(statementBlock(child));
-    }
- else {
-      throw new ParserException("Expecting case or default block",child.getToken());
-    }
-  }
-  return answer;
+  SwitchStatement statement=new SwitchStatement(expression(reduction.get(1)));
+  for (int i=2; i < reduction.size(); i++) {
+    CSTNode child=reduction.get(i);
+switch (child.getMeaning()) {
+case Types.KEYWORD_CASE:
+      statement.addCase(caseStatement(child));
+    break;
+case Types.KEYWORD_DEFAULT:
+  statement.setDefaultStatement(statementBlock(child));
+break;
+default :
+throw new GroovyBugError("invalid something in switch [" + child + "]");
+}
+}
+return statement;
 }

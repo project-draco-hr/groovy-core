@@ -1,0 +1,37 @@
+{
+  Reduction module=Reduction.newContainer();
+  Reduction packageDeclaration=null;
+  if (lt() == Types.KEYWORD_PACKAGE) {
+    try {
+      packageDeclaration=packageDeclaration();
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      recover();
+    }
+  }
+  if (packageDeclaration == null) {
+    packageDeclaration=Reduction.EMPTY;
+  }
+  module.add(packageDeclaration);
+  Reduction imports=(Reduction)module.add(Reduction.newContainer());
+  while (lt() == Types.KEYWORD_IMPORT) {
+    try {
+      imports.add(importStatement());
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      recover();
+    }
+  }
+  while (lt() != Types.EOF) {
+    try {
+      module.add(topLevelStatement());
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      recover();
+    }
+  }
+  return module;
+}

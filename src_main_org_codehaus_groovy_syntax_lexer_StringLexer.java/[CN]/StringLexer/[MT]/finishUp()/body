@@ -1,0 +1,15 @@
+{
+  for (int i=0; i < delimiter.length(); i++) {
+    char c=source.la(1);
+    if (c == CharStream.EOS) {
+      throw new UnterminatedStringLiteralException(getStartLine(),getStartColumn());
+    }
+ else     if (c == delimiter.charAt(i)) {
+      source.consume();
+    }
+ else {
+      throw new GroovyBugError("la() said delimiter [" + delimiter + "], finishUp() found ["+ c+ "]");
+    }
+  }
+  finish();
+}

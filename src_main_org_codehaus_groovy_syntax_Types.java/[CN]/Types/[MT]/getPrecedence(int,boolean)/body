@@ -1,0 +1,75 @@
+{
+switch (type) {
+case LEFT_PARENTHESIS:
+    return 0;
+case EQUAL:
+case PLUS_EQUAL:
+case MINUS_EQUAL:
+case MULTIPLY_EQUAL:
+case DIVIDE_EQUAL:
+case MOD_EQUAL:
+case LOGICAL_OR_EQUAL:
+case LOGICAL_AND_EQUAL:
+  return 5;
+case QUESTION:
+return 10;
+case LOGICAL_OR:
+return 15;
+case LOGICAL_AND:
+return 20;
+case COMPARE_IDENTICAL:
+case COMPARE_NOT_IDENTICAL:
+return 24;
+case COMPARE_NOT_EQUAL:
+case COMPARE_EQUAL:
+case COMPARE_LESS_THAN:
+case COMPARE_LESS_THAN_EQUAL:
+case COMPARE_GREATER_THAN:
+case COMPARE_GREATER_THAN_EQUAL:
+case COMPARE_TO:
+case FIND_REGEX:
+case MATCH_REGEX:
+case KEYWORD_INSTANCEOF:
+return 25;
+case DOT_DOT:
+case DOT_DOT_DOT:
+return 30;
+case LEFT_SHIFT:
+case RIGHT_SHIFT:
+return 35;
+case PLUS:
+case MINUS:
+return 40;
+case MULTIPLY:
+case DIVIDE:
+case MOD:
+return 45;
+case NOT:
+case REGEX_PATTERN:
+return 50;
+case SYNTH_CAST:
+return 55;
+case PLUS_PLUS:
+case MINUS_MINUS:
+case PREFIX_PLUS_PLUS:
+case PREFIX_MINUS_MINUS:
+case POSTFIX_PLUS_PLUS:
+case POSTFIX_MINUS_MINUS:
+return 65;
+case PREFIX_PLUS:
+case PREFIX_MINUS:
+return 70;
+case SYNTH_METHOD:
+case LEFT_SQUARE_BRACKET:
+return 75;
+case DOT:
+case NAVIGATE:
+return 80;
+case KEYWORD_NEW:
+return 85;
+}
+if (throwIfInvalid) {
+throw new GroovyBugError("precedence requested for non-operator");
+}
+return -1;
+}

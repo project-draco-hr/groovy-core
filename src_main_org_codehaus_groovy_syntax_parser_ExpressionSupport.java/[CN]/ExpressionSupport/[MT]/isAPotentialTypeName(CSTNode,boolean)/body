@@ -1,0 +1,12 @@
+{
+  if (node.isA(allowVoid ? Types.TYPE_NAME : Types.CREATABLE_TYPE_NAME)) {
+    return true;
+  }
+ else   if (node.isA(Types.DOT) && node.isAnExpression()) {
+    return isAPotentialTypeName(node.get(2),allowVoid) && isAPotentialTypeName(node.get(1),allowVoid);
+  }
+ else   if (node.isA(Types.LEFT_SQUARE_BRACKET) && node.isAnExpression() && node.size() == 2) {
+    return isAPotentialTypeName(node.get(1),allowVoid);
+  }
+  return false;
+}

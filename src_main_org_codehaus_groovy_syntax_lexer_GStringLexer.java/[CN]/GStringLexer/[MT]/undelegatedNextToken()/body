@@ -1,0 +1,111 @@
+{
+  Token token=null;
+  if (!sentStartToken) {
+    mark();
+    fullTextStartLine=getStartLine();
+    fullTextStartColumn=getStartColumn();
+    sentStartToken=true;
+    return symbol(Types.GSTRING_START);
+  }
+ else   if (la(1) == CharStream.EOS) {
+    if (!sentEndToken) {
+      sentEndToken=true;
+      token=Token.newSymbol(Types.GSTRING_END,fullTextStartLine,fullTextStartColumn);
+      token.setText(fullText.toString());
+    }
+    return token;
+  }
+  if (inExpression && la(1) != '}') {
+    mark();
+    unexpected(la(1),0);
+  }
+  mark();
+  StringBuffer segment=new StringBuffer();
+  char c;
+  MAIN_LOOP:   while (true) {
+    c=la(1);
+    ROOT_SWITCH: switch (c) {
+case CharStream.EOS:
+{
+        break MAIN_LOOP;
+      }
+case '\r':
+case '\n':
+{
+      readEOL(segment);
+      break ROOT_SWITCH;
+    }
+case '\\':
+{
+    ESCAPE_SWITCH: switch (la(2)) {
+case '\\':
+case '$':
+{
+        consume();
+        segment.append(consume());
+        break ESCAPE_SWITCH;
+      }
+default :
+{
+      segment.append(consume());
+      break ESCAPE_SWITCH;
+    }
+}
+break ROOT_SWITCH;
+}
+case '$':
+{
+if (la(2) == '{') {
+if (segment.length() == 0) {
+  sourceDelimiting(false);
+  mark();
+  consume();
+  consume();
+  token=symbol(Types.GSTRING_EXPRESSION_START);
+  inExpression=true;
+  if (child == null) {
+    child=new GroovyExpressionLexer();
+  }
+ else {
+    child.reset();
+  }
+  delegate(child);
+  break MAIN_LOOP;
+}
+ else {
+  break MAIN_LOOP;
+}
+}
+ else {
+segment.append(consume());
+}
+break ROOT_SWITCH;
+}
+case '}':
+{
+if (inExpression) {
+mark();
+consume();
+token=symbol(Types.GSTRING_EXPRESSION_END);
+inExpression=false;
+break MAIN_LOOP;
+}
+ else {
+segment.append(consume());
+break ROOT_SWITCH;
+}
+}
+default :
+{
+segment.append(consume());
+break ROOT_SWITCH;
+}
+}
+}
+if (token != null) {
+return token;
+}
+ else {
+return Token.newString(segment.toString(),getStartLine(),getStartColumn());
+}
+}

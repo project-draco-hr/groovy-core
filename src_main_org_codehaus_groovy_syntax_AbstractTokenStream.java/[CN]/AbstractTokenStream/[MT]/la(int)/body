@@ -1,6 +1,6 @@
 {
   if (k > buf.length) {
-    throw new LookAheadExhaustionError(k);
+    throw new GroovyBugError("Lookahead [" + k + "] is larger than lookahead buffer ["+ buf.length+ "]");
   }
   if (k > this.avail) {
     int numToPopulate=k - this.avail;
@@ -11,6 +11,7 @@
       int pop=((this.first + this.avail) % this.buf.length);
       this.buf[pop]=nextToken();
       ++this.avail;
+      ++this.checkpoint_avail;
     }
   }
   int pos=((k + this.first - 1) % this.buf.length);

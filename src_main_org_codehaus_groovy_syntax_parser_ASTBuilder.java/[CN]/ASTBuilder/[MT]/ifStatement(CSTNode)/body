@@ -1,16 +1,15 @@
 {
-  CSTNode[] children=statementRoot.getChildren();
-  BooleanExpression expression=new BooleanExpression(expression(children[0]));
-  BlockStatement ifBlock=statementOrStatementBlock(children[1]);
-  Statement elseBlock=null;
-  if (children.length == 3 && matches(children[2],Token.KEYWORD_IF)) {
-    elseBlock=ifStatement(children[2]);
-  }
- else   if (children.length == 3) {
-    elseBlock=statementOrStatementBlock(children[2].getChild(0));
-  }
+  Expression condition=expression(reduction.get(1));
+  BlockStatement body=statementBody(reduction.get(2));
+  Statement elseBlock=EmptyStatement.INSTANCE;
+  if (reduction.size() > 3) {
+    CSTNode elseReduction=reduction.get(3);
+    if (elseReduction.getMeaning() == Types.KEYWORD_IF) {
+      elseBlock=ifStatement(elseReduction);
+    }
  else {
-    elseBlock=EmptyStatement.INSTANCE;
+      elseBlock=statementBody(elseReduction.get(1));
+    }
   }
-  return new IfStatement(expression,ifBlock,elseBlock);
+  return new IfStatement(new BooleanExpression(condition),body,elseBlock);
 }

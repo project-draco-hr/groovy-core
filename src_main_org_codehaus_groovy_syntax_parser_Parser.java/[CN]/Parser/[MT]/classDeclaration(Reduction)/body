@@ -1,0 +1,21 @@
+{
+  consume(Types.KEYWORD_CLASS);
+  Reduction classDeclaration=consume(Types.IDENTIFIER).asReduction(modifiers);
+  classDeclaration.setMeaning(Types.SYNTH_CLASS);
+  try {
+    classDeclaration.add(typeList(Types.KEYWORD_EXTENDS,true,1));
+  }
+ catch (  SyntaxException e) {
+    collector.add(e);
+    classDeclaration.add(Reduction.EMPTY);
+  }
+  try {
+    classDeclaration.add(typeList(Types.KEYWORD_IMPLEMENTS,true,0));
+  }
+ catch (  SyntaxException e) {
+    collector.add(e);
+    classDeclaration.add(Reduction.EMPTY);
+  }
+  classDeclaration.add(typeBody(true,true,false));
+  return classDeclaration;
+}

@@ -1,0 +1,9 @@
+{
+  Token next=la();
+  if (stack.canComplete() && next.isA(Types.UNSAFE_OVER_NEWLINES)) {
+    if (la(true).getMeaning() == Types.NEWLINE) {
+      next=la(true);
+    }
+  }
+  return next;
+}

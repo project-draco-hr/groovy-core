@@ -1,8 +1,8 @@
 {
-  CSTNode statement=rootNode(Token.KEYWORD_SYNCHRONIZED);
-  consume(Token.LEFT_PARENTHESIS);
-  statement.addChild(expression());
-  consume(Token.RIGHT_PARENTHESIS);
-  statement.addChild(statementBody(true));
+  Reduction statement=consume(Types.KEYWORD_SYNCHRONIZED).asReduction();
+  consume(Types.LEFT_PARENTHESIS);
+  statement.add(expression());
+  consume(Types.RIGHT_PARENTHESIS);
+  statement.add(statementBody(true));
   return statement;
 }

@@ -1,12 +1,7 @@
 {
-  BooleanExpression assertExpr=new BooleanExpression(expression(statementRoot.getChild(0)));
-  CSTNode messageRoot=statementRoot.getChild(1);
-  Expression messageExpr=null;
-  if (messageRoot.getToken() == null) {
-    messageExpr=ConstantExpression.NULL;
+  BooleanExpression expression=new BooleanExpression(expression(reduction.get(1)));
+  if (reduction.children() > 1) {
+    return new AssertStatement(expression,expression(reduction.get(2)));
   }
- else {
-    messageExpr=expression(messageRoot);
-  }
-  return new AssertStatement(assertExpr,messageExpr);
+  return new AssertStatement(expression,ConstantExpression.NULL);
 }

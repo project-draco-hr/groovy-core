@@ -1,34 +1,33 @@
 {
-  CSTNode statement=rootNode(Token.KEYWORD_TRY);
-  statement.addChild(statementBody(true));
-  CSTNode catches=new CSTNode();
-  while (lt() == Token.KEYWORD_CATCH) {
+  Reduction statement=consume(Types.KEYWORD_TRY).asReduction();
+  statement.add(statementBody(true));
+  Reduction catches=(Reduction)statement.add(Reduction.newContainer());
+  while (lt() == Types.KEYWORD_CATCH) {
     try {
-      CSTNode catchBlock=rootNode(Token.KEYWORD_CATCH);
-      consume(Token.LEFT_PARENTHESIS);
+      Reduction catchBlock=(Reduction)catches.add(consume(Types.KEYWORD_CATCH).asReduction());
+      consume(Types.LEFT_PARENTHESIS);
       try {
-        catchBlock.addChild(datatype(false));
-        consume(catchBlock,Token.IDENTIFIER);
+        catchBlock.add(datatype(false));
+        catchBlock.add(nameDeclaration(false));
       }
  catch (      SyntaxException e) {
         collector.add(e);
-        recover(GENERAL_CLAUSE_TERMINATOR);
+        recover(Types.RIGHT_PARENTHESIS);
       }
-      consume(Token.RIGHT_PARENTHESIS);
-      catchBlock.addChild(statementBody(true));
-      catches.addChild(catchBlock);
+      consume(Types.RIGHT_PARENTHESIS);
+      catchBlock.add(statementBody(true));
     }
  catch (    SyntaxException e) {
       collector.add(e);
+      recover();
     }
   }
-  if (lt() == Token.KEYWORD_FINALLY) {
-    consume(Token.KEYWORD_FINALLY);
-    statement.addChild(statementBody(true));
+  if (lt() == Types.KEYWORD_FINALLY) {
+    consume(Types.KEYWORD_FINALLY);
+    statement.add(statementBody(true));
   }
  else {
-    statement.addChild(new CSTNode());
+    statement.add(Reduction.EMPTY);
   }
-  statement.addChild(catches);
   return statement;
 }

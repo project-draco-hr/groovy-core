@@ -1,0 +1,15 @@
+{
+  Parameter[] parameters=new Parameter[reduction.children()];
+  for (int i=1; i < reduction.size(); i++) {
+    CSTNode node=reduction.get(i);
+    String identifier=identifier(node);
+    String type=resolveName(node.get(1));
+    if (node.size() > 2) {
+      parameters[i - 1]=new Parameter(type,identifier,expression(node.get(2)));
+    }
+ else {
+      parameters[i - 1]=new Parameter(type,identifier);
+    }
+  }
+  return parameters;
+}

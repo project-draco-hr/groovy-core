@@ -1,7 +1,9 @@
 {
-  String text=expressionRoot.getToken().getText();
-  if (isDatatype(text)) {
-    return new ClassExpression(resolveName(text));
+  String className=resolveName(reduction,false);
+  if (className == null) {
+    return variableExpression(reduction);
   }
-  return variableExpression(expressionRoot);
+ else {
+    return new ClassExpression(className);
+  }
 }

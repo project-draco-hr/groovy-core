@@ -1,4 +1,20 @@
 {
-  CSTNode expressionRoot=root.getChild(0);
-  return new PrefixExpression(expressionRoot.getToken(),expression(expressionRoot.getChild(0)));
+  Expression expression=null;
+  Expression body=expression(reduction.get(1));
+  int type=reduction.getMeaning();
+switch (type) {
+case Types.PREFIX_MINUS:
+    expression=new NegationExpression(body);
+  break;
+case Types.PREFIX_PLUS:
+expression=body;
+break;
+case Types.NOT:
+expression=new NotExpression(body);
+break;
+default :
+expression=new PrefixExpression(reduction.getRoot(),body);
+break;
+}
+return expression;
 }

@@ -1,3 +1,32 @@
 {
-  return closureExpression(false);
+  Reduction closure=consume(Types.LEFT_CURLY_BRACE).asReduction();
+  closure.setMeaning(Types.SYNTH_CLOSURE);
+  boolean specified=(lt() == Types.PIPE) || (lt() == Types.DOUBLE_PIPE);
+  if (!specified) {
+    getTokenStream().checkpoint();
+    CSTNode type=optionalDatatype(true,false);
+    if (lt() == Types.IDENTIFIER && (lt(2) == Types.PIPE || lt(2) == Types.COMMA)) {
+      specified=true;
+    }
+    getTokenStream().restore();
+  }
+  if (specified) {
+    if (lt() == Types.DOUBLE_PIPE) {
+      consume(Types.DOUBLE_PIPE);
+      closure.add(Reduction.newContainer());
+    }
+ else {
+      if (lt() == Types.PIPE) {
+        consume(Types.PIPE);
+      }
+      closure.add(parameterDeclarationList());
+      consume(Types.PIPE);
+    }
+  }
+ else {
+    closure.add(Reduction.newContainer());
+  }
+  closure.add(statementsUntilRightCurly());
+  consume(Types.RIGHT_CURLY_BRACE);
+  return closure;
 }

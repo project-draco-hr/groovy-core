@@ -1,11 +1,16 @@
 {
-  CSTNode variableNode=statementRoot.getChild(0);
-  String variable=variableNode.getToken().getText();
-  Type variableType=Type.DYNAMIC_TYPE;
-  if (variableNode.getChildren().length > 0) {
-    variableType=new Type(resolvedQualifiedNameNotNull(variableNode.getChild(0)));
+  CSTNode header=reduction.get(1);
+  Statement body=statementBody(reduction.get(2));
+  if (header.getMeaning() == Types.UNKNOWN) {
+    Expression[] init=expressions(header.get(1));
+    Expression test=expression(header.get(2));
+    Expression[] incr=expressions(header.get(3));
+    throw new GroovyBugError("NOT YET IMPLEMENTED: standard for loop");
   }
-  Expression collectionExpr=expression(statementRoot.getChild(1));
-  BlockStatement bodyBlock=statementOrStatementBlock(statementRoot.getChild(2));
-  return new ForStatement(variable,variableType,collectionExpr,bodyBlock);
+ else {
+    Type type=typeExpression(header.get(1));
+    String identifier=identifier(header.get(2));
+    Expression source=expression(header.get(3));
+    return new ForStatement(identifier,type,source,body);
+  }
 }

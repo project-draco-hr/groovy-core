@@ -1,0 +1,38 @@
+{
+  Reduction expression=consume(Types.LEFT_SQUARE_BRACKET).asReduction();
+  expression.setMeaning(Types.SYNTH_LIST);
+  if (lt() == Types.COLON) {
+    if (!isMap && insist) {
+      error("expected list");
+    }
+    isMap=true;
+    expression.setMeaning(Types.SYNTH_MAP);
+    consume();
+    if (lt() != Types.RIGHT_SQUARE_BRACKET) {
+      error("expected empty map");
+    }
+  }
+  boolean done=(lt() == Types.RIGHT_SQUARE_BRACKET);
+  while (!done) {
+    CSTNode element=expression();
+    if (!insist) {
+      insist=true;
+      if (lt() == Types.COLON) {
+        isMap=true;
+        expression.setMeaning(Types.SYNTH_MAP);
+      }
+    }
+    if (isMap) {
+      element=consume(Types.COLON).asReduction(element,expression());
+    }
+    expression.add(element);
+    if (lt() == Types.COMMA) {
+      consume();
+    }
+ else {
+      done=true;
+    }
+  }
+  consume(Types.RIGHT_SQUARE_BRACKET);
+  return expression;
+}

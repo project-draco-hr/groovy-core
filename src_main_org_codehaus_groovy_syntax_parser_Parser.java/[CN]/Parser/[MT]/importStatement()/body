@@ -1,33 +1,32 @@
 {
-  CSTNode importStatement=rootNode(Token.KEYWORD_IMPORT);
+  Reduction importStatement=consume(Types.KEYWORD_IMPORT).asReduction();
   CSTNode packageNode=null;
-  if (lt(2) == Token.DOT) {
-    packageNode=rootNode(Token.IDENTIFIER);
-    while (lt(3) == Token.DOT) {
-      packageNode=rootNode(Token.DOT,packageNode);
-      packageNode.addChild(rootNode(Token.IDENTIFIER));
+  if (lt(2) == Types.DOT) {
+    packageNode=consume(Types.IDENTIFIER).asReduction();
+    while (lt(3) == Types.DOT) {
+      packageNode=consume(Types.DOT).asReduction(packageNode);
+      packageNode.add(consume(Types.IDENTIFIER));
     }
-    ;
-    consume(Token.DOT);
+    consume(Types.DOT);
   }
   if (packageNode == null) {
-    packageNode=new CSTNode();
+    packageNode=Reduction.EMPTY;
   }
-  importStatement.addChild(packageNode);
-  if (!packageNode.isEmpty() && lt() == Token.MULTIPLY) {
-    importStatement.addChild(rootNode(Token.MULTIPLY));
+  importStatement.add(packageNode);
+  if (!packageNode.isEmpty() && lt() == Types.STAR) {
+    importStatement.add(consume(Types.STAR));
   }
  else {
     boolean done=false;
     while (!done) {
-      CSTNode clause=rootNode(Token.IDENTIFIER);
-      if (lt() == Token.KEYWORD_AS) {
-        consume(Token.KEYWORD_AS);
-        clause.addChild(rootNode(Token.IDENTIFIER));
+      Reduction clause=consume(Types.IDENTIFIER).asReduction();
+      if (lt() == Types.KEYWORD_AS) {
+        consume(Types.KEYWORD_AS);
+        clause.add(consume(Types.IDENTIFIER));
       }
-      importStatement.addChild(clause);
-      if (lt() == Token.COMMA) {
-        consume(Token.COMMA);
+      importStatement.add(clause);
+      if (lt() == Types.COMMA) {
+        consume(Types.COMMA);
       }
  else {
         done=true;

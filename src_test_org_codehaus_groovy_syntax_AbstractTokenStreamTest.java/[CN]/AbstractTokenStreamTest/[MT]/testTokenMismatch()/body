@@ -1,12 +1,12 @@
 {
-  Token[] tokens=new Token[]{Token.leftParenthesis(1,1),Token.rightParenthesis(1,2)};
+  Token[] tokens=new Token[]{Token.newSymbol("(",1,1),Token.newSymbol(")",1,2)};
   MockTokenStream in=new MockTokenStream(tokens);
   try {
-    in.consume(Token.RIGHT_PARENTHESIS);
+    in.consume(Types.RIGHT_PARENTHESIS);
     fail("should have thrown TokenMismatchException");
   }
  catch (  TokenMismatchException e) {
     assertSame(tokens[0],e.getUnexpectedToken());
-    assertEquals(Token.RIGHT_PARENTHESIS,e.getExpectedType());
+    assertEquals(Types.RIGHT_PARENTHESIS,e.getExpectedType());
   }
 }

@@ -1,14 +1,14 @@
 {
-  CSTNode statement=rootNode(Token.KEYWORD_WHILE);
-  consume(Token.LEFT_PARENTHESIS);
+  Reduction statement=consume(Types.KEYWORD_WHILE).asReduction();
+  consume(Types.LEFT_PARENTHESIS);
   try {
-    statement.addChild(expression());
+    statement.add(expression());
   }
  catch (  SyntaxException e) {
     collector.add(e);
-    recover(GENERAL_CLAUSE_TERMINATOR);
+    recover(Types.RIGHT_PARENTHESIS);
   }
-  consume(Token.RIGHT_PARENTHESIS);
-  statement.addChild(statementBody(false));
+  consume(Types.RIGHT_PARENTHESIS);
+  statement.add(statementBody(false));
   return statement;
 }

@@ -1,7 +1,7 @@
 {
-  CSTNode statement=rootNode(Token.KEYWORD_RETURN);
-  if (lt_bare() != -1 && !la_bare().isA(STATEMENT_TERMINATORS)) {
-    statement.addChild(expression());
+  Reduction statement=consume(Types.KEYWORD_RETURN).asReduction();
+  if (!la(true).isA(Types.ANY_END_OF_STATEMENT)) {
+    statement.add(expression());
   }
   endOfStatement();
   return statement;

@@ -3,8 +3,8 @@
   classNode.addConstructor(new ConstructorNode(ACC_PUBLIC,null));
   classNode.addProperty(new PropertyNode("bar",ACC_PUBLIC,"java.lang.String","Foo",null,null,null));
   classNode.addProperty(new PropertyNode("result",ACC_PUBLIC,"java.lang.String","Foo",null,null,null));
-  BooleanExpression expression=new BooleanExpression(new BinaryExpression(new FieldExpression(new FieldNode("bar",ACC_PRIVATE,"java.lang.String","Foo",ConstantExpression.NULL)),Token.newToken(Token.COMPARE_EQUAL,0,0),new ConstantExpression("abc")));
-  Statement trueStatement=new ExpressionStatement(new BinaryExpression(new FieldExpression(new FieldNode("result",ACC_PRIVATE,"java.lang.String","Foo",ConstantExpression.NULL)),Token.newToken(Token.EQUAL,0,0),new ConstantExpression("worked")));
+  BooleanExpression expression=new BooleanExpression(new BinaryExpression(new FieldExpression(new FieldNode("bar",ACC_PRIVATE,"java.lang.String","Foo",ConstantExpression.NULL)),Token.newSymbol("==",0,0),new ConstantExpression("abc")));
+  Statement trueStatement=new ExpressionStatement(new BinaryExpression(new FieldExpression(new FieldNode("result",ACC_PRIVATE,"java.lang.String","Foo",ConstantExpression.NULL)),Token.newSymbol("=",0,0),new ConstantExpression("worked")));
   Statement falseStatement=createPrintlnStatement(new ConstantExpression("false"));
   IfStatement statement=new IfStatement(expression,trueStatement,falseStatement);
   classNode.addMethod(new MethodNode("ifDemo",ACC_PUBLIC,"void",Parameter.EMPTY_ARRAY,statement));

@@ -1,0 +1,13 @@
+{
+  Reduction block=Reduction.newContainer();
+  while (lt() != Types.EOF && lt() != Types.RIGHT_CURLY_BRACE) {
+    try {
+      block.add(statement());
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      recover();
+    }
+  }
+  return block;
+}

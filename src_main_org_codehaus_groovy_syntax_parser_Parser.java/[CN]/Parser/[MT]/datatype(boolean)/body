@@ -1,9 +1,8 @@
 {
   CSTNode datatype=scalarDatatype(allowVoid);
-  while (lt_bare() == Token.LEFT_SQUARE_BRACKET) {
-    CSTNode array=rootNode(Token.LEFT_SQUARE_BRACKET,datatype);
-    consume_bare(Token.RIGHT_SQUARE_BRACKET);
-    datatype=array;
+  while (lt(true) == Types.LEFT_SQUARE_BRACKET) {
+    datatype=consume(Types.LEFT_SQUARE_BRACKET).asReduction(datatype);
+    consume(Types.RIGHT_SQUARE_BRACKET);
   }
   return datatype;
 }

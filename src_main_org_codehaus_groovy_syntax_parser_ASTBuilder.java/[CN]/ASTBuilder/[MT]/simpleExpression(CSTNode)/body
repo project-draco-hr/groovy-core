@@ -1,0 +1,32 @@
+{
+  Expression expression=null;
+  int type=reduction.getMeaning();
+switch (type) {
+case Types.KEYWORD_NULL:
+    expression=ConstantExpression.NULL;
+  break;
+case Types.KEYWORD_TRUE:
+expression=ConstantExpression.TRUE;
+break;
+case Types.KEYWORD_FALSE:
+expression=ConstantExpression.FALSE;
+break;
+case Types.STRING:
+expression=new ConstantExpression(reduction.getRootText());
+break;
+case Types.INTEGER_NUMBER:
+expression=new ConstantExpression(Numbers.parseInteger(reduction.getRootText()));
+break;
+case Types.DECIMAL_NUMBER:
+expression=new ConstantExpression(Numbers.parseDecimal(reduction.getRootText()));
+break;
+case Types.KEYWORD_SUPER:
+case Types.KEYWORD_THIS:
+expression=variableExpression(reduction);
+break;
+case Types.IDENTIFIER:
+expression=variableOrClassExpression(reduction);
+break;
+}
+return expression;
+}

@@ -1,12 +1,8 @@
 {
   try {
-    Lexer lexer=new Lexer(charStream);
-    Parser parser=new Parser(new LexerTokenStream(lexer));
-    CSTNode compilationUnit=parser.compilationUnit();
-    ASTBuilder astBuilder=new ASTBuilder(classLoader);
-    ModuleNode module=astBuilder.build(compilationUnit);
+    Parser parser=Parser.create(charStream,10);
+    ModuleNode module=parser.parse(classLoader,file);
     unit.addModule(module);
-    module.setDescription(file);
     GeneratorContext context=new GeneratorContext(unit);
     for (Iterator iter=module.getClasses().iterator(); iter.hasNext(); ) {
       generateClass(context,(ClassNode)iter.next(),file);

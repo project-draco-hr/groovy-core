@@ -1,0 +1,22 @@
+{
+  if (text.charAt(0) == '.') {
+    text="0" + text;
+  }
+  char type='x';
+  int length=text.length();
+  if (isNumericTypeSpecifier(text.charAt(length - 1),true)) {
+    type=Character.toLowerCase(text.charAt(length - 1));
+    text=text.substring(0,length);
+    length-=1;
+  }
+  BigDecimal value=new BigDecimal(text);
+switch (type) {
+case 'f':
+    return new Float(value.floatValue());
+case 'd':
+  return new Double(value.doubleValue());
+case 'g':
+return value;
+}
+return value;
+}

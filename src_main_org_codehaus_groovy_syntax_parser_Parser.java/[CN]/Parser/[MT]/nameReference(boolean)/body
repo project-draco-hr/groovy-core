@@ -1,7 +1,9 @@
 {
-  Token token=(useBare ? la_bare() : la());
-  if (token == null || !token.isValidNameReference()) {
-    throwExpected(new int[]{Token.IDENTIFIER});
+  Token token=la(significantNewlines);
+  if (!token.canMean(Types.IDENTIFIER)) {
+    error(Types.IDENTIFIER);
   }
-  return new CSTNode(consume(lt()).toIdentifier());
+  consume();
+  token.setMeaning(Types.IDENTIFIER);
+  return token;
 }

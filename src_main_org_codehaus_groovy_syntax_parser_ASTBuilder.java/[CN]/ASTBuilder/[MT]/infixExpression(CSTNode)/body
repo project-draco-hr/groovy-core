@@ -1,0 +1,38 @@
+{
+  Expression expression;
+  int type=reduction.getMeaning();
+switch (type) {
+case Types.DOT:
+case Types.NAVIGATE:
+{
+      String name=reduction.get(2).getRootText();
+      Expression context=null;
+      if (name.equals("class")) {
+        CSTNode node=reduction.get(1);
+        if (node.isA(Types.LEFT_SQUARE_BRACKET) && node.children() == 1) {
+          throw new GroovyBugError("NOT YET IMPLEMENTED: .class for array types");
+        }
+      }
+      if (context == null) {
+        context=expression(reduction.get(1));
+      }
+      expression=new PropertyExpression(context,name,type == Types.NAVIGATE);
+      break;
+    }
+case Types.KEYWORD_INSTANCEOF:
+{
+    Expression lhs=expression(reduction.get(1));
+    Expression rhs=classExpression(reduction.get(2));
+    expression=new BinaryExpression(lhs,reduction.getRoot(),rhs);
+    break;
+  }
+default :
+{
+  Expression lhs=expression(reduction.get(1));
+  Expression rhs=expression(reduction.get(2));
+  expression=new BinaryExpression(lhs,reduction.getRoot(),rhs);
+  break;
+}
+}
+return expression;
+}

@@ -1,0 +1,22 @@
+{
+  boolean read=false;
+  char c=la();
+switch (c) {
+case '\r':
+case '\n':
+    if (destination == null) {
+      consume();
+      if (c == '\r' && la() == '\n') {
+        consume();
+      }
+    }
+ else {
+      destination.append(consume());
+      if (c == '\r' && la() == '\n') {
+        destination.append(consume());
+      }
+    }
+  read=true;
+}
+return read;
+}

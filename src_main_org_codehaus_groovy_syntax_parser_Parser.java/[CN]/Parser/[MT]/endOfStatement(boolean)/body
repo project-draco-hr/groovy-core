@@ -1,18 +1,16 @@
 {
-  int lt_bare=lt_bare();
-  if (lt_bare == Token.SEMICOLON || lt_bare == Token.NEWLINE) {
-    consume_bare(lt_bare);
+  Token next=la(true);
+  if (next.isA(Types.GENERAL_END_OF_STATEMENT)) {
+    consume(true);
   }
  else {
     if (allowRightCurlyBrace) {
-      if (lt_bare != -1 && lt_bare != Token.RIGHT_CURLY_BRACE) {
-        throwExpected(new int[]{Token.SEMICOLON,Token.NEWLINE,Token.RIGHT_CURLY_BRACE});
+      if (!next.isA(Types.RIGHT_CURLY_BRACE)) {
+        error(new int[]{Types.SEMICOLON,Types.NEWLINE,Types.RIGHT_CURLY_BRACE});
       }
     }
  else {
-      if (lt_bare != -1) {
-        throwExpected(new int[]{Token.SEMICOLON,Token.NEWLINE});
-      }
+      error(new int[]{Types.SEMICOLON,Types.NEWLINE});
     }
   }
 }

@@ -7,10 +7,14 @@
       descriptors[i]="unknown" + i;
     }
   }
-  CSTNode[] csts=new CSTNode[sources.length];
+  CompileUnit unit=new CompileUnit(getClassLoader(),config);
   for (int i=0; i < sources.length; ++i) {
     try {
-      csts[i]=parseSource(sources[i],descriptors[i]);
+      if (verbose) {
+        System.out.println("building source [" + descriptors[i] + "]");
+      }
+      ModuleNode ast=parse(sources[i],descriptors[i]);
+      unit.addModule(ast);
     }
  catch (    ExceptionCollector e) {
       if (!e.isEmpty()) {
@@ -34,22 +38,7 @@ catch (    Exception e) {
   if (!failures.isEmpty()) {
     throw failures;
   }
-  CompileUnit unit=new CompileUnit(getClassLoader(),config);
   ArrayList classes=new ArrayList();
-  for (int i=0; i < csts.length; ++i) {
-    try {
-      ModuleNode ast=buildAST(csts[i],descriptors[i]);
-      unit.addModule(ast);
-    }
- catch (    ExceptionCollector e) {
-      if (!e.isEmpty()) {
-        failures.add(descriptors[i],e);
-      }
-    }
-catch (    Exception e) {
-      throw new CompilerBugException(descriptors[i],"AST creation",e);
-    }
-  }
   for (Iterator iter=unit.getModules().iterator(); iter.hasNext(); ) {
     ModuleNode module=(ModuleNode)iter.next();
     try {

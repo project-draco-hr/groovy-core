@@ -1,0 +1,14 @@
+{
+  Reduction reduction=module();
+  collector.throwUnlessEmpty();
+  try {
+    ASTBuilder builder=new ASTBuilder(loader);
+    ModuleNode module=builder.build(reduction);
+    module.setDescription(descriptor);
+    return module;
+  }
+ catch (  GroovyException e) {
+    collector.add(e,false);
+  }
+  throw collector;
+}

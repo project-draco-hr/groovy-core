@@ -1,0 +1,88 @@
+{
+  if (!finished && source != null) {
+    if (delimited) {
+      if (k > characters.length) {
+        throw new GroovyBugError("StringLexer lookahead tolerance exceeded");
+      }
+      if (lookahead >= k) {
+        return characters[k - 1];
+      }
+      lookahead=0;
+      char c=' ', c1=' ', c2=' ';
+      int offset=1, width=0;
+      for (int i=1; i <= k; i++) {
+        c1=source.la(offset);
+        C1_SWITCH: switch (c1) {
+case CharStream.EOS:
+{
+            return c1;
+          }
+case '\\':
+{
+          c2=source.la(offset + 1);
+          ESCAPE_SWITCH: switch (c2) {
+case CharStream.EOS:
+            return c2;
+case '\\':
+case '$':
+{
+            if (allowGStrings) {
+              c=c1;
+              width=1;
+            }
+ else {
+              c=c2;
+              width=2;
+            }
+            break ESCAPE_SWITCH;
+          }
+case 'r':
+        c='\r';
+      width=2;
+    break ESCAPE_SWITCH;
+case 't':
+  c='\t';
+width=2;
+break ESCAPE_SWITCH;
+case 'n':
+c='\n';
+width=2;
+break ESCAPE_SWITCH;
+default :
+c=c2;
+width=2;
+break ESCAPE_SWITCH;
+}
+break C1_SWITCH;
+}
+default :
+{
+if (c1 == watchFor) {
+boolean atEnd=true;
+for (int j=1; j < delimiter.length(); j++) {
+if (source.la(offset + j) != delimiter.charAt(j)) {
+atEnd=false;
+break;
+}
+}
+if (atEnd) {
+return CharStream.EOS;
+}
+}
+c=c1;
+width=1;
+break C1_SWITCH;
+}
+}
+characters[lookahead]=c;
+widths[lookahead]=width;
+offset+=width;
+lookahead+=1;
+}
+return c;
+}
+lookahead=0;
+return source.la(k);
+}
+return CharStream.EOS;
+}

@@ -1,22 +1,3 @@
 {
-  CSTNode expr=null;
-  consume(Token.LEFT_SQUARE_BRACKET);
-  if (lt() == Token.COLON) {
-    consume(Token.COLON);
-    expr=new CSTNode(Token.syntheticMap());
-  }
- else   if (lt() == Token.RIGHT_SQUARE_BRACKET) {
-    expr=new CSTNode(Token.syntheticList());
-  }
- else {
-    CSTNode firstExpr=expression();
-    if (lt() == Token.COLON) {
-      expr=mapExpression(firstExpr);
-    }
- else {
-      expr=listExpression(firstExpr);
-    }
-  }
-  consume(Token.RIGHT_SQUARE_BRACKET);
-  return expr;
+  return listOrMapExpression(false,false);
 }

@@ -1,0 +1,36 @@
+{
+  String className=null;
+  if (classNode != null) {
+    className=classNode.getNameWithoutPackage();
+  }
+  String name=identifier(reduction);
+  int modifiers=modifiers(reduction.get(1)) | extraModifiers;
+  String type=resolveName(reduction.get(2));
+  Parameter[] parameters=parameterDeclarations(reduction.get(3));
+  BlockStatement body=statementBody(reduction.get(5));
+  CSTNode clause=reduction.get(4);
+  String[] throwTypes=new String[clause.children()];
+  for (int i=1; i < clause.size(); i++) {
+    throwTypes[i - 1]=resolveName(clause.get(i));
+  }
+  if (clause.hasChildren()) {
+    throw new GroovyBugError("NOT YET IMPLEMENTED: throws clause");
+  }
+  if (name.length() == 0) {
+    throw new GroovyBugError("NOT YET IMPLEMENTED: static initializers");
+  }
+ else   if (className != null && name.equals(className)) {
+    ConstructorNode node=new ConstructorNode(modifiers,parameters,body);
+    node.setCSTNode(reduction.get(0));
+    classNode.addConstructor(node);
+    return null;
+  }
+ else {
+    MethodNode method=new MethodNode(name,modifiers,type,parameters,body);
+    method.setCSTNode(reduction.get(0));
+    if (classNode != null) {
+      classNode.addMethod(method);
+    }
+    return method;
+  }
+}

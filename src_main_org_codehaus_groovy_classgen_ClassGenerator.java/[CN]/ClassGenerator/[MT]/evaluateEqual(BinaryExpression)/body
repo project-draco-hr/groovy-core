@@ -2,7 +2,7 @@
   Expression leftExpression=expression.getLeftExpression();
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
-    if (leftBinExpr.getOperation().getType() == Token.LEFT_SQUARE_BRACKET) {
+    if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
       visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),expression.getRightExpression()})));
       cv.visitInsn(POP);
       return;

@@ -1,0 +1,20 @@
+{
+  Token token=Token.NULL;
+  int streamK=1;
+  while (k > 0 && token.getMeaning() != Types.EOF) {
+    token=getTokenStream().la(streamK);
+    streamK+=1;
+    if (token == null) {
+      token=Token.EOF;
+    }
+ else     if (token.getMeaning() == Types.NEWLINE) {
+      if (significantNewlines) {
+        k-=1;
+      }
+    }
+ else {
+      k-=1;
+    }
+  }
+  return token;
+}

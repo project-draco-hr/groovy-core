@@ -1,0 +1,21 @@
+{
+  for (int i=1; i < body.size(); i++) {
+    CSTNode statement=body.get(i);
+switch (statement.getMeaning()) {
+case Types.SYNTH_PROPERTY:
+      addPropertyDeclaration(classNode,statement,propertyModifiers);
+    break;
+case Types.SYNTH_METHOD:
+  methodDeclaration(classNode,statement,methodModifiers);
+break;
+case Types.SYNTH_CLASS:
+classDeclaration(classNode,statement);
+break;
+case Types.SYNTH_INTERFACE:
+interfaceDeclaration(classNode,statement);
+break;
+default :
+throw new GroovyBugError("unrecognized type body statement [" + statement.toString() + "]");
+}
+}
+}

@@ -1,8 +1,13 @@
 {
-  TupleExpression tupleExpression=new TupleExpression();
-  CSTNode[] exprRoots=expressionRoot.getChildren();
-  for (int i=0; i < exprRoots.length; ++i) {
-    tupleExpression.addExpression(expression(exprRoots[i]));
+  TupleExpression tuple=new TupleExpression();
+  for (int i=1; i < reduction.size(); i++) {
+    CSTNode element=reduction.get(i);
+    if (element.getMeaning() == Types.SYNTH_TUPLE) {
+      tuple.addExpression(tupleExpression(element));
+    }
+ else {
+      tuple.addExpression(expression(element));
+    }
   }
-  return tupleExpression;
+  return tuple;
 }

@@ -1,0 +1,22 @@
+{
+switch (node.getMeaning()) {
+case Types.LEFT_SQUARE_BRACKET:
+    if (node.isAnExpression()) {
+      return isAVariable(node.get(1));
+    }
+  break;
+case Types.DOT:
+case Types.NAVIGATE:
+{
+  if (node.isAnExpression() && node.get(2).getMeaning() == Types.IDENTIFIER) {
+    return true;
+  }
+  break;
+}
+case Types.IDENTIFIER:
+{
+return true;
+}
+}
+return false;
+}

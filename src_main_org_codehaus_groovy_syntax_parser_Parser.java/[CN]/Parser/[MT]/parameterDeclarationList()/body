@@ -1,18 +1,15 @@
 {
-  CSTNode list=new CSTNode();
+  Reduction list=Reduction.newContainer();
   boolean expectDefaults=false;
-  while (lt() != -1 && la().isIdentifierOrPrimitiveTypeKeyword()) {
-    CSTNode parameter=parameterDeclaration();
-    list.addChild(parameter);
-    CSTNode value=new CSTNode();
-    if (expectDefaults || lt() == Token.EQUAL) {
+  while (la().isA(Types.TYPE_NAME)) {
+    Reduction parameter=(Reduction)list.add(parameterDeclaration());
+    if (expectDefaults || lt() == Types.EQUAL) {
       expectDefaults=true;
-      consume(Token.EQUAL);
-      value=expression();
+      consume(Types.EQUAL);
+      parameter.add(expression());
     }
-    parameter.addChild(value);
-    if (lt() == Token.COMMA) {
-      consume(Token.COMMA);
+    if (lt() == Types.COMMA) {
+      consume(Types.COMMA);
     }
  else {
       break;

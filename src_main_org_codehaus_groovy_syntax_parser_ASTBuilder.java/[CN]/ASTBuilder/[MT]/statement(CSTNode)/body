@@ -1,88 +1,85 @@
 {
   Statement statement=null;
-switch (statementRoot.getToken().getInterpretation()) {
-case (Token.KEYWORD_ASSERT):
+switch (reduction.getMeaning()) {
+case Types.KEYWORD_ASSERT:
 {
-      statement=assertStatement(statementRoot);
+      statement=assertStatement(reduction);
       break;
     }
-case (Token.KEYWORD_FOR):
+case Types.KEYWORD_BREAK:
 {
-    statement=forStatement(statementRoot);
+    statement=breakStatement(reduction);
     break;
   }
-case (Token.KEYWORD_WHILE):
+case Types.KEYWORD_CONTINUE:
 {
-  statement=whileStatement(statementRoot);
+  statement=continueStatement(reduction);
   break;
 }
-case (Token.KEYWORD_DO):
+case Types.KEYWORD_IF:
 {
-statement=doWhileStatement(statementRoot);
+statement=ifStatement(reduction);
 break;
 }
-case (Token.KEYWORD_TRY):
+case Types.KEYWORD_RETURN:
 {
-statement=tryStatement(statementRoot);
+statement=returnStatement(reduction);
 break;
 }
-case (Token.KEYWORD_RETURN):
+case Types.KEYWORD_SWITCH:
 {
-statement=returnStatement(statementRoot);
+statement=switchStatement(reduction);
 break;
 }
-case (Token.KEYWORD_SWITCH):
+case Types.KEYWORD_SYNCHRONIZED:
 {
-statement=switchStatement(statementRoot);
+statement=synchronizedStatement(reduction);
 break;
 }
-case (Token.KEYWORD_IF):
+case Types.KEYWORD_THROW:
 {
-statement=ifStatement(statementRoot);
+statement=throwStatement(reduction);
 break;
 }
-case (Token.KEYWORD_THROW):
+case Types.KEYWORD_TRY:
 {
-statement=throwStatement(statementRoot);
+statement=tryStatement(reduction);
 break;
 }
-case (Token.KEYWORD_BREAK):
+case Types.KEYWORD_FOR:
 {
-statement=breakStatement(statementRoot);
+statement=forStatement(reduction);
 break;
 }
-case (Token.KEYWORD_CONTINUE):
+case Types.KEYWORD_WHILE:
 {
-statement=continueStatement(statementRoot);
+statement=whileStatement(reduction);
 break;
 }
-case (Token.KEYWORD_SYNCHRONIZED):
+case Types.KEYWORD_DO:
 {
-statement=synchronizedStatement(statementRoot);
+statement=doWhileStatement(reduction);
 break;
 }
-case (Token.SYNTH_BLOCK):
-case (Token.LEFT_CURLY_BRACE):
+case Types.SYNTH_BLOCK:
+case Types.LEFT_CURLY_BRACE:
 {
-statement=statementBlock(statementRoot);
+statement=statementBlock(reduction);
 break;
 }
-case (Token.SYNTH_CLOSURE):
+case Types.SYNTH_LABEL:
 {
-statement=expressionStatement(statementRoot);
+statement=statement(reduction.get(1));
+statement.setStatementLabel(identifier(reduction));
 break;
 }
-case (Token.SYNTH_LABEL):
-{
-statement=statement(statementRoot.getChild(1));
-statement.setStatementLabel(statementRoot.getChild(0).getToken().getText());
-break;
-}
+case Types.SYNTH_CLOSURE:
 default :
 {
-statement=expressionStatement(statementRoot);
+statement=expressionStatement(reduction);
+break;
 }
 }
-statement.setCSTNode(statementRoot);
+statement.setCSTNode(reduction);
 return statement;
 }

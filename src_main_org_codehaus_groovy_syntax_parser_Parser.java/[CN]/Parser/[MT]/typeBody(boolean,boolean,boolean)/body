@@ -1,15 +1,15 @@
 {
-  CSTNode body=new CSTNode();
-  consume(Token.LEFT_CURLY_BRACE);
-  while (lt() != -1 && lt() != Token.RIGHT_CURLY_BRACE) {
+  Reduction body=Reduction.newContainer();
+  consume(Types.LEFT_CURLY_BRACE);
+  while (lt() != Types.EOF && lt() != Types.RIGHT_CURLY_BRACE) {
     try {
-      body.addChild(typeBodyStatement(allowStatic,allowAbstract,requireAbstract));
+      body.add(typeBodyStatement(allowStatic,allowAbstract,requireAbstract));
     }
  catch (    SyntaxException e) {
       collector.add(e);
       recover();
     }
   }
-  consume(Token.RIGHT_CURLY_BRACE);
+  consume(Types.RIGHT_CURLY_BRACE);
   return body;
 }

@@ -1,12 +1,3 @@
 {
-  int modifiers=modifiers(propertyRoot.getChild(0));
-  String identifier=propertyRoot.getChild(1).getToken().getText();
-  String typeName=resolvedQualifiedName(propertyRoot.getChild(2));
-  Expression initialValue=null;
-  if (propertyRoot.getChildren().length > 3) {
-    initialValue=expression(propertyRoot.getChild(3));
-  }
-  PropertyNode propertyNode=classNode.addProperty(identifier,modifiers,typeName,initialValue,null,null);
-  propertyNode.setCSTNode(propertyRoot.getChild(1));
-  return propertyNode;
+  addPropertyDeclaration(classNode,reduction,0);
 }

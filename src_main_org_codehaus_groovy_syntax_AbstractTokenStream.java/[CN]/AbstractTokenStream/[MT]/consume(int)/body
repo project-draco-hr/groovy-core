@@ -1,6 +1,9 @@
 {
   Token token=la();
-  if (token.getType() != type) {
+  if (token == null) {
+    return null;
+  }
+  if (!token.isA(type)) {
     throw new TokenMismatchException(token,type);
   }
   ++this.first;

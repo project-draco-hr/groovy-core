@@ -1,12 +1,5 @@
 {
-  CSTNode packageDeclaration=rootNode(Token.KEYWORD_PACKAGE);
-  CSTNode cur=rootNode(Token.IDENTIFIER);
-  while (lt() == Token.DOT) {
-    CSTNode dot=rootNode(Token.DOT,cur);
-    consume(dot,Token.IDENTIFIER);
-    cur=dot;
-  }
+  Reduction packageDeclaration=consume(Types.KEYWORD_PACKAGE).asReduction(dottedIdentifier());
   endOfStatement(false);
-  packageDeclaration.addChild(cur);
   return packageDeclaration;
 }

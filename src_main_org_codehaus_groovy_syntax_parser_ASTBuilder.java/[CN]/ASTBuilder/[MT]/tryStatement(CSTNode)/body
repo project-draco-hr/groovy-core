@@ -1,11 +1,13 @@
 {
-  TryCatchStatement tcf=new TryCatchStatement(statementBlock(statementRoot.getChild(0)),statementBlock(statementRoot.getChild(1)));
-  CSTNode[] catchRoots=statementRoot.getChild(2).getChildren();
-  for (int i=0; i < catchRoots.length; ++i) {
-    String exceptionType=resolvedQualifiedNameNotNull(catchRoots[i].getChild(0));
-    String identifier=identifier(catchRoots[i].getChild(1));
-    Statement block=statementBlock(catchRoots[i].getChild(2));
-    tcf.addCatch(new CatchStatement(exceptionType,identifier,block));
+  BlockStatement body=statementBody(reduction.get(1));
+  BlockStatement finallyBlock=statementBody(reduction.get(3));
+  TryCatchStatement statement=new TryCatchStatement(body,finallyBlock);
+  CSTNode catches=reduction.get(2);
+  for (int i=1; i < catches.size(); i++) {
+    CSTNode element=catches.get(i);
+    String type=resolveName(element.get(1));
+    String identifier=identifier(element.get(2));
+    statement.addCatch(new CatchStatement(type,identifier,statementBody(element.get(3))));
   }
-  return tcf;
+  return statement;
 }

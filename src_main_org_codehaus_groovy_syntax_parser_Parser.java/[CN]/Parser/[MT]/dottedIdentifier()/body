@@ -1,0 +1,7 @@
+{
+  CSTNode identifier=consume(Types.IDENTIFIER);
+  while (lt() == Types.DOT) {
+    identifier=consume(Types.DOT).asReduction(identifier,consume(Types.IDENTIFIER));
+  }
+  return identifier;
+}
