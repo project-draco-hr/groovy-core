@@ -378,6 +378,12 @@ consume();
 token=Token.minusEqual(getStartLine(),getStartColumn());
 break MULTICHAR_SWITCH;
 }
+case ('>'):
+{
+consume();
+token=Token.navigate(getStartLine(),getStartColumn());
+break MULTICHAR_SWITCH;
+}
 default :
 {
 token=Token.minus(getStartLine(),getStartColumn());
@@ -443,7 +449,14 @@ MULTICHAR_SWITCH: switch (c) {
 case ('='):
 {
 consume();
+c=la();
+if (c == '>') {
+consume();
+token=Token.compareTo(getStartLine(),getStartColumn());
+}
+ else {
 token=Token.compareLessThanEqual(getStartLine(),getStartColumn());
+}
 break MULTICHAR_SWITCH;
 }
 case ('<'):
