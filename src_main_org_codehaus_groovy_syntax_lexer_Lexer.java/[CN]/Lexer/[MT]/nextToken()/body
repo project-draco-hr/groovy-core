@@ -80,7 +80,13 @@ case ('.'):
 {
 mark();
 consume();
+if (la() == '.') {
+consume();
+token=Token.dotDot(getStartLine(),getStartColumn());
+}
+ else {
 token=Token.dot(getStartLine(),getStartColumn());
+}
 break ROOT_SWITCH;
 }
 case ('/'):

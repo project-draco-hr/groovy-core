@@ -16,6 +16,10 @@ case (Token.EQUAL):
 {
       return binaryExpression(expressionRoot);
     }
+case (Token.DOT_DOT):
+{
+    return rangeExpression(expressionRoot);
+  }
 case (Token.SINGLE_QUOTE_STRING):
 case (Token.DOUBLE_QUOTE_STRING):
 case (Token.INTEGER_NUMBER):
@@ -24,13 +28,13 @@ case (Token.KEYWORD_NULL):
 case (Token.KEYWORD_TRUE):
 case (Token.KEYWORD_FALSE):
 {
-    return constantExpression(expressionRoot);
-  }
+  return constantExpression(expressionRoot);
+}
 case (Token.IDENTIFIER):
 case (Token.KEYWORD_THIS):
 case (Token.KEYWORD_SUPER):
 {
-  return variableExpression(expressionRoot);
+return variableExpression(expressionRoot);
 }
 case (Token.DOT):
 {
