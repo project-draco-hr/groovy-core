@@ -3,7 +3,25 @@
   if (value == null) {
     cv.visitInsn(ACONST_NULL);
   }
- else {
+ else   if (value instanceof String) {
     cv.visitLdcInsn(value);
+  }
+ else   if (value instanceof Number) {
+    Number n=(Number)value;
+    String className=getClassInternalName(value.getClass().getName());
+    cv.visitTypeInsn(NEW,className);
+    cv.visitInsn(DUP);
+    String methodType="(I)V";
+    if (n instanceof Double) {
+      methodType="(D)V";
+    }
+ else     if (n instanceof Float) {
+      methodType="(F)V";
+    }
+    cv.visitLdcInsn(n);
+    cv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
+  }
+ else {
+    throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ value.getClass().getName());
   }
 }
