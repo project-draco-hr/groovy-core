@@ -1,0 +1,18 @@
+{
+  String dest=".";
+  String src=".";
+  if (args.length > 0) {
+    dest=args[0];
+  }
+  if (args.length > 1) {
+    src=args[1];
+  }
+  Project project=new Project();
+  project.addBuildListener(new AnsiColorLogger());
+  Groovyc compiler=new Groovyc();
+  compiler.setProject(project);
+  compiler.setSrcdir(new Path(project,src));
+  compiler.setDestdir(project.resolveFile(dest));
+  compiler.setListfiles(true);
+  compiler.execute();
+}
