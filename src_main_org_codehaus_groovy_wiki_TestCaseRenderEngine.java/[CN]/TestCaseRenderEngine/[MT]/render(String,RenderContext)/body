@@ -1,0 +1,22 @@
+{
+  String name=(String)context.get("name");
+  if (name == null) {
+    name="UknownName.wiki";
+  }
+  int idx=name.lastIndexOf('.');
+  if (idx > 0) {
+    name=name.substring(0,idx);
+  }
+  StringBuffer buf=new StringBuffer();
+  String[] parts=groovyCodePattern.split(content);
+  buf.append("class " + name + " extends GroovyTestCase {\n\n");
+  buf.append("/*\n");
+  buf.append(parts[0]);
+  int count=1;
+  for (int i=1; i < parts.length; i++) {
+    buf.append("*/ \n\n  void testCase" + (count++) + "() {\n");
+    buf.append(removeCloseCode(parts[i]));
+  }
+  buf.append("\n*/\n\n}\n");
+  return buf.toString();
+}

@@ -1,13 +1,13 @@
 {
-  String text=readFile(file);
-  String result=engine.render(text,context);
   String[] names=m.mapFileName(name);
   String outputName=names[0];
+  context.set("name",Verifier.capitalize(name));
+  String text=readFile(file);
+  String result=engine.render(text,context);
   File outputFile=new File(getDestdir(),outputName);
   System.out.println("Creating file: " + outputFile);
   FileWriter writer=new FileWriter(outputFile);
-  writer.write("<html><body>\n");
+  result=filter(result);
   writer.write(result);
-  writer.write("\n<body><html>\n");
   writer.close();
 }
