@@ -6,8 +6,7 @@
     throw new GroovyBugError("SourceUnit not ready for convert()");
   }
   try {
-    ASTBuilder builder=new ASTBuilder(this,this.classLoader);
-    this.ast=builder.build(this.cst);
+    this.ast=getParserPlugin().buildAST(this,this.classLoader,this.cst);
     this.ast.setDescription(this.name);
   }
  catch (  SyntaxException e) {

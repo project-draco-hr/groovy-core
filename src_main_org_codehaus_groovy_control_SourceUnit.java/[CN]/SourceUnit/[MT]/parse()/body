@@ -8,10 +8,7 @@
   Reader reader=null;
   try {
     reader=source.getReader();
-    GroovyLexer lexer=new GroovyLexer(new ReaderCharStream(reader));
-    TokenStream stream=new LexerTokenStream(lexer);
-    Parser parser=new Parser(this,stream);
-    this.cst=parser.parse();
+    cst=getParserPlugin().parseCST(this,reader);
     completePhase();
   }
  catch (  IOException e) {
