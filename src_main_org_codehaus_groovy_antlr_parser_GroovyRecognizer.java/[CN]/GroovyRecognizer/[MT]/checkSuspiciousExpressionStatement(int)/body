@@ -2,14 +2,14 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST checkSuspiciousExpressionStatement_AST=null;
-  boolean synPredMatched294=false;
+  boolean synPredMatched293=false;
   if (((_tokenSet_19.member(LA(1))) && (_tokenSet_9.member(LA(2))) && (_tokenSet_20.member(LA(3))))) {
-    int _m294=mark();
-    synPredMatched294=true;
+    int _m293=mark();
+    synPredMatched293=true;
     inputState.guessing++;
     try {
 {
-        if ((_tokenSet_109.member(LA(1)))) {
+        if ((_tokenSet_105.member(LA(1)))) {
           matchNot(LCURLY);
         }
  else         if ((LA(1) == LCURLY)) {
@@ -22,12 +22,12 @@
       }
     }
  catch (    RecognitionException pe) {
-      synPredMatched294=false;
+      synPredMatched293=false;
     }
-    rewind(_m294);
+    rewind(_m293);
     inputState.guessing--;
   }
-  if (synPredMatched294) {
+  if (synPredMatched293) {
 {
       if (((_tokenSet_19.member(LA(1))) && (_tokenSet_9.member(LA(2))) && (_tokenSet_20.member(LA(3)))) && (prevToken == NLS)) {
         if (inputState.guessing == 0) {
@@ -44,13 +44,13 @@
   }
  else   if (((_tokenSet_19.member(LA(1))) && (_tokenSet_9.member(LA(2))) && (_tokenSet_20.member(LA(3)))) && (prevToken == NLS)) {
     if (inputState.guessing == 0) {
-      require(false,"Closure expression looks like it may be an isolated open block, " + "or it may continue a previous statement.","Add an explicit parameter list, as in {it|...}, or label it as L:{...}, " + "and also either remove previous newline, or add an explicit semicolon ';'.");
+      require(false,"Closure expression looks like it may be an isolated open block, " + "or it may continue a previous statement.","Add an explicit parameter list, as in {it :: ...}, or label it as L:{...}, " + "and also either remove previous newline, or add an explicit semicolon ';'.");
     }
     checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
   }
  else   if (((_tokenSet_19.member(LA(1))) && (_tokenSet_9.member(LA(2))) && (_tokenSet_20.member(LA(3)))) && (prevToken != NLS)) {
     if (inputState.guessing == 0) {
-      require(false,"Closure expression looks like it may be an isolated open block.","Add an explicit parameter list, as in {it|...}, or label it as L:{...}.");
+      require(false,"Closure expression looks like it may be an isolated open block.","Add an explicit parameter list, as in {it :: ...}, or label it as L:{...}.");
     }
     checkSuspiciousExpressionStatement_AST=(AST)currentAST.root;
   }
