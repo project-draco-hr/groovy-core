@@ -4,10 +4,7 @@
   Expression leftExpression=expression(leftNode);
   AST rightNode=leftNode.getNextSibling();
   if (rightNode == null) {
-    rightNode=leftNode.getFirstChild();
-  }
-  if (rightNode == null) {
-    throw new NullPointerException("No rightNode associated with binary expression");
+    return leftExpression;
   }
   Expression rightExpression=expression(rightNode);
   return new BinaryExpression(leftExpression,token,rightExpression);
