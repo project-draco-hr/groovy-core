@@ -6,7 +6,14 @@
     defineVariable("this",classNode.getName()).getIndex();
   }
   for (int i=0; i < parameters.length; i++) {
-    defineVariable(parameters[i].getName(),parameters[i].getType());
+    Parameter parameter=parameters[i];
+    String type=parameter.getType();
+    int idx=defineVariable(parameter.getName(),type).getIndex();
+    if (helper.isPrimitiveType(type)) {
+      helper.load(type,idx);
+      helper.box(type);
+      cv.visitVarInsn(ASTORE,idx);
+    }
   }
   definingParameters=false;
 }
