@@ -1,9 +1,8 @@
 {
-  String name=method.getName();
-  List list=(List)newStaticInstanceMethodIndex.get(name);
-  if (list == null) {
-    list=new ArrayList();
-    newStaticInstanceMethodIndex.put(name,list);
+  if (initialised) {
+    throw new RuntimeException("Already initialized, cannot add new method: " + method);
   }
-  list.add(method);
+ else {
+    addNewStaticInstanceMethod(createMetaMethod(method));
+  }
 }

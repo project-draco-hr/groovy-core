@@ -5,7 +5,8 @@
     if (method == null) {
       throw new GroovyRuntimeException("Cannot read property: " + property);
     }
-    return doMethodInvoke(object,method,EMPTY_ARRAY);
+    MetaMethod metaMethod=findMethod(method);
+    return doMethodInvoke(object,metaMethod,EMPTY_ARRAY);
   }
   if (genericGetMethod != null) {
     Object[] arguments={property};
@@ -20,7 +21,7 @@
   }
   Exception lastException=null;
   try {
-    Method method=findGetter(object,"get" + capitalize(property));
+    MetaMethod method=findGetter(object,"get" + capitalize(property));
     if (method != null) {
       return doMethodInvoke(object,method,EMPTY_ARRAY);
     }

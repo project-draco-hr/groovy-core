@@ -1,23 +1,26 @@
 {
-  int minMethodIndex=1;
   int methodCount=methods.size();
-  int maxMethodIndex=methodCount;
   cv=cw.visitMethod(ACC_PUBLIC,"invoke","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
   helper=new BytecodeHelper(cv);
-  cv.visitVarInsn(ALOAD,minMethodIndex);
+  cv.visitVarInsn(ALOAD,1);
   cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/MetaMethod","getMethodIndex","()I");
   Label defaultLabel=new Label();
   Label[] labels=new Label[methodCount];
+  int[] indices=new int[methodCount];
   for (int i=0; i < methodCount; i++) {
     labels[i]=new Label();
+    MetaMethod method=(MetaMethod)methods.get(i);
+    method.setMethodIndex(i + 1);
+    indices[i]=method.getMethodIndex();
   }
-  cv.visitTableSwitchInsn(minMethodIndex,maxMethodIndex,defaultLabel,labels);
+  cv.visitLookupSwitchInsn(defaultLabel,indices,labels);
   for (int i=0; i < methodCount; i++) {
-    labels[i]=new Label();
     cv.visitLabel(labels[i]);
     MetaMethod method=(MetaMethod)methods.get(i);
-    method.setMethodIndex(i);
     invokeMethod(method);
+    if (method.getReturnType() == void.class) {
+      cv.visitInsn(ACONST_NULL);
+    }
     cv.visitInsn(ARETURN);
   }
   cv.visitLabel(defaultLabel);
@@ -25,8 +28,7 @@
   cv.visitVarInsn(ALOAD,1);
   cv.visitVarInsn(ALOAD,2);
   cv.visitVarInsn(ALOAD,3);
-  cv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/classgen/DummyReflector","noSuchMethod","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  cv.visitMethodInsn(INVOKEVIRTUAL,classInternalName,"noSuchMethod","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   cv.visitInsn(ARETURN);
   cv.visitMaxs(4,4);
-  cw.visitEnd();
 }

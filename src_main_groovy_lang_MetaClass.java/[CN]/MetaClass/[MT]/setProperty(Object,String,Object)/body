@@ -5,9 +5,10 @@
     if (method == null) {
       throw new GroovyRuntimeException("Cannot set read-only property: " + property);
     }
+    MetaMethod metaMethod=findMethod(method);
     Object[] arguments={newValue};
     try {
-      doMethodInvoke(object,method,arguments);
+      doMethodInvoke(object,metaMethod,arguments);
     }
  catch (    GroovyRuntimeException e) {
       if (newValue instanceof List) {
@@ -18,7 +19,7 @@
           Constructor constructor=constructors[i];
           if (constructor.getParameterTypes().length == params) {
             Object value=doConstructorInvoke(constructor,list.toArray());
-            doMethodInvoke(object,method,new Object[]{value});
+            doMethodInvoke(object,metaMethod,new Object[]{value});
             return;
           }
         }
@@ -27,7 +28,7 @@
     }
     return;
   }
-  Method addListenerMethod=(Method)listeners.get(property);
+  MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
   if (addListenerMethod != null && newValue instanceof Closure) {
     Object proxy=createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
     doMethodInvoke(object,addListenerMethod,new Object[]{proxy});

@@ -1,0 +1,10 @@
+{
+  if (method.isPrivate() || method.isProtected()) {
+    return false;
+  }
+  Class declaringClass=method.getDeclaringClass();
+  if (!Modifier.isPublic(declaringClass.getModifiers())) {
+    return !declaringClass.getName().startsWith("java.");
+  }
+  return true;
+}

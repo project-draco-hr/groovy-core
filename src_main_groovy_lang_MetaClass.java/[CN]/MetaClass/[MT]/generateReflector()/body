@@ -1,14 +1,6 @@
 {
-  List methods=new ArrayList();
-  methods.addAll(methodIndex.values());
-  methods.addAll(staticMethodIndex.values());
-  methods=DefaultGroovyMethods.flatten(methods);
-  for (int i=0, size=methods.size(); i < size; i++) {
-    MetaMethod metaMethod=new MetaMethod((Method)methods.get(i));
-    methods.set(i,metaMethod);
-  }
-  reflector=loadReflector(methods);
-  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+  reflector=loadReflector(allMethods);
+  for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
     MetaMethod metaMethod=(MetaMethod)iter.next();
     metaMethod.setReflector(reflector);
   }

@@ -1,0 +1,18 @@
+{
+  this.cw=cw;
+  String fileName=className;
+  int idx=className.lastIndexOf('.');
+  if (idx > 0) {
+    fileName=className.substring(idx + 1);
+  }
+  fileName+=".java";
+  classInternalName=helper.getClassInternalName(className);
+  cw.visit(ACC_PUBLIC + ACC_SUPER,classInternalName,"org/codehaus/groovy/runtime/Reflector",null,fileName);
+  cv=cw.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
+  cv.visitVarInsn(ALOAD,0);
+  cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/Reflector","<init>","()V");
+  cv.visitInsn(RETURN);
+  cv.visitMaxs(1,1);
+  generateInvokeMethod();
+  cw.visitEnd();
+}

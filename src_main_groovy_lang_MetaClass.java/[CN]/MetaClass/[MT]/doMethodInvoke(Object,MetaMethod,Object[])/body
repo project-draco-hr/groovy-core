@@ -1,0 +1,53 @@
+{
+  try {
+    if (argumentArray == null) {
+      argumentArray=EMPTY_ARRAY;
+    }
+ else     if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
+      argumentArray=ARRAY_WITH_NULL;
+    }
+    Reflector reflector=method.getReflector();
+    return method.invoke(object,argumentArray);
+  }
+ catch (  ClassCastException e) {
+    if (coerceGStrings(argumentArray)) {
+      try {
+        return doMethodInvoke(object,method,argumentArray);
+      }
+ catch (      Exception e2) {
+      }
+    }
+    throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+catch (  InvocationTargetException e) {
+    Throwable t=e.getTargetException();
+    if (t instanceof Error) {
+      Error error=(Error)t;
+      throw error;
+    }
+    if (t instanceof RuntimeException) {
+      RuntimeException runtimeEx=(RuntimeException)t;
+      throw runtimeEx;
+    }
+    throw new InvokerInvocationException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new GroovyRuntimeException("could not access method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+catch (  IllegalArgumentException e) {
+    if (coerceGStrings(argumentArray)) {
+      try {
+        return doMethodInvoke(object,method,argumentArray);
+      }
+ catch (      Exception e2) {
+      }
+    }
+    throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+catch (  RuntimeException e) {
+    throw e;
+  }
+catch (  Exception e) {
+    throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+  }
+}

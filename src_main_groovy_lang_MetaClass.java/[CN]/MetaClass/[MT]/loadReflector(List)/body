@@ -1,25 +1,32 @@
 {
   ReflectorGenerator generator=new ReflectorGenerator(methods);
   String className=theClass.getName();
-  String name="gjdk.reflector." + className;
-  if (theClass.isArray()) {
-    name="gjdk.reflector." + theClass.getComponentType().getName() + "Array";
+  String packagePrefix="";
+  if (className.startsWith("java.")) {
+    packagePrefix="gjdk.";
   }
-  byte[] bytecode=generator.generate(name);
+  String name=packagePrefix + className + "$GroovyReflector";
+  if (theClass.isArray()) {
+    String componentName=theClass.getComponentType().getName();
+    if (componentName.startsWith("java.")) {
+      packagePrefix="gjdk.";
+    }
+    name=packagePrefix + componentName + "$GroovyReflectorArray";
+  }
   try {
-    Class type=registry.loadClass(name,bytecode);
+    Class type=loadReflectorClass(name);
     return (Reflector)type.newInstance();
   }
- catch (  LinkageError e) {
-    try {
-      Class type=registry.loadClass(name);
-      return (Reflector)type.newInstance();
-    }
- catch (    Exception e2) {
-      throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e2,e2);
-    }
+ catch (  Exception e) {
   }
-catch (  Exception e) {
+  ClassWriter cw=new ClassWriter(true);
+  generator.generate(cw,name);
+  byte[] bytecode=cw.toByteArray();
+  try {
+    Class type=loadReflectorClass(name,bytecode);
+    return (Reflector)type.newInstance();
+  }
+ catch (  Exception e) {
     throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e,e);
   }
 }

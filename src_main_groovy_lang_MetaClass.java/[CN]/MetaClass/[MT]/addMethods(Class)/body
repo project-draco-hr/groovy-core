@@ -1,7 +1,7 @@
 {
   Method[] methodArray=theClass.getDeclaredMethods();
   for (int i=0; i < methodArray.length; i++) {
-    Method method=methodArray[i];
+    MetaMethod method=createMetaMethod(methodArray[i]);
     String name=method.getName();
     if (isGenericGetMethod(method) && genericGetMethod == null) {
       genericGetMethod=method;
@@ -9,7 +9,7 @@
  else     if (isGenericSetMethod(method) && genericSetMethod == null) {
       genericSetMethod=method;
     }
-    if (MethodHelper.isStatic(method)) {
+    if (method.isStatic()) {
       List list=(List)staticMethodIndex.get(name);
       if (list == null) {
         list=new ArrayList();

@@ -1,0 +1,14 @@
+{
+  if (registry.useAccessible()) {
+    method.setAccessible(true);
+  }
+  MetaMethod answer=new MetaMethod(method);
+  if (isValidReflectorMethod(answer)) {
+    allMethods.add(answer);
+    answer.setMethodIndex(allMethods.size());
+  }
+ else {
+    answer=new ReflectionMetaMethod(method);
+  }
+  return answer;
+}

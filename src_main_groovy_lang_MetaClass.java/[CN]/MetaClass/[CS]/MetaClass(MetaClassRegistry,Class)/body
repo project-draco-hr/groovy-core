@@ -15,7 +15,8 @@
     Method[] listenerMethods=descriptor.getListenerMethods();
     for (int j=0; j < listenerMethods.length; j++) {
       Method listenerMethod=listenerMethods[j];
-      listeners.put(listenerMethod.getName(),descriptor.getAddListenerMethod());
+      MetaMethod metaMethod=createMetaMethod(descriptor.getAddListenerMethod());
+      listeners.put(listenerMethod.getName(),metaMethod);
     }
   }
   Class[] interfaces=theClass.getInterfaces();

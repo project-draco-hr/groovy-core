@@ -1,8 +1,15 @@
 {
+  checkInitialised();
+  for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
+    MetaMethod method=(MetaMethod)iter.next();
+    if (method.isStatic() && method.getName().equals(name) && method.getParameterTypes().length == 0) {
+      return method;
+    }
+  }
   try {
     Method method=type.getMethod(name,EMPTY_TYPE_ARRAY);
     if ((method.getModifiers() & Modifier.STATIC) != 0) {
-      return method;
+      return new ReflectionMetaMethod(method);
     }
  else {
       return null;

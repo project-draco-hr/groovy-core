@@ -1,3 +1,9 @@
 {
-  return reflector.invoke(this,object,arguments);
+  if (reflector != null) {
+    return reflector.invoke(this,object,arguments);
+  }
+ else {
+    method.setAccessible(true);
+    return method.invoke(object,arguments);
+  }
 }

@@ -1,0 +1,17 @@
+{
+  ReflectorGenerator generator=new ReflectorGenerator(methods);
+  String name=getClass().getName() + "." + getName();
+  ClassWriter cw=new ClassWriter(true);
+  DumpClassVisitor dumper=new DumpClassVisitor(new PrintWriter(new OutputStreamWriter(System.out)));
+  generator.generate(new CheckClassAdapter(cw),name);
+  byte[] bytecode=cw.toByteArray();
+  String fileName="target/" + name + ".class";
+  FileOutputStream out=new FileOutputStream(fileName);
+  out.write(bytecode);
+  out.close();
+  DumpClassVisitor.main(new String[]{fileName});
+  MetaClassRegistry registry=new MetaClassRegistry();
+  Class type=registry.loadClass(name,bytecode);
+  Object reflector=type.newInstance();
+  System.out.println("Created new reflector: " + reflector);
+}

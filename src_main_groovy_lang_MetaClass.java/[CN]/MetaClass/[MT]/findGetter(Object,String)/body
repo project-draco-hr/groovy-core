@@ -1,8 +1,10 @@
 {
-  try {
-    return object.getClass().getMethod(name,EMPTY_TYPE_ARRAY);
+  checkInitialised();
+  for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
+    MetaMethod method=(MetaMethod)iter.next();
+    if (!method.isStatic() && method.getName().equals(name) && method.getParameterTypes().length == 0) {
+      return method;
+    }
   }
- catch (  Exception e) {
-    return null;
-  }
+  return null;
 }
