@@ -1,9 +1,19 @@
 {
   CSTNode[] children=statementRoot.getChildren();
   Expression expression=expression(children[0]);
+  SwitchStatement answer=new SwitchStatement(expression);
   Statement defaultBlock=null;
-  if (defaultBlock == null) {
-    defaultBlock=EmptyStatement.INSTANCE;
+  for (int i=1; i < children.length; i++) {
+    CSTNode child=children[i];
+    if (matches(child,Token.KEYWORD_CASE)) {
+      answer.addCase(caseStatement(child));
+    }
+ else     if (matches(child,Token.KEYWORD_DEFAULT)) {
+      answer.setDefaultStatement(statementBlock(child));
+    }
+ else {
+      throw new ParserException("Expecting case or default block",child.getToken());
+    }
   }
-  return new SwitchStatement(expression,defaultBlock);
+  return answer;
 }
