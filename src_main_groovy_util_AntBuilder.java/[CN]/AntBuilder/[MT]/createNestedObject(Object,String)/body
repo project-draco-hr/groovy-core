@@ -4,7 +4,9 @@
     IntrospectionHelper ih=IntrospectionHelper.getHelper(object.getClass());
     if (ih != null) {
       try {
-        dataType=ih.createElement(getAntProject(),object,name.toLowerCase());
+        String namespaceUri="";
+        UnknownElement unknownElement=null;
+        dataType=ih.getElementCreator(getAntProject(),namespaceUri,object,name.toLowerCase(),unknownElement).create();
       }
  catch (      BuildException be) {
         log.log(Level.SEVERE,"Caught: " + be,be);
