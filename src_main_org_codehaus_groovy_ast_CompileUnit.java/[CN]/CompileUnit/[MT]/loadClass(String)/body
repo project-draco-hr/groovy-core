@@ -1,23 +1,44 @@
 {
+  Object obj=cachedClasses.get(type);
+  if (obj == NO_CLASS) {
+    throw new ClassNotFoundException(type);
+  }
+  if (obj != null) {
+    return (Class)obj;
+  }
+  Class answer=null;
   try {
-    return getClassLoader().loadClass(type);
+    answer=getClassLoader().loadClass(type);
   }
  catch (  ClassNotFoundException e) {
-    try {
-      return Thread.currentThread().getContextClassLoader().loadClass(type);
-    }
- catch (    ClassNotFoundException e1) {
-    }
-    try {
-      return getClass().getClassLoader().loadClass(type);
-    }
- catch (    ClassNotFoundException e2) {
-    }
-    try {
-      return Class.forName(type);
-    }
- catch (    ClassNotFoundException e2) {
-    }
-    throw e;
   }
+  try {
+    if (answer == null) {
+      answer=Thread.currentThread().getContextClassLoader().loadClass(type);
+    }
+  }
+ catch (  ClassNotFoundException e1) {
+  }
+  try {
+    if (answer == null) {
+      answer=getClass().getClassLoader().loadClass(type);
+    }
+  }
+ catch (  ClassNotFoundException e2) {
+  }
+  try {
+    if (answer == null) {
+      answer=Class.forName(type);
+    }
+  }
+ catch (  ClassNotFoundException e2) {
+  }
+  if (answer == null) {
+    cachedClasses.put(type,NO_CLASS);
+    throw new ClassNotFoundException(type);
+  }
+ else {
+    cachedClasses.put(type,answer);
+  }
+  return answer;
 }
