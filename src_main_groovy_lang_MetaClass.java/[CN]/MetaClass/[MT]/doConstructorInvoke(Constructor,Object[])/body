@@ -3,15 +3,6 @@
     return constructor.newInstance(argumentArray);
   }
  catch (  InvocationTargetException e) {
-    Throwable t=e.getTargetException();
-    if (t instanceof Error) {
-      Error error=(Error)t;
-      throw error;
-    }
-    if (t instanceof RuntimeException) {
-      RuntimeException runtimeEx=(RuntimeException)t;
-      throw runtimeEx;
-    }
     throw new InvokerInvocationException(e);
   }
 catch (  IllegalArgumentException e) {
