@@ -1,3 +1,11 @@
 {
-  return text.substring(InvokerHelper.asInt(range.getFrom()),InvokerHelper.asInt(range.getTo()));
+  int from=normaliseIndex(InvokerHelper.asInt(range.getFrom()),text.length());
+  int to=normaliseIndex(InvokerHelper.asInt(range.getTo()),text.length());
+  int length=text.length();
+  if (from > to) {
+    int tmp=from;
+    from=to;
+    to=tmp;
+  }
+  return text.substring(from,to + 1);
 }
