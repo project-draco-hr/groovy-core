@@ -1,0 +1,17 @@
+{
+  Enumeration parameterNames=request.getParameterNames();
+  while (parameterNames.hasMoreElements()) {
+    String key=(String)parameterNames.nextElement();
+    if (binding.getVariables().containsKey(key)) {
+      servletContext.log("Key \"" + key + "\" already bound.");
+      continue;
+    }
+    String[] values=request.getParameterValues(key);
+    if (values.length == 1) {
+      binding.setVariable(key,values[0]);
+    }
+ else {
+      binding.setVariable(key,values);
+    }
+  }
+}

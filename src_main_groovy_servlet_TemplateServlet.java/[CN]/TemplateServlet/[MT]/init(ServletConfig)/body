@@ -1,5 +1,8 @@
 {
+  templateEngine=createTemplateEngine(config);
+  if (templateEngine == null) {
+    throw new RuntimeException("Template engine not instantiated.");
+  }
   servletContext=config.getServletContext();
-  templateEngine=new SimpleTemplateEngine();
-  servletContext.log(getClass().getName() + " initialized.");
+  servletContext.log(getClass().getName() + " initialized. (" + templateEngine+ ")");
 }

@@ -1,0 +1,15 @@
+{
+  Binding binding=null;
+  try {
+    binding=createBinding(request,response);
+    setContentType(request,response);
+    Template template=handleRequest(request,response,binding);
+    merge(template,binding,response);
+  }
+ catch (  Exception exception) {
+    error(request,response,exception);
+  }
+ finally {
+    requestDone(request,response,binding);
+  }
+}
