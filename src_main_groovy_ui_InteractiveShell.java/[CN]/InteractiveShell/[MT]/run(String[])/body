@@ -4,24 +4,27 @@
   System.out.println("Lets get Groovy!");
   System.out.println("================");
   System.out.println("Version: " + version + " JVM: "+ System.getProperty("java.vm.version"));
-  System.out.println("Hit carriage return twice to execute a command");
-  System.out.println("The command 'quit' will terminate the shell");
+  System.out.println("Type 'exit' to terminate the shell");
+  System.out.println("Type 'help' for command help");
   int counter=1;
   while (true) {
-    String command=readCommand();
-    if (command == null || command.equals("quit")) {
+    String command=read();
+    if (command == null) {
       break;
     }
-    if (command.length() == 0) {
-      continue;
-    }
-    try {
-      Object answer=shell.evaluate(command,"CommandLine" + counter++ + ".groovy");
-      System.out.println(InvokerHelper.inspect(answer));
-    }
- catch (    Exception e) {
-      System.out.println("Caught: " + e);
-      e.printStackTrace();
+    reset();
+    if (command.length() > 0) {
+      try {
+        Object answer=shell.evaluate(command,"CommandLine" + counter++ + ".groovy");
+      }
+ catch (      Exception e) {
+        new ErrorReporter(e,false).write(System.err);
+      }
+catch (      Throwable e) {
+        new ErrorReporter(e,false).write(System.err);
+        System.err.println(">>> exiting");
+        System.exit(1);
+      }
     }
   }
 }

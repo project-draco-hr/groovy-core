@@ -1,0 +1,9 @@
+{
+  if (error instanceof SyntaxException) {
+    ((SyntaxException)error).setSourceLocator("line");
+  }
+  System.err.print("discarding ");
+  ErrorReporter reporter=new ErrorReporter(error,false);
+  reporter.setSources(Collections.singletonMap("line",code));
+  reporter.write(System.err);
+}

@@ -1,0 +1,53 @@
+{
+  reset();
+  System.out.println("");
+  boolean complete=false;
+  boolean done=false;
+  while (!complete && !done) {
+    System.out.print(line + "> ");
+    try {
+      pending=reader.readLine();
+    }
+ catch (    IOException e) {
+    }
+    if (pending == null || pending.equals("exit")) {
+      return null;
+    }
+    if (COMMAND_MAPPINGS.containsKey(pending)) {
+      int code=((Integer)COMMAND_MAPPINGS.get(pending)).intValue();
+switch (code) {
+case COMMAND_ID_HELP:
+        displayHelp();
+      break;
+case COMMAND_ID_DISCARD:
+    reset();
+  done=true;
+break;
+case COMMAND_ID_DISPLAY:
+displayStatement();
+break;
+case COMMAND_ID_EXPLAIN:
+explainStatement();
+break;
+}
+continue;
+}
+freshen();
+if (pending.trim() == "") {
+accept();
+continue;
+}
+String code=current();
+if (parse(code,1)) {
+accept();
+complete=true;
+}
+ else if (error == null) {
+accept();
+}
+ else {
+report(code);
+}
+}
+return accepted(complete);
+}

@@ -4,8 +4,15 @@
   if (la == null) {
   }
  else   if (la.isA(Token.IDENTIFIER)) {
-    if (lt_bare(2) != -1 && la_bare(2).isA(OPTIONAL_DATATYPE_FOLLOWER)) {
-      type=datatype(allowVoid);
+    if (useBare) {
+      if (lt_bare(2) != -1 && la_bare(2).isA(OPTIONAL_DATATYPE_FOLLOWER)) {
+        type=datatype(allowVoid);
+      }
+    }
+ else {
+      if (lt(2) != -1 && la(2).isA(OPTIONAL_DATATYPE_FOLLOWER)) {
+        type=datatype(allowVoid);
+      }
     }
   }
  else   if (la.isPrimitiveTypeKeyword(true)) {

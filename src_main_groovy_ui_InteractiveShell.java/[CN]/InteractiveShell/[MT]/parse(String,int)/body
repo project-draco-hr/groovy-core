@@ -1,0 +1,34 @@
+{
+  boolean parsed=false;
+  parser=null;
+  stream=null;
+  error=null;
+  tree=null;
+  try {
+    parser=Parser.create(code,tolerance);
+    stream=parser.getTokenStream();
+    tree=parser.topLevelStatement();
+    if (stream.atEnd()) {
+      parsed=true;
+    }
+  }
+ catch (  ExceptionCollector e) {
+    if (!stream.atEnd()) {
+      if (tolerance == 1) {
+        error=(Exception)e.get(0);
+      }
+ else {
+        error=e;
+      }
+    }
+  }
+catch (  SyntaxException e) {
+    if (!stream.atEnd()) {
+      error=e;
+    }
+  }
+catch (  Exception e) {
+    error=e;
+  }
+  return parsed;
+}

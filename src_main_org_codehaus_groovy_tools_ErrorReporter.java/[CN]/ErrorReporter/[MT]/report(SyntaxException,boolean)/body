@@ -1,4 +1,7 @@
 {
+  if (source == null && e.getSourceLocator() != null) {
+    setSource(e.getSourceLocator());
+  }
   if (source != null) {
     String description=source.getDescriptor() + ":" + e.getLine()+ ": "+ e.getMessage();
     println(description);
@@ -8,7 +11,7 @@
     }
   }
  else {
-    println("unknown:" + e.getLine() + ": "+ e.getMessage());
+    println(":" + e.getLine() + ": "+ e.getMessage());
   }
   stacktrace(e,false);
 }
