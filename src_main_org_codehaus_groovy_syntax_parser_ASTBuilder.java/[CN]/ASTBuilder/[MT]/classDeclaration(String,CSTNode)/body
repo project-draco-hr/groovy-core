@@ -12,7 +12,14 @@
   if (matches(classRoot.getChild(3),Token.KEYWORD_IMPLEMENTS)) {
     interfaceNames=resolvedQualifiedNames(classRoot.getChild(3).getChildren());
   }
-  ClassNode classNode=new ClassNode(packageName + "." + className,modifiers,superClassName,interfaceNames);
+  String fqClassName=null;
+  if (packageName == null || packageName.trim().equals("")) {
+    fqClassName=className;
+  }
+ else {
+    fqClassName=packageName.trim() + "." + className;
+  }
+  ClassNode classNode=new ClassNode(fqClassName,modifiers,superClassName,interfaceNames);
   CSTNode[] bodyRoots=classRoot.getChild(4).getChildren();
   for (int i=0; i < bodyRoots.length; ++i) {
     if (matches(bodyRoots[i],Token.KEYWORD_PROPERTY)) {
