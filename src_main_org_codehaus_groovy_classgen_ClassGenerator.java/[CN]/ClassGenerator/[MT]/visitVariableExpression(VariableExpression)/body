@@ -28,17 +28,17 @@
       String name=variableName;
       Variable variable=null;
       String variableType=expression.getType();
+      boolean useProperty=isInScriptBody();
       if (!leftHandExpression) {
         variable=(Variable)variableStack.get(name);
       }
  else {
-        variable=defineVariable(name,variableType);
+        if (!useProperty) {
+          variable=defineVariable(name,variableType);
+        }
       }
       if (variable == null) {
-        variable=defineVariable(name,variableType,false);
         visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
-        cv.visitInsn(DUP);
-        cv.visitVarInsn(ASTORE,variable.getIndex());
         return;
       }
       String type=variable.getType();
