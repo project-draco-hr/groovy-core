@@ -1,0 +1,138 @@
+{
+  if (ENABLE_EARLY_BINDING) {
+    expression.resolve(this);
+    if (expression.isTypeResolved()) {
+      if (expression.getRightExpression().getTypeClass() == Void.TYPE) {
+        throwException("void value appeared on right hand side of assignment. ");
+      }
+    }
+  }
+  Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof BinaryExpression) {
+    BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
+    if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      do {
+        if (true && ENABLE_EARLY_BINDING) {
+          Class typeclass=leftBinExpr.getLeftExpression().getTypeClass();
+          if (typeclass == null) {
+            break;
+          }
+          if (typeclass == Map.class) {
+            load(expression.getRightExpression());
+            cv.visitInsn(DUP);
+            final Variable rightTemp=storeInTemp("rightTemp",expression.getRightExpression().getType());
+            final Class rclass=expression.getRightExpression().getTypeClass();
+            BytecodeExpression loadTempByteCode=new BytecodeExpression(){
+              public void visit(              GroovyCodeVisitor visitor){
+                cv.visitVarInsn(ALOAD,rightTemp.getIndex());
+              }
+              protected void resolveType(              AsmClassGenerator2 resolver){
+                setTypeClass(rclass);
+              }
+            }
+;
+            visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"put",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),loadTempByteCode})));
+            cv.visitInsn(POP);
+            removeVar(rightTemp);
+            return;
+          }
+ else           if (typeclass == List.class) {
+            load(expression.getRightExpression());
+            cv.visitInsn(DUP);
+            final Variable rightTemp=storeInTemp("rightTemp",expression.getRightExpression().getType());
+            final Class rclass=expression.getRightExpression().getTypeClass();
+            BytecodeExpression loadTempBytes=new BytecodeExpression(){
+              public void visit(              GroovyCodeVisitor visitor){
+                cv.visitVarInsn(ALOAD,rightTemp.getIndex());
+              }
+              protected void resolveType(              AsmClassGenerator2 resolver){
+                setTypeClass(rclass);
+              }
+            }
+;
+            visitMethodCallExpression(new MethodCallExpression(new ClassExpression(DefaultGroovyMethods.class),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getLeftExpression(),leftBinExpr.getRightExpression(),loadTempBytes})));
+            removeVar(rightTemp);
+            return;
+          }
+ else {
+            break;
+          }
+        }
+      }
+ while (false);
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),expression.getRightExpression()})));
+      return;
+    }
+  }
+  leftHandExpression=false;
+  Expression rightExpression=expression.getRightExpression();
+  String type=getLHSType(leftExpression);
+  if (type != null) {
+    if (BytecodeHelper.isPrimitiveType(type)) {
+      rightExpression.visit(this);
+    }
+ else {
+      if (ENABLE_EARLY_BINDING) {
+        if (leftExpression.isDynamic()) {
+          visitAndAutoboxBoolean(rightExpression);
+        }
+ else {
+          if (type.equals(rightExpression.getType())) {
+            visitAndAutoboxBoolean(rightExpression);
+          }
+ else {
+            if (rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null) {
+              cv.visitInsn(ACONST_NULL);
+            }
+ else {
+              visitCastExpression(new CastExpression(type,rightExpression));
+            }
+          }
+        }
+      }
+ else       if (!type.equals("java.lang.Object")) {
+        visitCastExpression(new CastExpression(type,rightExpression));
+      }
+ else {
+        visitAndAutoboxBoolean(rightExpression);
+      }
+    }
+  }
+ else {
+    visitAndAutoboxBoolean(rightExpression);
+  }
+  if (ENABLE_EARLY_BINDING) {
+    Class rc=rightExpression.getTypeClass();
+    if (rc != null && rc.isArray()) {
+      Class elemType=rc.getComponentType();
+      if (elemType.isPrimitive()) {
+        visitClassExpression(new ClassExpression(elemType));
+        convertPrimitiveArray.call(cv);
+        cast(loadClass(BytecodeHelper.getObjectArrayTypeForPrimitiveArray(elemType.getName() + "[]")));
+      }
+    }
+    if (leftExpression.isDynamic()) {
+      if (!(leftExpression instanceof FieldExpression) && !(leftExpression instanceof PropertyExpression))       copyTypeClass(leftExpression,rightExpression);
+    }
+ else {
+      Class lc=leftExpression.getTypeClass();
+      if (lc != null && rc != null && !lc.isAssignableFrom(rc) && !lc.isPrimitive()) {
+        if (!lc.isArray()) {
+          visitClassExpression(new ClassExpression(lc));
+          asTypeMethod.call(cv);
+          helper.doCast(lc);
+        }
+ else {
+          Class elemType=lc.getComponentType();
+          if (elemType.isPrimitive()) {
+            copyTypeClass(leftExpression,rightExpression);
+          }
+        }
+      }
+    }
+  }
+  cv.visitInsn(DUP);
+  leftHandExpression=true;
+  leftExpression.visit(this);
+  leftHandExpression=false;
+}

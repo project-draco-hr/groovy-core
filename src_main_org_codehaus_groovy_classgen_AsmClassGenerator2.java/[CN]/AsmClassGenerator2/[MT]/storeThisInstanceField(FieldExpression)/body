@@ -1,0 +1,34 @@
+{
+  FieldNode field=expression.getField();
+  boolean holder=field.isHolder() && !isInClosureConstructor();
+  String type=field.getType();
+  String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
+  if (holder) {
+    Variable tv=visitASTOREInTemp(field.getName());
+    int tempIndex=tv.getIndex();
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitFieldInsn(GETFIELD,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    cv.visitVarInsn(ALOAD,tempIndex);
+    cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
+    removeVar(tv);
+  }
+ else {
+    if (isInClosureConstructor()) {
+      helper.doCast(type);
+    }
+ else {
+      if (ENABLE_EARLY_BINDING) {
+        helper.doCast(type);
+      }
+ else {
+        doConvertAndCast(type);
+      }
+    }
+    Variable tmpVar=defineVariable(createVariableName(field.getName()),field.getType(),false);
+    helper.store(tmpVar,MARK_START);
+    helper.loadThis();
+    helper.load(tmpVar);
+    helper.putField(field,ownerName);
+    removeVar(tmpVar);
+  }
+}

@@ -1,0 +1,28 @@
+{
+  if (name.equals(this.classNode.getName())) {
+    return Object.class;
+  }
+  if (name == null) {
+    return null;
+  }
+ else   if (name.length() == 0) {
+    return Object.class;
+  }
+  name=BytecodeHelper.formatNameForClassLoading(name);
+  try {
+    Class cls=(Class)classCache.get(name);
+    if (cls != null)     return cls;
+    CompileUnit compileUnit=getCompileUnit();
+    if (compileUnit != null) {
+      cls=compileUnit.loadClass(name);
+      classCache.put(name,cls);
+      return cls;
+    }
+ else {
+      throw new ClassGeneratorException("Could not load class: " + name);
+    }
+  }
+ catch (  ClassNotFoundException e) {
+    throw new ClassGeneratorException("Error when compiling class: " + classNode.getName() + ". Reason: could not load class: "+ name+ " reason: "+ e,e);
+  }
+}

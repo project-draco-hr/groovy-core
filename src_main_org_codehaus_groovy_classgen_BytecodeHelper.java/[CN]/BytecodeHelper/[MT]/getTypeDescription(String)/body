@@ -5,6 +5,9 @@
   if (name.equals("void")) {
     return "V";
   }
+  if (name.startsWith("[")) {
+    return name.replace('.','/');
+  }
   String prefix="";
   if (name.endsWith("[]")) {
     prefix="[";
@@ -13,25 +16,25 @@
   if (name.equals("int")) {
     return prefix + "I";
   }
-  if (name.equals("long")) {
+ else   if (name.equals("long")) {
     return prefix + "J";
   }
-  if (name.equals("short")) {
+ else   if (name.equals("short")) {
     return prefix + "S";
   }
-  if (name.equals("float")) {
+ else   if (name.equals("float")) {
     return prefix + "F";
   }
-  if (name.equals("double")) {
+ else   if (name.equals("double")) {
     return prefix + "D";
   }
-  if (name.equals("byte")) {
+ else   if (name.equals("byte")) {
     return prefix + "B";
   }
-  if (name.equals("char")) {
+ else   if (name.equals("char")) {
     return prefix + "C";
   }
-  if (name.equals("boolean")) {
+ else   if (name.equals("boolean")) {
     return prefix + "Z";
   }
   return prefix + "L" + name.replace('.','/')+ ";";

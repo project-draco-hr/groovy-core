@@ -1,4 +1,29 @@
 {
+  if (mostSpecificType.isPrimitive() && type.isPrimitive()) {
+    if (mostSpecificType == type) {
+      return true;
+    }
+ else {
+      if (type == int.class) {
+        return mostSpecificType == int.class || mostSpecificType == short.class || mostSpecificType == byte.class;
+      }
+ else       if (type == double.class) {
+        return mostSpecificType == double.class || mostSpecificType == int.class || mostSpecificType == long.class || mostSpecificType == short.class || mostSpecificType == byte.class || mostSpecificType == float.class;
+      }
+ else       if (type == long.class) {
+        return mostSpecificType == long.class || mostSpecificType == int.class || mostSpecificType == short.class || mostSpecificType == byte.class;
+      }
+ else       if (type == float.class) {
+        return mostSpecificType == float.class || mostSpecificType == int.class || mostSpecificType == long.class || mostSpecificType == short.class || mostSpecificType == byte.class;
+      }
+ else       if (type == short.class) {
+        return mostSpecificType == short.class || mostSpecificType == byte.class;
+      }
+ else {
+        return false;
+      }
+    }
+  }
   boolean answer=type.isAssignableFrom(mostSpecificType);
   if (!answer) {
     answer=autoboxType(type).isAssignableFrom(autoboxType(mostSpecificType));

@@ -1,0 +1,9 @@
+{
+  if (!type.equals("java.lang.Object")) {
+    if (!type.endsWith("[]") && isValidTypeForCast(type)) {
+      visitClassExpression(new ClassExpression(type));
+      asTypeMethod.call(cv);
+    }
+    helper.doCast(type);
+  }
+}

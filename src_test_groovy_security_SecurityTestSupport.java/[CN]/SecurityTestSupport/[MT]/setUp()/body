@@ -6,5 +6,11 @@
     }
   }
   currentClassLoader=Thread.currentThread().getContextClassLoader();
-  Thread.currentThread().setContextClassLoader(loader);
+  AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      Thread.currentThread().setContextClassLoader(loader);
+      return null;
+    }
+  }
+);
 }

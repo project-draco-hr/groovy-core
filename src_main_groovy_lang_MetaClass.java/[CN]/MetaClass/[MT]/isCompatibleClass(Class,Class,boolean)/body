@@ -1,0 +1,43 @@
+{
+  boolean answer=value == null || type.isAssignableFrom(value);
+  if (!answer) {
+    if (type.isPrimitive()) {
+      if (type == int.class) {
+        return value == Integer.class;
+      }
+ else       if (type == double.class) {
+        return value == Double.class || value == Float.class || value == Integer.class || value == BigDecimal.class;
+      }
+ else       if (type == boolean.class) {
+        return value == Boolean.class;
+      }
+ else       if (type == long.class) {
+        return value == Long.class || value == Integer.class;
+      }
+ else       if (type == float.class) {
+        return value == Float.class || value == Integer.class;
+      }
+ else       if (type == char.class) {
+        return value == Character.class;
+      }
+ else       if (type == byte.class) {
+        return value == Byte.class;
+      }
+ else       if (type == short.class) {
+        return value == Short.class;
+      }
+    }
+ else     if (type.isArray() && value.isArray()) {
+      return isCompatibleClass(type.getComponentType(),value.getComponentType(),false);
+    }
+ else     if (includeCoerce) {
+      if (type == String.class && GString.class.isAssignableFrom(value)) {
+        return true;
+      }
+ else       if (value == Number.class) {
+        return Number.class.isAssignableFrom(type);
+      }
+    }
+  }
+  return answer;
+}

@@ -1,0 +1,16 @@
+{
+  boolean first=true;
+  Class cls=null;
+  for (Iterator iter=expressions.iterator(); iter.hasNext(); ) {
+    Expression exp=(Expression)iter.next();
+    if (cls == null) {
+      cls=exp.getTypeClass();
+    }
+ else {
+      if (cls != exp.getTypeClass()) {
+        return null;
+      }
+    }
+  }
+  return cls;
+}

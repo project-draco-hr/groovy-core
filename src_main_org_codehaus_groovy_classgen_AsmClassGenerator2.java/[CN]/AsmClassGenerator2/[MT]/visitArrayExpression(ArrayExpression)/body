@@ -1,0 +1,32 @@
+{
+  String type=expression.getElementType();
+  String typeName=BytecodeHelper.getClassInternalName(type);
+  Expression sizeExpression=expression.getSizeExpression();
+  if (sizeExpression != null) {
+    visitAndAutoboxBoolean(sizeExpression);
+    asIntMethod.call(cv);
+    cv.visitTypeInsn(ANEWARRAY,typeName);
+  }
+ else {
+    int size=expression.getExpressions().size();
+    helper.pushConstant(size);
+    cv.visitTypeInsn(ANEWARRAY,typeName);
+    for (int i=0; i < size; i++) {
+      cv.visitInsn(DUP);
+      helper.pushConstant(i);
+      Expression elementExpression=expression.getExpression(i);
+      if (elementExpression == null) {
+        ConstantExpression.NULL.visit(this);
+      }
+ else {
+        if (!type.equals(elementExpression.getClass().getName())) {
+          visitCastExpression(new CastExpression(type,elementExpression));
+        }
+ else {
+          visitAndAutoboxBoolean(elementExpression);
+        }
+      }
+      cv.visitInsn(AASTORE);
+    }
+  }
+}

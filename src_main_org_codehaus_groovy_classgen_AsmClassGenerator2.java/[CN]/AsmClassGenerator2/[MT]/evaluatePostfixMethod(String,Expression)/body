@@ -1,0 +1,12 @@
+{
+  leftHandExpression=false;
+  expression.visit(this);
+  Variable tv=visitASTOREInTemp("postfix_" + method);
+  int tempIdx=tv.getIndex();
+  cv.visitVarInsn(ALOAD,tempIdx);
+  cv.visitLdcInsn(method);
+  invokeNoArgumentsMethod.call(cv);
+  store(expression);
+  cv.visitVarInsn(ALOAD,tempIdx);
+  removeVar(tv);
+}

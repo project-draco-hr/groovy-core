@@ -1,0 +1,21 @@
+{
+  this.constructorNode=node;
+  this.methodNode=null;
+  this.variableScope=null;
+  visitParameters(node,node.getParameters());
+  String methodType=BytecodeHelper.getMethodDescriptor("void",node.getParameters());
+  cv=cw.visitMethod(node.getModifiers(),"<init>",methodType,null,null);
+  helper=new BytecodeHelper(cv);
+  findMutableVariables();
+  resetVariableStack(node.getParameters());
+  Statement code=node.getCode();
+  if (code == null || !firstStatementIsSuperInit(code)) {
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
+  }
+  if (code != null) {
+    code.visit(this);
+  }
+  cv.visitInsn(RETURN);
+  cv.visitMaxs(0,0);
+}

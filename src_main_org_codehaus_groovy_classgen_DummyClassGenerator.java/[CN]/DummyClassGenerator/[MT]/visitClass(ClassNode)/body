@@ -1,0 +1,30 @@
+{
+  try {
+    this.classNode=classNode;
+    this.internalClassName=BytecodeHelper.getClassInternalName(classNode.getName());
+    classNode.setSuperClass(checkValidType(classNode.getSuperClass(),classNode,"Must be a valid base class"));
+    String[] interfaces=classNode.getInterfaces();
+    for (int i=0; i < interfaces.length; i++) {
+      interfaces[i]=checkValidType(interfaces[i],classNode,"Must be a valid interface name");
+    }
+    this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
+    cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()),sourceFile);
+    classNode.visitContents(this);
+    for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
+      ClassNode innerClass=(ClassNode)iter.next();
+      String innerClassName=innerClass.getName();
+      String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
+      String outerClassName=internalClassName;
+      MethodNode enclosingMethod=innerClass.getEnclosingMethod();
+      if (enclosingMethod != null) {
+        outerClassName=null;
+      }
+      cw.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
+    }
+    cw.visitEnd();
+  }
+ catch (  GroovyRuntimeException e) {
+    e.setModule(classNode.getModule());
+    throw e;
+  }
+}

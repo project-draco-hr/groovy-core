@@ -4,8 +4,25 @@
   this.type=type;
   this.owner=owner;
   this.initialValueExpression=initialValueExpression;
-  if (type == null) {
-    this.type="java.lang.Object";
+  if (type == null || type.length() == 0) {
     this.dynamicType=true;
+    if (initialValueExpression != null) {
+      String initType=initialValueExpression.getType();
+      if (initType != null && initType.length() > 0) {
+        this.type=initType;
+      }
+ else {
+        this.type="java.lang.Object";
+      }
+    }
+ else {
+      this.type="java.lang.Object";
+    }
+  }
+ else {
+    String boxedType=BytecodeHelper.getObjectTypeForPrimitive(type);
+    boxedType=BytecodeHelper.getObjectArrayTypeForPrimitiveArray(boxedType);
+    this.type=boxedType;
+    dynamicType=false;
   }
 }

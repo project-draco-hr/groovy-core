@@ -1,0 +1,15 @@
+{
+  String type=cls.getName();
+  if (cls.isPrimitive() && cls != void.class) {
+    String wrapperName=getObjectTypeForPrimitive(type);
+    String internName=getClassInternalName(wrapperName);
+    if (cls == boolean.class) {
+      cv.visitTypeInsn(CHECKCAST,internName);
+      cv.visitMethodInsn(INVOKEVIRTUAL,internName,type + "Value","()" + getTypeDescription(type));
+    }
+ else {
+      cv.visitTypeInsn(CHECKCAST,"java/lang/Number");
+      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Number",type + "Value","()" + getTypeDescription(type));
+    }
+  }
+}

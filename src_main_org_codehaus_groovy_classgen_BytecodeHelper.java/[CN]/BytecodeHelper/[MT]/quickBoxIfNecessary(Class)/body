@@ -1,0 +1,26 @@
+{
+  String type=cls.getName();
+  String descr=getTypeDescription(type);
+  if (cls == boolean.class) {
+    boxBoolean();
+  }
+ else   if (cls.isPrimitive() && cls != void.class) {
+    if (cls == Integer.TYPE) {
+      cv.visitMethodInsn(INVOKESTATIC,getClassInternalName(InvokerHelper.class.getName()),"integerValue","(I)Ljava/lang/Integer;");
+      return;
+    }
+    String wrapperName=getObjectTypeForPrimitive(type);
+    String internName=getClassInternalName(wrapperName);
+    cv.visitTypeInsn(NEW,internName);
+    cv.visitInsn(DUP);
+    if (type.equals("double") || type.equals("long")) {
+      cv.visitInsn(DUP2_X2);
+      cv.visitInsn(POP2);
+    }
+ else {
+      cv.visitInsn(DUP2_X1);
+      cv.visitInsn(POP2);
+    }
+    cv.visitMethodInsn(INVOKESPECIAL,internName,"<init>","(" + descr + ")V");
+  }
+}

@@ -1,0 +1,75 @@
+{
+  String variableName=expression.getVariable();
+  if (isStaticMethod() && variableName.equals("this")) {
+    visitClassExpression(new ClassExpression(classNode.getName()));
+    return;
+  }
+  if (variableName.equals("super")) {
+    visitClassExpression(new ClassExpression(classNode.getSuperClass()));
+    return;
+  }
+  boolean handled=false;
+  Variable variable=(Variable)variableStack.get(variableName);
+  if (variable != null) {
+    if (variable.isProperty()) {
+      processPropertyVariable(variable);
+    }
+ else {
+      if (ENABLE_EARLY_BINDING && expression.isTypeResolved() && leftHandExpression) {
+        String typeName=expression.getType();
+        Type varOldType=variable.getType();
+        if (varOldType.isDynamic()) {
+          variable.setType(new Type(typeName,true));
+        }
+ else         if (!varOldType.getName().equals(typeName)) {
+          new GroovyRuntimeException("VariableExpression data type conflicts with the existing variable. " + "[" + expression.getLineNumber() + ":"+ expression.getColumnNumber()+ "]");
+        }
+      }
+      processStackVariable(variable);
+    }
+    handled=true;
+  }
+ else {
+    int steps=0;
+    ClassNode currentClassNode=classNode;
+    FieldNode field=null;
+    do {
+      if ((field=currentClassNode.getField(variableName)) != null) {
+        if (methodNode == null || !methodNode.isStatic() || field.isStatic())         break;
+      }
+      steps++;
+    }
+ while ((currentClassNode=currentClassNode.getOuterClass()) != null);
+    if (field != null) {
+      processFieldAccess(variableName,field,steps);
+      handled=true;
+    }
+  }
+  if (!handled && !variableName.equals("this")) {
+    String className=resolveClassName(variableName);
+    if (className != null) {
+      if (leftHandExpression) {
+        throwException("Cannot use a class expression on the left hand side of an assignment");
+      }
+      visitClassExpression(new ClassExpression(className));
+      return;
+    }
+  }
+  if (!handled) {
+    String variableType=expression.getType();
+    variable=defineVariable(variableName,variableType);
+    if (leftHandExpression && expression.isDynamic()) {
+      variable.setDynamic(true);
+    }
+ else {
+      variable.setDynamic(false);
+    }
+    if (isInScriptBody() || !leftHandExpression) {
+      variable.setProperty(true);
+      processPropertyVariable(variable);
+    }
+ else {
+      processStackVariable(variable);
+    }
+  }
+}

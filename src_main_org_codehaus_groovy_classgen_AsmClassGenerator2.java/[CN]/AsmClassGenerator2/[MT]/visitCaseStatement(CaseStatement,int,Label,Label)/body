@@ -1,0 +1,14 @@
+{
+  onLineNumber(statement,"visitCaseStatement");
+  cv.visitVarInsn(ALOAD,switchVariableIndex);
+  statement.getExpression().visit(this);
+  isCaseMethod.call(cv);
+  Label l0=new Label();
+  cv.visitJumpInsn(IFEQ,l0);
+  cv.visitLabel(thisLabel);
+  statement.getCode().visit(this);
+  if (nextLabel != null) {
+    cv.visitJumpInsn(GOTO,nextLabel);
+  }
+  cv.visitLabel(l0);
+}

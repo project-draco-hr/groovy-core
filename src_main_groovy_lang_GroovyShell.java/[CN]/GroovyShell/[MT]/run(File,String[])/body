@@ -1,4 +1,12 @@
 {
+  String scriptName=scriptFile.getName();
+  int p=scriptName.lastIndexOf(".");
+  if (p++ >= 0) {
+    if (scriptName.substring(p).equals("java")) {
+      System.err.println("error: cannot dompile file with .java extension: " + scriptName);
+      throw new CompilationFailedException(0,null);
+    }
+  }
   final Thread thread=Thread.currentThread();
   ClassLoader currentClassLoader=thread.getContextClassLoader();
 class DoSetContext implements PrivilegedAction {

@@ -1,0 +1,11 @@
+{
+  visitParameters(node,node.getParameters());
+  String methodType=BytecodeHelper.getMethodDescriptor("void",node.getParameters());
+  cv=cw.visitMethod(node.getModifiers(),"<init>",methodType,null,null);
+  cv.visitTypeInsn(NEW,"java/lang/RuntimeException");
+  cv.visitInsn(DUP);
+  cv.visitLdcInsn("not intended for execution");
+  cv.visitMethodInsn(INVOKESPECIAL,"java/lang/RuntimeException","<init>","(Ljava/lang/String;)V");
+  cv.visitInsn(ATHROW);
+  cv.visitMaxs(0,0);
+}

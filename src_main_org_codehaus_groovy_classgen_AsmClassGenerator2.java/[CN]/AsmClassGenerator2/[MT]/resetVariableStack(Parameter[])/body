@@ -1,0 +1,21 @@
+{
+  lastVariableIndex=-1;
+  variableStack.clear();
+  scope=new BlockScope(null);
+  definingParameters=true;
+  if (!isStaticMethod()) {
+    defineVariable("this",classNode.getName()).getIndex();
+  }
+  for (int i=0; i < parameters.length; i++) {
+    Parameter parameter=parameters[i];
+    String type=parameter.getType();
+    Variable v=defineVariable(parameter.getName(),type);
+    int idx=v.getIndex();
+    if (BytecodeHelper.isPrimitiveType(type)) {
+      helper.load(type,idx);
+      helper.box(type);
+      cv.visitVarInsn(ASTORE,idx);
+    }
+  }
+  definingParameters=false;
+}

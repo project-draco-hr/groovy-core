@@ -1,0 +1,212 @@
+{
+  do {
+    if (true && ENABLE_EARLY_BINDING) {
+      expression.resolve(this);
+      if (!expression.isTypeResolved()) {
+        break;
+      }
+      Expression ownerExp=expression.getObjectExpression();
+      String propName=expression.getProperty();
+      if (expression.getProperty().equals("class")) {
+        break;
+      }
+      String ownerType=ownerExp.getType();
+      Class ownerClass=ownerExp.getTypeClass();
+      if (ownerType == null || ownerType.length() == 0) {
+        break;
+      }
+      Label l3=new Label();
+      if (ownerClass != null && ownerClass.isArray() && propName.equals("length")) {
+        load(ownerExp);
+        if (expression.isSafe()) {
+          helper.dup();
+          cv.visitJumpInsn(IFNULL,l3);
+        }
+        cast(ownerClass);
+        cv.visitInsn(ARRAYLENGTH);
+        helper.quickBoxIfNecessary(int.class);
+        cv.visitLabel(l3);
+        return;
+      }
+      String propertyType=expression.getType();
+      if (propertyType == null || propertyType.length() == 0) {
+        break;
+      }
+      boolean isStatic=expression.isStatic();
+      if (!isThisExpression(ownerExp) && GroovyObject.class.isAssignableFrom(ownerExp.getTypeClass())) {
+        if (!isStatic && ownerExp instanceof ClassExpression) {
+          if (leftHandExpression) {
+            cv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(ownerType),"setProperty",BytecodeHelper.getTypeDescription(propertyType));
+          }
+ else {
+            cv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(ownerType),"getProperty",BytecodeHelper.getTypeDescription(propertyType));
+          }
+          return;
+        }
+ else {
+          break;
+        }
+      }
+ else {
+        Field fld=expression.getField();
+        Method setter=expression.getSetter();
+        Method getter=expression.getGetter();
+        if (leftHandExpression) {
+          if (fld == null && setter == null) {
+            break;
+          }
+        }
+ else {
+          if (fld == null && getter == null) {
+            break;
+          }
+        }
+        if (ownerClass == null && !isThisExpression(ownerExp)) {
+          break;
+        }
+        if (expression.isStatic()) {
+          if (leftHandExpression) {
+            if (fld != null) {
+              helper.quickUnboxIfNecessary(expression.getTypeClass());
+              cv.visitFieldInsn(PUTSTATIC,BytecodeHelper.getClassInternalName(ownerType),expression.getProperty(),BytecodeHelper.getTypeDescription(propertyType));
+            }
+ else             if (setter != null) {
+              helper.quickUnboxIfNecessary(setter.getParameterTypes()[0]);
+              helper.invoke(setter);
+            }
+ else {
+              throwException("no method or field is found for a resolved property access");
+            }
+          }
+ else {
+            if (fld != null) {
+              cv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(ownerType),propName,BytecodeHelper.getTypeDescription(propertyType));
+              helper.quickBoxIfNecessary(expression.getTypeClass());
+            }
+ else             if (getter != null) {
+              helper.invoke(getter);
+              helper.quickBoxIfNecessary(expression.getTypeClass());
+            }
+ else {
+              throwException("no method or field is found for a resolved property access");
+            }
+          }
+        }
+ else {
+          if (leftHandExpression) {
+            helper.quickUnboxIfNecessary(expression.getTypeClass());
+            load(ownerExp);
+            if (expression.isSafe()) {
+              helper.dup();
+              cv.visitJumpInsn(IFNULL,l3);
+            }
+            if (ownerClass != null)             cast(ownerClass);
+            Class cls=expression.getTypeClass();
+            if (cls == double.class || cls == long.class) {
+              cv.visitInsn(DUP_X2);
+              cv.visitInsn(POP);
+            }
+ else {
+              cv.visitInsn(SWAP);
+            }
+            if (fld != null) {
+              cv.visitFieldInsn(PUTFIELD,BytecodeHelper.getClassInternalName(ownerType),propName,BytecodeHelper.getTypeDescription(propertyType));
+            }
+ else             if (setter != null) {
+              helper.invoke(setter);
+            }
+ else {
+              throwException("no method or field is found for a resolved property access");
+            }
+          }
+ else {
+            load(ownerExp);
+            if (expression.isSafe()) {
+              helper.dup();
+              cv.visitJumpInsn(IFNULL,l3);
+            }
+            if (ownerClass != null)             cast(ownerClass);
+            if (fld != null) {
+              cv.visitFieldInsn(GETFIELD,BytecodeHelper.getClassInternalName(ownerType),propName,BytecodeHelper.getTypeDescription(propertyType));
+              helper.quickBoxIfNecessary(expression.getTypeClass());
+            }
+ else             if (getter != null) {
+              helper.invoke(getter);
+              helper.quickBoxIfNecessary(expression.getTypeClass());
+            }
+ else {
+              throwException("no method or field is found for a resolved property access");
+            }
+          }
+        }
+        cv.visitLabel(l3);
+        return;
+      }
+    }
+  }
+ while (false);
+  String className=null;
+  Expression objectExpression=expression.getObjectExpression();
+  if (!isThisExpression(objectExpression)) {
+    className=checkForQualifiedClass(expression);
+    if (className != null) {
+      visitClassExpression(new ClassExpression(className));
+      return;
+    }
+  }
+  if (expression.getProperty().equals("class")) {
+    if ((objectExpression instanceof ClassExpression)) {
+      visitClassExpression((ClassExpression)objectExpression);
+      return;
+    }
+ else     if (objectExpression instanceof VariableExpression) {
+      VariableExpression varExp=(VariableExpression)objectExpression;
+      className=varExp.getVariable();
+      try {
+        className=resolveClassName(className);
+        visitClassExpression(new ClassExpression(className));
+        return;
+      }
+ catch (      Exception e) {
+      }
+    }
+  }
+  if (isThisExpression(objectExpression)) {
+    String name=expression.getProperty();
+    FieldNode field=classNode.getField(name);
+    if (field != null) {
+      visitFieldExpression(new FieldExpression(field));
+      return;
+    }
+  }
+  boolean left=leftHandExpression;
+  leftHandExpression=false;
+  objectExpression.visit(this);
+  cv.visitLdcInsn(expression.getProperty());
+  if (isGroovyObject(objectExpression) && !expression.isSafe()) {
+    if (left) {
+      setGroovyObjectPropertyMethod.call(cv);
+    }
+ else {
+      getGroovyObjectPropertyMethod.call(cv);
+    }
+  }
+ else {
+    if (expression.isSafe()) {
+      if (left) {
+        setPropertySafeMethod2.call(cv);
+      }
+ else {
+        getPropertySafeMethod.call(cv);
+      }
+    }
+ else {
+      if (left) {
+        setPropertyMethod2.call(cv);
+      }
+ else {
+        getPropertyMethod.call(cv);
+      }
+    }
+  }
+}

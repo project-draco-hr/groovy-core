@@ -41,6 +41,14 @@ catch (  IllegalArgumentException e) {
  catch (      Exception e2) {
       }
     }
+    Object[] args=coerceNumbers(method,argumentArray);
+    if (args != null) {
+      try {
+        return doMethodInvoke(object,method,args);
+      }
+ catch (      Exception e3) {
+      }
+    }
     throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
 catch (  RuntimeException e) {

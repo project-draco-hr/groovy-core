@@ -1,0 +1,28 @@
+{
+  String type=v.getTypeName();
+  int idx=v.getIndex();
+  if (type.equals("double")) {
+    cv.visitVarInsn(DSTORE,idx);
+  }
+ else   if (type.equals("float")) {
+    cv.visitVarInsn(FSTORE,idx);
+  }
+ else   if (type.equals("long")) {
+    cv.visitVarInsn(LSTORE,idx);
+  }
+ else   if (type.equals("boolean") || type.equals("char") || type.equals("byte")|| type.equals("int")|| type.equals("short")) {
+    cv.visitVarInsn(ISTORE,idx);
+  }
+ else {
+    cv.visitVarInsn(ASTORE,idx);
+  }
+  if (AsmClassGenerator2.CREATE_DEBUG_INFO && markStart) {
+    Label l=v.getStartLabel();
+    if (l != null) {
+      cv.visitLabel(l);
+    }
+ else {
+      System.out.println("start label == null! what to do about this?");
+    }
+  }
+}

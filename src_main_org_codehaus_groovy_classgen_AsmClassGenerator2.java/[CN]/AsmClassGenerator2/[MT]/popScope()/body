@@ -1,0 +1,22 @@
+{
+  int lastID=scope.getFirstVariableIndex();
+  List removeKeys=new ArrayList();
+  for (Iterator iter=variableStack.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String name=(String)entry.getKey();
+    Variable value=(Variable)entry.getValue();
+    if (value.getIndex() >= lastID) {
+      removeKeys.add(name);
+    }
+  }
+  for (Iterator iter=removeKeys.iterator(); iter.hasNext(); ) {
+    Variable v=(Variable)variableStack.remove(iter.next());
+    if (CREATE_DEBUG_INFO) {
+      if (v != null) {
+        visitVariableEndLabel(v);
+        cv.visitLocalVariable(v.getName(),BytecodeHelper.getTypeDescription(v.getTypeName()),v.getStartLabel(),v.getEndLabel(),v.getIndex());
+      }
+    }
+  }
+  scope=scope.getParent();
+}

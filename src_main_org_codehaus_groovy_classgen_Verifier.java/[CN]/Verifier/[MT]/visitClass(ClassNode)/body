@@ -26,6 +26,11 @@
     constructor.setSynthetic(true);
     node.addConstructor(constructor);
   }
+  if (!(node instanceof InnerClassNode)) {
+    FieldNode timeTagField=new FieldNode(Verifier.__TIMESTAMP,Modifier.PUBLIC | Modifier.STATIC,"java.lang.Long",node.getName(),new ConstantExpression(new Long(System.currentTimeMillis())));
+    timeTagField.setSynthetic(true);
+    node.addField(timeTagField);
+  }
   addFieldInitialization(node);
   node.visitContents(this);
 }

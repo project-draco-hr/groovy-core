@@ -1,0 +1,18 @@
+{
+  FieldNode field=fldExp.getField();
+  boolean holder=field.isHolder() && !isInClosureConstructor();
+  String type=field.getType();
+  String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
+  if (holder) {
+    cv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+  }
+ else {
+    cv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    if (BytecodeHelper.isPrimitiveType(type)) {
+      helper.box(type);
+    }
+ else {
+    }
+  }
+}

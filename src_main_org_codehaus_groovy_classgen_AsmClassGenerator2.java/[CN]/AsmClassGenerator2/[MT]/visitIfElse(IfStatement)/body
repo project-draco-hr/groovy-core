@@ -1,0 +1,16 @@
+{
+  onLineNumber(ifElse,"visitIfElse");
+  ifElse.getBooleanExpression().visit(this);
+  Label l0=new Label();
+  cv.visitJumpInsn(IFEQ,l0);
+  pushBlockScope(false,false);
+  ifElse.getIfBlock().visit(this);
+  popScope();
+  Label l1=new Label();
+  cv.visitJumpInsn(GOTO,l1);
+  cv.visitLabel(l0);
+  pushBlockScope(false,false);
+  ifElse.getElseBlock().visit(this);
+  cv.visitLabel(l1);
+  popScope();
+}

@@ -2,6 +2,9 @@
   List answer=new ArrayList(self.size());
   for (Iterator iter=self.iterator(); iter.hasNext(); ) {
     answer.add(closure.call(iter.next()));
+    if (closure.getDirective() == Closure.DONE) {
+      break;
+    }
   }
   return answer;
 }

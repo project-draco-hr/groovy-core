@@ -1,0 +1,41 @@
+{
+  onLineNumber(statement,"visitReturnStatement");
+  String returnType=methodNode.getReturnType();
+  if (returnType.equals("void")) {
+    if (!(statement == ReturnStatement.RETURN_NULL_OR_VOID)) {
+      throwException("Cannot use return statement with an expression on a method that returns void");
+    }
+    cv.visitInsn(RETURN);
+    outputReturn=true;
+    return;
+  }
+  Expression expression=statement.getExpression();
+  evaluateExpression(expression);
+  if (returnType.equals("java.lang.Object") && expression.getType() != null && expression.getType().equals("void")) {
+    cv.visitInsn(ACONST_NULL);
+    cv.visitInsn(ARETURN);
+  }
+ else {
+    helper.unbox(returnType);
+    if (returnType.equals("double")) {
+      cv.visitInsn(DRETURN);
+    }
+ else     if (returnType.equals("float")) {
+      cv.visitInsn(FRETURN);
+    }
+ else     if (returnType.equals("long")) {
+      cv.visitInsn(LRETURN);
+    }
+ else     if (returnType.equals("boolean")) {
+      cv.visitInsn(IRETURN);
+    }
+ else     if (returnType.equals("char") || returnType.equals("byte") || returnType.equals("int")|| returnType.equals("short")) {
+      cv.visitInsn(IRETURN);
+    }
+ else {
+      doConvertAndCast(returnType,expression);
+      cv.visitInsn(ARETURN);
+    }
+  }
+  outputReturn=true;
+}

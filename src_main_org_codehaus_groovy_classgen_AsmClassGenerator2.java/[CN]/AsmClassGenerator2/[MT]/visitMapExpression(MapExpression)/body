@@ -1,0 +1,19 @@
+{
+  List entries=expression.getMapEntryExpressions();
+  int size=entries.size();
+  helper.pushConstant(size * 2);
+  cv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  int i=0;
+  for (Iterator iter=entries.iterator(); iter.hasNext(); ) {
+    MapEntryExpression entry=(MapEntryExpression)iter.next();
+    cv.visitInsn(DUP);
+    helper.pushConstant(i++);
+    visitAndAutoboxBoolean(entry.getKeyExpression());
+    cv.visitInsn(AASTORE);
+    cv.visitInsn(DUP);
+    helper.pushConstant(i++);
+    visitAndAutoboxBoolean(entry.getValueExpression());
+    cv.visitInsn(AASTORE);
+  }
+  createMapMethod.call(cv);
+}

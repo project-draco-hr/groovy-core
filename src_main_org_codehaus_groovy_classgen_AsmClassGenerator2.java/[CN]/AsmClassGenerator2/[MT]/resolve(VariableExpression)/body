@@ -1,0 +1,106 @@
+{
+  String variableName=expression.getVariable();
+  if (isStaticMethod() && variableName.equals("this")) {
+    expression.setTypeClass(Class.class);
+    return;
+  }
+ else   if (variableName.equals("super")) {
+    if (isStaticMethod()) {
+      expression.setTypeClass(Class.class);
+      return;
+    }
+ else {
+      try {
+        Class cls=loadClass(classNode.getSuperClass());
+        expression.setTypeClass(cls);
+        return;
+      }
+ catch (      Exception e) {
+        expression.setResolveFailed(true);
+        expression.setFailure(e.getMessage());
+        return;
+      }
+    }
+  }
+ else   if (variableName.equals("this")) {
+    return;
+  }
+ else {
+  }
+  boolean handled=false;
+  Variable variable=(Variable)variableStack.get(variableName);
+  try {
+    if (variable != null) {
+      Type t=variable.getType();
+      if (t.getRealName().length() == 0) {
+        String tname=t.getName();
+        if (tname.endsWith("[]")) {
+          expression.setResolveFailed(true);
+          expression.setFailure("array type to be supported later");
+          return;
+        }
+ else         if (tname.equals(classNode.getName())) {
+          expression.setResolveFailed(true);
+          return;
+        }
+ else         if (classNode.getOuterClass() != null && tname.equals(classNode.getOuterClass().getName())) {
+          expression.setResolveFailed(true);
+          return;
+        }
+        Class cls=loadClass(tname);
+        expression.setTypeClass(cls);
+        expression.setDynamic(t.isDynamic());
+        return;
+      }
+ else {
+        String tname=t.getRealName();
+        if (tname.endsWith("[]")) {
+          expression.setResolveFailed(true);
+          expression.setFailure("array type to be supported later");
+          return;
+        }
+        Class cls=loadClass(tname);
+        expression.setTypeClass(cls);
+        expression.setDynamic(t.isDynamic());
+        return;
+      }
+    }
+ else {
+      int steps=0;
+      ClassNode currentClassNode=classNode;
+      FieldNode field=null;
+      do {
+        if ((field=currentClassNode.getField(variableName)) != null) {
+          if (methodNode == null || !methodNode.isStatic() || field.isStatic()) {
+            if (field.isHolder()) {
+              expression.setResolveFailed(true);
+              expression.setFailure("reference type to be supported later");
+              return;
+            }
+ else {
+              String type=field.getType();
+              Class cls=loadClass(type);
+              expression.setTypeClass(cls);
+              expression.setDynamic(field.isDynamicType());
+              return;
+            }
+          }
+        }
+        steps++;
+      }
+ while ((currentClassNode=currentClassNode.getOuterClass()) != null);
+    }
+    String variableType=expression.getType();
+    if (variableType.length() > 0 && !variableType.equals("java.lang.Object")) {
+      Class cls=loadClass(variableType);
+      expression.setTypeClass(cls);
+      return;
+    }
+  }
+ catch (  Exception e) {
+    log.warning(e.getMessage());
+    expression.setResolveFailed(true);
+    expression.setFailure(e.getMessage());
+  }
+  return;
+}

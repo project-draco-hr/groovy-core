@@ -1,0 +1,42 @@
+{
+  if (ENABLE_EARLY_BINDING) {
+    int type=expression.getOperation().getType();
+    expression.resolve(this);
+    if (expression.isResolveFailed() || !expression.isTypeResolved()) {
+      evaluatePostfixMethod("next",expression.getExpression());
+      return;
+    }
+    Class lclass=expression.getTypeClass();
+    Expression exp=expression.getExpression();
+    String func=type == Types.PLUS_PLUS ? "next" : "previous";
+    int op=type == Types.PLUS_PLUS ? IADD : ISUB;
+    if (lclass == Integer.class) {
+      load(exp);
+      cv.visitInsn(DUP);
+      helper.quickUnboxIfNecessary(int.class);
+      cv.visitInsn(ICONST_1);
+      cv.visitInsn(op);
+      helper.quickBoxIfNecessary(int.class);
+      store(exp);
+    }
+ else     if (Number.class.isAssignableFrom(lclass)) {
+      load(exp);
+      cv.visitInsn(DUP);
+      cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),func,"(Ljava/lang/Number;)Ljava/lang/Number;");
+      store(exp);
+    }
+ else {
+      evaluatePostfixMethod(func,exp);
+    }
+  }
+ else {
+switch (expression.getOperation().getType()) {
+case Types.PLUS_PLUS:
+      evaluatePostfixMethod("next",expression.getExpression());
+    break;
+case Types.MINUS_MINUS:
+  evaluatePostfixMethod("previous",expression.getExpression());
+break;
+}
+}
+}

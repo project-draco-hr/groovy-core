@@ -1,4 +1,10 @@
 {
   String name=makeName(root);
-  return resolveName(name,safe);
+  if (name.length() == 0)   return "";
+  if (this.newClasses.contains(name)) {
+    return dot(packageName,name);
+  }
+ else {
+    return resolveName(name,safe);
+  }
 }

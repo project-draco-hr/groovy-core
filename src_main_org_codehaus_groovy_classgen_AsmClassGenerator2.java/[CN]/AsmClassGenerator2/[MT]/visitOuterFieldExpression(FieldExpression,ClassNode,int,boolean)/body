@@ -1,0 +1,34 @@
+{
+  FieldNode field=expression.getField();
+  boolean isStatic=field.isStatic();
+  Variable fieldTemp=defineVariable(createVariableName(field.getName()),"java.lang.Object",false);
+  int valueIdx=fieldTemp.getIndex();
+  if (leftHandExpression && first) {
+    cv.visitVarInsn(ASTORE,valueIdx);
+    visitVariableStartLabel(fieldTemp);
+  }
+  if (steps > 1 || !isStatic) {
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode.getName()));
+  }
+  if (steps == 1) {
+    int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
+    String ownerName=BytecodeHelper.getClassInternalName(outerClassNode.getName());
+    if (leftHandExpression) {
+      cv.visitVarInsn(ALOAD,valueIdx);
+      boolean holder=field.isHolder() && !isInClosureConstructor();
+      if (!holder) {
+        doConvertAndCast(field.getType());
+      }
+    }
+    cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
+    if (!leftHandExpression) {
+      if (BytecodeHelper.isPrimitiveType(field.getType())) {
+        helper.box(field.getType());
+      }
+    }
+  }
+ else {
+    visitOuterFieldExpression(expression,outerClassNode.getOuterClass(),steps - 1,false);
+  }
+}

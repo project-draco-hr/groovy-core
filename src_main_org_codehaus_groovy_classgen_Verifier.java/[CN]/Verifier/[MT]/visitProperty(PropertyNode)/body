@@ -24,6 +24,13 @@
     getter.setSynthetic(true);
     classNode.addMethod(getter);
     visitMethod(getter);
+    if ("java.lang.Boolean".equals(node.getType())) {
+      String secondGetterName="is" + capitalize(name);
+      MethodNode secondGetter=new MethodNode(secondGetterName,node.getModifiers(),node.getType(),Parameter.EMPTY_ARRAY,getterBlock);
+      secondGetter.setSynthetic(true);
+      classNode.addMethod(secondGetter);
+      visitMethod(secondGetter);
+    }
   }
   if (setterBlock != null) {
     Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};

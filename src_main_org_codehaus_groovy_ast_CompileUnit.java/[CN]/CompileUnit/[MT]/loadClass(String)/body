@@ -7,21 +7,26 @@
     return (Class)obj;
   }
   Class answer=null;
+  ClassLoader lastLoader=getClassLoader();
   try {
-    answer=getClassLoader().loadClass(type);
+    answer=lastLoader.loadClass(type);
   }
  catch (  ClassNotFoundException e) {
   }
   try {
-    if (answer == null) {
-      answer=Thread.currentThread().getContextClassLoader().loadClass(type);
+    ClassLoader loader=Thread.currentThread().getContextClassLoader();
+    if (answer == null && loader != lastLoader) {
+      lastLoader=loader;
+      answer=loader.loadClass(type);
     }
   }
  catch (  ClassNotFoundException e1) {
   }
   try {
-    if (answer == null) {
-      answer=getClass().getClassLoader().loadClass(type);
+    ClassLoader loader=getClass().getClassLoader();
+    if (answer == null && loader != lastLoader) {
+      lastLoader=loader;
+      answer=loader.loadClass(type);
     }
   }
  catch (  ClassNotFoundException e2) {
@@ -38,6 +43,11 @@
     throw new ClassNotFoundException(type);
   }
  else {
+    if (!type.equals(answer.getName())) {
+      cachedClasses.put(type,NO_CLASS);
+      System.out.println("Mismatch: answer.getName() = " + answer.getName() + ", type = "+ type);
+      throw new ClassNotFoundException(type);
+    }
     cachedClasses.put(type,answer);
   }
   return answer;

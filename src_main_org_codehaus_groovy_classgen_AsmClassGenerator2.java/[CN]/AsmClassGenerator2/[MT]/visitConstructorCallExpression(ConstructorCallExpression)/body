@@ -1,0 +1,92 @@
+{
+  onLineNumber(call,"visitConstructorCallExpression: \"" + call.getTypeToSet() + "\":");
+  do {
+    if (ENABLE_EARLY_BINDING) {
+      call.resolve(this);
+      if (call.isResolveFailed() || call.getTypeClass() == null) {
+        break;
+      }
+ else {
+        try {
+          Constructor ctor=call.getConstructor();
+          if (ctor != null) {
+            Class decClass=ctor.getDeclaringClass();
+            String ownerClassName=null;
+            if (decClass == null) {
+              ownerClassName=BytecodeHelper.getClassInternalName(classNode.getName());
+            }
+ else {
+              ownerClassName=BytecodeHelper.getClassInternalName(decClass.getName());
+            }
+            Class[] params=ctor.getParameterTypes();
+            StringBuffer argbuf=new StringBuffer("(");
+            for (int i=0; i < params.length; i++) {
+              Class arg=params[i];
+              String descr=BytecodeHelper.getTypeDescription(arg);
+              argbuf.append(descr);
+            }
+            argbuf.append(")V");
+            cv.visitTypeInsn(NEW,ownerClassName);
+            cv.visitInsn(DUP);
+            Expression arguments=call.getArguments();
+            if (arguments instanceof TupleExpression) {
+              TupleExpression tupleExpression=(TupleExpression)arguments;
+              List argexps=tupleExpression.getExpressions();
+              for (int i=0; i < argexps.size(); i++) {
+                Expression expression=(Expression)argexps.get(i);
+                load(expression);
+                if (params[i].isPrimitive()) {
+                  cast(params[i]);
+                  helper.quickUnboxIfNecessary(params[i]);
+                }
+ else                 if (params[i].isArray() && params[i].getComponentType().isPrimitive()) {
+                  new ClassExpression(params[i].getComponentType()).visit(this);
+                  convertToPrimitiveArray.call(cv);
+                  cast(params[i]);
+                }
+ else {
+                  if (expression.getTypeClass() == GString.class && params[i] == String.class) {
+                    cast(GString.class);
+                    cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","toString","()Ljava/lang/String;");
+                  }
+ else {
+                    cast(params[i]);
+                  }
+                }
+              }
+              cv.visitMethodInsn(INVOKESPECIAL,ownerClassName,"<init>",argbuf.toString());
+              return;
+            }
+ else {
+              throw new GroovyRuntimeException("arguments type not handled. fall through to late binding");
+            }
+          }
+        }
+ catch (        Exception e) {
+          System.out.println(this.classNode.getName() + ":" + this.methodNode.getName());
+          log.info("ignore: attempt early binding: " + e.getMessage());
+          break;
+        }
+      }
+    }
+  }
+ while (false);
+  this.leftHandExpression=false;
+  Expression arguments=call.getArguments();
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)arguments;
+    int size=tupleExpression.getExpressions().size();
+    if (size == 0) {
+      arguments=null;
+    }
+  }
+  String type=checkValidType(call.getType(),call,"in constructor call");
+  visitClassExpression(new ClassExpression(type));
+  if (arguments != null) {
+    arguments.visit(this);
+    invokeConstructorOfMethod.call(cv);
+  }
+ else {
+    invokeNoArgumentsConstructorOf.call(cv);
+  }
+}

@@ -1,0 +1,10 @@
+{
+  dummyGen.visitClass(classNode);
+  byte[] code=dummyClassWriter.toByteArray();
+  ClassLoader parentLoader=getClass().getClassLoader();
+  GroovyClassLoader groovyLoader=new GroovyClassLoader(parentLoader);
+  Class theClass=groovyLoader.defineClass(classNode.getName(),code);
+  if (theClass != null) {
+    classCache.put(classNode.getName(),theClass);
+  }
+}

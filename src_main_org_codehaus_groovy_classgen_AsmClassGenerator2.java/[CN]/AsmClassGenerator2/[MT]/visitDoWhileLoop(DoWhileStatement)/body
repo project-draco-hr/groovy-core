@@ -1,0 +1,14 @@
+{
+  onLineNumber(loop,"visitDoWhileLoop");
+  pushBlockScope();
+  Label breakLabel=scope.getBreakLabel();
+  Label continueLabel=scope.getContinueLabel();
+  cv.visitLabel(continueLabel);
+  Label l1=new Label();
+  loop.getLoopBlock().visit(this);
+  cv.visitLabel(l1);
+  loop.getBooleanExpression().visit(this);
+  cv.visitJumpInsn(IFNE,continueLabel);
+  cv.visitLabel(breakLabel);
+  popScope();
+}

@@ -1,0 +1,18 @@
+{
+  if (expression instanceof FieldExpression) {
+    FieldExpression fieldExp=(FieldExpression)expression;
+    return fieldExp.getField().isHolder();
+  }
+  if (expression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)expression;
+    Variable variable=(Variable)variableStack.get(varExp.getVariable());
+    if (variable != null) {
+      return variable.isHolder();
+    }
+    FieldNode field=classNode.getField(varExp.getVariable());
+    if (field != null) {
+      return field.isHolder();
+    }
+  }
+  return false;
+}

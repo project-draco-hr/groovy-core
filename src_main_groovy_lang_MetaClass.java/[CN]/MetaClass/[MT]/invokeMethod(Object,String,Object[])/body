@@ -2,16 +2,11 @@
   if (object == null) {
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
-  MethodKey methodKey=new TemporaryMethodKey(methodName,arguments);
-  MetaMethod method=(MetaMethod)methodCache.get(methodKey);
-  if (method == null) {
-    method=pickMethod(object,methodName,arguments);
-    if (method != null && method.isCacheable()) {
-      methodCache.put(methodKey.createCopy(),method);
-    }
-  }
+  MetaMethod method=retrieveMethod(object,methodName,arguments);
   if (method != null) {
     return doMethodInvoke(object,method,arguments);
   }
-  throw new MissingMethodException(methodName,theClass,arguments);
+ else {
+    throw new MissingMethodException(methodName,theClass,arguments);
+  }
 }

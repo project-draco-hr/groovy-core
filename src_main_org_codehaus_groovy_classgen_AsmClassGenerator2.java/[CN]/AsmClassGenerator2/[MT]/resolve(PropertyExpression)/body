@@ -1,0 +1,100 @@
+{
+  if (propertyExpression.getTypeClass() != null)   return;
+  if (propertyExpression.isResolveFailed())   return;
+  Expression ownerExp=propertyExpression.getObjectExpression();
+  Class ownerClass=ownerExp.getTypeClass();
+  String propName=propertyExpression.getProperty();
+  if (propName.equals("class")) {
+    propertyExpression.setTypeClass(Class.class);
+    return;
+  }
+  if (ownerClass != null && ownerClass.isArray() && propName.equals("length")) {
+    propertyExpression.setTypeClass(int.class);
+    return;
+  }
+  if (isThisExpression(ownerExp)) {
+    if (classNode == null) {
+      propertyExpression.setResolveFailed(true);
+      return;
+    }
+    FieldNode field=null;
+    ownerExp.setType(classNode.getName());
+    try {
+      if ((field=classNode.getField(propName)) != null) {
+        propertyExpression.setResolveFailed(true);
+        propertyExpression.setFailure("local property access. to be determined in the future.");
+        return;
+      }
+ else {
+        String[] interfaces=classNode.getInterfaces();
+        String[] supers=new String[interfaces.length + 1];
+        int i=0;
+        for (; i < interfaces.length; i++) {
+          supers[i]=interfaces[i];
+        }
+        supers[i]=classNode.getSuperClass();
+        for (int j=0; j < supers.length; j++) {
+          String aSuper=supers[j];
+          Class superClass=loadClass(aSuper);
+          Field fld=superClass.getDeclaredField(propName);
+          if (fld != null && !Modifier.isPrivate(fld.getModifiers())) {
+            propertyExpression.setField(fld);
+            return;
+          }
+        }
+      }
+    }
+ catch (    Exception e) {
+      propertyExpression.setResolveFailed(true);
+      propertyExpression.setFailure(e.getMessage());
+      return;
+    }
+  }
+ else   if (ownerExp instanceof ClassExpression) {
+    if (ownerClass != null) {
+      Field fld=null;
+      try {
+        fld=ownerClass.getDeclaredField(propName);
+        if (!Modifier.isPrivate(fld.getModifiers())) {
+          propertyExpression.setField(fld);
+          return;
+        }
+      }
+ catch (      NoSuchFieldException e) {
+        propertyExpression.setResolveFailed(true);
+        return;
+      }
+    }
+  }
+ else {
+    if (ownerClass != null) {
+      propertyExpression.setResolveFailed(true);
+      Field fld=null;
+      try {
+        fld=ownerClass.getDeclaredField(propName);
+      }
+ catch (      NoSuchFieldException e) {
+      }
+      if (fld != null && Modifier.isPublic(fld.getModifiers())) {
+        propertyExpression.setField(fld);
+      }
+      String getterName="get" + Character.toUpperCase(propName.charAt(0)) + propName.substring(1);
+      String setterName="set" + Character.toUpperCase(propName.charAt(0)) + propName.substring(1);
+      Method[] meths=ownerClass.getMethods();
+      for (int i=0; i < meths.length; i++) {
+        Method method=meths[i];
+        String methName=method.getName();
+        Class[] paramClasses=method.getParameterTypes();
+        if (methName.equals(getterName) && paramClasses.length == 0) {
+          propertyExpression.setGetter(method);
+        }
+ else         if (methName.equals(setterName) && paramClasses.length == 1) {
+          propertyExpression.setSetter(method);
+        }
+      }
+      return;
+    }
+  }
+  propertyExpression.setResolveFailed(true);
+  return;
+}

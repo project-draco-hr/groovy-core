@@ -1,0 +1,12 @@
+{
+  this.variable=variable;
+  if (type == null || type.length() == 0) {
+    isDynamic=true;
+  }
+ else {
+    String boxedType=BytecodeHelper.getObjectTypeForPrimitive(type);
+    boxedType=BytecodeHelper.getObjectArrayTypeForPrimitiveArray(boxedType);
+    super.setType(boxedType);
+    isDynamic=false;
+  }
+}

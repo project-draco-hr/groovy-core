@@ -1,0 +1,101 @@
+{
+  if (call.isResolveFailed()) {
+    return;
+  }
+ else   if (call.isTypeResolved()) {
+    return;
+  }
+  Expression obj=call.getObjectExpression();
+  String meth=call.getMethod();
+  Class ownerClass=null;
+  boolean isStaticCall=false;
+  boolean isSuperCall=false;
+  List arglist=new ArrayList();
+  Expression args=call.getArguments();
+  if (args instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)args;
+    List argexps=tupleExpression.getExpressions();
+    for (int i=0; i < argexps.size(); i++) {
+      Expression expression=(Expression)argexps.get(i);
+      Class cls=expression.getTypeClass();
+      if (cls == null) {
+        call.setResolveFailed(true);
+        return;
+      }
+ else {
+        arglist.add(cls);
+      }
+    }
+  }
+ else   if (args instanceof ClosureExpression) {
+    call.setResolveFailed(true);
+    return;
+  }
+ else {
+    call.setResolveFailed(true);
+    return;
+  }
+  Class[] argsArray=new Class[arglist.size()];
+  arglist.toArray(argsArray);
+  if (obj instanceof ClassExpression) {
+    ownerClass=obj.getTypeClass();
+    isStaticCall=true;
+  }
+ else   if (obj instanceof VariableExpression) {
+    VariableExpression var=(VariableExpression)obj;
+    if (var.getVariable().equals("this") && (methodNode == null ? true : !methodNode.isStatic())) {
+      isStaticCall=false;
+      if (methodNode != null) {
+        isStaticCall=Modifier.isStatic(methodNode.getModifiers());
+      }
+      MetaMethod mmeth=getMethodOfThisAndSuper(meth,argsArray,isStaticCall);
+      if (mmeth != null) {
+        call.setMethod(mmeth);
+        return;
+      }
+ else {
+        call.setResolveFailed(true);
+        return;
+      }
+    }
+ else     if (var.getVariable().equals("super")) {
+      isSuperCall=true;
+      ownerClass=var.getTypeClass();
+    }
+ else {
+      ownerClass=var.getTypeClass();
+    }
+  }
+ else {
+    ownerClass=obj.getTypeClass();
+    if (ownerClass == null) {
+      call.setResolveFailed(true);
+      call.setFailure("target class is null");
+      return;
+    }
+  }
+  if (ownerClass == Object.class) {
+    call.setResolveFailed(true);
+    return;
+  }
+ else   if (ownerClass == null) {
+    call.setResolveFailed(true);
+    return;
+  }
+ else   if (!isSuperCall && !isStaticCall && GroovyObject.class.isAssignableFrom(ownerClass)) {
+    call.setResolveFailed(true);
+    return;
+  }
+ else   if (ownerClass.isPrimitive()) {
+    call.setResolveFailed(true);
+    return;
+  }
+  MetaMethod mmethod=MetaClassRegistry.getIntance(MetaClassRegistry.DONT_LOAD_DEFAULT).getDefinedMethod(ownerClass,meth,argsArray,isStaticCall);
+  if (mmethod != null) {
+    call.setMethod(mmethod);
+  }
+ else {
+    call.setResolveFailed(true);
+  }
+  return;
+}

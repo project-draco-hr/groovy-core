@@ -14,9 +14,9 @@
       if (newValue instanceof List) {
         List list=(List)newValue;
         int params=list.size();
-        Constructor[] constructors=descriptor.getPropertyType().getConstructors();
-        for (int i=0; i < constructors.length; i++) {
-          Constructor constructor=constructors[i];
+        Constructor[] propConstructors=descriptor.getPropertyType().getConstructors();
+        for (int i=0; i < propConstructors.length; i++) {
+          Constructor constructor=propConstructors[i];
           if (constructor.getParameterTypes().length == params) {
             Object value=doConstructorInvoke(constructor,list.toArray());
             doMethodInvoke(object,metaMethod,new Object[]{value});

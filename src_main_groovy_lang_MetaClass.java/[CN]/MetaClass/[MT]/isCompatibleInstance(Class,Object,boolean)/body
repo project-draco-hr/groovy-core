@@ -27,6 +27,9 @@
         return value instanceof Short;
       }
     }
+ else     if (type.isArray() && value.getClass().isArray()) {
+      return isCompatibleClass(type.getComponentType(),value.getClass().getComponentType(),false);
+    }
  else     if (includeCoerce) {
       if (type == String.class && value instanceof GString) {
         return true;
