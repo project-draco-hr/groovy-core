@@ -1,6 +1,15 @@
 {
   CSTNode declaration=null;
   CSTNode modifiers=new CSTNode();
+  if (lt() == Token.KEYWORD_DEF) {
+    consume(lt());
+    while (isModifier(lt())) {
+      consume(modifiers,lt());
+    }
+    CSTNode type=methodReturnType();
+    CSTNode identifier=methodIdentifier();
+    return methodDeclaration(modifiers,type,identifier);
+  }
   while (isModifier(lt())) {
     consume(modifiers,lt());
   }

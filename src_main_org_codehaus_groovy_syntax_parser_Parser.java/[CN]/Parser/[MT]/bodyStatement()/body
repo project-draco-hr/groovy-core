@@ -10,42 +10,12 @@
   while (lt_bare() == Token.NEWLINE) {
     consume_bare(lt_bare());
   }
-  CSTNode type=new CSTNode();
-  if (lt_bare() == Token.IDENTIFIER) {
-switch (lt_bare(2)) {
-case Token.DOT:
-{
-        type=datatype();
-        break;
-      }
-case (Token.IDENTIFIER):
-{
-      type=new CSTNode(consume_bare(lt()));
-      break;
-    }
-}
-}
- else {
-switch (lt_bare()) {
-case (Token.KEYWORD_VOID):
-case (Token.KEYWORD_INT):
-case (Token.KEYWORD_FLOAT):
-case (Token.KEYWORD_DOUBLE):
-case (Token.KEYWORD_CHAR):
-case (Token.KEYWORD_BYTE):
-case (Token.KEYWORD_SHORT):
-case (Token.KEYWORD_LONG):
-case (Token.KEYWORD_BOOLEAN):
-{
-    type=new CSTNode(consume_bare(lt_bare()));
-  }
-}
-}
-CSTNode identifier=new CSTNode(consume_bare(Token.IDENTIFIER));
+  CSTNode type=methodReturnType();
+  CSTNode identifier=methodIdentifier();
 switch (lt_bare()) {
 case Token.LEFT_PARENTHESIS:
-bodyStatement=methodDeclaration(modifiers,type,identifier);
-break;
+    bodyStatement=methodDeclaration(modifiers,type,identifier);
+  break;
 case Token.EQUAL:
 case Token.SEMICOLON:
 case Token.NEWLINE:
