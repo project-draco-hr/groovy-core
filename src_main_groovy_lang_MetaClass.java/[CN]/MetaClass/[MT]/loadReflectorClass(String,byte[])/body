@@ -1,8 +1,13 @@
 {
   ClassLoader loader=theClass.getClassLoader();
   if (loader instanceof GroovyClassLoader) {
-    GroovyClassLoader gloader=(GroovyClassLoader)loader;
-    return gloader.loadClass(name,bytecode);
+    final GroovyClassLoader gloader=(GroovyClassLoader)loader;
+    return (Class)AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return gloader.defineClass(name,bytecode,getClass().getProtectionDomain());
+      }
+    }
+);
   }
   return registry.loadClass(name,bytecode);
 }

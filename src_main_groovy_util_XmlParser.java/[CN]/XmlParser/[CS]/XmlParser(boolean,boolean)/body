@@ -1,5 +1,22 @@
 {
-  SAXParserFactory factory=SAXParserFactory.newInstance();
+  SAXParserFactory factory=null;
+  try {
+    factory=(SAXParserFactory)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws ParserConfigurationException {
+        return SAXParserFactory.newInstance();
+      }
+    }
+);
+  }
+ catch (  PrivilegedActionException pae) {
+    Exception e=pae.getException();
+    if (e instanceof ParserConfigurationException) {
+      throw (ParserConfigurationException)e;
+    }
+ else {
+      throw new RuntimeException(e);
+    }
+  }
   factory.setNamespaceAware(namespaceAware);
   factory.setValidating(validating);
   SAXParser parser=factory.newSAXParser();

@@ -1,8 +1,39 @@
 {
-  Thread thread=Thread.currentThread();
+  final Thread thread=Thread.currentThread();
   ClassLoader currentClassLoader=thread.getContextClassLoader();
-  thread.setContextClassLoader(loader);
-  Class scriptClass=loader.parseClass(scriptFile);
+class DoSetContext implements PrivilegedAction {
+    ClassLoader classLoader;
+    public DoSetContext(    ClassLoader loader){
+      classLoader=loader;
+    }
+    public Object run(){
+      thread.setContextClassLoader(classLoader);
+      return null;
+    }
+  }
+  ;
+  AccessController.doPrivileged(new DoSetContext(loader));
+  Class scriptClass;
+  try {
+    scriptClass=(Class)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws SyntaxException, IOException {
+        return loader.parseClass(scriptFile);
+      }
+    }
+);
+  }
+ catch (  PrivilegedActionException pae) {
+    Exception e=pae.getException();
+    if (e instanceof SyntaxException) {
+      throw (SyntaxException)e;
+    }
+ else     if (e instanceof IOException) {
+      throw (IOException)e;
+    }
+ else {
+      throw (RuntimeException)pae.getException();
+    }
+  }
   InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
-  thread.setContextClassLoader(currentClassLoader);
+  AccessController.doPrivileged(new DoSetContext(currentClassLoader));
 }

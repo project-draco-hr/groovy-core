@@ -1,3 +1,8 @@
 {
-  return loader.loadClass(name,bytecode);
+  return (Class)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return loader.defineClass(name,bytecode,getClass().getProtectionDomain());
+    }
+  }
+);
 }

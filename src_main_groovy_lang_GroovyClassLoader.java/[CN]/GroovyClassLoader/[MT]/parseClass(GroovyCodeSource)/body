@@ -1,0 +1,30 @@
+{
+  String name=codeSource.getName();
+  Class answer=null;
+synchronized (cache) {
+    answer=(Class)cache.get(name);
+    if (answer != null) {
+      return (answer == PARSING.class ? null : answer);
+    }
+ else {
+      cache.put(name,PARSING.class);
+    }
+  }
+  try {
+    CompileUnit unit=new CompileUnit(this,codeSource.getCodeSource(),config);
+    ClassCollector compiler=createCollector(unit);
+    compiler.parseClass(codeSource.getInputStream(),name);
+    answer=compiler.generatedClass;
+  }
+  finally {
+synchronized (cache) {
+      if (answer == null) {
+        cache.remove(name);
+      }
+ else {
+        cache.put(name,answer);
+      }
+    }
+  }
+  return answer;
+}

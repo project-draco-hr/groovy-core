@@ -1,0 +1,15 @@
+{
+  Class clazz=null;
+  try {
+    clazz=loader.parseClass(gcs);
+  }
+ catch (  Exception e) {
+    fail(e.toString());
+  }
+  if (TestCase.class.isAssignableFrom(clazz)) {
+    executeTest(clazz,missingPermission);
+  }
+ else {
+    executeScript(clazz,missingPermission);
+  }
+}

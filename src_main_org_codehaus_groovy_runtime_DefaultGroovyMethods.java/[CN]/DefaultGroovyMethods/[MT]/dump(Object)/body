@@ -11,12 +11,18 @@
   while (true) {
     Field[] fields=klass.getDeclaredFields();
     for (int i=0; i < fields.length; i++) {
-      Field field=fields[i];
+      final Field field=fields[i];
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
         if (groovyObject && field.getName().equals("metaClass")) {
           continue;
         }
-        field.setAccessible(true);
+        AccessController.doPrivileged(new PrivilegedAction(){
+          public Object run(){
+            field.setAccessible(true);
+            return null;
+          }
+        }
+);
         buffer.append(" ");
         buffer.append(field.getName());
         buffer.append("=");

@@ -1,10 +1,16 @@
 {
-  if (parent == null) {
-    parent=Thread.currentThread().getContextClassLoader();
-    if (parent == null) {
-      parent=GroovyShell.class.getClassLoader();
+  this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      ClassLoader pcl=parent;
+      if (pcl == null) {
+        pcl=Thread.currentThread().getContextClassLoader();
+        if (pcl == null) {
+          pcl=GroovyShell.class.getClassLoader();
+        }
+      }
+      return new GroovyClassLoader(pcl,config);
     }
   }
-  this.loader=new GroovyClassLoader(parent,config);
+);
   this.context=binding;
 }

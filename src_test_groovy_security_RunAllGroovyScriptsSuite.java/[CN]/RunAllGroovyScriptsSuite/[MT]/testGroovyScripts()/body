@@ -1,0 +1,11 @@
+{
+  if (!isSecurityAvailable()) {
+    return;
+  }
+  TestResult result=new TestResult();
+  executeTests(new File("src/test"),result);
+  if (!result.wasSuccessful()) {
+    new SecurityTestResultPrinter(System.out).print(result);
+    fail("At least one groovy testcase did not run under the secure groovy environment.  Results in the testcase output");
+  }
+}

@@ -1,11 +1,9 @@
 {
-  Class answer=(Class)cache.get(fileName);
-  if (answer == null) {
-    CompileUnit unit=new CompileUnit(this,config);
-    ClassCollector compiler=createCollector(unit);
-    compiler.parseClass(in,fileName);
-    answer=compiler.generatedClass;
-    cache.put(fileName,answer);
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyCodeSource(in,fileName,"/groovy/script");
+    }
   }
-  return answer;
+);
+  return parseClass(gcs);
 }

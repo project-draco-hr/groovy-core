@@ -11,7 +11,10 @@
     Class type=loadReflectorClass(name);
     return (Reflector)type.newInstance();
   }
- catch (  Exception e) {
+ catch (  AccessControlException ace) {
+    throw ace;
+  }
+catch (  Exception e) {
   }
   ClassWriter cw=new ClassWriter(true);
   generator.generate(cw,name);

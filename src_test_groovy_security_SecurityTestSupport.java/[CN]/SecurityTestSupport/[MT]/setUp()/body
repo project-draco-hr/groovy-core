@@ -1,0 +1,10 @@
+{
+  if (checkSecurity()) {
+    securityManager=System.getSecurityManager();
+    if (securityManager == null) {
+      System.setSecurityManager(new SecurityManager());
+    }
+  }
+  currentClassLoader=Thread.currentThread().getContextClassLoader();
+  Thread.currentThread().setContextClassLoader(loader);
+}

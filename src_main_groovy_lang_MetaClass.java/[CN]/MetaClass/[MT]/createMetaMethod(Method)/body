@@ -1,6 +1,12 @@
 {
   if (registry.useAccessible()) {
-    method.setAccessible(true);
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
+    }
+);
   }
   if (useReflection) {
     return new ReflectionMetaMethod(method);

@@ -1,4 +1,10 @@
 {
-  Class scriptClass=loader.parseClass(in,fileName);
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyCodeSource(in,fileName,"/groovy/shell");
+    }
+  }
+);
+  Class scriptClass=parseClass(gcs);
   return InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
 }

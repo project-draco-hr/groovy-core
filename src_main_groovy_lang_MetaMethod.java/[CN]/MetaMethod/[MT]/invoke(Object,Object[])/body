@@ -4,7 +4,13 @@
   }
  else {
     log.warning("No reflector available for method so must use reflection: " + method);
-    method.setAccessible(true);
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
+    }
+);
     return method.invoke(object,arguments);
   }
 }

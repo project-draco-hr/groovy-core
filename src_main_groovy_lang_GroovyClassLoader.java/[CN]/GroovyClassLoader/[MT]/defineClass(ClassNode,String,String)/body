@@ -1,0 +1,12 @@
+{
+  CodeSource codeSource=null;
+  try {
+    codeSource=new CodeSource(new URL("file","",newCodeBase),null);
+  }
+ catch (  MalformedURLException e) {
+  }
+  CompileUnit unit=new CompileUnit(getParent(),codeSource,config);
+  ClassCollector compiler=createCollector(unit);
+  compiler.generateClass(new GeneratorContext(unit),classNode,file);
+  return compiler.generatedClass;
+}

@@ -1,7 +1,13 @@
 {
   log.info("About to execute script");
   log.info(text);
-  Class groovyClass=loader.parseClass(new ByteArrayInputStream(text.getBytes()),scriptName);
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyCodeSource(text,scriptName,"/groovy/testSupport");
+    }
+  }
+);
+  Class groovyClass=loader.parseClass(gcs);
   Script script=InvokerHelper.createScript(groovyClass,new Binding());
   script.run();
 }

@@ -1,0 +1,11 @@
+{
+  SecurityManager sm=System.getSecurityManager();
+  if (sm != null) {
+    String className=name.replace('/','.');
+    int i=className.lastIndexOf('.');
+    if (i != -1) {
+      sm.checkPackageAccess(className.substring(0,i));
+    }
+  }
+  return super.loadClass(name,resolve);
+}

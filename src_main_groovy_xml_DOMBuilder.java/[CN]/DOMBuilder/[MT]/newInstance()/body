@@ -1,3 +1,21 @@
 {
-  return new DOMBuilder(DocumentBuilderFactory.newInstance().newDocumentBuilder());
+  DocumentBuilder documentBuilder=null;
+  try {
+    documentBuilder=(DocumentBuilder)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws ParserConfigurationException {
+        return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      }
+    }
+);
+  }
+ catch (  PrivilegedActionException pae) {
+    Exception e=pae.getException();
+    if (e instanceof ParserConfigurationException) {
+      throw (ParserConfigurationException)e;
+    }
+ else {
+      throw new RuntimeException(e);
+    }
+  }
+  return new DOMBuilder(documentBuilder);
 }
