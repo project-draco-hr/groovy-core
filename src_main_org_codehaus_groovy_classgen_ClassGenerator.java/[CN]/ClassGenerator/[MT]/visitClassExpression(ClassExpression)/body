@@ -1,6 +1,6 @@
 {
   String type=expression.getText();
-  final String staticFieldName="class$" + type.replace('.','$');
+  final String staticFieldName=(type.equals(classNode.getName())) ? "class$0" : "class$" + type.replace('.','$');
   syntheticStaticFields.add(staticFieldName);
   cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
   Label l0=new Label();
