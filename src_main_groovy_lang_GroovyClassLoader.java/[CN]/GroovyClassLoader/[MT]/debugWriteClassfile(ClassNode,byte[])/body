@@ -1,0 +1,25 @@
+{
+  if (outputDir != null) {
+    String filename=classNode.getName().replace('.',File.separatorChar) + ".class";
+    System.err.println("Writing: " + filename);
+    int index=filename.lastIndexOf(File.separator);
+    String dirname;
+    if (index != -1) {
+      dirname=filename.substring(0,index);
+    }
+ else {
+      dirname="";
+    }
+    File outputFile=new File(new File(outputDir),filename);
+    System.err.println("Writing: " + outputFile);
+    try {
+      new File(new File(outputDir),dirname).mkdirs();
+      FileOutputStream fos=new FileOutputStream(outputFile);
+      fos.write(code,0,code.length);
+      fos.close();
+    }
+ catch (    IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+}
