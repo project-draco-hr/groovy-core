@@ -26,5 +26,16 @@
   if (method != null) {
     return doMethodInvoke(null,method,staticArguments);
   }
-  return invokeStaticMethod(object,methodName,arguments);
+  try {
+    return invokeStaticMethod(object,methodName,arguments);
+  }
+ catch (  NoSuchMethodException e) {
+    if (size == 1 && arguments[0] instanceof List) {
+      List list=(List)arguments[0];
+      return invokeMethod(object,methodName,list.toArray());
+    }
+ else {
+      throw e;
+    }
+  }
 }
