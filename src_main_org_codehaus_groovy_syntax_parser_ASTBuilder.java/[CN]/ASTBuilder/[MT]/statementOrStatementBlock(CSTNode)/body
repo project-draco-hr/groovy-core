@@ -1,0 +1,12 @@
+{
+  if (blockRoot.getToken() == null || blockRoot.getToken().getType() == Token.LEFT_CURLY_BRACE) {
+    return statementBlock(blockRoot,0);
+  }
+ else {
+    BlockStatement statementBlock=new BlockStatement();
+    Statement statement=statement(blockRoot);
+    statementBlock.addStatement(statement);
+    statement.setCSTNode(blockRoot);
+    return statementBlock;
+  }
+}

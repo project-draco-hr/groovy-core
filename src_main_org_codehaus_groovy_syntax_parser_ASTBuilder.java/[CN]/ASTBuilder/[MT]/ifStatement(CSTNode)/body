@@ -1,13 +1,13 @@
 {
   CSTNode[] children=statementRoot.getChildren();
   BooleanExpression expression=new BooleanExpression(expression(children[0]));
-  BlockStatement ifBlock=statementBlock(children[1]);
+  BlockStatement ifBlock=statementOrStatementBlock(children[1]);
   Statement elseBlock=null;
   if (children.length == 3 && matches(children[2],Token.KEYWORD_IF)) {
     elseBlock=ifStatement(children[2]);
   }
  else   if (children.length == 3) {
-    elseBlock=statementBlock(children[2].getChild(0));
+    elseBlock=statementOrStatementBlock(children[2].getChild(0));
   }
  else {
     elseBlock=EmptyStatement.INSTANCE;
