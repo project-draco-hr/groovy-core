@@ -1,6 +1,12 @@
 {
   try {
-    return getClassLoader().loadClass(name);
+    CompileUnit compileUnit=getCompileUnit();
+    if (compileUnit != null) {
+      return compileUnit.loadClass(name);
+    }
+ else {
+      throw new ClassGeneratorException("Could not load class: " + name);
+    }
   }
  catch (  ClassNotFoundException e) {
     throw new ClassGeneratorException("Could not load class: " + name + " reason: "+ e,e);

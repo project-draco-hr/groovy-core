@@ -2,36 +2,52 @@
   String className=checkForQualifiedClass(expression);
   if (className != null) {
     visitClassExpression(new ClassExpression(className));
+    return;
   }
- else {
-    Expression objectExpression=expression.getObjectExpression();
-    if (isThisExpression(objectExpression)) {
-      String name=expression.getProperty();
-      FieldNode field=classNode.getField(name);
-      if (field != null) {
-        visitFieldExpression(new FieldExpression(field));
+  Expression objectExpression=expression.getObjectExpression();
+  if (expression.getProperty().equals("class")) {
+    if ((objectExpression instanceof ClassExpression)) {
+      visitClassExpression((ClassExpression)objectExpression);
+      return;
+    }
+ else     if (objectExpression instanceof VariableExpression) {
+      VariableExpression varExp=(VariableExpression)objectExpression;
+      className=varExp.getVariable();
+      try {
+        className=resolveClassName(className);
+        visitClassExpression(new ClassExpression(className));
         return;
       }
-    }
-    boolean left=leftHandExpression;
-    leftHandExpression=false;
-    objectExpression.visit(this);
-    cv.visitLdcInsn(expression.getProperty());
-    if (expression.isSafe()) {
-      if (left) {
-        setPropertySafeMethod2.call(cv);
-      }
- else {
-        getPropertySafeMethod.call(cv);
+ catch (      Exception e) {
       }
     }
+  }
+  if (isThisExpression(objectExpression)) {
+    String name=expression.getProperty();
+    FieldNode field=classNode.getField(name);
+    if (field != null) {
+      visitFieldExpression(new FieldExpression(field));
+      return;
+    }
+  }
+  boolean left=leftHandExpression;
+  leftHandExpression=false;
+  objectExpression.visit(this);
+  cv.visitLdcInsn(expression.getProperty());
+  if (expression.isSafe()) {
+    if (left) {
+      setPropertySafeMethod2.call(cv);
+    }
  else {
-      if (left) {
-        setPropertyMethod2.call(cv);
-      }
+      getPropertySafeMethod.call(cv);
+    }
+  }
  else {
-        getPropertyMethod.call(cv);
-      }
+    if (left) {
+      setPropertyMethod2.call(cv);
+    }
+ else {
+      getPropertyMethod.call(cv);
     }
   }
 }
