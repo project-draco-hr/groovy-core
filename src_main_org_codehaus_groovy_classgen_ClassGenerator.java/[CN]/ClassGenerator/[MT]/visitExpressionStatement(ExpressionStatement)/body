@@ -1,8 +1,8 @@
 {
   onLineNumber(statement);
   Expression expression=statement.getExpression();
-  expression.visit(this);
-  if (expression instanceof MethodCallExpression && !MethodCallExpression.isSuperMethodCall((MethodCallExpression)expression)) {
+  visitAndAutobox(expression);
+  if (isPopRequired(expression)) {
     cv.visitInsn(POP);
   }
 }

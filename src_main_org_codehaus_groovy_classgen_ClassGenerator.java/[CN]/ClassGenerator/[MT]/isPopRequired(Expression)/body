@@ -1,0 +1,10 @@
+{
+  if (expression instanceof MethodCallExpression) {
+    return !MethodCallExpression.isSuperMethodCall((MethodCallExpression)expression);
+  }
+  if (expression instanceof BinaryExpression) {
+    BinaryExpression binExp=(BinaryExpression)expression;
+    return binExp.getOperation().getType() != Token.EQUAL;
+  }
+  return true;
+}
