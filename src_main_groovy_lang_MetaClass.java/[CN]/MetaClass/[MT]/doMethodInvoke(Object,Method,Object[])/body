@@ -26,6 +26,15 @@
 catch (  IllegalAccessException e) {
     throw new InvokerException("could not access method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
+catch (  IllegalArgumentException e) {
+    if (argumentArray.length == 1 && argumentArray[0] instanceof GString) {
+      argumentArray[0]=argumentArray[0].toString();
+      return doMethodInvoke(object,method,argumentArray);
+    }
+ else {
+      throw new InvokerException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+    }
+  }
 catch (  Exception e) {
     throw new InvokerException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
