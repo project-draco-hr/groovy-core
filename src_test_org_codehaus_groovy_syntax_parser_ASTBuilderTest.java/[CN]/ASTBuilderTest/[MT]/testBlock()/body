@@ -1,0 +1,11 @@
+{
+  ModuleNode module=parse("class Foo { void testMethod() { x = someMethod(); callMethod(x) } }","Dummy.groovy");
+  assertEquals("class count",1,module.getClasses().size());
+  ClassNode node=(ClassNode)module.getClasses().get(0);
+  assertNotNull(node);
+  MethodNode method=node.getMethod("testMethod");
+  assertNotNull(method);
+  BlockStatement statement=(BlockStatement)method.getCode();
+  assertEquals("Statements size: " + statement.getStatements(),2,statement.getStatements().size());
+  System.out.println(statement.getStatements());
+}
