@@ -1,0 +1,38 @@
+{
+  if (self == null) {
+    return "null";
+  }
+  StringBuffer buffer=new StringBuffer("<");
+  Class klass=self.getClass();
+  buffer.append(klass.getName());
+  buffer.append("@");
+  buffer.append(Integer.toHexString(self.hashCode()));
+  boolean groovyObject=self instanceof GroovyObject;
+  while (true) {
+    Field[] fields=klass.getDeclaredFields();
+    for (int i=0; i < fields.length; i++) {
+      Field field=fields[i];
+      if ((field.getModifiers() & Modifier.STATIC) == 0) {
+        if (groovyObject && field.getName().equals("metaClass")) {
+          continue;
+        }
+        field.setAccessible(true);
+        buffer.append(" ");
+        buffer.append(field.getName());
+        buffer.append("=");
+        try {
+          buffer.append(InvokerHelper.toString(field.get(self)));
+        }
+ catch (        Exception e) {
+          buffer.append(e);
+        }
+      }
+    }
+    klass=klass.getSuperclass();
+    if (klass == null) {
+      break;
+    }
+  }
+  buffer.append(">");
+  return buffer.toString();
+}
