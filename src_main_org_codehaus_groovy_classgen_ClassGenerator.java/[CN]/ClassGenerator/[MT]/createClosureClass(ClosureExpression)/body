@@ -14,6 +14,9 @@
   }
   InnerClassNode answer=new InnerClassNode(owner,name,ACC_PUBLIC,"groovy.lang.Closure");
   answer.addMethod("doCall",ACC_PUBLIC,"java.lang.Object",parameters,expression.getCode());
+  if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && !parameters[0].getType().equals("java.lang.Object"))) {
+    answer.addMethod("call",ACC_PUBLIC,"java.lang.Object",parameters,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));
+  }
   FieldNode field=answer.addField("owner",ACC_PRIVATE,outerClassName,null);
   BlockStatement block=new BlockStatement();
   block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("outerInstance"))));
