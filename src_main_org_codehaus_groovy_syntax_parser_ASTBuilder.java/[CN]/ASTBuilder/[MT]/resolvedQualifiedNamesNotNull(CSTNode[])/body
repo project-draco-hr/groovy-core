@@ -2,6 +2,10 @@
   String[] qualifiedNames=qualifiedNames(nameRoots);
   for (int i=0; i < qualifiedNames.length; ++i) {
     qualifiedNames[i]=resolveName(qualifiedNames[i]);
+    if (qualifiedNames[i] == null) {
+      Token token=nameRoots[i].getToken();
+      throw new ParserException("Unknown type: " + token.getText() + " could not be resolved",token);
+    }
   }
   return qualifiedNames;
 }

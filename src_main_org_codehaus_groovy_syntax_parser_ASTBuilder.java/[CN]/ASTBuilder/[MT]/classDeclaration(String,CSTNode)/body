@@ -3,14 +3,14 @@
   String className=identifier(classRoot.getChild(1));
   String superClassName="java.lang.Object";
   if (matches(classRoot.getChild(2),Token.KEYWORD_EXTENDS)) {
-    superClassName=resolvedQualifiedName(classRoot.getChild(2).getChild(0));
+    superClassName=resolvedQualifiedNameNotNull(classRoot.getChild(2).getChild(0));
   }
  else {
     superClassName="java.lang.Object";
   }
   String[] interfaceNames=EMPTY_STRING_ARRAY;
   if (matches(classRoot.getChild(3),Token.KEYWORD_IMPLEMENTS)) {
-    interfaceNames=resolvedQualifiedNames(classRoot.getChild(3).getChildren());
+    interfaceNames=resolvedQualifiedNamesNotNull(classRoot.getChild(3).getChildren());
   }
   MixinNode[] mixinNames=MixinNode.EMPTY_ARRAY;
   String fqClassName=null;
