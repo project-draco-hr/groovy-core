@@ -5,6 +5,23 @@
   if (value instanceof Iterator) {
     return (Iterator)value;
   }
+  if (value instanceof NodeList) {
+    final NodeList nodeList=(NodeList)value;
+    return new Iterator(){
+      private int current=0;
+      public boolean hasNext(){
+        return current < nodeList.getLength();
+      }
+      public Object next(){
+        Node node=nodeList.item(current++);
+        return node;
+      }
+      public void remove(){
+        throw new UnsupportedOperationException("Cannot remove() from an Enumeration");
+      }
+    }
+;
+  }
  else   if (value instanceof Enumeration) {
     final Enumeration enumeration=(Enumeration)value;
     return new Iterator(){

@@ -1,7 +1,16 @@
 {
   List answer=(List)methodIndex.get(name);
+  List used=GroovyCategorySupport.getCategoryMethods(theClass,name);
+  if (used != null) {
+    if (answer != null) {
+      answer.addAll(used);
+    }
+ else {
+      answer=used;
+    }
+  }
   if (answer == null) {
-    return Collections.EMPTY_LIST;
+    answer=Collections.EMPTY_LIST;
   }
   return answer;
 }

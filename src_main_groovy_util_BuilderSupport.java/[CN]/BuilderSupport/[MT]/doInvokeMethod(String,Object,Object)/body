@@ -2,7 +2,11 @@
   Object node=null;
   Closure closure=null;
   List list=InvokerHelper.asList(args);
-  if (!list.isEmpty()) {
+switch (list.size()) {
+case 0:
+    break;
+case 1:
+{
     Object object=list.get(0);
     if (object instanceof Map) {
       node=proxyBuilder.createNode(name,(Map)object);
@@ -14,26 +18,51 @@
  else {
       node=proxyBuilder.createNode(name,object);
     }
-    if (list.size() > 1) {
-      object=list.get(1);
-      if (object instanceof Closure) {
-        closure=(Closure)object;
-      }
-    }
+  }
+break;
+case 2:
+{
+Object object1=list.get(0);
+Object object2=list.get(1);
+if (object1 instanceof Map) {
+  if (object2 instanceof Closure) {
+    closure=(Closure)object2;
+    node=proxyBuilder.createNode(name,(Map)object1);
   }
  else {
-    node=proxyBuilder.createNode(name);
+    node=proxyBuilder.createNode(name,(Map)object1,object2);
   }
-  if (current != null) {
-    proxyBuilder.setParent(current,node);
+}
+ else {
+  if (object2 instanceof Closure) {
+    closure=(Closure)object2;
+    node=proxyBuilder.createNode(name,object1);
   }
-  if (closure != null) {
-    Object oldCurrent=current;
-    current=node;
-    closure.setDelegate(this);
-    closure.call();
-    current=oldCurrent;
-  }
-  proxyBuilder.nodeCompleted(current,node);
-  return node;
+}
+}
+break;
+case 3:
+{
+Object attributes=list.get(0);
+Object value=list.get(1);
+closure=(Closure)list.get(2);
+node=proxyBuilder.createNode(name,(Map)attributes,value);
+}
+break;
+}
+if (node == null) {
+node=proxyBuilder.createNode(name);
+}
+if (current != null) {
+proxyBuilder.setParent(current,node);
+}
+if (closure != null) {
+Object oldCurrent=current;
+current=node;
+closure.setDelegate(this);
+closure.call();
+current=oldCurrent;
+}
+proxyBuilder.nodeCompleted(current,node);
+return node;
 }

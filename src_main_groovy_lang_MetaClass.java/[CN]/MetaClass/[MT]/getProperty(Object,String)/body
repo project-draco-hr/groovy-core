@@ -10,11 +10,27 @@
     if (metaMethod == null) {
       metaMethod=findGetter(object,"get" + capitalize(property));
     }
+    if (metaMethod != null) {
+      return doMethodInvoke(object,metaMethod,EMPTY_ARRAY);
+    }
   }
-  if (metaMethod != null) {
-    return doMethodInvoke(object,metaMethod,EMPTY_ARRAY);
+  if (genericGetMethod == null) {
+    List possibleGenericMethods=getMethods("get");
+    if (possibleGenericMethods != null) {
+      for (Iterator i=possibleGenericMethods.iterator(); i.hasNext(); ) {
+        MetaMethod mmethod=(MetaMethod)i.next();
+        Class[] paramTypes=mmethod.getParameterTypes();
+        if (paramTypes.length == 1 && paramTypes[0] == String.class) {
+          Object[] arguments={property};
+          Object answer=doMethodInvoke(object,mmethod,arguments);
+          if (answer != null) {
+            return answer;
+          }
+        }
+      }
+    }
   }
-  if (genericGetMethod != null) {
+ else {
     Object[] arguments={property};
     Object answer=doMethodInvoke(object,genericGetMethod,arguments);
     if (answer != null) {

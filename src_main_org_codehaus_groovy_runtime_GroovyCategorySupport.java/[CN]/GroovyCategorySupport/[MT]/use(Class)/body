@@ -1,0 +1,26 @@
+{
+  Map properties=getProperties();
+  Map methodMaps=getMetaClassMap(properties);
+  Object classDefined=methodMaps.get(categoryClass);
+  if (classDefined == null) {
+    classDefined=new Object();
+    methodMaps.put(categoryClass,classDefined);
+    Method[] methods=categoryClass.getMethods();
+    for (int i=0; i < methods.length; i++) {
+      Method method=methods[i];
+      if (Modifier.isStatic(method.getModifiers())) {
+        Class[] paramTypes=method.getParameterTypes();
+        if (paramTypes.length > 0) {
+          Class metaClass=paramTypes[0];
+          Map metaMethodsMap=getMetaMethods(properties,metaClass);
+          List methodList=getMethodList(metaMethodsMap,method.getName());
+          MetaMethod mmethod=new NewInstanceMetaMethod(new MetaMethod(method));
+          methodList.add(mmethod);
+        }
+      }
+    }
+  }
+ else {
+    return;
+  }
+}

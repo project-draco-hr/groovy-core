@@ -52,6 +52,23 @@
     buffer.append("]");
     return buffer.toString();
   }
+ else   if (arguments instanceof Element) {
+    Element node=(Element)arguments;
+    OutputFormat format=new OutputFormat(node.getOwnerDocument());
+    format.setOmitXMLDeclaration(true);
+    format.setIndenting(true);
+    format.setLineWidth(0);
+    format.setPreserveSpace(true);
+    StringWriter sw=new StringWriter();
+    XMLSerializer serializer=new XMLSerializer(sw,format);
+    try {
+      serializer.asDOMSerializer();
+      serializer.serialize(node);
+    }
+ catch (    IOException e) {
+    }
+    return sw.toString();
+  }
  else   if (arguments instanceof String) {
     if (verbose) {
       return "\"" + arguments + "\"";
