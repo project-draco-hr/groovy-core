@@ -7,16 +7,15 @@
     return groovy.invokeMethod(methodName,arguments);
   }
  else {
-    List argumentList=asList(arguments);
     if (object instanceof Class) {
       Class theClass=(Class)object;
       MetaClass metaClass=metaRegistry.getMetaClass(theClass);
-      return metaClass.invokeStaticMethod(object,methodName,arguments,argumentList);
+      return metaClass.invokeStaticMethod(object,methodName,asArray(arguments));
     }
  else {
       Class theClass=object.getClass();
       MetaClass metaClass=metaRegistry.getMetaClass(theClass);
-      return metaClass.invokeMethod(object,methodName,arguments,argumentList);
+      return metaClass.invokeMethod(object,methodName,asArray(arguments));
     }
   }
 }

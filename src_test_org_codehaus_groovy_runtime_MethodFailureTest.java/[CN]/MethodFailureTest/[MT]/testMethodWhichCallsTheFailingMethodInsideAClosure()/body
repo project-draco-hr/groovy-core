@@ -1,0 +1,15 @@
+{
+  MockGroovyObject object=new MockGroovyObject();
+  try {
+    object.invokeMethod("callClosure",new Closure(this){
+      protected Object doCall(      GroovyObject object){
+        return object.invokeMethod("nonExistentMethod","hello");
+      }
+    }
+);
+    fail("Should have thrown an exception");
+  }
+ catch (  InvokerException e) {
+    System.out.println(e);
+  }
+}

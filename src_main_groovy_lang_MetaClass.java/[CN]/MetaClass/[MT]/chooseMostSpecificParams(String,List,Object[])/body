@@ -1,0 +1,32 @@
+{
+  Object answer=null;
+  int size=arguments.length;
+  Class[] mostSpecificTypes=null;
+  for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
+    Object method=iter.next();
+    Class[] paramTypes=getParameterTypes(method);
+    if (answer == null) {
+      answer=method;
+      mostSpecificTypes=paramTypes;
+    }
+ else {
+      boolean useThisMethod=false;
+      for (int i=0; i < size; i++) {
+        Class mostSpecificType=mostSpecificTypes[i];
+        Class type=paramTypes[i];
+        if (!type.isAssignableFrom(mostSpecificType)) {
+          useThisMethod=true;
+          break;
+        }
+      }
+      if (useThisMethod) {
+        if (size > 1) {
+          checkForInvalidOverloading(name,mostSpecificTypes,paramTypes);
+        }
+        answer=method;
+        mostSpecificTypes=paramTypes;
+      }
+    }
+  }
+  return answer;
+}

@@ -1,0 +1,10 @@
+{
+  GroovyObject object=assertCompileWorks("class UnknownClass {\n" + "    main() {\n" + "        x = UnknownThingy\n"+ "    }\n"+ "}\n");
+  try {
+    object.invokeMethod("main",null);
+    fail("Should have thrown exception due to unknown property");
+  }
+ catch (  NoSuchPropertyException e) {
+    assertEquals("UnknownThingy",e.getProperty());
+  }
+}

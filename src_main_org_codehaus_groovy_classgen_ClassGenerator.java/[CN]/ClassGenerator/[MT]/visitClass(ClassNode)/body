@@ -1,16 +1,22 @@
 {
-  syntheticStaticFields.clear();
-  this.classNode=classNode;
-  this.internalClassName=getClassInternalName(classNode.getName());
-  this.internalBaseClassName=getClassInternalName(classNode.getSuperClass());
-  cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,getClassInternalNames(classNode.getInterfaces()),sourceFile);
-  classNode.visitContents(this);
-  createSyntheticStaticFields();
-  for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
-    ClassNode innerClass=(ClassNode)iter.next();
-    String innerClassName=innerClass.getName();
-    String innerClassInternalName=getClassInternalName(innerClassName);
-    cw.visitInnerClass(innerClassInternalName,internalClassName,innerClassName,innerClass.getModifiers());
+  try {
+    syntheticStaticFields.clear();
+    this.classNode=classNode;
+    this.internalClassName=getClassInternalName(classNode.getName());
+    this.internalBaseClassName=getClassInternalName(classNode.getSuperClass());
+    cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,getClassInternalNames(classNode.getInterfaces()),sourceFile);
+    classNode.visitContents(this);
+    createSyntheticStaticFields();
+    for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
+      ClassNode innerClass=(ClassNode)iter.next();
+      String innerClassName=innerClass.getName();
+      String innerClassInternalName=getClassInternalName(innerClassName);
+      cw.visitInnerClass(innerClassInternalName,internalClassName,innerClassName,innerClass.getModifiers());
+    }
+    cw.visitEnd();
   }
-  cw.visitEnd();
+ catch (  InvokerException e) {
+    e.setModule(classNode.getModule());
+    throw e;
+  }
 }

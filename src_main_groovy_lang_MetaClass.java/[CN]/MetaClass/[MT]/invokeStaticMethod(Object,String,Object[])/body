@@ -1,0 +1,17 @@
+{
+  List methods=getStaticMethods(methodName);
+  if (!methods.isEmpty()) {
+    Method method=(Method)chooseMethod(methodName,methods,arguments);
+    if (method != null) {
+      return doMethodInvoke(theClass,method,arguments);
+    }
+  }
+  if (theClass != Class.class) {
+    try {
+      return registry.getMetaClass(Class.class).invokeMethod(object,methodName,arguments);
+    }
+ catch (    InvokerException e) {
+    }
+  }
+  throw new NoSuchMethodException(methodName,theClass);
+}

@@ -1,8 +1,10 @@
 {
   onLineNumber(statement);
   CatchStatement catchStatement=statement.getCatchStatement(0);
+  String exceptionType=catchStatement.getExceptionType();
+  checkValidType(exceptionType,catchStatement,"in catch statement");
   String exceptionVar=(catchStatement != null) ? catchStatement.getVariable() : createExceptionVariableName();
-  int exceptionIndex=defineVariable(exceptionVar,catchStatement.getExceptionType(),false).getIndex();
+  int exceptionIndex=defineVariable(exceptionVar,exceptionType,false).getIndex();
   int index2=exceptionIndex + 1;
   int index3=index2 + 1;
   final Label l0=new Label();
@@ -39,10 +41,10 @@
   statement.getFinallyStatement().visit(this);
   cv.visitVarInsn(RET,index3);
   cv.visitLabel(l4);
-  final String exceptionType=(catchStatement != null) ? getTypeDescription(catchStatement.getExceptionType()) : null;
+  final String exceptionTypeInternalName=(catchStatement != null) ? getTypeDescription(exceptionType) : null;
   exceptionBlocks.add(new Runnable(){
     public void run(){
-      cv.visitTryCatchBlock(l0,l1,l5,exceptionType);
+      cv.visitTryCatchBlock(l0,l1,l5,exceptionTypeInternalName);
       cv.visitTryCatchBlock(l0,l3,l7,null);
       cv.visitTryCatchBlock(l5,l6,l7,null);
       cv.visitTryCatchBlock(l7,l8,l7,null);

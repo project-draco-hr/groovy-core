@@ -1,0 +1,15 @@
+{
+  if (theClass.equals(Object.class)) {
+    return null;
+  }
+  MetaClass superClass=registry.getMetaClass(theClass.getSuperclass());
+  List list=superClass.getNewStaticInstanceMethods(methodName);
+  if (!list.isEmpty()) {
+    Method method=(Method)chooseMethod(methodName,list,staticArguments);
+    if (method != null) {
+      addNewStaticInstanceMethod(method);
+    }
+    return method;
+  }
+  return superClass.findNewStaticInstanceMethod(methodName,staticArguments);
+}

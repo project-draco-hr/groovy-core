@@ -3,6 +3,9 @@
     if (registry.useAccessible()) {
       method.setAccessible(true);
     }
+    if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
+      argumentArray=ARRAY_WITH_NULL;
+    }
     return method.invoke(object,argumentArray);
   }
  catch (  InvocationTargetException e) {

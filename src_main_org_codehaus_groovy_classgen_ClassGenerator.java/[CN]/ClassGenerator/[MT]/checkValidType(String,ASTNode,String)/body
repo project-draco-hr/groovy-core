@@ -1,0 +1,28 @@
+{
+  String original=type;
+  if (type != null) {
+    for (int i=0; i < 2; i++) {
+      if (context.getCompileUnit().getClass(type) != null) {
+        return;
+      }
+      try {
+        classLoader.loadClass(type);
+        return;
+      }
+ catch (      Throwable e) {
+      }
+      try {
+        Class.forName(type);
+        return;
+      }
+ catch (      Throwable e) {
+      }
+      String packageName=classNode.getPackageName();
+      if (packageName == null || packageName.length() <= 0) {
+        break;
+      }
+      type=packageName + "." + type;
+    }
+  }
+  throw new NoSuchClassException(original,node,message);
+}

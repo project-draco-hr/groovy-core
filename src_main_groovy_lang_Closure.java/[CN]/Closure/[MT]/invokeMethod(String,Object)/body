@@ -3,6 +3,14 @@
     return getMetaClass().invokeMethod(this,method,arguments);
   }
  catch (  InvokerException e) {
-    return InvokerHelper.invokeMethod(getDelegate(),method,arguments);
+    Object delegate=getDelegate();
+    if (delegate != this) {
+      try {
+        return InvokerHelper.invokeMethod(delegate,method,arguments);
+      }
+ catch (      InvokerException e2) {
+      }
+    }
+    throw e;
   }
 }

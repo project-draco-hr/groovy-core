@@ -1,0 +1,27 @@
+{
+  if (object == null) {
+    throw new InvokerException("Cannot invoke method: " + methodName + " on null object");
+  }
+  List methods=getMethods(methodName);
+  if (!methods.isEmpty()) {
+    Method method=(Method)chooseMethod(methodName,methods,arguments);
+    if (method != null) {
+      return doMethodInvoke(object,method,arguments);
+    }
+  }
+  List newStaticInstanceMethods=getNewStaticInstanceMethods(methodName);
+  Object[] staticArguments=new Object[arguments.length + 1];
+  staticArguments[0]=object;
+  System.arraycopy(arguments,0,staticArguments,1,arguments.length);
+  Method method=null;
+  if (!newStaticInstanceMethods.isEmpty()) {
+    method=(Method)chooseMethod(methodName,newStaticInstanceMethods,staticArguments);
+  }
+  if (method == null) {
+    method=findNewStaticInstanceMethod(methodName,staticArguments);
+  }
+  if (method != null) {
+    return doMethodInvoke(null,method,staticArguments);
+  }
+  return invokeStaticMethod(object,methodName,arguments);
+}

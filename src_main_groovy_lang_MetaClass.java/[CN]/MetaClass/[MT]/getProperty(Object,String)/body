@@ -25,6 +25,12 @@
     if (object instanceof Class) {
       return getStaticProperty((Class)object,property);
     }
-    throw new InvokerException("Unknown property: " + property);
+    if (object instanceof Collection) {
+      return DefaultGroovyMethods.get((Collection)object,property);
+    }
+    if (object instanceof Object[]) {
+      return DefaultGroovyMethods.get(Arrays.asList((Object[])object),property);
+    }
+    throw new NoSuchPropertyException(property,theClass);
   }
 }
