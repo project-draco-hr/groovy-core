@@ -1,3 +1,15 @@
 {
-  return value.replaceAll("\\'","&quot;");
+  if (value.matches(".*&.*")) {
+    value=value.replaceAll("&","&amp;");
+  }
+  if (value.matches(".*\\'.*")) {
+    value=value.replaceAll("\\'","&quot;");
+  }
+  if (value.matches(".*<.*")) {
+    value=value.replaceAll("<","&lt;");
+  }
+  if (value.matches(".*>.*")) {
+    value=value.replaceAll(">","&gt;");
+  }
+  return value;
 }
