@@ -2,13 +2,15 @@
   int from=normaliseIndex(InvokerHelper.asInt(range.getFrom()),text.length());
   int to=normaliseIndex(InvokerHelper.asInt(range.getTo()),text.length());
   int length=text.length();
+  boolean reverse=range.isReverse();
   if (from > to) {
-    int tmp=from;
-    from=to;
-    to=tmp;
+    int tmp=to;
+    to=from;
+    from=tmp;
+    reverse=!reverse;
   }
   String answer=text.substring(from,to + 1);
-  if (range.isReverse()) {
+  if (reverse) {
     answer=reverse(answer);
   }
   return answer;
