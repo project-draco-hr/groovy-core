@@ -26,7 +26,11 @@
     list.add(method);
   }
  else {
-    if (!containsMatchingMethod(list,method)) {
+    if (forceOverwrite) {
+      removeMatchingMethod(list,method);
+      list.add(method);
+    }
+ else     if (!containsMatchingMethod(list,method)) {
       list.add(method);
     }
   }
