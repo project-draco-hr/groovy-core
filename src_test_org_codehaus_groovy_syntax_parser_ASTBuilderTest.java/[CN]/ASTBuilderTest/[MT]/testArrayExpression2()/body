@@ -1,5 +1,5 @@
 {
-  ModuleNode module=parse("class Foo { void testMethod() { def foo = ['a', 'b', 'c']  as String[]\n assert foo != null } }","Dummy.groovy");
+  ModuleNode module=parse("class Foo { void testMethod() { String[] foo = ['a', 'b', 'c']\n assert foo != null } }","Dummy.groovy");
   BlockStatement statement=getCode(module,"testMethod");
   assertEquals("Statements size: " + statement.getStatements(),2,statement.getStatements().size());
   System.out.println(statement.getStatements());

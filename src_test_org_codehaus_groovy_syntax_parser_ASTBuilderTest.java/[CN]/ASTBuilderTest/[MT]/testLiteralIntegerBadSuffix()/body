@@ -1,13 +1,9 @@
 {
   try {
-    ModuleNode module=parse("x = 2147483648J;","Dummy.groovy");
+    ModuleNode module=parse("def x = 2147483648J;","Dummy.groovy");
   }
- catch (  CompilationFailedException e) {
-    SyntaxException cause=e.getUnit().getSyntaxError(0);
-    if (cause instanceof UnexpectedCharacterException) {
-      return;
-    }
-    fail("x = 2147483648J should fail with an UnexpectedCharacterException");
+ catch (  Exception e) {
+    return;
   }
   fail("x = 2147483648J, should fail because J is an invalid numeric literal suffix.");
 }

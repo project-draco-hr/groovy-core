@@ -1,6 +1,10 @@
 {
-  ModuleNode module=parse("class Foo { void testMethod() { println ${foo}\n}}","Dummy.groovy");
-  BlockStatement statement=getCode(module,"testMethod");
-  assertEquals("Statements size: " + statement.getStatements(),1,statement.getStatements().size());
-  System.out.println(statement.getStatements());
+  String script="class Foo { void testMethod() { println ${foo}\n}}";
+  try {
+    ModuleNode module=parse(script,"Dummy.groovy");
+  }
+ catch (  Exception e) {
+    return;
+  }
+  fail(script + " should fail because the { was unexpected after the dollar sign.");
 }

@@ -1,7 +1,7 @@
 {
-  GroovyObject object=assertCompileWorks("class UnknownClass {\n" + "    main() {\n" + "        x = UnknownThingy\n"+ "    }\n"+ "}\n");
+  GroovyObject object=assertCompileWorks("class UnknownClass {\n" + "    void main(args) {\n" + "        def x = UnknownThingy\n"+ "    }\n"+ "}\n");
   try {
-    object.invokeMethod("main",null);
+    object.invokeMethod("main",new String[]{});
     fail("Should have thrown exception due to unknown property");
   }
  catch (  MissingPropertyException e) {
