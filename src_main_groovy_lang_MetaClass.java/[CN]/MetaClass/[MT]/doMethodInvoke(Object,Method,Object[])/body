@@ -28,11 +28,13 @@ catch (  IllegalAccessException e) {
   }
 catch (  IllegalArgumentException e) {
     if (coerceGStrings(argumentArray)) {
-      return doMethodInvoke(object,method,argumentArray);
+      try {
+        return doMethodInvoke(object,method,argumentArray);
+      }
+ catch (      Exception e2) {
+      }
     }
- else {
-      throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
-    }
+    throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
 catch (  Exception e) {
     throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);

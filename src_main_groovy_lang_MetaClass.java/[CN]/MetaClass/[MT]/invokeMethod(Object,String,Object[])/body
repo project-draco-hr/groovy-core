@@ -4,9 +4,15 @@
   }
   List methods=getMethods(methodName);
   if (!methods.isEmpty()) {
-    Method method=(Method)chooseMethod(methodName,methods,arguments);
+    Method method=(Method)chooseMethod(methodName,methods,arguments,false);
     if (method != null) {
       return doMethodInvoke(object,method,arguments);
+    }
+ else {
+      method=(Method)chooseMethod(methodName,methods,arguments,true);
+      if (method != null) {
+        return doMethodInvoke(object,method,arguments);
+      }
     }
   }
   List newStaticInstanceMethods=getNewStaticInstanceMethods(methodName);
@@ -18,7 +24,7 @@
   }
   Method method=null;
   if (!newStaticInstanceMethods.isEmpty()) {
-    method=(Method)chooseMethod(methodName,newStaticInstanceMethods,staticArguments);
+    method=(Method)chooseMethod(methodName,newStaticInstanceMethods,staticArguments,false);
   }
   if (method == null) {
     method=findNewStaticInstanceMethod(methodName,staticArguments);
