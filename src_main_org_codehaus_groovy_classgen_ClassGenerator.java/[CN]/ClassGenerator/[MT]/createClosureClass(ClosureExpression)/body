@@ -18,6 +18,9 @@
   if (staticMethodOrInStaticClass) {
     answer.setStaticClass(true);
   }
+  if (isInScriptBody()) {
+    answer.setScriptBody(true);
+  }
   answer.addMethod("doCall",ACC_PUBLIC,"java.lang.Object",parameters,expression.getCode());
   if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && !parameters[0].getType().equals("java.lang.Object"))) {
     answer.addMethod("call",ACC_PUBLIC,"java.lang.Object",parameters,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));

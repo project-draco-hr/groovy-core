@@ -1,4 +1,9 @@
 {
-  String superClass=classNode.getSuperClass();
-  return superClass != null && superClass.equals("groovy.lang.Script") && methodNode != null && methodNode.getName().equals("run");
+  if (classNode.isScriptBody()) {
+    return true;
+  }
+ else {
+    String superClass=classNode.getSuperClass();
+    return superClass != null && superClass.equals("groovy.lang.Script") && methodNode != null && methodNode.getName().equals("run");
+  }
 }
