@@ -6,6 +6,11 @@
   }
 );
   Class scriptClass=parseClass(gcs);
-  runMainOrTestOrRunnable(scriptClass,args);
-  return null;
+  if (isUnitTestCase(scriptClass)) {
+    runTest(scriptClass);
+    return null;
+  }
+ else {
+    return InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
+  }
 }
