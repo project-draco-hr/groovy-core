@@ -1,4 +1,7 @@
 {
+  if (value == null) {
+    Collections.EMPTY_LIST.iterator();
+  }
   if (value instanceof Iterator) {
     return (Iterator)value;
   }
@@ -46,6 +49,16 @@
       }
     }
 ;
+  }
+ else {
+    try {
+      Method method=value.getClass().getMethod("iterator",EMPTY_TYPES);
+      if (method != null) {
+        return (Iterator)method.invoke(value,EMPTY_ARGUMENTS);
+      }
+    }
+ catch (    Exception e) {
+    }
   }
   return asCollection(value).iterator();
 }
