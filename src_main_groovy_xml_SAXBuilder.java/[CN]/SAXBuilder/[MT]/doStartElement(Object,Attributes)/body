@@ -1,0 +1,20 @@
+{
+  String uri="";
+  String localName=null;
+  String qualifiedName="";
+  if (name instanceof QName) {
+    QName qname=(QName)name;
+    uri=qname.getNamespaceURI();
+    localName=qname.getLocalPart();
+    qualifiedName=qname.getQualifiedName();
+  }
+ else {
+    localName=name.toString();
+  }
+  try {
+    handler.startElement(uri,localName,qualifiedName,attributes);
+  }
+ catch (  SAXException e) {
+    handleException(e);
+  }
+}

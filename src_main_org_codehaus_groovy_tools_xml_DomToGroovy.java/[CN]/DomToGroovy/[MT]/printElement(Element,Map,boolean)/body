@@ -32,22 +32,22 @@
     }
  else     if (mixedContent(list)) {
       println(" [");
-      ++indent;
+      out.incrementIndent();
       boolean first=true;
       int idx=0;
       for (node=element.getFirstChild(); node != null; node=node.getNextSibling()) {
         boolean useComma=node.getNextSibling() != null;
         print(node,namespaces,useComma);
       }
-      --indent;
+      out.decrementIndent();
       printIndent();
       printEnd("]",endWithComma);
     }
  else {
       println(" {");
-      ++indent;
+      out.incrementIndent();
       printChildren(element,namespaces);
-      --indent;
+      out.decrementIndent();
       printIndent();
       printEnd("}",endWithComma);
     }
