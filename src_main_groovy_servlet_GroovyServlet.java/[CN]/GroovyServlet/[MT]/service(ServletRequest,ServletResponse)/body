@@ -1,6 +1,6 @@
 {
-  HttpServletRequest httpRequest=(HttpServletRequest)request;
-  HttpServletResponse httpResponse=(HttpServletResponse)response;
+  final HttpServletRequest httpRequest=(HttpServletRequest)request;
+  final HttpServletResponse httpResponse=(HttpServletResponse)response;
   int contextLength=httpRequest.getContextPath().length();
   String scriptFilename=httpRequest.getRequestURI().substring(contextLength).intern();
   URL groovyScriptURL=sc.getResource(scriptFilename);
@@ -32,8 +32,66 @@ synchronized (scriptFilename) {
     URLConnection groovyScriptConn=groovyScriptURL.openConnection();
     long lastModified=groovyScriptConn.getLastModified();
     entry=(ServletCacheEntry)servletCache.get(scriptFilename);
-    if (entry == null || entry.lastModified < lastModified) {
-      GroovyClassLoader groovyLoader=new GroovyClassLoader(parent);
+    boolean dependencyOutOfDate=false;
+    if (entry != null) {
+      for (Iterator i=entry.dependencies.keySet().iterator(); i.hasNext(); ) {
+        URLConnection urlc=null;
+        try {
+          URL url=(URL)i.next();
+          urlc=url.openConnection();
+          if (urlc.getLastModified() > ((Long)entry.dependencies.get(url)).longValue()) {
+            dependencyOutOfDate=true;
+            break;
+          }
+        }
+  finally {
+          urlc.getInputStream().close();
+        }
+      }
+    }
+    if (entry == null || entry.lastModified < lastModified || dependencyOutOfDate) {
+      entry=new ServletCacheEntry();
+      final ServletCacheEntry finalEntry=entry;
+      GroovyClassLoader groovyLoader=new GroovyClassLoader(parent){
+        protected Class findClass(        String className) throws ClassNotFoundException {
+          String filename=className.replace('.',File.separatorChar) + ".groovy";
+          URL dependentScript;
+          try {
+            dependentScript=sc.getResource("/WEB-INF/groovy/" + filename);
+            if (dependentScript == null) {
+              String servletPath=httpRequest.getServletPath();
+              String current=servletPath.substring(0,servletPath.lastIndexOf("/") + 1);
+              dependentScript=sc.getResource(current + filename);
+            }
+          }
+ catch (          MalformedURLException e) {
+            throw new ClassNotFoundException(className + ": " + e);
+          }
+          if (dependentScript == null) {
+            throw new ClassNotFoundException("Could not find " + className + " in webapp");
+          }
+ else {
+            URLConnection dependentScriptConn;
+            try {
+              dependentScriptConn=dependentScript.openConnection();
+              finalEntry.dependencies.put(dependentScript,new Long(dependentScriptConn.getLastModified()));
+            }
+ catch (            IOException e1) {
+              throw new ClassNotFoundException("Could not read " + className + ": "+ e1);
+            }
+            try {
+              return parseClass(dependentScriptConn.getInputStream(),filename);
+            }
+ catch (            SyntaxException e2) {
+              throw new ClassNotFoundException("Syntax error in " + className + ": "+ e2);
+            }
+catch (            IOException e2) {
+              throw new ClassNotFoundException("Problem reading " + className + ": "+ e2);
+            }
+          }
+        }
+      }
+;
       Class scriptClass;
       try {
         scriptClass=groovyLoader.parseClass(groovyScriptConn.getInputStream(),scriptFilename.substring(1));
@@ -41,7 +99,6 @@ synchronized (scriptFilename) {
  catch (      SyntaxException e) {
         throw new ServletException("Could not parse script: " + scriptFilename,e);
       }
-      entry=new ServletCacheEntry();
       entry.servletScriptClass=scriptClass;
       entry.lastModified=lastModified;
       servletCache.put(scriptFilename,entry);
