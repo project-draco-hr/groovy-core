@@ -5,11 +5,14 @@
     }
     return value;
   }
- else {
+ else   if (value instanceof String) {
     Object widget=createNode(name);
-    if (widget != null && value instanceof String) {
+    if (widget != null) {
       InvokerHelper.invokeMethod(widget,"setText",value);
     }
     return widget;
+  }
+ else {
+    throw new MissingMethodException((String)name,getClass(),new Object[]{value});
   }
 }
