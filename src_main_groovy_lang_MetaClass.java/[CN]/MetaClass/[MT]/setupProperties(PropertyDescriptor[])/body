@@ -38,7 +38,7 @@
       method=methods[i];
       String methodName=method.getName();
       if (methodName.startsWith("get") && methodName.length() > 3 && method.getParameterTypes().length == 0) {
-        String propName=methodName.substring(3).toLowerCase();
+        String propName=methodName.substring(3,4).toLowerCase() + methodName.substring(4);
         mp=(MetaProperty)propertyMap.get(propName);
         if (mp != null) {
           if (mp instanceof MetaBeanProperty && ((MetaBeanProperty)mp).getGetter() == null) {
@@ -51,7 +51,7 @@
         }
       }
  else       if (methodName.startsWith("set") && methodName.length() > 3 && method.getParameterTypes().length == 1) {
-        String propName=methodName.substring(3).toLowerCase();
+        String propName=methodName.substring(3,4).toLowerCase() + methodName.substring(4);
         mp=(MetaProperty)propertyMap.get(propName);
         if (mp != null) {
           if (mp instanceof MetaBeanProperty && ((MetaBeanProperty)mp).getSetter() == null) {
