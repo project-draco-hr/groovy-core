@@ -37,7 +37,12 @@
         cv.visitLdcInsn(method);
         arguments.visit(this);
       }
-      invokeMethodMethod.call(cv);
+      if (call.isSafe()) {
+        invokeMethodSafeMethod.call(cv);
+      }
+ else {
+        invokeMethodMethod.call(cv);
+      }
     }
   }
 }

@@ -4,10 +4,20 @@
   Expression objectExpression=expression.getObjectExpression();
   objectExpression.visit(this);
   cv.visitLdcInsn(expression.getProperty());
-  if (left) {
-    setPropertyMethod2.call(cv);
+  if (expression.isSafe()) {
+    if (left) {
+      setPropertySafeMethod2.call(cv);
+    }
+ else {
+      getPropertySafeMethod.call(cv);
+    }
   }
  else {
-    getPropertyMethod.call(cv);
+    if (left) {
+      setPropertyMethod2.call(cv);
+    }
+ else {
+      getPropertyMethod.call(cv);
+    }
   }
 }

@@ -9,5 +9,12 @@
   }
   String methodName=expressionRoot.getChild(1).getToken().getText();
   Expression paramList=actualParameterList(expressionRoot.getChild(2));
-  return new MethodCallExpression(objectExpression,methodName,paramList);
+  MethodCallExpression answer=new MethodCallExpression(objectExpression,methodName,paramList);
+  if (expressionRoot.getChildren().length > 3) {
+    CSTNode notExpr=expressionRoot.getChild(3);
+    if (notExpr != null && notExpr.getToken().getType() == Token.NAVIGATE) {
+      answer.setSafe(true);
+    }
+  }
+  return answer;
 }

@@ -72,23 +72,23 @@ throwExpected(new int[]{});
 if (identifier != null && (lt() == Token.LEFT_PARENTHESIS || lt() == Token.LEFT_CURLY_BRACE)) {
 if (expr == identifier) {
 CSTNode replacementExpr=new CSTNode();
-CSTNode resultExpr=sugaryMethodCallExpression(replacementExpr,identifier);
+CSTNode resultExpr=sugaryMethodCallExpression(replacementExpr,identifier,null);
 if (resultExpr != replacementExpr) {
 expr=resultExpr;
 }
 }
  else {
-expr=sugaryMethodCallExpression(expr,identifier);
+expr=sugaryMethodCallExpression(expr,identifier,null);
 }
 }
-DOT_LOOP: while (lt() == Token.DOT && (lt(2) == Token.IDENTIFIER || lt(2) == Token.KEYWORD_CLASS)) {
-CSTNode dotExpr=rootNode(Token.DOT);
+DOT_LOOP: while ((lt() == Token.DOT || lt() == Token.NAVIGATE) && (lt(2) == Token.IDENTIFIER || lt(2) == Token.KEYWORD_CLASS)) {
+CSTNode dotExpr=rootNode(lt());
 identifier=rootNode(lt());
 DOT_TYPE_SWITCH: switch (lt()) {
 case (Token.LEFT_PARENTHESIS):
 case (Token.LEFT_CURLY_BRACE):
 {
-expr=sugaryMethodCallExpression(expr,identifier);
+expr=sugaryMethodCallExpression(expr,identifier,dotExpr);
 break DOT_TYPE_SWITCH;
 }
 default :
