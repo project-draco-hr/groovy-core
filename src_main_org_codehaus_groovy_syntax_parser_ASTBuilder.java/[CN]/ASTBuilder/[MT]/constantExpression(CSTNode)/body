@@ -1,22 +1,41 @@
 {
-  Object value=null;
+  ConstantExpression expr=null;
 switch (expressionRoot.getToken().getType()) {
-case (Token.SINGLE_QUOTE_STRING):
-case (Token.DOUBLE_QUOTE_STRING):
+case (Token.KEYWORD_NULL):
 {
-      value=expressionRoot.getToken().getText();
+      expr=ConstantExpression.NULL;
       break;
     }
-case (Token.INTEGER_NUMBER):
+case (Token.KEYWORD_TRUE):
 {
-    value=new Long(expressionRoot.getToken().getText());
+    expr=ConstantExpression.TRUE;
     break;
   }
-case (Token.FLOAT_NUMBER):
+case (Token.KEYWORD_FALSE):
 {
-  value=new Double(expressionRoot.getToken().getText());
+  expr=ConstantExpression.FALSE;
   break;
 }
+case (Token.SINGLE_QUOTE_STRING):
+{
+expr=new ConstantExpression(expressionRoot.getToken().getText());
+break;
 }
-return new ConstantExpression(value);
+case (Token.DOUBLE_QUOTE_STRING):
+{
+expr=new ConstantExpression(expressionRoot.getToken().getText());
+break;
+}
+case (Token.INTEGER_NUMBER):
+{
+expr=new ConstantExpression(new Long(expressionRoot.getToken().getText()));
+break;
+}
+case (Token.FLOAT_NUMBER):
+{
+expr=new ConstantExpression(new Double(expressionRoot.getToken().getText()));
+break;
+}
+}
+return expr;
 }
