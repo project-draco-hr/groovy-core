@@ -1,5 +1,11 @@
 {
-  Object[] new_args=(Object[])args;
+  Object[] new_args;
+  if (args instanceof Object[]) {
+    new_args=(Object[])args;
+  }
+ else {
+    new_args=new Object[]{args};
+  }
   Object[] all_args=new Object[new_args.length + this.curried_args.length];
   System.arraycopy(this.curried_args,0,all_args,0,this.curried_args.length);
   System.arraycopy(new_args,0,all_args,this.curried_args.length,new_args.length);
