@@ -4,14 +4,14 @@
     System.out.println("Usage: Groovy groovyScript [arguments]");
     return;
   }
-  String script=args[0];
+  String scriptName=args[0];
   String[] newArgs=new String[length - 1];
   if (length > 1) {
     System.arraycopy(args,1,newArgs,0,length - 1);
   }
   try {
     GroovyShell groovy=new GroovyShell();
-    groovy.run(script,newArgs);
+    groovy.run(new File(scriptName),newArgs);
   }
  catch (  Exception e) {
     System.out.println("Caught: " + e);

@@ -1,11 +1,11 @@
 {
-  Class answer=(Class)cache.get(file);
+  Class answer=(Class)cache.get(fileName);
   if (answer == null) {
     CompileUnit unit=new CompileUnit();
     ClassCollector compiler=createCollector(unit);
-    compiler.parseClass(in,file);
+    compiler.parseClass(in,fileName);
     answer=compiler.generatedClass;
-    cache.put(file,answer);
+    cache.put(fileName,answer);
   }
   return answer;
 }
