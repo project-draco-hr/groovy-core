@@ -1,13 +1,6 @@
 {
   this.leftHandExpression=false;
   Expression arguments=call.getArguments();
-  if (arguments instanceof TupleExpression) {
-    TupleExpression tupleExpression=(TupleExpression)arguments;
-    int size=tupleExpression.getExpressions().size();
-    if (size == 0) {
-      arguments=ConstantExpression.EMPTY_ARRAY;
-    }
-  }
   if (MethodCallExpression.isSuperMethodCall(call)) {
     cv.visitVarInsn(ALOAD,0);
     cv.visitVarInsn(ALOAD,1);
