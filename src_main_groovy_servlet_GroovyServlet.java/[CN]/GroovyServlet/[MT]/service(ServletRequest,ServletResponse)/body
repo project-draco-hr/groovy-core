@@ -1,0 +1,53 @@
+{
+  HttpServletRequest httpRequest=(HttpServletRequest)request;
+  HttpServletResponse httpResponse=(HttpServletResponse)response;
+  int contextLength=httpRequest.getContextPath().length();
+  String scriptFilename=httpRequest.getRequestURI().substring(contextLength).intern();
+  URL groovyScriptURL=sc.getResource(scriptFilename);
+  if (groovyScriptURL == null) {
+    sc.log("Groovy script " + scriptFilename + " not found");
+    httpResponse.sendError(404);
+    return;
+  }
+  ScriptContext binding=new ScriptContext();
+  binding.setVariable("request",httpRequest);
+  binding.setVariable("response",httpResponse);
+  binding.setVariable("application",sc);
+  binding.setVariable("session",httpRequest.getSession(true));
+  binding.setVariable("out",httpResponse.getWriter());
+  for (Enumeration paramEnum=request.getParameterNames(); paramEnum.hasMoreElements(); ) {
+    String key=(String)paramEnum.nextElement();
+    if (binding.getVariable(key) == null) {
+      String[] values=request.getParameterValues(key);
+      if (values.length == 1) {
+        binding.setVariable(key,values[0]);
+      }
+ else {
+        binding.setVariable(key,values);
+      }
+    }
+  }
+  ServletCacheEntry entry;
+synchronized (scriptFilename) {
+    URLConnection groovyScriptConn=groovyScriptURL.openConnection();
+    long lastModified=groovyScriptConn.getLastModified();
+    entry=(ServletCacheEntry)servletCache.get(scriptFilename);
+    if (entry == null || entry.lastModified < lastModified) {
+      GroovyClassLoader groovyLoader=new GroovyClassLoader(parent);
+      Class scriptClass;
+      try {
+        scriptClass=groovyLoader.parseClass(groovyScriptConn.getInputStream(),scriptFilename.substring(1));
+      }
+ catch (      SyntaxException e) {
+        throw new ServletException("Could not parse script: " + scriptFilename,e);
+      }
+      entry=new ServletCacheEntry();
+      entry.servletScriptClass=scriptClass;
+      entry.lastModified=lastModified;
+      servletCache.put(scriptFilename,entry);
+    }
+  }
+  response.setContentType("text/html");
+  Script script=InvokerHelper.createScript(entry.servletScriptClass,binding);
+  script.run();
+}
