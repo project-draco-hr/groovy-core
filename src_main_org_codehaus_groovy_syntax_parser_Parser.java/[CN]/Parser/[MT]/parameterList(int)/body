@@ -1,0 +1,13 @@
+{
+  CSTNode parameterList=new CSTNode(Token.syntheticList());
+  while (lt() != endOfListDemarc) {
+    parameterList.addChild(expression());
+    if (lt() == Token.COMMA) {
+      consume(Token.COMMA);
+    }
+ else {
+      break;
+    }
+  }
+  return parameterList;
+}
