@@ -1,10 +1,11 @@
 {
-  Parser parser=newParser("property cheese");
+  Parser parser=newParser("cheese = 1234");
   CSTNode root=parser.bodyStatement();
-  assertNode(root,"property",Token.KEYWORD_PROPERTY,3);
+  assertNode(root,"property",Token.KEYWORD_PROPERTY,4);
 {
     assertNullNode(root.getChild(0),0);
     assertNode(root.getChild(1),"cheese",Token.IDENTIFIER,0);
     assertNullNode(root.getChild(2),0);
+    assertNode(root.getChild(3),"1234",Token.INTEGER_NUMBER,0);
   }
 }

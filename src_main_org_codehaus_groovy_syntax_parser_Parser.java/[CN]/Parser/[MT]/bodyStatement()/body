@@ -4,22 +4,39 @@
   while (isModifier(lt())) {
     consume(modifiers,lt());
   }
-switch (lt()) {
-case (Token.KEYWORD_PROPERTY):
-{
-      bodyStatement=propertyDeclaration(modifiers);
-      optionalSemicolon();
-      break;
-    }
-case (Token.IDENTIFIER):
-case (Token.KEYWORD_VOID):
-{
-    bodyStatement=methodDeclaration(modifiers);
-    break;
+  if (lt() == Token.KEYWORD_PROPERTY) {
+    consume(lt());
   }
+  while (lt_bare() == Token.NEWLINE) {
+    consume_bare(lt_bare());
+  }
+  CSTNode type=new CSTNode();
+  if (lt_bare() == Token.IDENTIFIER) {
+    if (lt_bare(2) == Token.DOT) {
+      type=datatype();
+    }
+ else     if (lt_bare(2) == Token.IDENTIFIER) {
+      type=new CSTNode(consume_bare(lt()));
+    }
+  }
+ else   if (lt_bare() == Token.KEYWORD_VOID) {
+    type=new CSTNode(consume_bare(Token.KEYWORD_VOID));
+  }
+  CSTNode identifier=new CSTNode(consume_bare(Token.IDENTIFIER));
+switch (lt_bare()) {
+case Token.LEFT_PARENTHESIS:
+    bodyStatement=methodDeclaration(modifiers,type,identifier);
+  break;
+case Token.EQUAL:
+case Token.SEMICOLON:
+case Token.NEWLINE:
+case Token.RIGHT_CURLY_BRACE:
+case -1:
+bodyStatement=propertyDeclaration(modifiers,type,identifier);
+optionalSemicolon();
+break;
 default :
-{
-}
+throwExpected(new int[]{Token.LEFT_PARENTHESIS,Token.EQUAL,Token.SEMICOLON,Token.NEWLINE,Token.RIGHT_CURLY_BRACE});
 }
 return bodyStatement;
 }

@@ -1,2 +1,29 @@
 {
+  String name=node.getName();
+  FieldNode field=node.getField();
+  String getterName="get" + capitalize(name);
+  String setterName="set" + capitalize(name);
+  Statement getterBlock=node.getGetterBlock();
+  if (getterBlock == null) {
+    if (!node.isPrivate() && classNode.getGetterMethod(getterName) == null) {
+      getterBlock=createGetterBlock(node,field);
+    }
+  }
+  Statement setterBlock=node.getGetterBlock();
+  if (setterBlock == null) {
+    if (!node.isPrivate() && classNode.getSetterMethod(setterName) == null) {
+      setterBlock=createSetterBlock(node,field);
+    }
+  }
+  if (getterBlock != null) {
+    MethodNode getter=new MethodNode(getterName,node.getModifiers(),node.getType(),Parameter.EMPTY_ARRAY,getterBlock);
+    classNode.addMethod(getter);
+    visitMethod(getter);
+  }
+  if (setterBlock != null) {
+    Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};
+    MethodNode setter=new MethodNode(setterName,node.getModifiers(),"void",setterParameterTypes,setterBlock);
+    classNode.addMethod(setter);
+    visitMethod(setter);
+  }
 }
