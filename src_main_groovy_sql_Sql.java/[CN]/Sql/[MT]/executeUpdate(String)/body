@@ -1,0 +1,16 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    log.fine(sql);
+    statement=connection.createStatement();
+    return statement.executeUpdate(sql);
+  }
+ catch (  SQLException e) {
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}
