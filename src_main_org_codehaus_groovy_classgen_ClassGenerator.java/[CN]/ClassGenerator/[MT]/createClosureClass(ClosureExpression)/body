@@ -5,7 +5,8 @@
   }
   String outerClassName=owner.getName();
   String name=outerClassName + "$" + context.getNextInnerClassIdx();
-  if (isStaticMethod()) {
+  boolean staticMethodOrInStaticClass=isStaticMethod() || classNode.isStaticClass();
+  if (staticMethodOrInStaticClass) {
     outerClassName="java.lang.Class";
   }
   Parameter[] parameters=expression.getParameters();
@@ -14,6 +15,9 @@
   }
   Parameter[] localVariableParams=getClosureSharedVariables(expression);
   InnerClassNode answer=new InnerClassNode(owner,name,ACC_PUBLIC,"groovy.lang.Closure");
+  if (staticMethodOrInStaticClass) {
+    answer.setStaticClass(true);
+  }
   answer.addMethod("doCall",ACC_PUBLIC,"java.lang.Object",parameters,expression.getCode());
   if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && !parameters[0].getType().equals("java.lang.Object"))) {
     answer.addMethod("call",ACC_PUBLIC,"java.lang.Object",parameters,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));

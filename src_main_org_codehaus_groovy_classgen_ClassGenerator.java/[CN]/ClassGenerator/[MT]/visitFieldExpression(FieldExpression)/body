@@ -8,7 +8,12 @@
   String type=field.getType();
   int tempIndex=defineVariable(createVariableName("field"),"java.lang.Object",false).getIndex();
   if (leftHandExpression && !holder) {
-    doConvertAndCast(type);
+    if (isInClosureConstructor()) {
+      doCast(type);
+    }
+ else {
+      doConvertAndCast(type);
+    }
   }
   int opcode=(leftHandExpression && !holder) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : Type.getInternalName(loadClass(field.getOwner()));
