@@ -1,0 +1,19 @@
+{
+  final Socket socket=serverSocket.accept();
+  new Thread(new Runnable(){
+    public void run(){
+      try {
+        closure.call(socket);
+      }
+  finally {
+        try {
+          socket.close();
+        }
+ catch (        IOException e) {
+        }
+      }
+    }
+  }
+).start();
+  return socket;
+}
