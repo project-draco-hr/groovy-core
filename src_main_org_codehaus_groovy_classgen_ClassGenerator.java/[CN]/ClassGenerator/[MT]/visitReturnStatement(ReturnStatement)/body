@@ -2,7 +2,16 @@
   onLineNumber(statement);
   statement.getExpression().visit(this);
   Class c=getExpressionType(statement.getExpression());
-  if (!c.isPrimitive()) {
+  if (c == Boolean.class) {
+    Label l0=new Label();
+    cv.visitJumpInsn(IFEQ,l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
+    cv.visitInsn(ARETURN);
+    cv.visitLabel(l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
+    cv.visitInsn(ARETURN);
+  }
+ else   if (!c.isPrimitive()) {
     cv.visitInsn(ARETURN);
   }
  else {

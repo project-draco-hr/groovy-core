@@ -4,7 +4,18 @@
     cv.visitVarInsn(ALOAD,0);
   }
   leftHandExpression=false;
-  expression.getRightExpression().visit(this);
+  Expression rightExpression=expression.getRightExpression();
+  rightExpression.visit(this);
+  if (comparisonExpression(rightExpression)) {
+    Label l0=new Label();
+    cv.visitJumpInsn(IFEQ,l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","TRUE","Ljava/lang/Boolean;");
+    Label l1=new Label();
+    cv.visitJumpInsn(GOTO,l1);
+    cv.visitLabel(l0);
+    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean","FALSE","Ljava/lang/Boolean;");
+    cv.visitLabel(l1);
+  }
   leftHandExpression=true;
   leftExpression.visit(this);
   leftHandExpression=false;
