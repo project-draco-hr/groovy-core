@@ -1,0 +1,17 @@
+{
+  MetaClass interfaceMetaClass=registry.getMetaClass(theClass);
+  Iterator iter=interfaceMetaClass.newStaticInstanceMethodIndex.entrySet().iterator();
+  while (iter.hasNext()) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String name=(String)entry.getKey();
+    List values=(List)entry.getValue();
+    if (values != null) {
+      List list=(List)newStaticInstanceMethodIndex.get(name);
+      if (list == null) {
+        list=new ArrayList();
+        newStaticInstanceMethodIndex.put(name,list);
+      }
+      list.addAll(values);
+    }
+  }
+}

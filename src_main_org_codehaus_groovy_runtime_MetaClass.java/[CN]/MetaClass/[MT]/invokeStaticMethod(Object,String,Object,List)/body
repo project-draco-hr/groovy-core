@@ -7,7 +7,11 @@
     }
   }
   if (theClass != Class.class) {
-    return registry.getMetaClass(Class.class).invokeMethod(object,methodName,arguments,argumentList);
+    try {
+      return registry.getMetaClass(Class.class).invokeMethod(object,methodName,arguments,argumentList);
+    }
+ catch (    InvokerException e) {
+    }
   }
   throw new InvokerException("Could not find matching method called: " + methodName + " for class: "+ theClass.getName());
 }
