@@ -2,9 +2,7 @@
   Map binding=new HashMap();
   binding.put("sam","pullara");
   Template template1=new SimpleTemplateEngine().createTemplate("<%= sam %><% print sam %>");
-  template1.setBinding(binding);
-  assertEquals("pullarapullara",template1.toString());
+  assertEquals("pullarapullara",template1.make(binding).toString());
   Template template2=new GStringTemplateEngine().createTemplate("<%= sam %><% out << sam %>");
-  template2.setBinding(binding);
-  assertEquals("pullarapullara",template2.toString());
+  assertEquals("pullarapullara",template2.make(binding).toString());
 }

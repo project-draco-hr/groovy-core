@@ -1,0 +1,26 @@
+{
+  try {
+    final Closure delegatedClosure=(Closure)template.clone();
+    delegatedClosure.setDelegate(new Binding(map));
+    return new Writable(){
+      public Writer writeTo(      final Writer writer) throws IOException {
+        delegatedClosure.call(new Object[]{new PrintWriter(writer)});
+        return writer;
+      }
+      public String toString(){
+        final StringWriter stringWriter=new StringWriter();
+        try {
+          writeTo(stringWriter);
+          return stringWriter.toString();
+        }
+ catch (        final IOException e) {
+          return e.toString();
+        }
+      }
+    }
+;
+  }
+ catch (  CloneNotSupportedException e) {
+    return null;
+  }
+}
