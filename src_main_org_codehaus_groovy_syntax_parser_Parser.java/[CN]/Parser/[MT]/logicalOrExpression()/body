@@ -1,7 +1,7 @@
 {
   CSTNode expr=logicalAndExpression();
-  if (lt() == Token.LOGICAL_OR) {
-    rootNode(Token.LOGICAL_OR,expr);
+  while (lt() == Token.LOGICAL_OR) {
+    expr=rootNode(Token.LOGICAL_OR,expr);
     expr.addChild(logicalAndExpression());
   }
   return expr;
