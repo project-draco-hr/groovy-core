@@ -18,6 +18,12 @@
       return "groovy.lang." + name;
     }
  catch (    ClassNotFoundException ee) {
+      try {
+        getClassLoader().loadClass("groovy.util." + name);
+        return "groovy.util." + name;
+      }
+ catch (      ClassNotFoundException eee) {
+      }
     }
   }
   return null;
