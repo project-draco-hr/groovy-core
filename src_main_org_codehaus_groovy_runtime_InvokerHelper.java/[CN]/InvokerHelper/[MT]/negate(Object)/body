@@ -21,6 +21,14 @@
     Float number=(Float)value;
     return new Float(-number.floatValue());
   }
+ else   if (value instanceof ArrayList) {
+    ArrayList newlist=new ArrayList();
+    Iterator it=((ArrayList)value).iterator();
+    for (; it.hasNext(); ) {
+      newlist.add(negate(it.next()));
+    }
+    return newlist;
+  }
  else {
     throw new GroovyRuntimeException("Cannot negate type " + value.getClass().getName() + ", value "+ value);
   }

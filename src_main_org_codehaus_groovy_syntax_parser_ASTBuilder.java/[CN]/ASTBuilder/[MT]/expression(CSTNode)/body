@@ -22,7 +22,15 @@ case Types.INFIX_OPERATOR:
 }
 case Types.REGEX_PATTERN:
 {
-expression=new RegexExpression(expression(reduction.get(1)));
+CSTNode body=reduction.get(1);
+Token token=body.getRoot();
+String text=body.getRootText();
+if (body.isA(Types.SYNTH_GSTRING)) {
+  expression=new RegexExpression(expression(reduction.get(1)));
+}
+ else {
+  expression=new BitwiseNegExpression(expression(body));
+}
 break;
 }
 case Types.PREFIX_OPERATOR:

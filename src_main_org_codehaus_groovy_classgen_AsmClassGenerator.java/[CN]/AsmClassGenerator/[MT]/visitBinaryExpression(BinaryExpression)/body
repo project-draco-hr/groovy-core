@@ -34,6 +34,24 @@ break;
 case Types.LOGICAL_OR:
 evaluateLogicalOrExpression(expression);
 break;
+case Types.BITWISE_AND:
+evaluateBinaryExpression("and",expression);
+break;
+case Types.BITWISE_AND_EQUAL:
+evaluateBinaryExpressionWithAsignment("and",expression);
+break;
+case Types.BITWISE_OR:
+evaluateBinaryExpression("or",expression);
+break;
+case Types.BITWISE_OR_EQUAL:
+evaluateBinaryExpressionWithAsignment("or",expression);
+break;
+case Types.BITWISE_XOR:
+evaluateBinaryExpression("xor",expression);
+break;
+case Types.BITWISE_XOR_EQUAL:
+evaluateBinaryExpressionWithAsignment("xor",expression);
+break;
 case Types.PLUS:
 {
 if (ENABLE_EARLY_BINDING) {
@@ -255,12 +273,6 @@ break;
 case Types.INTDIV_EQUAL:
 evaluateBinaryExpressionWithAsignment("intdiv",expression);
 break;
-case Types.BITWISE_AND:
-evaluateBinaryExpression("and",expression);
-break;
-case Types.PIPE:
-evaluateBinaryExpression("or",expression);
-break;
 case Types.MOD:
 evaluateBinaryExpression("mod",expression);
 break;
@@ -270,11 +282,18 @@ break;
 case Types.LEFT_SHIFT:
 evaluateBinaryExpression("leftShift",expression);
 break;
+case Types.LEFT_SHIFT_EQUAL:
+evaluateBinaryExpressionWithAsignment("leftShift",expression);
 case Types.RIGHT_SHIFT:
 evaluateBinaryExpression("rightShift",expression);
 break;
+case Types.RIGHT_SHIFT_EQUAL:
+evaluateBinaryExpressionWithAsignment("rightShift",expression);
 case Types.RIGHT_SHIFT_UNSIGNED:
 evaluateBinaryExpression("rightShiftUnsigned",expression);
+break;
+case Types.RIGHT_SHIFT_UNSIGNED_EQUAL:
+evaluateBinaryExpressionWithAsignment("rightShiftUnsigned",expression);
 break;
 case Types.KEYWORD_INSTANCEOF:
 evaluateInstanceof(expression);
