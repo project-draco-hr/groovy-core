@@ -1,9 +1,10 @@
 {
-  if (args instanceof Closure) {
-    Closure closure=(Closure)args;
-    return C.args(new ClosureConstraintMatcher(closure));
+  if (args.getClass().isArray()) {
+    Object argArray[]=(Object[])args;
+    if (argArray[0] instanceof Closure) {
+      Closure closure=(Closure)argArray[0];
+      return C.args(new ClosureConstraintMatcher(closure));
+    }
   }
- else {
-    return C.args(C.eq(args));
-  }
+  return C.args(C.eq(args));
 }
