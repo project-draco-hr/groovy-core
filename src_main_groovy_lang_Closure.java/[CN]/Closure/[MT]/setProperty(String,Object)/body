@@ -1,9 +1,8 @@
 {
-  try {
-    getMetaClass().setProperty(this,property,newValue);
-    return;
+  if ("delegate".equals(property)) {
+    setDelegate(newValue);
   }
- catch (  GroovyRuntimeException e) {
+ else {
     try {
       InvokerHelper.setProperty(this.owner,property,newValue);
       return;
@@ -16,8 +15,8 @@
         }
  catch (        GroovyRuntimeException e2) {
         }
+        throw e1;
       }
-      throw e;
     }
   }
 }

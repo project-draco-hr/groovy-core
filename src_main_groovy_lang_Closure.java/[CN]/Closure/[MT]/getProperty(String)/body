@@ -1,8 +1,20 @@
 {
-  try {
-    return getMetaClass().getProperty(this,property);
+  if ("delegate".equals(property)) {
+    return getDelegate();
   }
- catch (  GroovyRuntimeException e) {
+ else   if ("owner".equals(property)) {
+    return getOwner();
+  }
+ else   if ("parameterTypes".equals(property)) {
+    return getParameterTypes();
+  }
+ else   if ("metaClass".equals(property)) {
+    return getMetaClass();
+  }
+ else   if ("class".equals(property)) {
+    return getClass();
+  }
+ else {
     try {
       return InvokerHelper.getProperty(this.owner,property);
     }
@@ -14,7 +26,7 @@
  catch (        GroovyRuntimeException e2) {
         }
       }
+      throw e1;
     }
-    throw e;
   }
 }
