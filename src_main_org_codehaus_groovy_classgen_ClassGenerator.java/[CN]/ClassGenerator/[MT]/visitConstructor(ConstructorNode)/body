@@ -4,6 +4,10 @@
   resetVariableStack(node.getParameters());
   cv.visitVarInsn(ALOAD,0);
   cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
+  Statement code=node.getCode();
+  if (code != null) {
+    code.visit(this);
+  }
   cv.visitInsn(RETURN);
   cv.visitMaxs(0,0);
 }

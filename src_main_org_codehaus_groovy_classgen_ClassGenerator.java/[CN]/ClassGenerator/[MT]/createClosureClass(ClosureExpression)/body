@@ -1,6 +1,13 @@
 {
-  String name=classNode.getName() + "$" + (innerClasses.size() + 1);
+  String outerClassName=classNode.getName();
+  String name=outerClassName + "$" + (innerClasses.size() + 1);
+  Parameter[] parameters=expression.getParameters();
   ClassNode answer=new ClassNode(name,ACC_PUBLIC,"org/codehaus/groovy/lang/Closure");
-  answer.addMethod(new MethodNode("doCall",ACC_PUBLIC,"java/lang/Object",expression.getParameters(),expression.getCode()));
+  answer.addMethod("doCall",ACC_PUBLIC,"java/lang/Object",parameters,expression.getCode());
+  FieldNode field=answer.addField("__outerInstance",ACC_PRIVATE,outerClassName,null);
+  StatementBlock block=new StatementBlock();
+  block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.equal(-1,-1),new VariableExpression("__outerInstance"))));
+  Parameter[] contructorParams=new Parameter[]{new Parameter(outerClassName,"__outerInstance",null)};
+  answer.addConstructor(ACC_PUBLIC,contructorParams,block);
   return answer;
 }
