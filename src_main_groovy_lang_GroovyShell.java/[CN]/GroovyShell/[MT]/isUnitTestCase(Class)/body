@@ -1,0 +1,17 @@
+{
+  boolean isUnitTestCase=false;
+  try {
+    ClassLoader ctxtClassLoader=getClassLoader();
+    try {
+      Class testCaseClass=ctxtClassLoader.loadClass("groovy.util.GroovyTestCase");
+      if (testCaseClass.isAssignableFrom(scriptClass)) {
+        isUnitTestCase=true;
+      }
+    }
+ catch (    ClassNotFoundException e) {
+    }
+  }
+ catch (  Exception e) {
+  }
+  return isUnitTestCase;
+}
