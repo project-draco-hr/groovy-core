@@ -1,0 +1,15 @@
+{
+  this.defaultTag=defaultTag;
+  final Iterator keyIterator=tagMap.keySet().iterator();
+  while (keyIterator.hasNext()) {
+    final Object key=keyIterator.next();
+    this.tagMap.put(key,tagMap.get(key));
+  }
+  try {
+    this.root=(Closure)root.clone();
+  }
+ catch (  final CloneNotSupportedException e) {
+    throw new GroovyRuntimeException(e.getMessage());
+  }
+  this.root.setDelegate(this);
+}

@@ -1,0 +1,15 @@
+{
+  this.defaultGenerator=defaultGenerator.asWritable();
+  this.methodMap=new HashMap();
+  final Iterator keyIterator=methodMap.keySet().iterator();
+  while (keyIterator.hasNext()) {
+    final Object key=keyIterator.next();
+    final Object value=methodMap.get(key);
+    if ((value instanceof Closure)) {
+      this.methodMap.put(key,value);
+    }
+ else {
+      this.methodMap.put(key,this.defaultGenerator.curry(value));
+    }
+  }
+}
