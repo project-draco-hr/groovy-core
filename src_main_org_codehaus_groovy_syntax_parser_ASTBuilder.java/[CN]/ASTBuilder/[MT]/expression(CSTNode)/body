@@ -1,5 +1,11 @@
 {
 switch (expressionRoot.getToken().getType()) {
+case (Token.MINUS):
+{
+      if (expressionRoot.getChildren().length == 1) {
+        return negationExpression(expressionRoot);
+      }
+    }
 case (Token.COMPARE_EQUAL):
 case (Token.COMPARE_NOT_EQUAL):
 case (Token.COMPARE_IDENTICAL):
@@ -9,7 +15,6 @@ case (Token.COMPARE_GREATER_THAN):
 case (Token.COMPARE_GREATER_THAN_EQUAL):
 case (Token.PLUS):
 case (Token.PLUS_EQUAL):
-case (Token.MINUS):
 case (Token.MINUS_EQUAL):
 case (Token.MULTIPLY):
 case (Token.MULTIPLY_EQUAL):
@@ -26,15 +31,15 @@ case (Token.MATCH_REGEX):
 case (Token.COMPARE_TO):
 case (Token.LEFT_SQUARE_BRACKET):
 {
-      return binaryExpression(expressionRoot);
-    }
+    return binaryExpression(expressionRoot);
+  }
 case (Token.SYNTH_POSTFIX):
 {
-    return postfixExpression(expressionRoot);
-  }
+  return postfixExpression(expressionRoot);
+}
 case (Token.SYNTH_PREFIX):
 {
-  return prefixExpression(expressionRoot);
+return prefixExpression(expressionRoot);
 }
 case (Token.DOT_DOT):
 {
