@@ -43,7 +43,7 @@ break PREFIX_SWITCH;
 }
 case (Token.KEYWORD_THIS):
 {
-expr=new CSTNode(Token.keyword(-1,-1,"this"));
+expr=thisExpression();
 identifier=rootNode(lt_bare());
 break PREFIX_SWITCH;
 }
@@ -83,7 +83,7 @@ expr=sugaryMethodCallExpression(expr,identifier,null);
 }
 }
  else {
-CSTNode methodCall=tryParseMethodCallWithoutParenthesis(expr,identifier);
+CSTNode methodCall=tryParseMethodCallWithoutParenthesis(thisExpression(),identifier);
 if (methodCall != null) {
 expr=methodCall;
 }
