@@ -2,17 +2,17 @@
   if (leftExpression instanceof VariableExpression) {
     VariableExpression varExp=(VariableExpression)leftExpression;
     String type=varExp.getType();
-    if (type != null && !type.equals("java.lang.Object")) {
+    if (isValidTypeForCast(type)) {
       return type;
     }
     String variableName=varExp.getVariable();
     Variable variable=(Variable)variableStack.get(variableName);
     if (variable != null) {
-      if (variable.isHolder()) {
+      if (variable.isHolder() || variable.isProperty()) {
         return null;
       }
       type=variable.getType();
-      if (type != null && !type.equals("java.lang.Object")) {
+      if (isValidTypeForCast(type)) {
         return type;
       }
     }
@@ -23,7 +23,7 @@
       }
       if (field != null) {
         type=field.getType();
-        if (!field.isHolder() && type != null && !type.equals("java.lang.Object")) {
+        if (!field.isHolder() && isValidTypeForCast(type)) {
           return type;
         }
       }

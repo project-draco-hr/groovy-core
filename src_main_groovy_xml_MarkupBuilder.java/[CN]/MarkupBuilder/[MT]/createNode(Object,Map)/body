@@ -1,17 +1,12 @@
 {
-  out.printIndent();
-  out.print("<");
-  out.print(name.toString());
+  toState(1,name);
   for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry entry=(Map.Entry)iter.next();
     out.print(" ");
-    print(entry.getKey());
+    print(transformName(entry.getKey().toString()));
     out.print("='");
-    print(entry.getValue());
+    print(transformValue(entry.getValue().toString()));
     out.print("'");
   }
-  out.println(">");
-  out.incrementIndent();
-  newline=true;
   return name;
 }

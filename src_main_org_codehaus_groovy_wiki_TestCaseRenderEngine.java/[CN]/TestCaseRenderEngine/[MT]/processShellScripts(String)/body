@@ -1,0 +1,26 @@
+{
+  StringBuffer buf=new StringBuffer();
+  String[] parts=groovyShellPattern.split(text);
+  buf.append(parts[0]);
+  for (int count=1; count < parts.length; count++) {
+    buf.append("*/ \n\n  void testScript" + count + "() {\n");
+    buf.append("    assertScript( <<<SCRIPT_EOF" + count + "\n");
+    String code=parts[count].replaceFirst("\\{code\\}","\nSCRIPT_EOF" + count + " )\n}    \n\n /*");
+    StringBuffer temp=new StringBuffer(code);
+    for (int idx=0; true; idx++) {
+      idx=temp.indexOf("$",idx);
+      if (idx >= 0) {
+        String next=temp.substring(++idx,idx + 1);
+        if (next.equals("{")) {
+          temp.insert(idx,"$");
+          idx++;
+        }
+      }
+ else {
+        break;
+      }
+    }
+    buf.append(temp.toString());
+  }
+  return buf.toString();
+}

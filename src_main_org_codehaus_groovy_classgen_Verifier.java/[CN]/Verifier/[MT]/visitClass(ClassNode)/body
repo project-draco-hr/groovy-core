@@ -8,10 +8,11 @@
   FieldExpression metaClassVar=new FieldExpression(metaClassField);
   IfStatement initMetaClassField=new IfStatement(new BooleanExpression(new BinaryExpression(metaClassVar,Token.compareEqual(-1,-1),ConstantExpression.NULL)),new ExpressionStatement(new BinaryExpression(metaClassVar,Token.equal(-1,-1),initMetaClassCall)),EmptyStatement.INSTANCE);
   node.addMethod("getMetaClass",ACC_PUBLIC,MetaClass.class.getName(),Parameter.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(metaClassVar)}));
-  boolean addDelegateObject=node instanceof InnerClassNode && node.getSuperClass().equals("groovy.lang.Closure");
+  String superClass=node.getSuperClass();
+  boolean addDelegateObject=(node instanceof InnerClassNode && superClass.equals(Closure.class.getName())) || superClass.equals(GString.class.getName());
   if (!addDelegateObject) {
     node.addMethod("invokeMethod",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"method"),new Parameter(Object.class.getName(),"arguments")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"invokeMethod",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("method"),new VariableExpression("arguments")})))}));
-    if (!node.getSuperClass().equals(Script.class.getName())) {
+    if (!superClass.equals(Script.class.getName())) {
       node.addMethod("getProperty",ACC_PUBLIC,Object.class.getName(),new Parameter[]{new Parameter(String.class.getName(),"property")},new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"getProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property")})))}));
       node.addMethod("setProperty",ACC_PUBLIC,"void",new Parameter[]{new Parameter(String.class.getName(),"property"),new Parameter(Object.class.getName(),"value")},new BlockStatement(new Statement[]{initMetaClassField,new ExpressionStatement(new MethodCallExpression(metaClassVar,"setProperty",new ArgumentListExpression(new Expression[]{VariableExpression.THIS_EXPRESSION,new VariableExpression("property"),new VariableExpression("value")})))}));
     }

@@ -1,0 +1,16 @@
+{
+  List list=new ArrayList();
+  File dir=new File("xdocs");
+  File[] files=dir.listFiles();
+  for (int i=0; i < files.length; i++) {
+    File file=files[i];
+    String name=file.getName();
+    if (name.endsWith(".html")) {
+      list.add("xdocs/" + file.getName());
+    }
+  }
+  String[] args=new String[list.size()];
+  list.toArray(args);
+  GroovyObject object=compile("src/test/org/codehaus/groovy/wiki/Html2Wiki.groovy");
+  object.invokeMethod("main",new Object[]{args});
+}

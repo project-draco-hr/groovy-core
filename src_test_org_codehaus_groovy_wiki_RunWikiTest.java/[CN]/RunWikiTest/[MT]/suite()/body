@@ -1,0 +1,15 @@
+{
+  TestSuite suite=new TestSuite();
+  File dir=new File("xdocs");
+  File[] files=dir.listFiles();
+  for (int i=0; i < files.length; i++) {
+    File file=files[i];
+    String name=file.getName();
+    if (name.endsWith(".wiki")) {
+      name="target/test-classes/wiki/" + name.replaceAll(".wiki","Test.groovy");
+      System.setProperty("test",name);
+      suite.addTest(GroovyTestSuite.suite());
+    }
+  }
+  return suite;
+}

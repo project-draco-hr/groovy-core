@@ -11,14 +11,13 @@
   StringBuffer buf=new StringBuffer();
   String[] parts=groovyCodePattern.split(content);
   buf.append("package wiki\nclass " + name + " extends GroovyTestCase {\n\n");
-  buf.append("void testDummy() {\n// this is a dummy test case\n}\n\n");
   buf.append("/*\n");
-  buf.append(parts[0]);
-  int count=1;
-  for (int i=1; i < parts.length; i++) {
-    buf.append("*/ \n\n  void testCase" + (count++) + "() {\n");
-    buf.append(removeCloseCode(parts[i]));
+  buf.append(processShellScripts(parts[0]));
+  for (int count=1; count < parts.length; count++) {
+    buf.append("*/ \n\n  void testCase" + count + "() {\n");
+    buf.append(processShellScripts(removeCloseCode(parts[count])));
   }
-  buf.append("\n*/\n\n}\n");
+  buf.append("\n*/\n\n");
+  buf.append("void testDummy() {\n// this is a dummy test case\n}\n\n}\n");
   return buf.toString();
 }

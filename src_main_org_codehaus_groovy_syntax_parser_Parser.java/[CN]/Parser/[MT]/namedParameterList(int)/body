@@ -1,7 +1,10 @@
 {
   CSTNode parameterList=new CSTNode(Token.syntheticList());
   while (lt() != endOfListDemarc) {
-    CSTNode name=rootNode(Token.IDENTIFIER);
+    if (lt_bare() != Token.IDENTIFIER && lt_bare() != Token.KEYWORD_CLASS) {
+      throwExpected(new int[]{Token.IDENTIFIER,Token.KEYWORD_CLASS});
+    }
+    CSTNode name=rootNode(lt_bare());
     CSTNode namedParam=rootNode_bare(Token.COLON,name);
     namedParam.addChild(expression());
     parameterList.addChild(namedParam);

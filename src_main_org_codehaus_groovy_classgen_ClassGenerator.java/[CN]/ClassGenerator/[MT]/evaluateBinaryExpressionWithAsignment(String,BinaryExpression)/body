@@ -5,7 +5,7 @@
     if (leftBinExpr.getOperation().getType() == Token.LEFT_SQUARE_BRACKET) {
       MethodCallExpression methodCall=new MethodCallExpression(expression.getLeftExpression(),method,new ArgumentListExpression(new Expression[]{expression.getRightExpression()}));
       Expression safeIndexExpr=createReusableExpression(leftBinExpr.getRightExpression());
-      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"put",new ArgumentListExpression(new Expression[]{safeIndexExpr,methodCall})));
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{safeIndexExpr,methodCall})));
       cv.visitInsn(POP);
       return;
     }

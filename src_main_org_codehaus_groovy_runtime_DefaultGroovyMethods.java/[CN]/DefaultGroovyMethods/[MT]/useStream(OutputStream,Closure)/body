@@ -1,0 +1,18 @@
+{
+  try {
+    closure.call(stream);
+    OutputStream temp=stream;
+    stream=null;
+    temp.close();
+  }
+  finally {
+    if (stream != null) {
+      try {
+        stream.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing stream: " + e);
+      }
+    }
+  }
+}

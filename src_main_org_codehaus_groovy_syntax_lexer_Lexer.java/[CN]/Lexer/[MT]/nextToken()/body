@@ -112,6 +112,10 @@ consume();
 eol();
 break CONSUME_LOOP;
 }
+case CharStream.EOS:
+{
+break CONSUME_LOOP;
+}
 default :
 {
 consume();
@@ -153,6 +157,10 @@ consume();
 eol();
 break CONSUME_LOOP;
 }
+case CharStream.EOS:
+{
+break CONSUME_LOOP;
+}
 default :
 {
 consume();
@@ -189,6 +197,10 @@ case ('\n'):
 eol();
 consume();
 break CONSUME_SWITCH;
+}
+case CharStream.EOS:
+{
+break CONSUME_LOOP;
 }
 default :
 {
@@ -604,6 +616,7 @@ consume();
 StringBuffer stringLiteral=new StringBuffer();
 LITERAL_LOOP: while (true) {
 c=la();
+int x=(int)c;
 LITERAL_SWITCH: switch (c) {
 case ('\\'):
 {
@@ -641,9 +654,7 @@ case ('"'):
 consume();
 break LITERAL_LOOP;
 }
-case ('\r'):
-case ('\n'):
-case (CharStream.EOS):
+case (char)-1:
 {
 throw new UnterminatedStringLiteralException(getStartLine(),getStartColumn());
 }

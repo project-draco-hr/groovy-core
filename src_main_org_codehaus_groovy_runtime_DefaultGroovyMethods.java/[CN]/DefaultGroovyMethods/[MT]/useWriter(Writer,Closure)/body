@@ -1,0 +1,18 @@
+{
+  try {
+    closure.call(writer);
+    Writer temp=writer;
+    writer=null;
+    temp.close();
+  }
+  finally {
+    if (writer != null) {
+      try {
+        writer.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing writer: " + e);
+      }
+    }
+  }
+}

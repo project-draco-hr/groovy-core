@@ -4,10 +4,12 @@
   if (leftHandExpression) {
     cv.visitVarInsn(ASTORE,valueIdx);
   }
-  cv.visitVarInsn(ALOAD,0);
-  cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(outerClassNode.getName()));
   FieldNode field=expression.getField();
   boolean isStatic=field.isStatic();
+  if (!isStatic) {
+    cv.visitVarInsn(ALOAD,0);
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",getTypeDescription(outerClassNode.getName()));
+  }
   int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=getClassInternalName(outerClassNode.getName());
   if (leftHandExpression) {

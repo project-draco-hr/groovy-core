@@ -1,9 +1,12 @@
 {
-  if (left instanceof Float)   left=new Double(((Float)left).doubleValue());
-  if (right instanceof Float)   right=new Double(((Float)left).doubleValue());
   if (left instanceof Comparable) {
-    Comparable comparable=(Comparable)left;
-    return comparable.compareTo(right);
+    if (left instanceof Number) {
+      return DefaultGroovyMethods.compareTo((Number)left,asNumber(right));
+    }
+ else {
+      Comparable comparable=(Comparable)left;
+      return comparable.compareTo(right);
+    }
   }
   throw new GroovyRuntimeException("Cannot compare values: " + left + " and "+ " right");
 }
