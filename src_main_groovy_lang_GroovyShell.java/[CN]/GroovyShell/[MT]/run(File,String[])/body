@@ -8,7 +8,6 @@
     }
   }
   final Thread thread=Thread.currentThread();
-  ClassLoader currentClassLoader=thread.getContextClassLoader();
 class DoSetContext implements PrivilegedAction {
     ClassLoader classLoader;
     public DoSetContext(    ClassLoader loader){
@@ -22,6 +21,7 @@ class DoSetContext implements PrivilegedAction {
   ;
   AccessController.doPrivileged(new DoSetContext(loader));
   Class scriptClass;
+  final ShellLoader loader=new ShellLoader();
   try {
     scriptClass=(Class)AccessController.doPrivileged(new PrivilegedExceptionAction(){
       public Object run() throws CompilationFailedException, IOException {
@@ -43,5 +43,4 @@ class DoSetContext implements PrivilegedAction {
     }
   }
   runMainOrTestOrRunnable(scriptClass,args);
-  AccessController.doPrivileged(new DoSetContext(currentClassLoader));
 }

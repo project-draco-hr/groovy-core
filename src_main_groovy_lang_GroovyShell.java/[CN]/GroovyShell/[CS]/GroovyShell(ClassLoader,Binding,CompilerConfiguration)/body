@@ -1,16 +1,5 @@
 {
-  this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
-      ClassLoader pcl=parent;
-      if (pcl == null) {
-        pcl=Thread.currentThread().getContextClassLoader();
-        if (pcl == null) {
-          pcl=GroovyShell.class.getClassLoader();
-        }
-      }
-      return new GroovyClassLoader(pcl,(config == null) ? new CompilerConfiguration() : config);
-    }
-  }
-);
+  this.config=config;
+  this.loader=new MainClassLoader(parent);
   this.context=binding;
 }
