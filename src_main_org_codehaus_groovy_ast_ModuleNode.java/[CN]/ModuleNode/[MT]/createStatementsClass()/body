@@ -11,6 +11,17 @@
   }
   name+=extractClassFromFileDescription();
   ClassNode classNode=new ClassNode(name,ACC_PUBLIC,"java.lang.Object");
-  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"void",new Parameter[]{new Parameter("java.lang.String[]","args")},statementBlock));
+  if (!statementBlock.isEmpty()) {
+    classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"void",new Parameter[]{new Parameter("java.lang.String[]","args")},statementBlock));
+  }
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode node=(MethodNode)iter.next();
+    int modifiers=node.getModifiers();
+    if ((modifiers & ACC_ABSTRACT) == 0) {
+      throw new RuntimeException("Cannot use abstract methods in a script, they are only available inside classes. Method: " + node.getName());
+    }
+    node.setModifiers(modifiers | ACC_STATIC);
+    classNode.addMethod(node);
+  }
   return classNode;
 }
