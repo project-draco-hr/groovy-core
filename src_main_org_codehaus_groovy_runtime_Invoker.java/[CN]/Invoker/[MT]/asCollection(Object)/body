@@ -18,6 +18,14 @@
     method.call(adapter);
     return adapter.asList();
   }
+ else   if (value instanceof File) {
+    try {
+      return DefaultGroovyMethods.readLines((File)value);
+    }
+ catch (    IOException e) {
+      throw new GroovyRuntimeException("Error reading file: " + value,e);
+    }
+  }
  else {
     return Collections.singletonList(value);
   }
