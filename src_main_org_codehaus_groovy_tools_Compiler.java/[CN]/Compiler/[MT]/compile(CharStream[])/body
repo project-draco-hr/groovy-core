@@ -5,6 +5,9 @@
       compilationUnits[i]=stageOneCompile(sources[i]);
     }
  catch (    Exception e) {
+      if (e instanceof SyntaxException) {
+        ((SyntaxException)e).setSourceLocator(sources[i].getDescription());
+      }
       this.errors.add(e);
     }
  finally {
