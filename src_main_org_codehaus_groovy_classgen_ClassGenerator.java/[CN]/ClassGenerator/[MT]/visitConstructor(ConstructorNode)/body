@@ -2,6 +2,7 @@
   String methodType=getMethodDescriptor("void",node.getParameters());
   cv=classVisitor.visitMethod(node.getModifiers(),"<init>",methodType,null);
   resetVariableStack(node.getParameters());
+  cv.visitVarInsn(ALOAD,0);
   cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
   cv.visitInsn(RETURN);
   cv.visitMaxs(0,0);

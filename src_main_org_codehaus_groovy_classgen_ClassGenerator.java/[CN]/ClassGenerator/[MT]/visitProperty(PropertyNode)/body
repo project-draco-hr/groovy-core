@@ -1,21 +1,2 @@
 {
-  String name=propertyNode.getName();
-  String getterName="get" + capitalize(name);
-  String setterName="set" + capitalize(name);
-  FieldNode field=new FieldNode(name,ACC_PRIVATE,propertyNode.getType(),classNode.getName(),propertyNode.getInitialValueExpression());
-  classNode.addField(field);
-  visitField(field);
-  Statement getterBlock=propertyNode.getGetterBlock();
-  if (getterBlock == null) {
-    getterBlock=createGetterBlock(propertyNode,field);
-  }
-  Statement setterBlock=propertyNode.getGetterBlock();
-  if (setterBlock == null) {
-    setterBlock=createSetterBlock(propertyNode,field);
-  }
-  MethodNode getter=new MethodNode(getterName,propertyNode.getModifiers(),propertyNode.getType(),Parameter.EMPTY_ARRAY,getterBlock);
-  visitMethod(getter);
-  Parameter[] setterParameterTypes={new Parameter(propertyNode.getType(),"value")};
-  MethodNode setter=new MethodNode(setterName,propertyNode.getModifiers(),"void",setterParameterTypes,setterBlock);
-  visitMethod(setter);
 }
