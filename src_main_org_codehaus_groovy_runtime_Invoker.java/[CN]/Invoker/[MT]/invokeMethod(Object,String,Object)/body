@@ -2,15 +2,21 @@
   if (object == null) {
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
-  List argumentList=asList(arguments);
-  if (object instanceof Class) {
-    Class theClass=(Class)object;
-    MetaClass metaClass=metaRegistry.getMetaClass(theClass);
-    return metaClass.invokeStaticMethod(object,methodName,arguments,argumentList);
+  if (object instanceof GroovyObject) {
+    GroovyObject groovy=(GroovyObject)object;
+    return groovy.invokeMethod(methodName,arguments);
   }
  else {
-    Class theClass=object.getClass();
-    MetaClass metaClass=metaRegistry.getMetaClass(theClass);
-    return metaClass.invokeMethod(object,methodName,arguments,argumentList);
+    List argumentList=asList(arguments);
+    if (object instanceof Class) {
+      Class theClass=(Class)object;
+      MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+      return metaClass.invokeStaticMethod(object,methodName,arguments,argumentList);
+    }
+ else {
+      Class theClass=object.getClass();
+      MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+      return metaClass.invokeMethod(object,methodName,arguments,argumentList);
+    }
   }
 }
