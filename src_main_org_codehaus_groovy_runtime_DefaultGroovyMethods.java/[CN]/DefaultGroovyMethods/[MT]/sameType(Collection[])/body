@@ -1,0 +1,23 @@
+{
+  List all=new LinkedList();
+  for (int i=0; i < cols.length; i++) {
+    all.addAll(cols[i]);
+  }
+  if (all.size() == 0)   return true;
+  Object first=all.get(0);
+  Class baseClass;
+  if (first instanceof Number) {
+    baseClass=Number.class;
+  }
+ else {
+    baseClass=first.getClass();
+  }
+  for (int i=0; i < cols.length; i++) {
+    for (Iterator iter=cols[i].iterator(); iter.hasNext(); ) {
+      if (!baseClass.isInstance(iter.next())) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

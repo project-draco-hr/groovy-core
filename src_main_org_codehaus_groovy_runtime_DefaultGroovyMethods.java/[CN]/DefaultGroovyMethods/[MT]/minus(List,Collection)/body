@@ -1,0 +1,34 @@
+{
+  if (self.size() == 0)   return new ArrayList();
+  boolean nlgnSort=sameType(new Collection[]{self,removeMe});
+  if (nlgnSort) {
+    Set answer=new TreeSet(self);
+    answer.removeAll(removeMe);
+    return new ArrayList(answer);
+  }
+ else {
+    List tmpAnswer=new LinkedList(self);
+    for (Iterator iter=tmpAnswer.iterator(); iter.hasNext(); ) {
+      Object element=iter.next();
+      boolean removeElement=false;
+      for (Iterator iterator=removeMe.iterator(); iterator.hasNext(); ) {
+        if (element.equals(iterator.next())) {
+          iter.remove();
+        }
+      }
+    }
+    List answer=new LinkedList();
+    Object[] array=(Object[])tmpAnswer.toArray(new Object[tmpAnswer.size()]);
+    for (int i=0; i < array.length; i++) {
+      if (array[i] != null) {
+        for (int j=i + 1; j < array.length; j++) {
+          if (array[i].equals(array[j])) {
+            array[j]=null;
+          }
+        }
+        answer.add(array[i]);
+      }
+    }
+    return new ArrayList(answer);
+  }
+}
