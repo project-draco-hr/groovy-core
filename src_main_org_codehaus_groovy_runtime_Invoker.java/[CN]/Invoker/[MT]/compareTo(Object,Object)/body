@@ -12,9 +12,17 @@
     if (left instanceof Number) {
       return DefaultGroovyMethods.compareTo((Number)left,asNumber(right));
     }
+ else     if (right instanceof Number) {
+      return DefaultGroovyMethods.compareTo(asNumber(left),(Number)right);
+    }
  else {
-      Comparable comparable=(Comparable)left;
-      return comparable.compareTo(right);
+      try {
+        return DefaultGroovyMethods.compareTo(asNumber(left),asNumber(right));
+      }
+ catch (      Exception e) {
+        Comparable comparable=(Comparable)left;
+        return comparable.compareTo(right);
+      }
     }
   }
   throw new GroovyRuntimeException("Cannot compare values: " + left + " and "+ right);

@@ -22,6 +22,20 @@
       }
     }
   }
+  if (Number.class.isAssignableFrom(type)) {
+    if (object instanceof Character) {
+      return new Integer(((Character)object).charValue());
+    }
+ else     if (object instanceof String) {
+      String c=(String)object;
+      if (c.length() == 1) {
+        return new Integer(c.charAt(0));
+      }
+ else {
+        throw new ClassCastException("Cannot cast: '" + c + "' to an Integer");
+      }
+    }
+  }
   if (object instanceof Number) {
     Number n=(Number)object;
     if (type.isPrimitive()) {
