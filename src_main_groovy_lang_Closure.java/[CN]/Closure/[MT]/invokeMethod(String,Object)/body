@@ -22,7 +22,10 @@ catch (        GroovyRuntimeException e1) {
             try {
               return InvokerHelper.invokeMethod(this.delegate,method,arguments);
             }
- catch (            GroovyRuntimeException gre) {
+ catch (            MissingMethodException mme) {
+              throw new InvokerInvocationException(mme);
+            }
+catch (            GroovyRuntimeException gre) {
               throw new InvokerInvocationException(gre.getCause());
             }
           }
