@@ -1,0 +1,16 @@
+{
+  int size=expression.getValues().size();
+  pushConstant(size);
+  cv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  for (int i=0; i < size; i++) {
+    cv.visitInsn(DUP);
+    pushConstant(i);
+    expression.getValue(i).visit(this);
+    cv.visitInsn(AASTORE);
+  }
+  ClassNode innerClass=createCompositeStringClass(expression);
+  innerClasses.add(innerClass);
+  String innerClassinternalName=getClassInternalName(innerClass.getName());
+  cv.visitTypeInsn(NEW,innerClassinternalName);
+  cv.visitInsn(DUP);
+}
