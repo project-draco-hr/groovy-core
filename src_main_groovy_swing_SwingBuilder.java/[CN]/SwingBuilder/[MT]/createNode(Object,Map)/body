@@ -1,50 +1,37 @@
 {
   constraints=attributes.remove("constraints");
   Object widget=null;
-  Factory factory=(Factory)factories.get(name);
-  if (factory != null) {
-    try {
-      widget=factory.newInstance(attributes);
-      if (widget == null) {
-        log.log(Level.WARNING,"Factory for name: " + name + " returned null");
-      }
+  if (passThroughNodes.containsKey(name)) {
+    widget=attributes.get(name);
+    if ((widget != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(widget.getClass())) {
+      attributes.remove(name);
+    }
  else {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("For name: " + name + " created widget: "+ widget);
+      widget=null;
+    }
+  }
+  if (widget == null) {
+    Factory factory=(Factory)factories.get(name);
+    if (factory != null) {
+      try {
+        widget=factory.newInstance(attributes);
+        if (widget == null) {
+          log.log(Level.WARNING,"Factory for name: " + name + " returned null");
+        }
+ else {
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("For name: " + name + " created widget: "+ widget);
+          }
         }
       }
-    }
- catch (    Exception e) {
-      throw new RuntimeException("Failed to create component for" + name + " reason: "+ e,e);
-    }
-  }
- else {
-    log.log(Level.WARNING,"Could not find match for name: " + name);
-  }
-  if (widget != null) {
-    if (widget instanceof Action) {
-      Action action=(Action)widget;
-      Closure closure=(Closure)attributes.remove("closure");
-      if (closure != null && action instanceof DefaultAction) {
-        DefaultAction defaultAction=(DefaultAction)action;
-        defaultAction.setClosure(closure);
-      }
-      for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
-        Map.Entry entry=(Map.Entry)iter.next();
-        String actionName=(String)entry.getKey();
-        actionName=capitalize(actionName);
-        Object value=entry.getValue();
-        action.putValue(actionName,value);
+ catch (      Exception e) {
+        throw new RuntimeException("Failed to create component for" + name + " reason: "+ e,e);
       }
     }
  else {
-      for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
-        Map.Entry entry=(Map.Entry)iter.next();
-        String property=entry.getKey().toString();
-        Object value=entry.getValue();
-        InvokerHelper.setProperty(widget,property,value);
-      }
+      log.log(Level.WARNING,"Could not find match for name: " + name);
     }
   }
+  handleWidgetAttributes(widget,attributes);
   return widget;
 }

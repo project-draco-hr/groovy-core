@@ -1,7 +1,13 @@
 {
-  Object widget=createNode(name,attributes);
-  if (widget != null) {
-    InvokerHelper.invokeMethod(widget,"setText",value.toString());
+  if (passThroughNodes.containsKey(name) && (value != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(value.getClass())) {
+    handleWidgetAttributes(value,attributes);
+    return value;
   }
-  return widget;
+ else {
+    Object widget=createNode(name,attributes);
+    if (widget != null) {
+      InvokerHelper.invokeMethod(widget,"setText",value.toString());
+    }
+    return widget;
+  }
 }

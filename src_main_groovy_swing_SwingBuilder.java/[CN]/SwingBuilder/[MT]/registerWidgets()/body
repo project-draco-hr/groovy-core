@@ -1,5 +1,6 @@
 {
   registerBeanFactory("action",DefaultAction.class);
+  passThroughNodes.put("action",javax.swing.Action.class);
   registerFactory("boxLayout",new Factory(){
     public Object newInstance(    Map properties) throws InstantiationException, InstantiationException, IllegalAccessException {
       return createBoxLayout(properties);
@@ -47,6 +48,7 @@
   registerBeanFactory("optionPane",JOptionPane.class);
   registerBeanFactory("scrollPane",JScrollPane.class);
   registerBeanFactory("separator",JSeparator.class);
+  registerBeanFactory("tabbedPane",JTabbedPane.class);
   registerFactory("splitPane",new Factory(){
     public Object newInstance(    Map properties){
       JSplitPane answer=new JSplitPane();
@@ -64,9 +66,76 @@
     }
   }
 );
+  registerFactory("hglue",new Factory(){
+    public Object newInstance(    Map properties){
+      return Box.createHorizontalGlue();
+    }
+  }
+);
+  registerFactory("hstrut",new Factory(){
+    public Object newInstance(    Map properties){
+      try {
+        Object num=properties.remove("width");
+        if (num instanceof Number) {
+          return Box.createHorizontalStrut(((Number)num).intValue());
+        }
+ else {
+          return Box.createHorizontalStrut(6);
+        }
+      }
+ catch (      RuntimeException re) {
+        re.printStackTrace(System.out);
+        throw re;
+      }
+    }
+  }
+);
   registerFactory("vbox",new Factory(){
     public Object newInstance(    Map properties){
       return Box.createVerticalBox();
+    }
+  }
+);
+  registerFactory("vglue",new Factory(){
+    public Object newInstance(    Map properties){
+      return Box.createVerticalGlue();
+    }
+  }
+);
+  registerFactory("vstrut",new Factory(){
+    public Object newInstance(    Map properties){
+      Object num=properties.remove("height");
+      if (num instanceof Number) {
+        return Box.createVerticalStrut(((Number)num).intValue());
+      }
+ else {
+        return Box.createVerticalStrut(6);
+      }
+    }
+  }
+);
+  registerFactory("glue",new Factory(){
+    public Object newInstance(    Map properties){
+      return Box.createGlue();
+    }
+  }
+);
+  registerFactory("rigidArea",new Factory(){
+    public Object newInstance(    Map properties){
+      Dimension dim;
+      Object o=properties.remove("size");
+      if (o instanceof Dimension) {
+        dim=(Dimension)o;
+      }
+ else {
+        int w, h;
+        o=properties.remove("width");
+        w=((o instanceof Number)) ? ((Number)o).intValue() : 6;
+        o=properties.remove("height");
+        h=((o instanceof Number)) ? ((Number)o).intValue() : 6;
+        dim=new Dimension(w,h);
+      }
+      return Box.createRigidArea(dim);
     }
   }
 );
@@ -92,6 +161,7 @@
     }
   }
 );
+  passThroughNodes.put("tableModel",javax.swing.table.TableModel.class);
   registerFactory("propertyColumn",new Factory(){
     public Object newInstance(    Map properties){
       Object current=getCurrent();
@@ -168,4 +238,5 @@
     }
   }
 );
+  passThroughNodes.put("widget",java.awt.Component.class);
 }

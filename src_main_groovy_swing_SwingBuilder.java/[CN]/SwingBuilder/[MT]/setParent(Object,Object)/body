@@ -1,7 +1,11 @@
 {
   if (child instanceof Action) {
     Action action=(Action)child;
-    InvokerHelper.setProperty(parent,"action",action);
+    try {
+      InvokerHelper.setProperty(parent,"action",action);
+    }
+ catch (    RuntimeException re) {
+    }
     Object keyStroke=action.getValue("KeyStroke");
     if (parent instanceof JComponent) {
       JComponent component=(JComponent)parent;
@@ -30,6 +34,10 @@
     JTable table=(JTable)parent;
     TableColumn column=(TableColumn)child;
     table.addColumn(column);
+  }
+ else   if (parent instanceof JTabbedPane && child instanceof Component) {
+    JTabbedPane tabbedPane=(JTabbedPane)parent;
+    tabbedPane.add((Component)child);
   }
  else {
     Component component=null;
