@@ -1,0 +1,20 @@
+{
+  CSTNode dotExpr=rootNode(lt_bare());
+  CSTNode identifier=rootNode(lt_bare());
+switch (lt_bare()) {
+case (Token.LEFT_PARENTHESIS):
+case (Token.LEFT_CURLY_BRACE):
+{
+      expr=sugaryMethodCallExpression(expr,identifier,dotExpr);
+      break;
+    }
+default :
+{
+    dotExpr.addChild(expr);
+    dotExpr.addChild(identifier);
+    expr=dotExpr;
+    break;
+  }
+}
+return expr;
+}

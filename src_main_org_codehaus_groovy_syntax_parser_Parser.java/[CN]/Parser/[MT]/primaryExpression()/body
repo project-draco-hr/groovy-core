@@ -81,23 +81,12 @@ expr=resultExpr;
 expr=sugaryMethodCallExpression(expr,identifier,null);
 }
 }
-DOT_LOOP: while ((lt_bare() == Token.DOT || lt_bare() == Token.NAVIGATE) && (lt(2) == Token.IDENTIFIER || lt(2) == Token.KEYWORD_CLASS)) {
-CSTNode dotExpr=rootNode(lt_bare());
-identifier=rootNode(lt_bare());
-DOT_TYPE_SWITCH: switch (lt_bare()) {
-case (Token.LEFT_PARENTHESIS):
-case (Token.LEFT_CURLY_BRACE):
-{
-expr=sugaryMethodCallExpression(expr,identifier,dotExpr);
-break DOT_TYPE_SWITCH;
+while (lt_bare() == Token.LEFT_SQUARE_BRACKET || lookAheadForMethodCall()) {
+if (lt_bare() == Token.LEFT_SQUARE_BRACKET) {
+expr=subscriptExpression(expr);
 }
-default :
-{
-dotExpr.addChild(expr);
-dotExpr.addChild(identifier);
-expr=dotExpr;
-break DOT_TYPE_SWITCH;
-}
+ else {
+expr=methodCallOrPropertyExpression(expr);
 }
 }
 return expr;
