@@ -10,7 +10,7 @@
       interfaces[i]=checkValidType(interfaces[i],classNode,"Must be a valid interface name");
     }
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(classNode.getModifiers(),internalClassName,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()),sourceFile);
+    cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()),sourceFile);
     classNode.visitContents(this);
     createSyntheticStaticFields();
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
