@@ -32,5 +32,8 @@
   }
  else {
     cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),helper.getTypeDescription(type));
+    if (!leftHandExpression && helper.isPrimitiveType(type)) {
+      helper.box(type);
+    }
   }
 }

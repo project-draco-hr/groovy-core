@@ -15,7 +15,12 @@
   Expression rightExpression=expression.getRightExpression();
   String type=getLHSType(leftExpression);
   if (type != null) {
-    visitCastExpression(new CastExpression(type,rightExpression));
+    if (helper.isPrimitiveType(type)) {
+      rightExpression.visit(this);
+    }
+ else {
+      visitCastExpression(new CastExpression(type,rightExpression));
+    }
   }
  else {
     visitAndAutobox(rightExpression);
