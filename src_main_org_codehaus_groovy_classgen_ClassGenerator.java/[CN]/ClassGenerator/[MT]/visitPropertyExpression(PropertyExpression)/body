@@ -4,9 +4,17 @@
     visitClassExpression(new ClassExpression(className));
   }
  else {
+    Expression objectExpression=expression.getObjectExpression();
+    if (isThisExpression(objectExpression)) {
+      String name=expression.getProperty();
+      FieldNode field=classNode.getField(name);
+      if (field != null) {
+        visitFieldExpression(new FieldExpression(field));
+        return;
+      }
+    }
     boolean left=leftHandExpression;
     leftHandExpression=false;
-    Expression objectExpression=expression.getObjectExpression();
     objectExpression.visit(this);
     cv.visitLdcInsn(expression.getProperty());
     if (expression.isSafe()) {
