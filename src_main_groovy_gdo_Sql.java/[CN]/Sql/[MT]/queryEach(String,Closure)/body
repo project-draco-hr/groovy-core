@@ -5,7 +5,10 @@
   try {
     log.debug(sql);
     results=statement.executeQuery(sql);
-    closure.call(results);
+    GroovyResultSet groovyRS=new GroovyResultSet(results);
+    while (groovyRS.next()) {
+      closure.call(groovyRS);
+    }
   }
  catch (  SQLException e) {
     log.warn("Failed to execute: " + sql,e);

@@ -1,0 +1,44 @@
+{
+  StringBuffer buffer=new StringBuffer("insert into ");
+  buffer.append(table);
+  buffer.append(" (");
+  StringBuffer paramBuffer=new StringBuffer();
+  boolean first=true;
+  for (Iterator iter=values.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String column=entry.getKey().toString();
+    if (first) {
+      first=false;
+      paramBuffer.append("?");
+    }
+ else {
+      buffer.append(", ");
+      paramBuffer.append(", ?");
+    }
+    buffer.append(column);
+  }
+  buffer.append(") values (");
+  buffer.append(paramBuffer.toString());
+  buffer.append(")");
+  Connection connection=createConnection();
+  PreparedStatement statement=null;
+  try {
+    statement=connection.prepareStatement(buffer.toString());
+    int i=1;
+    for (Iterator iter=values.entrySet().iterator(); iter.hasNext(); ) {
+      Map.Entry entry=(Map.Entry)iter.next();
+      setObject(statement,i++,entry.getValue());
+    }
+    int answer=statement.executeUpdate();
+    if (answer != 1) {
+      log.warn("Should have updated 1 row not " + answer + " when trying to add: "+ values);
+    }
+  }
+ catch (  SQLException e) {
+    log.warn("Failed to add row for: " + values,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}

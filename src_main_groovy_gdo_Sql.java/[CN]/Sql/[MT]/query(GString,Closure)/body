@@ -1,10 +1,10 @@
 {
   Connection connection=createConnection();
-  Statement statement=connection.createStatement();
+  PreparedStatement statement=null;
   ResultSet results=null;
   try {
-    log.debug(sql);
-    results=statement.executeQuery(sql);
+    statement=createPreparedStatement(connection,sql);
+    results=statement.executeQuery();
     closure.call(results);
   }
  catch (  SQLException e) {

@@ -1,0 +1,20 @@
+{
+  Connection connection=createConnection();
+  PreparedStatement statement=null;
+  ResultSet results=null;
+  try {
+    statement=createPreparedStatement(connection,sql);
+    results=statement.executeQuery();
+    GroovyResultSet groovyRS=new GroovyResultSet(results);
+    while (groovyRS.next()) {
+      closure.call(groovyRS);
+    }
+  }
+ catch (  SQLException e) {
+    log.warn("Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement,results);
+  }
+}
