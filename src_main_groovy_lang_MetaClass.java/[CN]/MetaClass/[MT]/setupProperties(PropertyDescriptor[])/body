@@ -14,6 +14,9 @@
     }
     klass=klass.getSuperclass();
   }
+  if (theClass.isArray()) {
+    propertyMap.put("length",arrayLengthProperty);
+  }
   for (int i=0; i < propertyDescriptors.length; i++) {
     PropertyDescriptor pd=propertyDescriptors[i];
     if (propertyMap.get(pd.getName()) != null)     continue;
