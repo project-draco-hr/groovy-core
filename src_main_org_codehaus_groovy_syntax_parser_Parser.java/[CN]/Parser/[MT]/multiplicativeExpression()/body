@@ -1,14 +1,20 @@
 {
   CSTNode expr=unaryExpression();
-switch (lt()) {
+  LOOP:   while (true) {
+    SWITCH: switch (lt()) {
 case (Token.MULTIPLY):
 case (Token.DIVIDE):
 case (Token.MOD):
 {
-      expr=rootNode(lt(),expr);
-      expr.addChild(unaryExpression());
-      break;
+        expr=rootNode(lt(),expr);
+        expr.addChild(unaryExpression());
+        break SWITCH;
+      }
+default :
+{
+      break LOOP;
     }
+}
 }
 return expr;
 }

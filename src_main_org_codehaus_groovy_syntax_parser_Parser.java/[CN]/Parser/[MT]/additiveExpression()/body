@@ -1,13 +1,19 @@
 {
   CSTNode expr=multiplicativeExpression();
-switch (lt()) {
+  LOOP:   while (true) {
+    SWITCH: switch (lt()) {
 case (Token.PLUS):
 case (Token.MINUS):
 {
-      expr=rootNode(lt(),expr);
-      expr.addChild(multiplicativeExpression());
-      break;
+        expr=rootNode(lt(),expr);
+        expr.addChild(multiplicativeExpression());
+        break SWITCH;
+      }
+default :
+{
+      break LOOP;
     }
+}
 }
 return expr;
 }
