@@ -1,0 +1,18 @@
+{
+  AnnotationNode oldValue=(AnnotationNode)annotations.get(name);
+  if (oldValue == null) {
+    annotations.put(name,value);
+  }
+ else {
+    List list=null;
+    if (oldValue instanceof List) {
+      list=(List)oldValue;
+    }
+ else {
+      list=new ArrayList();
+      list.add(oldValue);
+      annotations.put(name,list);
+    }
+    list.add(value);
+  }
+}
