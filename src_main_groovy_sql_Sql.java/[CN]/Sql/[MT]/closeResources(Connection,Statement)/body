@@ -1,9 +1,11 @@
 {
-  try {
-    statement.close();
-  }
- catch (  SQLException e) {
-    log.log(Level.SEVERE,"Caught exception closing statement: " + e,e);
+  if (statement != null) {
+    try {
+      statement.close();
+    }
+ catch (    SQLException e) {
+      log.log(Level.SEVERE,"Caught exception closing statement: " + e,e);
+    }
   }
   if (dataSource != null) {
     try {

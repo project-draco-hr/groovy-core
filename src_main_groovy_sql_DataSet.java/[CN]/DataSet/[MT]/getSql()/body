@@ -2,11 +2,14 @@
   if (sql == null) {
     sql="select * from " + table;
     if (where != null) {
-      sql+=" where ";
+      String clause="";
       if (parent != null && parent.where != null) {
-        sql+=parent.getSqlVisitor().getWhere() + " and ";
+        clause+=parent.getSqlVisitor().getWhere() + " and ";
       }
-      sql+=getSqlVisitor().getWhere();
+      clause+=getSqlVisitor().getWhere();
+      if (clause.length() > 0) {
+        sql+=" where " + clause;
+      }
     }
   }
   return sql;
