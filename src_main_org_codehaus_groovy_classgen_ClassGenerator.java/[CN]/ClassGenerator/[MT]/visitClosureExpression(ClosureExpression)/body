@@ -5,9 +5,9 @@
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);
   cv.visitVarInsn(ALOAD,0);
+  ClassNode owner=innerClass.getOuterClass();
   if (classNode instanceof InnerClassNode) {
-    ClassNode owner=classNode.getOuterClass();
     cv.visitFieldInsn(GETFIELD,getClassInternalName(owner.getName()),"__outerInstance",getTypeDescription(owner.getName()));
   }
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","(L" + internalClassName + ";)V");
+  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","(L" + getClassInternalName(owner.getName()) + ";)V");
 }
