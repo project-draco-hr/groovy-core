@@ -1,0 +1,16 @@
+{
+  String typeName=type.getName();
+  int idx=typeName.lastIndexOf('.');
+  if (idx > 0) {
+    typeName=typeName.substring(idx + 1);
+  }
+  String sql="select * from " + typeName.toLowerCase();
+  if (where != null) {
+    sql+=" where ";
+    if (parent != null && parent.where != null) {
+      sql+=parent.getWhereSql() + " and ";
+    }
+    sql+=getWhereSql();
+  }
+  return sql;
+}
