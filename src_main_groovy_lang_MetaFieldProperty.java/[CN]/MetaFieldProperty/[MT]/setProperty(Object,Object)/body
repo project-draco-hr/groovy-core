@@ -2,7 +2,15 @@
   try {
     field.set(object,newValue);
   }
- catch (  Exception e) {
-    throw new GroovyRuntimeException("cannot set property " + name,e);
+ catch (  IllegalArgumentException e) {
+    try {
+      field.set(object,InvokerHelper.asType(newValue,field.getType()));
+    }
+ catch (    Exception ex) {
+      throw new TypeMissMatchException("'" + toName(object.getClass()) + "."+ field.getName()+ "' can not refer to the value '"+ newValue+ "' (type "+ toName(newValue.getClass())+ "), because it is of the type "+ toName(field.getType()));
+    }
+  }
+catch (  Exception e) {
+    throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",e);
   }
 }
