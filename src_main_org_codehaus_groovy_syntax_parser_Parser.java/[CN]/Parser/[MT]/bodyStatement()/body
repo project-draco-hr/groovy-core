@@ -1,31 +1,3 @@
 {
-  CSTNode bodyStatement=null;
-  CSTNode modifiers=new CSTNode();
-  while (isModifier(lt())) {
-    consume(modifiers,lt());
-  }
-  if (lt() == Token.KEYWORD_PROPERTY) {
-    consume(lt());
-  }
-  while (lt_bare() == Token.NEWLINE) {
-    consume_bare(lt_bare());
-  }
-  CSTNode type=methodReturnType();
-  CSTNode identifier=methodIdentifier();
-switch (lt_bare()) {
-case Token.LEFT_PARENTHESIS:
-    bodyStatement=methodDeclaration(modifiers,type,identifier);
-  break;
-case Token.EQUAL:
-case Token.SEMICOLON:
-case Token.NEWLINE:
-case Token.RIGHT_CURLY_BRACE:
-case -1:
-bodyStatement=propertyDeclaration(modifiers,type,identifier);
-optionalSemicolon();
-break;
-default :
-throwExpected(new int[]{Token.LEFT_PARENTHESIS,Token.EQUAL,Token.SEMICOLON,Token.NEWLINE,Token.RIGHT_CURLY_BRACE});
-}
-return bodyStatement;
+  return typeBodyStatement(true,true,false);
 }

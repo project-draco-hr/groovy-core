@@ -1,0 +1,15 @@
+{
+  CSTNode datatype=null;
+  if (Parser.isPrimitiveTypeKeyword(lt(),allowVoid)) {
+    datatype=rootNode(lt());
+  }
+ else {
+    datatype=rootNode(Token.IDENTIFIER);
+    while (lt() == Token.DOT) {
+      CSTNode dot=rootNode(Token.DOT,datatype);
+      consume(dot,Token.IDENTIFIER);
+      datatype=dot;
+    }
+  }
+  return datatype;
+}

@@ -1,11 +1,11 @@
 {
-  CSTNode propertyDeclaration=new CSTNode(Token.keyword(-1,-1,"property"));
-  propertyDeclaration.addChild(modifiers);
-  propertyDeclaration.addChild(identifier);
-  propertyDeclaration.addChild(type);
+  CSTNode property=new CSTNode(Token.keyword(-1,-1,"property"));
+  property.addChild(modifiers);
+  property.addChild(identifier);
+  property.addChild(type);
   if (lt() == Token.EQUAL) {
     consume(lt());
-    propertyDeclaration.addChild(expression());
+    property.addChild(expression());
   }
-  return propertyDeclaration;
+  return property;
 }

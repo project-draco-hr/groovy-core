@@ -1,0 +1,34 @@
+{
+  CSTNode result=null;
+  if (lt() == Token.KEYWORD_DEF) {
+    consume(lt());
+    CSTNode modifiers=modifierList(false,false);
+    CSTNode type=optionalDatatype(false,true);
+    CSTNode identifier=identifier(false);
+    result=methodDeclaration(modifiers,type,identifier,false);
+  }
+ else   if (isModifier(lt()) || lt() == Token.KEYWORD_CLASS || lt() == Token.KEYWORD_INTERFACE) {
+    CSTNode modifiers=modifierList(true,true);
+switch (lt()) {
+case Token.KEYWORD_CLASS:
+{
+        result=classDeclaration(modifiers);
+        break;
+      }
+case Token.KEYWORD_INTERFACE:
+{
+      result=interfaceDeclaration(modifiers);
+      break;
+    }
+default :
+{
+    throwExpected(new int[]{Token.KEYWORD_CLASS,Token.KEYWORD_INTERFACE});
+    break;
+  }
+}
+}
+ else {
+result=statement();
+}
+return result;
+}

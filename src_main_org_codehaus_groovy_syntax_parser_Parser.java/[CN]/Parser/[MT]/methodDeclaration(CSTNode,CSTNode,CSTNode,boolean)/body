@@ -1,0 +1,30 @@
+{
+  CSTNode method=new CSTNode(Token.syntheticMethod());
+  method.addChild(modifiers);
+  method.addChild(identifier);
+  method.addChild(type);
+  Token label=consume(Token.LEFT_PARENTHESIS);
+  CSTNode parameters=parameterDeclarationList();
+  parameters.setToken(label);
+  method.addChild(parameters);
+  consume(Token.RIGHT_PARENTHESIS);
+  CSTNode throwsClause=new CSTNode();
+  try {
+    throwsClause=typeList(Token.KEYWORD_THROWS,THROWS_CLAUSE_TERMINATORS,true,0);
+  }
+ catch (  SyntaxException e) {
+    collector.add(e);
+  }
+  if (emptyOnly) {
+    method.addChild(new CSTNode());
+    optionalSemicolon();
+    if (lt() == Token.LEFT_CURLY_BRACE) {
+      collector.add(new ParserException("method cannot have a body",la()));
+    }
+  }
+ else {
+    method.addChild(statementBlock());
+  }
+  method.addChild(throwsClause);
+  return method;
+}

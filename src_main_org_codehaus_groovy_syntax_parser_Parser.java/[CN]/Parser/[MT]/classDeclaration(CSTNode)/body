@@ -2,48 +2,22 @@
   CSTNode classDeclaration=rootNode(Token.KEYWORD_CLASS);
   classDeclaration.addChild(modifiers);
   consume(classDeclaration,Token.IDENTIFIER);
-  if (lt() == Token.KEYWORD_EXTENDS) {
-    CSTNode extendsNode=rootNode(Token.KEYWORD_EXTENDS);
+  try {
+    CSTNode extendsNode=typeList(Token.KEYWORD_EXTENDS,EXTENDS_CLAUSE_TERMINATORS,true,1);
     classDeclaration.addChild(extendsNode);
-    CSTNode datatype=datatype();
-    extendsNode.addChild(datatype);
   }
- else {
+ catch (  SyntaxException e) {
+    collector.add(e);
     classDeclaration.addChild(new CSTNode());
   }
-  if (lt() == Token.KEYWORD_IMPLEMENTS) {
-    CSTNode implementsNode=rootNode(Token.KEYWORD_IMPLEMENTS);
+  try {
+    CSTNode implementsNode=typeList(Token.KEYWORD_IMPLEMENTS,IMPLEMENTS_CLAUSE_TERMINATORS,true,0);
     classDeclaration.addChild(implementsNode);
-    CSTNode datatype=datatype();
-    implementsNode.addChild(datatype);
-    while (lt() == Token.COMMA) {
-      consume(Token.COMMA);
-      datatype=datatype();
-      implementsNode.addChild(datatype);
-    }
   }
- else {
+ catch (  SyntaxException e) {
+    collector.add(e);
     classDeclaration.addChild(new CSTNode());
   }
-  consume(Token.LEFT_CURLY_BRACE);
-  CSTNode body=new CSTNode();
-  classDeclaration.addChild(body);
-  BODY_LOOP:   while (true) {
-switch (lt()) {
-case (-1):
-{
-        break BODY_LOOP;
-      }
-case (Token.RIGHT_CURLY_BRACE):
-{
-      break BODY_LOOP;
-    }
-default :
-{
-    body.addChild(bodyStatement());
-  }
-}
-}
-consume(Token.RIGHT_CURLY_BRACE);
-return classDeclaration;
+  classDeclaration.addChild(typeBody(true,true,false));
+  return classDeclaration;
 }

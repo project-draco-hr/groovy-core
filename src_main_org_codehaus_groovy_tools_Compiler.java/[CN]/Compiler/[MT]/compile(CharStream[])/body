@@ -1,33 +1,69 @@
 {
-  CSTNode[] compilationUnits=new CSTNode[sources.length];
+  CompilationFailuresException failures=new CompilationFailuresException();
+  String[] descriptors=new String[sources.length];
+  for (int i=0; i < sources.length; ++i) {
+    descriptors[i]=sources[i].getDescription();
+    if (descriptors[i] == null) {
+      descriptors[i]="unknown" + i;
+    }
+  }
+  CSTNode[] csts=new CSTNode[sources.length];
   for (int i=0; i < sources.length; ++i) {
     try {
-      compilationUnits[i]=stageOneCompile(sources[i]);
+      csts[i]=parseSource(sources[i],descriptors[i]);
     }
- catch (    Exception e) {
-      if (e instanceof SyntaxException) {
-        ((SyntaxException)e).setSourceLocator(sources[i].getDescription());
+ catch (    ExceptionCollector e) {
+      if (!e.isEmpty()) {
+        failures.add(descriptors[i],e);
       }
-      this.errors.add(e);
+      if (failures.total() > maximumFailuresPerCompile) {
+        throw failures;
+      }
     }
  finally {
       try {
         sources[i].close();
       }
- catch (      IOException e) {
+ catch (      Exception e) {
       }
     }
   }
-  if (!this.errors.isEmpty()) {
-    MultiException exception=new MultiException((Exception[])this.errors.toArray(EMPTY_EXCEPTION_ARRAY));
-    this.errors.clear();
-    throw exception;
+  if (!failures.isEmpty()) {
+    throw failures;
   }
-  List results=new ArrayList();
   CompileUnit unit=new CompileUnit();
-  for (int i=0; i < compilationUnits.length; ++i) {
-    stageThreeCompile(unit,compilationUnits[i],sources[i]);
+  ArrayList classes=new ArrayList();
+  for (int i=0; i < csts.length; ++i) {
+    try {
+      ModuleNode ast=buildAST(csts[i],descriptors[i]);
+      unit.addModule(ast);
+    }
+ catch (    ExceptionCollector e) {
+      if (!e.isEmpty()) {
+        failures.add(descriptors[i],e);
+      }
+    }
   }
-  stageFourCompile(results,unit);
-  return (GroovyClass[])results.toArray(GroovyClass.EMPTY_ARRAY);
+  for (Iterator iter=unit.getModules().iterator(); iter.hasNext(); ) {
+    ModuleNode module=(ModuleNode)iter.next();
+    try {
+      Iterator classNodes=module.getClasses().iterator();
+      while (classNodes.hasNext()) {
+        ClassNode classNode=(ClassNode)classNodes.next();
+        if (verbose) {
+          System.out.println("Generating class: " + classNode.getName());
+        }
+        classes.addAll(generateClasses(new GeneratorContext(unit),classNode,module.getDescription()));
+      }
+    }
+ catch (    ExceptionCollector e) {
+      if (!e.isEmpty()) {
+        failures.add(module.getDescription(),e);
+      }
+    }
+  }
+  if (!failures.isEmpty()) {
+    throw failures;
+  }
+  return (GroovyClass[])classes.toArray(GroovyClass.EMPTY_ARRAY);
 }

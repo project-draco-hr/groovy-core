@@ -1,8 +1,13 @@
 {
   Parser parser=newParser("package .");
   try {
-    parser.packageDeclaration();
-    fail("should have thrown UnexpectedTokenException");
+    try {
+      parser.packageDeclaration();
+      fail("should have thrown UnexpectedTokenException");
+    }
+ catch (    ExceptionCollector e) {
+      e.throwFirstChild();
+    }
   }
  catch (  UnexpectedTokenException e) {
     assertToken(e.getUnexpectedToken(),".",Token.DOT);

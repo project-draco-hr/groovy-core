@@ -1,18 +1,6 @@
 {
-  CSTNode parameterDeclaration=null;
-switch (lt(2)) {
-case (Token.IDENTIFIER):
-case (Token.LEFT_SQUARE_BRACKET):
-case (Token.DOT):
-{
-      parameterDeclaration=parameterDeclarationWithDatatype();
-      break;
-    }
-default :
-{
-    parameterDeclaration=parameterDeclarationWithoutDatatype();
-    break;
-  }
-}
-return parameterDeclaration;
+  CSTNode parameter=new CSTNode(Token.syntheticParameterDeclaration());
+  parameter.addChild(optionalDatatype(false,false));
+  parameter.addChild(identifier(false));
+  return parameter;
 }

@@ -1,8 +1,13 @@
 {
   Parser parser=newParser("import cheese.");
   try {
-    parser.importStatement();
-    fail("should have thrown UnexpectedTokenException");
+    try {
+      parser.importStatement();
+      fail("should have thrown UnexpectedTokenException");
+    }
+ catch (    ExceptionCollector e) {
+      e.throwFirstChild();
+    }
   }
  catch (  UnexpectedTokenException e) {
     assertNull(e.getUnexpectedToken());

@@ -1,0 +1,59 @@
+{
+  CSTNode statement=null;
+  if (lt() == Token.KEYWORD_STATIC && lt(2) == Token.LEFT_CURLY_BRACE) {
+    if (!allowStatic) {
+      collector.add(new ParserException("static initializers not valid in this context",la()));
+    }
+    CSTNode modifiers=modifierList(true,false);
+    CSTNode identifier=new CSTNode(Token.identifier(-1,-1,""));
+    statement=methodDeclaration(modifiers,new CSTNode(),identifier,false);
+  }
+ else {
+    CSTNode modifiers=modifierList(allowStatic,allowAbstract);
+    if (lt() == Token.KEYWORD_CLASS) {
+      statement=classDeclaration(modifiers);
+    }
+ else     if (lt() == Token.KEYWORD_INTERFACE) {
+      statement=interfaceDeclaration(modifiers);
+    }
+ else {
+      if (lt() == Token.KEYWORD_PROPERTY) {
+        consume(lt());
+      }
+      while (lt_bare() == Token.NEWLINE) {
+        consume_bare(lt_bare());
+      }
+      CSTNode type=optionalDatatype(true,true);
+      CSTNode identifier=identifier(true);
+switch (lt_bare()) {
+case Token.LEFT_PARENTHESIS:
+{
+          boolean methodIsAbstract=requireAbstract;
+          if (!methodIsAbstract) {
+            Iterator iterator=modifiers.childIterator();
+            while (iterator.hasNext()) {
+              CSTNode child=(CSTNode)iterator.next();
+              if (child.getToken().getType() == Token.KEYWORD_ABSTRACT) {
+                methodIsAbstract=true;
+                break;
+              }
+            }
+          }
+          statement=methodDeclaration(modifiers,type,identifier,methodIsAbstract);
+          break;
+        }
+case Token.EQUAL:
+case Token.SEMICOLON:
+case Token.NEWLINE:
+case Token.RIGHT_CURLY_BRACE:
+case -1:
+      statement=propertyDeclaration(modifiers,type,identifier);
+    optionalSemicolon();
+  break;
+default :
+throwExpected(new int[]{Token.LEFT_PARENTHESIS,Token.EQUAL,Token.SEMICOLON,Token.NEWLINE,Token.RIGHT_CURLY_BRACE});
+}
+}
+}
+return statement;
+}

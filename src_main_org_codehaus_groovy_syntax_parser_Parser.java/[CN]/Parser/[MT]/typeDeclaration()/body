@@ -1,33 +1,3 @@
 {
-  CSTNode declaration=null;
-  CSTNode modifiers=new CSTNode();
-  if (lt() == Token.KEYWORD_DEF) {
-    consume(lt());
-    while (isModifier(lt())) {
-      consume(modifiers,lt());
-    }
-    CSTNode type=methodReturnType();
-    CSTNode identifier=methodIdentifier();
-    return methodDeclaration(modifiers,type,identifier);
-  }
-  while (isModifier(lt())) {
-    consume(modifiers,lt());
-  }
-switch (lt()) {
-case (Token.KEYWORD_CLASS):
-{
-      declaration=classDeclaration(modifiers);
-      break;
-    }
-case (Token.KEYWORD_INTERFACE):
-{
-    declaration=interfaceDeclaration(modifiers);
-    break;
-  }
-default :
-{
-  declaration=statement();
-}
-}
-return declaration;
+  return topLevelStatement();
 }

@@ -1,6 +1,11 @@
 {
-  if (this.charStream == null) {
-    this.charStream=new InputStreamCharStream(new FileInputStream(getFile()));
+  try {
+    if (this.charStream == null) {
+      this.charStream=new InputStreamCharStream(new FileInputStream(getFile()));
+    }
+  }
+ catch (  IOException e) {
+    throw new ReadException(e);
   }
   return this.charStream;
 }

@@ -1,6 +1,8 @@
 {
   if (k > this.charsInBuffer) {
-    if (k > this.buf.length)     throw new LookAheadExhaustionException(k);
+    if (k > this.buf.length) {
+      throw new LookAheadExhaustionError(k);
+    }
     for (int i=0; i != this.charsInBuffer; i++, this.cur++) {
       this.buf[i]=this.buf[this.cur];
       this.charWidth[i]=this.charWidth[this.cur];

@@ -1,0 +1,21 @@
+{
+  CSTNode tree=null;
+  if (verbose) {
+    System.out.println("Parsing: " + descriptor);
+  }
+  ExceptionCollector collector=new ExceptionCollector(maximumParseFailuresPerFile);
+  try {
+    Lexer lexer=new Lexer(charStream);
+    Parser parser=new Parser(new LexerTokenStream(lexer),collector);
+    collector.throwUnlessEmpty();
+    tree=parser.compilationUnit();
+  }
+ catch (  ExceptionCollector e) {
+    collector.merge(e,false);
+  }
+catch (  GroovyException e) {
+    collector.add(e,false);
+  }
+  collector.throwUnlessEmpty();
+  return tree;
+}

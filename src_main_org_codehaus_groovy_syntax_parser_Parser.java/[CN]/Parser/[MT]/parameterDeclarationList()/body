@@ -1,7 +1,7 @@
 {
-  CSTNode parameterDeclarationList=new CSTNode();
-  while (lt() == Token.IDENTIFIER || isIdentifierOrPrimtiveTypeKeyword(lt())) {
-    parameterDeclarationList.addChild(parameterDeclaration());
+  CSTNode list=new CSTNode();
+  while (Parser.isIdentifierOrPrimitiveTypeKeyword(lt())) {
+    list.addChild(parameterDeclaration());
     if (lt() == Token.COMMA) {
       consume(Token.COMMA);
     }
@@ -9,5 +9,5 @@
       break;
     }
   }
-  return parameterDeclarationList;
+  return list;
 }

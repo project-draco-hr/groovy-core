@@ -2,7 +2,12 @@
   Parser parser=newParser("class {");
   CSTNode modifiers=new CSTNode();
   try {
-    parser.classDeclaration(modifiers);
+    try {
+      parser.classDeclaration(modifiers);
+    }
+ catch (    ExceptionCollector e) {
+      e.throwFirstChild();
+    }
   }
  catch (  UnexpectedTokenException e) {
     assertToken(e.getUnexpectedToken(),"{",Token.LEFT_CURLY_BRACE);

@@ -1,0 +1,13 @@
+{
+  CSTNode type=new CSTNode();
+  int lt=(useBare ? lt_bare() : lt());
+  if (lt == Token.IDENTIFIER) {
+    if (Parser.ofType(lt_bare(2),OPTIONAL_DATATYPE_FOLLOWER)) {
+      type=datatype(allowVoid);
+    }
+  }
+ else   if (Parser.isPrimitiveTypeKeyword(lt,true)) {
+    type=datatype(allowVoid);
+  }
+  return type;
+}

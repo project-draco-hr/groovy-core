@@ -2,10 +2,16 @@
   CSTNode compilationUnit=new CSTNode();
   CSTNode packageDeclaration=null;
   if (lt() == Token.KEYWORD_PACKAGE) {
-    packageDeclaration=packageDeclaration();
-    optionalSemicolon();
+    try {
+      packageDeclaration=packageDeclaration();
+      optionalSemicolon();
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      errorCorrect();
+    }
   }
- else {
+  if (packageDeclaration == null) {
     packageDeclaration=new CSTNode(Token.keyword(-1,-1,"package"));
     packageDeclaration.addChild(new CSTNode());
   }
@@ -13,11 +19,23 @@
   CSTNode imports=new CSTNode();
   compilationUnit.addChild(imports);
   while (lt() == Token.KEYWORD_IMPORT) {
-    imports.addChild(importStatement());
-    optionalSemicolon();
+    try {
+      imports.addChild(importStatement());
+      optionalSemicolon();
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      errorCorrect();
+    }
   }
   while (lt() != -1) {
-    compilationUnit.addChild(typeDeclaration());
+    try {
+      compilationUnit.addChild(topLevelStatement());
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      errorCorrect();
+    }
   }
   return compilationUnit;
 }

@@ -1,0 +1,15 @@
+{
+  CSTNode body=new CSTNode();
+  consume(Token.LEFT_CURLY_BRACE);
+  while (lt() != -1 && lt() != Token.RIGHT_CURLY_BRACE) {
+    try {
+      body.addChild(typeBodyStatement(allowStatic,allowAbstract,requireAbstract));
+    }
+ catch (    SyntaxException e) {
+      collector.add(e);
+      errorCorrect();
+    }
+  }
+  consume(Token.RIGHT_CURLY_BRACE);
+  return body;
+}

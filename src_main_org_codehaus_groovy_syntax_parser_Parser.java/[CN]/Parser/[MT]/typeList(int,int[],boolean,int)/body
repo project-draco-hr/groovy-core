@@ -1,0 +1,40 @@
+{
+  CSTNode typeList=null;
+  if (lt() == declarator) {
+    typeList=rootNode(declarator);
+    while (limit == 0 || typeList.children() < limit) {
+      try {
+        if (typeList.children() > 0) {
+          consume(Token.COMMA);
+        }
+        CSTNode datatype=datatype(false);
+        typeList.addChild(datatype);
+      }
+ catch (      SyntaxException e) {
+        collector.add(e);
+        if (limit > 0 && typeList.children() >= limit) {
+          while (lt() != -1 && !Parser.ofType(lt(),until)) {
+            consume(lt());
+          }
+        }
+ else {
+          while (lt() != -1 && lt() != Token.COMMA && !Parser.ofType(lt(),until)) {
+            consume(lt());
+          }
+        }
+      }
+      if (Parser.ofType(lt(),until)) {
+        break;
+      }
+    }
+  }
+ else {
+    if (optional) {
+      typeList=new CSTNode();
+    }
+ else {
+      throwExpected(new int[]{declarator});
+    }
+  }
+  return typeList;
+}

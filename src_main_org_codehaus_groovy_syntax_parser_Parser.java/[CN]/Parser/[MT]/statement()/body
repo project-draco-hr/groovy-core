@@ -65,8 +65,14 @@ break;
 }
 default :
 {
+try {
 statement=expression();
 optionalSemicolon();
+}
+ catch (SyntaxException e) {
+collector.add(e);
+errorCorrect();
+}
 }
 }
 return statement;

@@ -1,0 +1,18 @@
+{
+  StringBuffer buffer=new StringBuffer();
+  String endl=System.getProperty("line.separator","\n");
+  if (failures.size() == 1) {
+    buffer.append("1 failure:");
+  }
+ else {
+    buffer.append(failures.size()).append(" failures:");
+  }
+  buffer.append(endl);
+  Iterator sources=iterator();
+  while (sources.hasNext()) {
+    String source=(String)sources.next();
+    String message=get(source).getMessage();
+    buffer.append("   ").append(source).append(": ").append(message).append(endl);
+  }
+  return buffer.toString();
+}

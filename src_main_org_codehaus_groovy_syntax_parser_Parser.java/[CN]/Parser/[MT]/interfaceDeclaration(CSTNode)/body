@@ -3,18 +3,14 @@
   interfaceDeclaration.addChild(modifiers);
   consume(interfaceDeclaration,Token.IDENTIFIER);
   interfaceDeclaration.addChild(new CSTNode());
-  if (lt() == Token.KEYWORD_EXTENDS) {
-    CSTNode extendsNode=rootNode(Token.KEYWORD_EXTENDS);
+  try {
+    CSTNode extendsNode=typeList(Token.KEYWORD_EXTENDS,IMPLEMENTS_CLAUSE_TERMINATORS,true,0);
     interfaceDeclaration.addChild(extendsNode);
-    CSTNode datatype=datatype();
-    extendsNode.addChild(datatype);
-    while (lt() == Token.COMMA) {
-      consume(Token.COMMA);
-      datatype=datatype();
-      extendsNode.addChild(datatype);
-    }
   }
-  consume(Token.LEFT_CURLY_BRACE);
-  consume(Token.RIGHT_CURLY_BRACE);
+ catch (  SyntaxException e) {
+    collector.add(e);
+    interfaceDeclaration.addChild(new CSTNode());
+  }
+  interfaceDeclaration.addChild(typeBody(false,true,true));
   return interfaceDeclaration;
 }

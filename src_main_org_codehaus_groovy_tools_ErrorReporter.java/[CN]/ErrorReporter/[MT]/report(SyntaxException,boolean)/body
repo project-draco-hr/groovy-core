@@ -1,0 +1,14 @@
+{
+  if (source != null) {
+    String description=source.getDescriptor() + ":" + e.getLine()+ ": "+ e.getMessage();
+    println(description);
+    String sample=source.getSample(e.getLine(),e.getEndColumn() - 1);
+    if (sample != null) {
+      println(sample);
+    }
+  }
+ else {
+    println("unknown:" + e.getLine() + ": "+ e.getMessage());
+  }
+  stacktrace(e,false);
+}
