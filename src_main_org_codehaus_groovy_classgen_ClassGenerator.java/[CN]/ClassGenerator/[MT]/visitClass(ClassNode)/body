@@ -17,7 +17,12 @@
       ClassNode innerClass=(ClassNode)iter.next();
       String innerClassName=innerClass.getName();
       String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
-      cw.visitInnerClass(innerClassInternalName,internalClassName,innerClassName,innerClass.getModifiers());
+      String outerClassName=internalClassName;
+      MethodNode enclosingMethod=innerClass.getEnclosingMethod();
+      if (enclosingMethod != null) {
+        outerClassName=null;
+      }
+      cw.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
     }
     cw.visitEnd();
   }

@@ -11,21 +11,7 @@
       cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
     }
  else {
-      if (type.equals("double")) {
-        cv.visitVarInsn(DSTORE,index);
-      }
- else       if (type.equals("float")) {
-        cv.visitVarInsn(FSTORE,index);
-      }
- else       if (type.equals("long")) {
-        cv.visitVarInsn(LSTORE,index);
-      }
- else       if (type.equals("byte") || type.equals("short") || type.equals("boolean")|| type.equals("int")) {
-        cv.visitVarInsn(ISTORE,index);
-      }
- else {
-        cv.visitVarInsn(ASTORE,index);
-      }
+      helper.store("objref",index);
     }
   }
  else {

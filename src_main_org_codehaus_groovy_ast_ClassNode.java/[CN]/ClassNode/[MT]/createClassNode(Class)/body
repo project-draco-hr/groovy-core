@@ -1,23 +1,23 @@
 {
-  Class[] interfaces=theClass.getInterfaces();
-  int size=interfaces.length;
+  Class[] classInterfaces=theClass.getInterfaces();
+  int size=classInterfaces.length;
   String[] interfaceNames=new String[size];
   for (int i=0; i < size; i++) {
-    interfaceNames[i]=interfaces[i].getName();
+    interfaceNames[i]=classInterfaces[i].getName();
   }
-  String name=null;
+  String className=null;
   if (theClass.getSuperclass() != null) {
-    name=theClass.getSuperclass().getName();
+    className=theClass.getSuperclass().getName();
   }
-  ClassNode answer=new ClassNode(theClass.getName(),theClass.getModifiers(),name,interfaceNames,MixinNode.EMPTY_ARRAY);
+  ClassNode answer=new ClassNode(theClass.getName(),theClass.getModifiers(),className,interfaceNames,MixinNode.EMPTY_ARRAY);
   answer.compileUnit=getCompileUnit();
-  Method[] methods=theClass.getDeclaredMethods();
-  for (int i=0; i < methods.length; i++) {
-    answer.addMethod(createMethodNode(methods[i]));
+  Method[] declaredMethods=theClass.getDeclaredMethods();
+  for (int i=0; i < declaredMethods.length; i++) {
+    answer.addMethod(createMethodNode(declaredMethods[i]));
   }
-  Constructor[] constructors=theClass.getDeclaredConstructors();
-  for (int i=0; i < constructors.length; i++) {
-    answer.addConstructor(createConstructorNode(constructors[i]));
+  Constructor[] declaredConstructors=theClass.getDeclaredConstructors();
+  for (int i=0; i < declaredConstructors.length; i++) {
+    answer.addConstructor(createConstructorNode(declaredConstructors[i]));
   }
   return answer;
 }

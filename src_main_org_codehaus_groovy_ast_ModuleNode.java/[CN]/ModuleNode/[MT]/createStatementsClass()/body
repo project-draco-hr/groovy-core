@@ -22,7 +22,8 @@
   classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"void",new Parameter[]{new Parameter("java.lang.String[]","args")},new ExpressionStatement(new MethodCallExpression(new ClassExpression(InvokerHelper.class.getName()),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode.getName()),new VariableExpression("args")})))));
   classNode.addMethod(new MethodNode("run",ACC_PUBLIC,Object.class.getName(),Parameter.EMPTY_ARRAY,statementBlock));
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,new BlockStatement());
-  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(Binding.class.getName(),"context")},new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("context"))));
+  Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new Expression[]{new VariableExpression("context")})));
+  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(Binding.class.getName(),"context")},stmt);
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode node=(MethodNode)iter.next();
     int modifiers=node.getModifiers();

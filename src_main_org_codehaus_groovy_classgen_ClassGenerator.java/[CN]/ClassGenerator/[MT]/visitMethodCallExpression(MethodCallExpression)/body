@@ -5,8 +5,14 @@
   String method=call.getMethod();
   if (superMethodCall && method.equals("<init>")) {
     cv.visitVarInsn(ALOAD,0);
-    cv.visitVarInsn(ALOAD,1);
-    cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
+    if (isInClosureConstructor()) {
+      cv.visitVarInsn(ALOAD,2);
+      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
+    }
+ else {
+      cv.visitVarInsn(ALOAD,1);
+      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
+    }
   }
  else {
     if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(call.getMethod())) {
@@ -17,18 +23,18 @@
  else {
       if (superMethodCall) {
         if (method.equals("super") || method.equals("<init>")) {
-          ConstructorNode constructorNode=findSuperConstructor(call);
+          ConstructorNode superConstructorNode=findSuperConstructor(call);
           cv.visitVarInsn(ALOAD,0);
-          loadArguments(constructorNode.getParameters(),arguments);
-          String descriptor=BytecodeHelper.getMethodDescriptor("void",constructorNode.getParameters());
+          loadArguments(superConstructorNode.getParameters(),arguments);
+          String descriptor=BytecodeHelper.getMethodDescriptor("void",superConstructorNode.getParameters());
           cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>",descriptor);
         }
  else {
-          MethodNode methodNode=findSuperMethod(call);
+          MethodNode superMethodNode=findSuperMethod(call);
           cv.visitVarInsn(ALOAD,0);
-          loadArguments(methodNode.getParameters(),arguments);
-          String descriptor=BytecodeHelper.getMethodDescriptor(methodNode.getReturnType(),methodNode.getParameters());
-          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(methodNode.getDeclaringClass().getName()),method,descriptor);
+          loadArguments(superMethodNode.getParameters(),arguments);
+          String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
+          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass().getName()),method,descriptor);
         }
       }
  else {

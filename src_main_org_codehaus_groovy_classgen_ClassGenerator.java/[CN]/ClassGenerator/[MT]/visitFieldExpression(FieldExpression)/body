@@ -15,12 +15,12 @@
       doConvertAndCast(type);
     }
   }
-  int opcode=(leftHandExpression && !holder) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
   String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
+  int opcode=isStatic ? GETSTATIC : GETFIELD;
   if (holder) {
     if (leftHandExpression) {
       cv.visitVarInsn(ASTORE,tempIndex);
-      cv.visitVarInsn(ALOAD,0);
+      if (!isStatic)       cv.visitVarInsn(ALOAD,0);
       cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
       cv.visitVarInsn(ALOAD,tempIndex);
       cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
@@ -31,9 +31,23 @@
     }
   }
  else {
-    cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
-    if (!leftHandExpression && helper.isPrimitiveType(type)) {
-      helper.box(type);
+    if (leftHandExpression) {
+      if (!isStatic) {
+        opcode=PUTFIELD;
+        helper.store(field.getType(),tempIndex);
+        cv.visitVarInsn(ALOAD,0);
+        helper.load(field.getType(),tempIndex);
+      }
+ else {
+        opcode=PUTSTATIC;
+      }
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    }
+ else {
+      cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+      if (helper.isPrimitiveType(type)) {
+        helper.box(type);
+      }
     }
   }
 }

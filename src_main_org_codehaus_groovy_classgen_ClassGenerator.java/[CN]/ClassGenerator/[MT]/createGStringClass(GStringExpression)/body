@@ -5,8 +5,9 @@
   }
   String outerClassName=owner.getName();
   String name=outerClassName + "$" + context.getNextInnerClassIdx();
-  InnerClassNode answer=new InnerClassNode(owner,name,ACC_PUBLIC,GString.class.getName());
-  FieldNode stringsField=answer.addField("strings",ACC_PRIVATE | ACC_STATIC,"java.lang.String[]",new ArrayExpression("java.lang.String",expression.getStrings()));
+  InnerClassNode answer=new InnerClassNode(owner,name,ACC_SUPER,GString.class.getName());
+  answer.setEnclosingMethod(this.methodNode);
+  FieldNode stringsField=answer.addField("strings",ACC_PRIVATE,"java.lang.String[]",new ArrayExpression("java.lang.String",expression.getStrings()));
   answer.addMethod("getStrings",ACC_PUBLIC,"java.lang.String[]",Parameter.EMPTY_ARRAY,new ReturnStatement(new FieldExpression(stringsField)));
   BlockStatement block=new BlockStatement();
   block.addStatement(new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"<init>",new VariableExpression("values"))));

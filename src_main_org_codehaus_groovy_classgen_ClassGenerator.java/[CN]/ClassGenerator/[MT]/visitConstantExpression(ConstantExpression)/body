@@ -46,6 +46,12 @@
     String text=(bool.booleanValue()) ? "TRUE" : "FALSE";
     cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean",text,"Ljava/lang/Boolean;");
   }
+ else   if (value instanceof Class) {
+    Class vc=(Class)value;
+    if (!vc.getName().equals("java.lang.Void")) {
+      throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ value.getClass().getName());
+    }
+  }
  else {
     throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ value.getClass().getName());
   }

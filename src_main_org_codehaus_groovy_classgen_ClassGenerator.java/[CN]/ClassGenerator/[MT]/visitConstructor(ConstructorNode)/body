@@ -9,7 +9,7 @@
   findMutableVariables();
   resetVariableStack(node.getParameters());
   Statement code=node.getCode();
-  if (code == null || !firstStatementIsSuperMethodCall(code)) {
+  if (code == null || !firstStatementIsSuperInit(code)) {
     cv.visitVarInsn(ALOAD,0);
     cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
   }

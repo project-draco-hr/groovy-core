@@ -15,7 +15,10 @@
   if (expStmt != null) {
     Expression expr=expStmt.getExpression();
     if (expr instanceof MethodCallExpression) {
-      return MethodCallExpression.isSuperMethodCall((MethodCallExpression)expr);
+      MethodCallExpression call=(MethodCallExpression)expr;
+      if (MethodCallExpression.isSuperMethodCall(call)) {
+        return call.getMethod().equals("<init>") || call.getMethod().equals("super");
+      }
     }
   }
   return false;
