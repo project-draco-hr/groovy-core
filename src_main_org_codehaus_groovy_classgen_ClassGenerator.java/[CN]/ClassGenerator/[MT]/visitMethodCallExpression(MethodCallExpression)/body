@@ -17,20 +17,28 @@
     cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
   }
  else {
-    if (argumentsUseStack(arguments)) {
-      int paramIdx=defineVariable(createVariableName("iterator"),"java.lang.Object",false).getIndex();
+    String method=call.getMethod();
+    if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(call.getMethod())) {
+      visitVariableExpression(new VariableExpression(method));
       arguments.visit(this);
-      cv.visitVarInsn(ASTORE,paramIdx);
-      call.getObjectExpression().visit(this);
-      cv.visitLdcInsn(call.getMethod());
-      cv.visitVarInsn(ALOAD,paramIdx);
-      idx--;
+      invokeClosureMethod.call(cv);
     }
  else {
-      call.getObjectExpression().visit(this);
-      cv.visitLdcInsn(call.getMethod());
-      arguments.visit(this);
+      if (argumentsUseStack(arguments)) {
+        int paramIdx=defineVariable(createVariableName("iterator"),"java.lang.Object",false).getIndex();
+        arguments.visit(this);
+        cv.visitVarInsn(ASTORE,paramIdx);
+        call.getObjectExpression().visit(this);
+        cv.visitLdcInsn(method);
+        cv.visitVarInsn(ALOAD,paramIdx);
+        idx--;
+      }
+ else {
+        call.getObjectExpression().visit(this);
+        cv.visitLdcInsn(method);
+        arguments.visit(this);
+      }
+      invokeMethodMethod.call(cv);
     }
-    invokeMethodMethod.call(cv);
   }
 }
