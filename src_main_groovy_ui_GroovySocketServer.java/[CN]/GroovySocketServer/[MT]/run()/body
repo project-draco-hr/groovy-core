@@ -4,10 +4,10 @@
     while (true) {
       Script script;
       if (isScriptFile) {
-        script=groovy.parse(new File(scriptLocation));
+        script=groovy.parse(new FileInputStream(scriptFilenameOrText));
       }
  else {
-        script=groovy.parse(scriptLocation,"main");
+        script=groovy.parse(scriptFilenameOrText);
       }
       new GroovyClientConnection(script,autoOutput,serverSocket.accept());
     }
