@@ -2,14 +2,14 @@
   ReflectorGenerator generator=new ReflectorGenerator(methods);
   String name=getClass().getName() + "." + getMethodName();
   ClassWriter cw=new ClassWriter(true);
-  DumpClassVisitor dumper=new DumpClassVisitor(new PrintWriter(new OutputStreamWriter(System.out)));
+  ASMifierClassVisitor dumper=new ASMifierClassVisitor(new PrintWriter(new OutputStreamWriter(System.out)));
   generator.generate(new CheckClassAdapter(cw),name);
   byte[] bytecode=cw.toByteArray();
   String fileName="target/" + name + ".class";
   FileOutputStream out=new FileOutputStream(fileName);
   out.write(bytecode);
   out.close();
-  DumpClassVisitor.main(new String[]{fileName});
+  ASMifierClassVisitor.main(new String[]{fileName});
   MetaClassRegistry registry=new MetaClassRegistry();
   Class type=registry.loadClass(name,bytecode);
   Object reflector=type.newInstance();
