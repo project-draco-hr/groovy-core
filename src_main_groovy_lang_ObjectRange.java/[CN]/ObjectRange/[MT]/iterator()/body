@@ -1,0 +1,29 @@
+{
+  return new Iterator(){
+    int index=0;
+    Object value=(reverse) ? to : from;
+    public boolean hasNext(){
+      return index < size();
+    }
+    public Object next(){
+      if (index++ > 0) {
+        if (index > size()) {
+          value=null;
+        }
+ else {
+          if (reverse) {
+            value=decrement(value);
+          }
+ else {
+            value=increment(value);
+          }
+        }
+      }
+      return value;
+    }
+    public void remove(){
+      ObjectRange.this.remove(index);
+    }
+  }
+;
+}

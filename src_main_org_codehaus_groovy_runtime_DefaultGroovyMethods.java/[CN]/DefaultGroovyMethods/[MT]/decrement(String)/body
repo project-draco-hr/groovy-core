@@ -3,12 +3,17 @@
   char lastCh=lastCharacter();
   for (int idx=buffer.length() - 1; idx >= 0; idx--) {
     char ch=decrement(buffer.charAt(idx));
-    if (ch != 0) {
+    if (ch != ZERO_CHAR) {
       buffer.setCharAt(idx,ch);
       break;
     }
  else {
-      buffer.setCharAt(idx,lastCh);
+      if (idx == 0) {
+        return null;
+      }
+ else {
+        buffer.setCharAt(idx,lastCh);
+      }
     }
   }
   return buffer.toString();
