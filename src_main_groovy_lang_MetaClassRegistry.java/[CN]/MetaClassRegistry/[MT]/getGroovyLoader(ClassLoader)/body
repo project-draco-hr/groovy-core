@@ -1,0 +1,18 @@
+{
+  if (loader instanceof GroovyClassLoader) {
+    return (GroovyClassLoader)loader;
+  }
+synchronized (loaderMap) {
+    GroovyClassLoader groovyLoader=(GroovyClassLoader)loaderMap.get(loader);
+    if (groovyLoader == null) {
+      if (loader == null || loader == getClass().getClassLoader()) {
+        groovyLoader=this.loader;
+      }
+ else {
+        groovyLoader=new GroovyClassLoader(loader);
+      }
+      loaderMap.put(loader,groovyLoader);
+    }
+    return groovyLoader;
+  }
+}
