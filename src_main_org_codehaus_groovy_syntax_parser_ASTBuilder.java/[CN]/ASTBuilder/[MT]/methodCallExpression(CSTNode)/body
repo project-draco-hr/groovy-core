@@ -1,5 +1,12 @@
 {
-  Expression objectExpression=expression(expressionRoot.getChild(0));
+  CSTNode objectExpressionRoot=expressionRoot.getChild(0);
+  Expression objectExpression=null;
+  if (objectExpressionRoot.getToken() == null) {
+    objectExpression=new VariableExpression("this");
+  }
+ else {
+    objectExpression=expression(expressionRoot.getChild(0));
+  }
   CSTNode node=expressionRoot.getChild(1);
   System.out.println("node: " + node);
   String methodName=expressionRoot.getChild(1).getToken().getText();
