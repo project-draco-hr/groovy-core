@@ -10,18 +10,16 @@
       return getMetaClass().invokeMethod(this,method,arguments);
     }
  catch (    MissingMethodException e) {
-      Object delegate=getDelegate();
-      if (delegate != this && delegate != null) {
-        try {
-          return InvokerHelper.invokeMethod(delegate,method,arguments);
-        }
- catch (        GroovyRuntimeException e2) {
-          if (owner != this && delegate != owner) {
-            try {
-              return InvokerHelper.invokeMethod(owner,method,arguments);
-            }
- catch (            GroovyRuntimeException e3) {
-            }
+      Object aDelegate=(delegate != null && delegate != this) ? delegate : owner;
+      try {
+        return InvokerHelper.invokeMethod(aDelegate,method,arguments);
+      }
+ catch (      GroovyRuntimeException e2) {
+        if (owner != aDelegate) {
+          try {
+            return InvokerHelper.invokeMethod(owner,method,arguments);
+          }
+ catch (          GroovyRuntimeException e3) {
           }
         }
       }
