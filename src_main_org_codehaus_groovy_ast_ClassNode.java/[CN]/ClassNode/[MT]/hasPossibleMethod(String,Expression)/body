@@ -1,0 +1,19 @@
+{
+  int count=0;
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tuple=(TupleExpression)arguments;
+    count=tuple.getExpressions().size();
+  }
+  ClassNode node=this;
+  do {
+    for (Iterator iter=node.methods.iterator(); iter.hasNext(); ) {
+      MethodNode method=(MethodNode)iter.next();
+      if (name.equals(method.getName()) && method.getParameters().length == count) {
+        return true;
+      }
+    }
+    node=node.getSuperClassNode();
+  }
+ while (node != null);
+  return false;
+}

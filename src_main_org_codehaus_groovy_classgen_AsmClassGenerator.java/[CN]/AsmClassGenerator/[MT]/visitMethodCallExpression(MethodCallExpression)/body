@@ -17,7 +17,7 @@
     }
   }
  else {
-    if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(call.getMethod())) {
+    if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(method) && !classNode.hasPossibleMethod(method,arguments)) {
       visitVariableExpression(new VariableExpression(method));
       arguments.visit(this);
       invokeClosureMethod.call(cv);
