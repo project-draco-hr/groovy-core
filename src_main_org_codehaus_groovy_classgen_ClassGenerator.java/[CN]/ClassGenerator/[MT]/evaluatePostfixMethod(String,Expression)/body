@@ -1,0 +1,14 @@
+{
+  leftHandExpression=false;
+  expression.visit(this);
+  int tempIdx=defineVariable(createVariableName("postfix"),"java.lang.Object",false).getIndex();
+  cv.visitVarInsn(ASTORE,tempIdx);
+  cv.visitVarInsn(ALOAD,tempIdx);
+  cv.visitLdcInsn(method);
+  new ArgumentListExpression().visit(this);
+  invokeMethodMethod.call(cv);
+  leftHandExpression=true;
+  expression.visit(this);
+  leftHandExpression=false;
+  cv.visitVarInsn(ALOAD,tempIdx);
+}
