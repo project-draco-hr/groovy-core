@@ -33,6 +33,8 @@
       }
       if (variable == null) {
         visitPropertyExpression(new PropertyExpression(new VariableExpression("this"),variableName));
+        cv.visitInsn(DUP);
+        cv.visitVarInsn(ASTORE,idx + 1);
         return;
       }
       String type=variable.getType();
