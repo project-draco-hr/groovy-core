@@ -16,12 +16,7 @@ case Types.GSTRING_START:
       }
 case Types.CREATABLE_PRIMITIVE_TYPE:
 {
-      if (stack.atStartOfExpression()) {
-        stack.push(variableDeclarationExpression(consume()));
-      }
- else {
-        error("type name not valid in this context");
-      }
+      stack.shiftIf(stack.atStartOfExpression(),"type name not valid in this context");
       break;
     }
 case Types.SIMPLE_EXPRESSION:
@@ -119,7 +114,7 @@ boolean checkAgain=false, skipPatterns=false;
 CSTNode top0=null, top1=null, top2=null;
 int nextPrecedence=0, top1Precedence=0;
 REDUCE: do {
-if (!stack.topIsAnExpression()) {
+if (!stack.topIsAnExpression() && !ExpressionSupport.isAPotentialTypeName(stack.top(),false)) {
 break;
 }
 checkAgain=false;
@@ -170,7 +165,7 @@ stack.reduce(3,1,true);
 checkAgain=true;
 continue;
 }
-if (top0.isA(Types.SYNTH_LIST) && top1.isAnExpression()) {
+if (top0.isA(Types.SYNTH_LIST) && top1.isAnExpression() || ExpressionSupport.isAPotentialTypeName(top1,false)) {
 if (!top0.hasChildren()) {
 boolean typePreceeds=ExpressionSupport.isAPotentialTypeName(top1,false);
 boolean potentialCast=top2.isA(Types.LEFT_PARENTHESIS);
