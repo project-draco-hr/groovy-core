@@ -3,6 +3,9 @@
   ClassNode[] classNodes=astBuilder.build(compilationUnit);
   List results=new ArrayList();
   for (int i=0; i < classNodes.length; ++i) {
+    if (verbose) {
+      System.out.println("Generating class: " + classNodes[i].getName());
+    }
     GroovyClass[] classes=generateClasses(new GeneratorContext(),classNodes[i],charStream.getDescription());
     for (int j=0; j < classes.length; ++j) {
       results.add(classes[j]);
