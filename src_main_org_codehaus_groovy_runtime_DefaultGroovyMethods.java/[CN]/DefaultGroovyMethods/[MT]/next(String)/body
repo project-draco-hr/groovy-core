@@ -1,40 +1,18 @@
 {
   StringBuffer buffer=new StringBuffer(self);
-  boolean digit=false;
-  boolean upperCaseLetter=false;
-  boolean carry=buffer.length() > 0;
-  boolean incremented=false;
-  for (int idx=buffer.length() - 1; (idx >= 0) && carry; idx--) {
-    char ch=buffer.charAt(idx);
-    if (!isLetterOrDigit(ch)) {
-      if (!incremented)       continue;
-      buffer.insert(idx + 1,firstCharacter(digit,upperCaseLetter));
-      carry=false;
-      break;
-    }
-    digit=isDigit(ch);
-    upperCaseLetter=isUpperCase(ch);
-    char newCh=ch;
-    newCh++;
-    incremented=true;
-    if (isLetterOrDigit(newCh)) {
-      carry=false;
-    }
- else {
-      newCh=firstCharacter(digit,upperCaseLetter);
-      if (digit)       newCh='0';
-    }
-    buffer.setCharAt(idx,newCh);
-  }
-  if (!carry)   return buffer.toString();
-  if (incremented) {
-    buffer.insert(0,firstCharacter(digit,upperCaseLetter));
+  if (buffer.length() == 0) {
+    buffer.append(Character.MIN_VALUE);
   }
  else {
-    int last=buffer.length() - 1;
-    char ch=buffer.charAt(last);
-    ch++;
-    buffer.setCharAt(last,ch);
+    char last=buffer.charAt(buffer.length() - 1);
+    if (last == Character.MAX_VALUE) {
+      buffer.append(Character.MIN_VALUE);
+    }
+ else {
+      char next=last;
+      next++;
+      buffer.setCharAt(buffer.length() - 1,next);
+    }
   }
   return buffer.toString();
 }

@@ -1,63 +1,14 @@
 {
   StringBuffer buffer=new StringBuffer(self);
-  if (buffer.length() == 0)   return self;
-  if (buffer.length() == 1) {
-    int last=buffer.length() - 1;
-    char ch=buffer.charAt(last);
-    ch--;
-    buffer.setCharAt(last,ch);
-    return buffer.toString();
-  }
-  boolean digit=false;
-  boolean upperCaseLetter=false;
-  boolean carry=buffer.length() > 0;
-  boolean decremented=false;
-  int fill=0;
-  char oldChar=' ';
-  char ch=' ';
-  for (int idx=buffer.length() - 1; idx >= 0 && carry; idx--) {
-    oldChar=ch;
-    ch=buffer.charAt(idx);
-    if (!isLetterOrDigit(ch)) {
-      if (!decremented)       continue;
-      if (fill > 1) {
-        buffer.deleteCharAt(idx + 1);
-      }
- else {
-        oldChar--;
-        buffer.setCharAt(idx + 1,oldChar);
-      }
-      carry=false;
-      break;
-    }
-    digit=isDigit(ch);
-    upperCaseLetter=isUpperCase(ch);
-    char newCh=ch;
-    newCh--;
-    fill++;
-    decremented=true;
-    if (newCh == '0' && fill > 1) {
-      buffer.deleteCharAt(idx);
-      carry=false;
-      break;
-    }
-    if (isLetterOrDigit(newCh)) {
-      carry=false;
-    }
- else {
-      newCh=lastCharacter(digit,upperCaseLetter);
-    }
-    buffer.setCharAt(idx,newCh);
-  }
-  if (!carry)   return buffer.toString();
-  if (decremented) {
-    buffer.deleteCharAt(0);
+  if (buffer.length() == 0)   throw new IllegalArgumentException("the string is empty");
+  char last=buffer.charAt(buffer.length() - 1);
+  if (last == Character.MIN_VALUE) {
+    buffer.deleteCharAt(buffer.length() - 1);
   }
  else {
-    int last=buffer.length() - 1;
-    ch=buffer.charAt(last);
-    ch--;
-    buffer.setCharAt(last,ch);
+    char next=last;
+    next--;
+    buffer.setCharAt(buffer.length() - 1,next);
   }
   return buffer.toString();
 }
