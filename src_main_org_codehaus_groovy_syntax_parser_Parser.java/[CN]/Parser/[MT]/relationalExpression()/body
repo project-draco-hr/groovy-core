@@ -13,6 +13,13 @@ case (Token.KEYWORD_INSTANCEOF):
       expr.addChild(rangeExpression());
       break;
     }
+case (Token.LEFT_SQUARE_BRACKET):
+{
+    expr=rootNode(lt(),expr);
+    expr.addChild(rangeExpression());
+    consume(Token.RIGHT_SQUARE_BRACKET);
+    break;
+  }
 }
 return expr;
 }
