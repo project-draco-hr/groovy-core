@@ -1,11 +1,13 @@
 {
   super.initialize(mgr,lang,declaredBeans);
-  parent=Thread.currentThread().getContextClassLoader();
+  parent=mgr.getClassLoader();
   if (parent == null)   parent=GroovyShell.class.getClassLoader();
   final ClassLoader finalParent=parent;
   this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      return new GroovyClassLoader(finalParent);
+      CompilerConfiguration configuration=new CompilerConfiguration();
+      configuration.setClasspath(mgr.getClassPath());
+      return new GroovyClassLoader(finalParent,configuration);
     }
   }
 );
