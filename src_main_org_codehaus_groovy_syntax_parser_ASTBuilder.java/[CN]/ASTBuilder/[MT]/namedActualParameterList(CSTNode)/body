@@ -1,12 +1,24 @@
 {
-  NamedArgumentListExpression paramList=new NamedArgumentListExpression();
+  TupleExpression paramList=new TupleExpression();
   CSTNode[] paramRoots=paramRoot.getChildren();
+  MapExpression map=new MapExpression();
+  paramList.addExpression(map);
   for (int i=0; i < paramRoots.length; ++i) {
-    CSTNode keyRoot=paramRoots[i].getChild(0);
-    CSTNode valueRoot=paramRoots[i].getChild(1);
-    Expression keyExpr=new ConstantExpression(keyRoot.getToken().getText());
-    Expression valueExpr=expression(paramRoot);
-    paramList.addMapEntryExpression(keyExpr,valueExpr);
+    if (matches(paramRoots[i],Token.COLON)) {
+      CSTNode keyRoot=paramRoots[i].getChild(0);
+      CSTNode valueRoot=paramRoots[i].getChild(1);
+      System.err.println("param: " + paramRoots[i]);
+      Expression keyExpr=new ConstantExpression(keyRoot.getToken().getText());
+      Expression valueExpr=expression(valueRoot);
+      map.addMapEntryExpression(keyExpr,valueExpr);
+    }
+ else {
+      if (matches(paramRoots[i],Token.LEFT_CURLY_BRACE)) {
+        paramList.addExpression(closureExpression(paramRoots[i]));
+      }
+      break;
+    }
   }
+  System.err.println("paramList: " + paramList);
   return paramList;
 }
