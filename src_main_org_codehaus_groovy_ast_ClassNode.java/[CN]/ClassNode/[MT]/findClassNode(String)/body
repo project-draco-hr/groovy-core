@@ -1,0 +1,18 @@
+{
+  ClassNode answer=null;
+  CompileUnit compileUnit=getCompileUnit();
+  if (compileUnit != null) {
+    answer=compileUnit.getClass(type);
+    if (answer == null) {
+      Class theClass;
+      try {
+        theClass=compileUnit.loadClass(type);
+        answer=createClassNode(theClass);
+      }
+ catch (      ClassNotFoundException e) {
+        log.warning("Cannot find class: " + type + " due to: "+ e);
+      }
+    }
+  }
+  return answer;
+}
