@@ -4,6 +4,11 @@
   }
  catch (  ClassNotFoundException e) {
     try {
+      return Thread.currentThread().getContextClassLoader().loadClass(type);
+    }
+ catch (    ClassNotFoundException e1) {
+    }
+    try {
       return getClass().getClassLoader().loadClass(type);
     }
  catch (    ClassNotFoundException e2) {

@@ -1,9 +1,10 @@
 {
   if (createClassForStatements && (!statementBlock.isEmpty() || !methods.isEmpty())) {
     ClassNode mainClass=createStatementsClass();
+    createClassForStatements=false;
     classes.add(0,mainClass);
     mainClass.setModule(this);
-    createClassForStatements=false;
+    addToCompileUnit(mainClass);
   }
   return classes;
 }

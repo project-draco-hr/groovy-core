@@ -22,6 +22,15 @@
         }
       }
     }
+    if (answer == null) {
+      for (int i=0, size=defaultImports.length; i < size; i++) {
+        String packagePrefix=defaultImports[i];
+        answer=tryResolveClassFromCompileUnit(packagePrefix + "." + type);
+        if (answer != null) {
+          return answer;
+        }
+      }
+    }
   }
   return answer;
 }
