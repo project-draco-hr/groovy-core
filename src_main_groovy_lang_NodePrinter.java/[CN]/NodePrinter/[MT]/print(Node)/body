@@ -1,0 +1,27 @@
+{
+  printIndent();
+  printName(node);
+  Map attributes=node.attributes();
+  boolean hasAttributes=attributes != null && !attributes.isEmpty();
+  if (hasAttributes) {
+    printAttributes(attributes);
+  }
+  Object value=node.value();
+  if (value instanceof List) {
+    if (!hasAttributes) {
+      print("()");
+    }
+    printList((List)value);
+  }
+ else {
+    if (value instanceof String) {
+      print("('");
+      print((String)value);
+      println("')");
+    }
+ else {
+      println("()");
+    }
+  }
+  out.flush();
+}

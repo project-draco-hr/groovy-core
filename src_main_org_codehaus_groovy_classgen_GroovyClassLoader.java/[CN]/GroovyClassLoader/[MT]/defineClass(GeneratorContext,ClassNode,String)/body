@@ -1,0 +1,13 @@
+{
+  verifier.visitClass(classNode);
+  ClassWriter classWriter=new ClassWriter(true);
+  ClassGenerator generator=new ClassGenerator(context,classWriter,this,file);
+  generator.visitClass(classNode);
+  byte[] code=classWriter.toByteArray();
+  Class answer=defineClass(classNode.getName(),code,0,code.length);
+  LinkedList innerClasses=generator.getInnerClasses();
+  while (!innerClasses.isEmpty()) {
+    defineClass(context,(ClassNode)innerClasses.removeFirst(),file);
+  }
+  return answer;
+}
