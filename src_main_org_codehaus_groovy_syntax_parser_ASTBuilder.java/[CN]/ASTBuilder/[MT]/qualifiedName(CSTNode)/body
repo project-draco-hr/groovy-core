@@ -1,5 +1,9 @@
 {
   String qualifiedName="";
+  if (matches(nameRoot,Token.LEFT_SQUARE_BRACKET)) {
+    CSTNode child=nameRoot.getChild(0);
+    return qualifiedName(child) + "[]";
+  }
   if (matches(nameRoot,Token.DOT)) {
     CSTNode cur=nameRoot;
     while (matches(cur,Token.DOT)) {

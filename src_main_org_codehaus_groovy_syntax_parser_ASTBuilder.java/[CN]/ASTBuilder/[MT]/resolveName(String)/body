@@ -1,17 +1,23 @@
 {
+  String original=name;
+  name=removeTypeModifiers(name);
+  String postfix="";
+  if (original.length() > name.length()) {
+    postfix=original.substring(name.length());
+  }
   if (name.indexOf(".") >= 0) {
-    return name;
+    return original;
   }
  else   if (name.equals("void") || name.equals("int") || name.equals("boolean")|| name.equals("long")|| name.equals("short")|| name.equals("char")|| name.equals("byte")|| name.equals("double")|| name.equals("float")) {
-    return name;
+    return original;
   }
   if (this.imports.containsKey(name)) {
-    return (String)this.imports.get(name);
+    return (String)this.imports.get(name) + postfix;
   }
   if (packageName != null && packageName.length() > 0) {
     try {
       getClassLoader().loadClass(packageName + "." + name);
-      return packageName + "." + name;
+      return packageName + "." + name+ postfix;
     }
  catch (    Exception e) {
     }
@@ -22,7 +28,7 @@ catch (    Error e) {
     try {
       String fullName=DEFAULT_IMPORTS[i] + name;
       getClassLoader().loadClass(fullName);
-      return fullName;
+      return fullName + postfix;
     }
  catch (    Exception e) {
     }

@@ -24,5 +24,14 @@ default :
     }
   }
 }
+if (datatype != null) {
+if (lt_bare() == Token.LEFT_SQUARE_BRACKET && lt_bare(2) == Token.RIGHT_SQUARE_BRACKET) {
+  CSTNode newRoot=new CSTNode(Token.leftSquareBracket(-1,-1));
+  newRoot.addChild(datatype);
+  datatype=newRoot;
+  consume_bare(datatype,Token.LEFT_SQUARE_BRACKET);
+  consume_bare(Token.RIGHT_SQUARE_BRACKET);
+}
+}
 return datatype;
 }
