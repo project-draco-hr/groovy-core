@@ -1,21 +1,14 @@
 {
-  URL url=null;
-  url=servletContext.getResource(templateName);
+  URL url=servletContext.getResource(templateName);
+  if (url != null) {
+    return url;
+  }
+  ClassLoader classLoader=Thread.currentThread().getContextClassLoader();
+  url=classLoader.getResource(templateName);
   if (url != null) {
     return url;
   }
   url=getClass().getResource(templateName);
-  if (url != null) {
-    return url;
-  }
-  ClassLoader classLoader=null;
-  classLoader=ClassLoader.getSystemClassLoader();
-  url=classLoader.getResource(templateName);
-  if (url != null) {
-    return url;
-  }
-  classLoader=Thread.currentThread().getContextClassLoader();
-  url=classLoader.getResource(templateName);
   if (url != null) {
     return url;
   }
