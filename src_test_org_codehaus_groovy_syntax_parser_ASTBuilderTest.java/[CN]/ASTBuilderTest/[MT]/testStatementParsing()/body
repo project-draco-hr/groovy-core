@@ -1,8 +1,5 @@
 {
-  Parser parser=newParser("import cheddar.cheese.Toast as Bread\n x = [1, 2, 3]; System.out.println(x)");
-  CSTNode root=parser.compilationUnit();
-  ASTBuilder builder=new ASTBuilder(getClass().getClassLoader());
-  ModuleNode module=builder.build(root);
+  ModuleNode module=parse("import cheddar.cheese.Toast as Bread\n x = [1, 2, 3]; System.out.println(x)","foo/Cheese.groovy");
   BlockStatement block=module.getStatementBlock();
   assertTrue("Contains some statements",!block.getStatements().isEmpty());
   System.out.println("Statements: " + block.getStatements());

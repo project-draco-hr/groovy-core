@@ -1,0 +1,16 @@
+{
+  String name=getPackageName();
+  if (name == null) {
+    name="";
+  }
+ else {
+    name=name + ".";
+  }
+  if (description == null) {
+    throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
+  }
+  name+=extractClassFromFileDescription();
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,"java.lang.Object");
+  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,"void",new Parameter[]{new Parameter("java.lang.String[]","args")},statementBlock));
+  return classNode;
+}
