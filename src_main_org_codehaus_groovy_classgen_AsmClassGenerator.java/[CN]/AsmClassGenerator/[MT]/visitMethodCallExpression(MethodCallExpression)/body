@@ -125,7 +125,7 @@
  catch (          Exception e) {
           }
         }
-        if (emptyArguments(arguments) && !call.isSafe()) {
+        if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
           call.getObjectExpression().visit(this);
           cv.visitLdcInsn(method);
           invokeNoArgumentsMethod.call(cv);
@@ -145,7 +145,10 @@
             cv.visitLdcInsn(method);
             arguments.visit(this);
           }
-          if (call.isSafe()) {
+          if (call.isSpreadSafe()) {
+            invokeMethodSpreadSafeMethod.call(cv);
+          }
+ else           if (call.isSafe()) {
             invokeMethodSafeMethod.call(cv);
           }
  else {

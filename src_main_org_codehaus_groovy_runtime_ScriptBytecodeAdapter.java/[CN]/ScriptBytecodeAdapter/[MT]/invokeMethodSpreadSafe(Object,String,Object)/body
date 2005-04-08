@@ -1,0 +1,15 @@
+{
+  if (object != null) {
+    if (object instanceof List) {
+      List list=(List)object;
+      List answer=new ArrayList();
+      Iterator it=list.iterator();
+      for (; it.hasNext(); ) {
+        answer.add(invokeMethodSafe(it.next(),methodName,arguments));
+      }
+      return answer;
+    }
+ else     return invokeMethodSafe(object,methodName,arguments);
+  }
+  return null;
+}
