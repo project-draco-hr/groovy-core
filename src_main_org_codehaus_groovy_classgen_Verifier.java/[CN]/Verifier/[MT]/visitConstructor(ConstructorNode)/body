@@ -1,2 +1,25 @@
 {
+  CodeVisitorSupport checkSuper=new CodeVisitorSupport(){
+    boolean firstMethodCall=true;
+    String type=null;
+    public void visitMethodCallExpression(    MethodCallExpression call){
+      if (!firstMethodCall)       return;
+      firstMethodCall=false;
+      String name=call.getMethod();
+      if (!name.equals("super") && !name.equals("this"))       return;
+      type=name;
+      call.getArguments().visit(this);
+      type=null;
+    }
+    public void visitVariableExpression(    VariableExpression expression){
+      if (type == null)       return;
+      String name=expression.getVariable();
+      if (!name.equals("this") && !name.equals("super"))       return;
+      throw new RuntimeParserException("cannot reference " + name + " inside of "+ type+ "(....) before supertype constructor has been called",expression);
+    }
+  }
+;
+  Statement s=node.getCode();
+  if (s == null)   return;
+  s.visit(checkSuper);
 }
