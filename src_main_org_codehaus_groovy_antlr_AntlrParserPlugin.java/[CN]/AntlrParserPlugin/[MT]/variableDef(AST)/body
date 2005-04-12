@@ -10,7 +10,7 @@
   }
   String name=identifier(node);
   node=node.getNextSibling();
-  Expression leftExpression=new VariableExpression(name,type);
+  VariableExpression leftExpression=new VariableExpression(name,type);
   configureAST(leftExpression,variableDef);
   Expression rightExpression=ConstantExpression.NULL;
   if (node != null) {
@@ -18,7 +18,7 @@
     rightExpression=expression(node.getFirstChild());
   }
   Token token=makeToken(Types.ASSIGN,variableDef);
-  BinaryExpression expression=new BinaryExpression(leftExpression,token,rightExpression);
+  DeclarationExpression expression=new DeclarationExpression(leftExpression,token,rightExpression);
   configureAST(expression,variableDef);
   ExpressionStatement expressionStatement=new ExpressionStatement(expression);
   configureAST(expressionStatement,variableDef);
