@@ -1,0 +1,47 @@
+{
+  log("execute()",Project.MSG_VERBOSE);
+  command=command.trim();
+  try {
+    if (srcFile == null && command.length() == 0 && filesets.isEmpty()) {
+      throw new BuildException("Source file does not exist!",getLocation());
+    }
+    if (srcFile != null && !srcFile.exists()) {
+      throw new BuildException("Source file does not exist!",getLocation());
+    }
+    for (int i=0; i < filesets.size(); i++) {
+      FileSet fs=(FileSet)filesets.elementAt(i);
+      DirectoryScanner ds=fs.getDirectoryScanner(getProject());
+      File srcDir=fs.getDir(getProject());
+      String[] srcFiles=ds.getIncludedFiles();
+    }
+    try {
+      PrintStream out=System.out;
+      try {
+        if (output != null) {
+          log("Opening PrintStream to output file " + output,Project.MSG_VERBOSE);
+          out=new PrintStream(new BufferedOutputStream(new FileOutputStream(output.getAbsolutePath(),append)));
+        }
+        if (command == null) {
+          command=getText(new BufferedReader(new FileReader(srcFile)));
+        }
+        if (command != null) {
+          execGroovy(command,out);
+        }
+ else {
+          throw new BuildException("Source file does not exist!",getLocation());
+        }
+      }
+  finally {
+        if (out != null && out != System.out) {
+          out.close();
+        }
+      }
+    }
+ catch (    IOException e) {
+      throw new BuildException(e,getLocation());
+    }
+    log("statements executed successfully");
+  }
+  finally {
+  }
+}

@@ -1,0 +1,20 @@
+{
+  log("execGroovy()",Project.MSG_VERBOSE);
+  if ("".equals(txt.trim())) {
+    return;
+  }
+  log("Groovy: " + txt,Project.MSG_VERBOSE);
+  GroovyShell groovy=new GroovyShell(GroovyShell.class.getClassLoader());
+  try {
+    Script script=groovy.parse(txt);
+    script.run();
+  }
+ catch (  CompilationFailedException e) {
+    throw new BuildException("Script Failed: " + e.getMessage(),getLocation());
+  }
+  if (print) {
+    StringBuffer line=new StringBuffer();
+    line.append(" foo bar");
+    out.println(line);
+  }
+}

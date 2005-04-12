@@ -1,0 +1,15 @@
+{
+  log("runStatements()",Project.MSG_VERBOSE);
+  StringBuffer txt=new StringBuffer();
+  String line="";
+  BufferedReader in=new BufferedReader(reader);
+  while ((line=in.readLine()) != null) {
+    line=getProject().replaceProperties(line);
+    if (line.indexOf("--") >= 0) {
+      txt.append("\n");
+    }
+  }
+  if (!txt.equals("")) {
+    execGroovy(txt.toString(),out);
+  }
+}
