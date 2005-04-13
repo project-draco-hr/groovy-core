@@ -1,0 +1,11 @@
+{
+  VariableScope variableScope=new VariableScope();
+  VariableScopeCodeVisitor visitor=new VariableScopeCodeVisitor(variableScope);
+  visitor.setParameters(getParameters());
+  Statement code=getCode();
+  if (code != null) {
+    code.visit(visitor);
+  }
+  addFieldsToVisitor(variableScope);
+  return variableScope;
+}
