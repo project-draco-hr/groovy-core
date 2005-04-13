@@ -1,36 +1,38 @@
 {
   AST node=methodCallNode.getFirstChild();
-  if (isType(METHOD_CALL,node)) {
-    return methodCallExpression(node);
-  }
-  Expression objectExpression=VariableExpression.THIS_EXPRESSION;
-  AST elist=null;
+  Expression objectExpression;
+  AST selector;
+  AST elist=node.getNextSibling();
   boolean safe=isType(OPTIONAL_DOT,node);
   boolean spreadSafe=isType(SPREAD_DOT,node);
   if (isType(DOT,node) || safe || spreadSafe) {
     AST objectNode=node.getFirstChild();
-    elist=node.getNextSibling();
     objectExpression=expression(objectNode);
-    node=objectNode.getNextSibling();
+    selector=objectNode.getNextSibling();
+  }
+ else   if (isType(IDENT,node)) {
+    objectExpression=VariableExpression.THIS_EXPRESSION;
+    selector=node;
+  }
+ else {
+    objectExpression=expression(node);
+    selector=null;
   }
   String name=null;
-  if (isType(LITERAL_super,node)) {
+  if (selector == null) {
+    name="call";
+  }
+ else   if (isType(LITERAL_super,selector)) {
     name="super";
     if (objectExpression == VariableExpression.THIS_EXPRESSION) {
       objectExpression=VariableExpression.SUPER_EXPRESSION;
     }
   }
- else   if (isType(LITERAL_new,node)) {
-    return constructorCallExpression(node);
-  }
- else   if (isPrimitiveTypeLiteral(node)) {
-    throw new ASTRuntimeException(node,"Primitive type literal: " + node.getText() + " cannot be used as a method name; maybe you need to use a double || with a closure expression? {|int x| ..} rather than {int x|...}");
+ else   if (isPrimitiveTypeLiteral(selector)) {
+    throw new ASTRuntimeException(selector,"Primitive type literal: " + selector.getText() + " cannot be used as a method name");
   }
  else {
-    name=identifier(node);
-  }
-  if (elist == null) {
-    elist=node.getNextSibling();
+    name=identifier(selector);
   }
   Expression arguments=arguments(elist);
   MethodCallExpression expression=new MethodCallExpression(objectExpression,name,arguments);
