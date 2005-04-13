@@ -9,14 +9,13 @@ synchronized (loaderMap) {
         groovyLoader=this.loader;
       }
  else {
-        ClassLoader localLoader=getClass().getClassLoader();
-        ClassLoader parent=loader;
-        while (parent != localLoader && parent != null)         parent=parent.getParent();
-        if (parent == null) {
-          groovyLoader=new GroovyClassLoader(localLoader);
-        }
- else {
+        try {
+          loader.loadClass(getClass().getName());
           groovyLoader=new GroovyClassLoader(loader);
+        }
+ catch (        ClassNotFoundException e) {
+          ClassLoader localLoader=getClass().getClassLoader();
+          groovyLoader=new GroovyClassLoader(localLoader);
         }
       }
       loaderMap.put(loader,groovyLoader);
