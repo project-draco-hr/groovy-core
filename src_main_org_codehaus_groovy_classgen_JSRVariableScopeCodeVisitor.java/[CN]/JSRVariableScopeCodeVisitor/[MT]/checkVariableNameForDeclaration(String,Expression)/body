@@ -1,14 +1,22 @@
 {
-  if (name.equals("this"))   return;
-  if (name.equals("super"))   return;
+  if (expression == VariableExpression.THIS_EXPRESSION)   return;
+  if (expression == VariableExpression.SUPER_EXPRESSION)   return;
   VariableScope scope=currentScope;
   while (scope != null) {
     if (scope.getDeclaredVariables().contains(name))     break;
     if (scope.getReferencedVariables().contains(name))     break;
-    scope.getReferencedVariables().add(name);
     scope=scope.getParent();
   }
+  VariableScope end=scope;
   if (scope == null) {
-    throw new GroovyRuntimeException("The variable " + name + " is undefined in the current scope",expression);
+    declare(name,expression);
+    addError("The variable " + name + " is undefined in the current scope",expression);
+  }
+ else {
+    scope=currentScope;
+    while (scope != end) {
+      scope.getReferencedVariables().add(name);
+      scope=scope.getParent();
+    }
   }
 }
