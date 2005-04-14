@@ -7,6 +7,11 @@
   GroovyShell groovy=new GroovyShell(GroovyShell.class.getClassLoader());
   try {
     Script script=groovy.parse(txt);
+    script.setProperty("ant",new AntBuilder(getProject()));
+    script.setProperty("project",getProject());
+    script.setProperty("properties",getProject().getProperties());
+    script.setProperty("target",getOwningTarget());
+    script.setProperty("task",this);
     script.run();
   }
  catch (  CompilationFailedException e) {
