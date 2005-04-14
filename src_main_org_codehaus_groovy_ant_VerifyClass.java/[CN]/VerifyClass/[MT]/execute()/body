@@ -1,0 +1,13 @@
+{
+  if (topDir == null)   throw new BuildException("no dir attribute is set");
+  File top=new File(topDir);
+  if (!top.exists())   throw new BuildException("the directory " + top + " does not exist");
+  log("top dir is " + top);
+  int fails=execute(top);
+  if (fails == 0) {
+    log("no bytecode problems found");
+  }
+ else {
+    log("found " + fails + " failing classes");
+  }
+}
