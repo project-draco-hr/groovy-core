@@ -1,0 +1,13 @@
+{
+  VariableScope scope=currentScope;
+  currentScope=new VariableScope(currentScope);
+  Set declares=currentScope.getDeclaredVariables();
+  Parameter[] parameters=node.getParameters();
+  for (int i=0; i < parameters.length; i++) {
+    declares.add(parameters[i].getName());
+  }
+  currentScope=new VariableScope(currentScope);
+  Statement code=node.getCode();
+  if (code != null)   code.visit(this);
+  currentScope=scope;
+}

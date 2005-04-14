@@ -1,0 +1,16 @@
+{
+  VariableScope scope=currentScope;
+  currentScope=new VariableScope(currentScope);
+  Set declares=currentScope.getDeclaredVariables();
+  if (expression.isParameterSpecified()) {
+    Parameter[] parameters=expression.getParameters();
+    for (int i=0; i < parameters.length; i++) {
+      declares.add(parameters[i].getName());
+    }
+  }
+ else {
+    declares.add("it");
+  }
+  super.visitClosureExpression(expression);
+  currentScope=scope;
+}

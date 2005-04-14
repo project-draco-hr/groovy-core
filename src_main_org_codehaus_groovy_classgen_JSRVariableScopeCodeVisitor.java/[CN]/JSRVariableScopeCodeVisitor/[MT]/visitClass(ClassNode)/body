@@ -1,0 +1,53 @@
+{
+  VariableScope scope=currentScope;
+  currentScope=new VariableScope(currentScope);
+  Set declares=currentScope.getDeclaredVariables();
+  for (Iterator iter=node.getProperties().iterator(); iter.hasNext(); ) {
+    PropertyNode element=(PropertyNode)iter.next();
+    declares.add(element.getName());
+  }
+  for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
+    FieldNode element=(FieldNode)iter.next();
+    declares.add(element.getName());
+  }
+  for (Iterator iter=node.getAllDeclaredMethods().iterator(); iter.hasNext(); ) {
+    MethodNode element=(MethodNode)iter.next();
+    if (element.getName().startsWith("set") || element.getName().startsWith("get")) {
+      String name=element.getName().substring(3);
+      if (name.length() == 0)       continue;
+      String s=name.substring(0,1).toLowerCase();
+      String rest=name.substring(1);
+      declares.add(s + rest);
+    }
+  }
+  Set refs=currentScope.getReferencedVariables();
+  try {
+    Class c=loader.loadClass(node.getSuperClass());
+    while (c != null) {
+      Field[] fields=c.getDeclaredFields();
+      for (int i=0; i < fields.length; i++) {
+        Field f=fields[i];
+        if (Modifier.isPrivate(f.getModifiers()))         continue;
+        refs.add(f.getName());
+      }
+      Method[] methods=c.getDeclaredMethods();
+      for (int i=0; i < methods.length; i++) {
+        Method m=methods[i];
+        if (Modifier.isPrivate(m.getModifiers()))         continue;
+        if (m.getName().startsWith("set") || m.getName().startsWith("get")) {
+          String name=m.getName().substring(3);
+          if (name.length() == 0)           continue;
+          String s=name.substring(0,1).toLowerCase();
+          String rest=name.substring(1);
+          refs.add(s + rest);
+        }
+      }
+      c=c.getSuperclass();
+    }
+  }
+ catch (  ClassNotFoundException cnfe) {
+    cnfe.printStackTrace();
+  }
+  node.visitContents(this);
+  currentScope=scope;
+}
