@@ -1,9 +1,5 @@
 {
   int line=expr.getLineNumber();
   int col=expr.getColumnNumber();
-  try {
-    source.addError(new SyntaxErrorMessage(new SyntaxException(msg,line,col)),false);
-  }
- catch (  CompilationFailedException ce) {
-  }
+  source.addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException(msg + "\n",line,col)));
 }

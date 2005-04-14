@@ -2,35 +2,13 @@
   VariableScope scope=currentScope;
   currentScope=new VariableScope(currentScope);
   Set declares=currentScope.getDeclaredVariables();
-  for (Iterator iter=node.getProperties().iterator(); iter.hasNext(); ) {
-    PropertyNode element=(PropertyNode)iter.next();
-    declares.add(element.getName());
+  try {
+    addVarNames(node,currentScope.getDeclaredVariables(),false);
+    addVarNames(node.getOuterClass(),currentScope.getReferencedVariables(),true);
+    addVarNames(node.getSuperClass(),currentScope.getReferencedVariables(),true);
   }
-  for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
-    FieldNode element=(FieldNode)iter.next();
-    declares.add(element.getName());
-  }
-  for (Iterator iter=node.getAllDeclaredMethods().iterator(); iter.hasNext(); ) {
-    MethodNode element=(MethodNode)iter.next();
-    String name=getPropertyName(element.getName());
-    if (name != null)     declares.add(name);
-  }
-  Set refs=currentScope.getReferencedVariables();
-  ClassNode cn=unit.getClass(node.getSuperClass());
-  while (cn != null) {
-    List l=cn.getFields();
-    for (Iterator iter=l.iterator(); iter.hasNext(); ) {
-      FieldNode f=(FieldNode)iter.next();
-      if (Modifier.isPrivate(f.getModifiers()))       continue;
-      refs.add(f.getName());
-    }
-    l=cn.getMethods();
-    for (Iterator iter=l.iterator(); iter.hasNext(); ) {
-      MethodNode f=(MethodNode)iter.next();
-      if (Modifier.isPrivate(f.getModifiers()))       continue;
-      refs.add(f.getName());
-    }
-    cn=unit.getClass(cn.getSuperClass());
+ catch (  ClassNotFoundException cnfe) {
+    cnfe.printStackTrace();
   }
   node.visitContents(this);
   currentScope=scope;
