@@ -1,5 +1,23 @@
 {
-  for (int i=self.intValue(), size=to.intValue(), step=stepNumber.intValue(); i < size; i+=step) {
-    closure.call(new Integer(i));
+  if (self instanceof BigDecimal || to instanceof BigDecimal || stepNumber instanceof BigDecimal) {
+    BigDecimal self1=(self instanceof BigDecimal) ? (BigDecimal)self : new BigDecimal("" + self);
+    BigDecimal to1=(to instanceof BigDecimal) ? (BigDecimal)to : new BigDecimal("" + to);
+    BigDecimal stepNumber1=(stepNumber instanceof BigDecimal) ? (BigDecimal)stepNumber : new BigDecimal("" + stepNumber);
+    for (BigDecimal i=self1, size=to1, step=stepNumber1; i.compareTo(size) < 0; i=i.add(step)) {
+      closure.call(i);
+    }
+  }
+ else   if (self instanceof BigInteger || to instanceof BigInteger || stepNumber instanceof BigInteger) {
+    BigInteger self1=(self instanceof BigInteger) ? (BigInteger)self : new BigInteger("" + self);
+    BigInteger to1=(to instanceof BigInteger) ? (BigInteger)to : new BigInteger("" + to);
+    BigInteger stepNumber1=(stepNumber instanceof BigInteger) ? (BigInteger)stepNumber : new BigInteger("" + stepNumber);
+    for (BigInteger i=self1, size=to1, step=stepNumber1; i.compareTo(size) < 0; i=i.add(step)) {
+      closure.call(i);
+    }
+  }
+ else {
+    for (int i=self.intValue(), size=to.intValue(), step=stepNumber.intValue(); i < size; i+=step) {
+      closure.call(new Integer(i));
+    }
   }
 }
