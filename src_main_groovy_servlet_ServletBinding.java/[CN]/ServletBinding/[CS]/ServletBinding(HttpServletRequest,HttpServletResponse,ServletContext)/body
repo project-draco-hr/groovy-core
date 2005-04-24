@@ -1,0 +1,36 @@
+{
+  this.response=response;
+  this.sc=sc;
+  binding.setVariable("request",request);
+  binding.setVariable("response",response);
+  binding.setVariable("context",sc);
+  binding.setVariable("application",sc);
+  binding.setVariable("session",request.getSession(true));
+  Map params=new HashMap();
+  for (Enumeration paramEnum=request.getParameterNames(); paramEnum.hasMoreElements(); ) {
+    String key=(String)paramEnum.nextElement();
+    if (!binding.getVariables().containsKey(key)) {
+      String[] values=request.getParameterValues(key);
+      if (values.length == 1) {
+        params.put(key,values[0]);
+      }
+ else {
+        params.put(key,values);
+      }
+    }
+  }
+  binding.setVariable("param",params);
+  Map headers=new HashMap(){
+    public Object put(    Object key,    Object value){
+      response.setHeader(key.toString(),value.toString());
+      return null;
+    }
+  }
+;
+  for (Enumeration headerEnum=request.getHeaderNames(); headerEnum.hasMoreElements(); ) {
+    String headerName=(String)headerEnum.nextElement();
+    String headerValue=request.getHeader(headerName);
+    headers.put(headerName,headerValue);
+  }
+  binding.setVariable("header",headers);
+}
