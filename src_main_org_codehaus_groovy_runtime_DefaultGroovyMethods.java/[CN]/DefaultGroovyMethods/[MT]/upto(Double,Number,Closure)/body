@@ -1,5 +1,10 @@
 {
-  for (double i=self.doubleValue(), size=to.doubleValue(); i <= size; i++) {
-    closure.call(new Double(i));
+  double self1=self.doubleValue();
+  double to1=to.doubleValue();
+  if (self1 <= to1) {
+    for (double i=self1; i <= to1; i++) {
+      closure.call(new Double(i));
+    }
   }
+ else   throw new GroovyRuntimeException("Infinite loop in " + self + ".upto("+ to+ ")");
 }

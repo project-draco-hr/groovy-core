@@ -1,20 +1,32 @@
 {
   if (to instanceof BigDecimal) {
-    BigDecimal one=new BigDecimal(1.0);
-    for (BigDecimal i=new BigDecimal(self), size=(BigDecimal)to; i.compareTo(size) >= 0; i=i.subtract(one)) {
-      closure.call(i);
+    final BigDecimal one=new BigDecimal(1.0);
+    BigDecimal to1=(BigDecimal)to;
+    if (self.compareTo(to1) >= 0) {
+      for (BigDecimal i=new BigDecimal(self); i.compareTo(to1) >= 0; i=i.subtract(one)) {
+        closure.call(i);
+      }
     }
+ else     throw new GroovyRuntimeException("Infinite loop in " + self + ".downto("+ to+ ")");
   }
  else   if (to instanceof BigInteger) {
-    BigInteger one=new BigInteger("1");
-    for (BigInteger i=self, size=(BigInteger)to; i.compareTo(size) >= 0; i=i.subtract(one)) {
-      closure.call(i);
+    final BigInteger one=new BigInteger("1");
+    BigInteger to1=(BigInteger)to;
+    if (self.compareTo(to1) >= 0) {
+      for (BigInteger i=self; i.compareTo(to1) >= 0; i=i.subtract(one)) {
+        closure.call(i);
+      }
     }
+ else     throw new GroovyRuntimeException("Infinite loop in " + self + ".downto("+ to+ ")");
   }
  else {
-    BigInteger one=new BigInteger("1");
-    for (BigInteger i=self, size=new BigInteger("" + to); i.compareTo(size) >= 0; i=i.subtract(one)) {
-      closure.call(i);
+    final BigInteger one=new BigInteger("1");
+    BigInteger to1=new BigInteger("" + to);
+    if (self.compareTo(to1) >= 0) {
+      for (BigInteger i=self; i.compareTo(to1) >= 0; i=i.subtract(one)) {
+        closure.call(i);
+      }
     }
+ else     throw new GroovyRuntimeException("Infinite loop in " + self + ".downto("+ to+ ")");
   }
 }

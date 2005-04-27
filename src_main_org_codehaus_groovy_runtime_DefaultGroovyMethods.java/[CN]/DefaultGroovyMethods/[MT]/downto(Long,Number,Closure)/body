@@ -1,5 +1,10 @@
 {
-  for (long i=self.longValue(), size=to.longValue(); i >= size; i--) {
-    closure.call(new Long(i));
+  long self1=self.longValue();
+  long to1=to.longValue();
+  if (self1 >= to1) {
+    for (long i=self1; i >= to1; i--) {
+      closure.call(new Long(i));
+    }
   }
+ else   throw new GroovyRuntimeException("Infinite loop in " + self + ".downto("+ to+ ")");
 }

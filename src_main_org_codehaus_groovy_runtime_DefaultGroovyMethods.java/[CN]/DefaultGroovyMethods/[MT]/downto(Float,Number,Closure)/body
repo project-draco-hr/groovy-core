@@ -1,5 +1,10 @@
 {
-  for (float i=self.floatValue(), size=to.floatValue(); i >= size; i--) {
-    closure.call(new Float(i));
+  float self1=self.floatValue();
+  float to1=to.floatValue();
+  if (self1 >= to1) {
+    for (float i=self1; i >= to1; i--) {
+      closure.call(new Float(i));
+    }
   }
+ else   throw new GroovyRuntimeException("Infinite loop in " + self + ".downto("+ to+ ")");
 }
