@@ -1,0 +1,40 @@
+{
+  String key=file.getAbsolutePath();
+  Template template=null;
+  TemplateCacheEntry entry=(TemplateCacheEntry)cache.get(key);
+  if (entry != null) {
+    if (entry.validate(file)) {
+      template=entry.template;
+    }
+  }
+  if (template == null) {
+    if (VERBOSE) {
+      log("Creating new template from file " + file + "...");
+    }
+    FileReader reader=null;
+    try {
+      reader=new FileReader(file);
+      template=createTemplate((int)file.length(),reader);
+    }
+ catch (    Exception e) {
+      throw new ServletException("Creation of template failed: " + e,e);
+    }
+ finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        }
+ catch (        IOException ignore) {
+        }
+      }
+    }
+    cache.put(key,new TemplateCacheEntry(file,template));
+    if (VERBOSE) {
+      log("Created and added template to cache. [key=" + key + "]");
+    }
+  }
+  if (template == null) {
+    throw new ServletException("Template is null? Should not happen here!");
+  }
+  return template;
+}

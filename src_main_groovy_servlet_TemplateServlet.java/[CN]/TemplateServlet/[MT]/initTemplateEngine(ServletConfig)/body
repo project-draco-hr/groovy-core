@@ -1,0 +1,19 @@
+{
+  String name=config.getInitParameter("templateEngine");
+  if (name == null) {
+    return new SimpleTemplateEngine();
+  }
+  try {
+    return (TemplateEngine)Class.forName(name).newInstance();
+  }
+ catch (  InstantiationException e) {
+    log("Could not instantiate template engine: " + name,e);
+  }
+catch (  IllegalAccessException e) {
+    log("Could not access template engine class: " + name,e);
+  }
+catch (  ClassNotFoundException e) {
+    log("Could not find template engine class: " + name,e);
+  }
+  return null;
+}

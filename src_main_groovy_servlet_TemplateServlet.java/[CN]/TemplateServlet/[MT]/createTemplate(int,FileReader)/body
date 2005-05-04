@@ -1,0 +1,20 @@
+{
+  StringBuffer sb=new StringBuffer(bufferCapacity);
+  BufferedReader reader=new BufferedReader(fileReader);
+  try {
+    String line=reader.readLine();
+    while (line != null) {
+      sb.append(line);
+      line=reader.readLine();
+    }
+  }
+  finally {
+    if (reader != null) {
+      reader.close();
+    }
+  }
+  StringReader stringReader=new StringReader(sb.toString());
+  Template template=engine.createTemplate(stringReader);
+  stringReader.close();
+  return template;
+}
