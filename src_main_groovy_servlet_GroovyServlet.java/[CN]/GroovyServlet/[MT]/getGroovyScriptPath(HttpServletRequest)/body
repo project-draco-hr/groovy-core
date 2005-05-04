@@ -1,6 +1,14 @@
 {
+  String includeURI=(String)request.getAttribute("javax.servlet.include.request_uri");
+  String strURI=null;
+  if (includeURI != null) {
+    strURI=includeURI;
+  }
+ else {
+    strURI=request.getRequestURI();
+  }
   int contextLength=request.getContextPath().length();
-  String scriptFilename=request.getRequestURI().substring(contextLength).substring(1);
+  String scriptFilename=strURI.substring(contextLength).substring(1);
   if (scriptFilename.endsWith(GROOVY_EXTENSION))   return scriptFilename;
   int lastDot=scriptFilename.lastIndexOf(".");
   scriptFilename=scriptFilename.substring(0,lastDot) + GROOVY_EXTENSION;
