@@ -1,12 +1,5 @@
 {
-  String includeURI=(String)request.getAttribute("javax.servlet.include.request_uri");
-  String strURI=null;
-  if (includeURI != null) {
-    strURI=includeURI;
-  }
- else {
-    strURI=request.getRequestURI();
-  }
+  String strURI=super.getScriptUri(request);
   int contextLength=request.getContextPath().length();
   String scriptFilename=strURI.substring(contextLength).substring(1);
   if (scriptFilename.endsWith(GROOVY_EXTENSION))   return scriptFilename;

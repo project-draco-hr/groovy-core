@@ -3,7 +3,7 @@
   final HttpServletResponse httpResponse=(HttpServletResponse)response;
   final String scriptFilename=getGroovyScriptPath(httpRequest);
   response.setContentType("text/html");
-  final Binding binding=new ServletBinding((HttpServletRequest)request,(HttpServletResponse)response,sc);
+  final Binding binding=new ServletBinding(httpRequest,httpResponse,sc);
   try {
     Closure closure=new Closure(gse){
       public Object call(){
@@ -20,6 +20,8 @@ catch (        ScriptException e) {
     }
 ;
     GroovyCategorySupport.use(ServletCategory.class,closure);
+    httpResponse.setStatus(HttpServletResponse.SC_OK);
+    httpResponse.flushBuffer();
   }
  catch (  RuntimeException re) {
     StringBuffer error=new StringBuffer("GroovyServlet Error: ");

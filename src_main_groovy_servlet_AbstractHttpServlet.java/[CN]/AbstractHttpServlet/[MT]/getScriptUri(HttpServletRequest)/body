@@ -1,0 +1,18 @@
+{
+  String uri=null;
+  String info=null;
+  uri=(String)request.getAttribute(INC_SERVLET_PATH);
+  if (uri != null) {
+    info=(String)request.getAttribute(INC_PATH_INFO);
+    if (info != null) {
+      uri+=info;
+    }
+    return uri;
+  }
+  uri=request.getServletPath();
+  info=request.getPathInfo();
+  if (info != null) {
+    uri+=info;
+  }
+  return uri;
+}
