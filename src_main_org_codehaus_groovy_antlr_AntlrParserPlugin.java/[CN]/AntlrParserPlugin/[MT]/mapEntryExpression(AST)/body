@@ -1,9 +1,19 @@
 {
-  AST keyNode=node.getFirstChild();
-  Expression keyExpression=expression(keyNode);
-  AST valueNode=keyNode.getNextSibling();
-  Expression valueExpression=expression(valueNode);
-  MapEntryExpression mapEntryExpression=new MapEntryExpression(keyExpression,valueExpression);
-  configureAST(mapEntryExpression,node);
-  return mapEntryExpression;
+  if (node.getType() == SPREAD_MAP_ARG) {
+    AST rightNode=node.getFirstChild();
+    Expression keyExpression=spreadMapExpression(node);
+    Expression rightExpression=expression(rightNode);
+    MapEntryExpression mapEntryExpression=new MapEntryExpression(keyExpression,rightExpression);
+    configureAST(mapEntryExpression,node);
+    return mapEntryExpression;
+  }
+ else {
+    AST keyNode=node.getFirstChild();
+    Expression keyExpression=expression(keyNode);
+    AST valueNode=keyNode.getNextSibling();
+    Expression valueExpression=expression(valueNode);
+    MapEntryExpression mapEntryExpression=new MapEntryExpression(keyExpression,valueExpression);
+    configureAST(mapEntryExpression,node);
+    return mapEntryExpression;
+  }
 }

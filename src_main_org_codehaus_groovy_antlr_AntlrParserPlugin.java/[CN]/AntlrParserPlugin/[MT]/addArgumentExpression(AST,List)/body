@@ -1,5 +1,15 @@
 {
-  Expression expression=expression(node);
-  expressionList.add(expression);
-  return expression instanceof MapEntryExpression;
+  if (node.getType() == SPREAD_MAP_ARG) {
+    AST rightNode=node.getFirstChild();
+    Expression keyExpression=spreadMapExpression(node);
+    Expression rightExpression=expression(rightNode);
+    MapEntryExpression mapEntryExpression=new MapEntryExpression(keyExpression,rightExpression);
+    expressionList.add(mapEntryExpression);
+    return true;
+  }
+ else {
+    Expression expression=expression(node);
+    expressionList.add(expression);
+    return expression instanceof MapEntryExpression;
+  }
 }

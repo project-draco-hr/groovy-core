@@ -1,0 +1,17 @@
+{
+  if (this == null && that == null)   return true;
+ else   if (this != null && that == null)   return false;
+ else   if (this == null && that != null)   return false;
+  if (size() == that.size()) {
+    SpreadMap other=(SpreadMap)that;
+    Iterator iter=mapData.keySet().iterator();
+    for (; iter.hasNext(); ) {
+      Object key=iter.next();
+      if (!InvokerHelper.compareEqual(get(key),other.get(key))) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
