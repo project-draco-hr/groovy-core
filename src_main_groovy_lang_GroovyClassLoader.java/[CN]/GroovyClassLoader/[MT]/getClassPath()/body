@@ -1,10 +1,23 @@
 {
-  if (searchPaths == null) {
-    List pathList=new ArrayList(additionalPaths);
-    String classpath=System.getProperty("java.class.path",".");
+  if (null == _searchPaths) {
+    final String classpath;
+    if (null != config && null != config.getClasspath()) {
+      final List paths=config.getClasspath();
+      final StringBuffer sb=new StringBuffer();
+      for (Iterator iter=paths.iterator(); iter.hasNext(); ) {
+        sb.append(iter.next().toString());
+        sb.append(File.pathSeparatorChar);
+      }
+      sb.deleteCharAt(sb.length() - 1);
+      classpath=sb.toString();
+    }
+ else {
+      classpath=System.getProperty("java.class.path",".");
+    }
+    final List pathList=new ArrayList();
     expandClassPath(pathList,null,classpath);
-    searchPaths=new String[pathList.size()];
-    searchPaths=(String[])pathList.toArray(searchPaths);
+    _searchPaths=new String[pathList.size()];
+    _searchPaths=(String[])pathList.toArray(_searchPaths);
   }
-  return searchPaths;
+  return _searchPaths;
 }
