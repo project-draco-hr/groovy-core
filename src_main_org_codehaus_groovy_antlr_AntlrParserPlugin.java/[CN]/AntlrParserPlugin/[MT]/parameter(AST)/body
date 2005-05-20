@@ -6,20 +6,15 @@
     modifiers=modifiers(node,annotations,modifiers);
     node=node.getNextSibling();
   }
-  String type=null;
-  if (isType(TYPE,node)) {
-    type=typeName(node);
-    node=node.getNextSibling();
-  }
-  String name=identifier(node);
+  assertNodeType(TYPE,node);
+  String type=typeName(node);
   node=node.getNextSibling();
-  VariableExpression leftExpression=new VariableExpression(name,type);
-  configureAST(leftExpression,paramNode);
-  Expression rightExpression=ConstantExpression.NULL;
+  String name=identifier(node);
+  Expression defaultValue=null;
+  node=node.getNextSibling();
   if (node != null) {
-    assertNodeType(ASSIGN,node);
-    rightExpression=expression(node.getFirstChild());
+    defaultValue=expression(node);
   }
-  Parameter parameter=new Parameter(type,name,rightExpression);
+  Parameter parameter=new Parameter(type,name,defaultValue);
   return parameter;
 }
