@@ -1,0 +1,13 @@
+{
+  Method ans=this.doCallMethod;
+  Class closureClass=this.getClass();
+  final Method methods[]=closureClass.getDeclaredMethods();
+  for (int j=0; j < methods.length; j++) {
+    System.out.println(j + ": " + methods[j].getName()+ " "+ methods[j].getParameterTypes().length);
+    if ("call".equals(methods[j].getName()) && paramCount == methods[j].getParameterTypes().length) {
+      ans=methods[j];
+      break;
+    }
+  }
+  return ans;
+}

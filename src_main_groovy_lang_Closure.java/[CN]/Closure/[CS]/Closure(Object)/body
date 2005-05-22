@@ -2,16 +2,22 @@
   this.delegate=delegate;
   this.owner=delegate;
   Class closureClass=this.getClass();
+  Method tmpCallMethod=null;
   while (true) {
     final Method methods[]=closureClass.getDeclaredMethods();
-    int i=0;
-    while (!methods[i].getName().equals("doCall") && ++i != methods.length)     ;
-    if (i < methods.length) {
-      this.doCallMethod=methods[i];
-      break;
+    int tmpCounter=-1;
+    for (int i=0; i < methods.length; i++) {
+      if ("doCall".equals(methods[i].getName()) && methods[i].getParameterTypes().length > tmpCounter) {
+        tmpCallMethod=methods[i];
+        tmpCounter=methods[i].getParameterTypes().length;
+      }
     }
+    if (tmpCallMethod != null)     break;
     closureClass=closureClass.getSuperclass();
   }
+  this.doCallMethod=tmpCallMethod;
+  this.parameterTypes=this.doCallMethod.getParameterTypes();
+  this.numberOfParameters=this.parameterTypes.length;
   AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
       Closure.this.doCallMethod.setAccessible(true);
@@ -19,9 +25,7 @@
     }
   }
 );
-  this.parameterTypes=this.doCallMethod.getParameterTypes();
-  this.numberOfParameters=this.parameterTypes.length;
-  if (this.numberOfParameters != 0) {
+  if (this.numberOfParameters > 0) {
     this.supportsVarargs=this.parameterTypes[this.numberOfParameters - 1].equals(Object[].class);
   }
  else {

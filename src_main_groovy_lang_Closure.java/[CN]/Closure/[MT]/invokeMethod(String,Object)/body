@@ -1,8 +1,19 @@
 {
   if ("doCall".equals(method) || "call".equals(method)) {
-    return call(arguments);
+    if (arguments == null) {
+      return call(arguments);
+    }
+ else {
+      if (arguments instanceof Object[]) {
+        if (((Object[])arguments).length <= 1)         return call(arguments);
+ else         if (((Object[])arguments)[0] instanceof Object[])         return callViaReflection((Object[])((Object[])arguments)[0]);
+ else         return callViaReflection((Object[])arguments);
+      }
+ else       return call(arguments);
+    }
   }
  else   if ("curry".equals(method)) {
+    System.out.println("Loop 2:");
     return curry((Object[])arguments);
   }
  else {
