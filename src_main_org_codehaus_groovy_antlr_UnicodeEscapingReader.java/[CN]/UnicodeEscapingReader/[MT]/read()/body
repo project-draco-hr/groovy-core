@@ -1,16 +1,19 @@
 {
   if (hasNextChar) {
     hasNextChar=false;
+    write(nextChar);
     return nextChar;
   }
   int c=reader.read();
   if (c != '\\') {
+    write(c);
     return c;
   }
   c=reader.read();
   if (c != 'u') {
     hasNextChar=true;
     nextChar=c;
+    write('\\');
     return '\\';
   }
   do {
@@ -25,5 +28,7 @@
     checkHexDigit(c);
     charNum.append((char)c);
   }
-  return Integer.parseInt(charNum.toString(),16);
+  int rv=Integer.parseInt(charNum.toString(),16);
+  write(rv);
+  return rv;
 }

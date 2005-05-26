@@ -5,9 +5,10 @@
   }
  else   if (f.getName().endsWith(".groovy")) {
     System.err.println(" --- " + f.getAbsolutePath());
-    UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new FileReader(f));
+    SourceBuffer sourceBuffer=new SourceBuffer();
+    UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new FileReader(f),sourceBuffer);
     GroovyLexer lexer=new GroovyLexer(unicodeReader);
     unicodeReader.setLexer(lexer);
-    parseFile(f.getName(),lexer);
+    parseFile(f.getName(),lexer,sourceBuffer);
   }
 }
