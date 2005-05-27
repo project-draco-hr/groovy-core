@@ -1,15 +1,19 @@
 {
   ClassReader cr=new ClassReader(new FileInputStream(clazz));
-  TreeClassAdapter ca=new TreeClassAdapter(null);
+  ClassNode ca=new ClassNode(){
+    public void visitEnd(){
+    }
+  }
+;
   cr.accept(new CheckClassAdapter(ca),true);
   boolean failed=false;
-  List methods=ca.classNode.methods;
+  List methods=ca.methods;
   for (int i=0; i < methods.size(); ++i) {
     MethodNode method=(MethodNode)methods.get(i);
     if (method.instructions.size() > 0) {
       Analyzer a=new Analyzer(new SimpleVerifier());
       try {
-        a.analyze(ca.classNode,method);
+        a.analyze(ca.name,method);
         continue;
       }
  catch (      Exception e) {
@@ -21,7 +25,7 @@
         log("verifying of class " + clazz + " failed");
       }
       if (verbose)       log(method.name + method.desc);
-      TraceCodeVisitor cv=new TraceCodeVisitor(null){
+      TraceMethodVisitor cv=new TraceMethodVisitor(null){
         public void visitMaxs(        int maxStack,        int maxLocals){
           StringBuffer buffer=new StringBuffer();
           for (int i=0; i < text.size(); ++i) {

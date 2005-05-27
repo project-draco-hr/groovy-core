@@ -23,11 +23,11 @@
   configureAST(fieldNode,fieldDef);
   if (fieldNode.getAnnotations("Property") != null) {
     int fieldModifiers=0;
-    int flags=Constants.ACC_STATIC | Constants.ACC_TRANSIENT | Constants.ACC_VOLATILE| Constants.ACC_FINAL;
+    int flags=Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT | Opcodes.ACC_VOLATILE| Opcodes.ACC_FINAL;
     fieldModifiers|=(modifiers & flags);
     fieldNode.setModifiers(fieldModifiers);
     if (!hasVisibility(modifiers)) {
-      modifiers|=Constants.ACC_PUBLIC;
+      modifiers|=Opcodes.ACC_PUBLIC;
     }
     PropertyNode propertyNode=new PropertyNode(fieldNode,modifiers,null,null);
     configureAST(propertyNode,fieldDef);
