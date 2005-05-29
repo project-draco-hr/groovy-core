@@ -2,29 +2,38 @@
   this.delegate=delegate;
   this.owner=delegate;
   Class closureClass=this.getClass();
-  Method tmpCallMethod=null;
+  callsMap=new HashMap();
+  int paramLenTemp=-1;
+  Method doCallTemp=null;
   while (true) {
     final Method methods[]=closureClass.getDeclaredMethods();
-    int tmpCounter=-1;
-    for (int i=0; i < methods.length; i++) {
-      if ("doCall".equals(methods[i].getName()) && methods[i].getParameterTypes().length > tmpCounter) {
-        tmpCallMethod=methods[i];
-        tmpCounter=methods[i].getParameterTypes().length;
+    int i=0;
+    for (int j=0; j < methods.length; j++) {
+      if ("doCall".equals(methods[j].getName())) {
+        callsMap.put(new Integer(methods[j].getParameterTypes().length),methods[j]);
+        if (methods[j].getParameterTypes().length > paramLenTemp) {
+          doCallTemp=methods[j];
+          paramLenTemp=methods[j].getParameterTypes().length;
+        }
       }
     }
-    if (tmpCallMethod != null)     break;
+    if (!callsMap.isEmpty()) {
+      break;
+    }
     closureClass=closureClass.getSuperclass();
   }
-  this.doCallMethod=tmpCallMethod;
-  this.parameterTypes=this.doCallMethod.getParameterTypes();
-  this.numberOfParameters=this.parameterTypes.length;
+  this.doCallMethod=doCallTemp;
   AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      Closure.this.doCallMethod.setAccessible(true);
+      for (Iterator iter=callsMap.values().iterator(); iter.hasNext(); ) {
+        ((Method)iter.next()).setAccessible(true);
+      }
       return null;
     }
   }
 );
+  this.parameterTypes=this.doCallMethod.getParameterTypes();
+  this.numberOfParameters=this.parameterTypes.length;
   if (this.numberOfParameters > 0) {
     this.supportsVarargs=this.parameterTypes[this.numberOfParameters - 1].equals(Object[].class);
   }

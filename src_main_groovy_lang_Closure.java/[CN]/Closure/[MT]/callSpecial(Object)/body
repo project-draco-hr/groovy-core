@@ -1,0 +1,64 @@
+{
+  final Object params[];
+  if (this.curriedParams.length > 0) {
+    final Object args[];
+    if (arguments instanceof Object[]) {
+      args=(Object[])arguments;
+    }
+ else {
+      args=new Object[]{arguments};
+    }
+    params=new Object[this.curriedParams.length + args.length];
+    System.arraycopy(this.curriedParams,0,params,0,this.curriedParams.length);
+    System.arraycopy(args,0,params,this.curriedParams.length,args.length);
+  }
+ else {
+    Object[] tmpParams=null;
+    if (arguments instanceof Object[]) {
+      tmpParams=(Object[])arguments;
+      if ((tmpParams != null) && (tmpParams.length > 1)) {
+        boolean allNull=true;
+        for (int j=1; j < tmpParams.length; j++) {
+          if (tmpParams[j] != null) {
+            allNull=false;
+            break;
+          }
+        }
+        if (allNull) {
+          if (tmpParams[0] instanceof Object[])           tmpParams=(Object[])(tmpParams[0]);
+ else           throw new IncorrectClosureArgumentsException(this,new Object[]{tmpParams[0]},this.parameterTypes);
+        }
+      }
+      params=tmpParams;
+    }
+ else {
+      return doCall(arguments);
+    }
+  }
+  final int lastParam=this.numberOfParameters - 1;
+  if (this.supportsVarargs && !(this.numberOfParameters == params.length && (params.length > lastParam) && (params[lastParam] == null || params[lastParam].getClass() == Object[].class))) {
+    final Object actualParameters[]=new Object[this.numberOfParameters];
+    if (params.length < lastParam) {
+      throw new IncorrectClosureArgumentsException(this,params,this.parameterTypes);
+    }
+ else {
+      final Object rest[]=new Object[params.length - lastParam];
+      System.arraycopy(params,0,actualParameters,0,lastParam);
+      System.arraycopy(params,lastParam,rest,0,rest.length);
+      actualParameters[lastParam]=rest;
+      return callViaReflection(actualParameters);
+    }
+  }
+  if (params.length == 0) {
+    return doCall();
+  }
+ else   if (params.length == 1) {
+    return doCall(params[0]);
+  }
+ else   if (params.length == 2) {
+    return doCall(params[0],params[1]);
+  }
+ else {
+    return callViaReflection(params);
+  }
+}
