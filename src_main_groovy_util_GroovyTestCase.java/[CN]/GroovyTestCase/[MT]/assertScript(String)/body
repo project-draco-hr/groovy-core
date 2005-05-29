@@ -1,16 +1,4 @@
 {
-  log.info("About to execute script");
-  String testClassName=getTestClassName();
-  File dir=new File("target/test-script/");
-  dir.mkdirs();
-  File file=new File(dir,testClassName);
-  log.info("Creating file " + file);
-  DefaultGroovyMethods.withPrintWriter(file,new Closure(null){
-    protected void doCall(    PrintWriter writer){
-      writer.println(script);
-    }
-  }
-);
   GroovyShell shell=new GroovyShell();
-  shell.evaluate(new GroovyCodeSource(file));
+  shell.evaluate(script,getTestClassName());
 }
