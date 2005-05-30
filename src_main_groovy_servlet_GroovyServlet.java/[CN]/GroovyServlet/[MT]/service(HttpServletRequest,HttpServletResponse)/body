@@ -1,9 +1,16 @@
 {
-  final HttpServletRequest httpRequest=(HttpServletRequest)request;
-  final HttpServletResponse httpResponse=(HttpServletResponse)response;
-  final String scriptFilename=getGroovyScriptPath(httpRequest);
+  File file=super.getScriptUriAsFile(request,sc);
+  if (!file.exists()) {
+    response.sendError(HttpServletResponse.SC_NOT_FOUND,"Not found!");
+    return;
+  }
+  if (!file.canRead()) {
+    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read!");
+    return;
+  }
+  final String scriptFilename=file.getName();
   response.setContentType("text/html");
-  final Binding binding=new ServletBinding(httpRequest,httpResponse,sc);
+  final Binding binding=new ServletBinding(request,response,sc);
   try {
     Closure closure=new Closure(gse){
       public Object call(){
@@ -20,8 +27,8 @@ catch (        ScriptException e) {
     }
 ;
     GroovyCategorySupport.use(ServletCategory.class,closure);
-    httpResponse.setStatus(HttpServletResponse.SC_OK);
-    httpResponse.flushBuffer();
+    response.setStatus(HttpServletResponse.SC_OK);
+    response.flushBuffer();
   }
  catch (  RuntimeException re) {
     StringBuffer error=new StringBuffer("GroovyServlet Error: ");
@@ -33,7 +40,7 @@ catch (        ScriptException e) {
       error.append(" Script not found, sending 404.");
       sc.log(error.toString());
       System.out.println(error.toString());
-      httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
  else {
       if (re.getMessage() != null)       error.append(re.getMessage());
@@ -45,7 +52,7 @@ catch (        ScriptException e) {
       }
       sc.log(error.toString());
       System.out.println(error.toString());
-      httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 }

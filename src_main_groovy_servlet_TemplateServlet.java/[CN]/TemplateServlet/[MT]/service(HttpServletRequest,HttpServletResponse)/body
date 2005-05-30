@@ -2,7 +2,7 @@
   if (VERBOSE) {
     log("Creating/getting cached template...");
   }
-  File file=super.getScriptUriAsFile(request,context);
+  File file=super.getScriptUriAsFile(request,servletContext);
   if (!file.exists()) {
     response.sendError(HttpServletResponse.SC_NOT_FOUND);
     return;
@@ -14,7 +14,7 @@
   long getMillis=System.currentTimeMillis();
   Template template=getTemplate(file);
   getMillis=System.currentTimeMillis() - getMillis;
-  ServletBinding binding=new ServletBinding(request,response,context);
+  ServletBinding binding=new ServletBinding(request,response,servletContext);
   setVariables(binding);
   response.setContentType(CONTENT_TYPE_TEXT_HTML);
   Writer out=(Writer)binding.getVariable("out");
