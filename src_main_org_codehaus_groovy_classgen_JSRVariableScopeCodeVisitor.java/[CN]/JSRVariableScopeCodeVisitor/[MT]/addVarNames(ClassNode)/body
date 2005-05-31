@@ -1,0 +1,40 @@
+{
+  if (cn == null)   return;
+  List l=cn.getFields();
+  Set fields=new HashSet();
+  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
+    FieldNode f=(FieldNode)iter.next();
+    Var var=new Var(f);
+    if (fields.contains(var)) {
+      declare(var,f);
+    }
+ else {
+      fields.add(var);
+      currentScope.declares.put(var.name,var);
+    }
+  }
+  l=cn.getMethods();
+  Set setter=new HashSet();
+  Set getter=new HashSet();
+  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
+    MethodNode f=(MethodNode)iter.next();
+    String methodName=f.getName();
+    String pName=getPropertyName(methodName);
+    if (pName == null)     continue;
+    Var var=new Var(pName,f);
+    currentScope.declares.put(var.name,var);
+  }
+  l=cn.getProperties();
+  Set props=new HashSet();
+  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
+    PropertyNode f=(PropertyNode)iter.next();
+    Var var=new Var(f);
+    if (props.contains(var)) {
+      declare(var,f);
+    }
+ else {
+      props.add(var);
+      currentScope.declares.put(var.name,var);
+    }
+  }
+}

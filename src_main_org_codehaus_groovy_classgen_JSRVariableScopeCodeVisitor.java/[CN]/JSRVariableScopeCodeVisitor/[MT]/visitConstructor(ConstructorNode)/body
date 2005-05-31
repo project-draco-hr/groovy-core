@@ -1,12 +1,12 @@
 {
-  VariableScope scope=currentScope;
-  currentScope=new VariableScope(currentScope);
-  Set declares=currentScope.getDeclaredVariables();
+  VarScope scope=currentScope;
+  currentScope=new VarScope(currentScope);
+  HashMap declares=currentScope.declares;
   Parameter[] parameters=node.getParameters();
   for (int i=0; i < parameters.length; i++) {
-    declares.add(parameters[i].getName());
+    declare(new Var(parameters[i],false),node);
   }
-  currentScope=new VariableScope(currentScope);
+  currentScope=new VarScope(currentScope);
   Statement code=node.getCode();
   if (code != null)   code.visit(this);
   currentScope=scope;

@@ -1,15 +1,21 @@
 {
-  VariableScope scope=currentScope;
-  currentScope=new VariableScope(currentScope);
-  Set declares=currentScope.getDeclaredVariables();
+  VarScope scope=currentScope;
+  currentScope=new VarScope(!jroseRule,currentScope);
   if (expression.isParameterSpecified()) {
     Parameter[] parameters=expression.getParameters();
     for (int i=0; i < parameters.length; i++) {
-      declares.add(parameters[i].getName());
+      declare(new Var(parameters[i],false),expression);
     }
   }
  else {
-    declares.add("it");
+    if (jroseRule) {
+      JRoseCheck check=new JRoseCheck();
+      expression.visit(check);
+      if (check.itUsed)       declare(new Var("it"),expression);
+    }
+ else {
+      currentScope.declares.put("it",new Var("it"));
+    }
   }
   super.visitClosureExpression(expression);
   currentScope=scope;

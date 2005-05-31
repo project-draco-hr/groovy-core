@@ -1,22 +1,29 @@
 {
-  if (expression == VariableExpression.THIS_EXPRESSION)   return;
-  if ("super".equals(name))   return;
-  VariableScope scope=currentScope;
+  Var var=new Var(name);
+  if ("super".equals(var.name) || "this".equals(var.name))   return null;
+  VarScope scope=currentScope;
   while (scope != null) {
-    if (scope.getDeclaredVariables().contains(name))     break;
-    if (scope.getReferencedVariables().contains(name))     break;
-    scope=scope.getParent();
+    if (scope.declares.get(var.name) != null) {
+      var=(Var)scope.declares.get(var.name);
+      break;
+    }
+    if (scope.visibles.get(var.name) != null) {
+      var=(Var)scope.visibles.get(var.name);
+      break;
+    }
+    scope=scope.parent;
   }
-  VariableScope end=scope;
+  VarScope end=scope;
   if (scope == null) {
-    declare(name,expression);
-    addError("The variable " + name + " is undefined in the current scope",expression);
+    declare(var,expression);
+    if (!scriptMode)     addError("The variable " + var.name + " is undefined in the current scope",expression);
   }
  else {
     scope=currentScope;
     while (scope != end) {
-      scope.getReferencedVariables().add(name);
-      scope=scope.getParent();
+      scope.visibles.put(var.name,var);
+      scope=scope.parent;
     }
   }
+  return var;
 }

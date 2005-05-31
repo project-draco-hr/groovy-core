@@ -1,15 +1,18 @@
 {
-  VariableScope scope=currentScope;
-  currentScope=new VariableScope(currentScope);
-  Set declares=currentScope.getDeclaredVariables();
+  VarScope scope=currentScope;
+  currentScope=new VarScope(true,currentScope);
+  boolean scriptModeBackup=scriptMode;
+  scriptMode=node.isScript();
+  HashMap declares=currentScope.declares;
   try {
-    addVarNames(node,currentScope.getDeclaredVariables(),false);
-    addVarNames(node.getOuterClass(),currentScope.getReferencedVariables(),true);
-    addVarNames(node.getSuperClass(),currentScope.getReferencedVariables(),true);
+    addVarNames(node);
+    addVarNames(node.getOuterClass(),currentScope.visibles,true);
+    addVarNames(node.getSuperClass(),currentScope.visibles,true);
   }
  catch (  ClassNotFoundException cnfe) {
     cnfe.printStackTrace();
   }
   node.visitContents(this);
   currentScope=scope;
+  scriptMode=scriptModeBackup;
 }

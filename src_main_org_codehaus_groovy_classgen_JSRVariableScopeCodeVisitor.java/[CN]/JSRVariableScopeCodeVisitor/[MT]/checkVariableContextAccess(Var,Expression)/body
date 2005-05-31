@@ -1,0 +1,9 @@
+{
+  if (v.isStatic || dynamicContext)   return;
+  String accessContext="dynamic";
+  if (!dynamicContext)   accessContext="static";
+  String varContext="dynamic";
+  if (v.isStatic)   varContext="static";
+  String msg=v.name + " is declared in a dynamic context, but you tried to" + " access it from a static context.";
+  addError(msg,expr);
+}

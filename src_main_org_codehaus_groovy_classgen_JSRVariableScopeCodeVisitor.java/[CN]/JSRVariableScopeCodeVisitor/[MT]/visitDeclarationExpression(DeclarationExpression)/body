@@ -1,5 +1,10 @@
 {
   expression.getRightExpression().visit(this);
-  String variable=expression.getVariableExpression().getVariable();
-  declare(variable,expression);
+  VariableExpression vex=expression.getVariableExpression();
+  if (!jroseRule && "it".equals(vex.getVariable())) {
+    addError("'it' is a keyword in this mode.",vex);
+  }
+ else {
+    declare(vex);
+  }
 }
