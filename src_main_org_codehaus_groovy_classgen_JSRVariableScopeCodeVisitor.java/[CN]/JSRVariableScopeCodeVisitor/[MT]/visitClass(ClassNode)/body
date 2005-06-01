@@ -3,6 +3,8 @@
   currentScope=new VarScope(true,currentScope);
   boolean scriptModeBackup=scriptMode;
   scriptMode=node.isScript();
+  ClassNode classBackup=currentClass;
+  currentClass=node;
   HashMap declares=currentScope.declares;
   try {
     addVarNames(node);
@@ -13,6 +15,7 @@
     cnfe.printStackTrace();
   }
   node.visitContents(this);
+  currentClass=classBackup;
   currentScope=scope;
   scriptMode=scriptModeBackup;
 }
