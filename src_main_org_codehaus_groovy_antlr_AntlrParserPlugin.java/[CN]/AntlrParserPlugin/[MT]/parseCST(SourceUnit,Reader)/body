@@ -13,7 +13,9 @@
     parser.compilationUnit();
   }
  catch (  RecognitionException e) {
-    sourceUnit.addException(e);
+    SyntaxException se=new SyntaxException(e.getMessage(),e,e.getLine(),e.getColumn());
+    se.setFatal(true);
+    sourceUnit.addError(se);
   }
 catch (  TokenStreamException e) {
     sourceUnit.addException(e);
