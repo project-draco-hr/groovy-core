@@ -1,5 +1,9 @@
 {
   this.classNode=node;
+  if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+    node.visitContents(this);
+    return;
+  }
   addDefaultParameterMethods(node);
   if (!node.isDerivedFromGroovyObject()) {
     node.addInterface(GroovyObject.class.getName());

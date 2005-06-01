@@ -6,6 +6,9 @@
     modifiers=modifiers(node,annotations,modifiers);
     node=node.getNextSibling();
   }
+  if (classNode != null && (classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+    modifiers|=Opcodes.ACC_ABSTRACT;
+  }
   String returnType=null;
   if (isType(TYPE,node)) {
     returnType=typeName(node);
