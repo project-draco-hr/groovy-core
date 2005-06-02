@@ -1,21 +1,12 @@
 {
-  File file=super.getScriptUriAsFile(request,sc);
-  if (!file.exists()) {
-    response.sendError(HttpServletResponse.SC_NOT_FOUND,"Not found!");
-    return;
-  }
-  if (!file.canRead()) {
-    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read!");
-    return;
-  }
-  final String scriptFilename=file.getName();
+  final String scriptUri=getScriptUri(request);
   response.setContentType("text/html");
-  final Binding binding=new ServletBinding(request,response,sc);
+  final Binding binding=new ServletBinding(request,response,servletContext);
   try {
     Closure closure=new Closure(gse){
       public Object call(){
         try {
-          return ((GroovyScriptEngine)getDelegate()).run(scriptFilename,binding);
+          return ((GroovyScriptEngine)getDelegate()).run(scriptUri,binding);
         }
  catch (        ResourceException e) {
           throw new RuntimeException(e);
@@ -33,26 +24,26 @@ catch (        ScriptException e) {
  catch (  RuntimeException re) {
     StringBuffer error=new StringBuffer("GroovyServlet Error: ");
     error.append(" script: '");
-    error.append(scriptFilename);
+    error.append(scriptUri);
     error.append("': ");
     Throwable e=re.getCause();
     if (e instanceof ResourceException) {
       error.append(" Script not found, sending 404.");
-      sc.log(error.toString());
+      servletContext.log(error.toString());
       System.out.println(error.toString());
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
  else {
       if (re.getMessage() != null)       error.append(re.getMessage());
       if (e != null) {
-        sc.log("An error occurred processing the request",e);
+        servletContext.log("An error occurred processing the request",e);
       }
  else {
-        sc.log("An error occurred processing the request",re);
+        servletContext.log("An error occurred processing the request",re);
       }
-      sc.log(error.toString());
+      servletContext.log(error.toString());
       System.out.println(error.toString());
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
     }
   }
 }
