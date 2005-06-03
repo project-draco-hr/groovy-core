@@ -1,0 +1,30 @@
+{
+  try {
+    while (true) {
+      try {
+        Object obj=ois.readObject();
+        closure.call(obj);
+      }
+ catch (      EOFException e) {
+        break;
+      }
+    }
+    ois.close();
+  }
+ catch (  ClassNotFoundException e) {
+    try {
+      ois.close();
+    }
+ catch (    Exception e2) {
+    }
+    throw e;
+  }
+catch (  IOException e) {
+    try {
+      ois.close();
+    }
+ catch (    Exception e2) {
+    }
+    throw e;
+  }
+}
