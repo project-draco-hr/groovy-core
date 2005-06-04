@@ -1,8 +1,8 @@
 {
   try {
-    return first.invokeMethod(this,name,args);
+    return super.invokeMethod(name,args);
   }
  catch (  MissingMethodException e) {
-    return second.invokeMethod(this,name,args);
+    return InvokerHelper.getMetaClass(adaptee).invokeMethod(adaptee,name,args);
   }
 }
