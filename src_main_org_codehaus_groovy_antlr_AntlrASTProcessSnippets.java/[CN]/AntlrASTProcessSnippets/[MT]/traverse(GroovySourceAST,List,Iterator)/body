@@ -1,0 +1,31 @@
+{
+  if (t == null) {
+    return t;
+  }
+  if (l != null) {
+    l.add(new LineColumn(t.getLine(),t.getColumn()));
+  }
+  if (itr != null && itr.hasNext()) {
+    LineColumn lc=(LineColumn)itr.next();
+    if (t.getLineLast() == 0) {
+      int nextLine=lc.getLine();
+      int nextColumn=lc.getColumn();
+      if (nextLine < t.getLine() || (nextLine == t.getLine() && nextColumn < t.getColumn())) {
+        nextLine=t.getLine();
+        nextColumn=t.getColumn();
+      }
+      t.setLineLast(nextLine);
+      t.setColumnLast(nextColumn);
+      t.setSnippet(sourceBuffer.getSnippet(new LineColumn(t.getLine(),t.getColumn()),new LineColumn(t.getLineLast(),t.getColumnLast())));
+    }
+  }
+  GroovySourceAST child=(GroovySourceAST)t.getFirstChild();
+  if (child != null) {
+    traverse(child,l,itr);
+  }
+  GroovySourceAST sibling=(GroovySourceAST)t.getNextSibling();
+  if (sibling != null) {
+    traverse(sibling,l,itr);
+  }
+  return t;
+}

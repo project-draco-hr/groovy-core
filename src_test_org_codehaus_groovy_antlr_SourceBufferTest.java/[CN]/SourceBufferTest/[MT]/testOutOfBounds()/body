@@ -1,0 +1,11 @@
+{
+  String endOfLine="\n";
+  StringBuffer src=new StringBuffer();
+  src.append("println 'hello world'").append(endOfLine);
+  src.append("println 'oh not, not that again'").append(endOfLine);
+  SourceBuffer buffer=getSourceBuffer(src.toString());
+  assertEquals("println",buffer.getSnippet(new LineColumn(0,0),new LineColumn(1,8)));
+  assertEquals("println",buffer.getSnippet(new LineColumn(-10,-1),new LineColumn(1,8)));
+  assertEquals(endOfLine,buffer.getSnippet(new LineColumn(2,33),new LineColumn(2,40)));
+  assertEquals("",buffer.getSnippet(new LineColumn(3,33),new LineColumn(6,40)));
+}
