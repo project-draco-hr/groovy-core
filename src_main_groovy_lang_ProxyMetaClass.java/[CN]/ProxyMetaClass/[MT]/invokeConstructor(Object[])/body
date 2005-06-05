@@ -1,0 +1,11 @@
+{
+  if (null == interceptor) {
+    return adaptee.invokeConstructor(arguments);
+  }
+  Object result=interceptor.beforeInvoke(theClass,"ctor",arguments);
+  if (interceptor.doInvoke()) {
+    result=adaptee.invokeConstructor(arguments);
+  }
+  result=interceptor.afterInvoke(theClass,"ctor",arguments,result);
+  return result;
+}

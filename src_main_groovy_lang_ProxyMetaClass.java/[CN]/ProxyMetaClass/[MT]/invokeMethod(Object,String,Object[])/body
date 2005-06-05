@@ -1,0 +1,11 @@
+{
+  if (null == interceptor) {
+    return adaptee.invokeMethod(object,methodName,arguments);
+  }
+  Object result=interceptor.beforeInvoke(object,methodName,arguments);
+  if (interceptor.doInvoke()) {
+    result=adaptee.invokeMethod(object,methodName,arguments);
+  }
+  result=interceptor.afterInvoke(object,methodName,arguments,result);
+  return result;
+}
