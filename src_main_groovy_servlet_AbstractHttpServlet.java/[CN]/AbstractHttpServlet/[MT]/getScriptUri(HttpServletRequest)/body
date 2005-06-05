@@ -1,4 +1,11 @@
 {
+  if (logRequestClassAndLoaderOnce) {
+    log("Logging request class and its class loader:");
+    log(" c = request.getClass() :\"" + request.getClass() + "\"");
+    log(" l = c.getClassLoader() :\"" + request.getClass().getClassLoader() + "\"");
+    log(" l.getClass()           :\"" + request.getClass().getClassLoader().getClass() + "\"");
+    logRequestClassAndLoaderOnce=false;
+  }
   String uri=null;
   String info=null;
   uri=(String)request.getAttribute(INC_SERVLET_PATH);

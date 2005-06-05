@@ -1,4 +1,9 @@
 {
   super.init(config);
   this.servletContext=config.getServletContext();
+  MetaClass.setUseReflection(true);
+  String value=config.getInitParameter("logRequestClassAndLoaderOnce");
+  if (value != null) {
+    this.logRequestClassAndLoaderOnce=Boolean.valueOf(value).booleanValue();
+  }
 }
