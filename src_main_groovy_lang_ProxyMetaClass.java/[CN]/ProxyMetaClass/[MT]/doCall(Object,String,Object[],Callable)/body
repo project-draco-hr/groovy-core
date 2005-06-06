@@ -1,0 +1,11 @@
+{
+  if (null == interceptor) {
+    return howToInvoke.call();
+  }
+  Object result=interceptor.beforeInvoke(object,methodName,arguments);
+  if (interceptor.doInvoke()) {
+    result=howToInvoke.call();
+  }
+  result=interceptor.afterInvoke(object,methodName,arguments,result);
+  return result;
+}
