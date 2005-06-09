@@ -10,7 +10,7 @@
     this.ast.setDescription(this.name);
   }
  catch (  SyntaxException e) {
-    addError(new SyntaxErrorMessage(e));
+    getErrorCollector().addError(new SyntaxErrorMessage(e,this));
   }
   if ("xml".equals(System.getProperty("groovy.ast"))) {
     saveAsXML(name,ast);

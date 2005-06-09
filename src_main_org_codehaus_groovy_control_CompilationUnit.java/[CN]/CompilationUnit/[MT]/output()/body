@@ -19,7 +19,7 @@
       stream.write(bytes,0,bytes.length);
     }
  catch (    IOException e) {
-      addError(Message.create(e.getMessage()));
+      getErrorCollector().addError(Message.create(e.getMessage(),this));
       failures=true;
     }
  finally {
@@ -32,9 +32,7 @@
       }
     }
   }
-  if (failures) {
-    fail();
-  }
+  getErrorCollector().failIfErrors();
   completePhase();
   applyToSourceUnits(mark);
   if (CompilationUnit.this.progressCallback != null) {

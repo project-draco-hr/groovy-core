@@ -1,7 +1,7 @@
 {
   boolean result=false;
-  if (this.errors != null) {
-    Message last=(Message)errors.get(errors.size() - 1);
+  if (getErrorCollector().hasErrors()) {
+    Message last=(Message)getErrorCollector().getLastError();
     if (last instanceof SyntaxErrorMessage) {
       SyntaxException cause=((SyntaxErrorMessage)last).getCause();
       if (cause instanceof UnexpectedTokenException) {

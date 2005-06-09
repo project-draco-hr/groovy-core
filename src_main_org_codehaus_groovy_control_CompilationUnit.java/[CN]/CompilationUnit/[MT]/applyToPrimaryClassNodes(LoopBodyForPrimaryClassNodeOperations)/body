@@ -14,15 +14,11 @@
       }
     }
  catch (    CompilationFailedException e) {
-      failures=true;
-      addError(new ExceptionMessage(e));
     }
 catch (    Exception e) {
       failures=true;
-      addError(new ExceptionMessage(e));
+      getErrorCollector().addError(new ExceptionMessage(e,configuration.getDebug(),this));
     }
   }
-  if (failures) {
-    fail();
-  }
+  getErrorCollector().failIfErrors();
 }
