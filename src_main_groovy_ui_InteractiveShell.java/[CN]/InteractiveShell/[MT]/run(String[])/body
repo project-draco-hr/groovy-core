@@ -18,11 +18,23 @@
       try {
         shell.evaluate(command,"CommandLine.groovy");
       }
- catch (      Exception e) {
-        new ErrorReporter(e,false).write(err);
+ catch (      CompilationFailedException e) {
+        err.println(e);
       }
 catch (      Throwable e) {
-        new ErrorReporter(e,false).write(err);
+        if (e instanceof InvokerInvocationException) {
+          InvokerInvocationException iie=(InvokerInvocationException)e;
+          e=iie.getCause();
+        }
+        err.println("Caught: " + e);
+        StackTraceElement[] stackTrace=e.getStackTrace();
+        for (int i=0; i < stackTrace.length; i++) {
+          StackTraceElement element=stackTrace[i];
+          String fileName=element.getFileName();
+          if (fileName == null || (!fileName.endsWith(".java"))) {
+            err.println("\tat " + element);
+          }
+        }
       }
     }
   }
