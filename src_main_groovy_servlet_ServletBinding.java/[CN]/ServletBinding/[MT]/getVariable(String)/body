@@ -1,27 +1,28 @@
 {
-  if ("out".equals(name))   try {
-    return response.getWriter();
+  if (name == null) {
+    throw new IllegalArgumentException("Can't bind variable to null key.");
+  }
+  if (name.length() == 0) {
+    throw new IllegalArgumentException("Can't bind variable to blank key name. [length=0]");
+  }
+  try {
+    if ("out".equals(name)) {
+      return response.getWriter();
+    }
+    if ("sout".equals(name)) {
+      return response.getOutputStream();
+    }
+    if ("html".equals(name)) {
+      if (html == null) {
+        html=new MarkupBuilder(response.getWriter());
+      }
+      return html;
+    }
   }
  catch (  IOException e) {
-    sc.log("Failed to get writer from response",e);
-    return null;
-  }
-  if ("sout".equals(name))   try {
-    return response.getOutputStream();
-  }
- catch (  IOException e) {
-    sc.log("Failed to get outputstream from response",e);
-    return null;
-  }
-  if ("html".equals(name)) {
-    if (html == null)     try {
-      html=new MarkupBuilder(response.getWriter());
-    }
- catch (    IOException e) {
-      sc.log("Failed to get writer from response",e);
-      return null;
-    }
-    return html;
+    String message="Failed to get writer or output stream from response.";
+    context.log(message,e);
+    throw new RuntimeException(message,e);
   }
   return binding.getVariable(name);
 }
