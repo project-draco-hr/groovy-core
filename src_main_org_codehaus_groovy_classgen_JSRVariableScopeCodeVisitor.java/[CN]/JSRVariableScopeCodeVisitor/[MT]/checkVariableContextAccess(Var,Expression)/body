@@ -1,7 +1,7 @@
 {
-  if (v.isStatic || dynamicContext)   return;
+  if (v.isStatic || !currentScope.isInStaticContext)   return;
   String accessContext="dynamic";
-  if (!dynamicContext)   accessContext="static";
+  if (currentScope.isInStaticContext)   accessContext="static";
   String varContext="dynamic";
   if (v.isStatic)   varContext="static";
   String msg=v.name + " is declared in a dynamic context, but you tried to" + " access it from a static context.";
