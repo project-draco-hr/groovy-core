@@ -1,0 +1,34 @@
+{
+  List l=cn.getMethods();
+  for (Iterator cnIter=l.iterator(); cnIter.hasNext(); ) {
+    MethodNode method=(MethodNode)cnIter.next();
+    Parameter[] parameters=method.getParameters();
+    for (ClassNode superCN=cn.getSuperClassNode(); superCN != null; superCN=superCN.getSuperClassNode()) {
+      List methods=superCN.getMethods(method.getName());
+      for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+        MethodNode m=(MethodNode)iter.next();
+        Parameter[] np=m.getParameters();
+        if (hasEqualParameterTypes(parameters,np))         continue;
+        if (!Modifier.isFinal(m.getModifiers()))         return;
+        StringBuffer msg=new StringBuffer();
+        msg.append("you are not allowed to overwrite the final method ").append(method.getName());
+        msg.append("(");
+        boolean semi=false;
+        for (int i=0; i < parameters.length; i++) {
+          if (semi) {
+            msg.append(",");
+          }
+ else {
+            semi=true;
+          }
+          msg.append(parameters[i].getType());
+        }
+        msg.append(")");
+        msg.append(" from class ").append(superCN.getName());
+        msg.append(".");
+        addError(msg.toString(),method);
+        return;
+      }
+    }
+  }
+}
