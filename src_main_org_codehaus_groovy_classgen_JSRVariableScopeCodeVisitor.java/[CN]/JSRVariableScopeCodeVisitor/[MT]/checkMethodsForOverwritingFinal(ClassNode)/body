@@ -8,7 +8,7 @@
       for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
         MethodNode m=(MethodNode)iter.next();
         Parameter[] np=m.getParameters();
-        if (hasEqualParameterTypes(parameters,np))         continue;
+        if (!hasEqualParameterTypes(parameters,np))         continue;
         if (!Modifier.isFinal(m.getModifiers()))         return;
         StringBuffer msg=new StringBuffer();
         msg.append("you are not allowed to overwrite the final method ").append(method.getName());
