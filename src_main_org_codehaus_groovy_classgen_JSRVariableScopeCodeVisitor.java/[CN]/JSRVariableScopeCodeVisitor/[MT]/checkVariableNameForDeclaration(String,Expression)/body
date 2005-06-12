@@ -15,8 +15,11 @@
   }
   VarScope end=scope;
   if (scope == null) {
-    declare(var,expression);
-    if (!scriptMode)     addError("The variable " + var.name + " is undefined in the current scope",expression);
+    ClassNode vn=unit.getClass(var.name);
+    if (vn == null) {
+      declare(var,expression);
+      if (!scriptMode)       addError("The variable " + var.name + " is undefined in the current scope",expression);
+    }
   }
  else {
     scope=currentScope;
