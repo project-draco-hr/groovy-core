@@ -1,0 +1,18 @@
+{
+  String[] result=new String[CLASS_OTHER_IDX + 1];
+  result[CLASS_PACKAGE_IDX]="package " + getClassUnderInspection().getPackage().getName();
+  String modifiers=Modifier.toString(getClassUnderInspection().getModifiers());
+  String classOrInterface="class";
+  if (getClassUnderInspection().isInterface()) {
+    classOrInterface="interface";
+  }
+  result[CLASS_CLASS_IDX]=modifiers + " " + classOrInterface+ " "+ shortName(getClassUnderInspection());
+  result[CLASS_INTERFACE_IDX]="implements ";
+  Class[] interfaces=getClassUnderInspection().getInterfaces();
+  for (int i=0; i < interfaces.length; i++) {
+    result[CLASS_INTERFACE_IDX]+=shortName(interfaces[i]) + " ";
+  }
+  result[CLASS_SUPERCLASS_IDX]="extends " + shortName(getClassUnderInspection().getSuperclass());
+  result[CLASS_OTHER_IDX]="is Primitive: " + getClassUnderInspection().isPrimitive() + ", is Array: "+ getClassUnderInspection().isArray()+ ", is Groovy: "+ isGroovy();
+  return result;
+}
