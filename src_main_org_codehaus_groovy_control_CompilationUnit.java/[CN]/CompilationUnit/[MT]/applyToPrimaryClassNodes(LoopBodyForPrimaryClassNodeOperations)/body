@@ -17,7 +17,19 @@
     }
 catch (    Exception e) {
       failures=true;
-      getErrorCollector().addError(new ExceptionMessage(e,configuration.getDebug(),this));
+      ErrorCollector nestedCollector=null;
+      for (Throwable next=e.getCause(); next != e && next != null; next=next.getCause()) {
+        if (!(next instanceof MultipleCompilationErrorsException))         continue;
+        MultipleCompilationErrorsException mcee=(MultipleCompilationErrorsException)next;
+        nestedCollector=mcee.collector;
+        break;
+      }
+      if (nestedCollector != null) {
+        getErrorCollector().addCollectorContents(nestedCollector);
+      }
+ else {
+        getErrorCollector().addError(new ExceptionMessage(e,configuration.getDebug(),this));
+      }
     }
   }
   getErrorCollector().failIfErrors();

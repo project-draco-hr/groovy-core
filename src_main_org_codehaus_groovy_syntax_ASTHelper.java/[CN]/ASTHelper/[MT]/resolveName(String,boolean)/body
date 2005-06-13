@@ -6,6 +6,17 @@
  else   if (resolution != null) {
     return (String)resolution;
   }
+  try {
+    getClassLoader().loadClass(name);
+    resolutions.put(name,name);
+    return name;
+  }
+ catch (  ClassNotFoundException cnfe) {
+    if (cnfe.getCause() instanceof CompilationFailedException) {
+      resolutions.put(name,name);
+      return name;
+    }
+  }
   do {
     if (name.indexOf(".") >= 0) {
       resolution=name;
@@ -30,7 +41,10 @@
         resolution=dot(packageName,name);
         break;
       }
- catch (      Throwable e) {
+ catch (      ClassNotFoundException cnfe) {
+        if (cnfe.getCause() instanceof CompilationFailedException) {
+          break;
+        }
       }
     }
     List packageImports=output.getImportPackages();
@@ -42,7 +56,10 @@
         resolution=clsName;
         break;
       }
- catch (      Throwable e) {
+ catch (      ClassNotFoundException cnfe) {
+        if (cnfe.getCause() instanceof CompilationFailedException) {
+          break;
+        }
       }
     }
     if (resolution != null) {
@@ -55,7 +72,10 @@
         resolution=qualified + postfix;
         break;
       }
- catch (      Throwable e) {
+ catch (      ClassNotFoundException cnfe) {
+        if (cnfe.getCause() instanceof CompilationFailedException) {
+          break;
+        }
       }
     }
   }

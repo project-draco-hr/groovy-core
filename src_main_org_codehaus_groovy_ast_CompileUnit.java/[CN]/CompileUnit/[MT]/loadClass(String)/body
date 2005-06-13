@@ -12,6 +12,10 @@
     answer=lastLoader.loadClass(type);
   }
  catch (  ClassNotFoundException e) {
+    Throwable cause=e.getCause();
+    if (cause != null && cause instanceof CompilationFailedException) {
+      throw new ClassGeneratorException("Error when compiling class: " + type + ". Reason: "+ cause,cause);
+    }
   }
   try {
     ClassLoader loader=Thread.currentThread().getContextClassLoader();
@@ -21,6 +25,10 @@
     }
   }
  catch (  ClassNotFoundException e1) {
+    Throwable cause=e1.getCause();
+    if (cause != null && cause instanceof CompilationFailedException) {
+      throw new ClassGeneratorException("Error when compiling class: " + type + ". Reason: "+ cause,cause);
+    }
   }
   try {
     ClassLoader loader=getClass().getClassLoader();
@@ -30,6 +38,10 @@
     }
   }
  catch (  ClassNotFoundException e2) {
+    Throwable cause=e2.getCause();
+    if (cause != null && cause instanceof CompilationFailedException) {
+      throw new ClassGeneratorException("Error when compiling class: " + type + ". Reason: "+ cause,cause);
+    }
   }
   try {
     if (answer == null) {
@@ -37,6 +49,10 @@
     }
   }
  catch (  ClassNotFoundException e2) {
+    Throwable cause=e2.getCause();
+    if (cause != null && cause instanceof CompilationFailedException) {
+      throw new ClassGeneratorException("Error when compiling class: " + type + ". Reason: "+ cause,cause);
+    }
   }
   if (answer == null) {
     cachedClasses.put(type,NO_CLASS);
