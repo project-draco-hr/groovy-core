@@ -1,5 +1,5 @@
 {
-  final StringBuffer templateExpressions=new StringBuffer("package groovy.tmp.templates\nclass C { def getTemplate() { return { out -> out << \"\"\"");
+  final StringBuffer templateExpressions=new StringBuffer("package groovy.tmp.templates\n def getTemplate() { return { out -> out << \"\"\"");
   boolean writingString=true;
   while (true) {
     int c=reader.read();
@@ -34,7 +34,7 @@
   if (writingString) {
     templateExpressions.append("\"\"\"");
   }
-  templateExpressions.append("}.asWritable()}}");
+  templateExpressions.append("}.asWritable()}");
   final ClassLoader parentLoader=getClass().getClassLoader();
   final GroovyClassLoader loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
