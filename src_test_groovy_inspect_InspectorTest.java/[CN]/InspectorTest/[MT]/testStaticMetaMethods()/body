@@ -1,8 +1,10 @@
 {
   Matcher matcher=Pattern.compile("").matcher("");
   Inspector insp=new Inspector(matcher);
-  String[][] metaMethods=insp.getMetaMethods();
-  assertEquals(32,metaMethods.length);
-  String[] details={"GROOVY","public static","Matcher","Matcher","getLastMatcher","",""};
+  Object[] metaMethods=insp.getMetaMethods();
+  if (!System.getProperty("java.version").startsWith("1.5")) {
+    assertUnique(Inspector.sort(metaMethods));
+  }
+  String[] details={"GROOVY","public static","Matcher","Matcher","getLastMatcher","","n/a"};
   assertContains(metaMethods,details);
 }
