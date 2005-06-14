@@ -7,47 +7,47 @@
       sm.checkPackageAccess(className.substring(0,i));
     }
   }
-  boolean loadGroovyFile=false;
   Class cls=null;
   ClassNotFoundException last=null;
   try {
     cls=super.loadClass(name,resolve);
+    boolean recompile=false;
     if (getTimeStamp(cls) < Long.MAX_VALUE) {
       Class[] inters=cls.getInterfaces();
-      boolean isGroovyObject=false;
       for (int i=0; i < inters.length; i++) {
         if (inters[i].getName().equals(GroovyObject.class.getName())) {
-          loadGroovyFile=true;
+          recompile=true;
           break;
         }
       }
     }
+    if (!recompile)     return cls;
   }
  catch (  ClassNotFoundException cnfe) {
     last=cnfe;
-    loadGroovyFile=true;
   }
-  if (loadGroovyFile) {
-    try {
-      File source=(File)AccessController.doPrivileged(new PrivilegedAction(){
-        public Object run(){
-          return getSourceFile(name);
-        }
+  try {
+    File source=(File)AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return getSourceFile(name);
       }
+    }
 );
-      if (source != null) {
-        if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
-          cls=parseClass(source);
-        }
+    if (source != null) {
+      if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
+        cls=parseClass(source);
       }
-    }
- catch (    Exception e) {
-synchronized (cache) {
-        cache.put(name,NOT_RESOLVED.class);
-      }
-      throw new ClassNotFoundException("Failed to parse groovy file: " + name,e);
     }
   }
-  if (cls == null)   throw last;
+ catch (  Exception e) {
+synchronized (cache) {
+      cache.put(name,NOT_RESOLVED.class);
+    }
+    throw new ClassNotFoundException("Failed to parse groovy file: " + name,e);
+  }
+  if (cls == null) {
+    if (last == null)     throw new AssertionError(true);
+    throw last;
+  }
   return cls;
 }
