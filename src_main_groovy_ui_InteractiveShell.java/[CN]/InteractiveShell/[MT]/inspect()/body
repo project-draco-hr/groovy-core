@@ -1,0 +1,15 @@
+{
+  if (null == lastResult) {
+    err.println("nothing to inspect (preceding \"go\" missing?)");
+    return;
+  }
+  try {
+    Class browserClass=Class.forName("groovy.inspect.swingui.ObjectBrowser");
+    Method inspectMethod=browserClass.getMethod("inspect",new Class[]{Object.class});
+    inspectMethod.invoke(browserClass,new Object[]{lastResult});
+  }
+ catch (  Exception e) {
+    err.println("cannot invoke ObjectBrowser");
+    e.printStackTrace();
+  }
+}
