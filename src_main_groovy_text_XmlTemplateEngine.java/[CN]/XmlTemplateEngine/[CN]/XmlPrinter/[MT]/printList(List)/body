@@ -1,0 +1,21 @@
+{
+  if (list.isEmpty()) {
+    out.print("\\n");
+  }
+ else {
+    out.incrementIndent();
+    for (Iterator iter=list.iterator(); iter.hasNext(); ) {
+      Object value=iter.next();
+      if (value instanceof Node) {
+        print((Node)value);
+      }
+ else {
+        out.print("out.print(\"");
+        out.printIndent();
+        out.print(InvokerHelper.toString(value));
+        out.print("\\n\");\n");
+      }
+    }
+    out.decrementIndent();
+  }
+}
