@@ -1,5 +1,11 @@
 {
-  this.config=config;
+  if (binding == null) {
+    throw new IllegalArgumentException("Binding must not be null.");
+  }
+  if (config == null) {
+    throw new IllegalArgumentException("Compiler configuration must not be null.");
+  }
   this.loader=new MainClassLoader(parent);
   this.context=binding;
+  this.config=config;
 }
