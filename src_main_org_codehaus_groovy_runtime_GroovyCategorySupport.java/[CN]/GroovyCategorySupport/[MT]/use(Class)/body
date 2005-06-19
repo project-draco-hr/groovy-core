@@ -9,13 +9,9 @@
         Class metaClass=paramTypes[0];
         Map metaMethodsMap=getMetaMethods(properties,metaClass);
         List methodList=getMethodList(metaMethodsMap,method.getName());
-        MetaMethod mmethod=new NewInstanceMetaMethod(new MetaMethod(method)){
-          public boolean isCacheable(){
-            return false;
-          }
-        }
-;
+        MetaMethod mmethod=new CategoryMethod(new MetaMethod(method),metaClass);
         methodList.add(mmethod);
+        Collections.sort(methodList);
       }
     }
   }
