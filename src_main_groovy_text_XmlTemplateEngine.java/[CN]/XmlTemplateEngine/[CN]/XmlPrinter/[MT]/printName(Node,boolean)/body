@@ -1,38 +1,20 @@
 {
+  if (node == null) {
+    throw new NullPointerException("Node must not be null.");
+  }
   Object name=node.name();
   if (name == null) {
     throw new NullPointerException("Name must not be null.");
   }
-  out.print("out.print(\"");
-  out.printIndent();
+  printLineBegin();
   out.print("<");
-  if (!start) {
+  if (!begin) {
     out.print("/");
   }
-  out.print(nameToString(node));
-  if (start) {
-    Map attributes=node.attributes();
-    if (attributes != null && !attributes.isEmpty()) {
-      out.print(" ");
-      boolean first=true;
-      for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
-        Map.Entry entry=(Map.Entry)iter.next();
-        if (first) {
-          first=false;
-        }
- else {
-          out.print(" ");
-        }
-        out.print(entry.getKey().toString());
-        out.print("=");
-        if (entry.getValue() instanceof String) {
-          out.print("\\\"" + entry.getValue() + "\\\"");
-        }
- else {
-          out.print(InvokerHelper.toString(entry.getValue()));
-        }
-      }
-    }
+  out.print(getNameOfNode(node));
+  if (begin) {
+    printNameAttributes(node.attributes());
   }
-  out.print(">\\n\");\n");
+  out.print(">");
+  printLineEnd();
 }

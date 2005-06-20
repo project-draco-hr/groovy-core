@@ -1,34 +1,31 @@
 {
-  if (node.text() == null || node.text().length() == 0) {
-    out.print("out.print(\"");
-    out.printIndent();
+  if (isEmptyElement(node)) {
+    printLineBegin();
     out.print("<");
-    out.print(nameToString(node));
-    out.print("/>\\n\");\n");
+    out.print(getNameOfNode(node));
+    printNameAttributes(node.attributes());
+    out.print("/>");
+    printLineEnd("empty element");
     return;
   }
-  if (node.name() != null && node.name() instanceof QName) {
-    String s=((QName)node.name()).getPrefix();
+  Object name=node.name();
+  if (name != null && name instanceof QName) {
+    String s=((QName)name).getPrefix();
     if (s.startsWith("gsp:")) {
       s=s.substring(4);
       if (s.length() == 0) {
         throw new RuntimeException("No local part after 'gsp:' given in node " + node);
       }
-      if (s.equals("scriptlet")) {
-        out.print(node.text() + "\n");
-        return;
-      }
-      throw new RuntimeException("Unsupported local part gsp:" + s);
+      printGroovyTag(s,node.text());
+      return;
     }
   }
-  printName(node,true);
   Object value=node.value();
   if (value instanceof List) {
+    printName(node,true);
     printList((List)value);
+    printName(node,false);
+    return;
   }
- else {
-    throw new RuntimeException("Unsupported node value: " + node.value());
-  }
-  printName(node,false);
-  out.flush();
+  throw new RuntimeException("Unsupported node value: " + node.value());
 }
