@@ -6,10 +6,8 @@
     Class[] paramTypes=wrap(getParameterTypes(method));
     if (Arrays.equals(wrappedArguments,paramTypes))     directMatches.add(method);
   }
+  if (directMatches.size() == 1)   return directMatches.getFirst();
   if (directMatches.size() > 0) {
-    matchingMethods=directMatches;
-  }
-  if (directMatches.size() > 1) {
     matchingMethods=directMatches;
     directMatches=new LinkedList();
     for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
@@ -17,7 +15,7 @@
       Class[] paramTypes=getParameterTypes(method);
       if (Arrays.equals(arguments,paramTypes))       directMatches.add(method);
     }
-    if (directMatches.size() == 1)     matchingMethods=directMatches;
+    if (directMatches.size() == 1)     return directMatches.getFirst();
   }
   List superclassMatches=new ArrayList(matchingMethods);
   for (Iterator iter=superclassMatches.iterator(); iter.hasNext(); ) {
@@ -30,7 +28,7 @@
       }
     }
   }
-  if (superclassMatches.size() != 0) {
+  if (superclassMatches.size() > 0) {
     matchingMethods=superclassMatches;
   }
   Object answer=null;
