@@ -4,7 +4,9 @@
   }
  else {
     NewInstanceMetaMethod newMethod=new NewInstanceMetaMethod(createMetaMethod(method));
-    addMethod(newMethod,false);
-    addNewInstanceMethod(newMethod);
+    if (!newGroovyMethodsList.contains(newMethod)) {
+      newGroovyMethodsList.add(newMethod);
+      addMethod(newMethod,false);
+    }
   }
 }

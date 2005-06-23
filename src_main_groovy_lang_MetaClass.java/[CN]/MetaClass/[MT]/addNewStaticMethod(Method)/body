@@ -4,7 +4,9 @@
   }
  else {
     NewStaticMetaMethod newMethod=new NewStaticMetaMethod(createMetaMethod(method));
-    addMethod(newMethod,false);
-    addNewStaticMethod(newMethod);
+    if (!newGroovyMethodsList.contains(newMethod)) {
+      newGroovyMethodsList.add(newMethod);
+      addMethod(newMethod,false);
+    }
   }
 }

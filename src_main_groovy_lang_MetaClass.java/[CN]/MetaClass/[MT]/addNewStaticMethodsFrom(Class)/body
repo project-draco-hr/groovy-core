@@ -3,7 +3,9 @@
   Iterator iter=interfaceMetaClass.newGroovyMethodsList.iterator();
   while (iter.hasNext()) {
     MetaMethod method=(MetaMethod)iter.next();
-    addMethod(method,false);
-    newGroovyMethodsList.add(method);
+    if (!newGroovyMethodsList.contains(method)) {
+      newGroovyMethodsList.add(method);
+      addMethod(method,false);
+    }
   }
 }
