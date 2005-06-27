@@ -1,0 +1,10 @@
+{
+  String newClasspathEntry="/tmp";
+  int initialNumberOfClasspathEntries=classLoader.getClassPath().length;
+  classLoader.addClasspath(newClasspathEntry);
+  assertEquals("number of classpath entries",initialNumberOfClasspathEntries + 1,classLoader.getClassPath().length);
+  assertTrue("contains new classpath entry",Arrays.asList(classLoader.getClassPath()).contains(newClasspathEntry));
+  classLoader.addClasspath(newClasspathEntry);
+  assertEquals("number of classpath entries",initialNumberOfClasspathEntries + 1,classLoader.getClassPath().length);
+  assertTrue("contains new classpath entry",Arrays.asList(classLoader.getClassPath()).contains(newClasspathEntry));
+}

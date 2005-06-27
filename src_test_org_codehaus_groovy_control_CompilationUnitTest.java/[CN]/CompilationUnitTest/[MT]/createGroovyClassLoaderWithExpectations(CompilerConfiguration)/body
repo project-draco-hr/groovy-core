@@ -1,0 +1,7 @@
+{
+  Mock mockGroovyClassLoader=mock(GroovyClassLoader.class);
+  for (Iterator iterator=configuration.getClasspath().iterator(); iterator.hasNext(); ) {
+    mockGroovyClassLoader.expects(once()).method("addClasspath").with(eq(iterator.next()));
+  }
+  return (GroovyClassLoader)mockGroovyClassLoader.proxy();
+}
