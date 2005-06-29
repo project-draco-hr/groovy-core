@@ -29,8 +29,6 @@ catch (  TokenStreamException e) {
   ast=parser.getAST();
   AntlrASTProcessor snippets=new AntlrASTProcessSnippets(sourceBuffer);
   ast=snippets.process(ast);
-  if ("xml".equals(System.getProperty("antlr.ast"))) {
-    saveAsXML(sourceUnit.getName(),ast);
-  }
+  outputASTInVariousFormsIfNeeded(sourceUnit);
   return null;
 }

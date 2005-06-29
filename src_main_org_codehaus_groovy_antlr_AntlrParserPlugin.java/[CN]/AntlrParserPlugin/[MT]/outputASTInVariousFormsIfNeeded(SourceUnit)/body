@@ -1,0 +1,41 @@
+{
+  if ("xml".equals(System.getProperty("antlr.ast"))) {
+    saveAsXML(sourceUnit.getName(),ast);
+  }
+  if ("groovy".equals(System.getProperty("antlr.ast"))) {
+    try {
+      PrintStream out=new PrintStream(new FileOutputStream(sourceUnit.getName() + ".pretty.groovy"));
+      Visitor visitor=new SourcePrinter(out,tokenNames);
+      AntlrASTProcessor treewalker=new SourceCodeTraversal(visitor);
+      treewalker.process(ast);
+    }
+ catch (    FileNotFoundException e) {
+      System.out.println("Cannot create " + sourceUnit.getName() + ".pretty.groovy");
+    }
+  }
+  if ("mindmap".equals(System.getProperty("antlr.ast"))) {
+    try {
+      PrintStream out=new PrintStream(new FileOutputStream(sourceUnit.getName() + ".mm"));
+      Visitor visitor=new MindMapPrinter(out,tokenNames);
+      AntlrASTProcessor treewalker=new PreOrderTraversal(visitor);
+      treewalker.process(ast);
+    }
+ catch (    FileNotFoundException e) {
+      System.out.println("Cannot create " + sourceUnit.getName() + ".mm");
+    }
+  }
+  if ("html".equals(System.getProperty("antlr.ast"))) {
+    try {
+      PrintStream out=new PrintStream(new FileOutputStream(sourceUnit.getName() + ".html"));
+      List v=new ArrayList();
+      v.add(new NodeAsHTMLPrinter(out,tokenNames));
+      v.add(new SourcePrinter(out,tokenNames));
+      Visitor visitors=new CompositeVisitor(v);
+      AntlrASTProcessor treewalker=new SourceCodeTraversal(visitors);
+      treewalker.process(ast);
+    }
+ catch (    FileNotFoundException e) {
+      System.out.println("Cannot create " + sourceUnit.getName() + ".html");
+    }
+  }
+}
