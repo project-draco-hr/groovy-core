@@ -1,8 +1,16 @@
 {
-  String name=tokenNames[t.getType()];
-  if (!(escape(name).equals(escape(t.getText())))) {
+  String name=tokenNames[t.getType()] + " <" + t.getType()+ ">";
+  if (!(escape(tokenNames[t.getType()]).equals(escape(t.getText())))) {
     name=name + " : " + t.getText();
   }
-  name=escape(name);
-  return name;
+switch (t.getType()) {
+case GroovyTokenTypes.METHOD_DEF:
+case GroovyTokenTypes.VARIABLE_DEF:
+    GroovySourceAST identNode=t.childOfType(GroovyTokenTypes.IDENT);
+  if (identNode != null) {
+    name=name + " : " + identNode.getText()+ "";
+  }
+}
+name=escape(name);
+return name;
 }
