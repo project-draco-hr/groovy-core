@@ -20,9 +20,9 @@
   List superclassMatches=new ArrayList(matchingMethods);
   for (Iterator iter=superclassMatches.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
-    Class[] paramTypes=getParameterTypes(method);
+    Class[] paramTypes=wrap(getParameterTypes(method));
     for (int i=0; i < paramTypes.length; i++) {
-      if (!isSuperclass(arguments[i],paramTypes[i])) {
+      if (!isSuperclass(wrappedArguments[i],paramTypes[i])) {
         iter.remove();
         break;
       }

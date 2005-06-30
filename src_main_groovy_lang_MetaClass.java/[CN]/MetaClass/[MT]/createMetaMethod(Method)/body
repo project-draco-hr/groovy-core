@@ -8,9 +8,6 @@
     }
 );
   }
-  if (useReflection) {
-    return new ReflectionMetaMethod(method);
-  }
   MetaMethod answer=new MetaMethod(method);
   if (isValidReflectorMethod(answer)) {
     allMethods.add(answer);
@@ -18,6 +15,9 @@
   }
  else {
     answer=new ReflectionMetaMethod(method);
+  }
+  if (useReflection) {
+    return new ReflectionMetaMethod(method);
   }
   return answer;
 }

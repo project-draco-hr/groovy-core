@@ -24,6 +24,9 @@
       }
     }
   }
+  if (type == String.class) {
+    return mostSpecificType == String.class || GString.class.isAssignableFrom(mostSpecificType);
+  }
   boolean answer=type.isAssignableFrom(mostSpecificType);
   if (!answer) {
     answer=autoboxType(type).isAssignableFrom(autoboxType(mostSpecificType));

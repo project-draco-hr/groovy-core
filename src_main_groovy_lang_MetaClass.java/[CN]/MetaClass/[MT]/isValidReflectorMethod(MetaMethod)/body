@@ -2,17 +2,30 @@
   if (!method.isPublic()) {
     return false;
   }
-  Class declaringClass=method.getDeclaringClass();
-  if (!Modifier.isPublic(declaringClass.getModifiers())) {
-    List list=getInterfaceMethods();
-    for (Iterator iter=list.iterator(); iter.hasNext(); ) {
-      MetaMethod aMethod=(MetaMethod)iter.next();
-      if (method.isSame(aMethod)) {
-        method.setInterfaceClass(aMethod.getDeclaringClass());
-        return true;
-      }
+  List interfaceMethods=getInterfaceMethods();
+  for (Iterator iter=interfaceMethods.iterator(); iter.hasNext(); ) {
+    MetaMethod aMethod=(MetaMethod)iter.next();
+    if (method.isSame(aMethod)) {
+      method.setInterfaceClass(aMethod.getDeclaringClass());
+      return true;
     }
-    return false;
   }
+  Class declaringClass=method.getDeclaringClass();
+  for (Class clazz=declaringClass; clazz != null; clazz=clazz.getSuperclass()) {
+    try {
+      Method m=clazz.getDeclaredMethod(method.getName(),method.getParameterTypes());
+      if (!Modifier.isPublic(clazz.getModifiers()))       continue;
+      if (!Modifier.isPublic(m.getModifiers()))       continue;
+      declaringClass=clazz;
+    }
+ catch (    SecurityException e) {
+      continue;
+    }
+catch (    NoSuchMethodException e) {
+      continue;
+    }
+  }
+  if (!Modifier.isPublic(declaringClass.getModifiers()))   return false;
+  method.setDeclaringClass(declaringClass);
   return true;
 }
