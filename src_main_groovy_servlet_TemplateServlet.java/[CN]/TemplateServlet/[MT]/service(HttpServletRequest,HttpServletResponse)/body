@@ -3,12 +3,13 @@
     log("Creating/getting cached template...");
   }
   File file=super.getScriptUriAsFile(request);
+  String name=file.getName();
   if (!file.exists()) {
     response.sendError(HttpServletResponse.SC_NOT_FOUND);
     return;
   }
   if (!file.canRead()) {
-    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read!");
+    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read \"" + name + "\"!");
     return;
   }
   long getMillis=System.currentTimeMillis();
@@ -22,7 +23,7 @@
     out=response.getWriter();
   }
   if (VERBOSE) {
-    log("Making template...");
+    log("Making template \"" + name + "\"...");
   }
   long makeMillis=System.currentTimeMillis();
   template.make(binding.getVariables()).writeTo(out);
@@ -39,6 +40,6 @@
   response.setStatus(HttpServletResponse.SC_OK);
   response.flushBuffer();
   if (VERBOSE) {
-    log("Template request responded. [create/get=" + getMillis + " ms, make="+ makeMillis+ " ms]");
+    log("Template \"" + name + "\" request responded. [create/get="+ getMillis+ " ms, make="+ makeMillis+ " ms]");
   }
 }
