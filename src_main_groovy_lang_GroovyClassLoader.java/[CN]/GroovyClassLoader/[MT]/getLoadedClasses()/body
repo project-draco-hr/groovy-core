@@ -1,3 +1,7 @@
 {
-  return (Class[])this.cache.values().toArray(new Class[]{});
+  Class[] loadedClasses=null;
+synchronized (this.loadedClasses) {
+    loadedClasses=(Class[])this.loadedClasses.toArray(new Class[this.loadedClasses.size()]);
+  }
+  return loadedClasses;
 }

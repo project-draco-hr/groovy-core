@@ -24,6 +24,9 @@ synchronized (cache) {
     if (config != null && config.getTargetDirectory() != null)     goalPhase=Phases.OUTPUT;
     unit.compile(goalPhase);
     answer=collector.generatedClass;
+synchronized (this.loadedClasses) {
+      this.loadedClasses.addAll(collector.getLoadedClasses());
+    }
   }
   finally {
 synchronized (cache) {
