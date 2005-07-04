@@ -3,6 +3,11 @@
     ClassRealm system=classWorld.newRealm("system");
     ClassRealm groovy=classWorld.getRealm("groovy");
     groovy.importFrom("system","");
+    String tools=System.getProperty("tools.jar");
+    if (tools != null) {
+      URL ref=(new File(tools)).toURI().toURL();
+      groovy.addConstituent(ref);
+    }
     if (oldArgs.length == 0) {
       printUsage();
       System.exit(1);
