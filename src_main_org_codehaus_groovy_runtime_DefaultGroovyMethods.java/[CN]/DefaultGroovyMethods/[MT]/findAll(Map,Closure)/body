@@ -1,9 +1,9 @@
 {
-  List answer=new ArrayList(self.size());
+  Map answer=new HashMap(self.size());
   for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
-    Object value=iter.next();
-    if (InvokerHelper.asBool(closure.call(value))) {
-      answer.add(value);
+    Map.Entry entry=(Map.Entry)iter.next();
+    if (InvokerHelper.asBool(callClosureForMapEntry(closure,entry))) {
+      answer.put(entry.getKey(),entry.getValue());
     }
   }
   return answer;
