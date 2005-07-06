@@ -1,0 +1,13 @@
+{
+  int size=self.size();
+  int from=normaliseIndex(InvokerHelper.asInt(range.getFrom()),size);
+  int to=normaliseIndex(InvokerHelper.asInt(range.getTo()),size);
+  boolean reverse=range.isReverse();
+  if (from > to) {
+    int tmp=to;
+    to=from;
+    from=tmp;
+    reverse=!reverse;
+  }
+  return new RangeInfo(from,to + 1,reverse);
+}
