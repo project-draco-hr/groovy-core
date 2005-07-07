@@ -1,0 +1,15 @@
+{
+  if (self instanceof Set)   return self;
+  if (self.size() == new HashSet(self).size())   return self;
+  Collection seen=new HashSet(self.size());
+  for (Iterator iter=self.iterator(); iter.hasNext(); ) {
+    Object o=iter.next();
+    if (seen.contains(o)) {
+      iter.remove();
+    }
+ else {
+      seen.add(o);
+    }
+  }
+  return self;
+}
