@@ -9,10 +9,12 @@ case GroovyTokenTypes.QUESTION:
       accept_FirstChild_v_SecondChild_v_ThirdChild_v(t);
     break;
 case GroovyTokenTypes.CASE_GROUP:
+  accept_FirstChild_v_SecondChildsChildren_v(t);
+break;
 case GroovyTokenTypes.ELIST:
 case GroovyTokenTypes.PARAMETERS:
 case GroovyTokenTypes.STRING_CONSTRUCTOR:
-  accept_v_FirstChild_v_SecondChild_v___LastChild_v(t);
+accept_v_FirstChild_v_SecondChild_v___LastChild_v(t);
 break;
 case GroovyTokenTypes.INDEX_OP:
 accept_FirstChild_v_SecondChild_v(t);
@@ -52,9 +54,19 @@ case GroovyTokenTypes.STAR:
 accept_FirstChild_v_RestOfTheChildren(t);
 break;
 case GroovyTokenTypes.METHOD_CALL:
+if (t.getNumberOfChildren() == 2 && t.childAt(1) != null && t.childAt(1).getType() == GroovyTokenTypes.CLOSED_BLOCK) {
+accept_FirstChild_v_SecondChild(t);
+}
+ else {
+GroovySourceAST lastChild=t.childAt(t.getNumberOfChildren() - 1);
+if (lastChild != null && lastChild.getType() == GroovyTokenTypes.CLOSED_BLOCK) {
+accept_FirstChild_v_RestOfTheChildren_v_LastChild(t);
+}
+ else {
 accept_FirstChild_v_RestOfTheChildren_v(t);
+}
+}
 break;
-case GroovyTokenTypes.LITERAL_case:
 case GroovyTokenTypes.LITERAL_while:
 accept_v_FirstChildsFirstChild_v_RestOfTheChildren(t);
 break;
@@ -62,6 +74,13 @@ case GroovyTokenTypes.LITERAL_if:
 accept_v_FirstChildsFirstChild_v_Child2_Child3_v_Child4_v___v_LastChild(t);
 break;
 case GroovyTokenTypes.CLOSED_BLOCK:
+if (t.childAt(0) != null && t.childAt(0).getType() == GroovyTokenTypes.IMPLICIT_PARAMETERS) {
+accept_v_AllChildren_v(t);
+}
+ else {
+accept_v_FirstChild_v_RestOfTheChildren_v(t);
+}
+break;
 case GroovyTokenTypes.FOR_IN_ITERABLE:
 case GroovyTokenTypes.LITERAL_for:
 case GroovyTokenTypes.LITERAL_new:

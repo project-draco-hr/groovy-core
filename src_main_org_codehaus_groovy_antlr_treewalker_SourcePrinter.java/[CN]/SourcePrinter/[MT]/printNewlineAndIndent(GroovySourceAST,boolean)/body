@@ -5,11 +5,18 @@
   }
   if (lastLinePrinted != currentLine || suggestNewline) {
     if (newLines) {
-      out.println();
+      if (suggestNewline) {
+        out.println();
+      }
+ else {
+        for (int i=lastLinePrinted; i < currentLine; i++) {
+          out.println();
+        }
+      }
       for (int i=0; i < tabLevel; i++) {
         out.print("    ");
       }
     }
-    lastLinePrinted=currentLine;
+    lastLinePrinted=Math.max(currentLine,lastLinePrinted);
   }
 }

@@ -1,13 +1,14 @@
 {
   if (visit == OPENING_VISIT) {
     print(t,visit,"switch (");
+    tabLevel++;
   }
   if (visit == SUBSEQUENT_VISIT) {
-    tabLevel++;
     print(t,visit,") {");
   }
   if (visit == CLOSING_VISIT) {
-    print(t,visit,"}");
     tabLevel--;
+    printNewlineAndIndent(t,true);
+    print(t,visit,"}");
   }
 }
