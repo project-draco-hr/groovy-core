@@ -1,0 +1,15 @@
+{
+  Object name=node.name();
+  if (name != null && name instanceof QName) {
+    String s=((QName)name).getPrefix();
+    if (s.startsWith("gsp:")) {
+      s=s.substring(4);
+      if (s.length() == 0) {
+        throw new RuntimeException("No local part after 'gsp:' given in node " + node);
+      }
+      printGroovyTag(s,node.text());
+      return true;
+    }
+  }
+  return false;
+}

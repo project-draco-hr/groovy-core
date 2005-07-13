@@ -5,26 +5,20 @@
     out.print(getNameOfNode(node));
     printNameAttributes(node.attributes());
     out.print("/>");
-    printLineEnd("empty element");
+    printLineEnd();
+    out.flush();
     return;
   }
-  Object name=node.name();
-  if (name != null && name instanceof QName) {
-    String s=((QName)name).getPrefix();
-    if (s.startsWith("gsp:")) {
-      s=s.substring(4);
-      if (s.length() == 0) {
-        throw new RuntimeException("No local part after 'gsp:' given in node " + node);
-      }
-      printGroovyTag(s,node.text());
-      return;
-    }
+  if (printSpecialNode(node)) {
+    out.flush();
+    return;
   }
   Object value=node.value();
   if (value instanceof List) {
     printName(node,true);
     printList((List)value);
     printName(node,false);
+    out.flush();
     return;
   }
   throw new RuntimeException("Unsupported node value: " + node.value());
