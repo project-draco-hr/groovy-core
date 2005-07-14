@@ -1,0 +1,31 @@
+{
+  int dist=0;
+  for (int i=0; i < arguments.length; i++) {
+    if (parameters[i] == arguments[i])     continue;
+    if (parameters[i].isInterface()) {
+      dist+=2;
+      continue;
+    }
+    if (arguments[i] != null) {
+      if (arguments[i].isPrimitive() || parameters[i].isPrimitive()) {
+        dist++;
+        continue;
+      }
+      dist++;
+      Class clazz=arguments[i];
+      while (clazz != null && clazz != parameters[i]) {
+        clazz=clazz.getSuperclass();
+        dist+=2;
+      }
+    }
+ else {
+      dist--;
+      Class clazz=parameters[i];
+      while (clazz != Object.class) {
+        clazz=clazz.getSuperclass();
+        dist+=2;
+      }
+    }
+  }
+  return dist;
+}

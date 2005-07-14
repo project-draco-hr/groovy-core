@@ -1,64 +1,39 @@
 {
   Class[] wrappedArguments=wrap(arguments);
-  LinkedList directMatches=new LinkedList();
-  for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
-    Object method=iter.next();
-    Class[] paramTypes=wrap(getParameterTypes(method));
-    if (Arrays.equals(wrappedArguments,paramTypes))     directMatches.add(method);
-  }
-  if (directMatches.size() == 1)   return directMatches.getFirst();
-  if (directMatches.size() > 0) {
-    matchingMethods=directMatches;
-    directMatches=new LinkedList();
-    for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
-      Object method=iter.next();
-      Class[] paramTypes=getParameterTypes(method);
-      if (Arrays.equals(arguments,paramTypes))       directMatches.add(method);
-    }
-    if (directMatches.size() == 1)     return directMatches.getFirst();
-  }
-  List superclassMatches=new ArrayList(matchingMethods);
-  for (Iterator iter=superclassMatches.iterator(); iter.hasNext(); ) {
-    Object method=iter.next();
-    Class[] paramTypes=wrap(getParameterTypes(method));
-    for (int i=0; i < paramTypes.length; i++) {
-      if (!isSuperclass(wrappedArguments[i],paramTypes[i])) {
-        iter.remove();
-        break;
-      }
-    }
-  }
-  if (superclassMatches.size() > 0) {
-    matchingMethods=superclassMatches;
-  }
-  Object answer=null;
-  int size=arguments.length;
-  Class[] mostSpecificTypes=null;
+  int matchesDistance=-1;
+  LinkedList matches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
     Class[] paramTypes=getParameterTypes(method);
-    if (answer == null) {
-      answer=method;
-      mostSpecificTypes=paramTypes;
+    if (!parametersAreCompatible(arguments,paramTypes))     continue;
+    int dist=calculateParameterDistance(arguments,paramTypes);
+    if (matches.size() == 0) {
+      matches.add(method);
+      matchesDistance=dist;
     }
- else {
-      boolean useThisMethod=false;
-      for (int i=0; i < size; i++) {
-        Class mostSpecificType=mostSpecificTypes[i];
-        Class type=paramTypes[i];
-        if (!isAssignableFrom(mostSpecificType,type)) {
-          useThisMethod=true;
-          break;
-        }
-      }
-      if (useThisMethod) {
-        if (size > 1) {
-          checkForInvalidOverloading(name,mostSpecificTypes,paramTypes);
-        }
-        answer=method;
-        mostSpecificTypes=paramTypes;
-      }
+ else     if (dist < matchesDistance) {
+      matchesDistance=dist;
+      matches.clear();
+      matches.add(method);
+    }
+ else     if (dist == matchesDistance) {
+      matches.add(method);
     }
   }
-  return answer;
+  if (matches.size() == 1) {
+    return matches.getFirst();
+  }
+  if (matches.size() == 0) {
+    return null;
+  }
+  String msg="Ambiguous method overloading for method ";
+  msg+=theClass.getName() + "#" + name;
+  msg+=".\nCannot resolve which method to invoke for ";
+  msg+=InvokerHelper.toString(arguments);
+  msg+=" due to overlapping prototypes between:";
+  for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
+    Class[] types=getParameterTypes(iter.next());
+    msg+="\n\t" + InvokerHelper.toString(types);
+  }
+  throw new GroovyRuntimeException(msg);
 }

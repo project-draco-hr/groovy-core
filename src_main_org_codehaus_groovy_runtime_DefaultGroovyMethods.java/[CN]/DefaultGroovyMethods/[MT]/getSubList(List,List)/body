@@ -1,12 +1,31 @@
 {
-  if (splice.size() != 2) {
+  int left=0;
+  int right=0;
+  boolean emptyRange=false;
+  if (splice.size() == 2) {
+    left=InvokerHelper.asInt(splice.get(0));
+    right=InvokerHelper.asInt(splice.get(1));
+  }
+ else   if (splice instanceof IntRange) {
+    IntRange range=(IntRange)splice;
+    left=range.getFromInt();
+    right=range.getToInt();
+  }
+ else   if (splice instanceof EmptyRange) {
+    emptyRange=true;
+  }
+ else {
     throw new IllegalArgumentException("You must specify a list of 2 indexes to create a sub-list");
   }
-  int left=InvokerHelper.asInt(splice.get(0));
-  int right=InvokerHelper.asInt(splice.get(1));
   int size=self.size();
   left=normaliseIndex(left,size);
   right=normaliseIndex(right,size);
-  List sublist=self.subList(left,right + 1);
+  List sublist=null;
+  if (!emptyRange) {
+    sublist=self.subList(left,right + 1);
+  }
+ else {
+    sublist=self.subList(left,left);
+  }
   return sublist;
 }
