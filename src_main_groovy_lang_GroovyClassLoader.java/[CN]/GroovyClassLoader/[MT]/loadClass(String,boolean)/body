@@ -40,6 +40,9 @@ synchronized (cache) {
 );
     if (source != null) {
       if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
+synchronized (cache) {
+          cache.put(name,PARSING.class);
+        }
         cls=parseClass(source);
       }
     }
