@@ -1,30 +1,13 @@
 {
   final Object params[];
   if (this.curriedParams.length > 0) {
-    final Object args[];
-    if (arguments instanceof ParameterArray) {
-      Object paramObj=((ParameterArray)arguments).get();
-      if (paramObj instanceof Object[])       args=(Object[])paramObj;
- else       args=new Object[]{paramObj};
-    }
- else {
-      args=new Object[]{arguments};
-    }
+    final Object[] args=getArguments(arguments);
     params=new Object[this.curriedParams.length + args.length];
     System.arraycopy(this.curriedParams,0,params,0,this.curriedParams.length);
     System.arraycopy(args,0,params,this.curriedParams.length,args.length);
   }
  else {
-    Object[] tmpParams=null;
-    if (arguments instanceof ParameterArray) {
-      Object paramObj=((ParameterArray)arguments).get();
-      if (paramObj instanceof Object[])       tmpParams=(Object[])paramObj;
- else       tmpParams=new Object[]{paramObj};
-    }
- else {
-      tmpParams=new Object[]{arguments};
-    }
-    params=tmpParams;
+    params=getArguments(arguments);
   }
   final int lastParam=this.numberOfParameters - 1;
   if (this.supportsVarargs && !(this.numberOfParameters == params.length && (params.length > lastParam) && (params[lastParam] == null || params[lastParam].getClass() == Object[].class))) {
