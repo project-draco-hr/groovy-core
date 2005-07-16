@@ -1,0 +1,12 @@
+{
+  Object method=getExpandoProperties().get("equals");
+  if (method != null && method instanceof Closure) {
+    Closure closure=(Closure)method;
+    closure.setDelegate(this);
+    Boolean ret=(Boolean)closure.call(obj);
+    return ret.booleanValue();
+  }
+ else {
+    return super.equals(obj);
+  }
+}
