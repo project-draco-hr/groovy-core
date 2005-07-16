@@ -1,6 +1,9 @@
 {
   try {
-    return ((Method)callsMap.get(new Integer(params.length))).invoke(this,params);
+    if (callsMap.get(new Integer(params.length)) != null) {
+      return ((Method)callsMap.get(new Integer(params.length))).invoke(this,params);
+    }
+ else     return this.doCallMethod.invoke(this,params);
   }
  catch (  final IllegalArgumentException e) {
     throw new IncorrectClosureArgumentsException(this,params,this.parameterTypes);

@@ -10,14 +10,16 @@
   }
 catch (  Exception e) {
   }
-  ClassWriter cw=new ClassWriter(true);
-  generator.generate(cw,name);
-  byte[] bytecode=cw.toByteArray();
-  try {
-    Class type=loadReflectorClass(name,bytecode);
-    return (Reflector)type.newInstance();
-  }
- catch (  Exception e) {
-    throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e,e);
+ finally {
+    ClassWriter cw=new ClassWriter(true);
+    generator.generate(cw,name);
+    byte[] bytecode=cw.toByteArray();
+    try {
+      Class type=loadReflectorClass(name,bytecode);
+      return (Reflector)type.newInstance();
+    }
+ catch (    Exception e) {
+      throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e,e);
+    }
   }
 }

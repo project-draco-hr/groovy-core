@@ -1,3 +1,9 @@
 {
-  this(type,name,null);
+  this.name=MethodNode.ensureJavaTypeNameSyntax(name);
+  this.type=type;
+  this.hasDefaultValue=false;
+  if (type == null || type.length() == 0) {
+    this.type="java.lang.Object";
+    this.dynamicType=true;
+  }
 }

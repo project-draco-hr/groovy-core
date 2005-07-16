@@ -2,8 +2,10 @@
   final Object params[];
   if (this.curriedParams.length > 0) {
     final Object args[];
-    if (arguments instanceof Object[]) {
-      args=(Object[])arguments;
+    if (arguments instanceof ParameterArray) {
+      Object paramObj=((ParameterArray)arguments).get();
+      if (paramObj instanceof Object[])       args=(Object[])paramObj;
+ else       args=new Object[]{paramObj};
     }
  else {
       args=new Object[]{arguments};
@@ -14,26 +16,15 @@
   }
  else {
     Object[] tmpParams=null;
-    if (arguments instanceof Object[]) {
-      tmpParams=(Object[])arguments;
-      if ((tmpParams != null) && (tmpParams.length > 1)) {
-        boolean allNull=true;
-        for (int j=1; j < tmpParams.length; j++) {
-          if (tmpParams[j] != null) {
-            allNull=false;
-            break;
-          }
-        }
-        if (allNull) {
-          if (tmpParams[0] instanceof Object[])           tmpParams=(Object[])(tmpParams[0]);
- else           throw new IncorrectClosureArgumentsException(this,new Object[]{tmpParams[0]},this.parameterTypes);
-        }
-      }
-      params=tmpParams;
+    if (arguments instanceof ParameterArray) {
+      Object paramObj=((ParameterArray)arguments).get();
+      if (paramObj instanceof Object[])       tmpParams=(Object[])paramObj;
+ else       tmpParams=new Object[]{paramObj};
     }
  else {
-      return doCall(arguments);
+      tmpParams=new Object[]{arguments};
     }
+    params=tmpParams;
   }
   final int lastParam=this.numberOfParameters - 1;
   if (this.supportsVarargs && !(this.numberOfParameters == params.length && (params.length > lastParam) && (params[lastParam] == null || params[lastParam].getClass() == Object[].class))) {
@@ -51,12 +42,6 @@
   }
   if (params.length == 0) {
     return doCall();
-  }
- else   if (params.length == 1) {
-    return doCall(params[0]);
-  }
- else   if (params.length == 2) {
-    return doCall(params[0],params[1]);
   }
  else {
     return callViaReflection(params);

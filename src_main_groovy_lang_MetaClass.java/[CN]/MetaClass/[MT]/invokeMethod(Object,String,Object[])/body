@@ -12,7 +12,7 @@
       if (value instanceof Closure && object != this) {
         Closure closure=(Closure)value;
         closure.setDelegate(this);
-        return closure.call(arguments);
+        return closure.call(new ParameterArray(arguments));
       }
  else {
         throw new MissingMethodException(methodName,theClass,arguments);

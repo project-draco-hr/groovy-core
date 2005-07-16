@@ -2,18 +2,8 @@
   if ("doCall".equals(method) || "call".equals(method)) {
     if (arguments instanceof Object[]) {
       Object[] objs=(Object[])arguments;
-      if ((objs != null) && (objs.length > 1) && (objs[0] instanceof Object[])) {
-        boolean allNull=true;
-        for (int j=1; j < objs.length; j++) {
-          if (objs[j] != null) {
-            allNull=false;
-            break;
-          }
-        }
-        if (allNull)         return callViaReflection((Object[])(objs[0]));
-      }
     }
-    return callSpecial(arguments);
+    return callSpecial(new ParameterArray(arguments));
   }
  else   if ("curry".equals(method)) {
     return curry((Object[])arguments);
