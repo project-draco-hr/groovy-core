@@ -6,7 +6,13 @@
   Class klass;
   klass=theClass;
   while (klass != null) {
-    Field[] fields=klass.getDeclaredFields();
+    final Class clazz=klass;
+    Field[] fields=(Field[])AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return clazz.getDeclaredFields();
+      }
+    }
+);
     for (int i=0; i < fields.length; i++) {
       if ((fields[i].getModifiers() & java.lang.reflect.Modifier.PUBLIC) == 0)       continue;
       if (propertyMap.get(fields[i].getName()) != null)       continue;
@@ -32,7 +38,13 @@
   }
   klass=theClass;
   while (klass != null) {
-    Method[] methods=klass.getDeclaredMethods();
+    final Class clazz=klass;
+    Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return clazz.getDeclaredMethods();
+      }
+    }
+);
     for (int i=0; i < methods.length; i++) {
       if (Modifier.isPublic(methods[i].getModifiers()) == false)       continue;
       method=methods[i];

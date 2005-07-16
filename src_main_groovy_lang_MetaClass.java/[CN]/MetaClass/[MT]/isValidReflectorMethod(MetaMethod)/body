@@ -13,10 +13,28 @@
   Class declaringClass=method.getDeclaringClass();
   for (Class clazz=declaringClass; clazz != null; clazz=clazz.getSuperclass()) {
     try {
-      Method m=clazz.getDeclaredMethod(method.getName(),method.getParameterTypes());
-      if (!Modifier.isPublic(clazz.getModifiers()))       continue;
-      if (!Modifier.isPublic(m.getModifiers()))       continue;
-      declaringClass=clazz;
+      final Class klazz=clazz;
+      final String mName=method.getName();
+      final Class[] parms=method.getParameterTypes();
+      try {
+        Method m=(Method)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+          public Object run() throws NoSuchMethodException {
+            return klazz.getDeclaredMethod(mName,parms);
+          }
+        }
+);
+        if (!Modifier.isPublic(clazz.getModifiers()))         continue;
+        if (!Modifier.isPublic(m.getModifiers()))         continue;
+        declaringClass=clazz;
+      }
+ catch (      PrivilegedActionException pae) {
+        if (pae.getException() instanceof NoSuchMethodException) {
+          throw (NoSuchMethodException)pae.getException();
+        }
+ else {
+          throw new RuntimeException(pae.getException());
+        }
+      }
     }
  catch (    SecurityException e) {
       continue;

@@ -1,5 +1,10 @@
 {
-  ClassLoader loader=theClass.getClassLoader();
+  ClassLoader loader=(ClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return theClass.getClassLoader();
+    }
+  }
+);
   if (loader instanceof GroovyClassLoader) {
     final GroovyClassLoader gloader=(GroovyClassLoader)loader;
     return (Class)AccessController.doPrivileged(new PrivilegedAction(){

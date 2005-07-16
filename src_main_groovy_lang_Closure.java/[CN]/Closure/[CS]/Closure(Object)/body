@@ -6,7 +6,13 @@
   int paramLenTemp=-1;
   Method doCallTemp=null;
   while (true) {
-    final Method methods[]=closureClass.getDeclaredMethods();
+    final Class clazz=closureClass;
+    final Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return clazz.getDeclaredMethods();
+      }
+    }
+);
     int i=0;
     for (int j=0; j < methods.length; j++) {
       if ("doCall".equals(methods[j].getName())) {

@@ -14,8 +14,13 @@ synchronized (loaderMap) {
           groovyLoader=new GroovyClassLoader(loader);
         }
  catch (        ClassNotFoundException e) {
-          ClassLoader localLoader=getClass().getClassLoader();
-          groovyLoader=new GroovyClassLoader(localLoader);
+          final ClassLoader localLoader=getClass().getClassLoader();
+          groovyLoader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+            public Object run(){
+              return new GroovyClassLoader(localLoader);
+            }
+          }
+);
         }
       }
       loaderMap.put(loader,groovyLoader);

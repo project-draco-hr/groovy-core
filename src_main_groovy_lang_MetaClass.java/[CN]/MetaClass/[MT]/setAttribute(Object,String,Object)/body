@@ -1,8 +1,24 @@
 {
   try {
-    Field field=theClass.getDeclaredField(attribute);
-    field.setAccessible(true);
-    field.set(object,newValue);
+    final Class clazz=theClass;
+    try {
+      Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+        public Object run() throws NoSuchFieldException {
+          return clazz.getDeclaredField(attribute);
+        }
+      }
+);
+      field.setAccessible(true);
+      field.set(object,newValue);
+    }
+ catch (    PrivilegedActionException pae) {
+      if (pae.getException() instanceof NoSuchFieldException) {
+        throw (NoSuchFieldException)pae.getException();
+      }
+ else {
+        throw new RuntimeException(pae.getException());
+      }
+    }
   }
  catch (  NoSuchFieldException e) {
     throw new MissingFieldException(attribute,theClass);

@@ -83,8 +83,25 @@ catch (    Exception e) {
  catch (    MissingMethodException e1) {
       Field field=null;
       try {
-        field=object.getClass().getDeclaredField(property);
-        field.set(object,newValue);
+        final Class clazz=object.getClass();
+        final String prop=property;
+        try {
+          field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+            public Object run() throws NoSuchFieldException {
+              return clazz.getDeclaredField(prop);
+            }
+          }
+);
+          field.set(object,newValue);
+        }
+ catch (        PrivilegedActionException pae) {
+          if (pae.getException() instanceof NoSuchFieldException) {
+            throw (NoSuchFieldException)pae.getException();
+          }
+ else {
+            throw new RuntimeException(pae.getException());
+          }
+        }
       }
  catch (      IllegalAccessException iae) {
         throw new IllegalPropertyAccessException(field,object.getClass());
