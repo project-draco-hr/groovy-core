@@ -10,7 +10,7 @@
     Project project=getProject();
     script.setProperty("ant",new AntBuilder(project));
     script.setProperty("project",project);
-    script.setProperty("properties",project.getProperties());
+    script.setProperty("properties",new AntProjectPropertiesDelegate(project));
     script.setProperty("target",getOwningTarget());
     script.setProperty("task",this);
     if ("org.apache.commons.grant.GrantProject".equals(project.getClass().getName())) {
