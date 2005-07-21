@@ -2,6 +2,11 @@
   SimpleTemplate template=new SimpleTemplate();
   GroovyShell shell=new GroovyShell();
   String script=template.parse(reader);
+  if (verbose) {
+    System.out.println("--before-parsing--");
+    System.out.print(script);
+    System.out.println("\n--");
+  }
   template.script=shell.parse(script);
   return template;
 }
