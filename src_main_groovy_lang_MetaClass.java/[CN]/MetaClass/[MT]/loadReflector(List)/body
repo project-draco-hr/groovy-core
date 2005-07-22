@@ -5,21 +5,19 @@
     Class type=loadReflectorClass(name);
     return (Reflector)type.newInstance();
   }
- catch (  AccessControlException ace) {
-    throw ace;
-  }
-catch (  Exception e) {
-  }
- finally {
-    ClassWriter cw=new ClassWriter(true);
-    generator.generate(cw,name);
-    byte[] bytecode=cw.toByteArray();
+ catch (  ClassNotFoundException cnfe) {
     try {
+      ClassWriter cw=new ClassWriter(true);
+      generator.generate(cw,name);
+      byte[] bytecode=cw.toByteArray();
       Class type=loadReflectorClass(name,bytecode);
       return (Reflector)type.newInstance();
     }
  catch (    Exception e) {
-      throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ e,e);
+      throw new GroovyRuntimeException("Could not generate and load the reflector for class: " + name + ". Reason: "+ e,e);
     }
+  }
+catch (  Throwable t) {
+    throw new GroovyRuntimeException("Could not load the reflector for class: " + name + ". Reason: "+ t,t);
   }
 }
