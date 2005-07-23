@@ -1,0 +1,20 @@
+{
+  if (arg == null) {
+    return "null";
+  }
+  if (arg.isEmpty()) {
+    return "[]";
+  }
+  String sbdry="[";
+  String ebdry="]";
+  StringBuffer buffer=new StringBuffer(sbdry);
+  boolean first=true;
+  for (Iterator iter=arg.iterator(); iter.hasNext(); ) {
+    if (first)     first=false;
+ else     buffer.append(", ");
+    Object elem=iter.next();
+    buffer.append(format(elem,true));
+  }
+  buffer.append(ebdry);
+  return buffer.toString();
+}

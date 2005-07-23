@@ -1,3 +1,6 @@
 {
-  return format(arguments,false);
+  if (arguments instanceof Object[])   return toArrayString((Object[])arguments);
+ else   if (arguments instanceof Map)   return toMapString((Map)arguments);
+ else   if (arguments instanceof Collection)   return format(arguments,true);
+ else   return format(arguments,false);
 }

@@ -1,3 +1,6 @@
 {
-  return getInstance().toString(arguments);
+  if (arguments instanceof Object[])   return getInstance().toArrayString((Object[])arguments);
+ else   if (arguments instanceof Collection)   return getInstance().toListString((Collection)arguments);
+ else   if (arguments instanceof Map)   return getInstance().toMapString((Map)arguments);
+ else   return getInstance().toString(arguments);
 }
