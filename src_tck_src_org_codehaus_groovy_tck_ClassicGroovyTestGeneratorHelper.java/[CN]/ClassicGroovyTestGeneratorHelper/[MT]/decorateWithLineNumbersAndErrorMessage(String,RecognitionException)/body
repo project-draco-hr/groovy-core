@@ -1,0 +1,35 @@
+{
+  try {
+    BufferedReader reader=new BufferedReader(new StringReader(theSrcText));
+    String line=null;
+    StringBuffer numberedSrcTextBuffer=new StringBuffer();
+    int lineNum=1;
+    while ((line=reader.readLine()) != null) {
+      numberedSrcTextBuffer.append(lineNum);
+      numberedSrcTextBuffer.append("\t");
+      numberedSrcTextBuffer.append(line);
+      numberedSrcTextBuffer.append(lineSep);
+      if (parseException != null) {
+        if (lineNum == parseException.getLine()) {
+          StringBuffer padding=new StringBuffer("\t");
+          for (int col=1; col < parseException.getColumn(); col++) {
+            padding.append(" ");
+          }
+          numberedSrcTextBuffer.append(padding);
+          numberedSrcTextBuffer.append("^");
+          numberedSrcTextBuffer.append(lineSep);
+          numberedSrcTextBuffer.append("ERROR:");
+          numberedSrcTextBuffer.append(lineSep);
+          numberedSrcTextBuffer.append(parseException.getMessage());
+          numberedSrcTextBuffer.append(lineSep);
+          numberedSrcTextBuffer.append(lineSep);
+        }
+      }
+      lineNum++;
+    }
+    theSrcText=numberedSrcTextBuffer.toString();
+  }
+ catch (  IOException e) {
+  }
+  return theSrcText;
+}
