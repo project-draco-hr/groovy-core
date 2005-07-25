@@ -1,10 +1,25 @@
 {
   if (size == -1) {
-    size=0;
-    Object value=from;
-    while (to.compareTo(value) >= 0) {
-      value=increment(value);
-      size++;
+    if (from instanceof Integer && to instanceof Integer) {
+      size=0;
+      int fromNum=((Integer)from).intValue();
+      int toNum=((Integer)to).intValue();
+      size=toNum - fromNum + 1;
+    }
+ else     if (from instanceof BigDecimal || to instanceof BigDecimal) {
+      size=0;
+      BigDecimal fromNum=new BigDecimal("" + from);
+      BigDecimal toNum=new BigDecimal("" + to);
+      BigInteger sizeNum=toNum.subtract(fromNum).add(new BigDecimal(1.0)).toBigInteger();
+      size=sizeNum.intValue();
+    }
+ else {
+      size=0;
+      Object value=from;
+      while (to.compareTo(value) >= 0) {
+        value=increment(value);
+        size++;
+      }
     }
   }
   return size;

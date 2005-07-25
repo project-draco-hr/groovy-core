@@ -1,2 +1,15 @@
 {
+  Range r=createRange(5,11);
+  int i=5;
+  for (Iterator it=r.iterator(); it.hasNext(); ) {
+    assertEquals("equals to " + i,new Integer(i),(Integer)(it.next()));
+    i++;
+  }
+  r=createRange(new BigDecimal("5.0"),new BigDecimal("11.0"));
+  BigDecimal one=new BigDecimal("1.0");
+  BigDecimal val=new BigDecimal("5.0");
+  for (Iterator it=r.iterator(); it.hasNext(); ) {
+    assertEquals("equals to " + val,val,(BigDecimal)(it.next()));
+    val=val.add(one);
+  }
 }
