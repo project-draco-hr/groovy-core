@@ -4,8 +4,13 @@
     matcher.reset();
     StringBuffer sb=new StringBuffer();
     while (matcher.find()) {
+      int count=matcher.groupCount();
+      ArrayList groups=new ArrayList();
+      for (int i=0; i <= count; i++) {
+        groups.add(matcher.group(i));
+      }
       String foundText=self.substring(matcher.start(0),matcher.end(0));
-      matcher.appendReplacement(sb,String.valueOf(closure.call(foundText)));
+      matcher.appendReplacement(sb,String.valueOf(closure.callSpecial(new ParameterArray(groups.toArray()))));
     }
     matcher.appendTail(sb);
     return sb.toString();

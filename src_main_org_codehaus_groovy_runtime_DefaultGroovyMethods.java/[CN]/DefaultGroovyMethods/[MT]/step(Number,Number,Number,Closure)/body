@@ -1,17 +1,17 @@
 {
   if (self instanceof BigDecimal || to instanceof BigDecimal || stepNumber instanceof BigDecimal) {
-    final BigDecimal zero=new BigDecimal(0.0);
+    final BigDecimal zero=new BigDecimal("0.0");
     BigDecimal self1=(self instanceof BigDecimal) ? (BigDecimal)self : new BigDecimal("" + self);
     BigDecimal to1=(to instanceof BigDecimal) ? (BigDecimal)to : new BigDecimal("" + to);
     BigDecimal stepNumber1=(stepNumber instanceof BigDecimal) ? (BigDecimal)stepNumber : new BigDecimal("" + stepNumber);
     if (stepNumber1.compareTo(zero) > 0 && to1.compareTo(self1) > 0) {
       for (BigDecimal i=self1; i.compareTo(to1) < 0; i=i.add(stepNumber1)) {
-        closure.call(i);
+        closure.callSpecial(i);
       }
     }
  else     if (stepNumber1.compareTo(zero) < 0 && to1.compareTo(self1) < 0) {
       for (BigDecimal i=self1; i.compareTo(to1) > 0; i=i.add(stepNumber1)) {
-        closure.call(i);
+        closure.callSpecial(i);
       }
     }
  else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
@@ -23,12 +23,12 @@
     BigInteger stepNumber1=(stepNumber instanceof BigInteger) ? (BigInteger)stepNumber : new BigInteger("" + stepNumber);
     if (stepNumber1.compareTo(zero) > 0 && to1.compareTo(self1) > 0) {
       for (BigInteger i=self1; i.compareTo(to1) < 0; i=i.add(stepNumber1)) {
-        closure.call(i);
+        closure.callSpecial(i);
       }
     }
  else     if (stepNumber1.compareTo(zero) < 0 && to1.compareTo(self1) < 0) {
       for (BigInteger i=self1; i.compareTo(to1) > 0; i=i.add(stepNumber1)) {
-        closure.call(i);
+        closure.callSpecial(i);
       }
     }
  else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
@@ -39,12 +39,12 @@
     int stepNumber1=stepNumber.intValue();
     if (stepNumber1 > 0 && to1 > self1) {
       for (int i=self1; i < to1; i+=stepNumber1) {
-        closure.call(new Integer(i));
+        closure.callSpecial(new Integer(i));
       }
     }
  else     if (stepNumber1 < 0 && to1 < self1) {
       for (int i=self1; i > to1; i+=stepNumber1) {
-        closure.call(new Integer(i));
+        closure.callSpecial(new Integer(i));
       }
     }
  else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
