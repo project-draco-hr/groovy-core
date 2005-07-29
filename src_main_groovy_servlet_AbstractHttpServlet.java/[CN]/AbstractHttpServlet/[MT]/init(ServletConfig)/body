@@ -1,15 +1,45 @@
 {
   super.init(config);
   this.servletContext=config.getServletContext();
-  String value;
-  value=config.getInitParameter("MetaClass.useReflection");
+  String value=config.getInitParameter("verbose");
   if (value != null) {
-    this.metaClassUseReflection=Boolean.valueOf(value).booleanValue();
+    this.verbose=Boolean.valueOf(value).booleanValue();
   }
-  log("Setting MetaClass reflection to " + metaClassUseReflection + ".");
-  MetaClass.setUseReflection(metaClassUseReflection);
-  value=config.getInitParameter("logRequestClassAndLoaderOnce");
+  if (verbose) {
+    log("Parsing init parameters...");
+  }
+  String regex=config.getInitParameter("resource.name.regex");
+  if (regex != null) {
+    String replacement=config.getInitParameter("resource.name.replacement");
+    if (replacement == null) {
+      Exception npex=new NullPointerException("resource.name.replacement");
+      String message="Init-param 'resource.name.replacement' not specified!";
+      log(message,npex);
+      throw new ServletException(message,npex);
+    }
+    int flags=0;
+    this.resourceNameMatcher=Pattern.compile(regex,flags).matcher("");
+    this.resourceNameReplacement=replacement;
+    String all=config.getInitParameter("resource.name.replace.all");
+    if (all != null) {
+      this.resourceNameReplaceAll=Boolean.valueOf(all).booleanValue();
+    }
+  }
+  value=config.getInitParameter("reflection");
   if (value != null) {
-    this.logRequestClassAndLoaderOnce=Boolean.valueOf(value).booleanValue();
+    this.reflection=Boolean.valueOf(value).booleanValue();
+    MetaClass.setUseReflection(reflection);
+  }
+  value=config.getInitParameter("logGROOVY861");
+  if (value != null) {
+    this.logGROOVY861=Boolean.valueOf(value).booleanValue();
+  }
+  if (verbose) {
+    log("(Abstract) init done. Listing some parameter name/value pairs:");
+    log("verbose = " + verbose);
+    log("reflection = " + reflection);
+    log("logGROOVY861 = " + logGROOVY861);
+    log("resource.name.regex = " + resourceNameMatcher.pattern().pattern());
+    log("resource.name.replacement = " + resourceNameReplacement);
   }
 }

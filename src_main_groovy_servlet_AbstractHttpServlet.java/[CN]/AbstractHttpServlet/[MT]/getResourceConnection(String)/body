@@ -1,24 +1,32 @@
 {
-  String pattern=servletContext.getInitParameter("groovy.servlet.resource.pattern");
-  String replace=servletContext.getInitParameter("groovy.servlet.resource.replace");
-  if (pattern != null && replace != null) {
-    String newName=name.replaceAll(pattern,replace);
-    if (!name.equals(newName)) {
-      log("replaced resource \"" + name + "\" to \""+ newName+ "\"");
-      name=newName;
+  Matcher matcher=resourceNameMatcher;
+  if (matcher != null) {
+    matcher.reset(name);
+    String replaced;
+    if (resourceNameReplaceAll) {
+      replaced=resourceNameMatcher.replaceAll(resourceNameReplacement);
+    }
+ else {
+      replaced=resourceNameMatcher.replaceFirst(resourceNameReplacement);
+    }
+    if (!name.equals(replaced)) {
+      if (verbose) {
+        log("Replaced resource name \"" + name + "\" with \""+ replaced+ "\".");
+      }
+      name=replaced;
     }
   }
   try {
     URL url=servletContext.getResource("/" + name);
     if (url == null) {
       url=servletContext.getResource("/WEB-INF/groovy/" + name);
-      if (url == null) {
-        throw new ResourceException("Resource " + name + " not found");
-      }
+    }
+    if (url == null) {
+      throw new ResourceException("Resource \"" + name + "\" not found!");
     }
     return url.openConnection();
   }
- catch (  IOException ioe) {
-    throw new ResourceException("Problem reading resource named \"" + name + "\"");
+ catch (  IOException e) {
+    throw new ResourceException("Problems getting resource named \"" + name + "\"!",e);
   }
 }
