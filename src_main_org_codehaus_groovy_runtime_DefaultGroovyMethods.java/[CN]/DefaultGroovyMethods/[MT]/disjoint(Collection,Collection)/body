@@ -1,0 +1,11 @@
+{
+  if (left.size() == 0 || right.size() == 0)   return true;
+  boolean nlgnSort=sameType(new Collection[]{left,right});
+  Collection pickFrom=(Collection)new TreeSet(new NumberComparator());
+  ((TreeSet)pickFrom).addAll(right);
+  for (Iterator iter=left.iterator(); iter.hasNext(); ) {
+    final Object o=iter.next();
+    if (pickFrom.contains(o))     return false;
+  }
+  return true;
+}
