@@ -4,7 +4,7 @@
     return;
   }
   log("Groovy: " + txt,Project.MSG_VERBOSE);
-  GroovyShell groovy=new GroovyShell(GroovyShell.class.getClassLoader());
+  GroovyShell groovy=new GroovyShell(GroovyShell.class.getClassLoader(),new Binding(),configuration);
   try {
     Script script=groovy.parse(txt);
     Project project=getProject();
@@ -29,11 +29,9 @@
     script.run();
   }
  catch (  CompilationFailedException e) {
-    throw new BuildException("Script Failed: " + e.getMessage(),getLocation());
-  }
-  if (print) {
-    StringBuffer line=new StringBuffer();
-    line.append(" foo bar");
-    out.println(line);
+    StringWriter writer=new StringWriter();
+    new ErrorReporter(e,false).write(new PrintWriter(writer));
+    String message=writer.toString();
+    throw new BuildException("Script Failed: " + message,getLocation());
   }
 }
