@@ -3,6 +3,7 @@
     throw new GroovyRuntimeException("Cannot set attribute on null object");
   }
  else {
-    metaRegistry.getMetaClass(object.getClass()).setAttribute(object,attribute,newValue);
+    if (object instanceof Class)     metaRegistry.getMetaClass((Class)object).setAttribute(object,attribute,newValue);
+ else     metaRegistry.getMetaClass(object.getClass()).setAttribute(object,attribute,newValue);
   }
 }

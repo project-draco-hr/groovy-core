@@ -3,6 +3,7 @@
     throw new NullPointerException("Cannot get attribute: " + attribute + " on null object");
   }
  else {
-    return metaRegistry.getMetaClass(object.getClass()).getAttribute(object,attribute);
+    if (object instanceof Class)     return metaRegistry.getMetaClass((Class)object).getAttribute(object,attribute);
+ else     return metaRegistry.getMetaClass(object.getClass()).getAttribute(object,attribute);
   }
 }
