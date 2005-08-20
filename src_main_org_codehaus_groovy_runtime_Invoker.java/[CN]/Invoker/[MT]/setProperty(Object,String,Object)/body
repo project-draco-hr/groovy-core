@@ -11,6 +11,7 @@
     map.put(property,newValue);
   }
  else {
-    metaRegistry.getMetaClass(object.getClass()).setProperty(object,property,newValue);
+    if (object instanceof Class)     metaRegistry.getMetaClass((Class)object).setProperty((Class)object,property,newValue);
+ else     metaRegistry.getMetaClass(object.getClass()).setProperty(object,property,newValue);
   }
 }
