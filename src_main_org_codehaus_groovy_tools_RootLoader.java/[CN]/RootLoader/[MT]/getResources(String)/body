@@ -1,0 +1,15 @@
+{
+  final Enumeration enum1=inner.getResources(name);
+  final Enumeration enum2=super.getResources(name);
+  return new Enumeration(){
+    public boolean hasMoreElements(){
+      return enum1.hasMoreElements() || enum2.hasMoreElements();
+    }
+    public Object nextElement(){
+      if (enum1.hasMoreElements())       return enum1.nextElement();
+      if (enum2.hasMoreElements())       return enum2.nextElement();
+      return null;
+    }
+  }
+;
+}

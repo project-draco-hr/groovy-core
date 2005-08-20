@@ -2,48 +2,18 @@
   this.delegate=delegate;
   this.owner=delegate;
   Class closureClass=this.getClass();
-  callsMap=new HashMap();
-  int paramLenTemp=-1;
-  Method doCallTemp=null;
-  while (true) {
-    final Class clazz=closureClass;
-    final Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        return clazz.getDeclaredMethods();
-      }
-    }
-);
-    int i=0;
-    for (int j=0; j < methods.length; j++) {
-      if ("doCall".equals(methods[j].getName())) {
-        callsMap.put(new Integer(methods[j].getParameterTypes().length),methods[j]);
-        if (methods[j].getParameterTypes().length > paramLenTemp) {
-          doCallTemp=methods[j];
-          paramLenTemp=methods[j].getParameterTypes().length;
-        }
-      }
-    }
-    if (!callsMap.isEmpty()) {
-      break;
-    }
-    closureClass=closureClass.getSuperclass();
-  }
-  this.doCallMethod=doCallTemp;
-  AccessController.doPrivileged(new PrivilegedAction(){
+  maximumNumberOfParameters=0;
+  final Class clazz=closureClass;
+  final Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      for (Iterator iter=callsMap.values().iterator(); iter.hasNext(); ) {
-        ((Method)iter.next()).setAccessible(true);
-      }
-      return null;
+      return clazz.getDeclaredMethods();
     }
   }
 );
-  this.parameterTypes=this.doCallMethod.getParameterTypes();
-  this.numberOfParameters=this.parameterTypes.length;
-  if (this.numberOfParameters > 0) {
-    this.supportsVarargs=this.parameterTypes[this.numberOfParameters - 1].equals(Object[].class);
-  }
- else {
-    this.supportsVarargs=false;
+  for (int j=0; j < methods.length; j++) {
+    if ("doCall".equals(methods[j].getName()) && methods[j].getParameterTypes().length > maximumNumberOfParameters) {
+      parameterTypes=methods[j].getParameterTypes();
+      maximumNumberOfParameters=parameterTypes.length;
+    }
   }
 }

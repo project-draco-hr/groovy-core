@@ -1,10 +1,19 @@
 {
+  Class[] paramTypes=method.getParameterTypes();
   try {
     if (argumentArray == null) {
       argumentArray=EMPTY_ARRAY;
     }
- else     if (method.getParameterTypes().length == 1 && argumentArray.length == 0) {
+ else     if (paramTypes.length == 1 && argumentArray.length == 0) {
       argumentArray=ARRAY_WITH_NULL;
+    }
+ else     if (isVargsMethod(paramTypes,argumentArray)) {
+      Object[] newArg=new Object[paramTypes.length];
+      System.arraycopy(argumentArray,0,newArg,0,newArg.length - 1);
+      Object[] vargs=new Object[argumentArray.length - newArg.length + 1];
+      System.arraycopy(argumentArray,newArg.length - 1,vargs,0,vargs.length);
+      newArg[newArg.length - 1]=vargs;
+      argumentArray=newArg;
     }
     return method.invoke(object,argumentArray);
   }

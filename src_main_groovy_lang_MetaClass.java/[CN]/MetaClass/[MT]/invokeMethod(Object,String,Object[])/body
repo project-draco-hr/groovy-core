@@ -3,6 +3,61 @@
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
   MetaMethod method=retrieveMethod(object,methodName,arguments);
+  boolean isClosure=object instanceof Closure;
+  if (isClosure) {
+    Closure closure=(Closure)object;
+    Object delegate=closure.getDelegate();
+    Object owner=closure.getOwner();
+    if ("call".equals(methodName) || "doCall".equals(methodName)) {
+      if (object.getClass() == MethodClosure.class) {
+        MethodClosure mc=(MethodClosure)object;
+        methodName=mc.getMethod();
+        MetaClass delegateMetaClass=registry.getMetaClass(delegate.getClass());
+        return delegateMetaClass.invokeMethod(delegate,methodName,arguments);
+      }
+ else       if (object.getClass() == CurriedClosure.class) {
+        CurriedClosure cc=(CurriedClosure)object;
+        arguments=cc.getUncurriedArguments(arguments);
+        MetaClass delegateMetaClass=registry.getMetaClass(delegate.getClass());
+        return delegateMetaClass.invokeMethod(delegate,methodName,arguments);
+      }
+    }
+ else     if ("curry".equals(methodName)) {
+      return closure.curry(arguments);
+    }
+    if (method == null && owner != closure) {
+      MetaClass ownerMetaClass=registry.getMetaClass(owner.getClass());
+      method=ownerMetaClass.retrieveMethod(owner,methodName,arguments);
+      if (method != null)       return ownerMetaClass.invokeMethod(owner,methodName,arguments);
+    }
+    if (method == null && delegate != closure && delegate != null) {
+      MetaClass delegateMetaClass=registry.getMetaClass(delegate.getClass());
+      method=delegateMetaClass.retrieveMethod(delegate,methodName,arguments);
+      if (method != null)       return delegateMetaClass.invokeMethod(delegate,methodName,arguments);
+    }
+    if (method == null) {
+      MissingMethodException last=null;
+      if (delegate != closure && (delegate instanceof GroovyObject)) {
+        try {
+          GroovyObject go=(GroovyObject)delegate;
+          return go.invokeMethod(methodName,arguments);
+        }
+ catch (        MissingMethodException mme) {
+          last=mme;
+        }
+      }
+      if (owner != closure && (owner instanceof GroovyObject)) {
+        try {
+          GroovyObject go=(GroovyObject)owner;
+          return go.invokeMethod(methodName,arguments);
+        }
+ catch (        MissingMethodException mme) {
+          if (last == null)           last=mme;
+        }
+      }
+      if (last != null)       throw last;
+    }
+  }
   if (method != null) {
     return doMethodInvoke(object,method,arguments);
   }
@@ -12,14 +67,12 @@
       if (value instanceof Closure && object != this) {
         Closure closure=(Closure)value;
         closure.setDelegate(this);
-        return closure.call(new ParameterArray(arguments));
-      }
- else {
-        throw new MissingMethodException(methodName,theClass,arguments);
+        MetaClass delegateMetaClass=registry.getMetaClass(closure.getClass());
+        return delegateMetaClass.invokeMethod(closure,"doCall",arguments);
       }
     }
- catch (    Exception e) {
-      throw new MissingMethodException(methodName,theClass,arguments);
+ catch (    MissingPropertyException mpe) {
     }
+    throw new MissingMethodException(methodName,theClass,arguments);
   }
 }

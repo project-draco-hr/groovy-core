@@ -1,4 +1,28 @@
 {
   super(owner);
   this.method=method;
+  final Class clazz=owner.getClass();
+  maximumNumberOfParameters=0;
+  Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return clazz.getMethods();
+    }
+  }
+);
+  for (int j=0; j < methods.length; j++) {
+    if (method.equals(methods[j].getName()) && methods[j].getParameterTypes().length > maximumNumberOfParameters) {
+      maximumNumberOfParameters=methods[j].getParameterTypes().length;
+    }
+  }
+  methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return clazz.getDeclaredMethods();
+    }
+  }
+);
+  for (int j=0; j < methods.length; j++) {
+    if (method.equals(methods[j].getName()) && methods[j].getParameterTypes().length > maximumNumberOfParameters) {
+      maximumNumberOfParameters=methods[j].getParameterTypes().length;
+    }
+  }
 }

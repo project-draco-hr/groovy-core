@@ -1,8 +1,3 @@
 {
-  final Closure curriedClosure=(Closure)this.clone();
-  final Object newCurriedParams[]=new Object[curriedClosure.curriedParams.length + arguments.length];
-  System.arraycopy(curriedClosure.curriedParams,0,newCurriedParams,0,curriedClosure.curriedParams.length);
-  System.arraycopy(arguments,0,newCurriedParams,curriedClosure.curriedParams.length,arguments.length);
-  curriedClosure.curriedParams=newCurriedParams;
-  return curriedClosure;
+  return new CurriedClosure(this,arguments);
 }

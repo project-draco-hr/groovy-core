@@ -1,14 +1,24 @@
 {
-  boolean failed=false;
+  Throwable th=null;
   try {
     code.call();
   }
- catch (  Exception e) {
-    if (clazz.isInstance(e)) {
-      failed=true;
+ catch (  GroovyRuntimeException gre) {
+    th=gre;
+    while (th.getCause() != null && th.getCause() != gre) {
+      th=th.getCause();
+      if (th != gre && (th instanceof GroovyRuntimeException)) {
+        gre=(GroovyRuntimeException)th;
+      }
     }
-    assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName()+ ", instead got Exception "+ e,failed);
-    return;
   }
-  assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName(),failed);
+catch (  Exception e) {
+    th=e;
+  }
+  if (th == null) {
+    assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName(),false);
+  }
+ else   if (!clazz.isInstance(th)) {
+    assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName()+ ", instead got Exception "+ th,false);
+  }
 }

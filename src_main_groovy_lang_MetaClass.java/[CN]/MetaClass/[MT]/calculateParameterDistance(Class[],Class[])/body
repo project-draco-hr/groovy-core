@@ -13,7 +13,12 @@
       }
       dist++;
       Class clazz=arguments[i];
-      while (clazz != null && clazz != parameters[i]) {
+      while (clazz != null) {
+        if (clazz == parameters[i])         break;
+        if (clazz == GString.class && parameters[i] == String.class) {
+          dist+=2;
+          break;
+        }
         clazz=clazz.getSuperclass();
         dist+=2;
       }

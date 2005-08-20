@@ -1,7 +1,8 @@
 {
+  PrivilegedActionException firstException=null;
   try {
-    final Class clazz=theClass;
     try {
+      final Class clazz=theClass;
       Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
         public Object run() throws NoSuchFieldException {
           return clazz.getDeclaredField(attribute);
@@ -12,12 +13,29 @@
       return field.get(object);
     }
  catch (    PrivilegedActionException pae) {
-      if (pae.getException() instanceof NoSuchFieldException) {
-        throw (NoSuchFieldException)pae.getException();
+      firstException=pae;
+    }
+    if (object instanceof Class) {
+      try {
+        final Class clazz=(Class)object;
+        Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+          public Object run() throws NoSuchFieldException {
+            return clazz.getDeclaredField(attribute);
+          }
+        }
+);
+        field.setAccessible(true);
+        return field.get(object);
       }
+ catch (      PrivilegedActionException pae) {
+        firstException=pae;
+      }
+    }
+    if (firstException.getException() instanceof NoSuchFieldException) {
+      throw (NoSuchFieldException)firstException.getException();
+    }
  else {
-        throw new RuntimeException(pae.getException());
-      }
+      throw new RuntimeException(firstException.getException());
     }
   }
  catch (  NoSuchFieldException e) {

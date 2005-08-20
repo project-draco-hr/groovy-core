@@ -1,0 +1,23 @@
+{
+  int propertyIndexStart=0, propertyIndexEnd=0;
+  String result="";
+  while (propertyIndexStart < str.length()) {
+    propertyIndexStart=str.indexOf("${",propertyIndexStart);
+    if (propertyIndexStart == -1)     break;
+    result+=str.substring(propertyIndexEnd,propertyIndexStart);
+    propertyIndexEnd=str.indexOf("}",propertyIndexStart);
+    if (propertyIndexEnd == -1)     break;
+    String propertyKey=str.substring(propertyIndexStart + 2,propertyIndexEnd);
+    String propertyValue=System.getProperty(propertyKey);
+    result+=propertyValue;
+    propertyIndexEnd++;
+    propertyIndexStart=propertyIndexEnd;
+  }
+  if (propertyIndexStart == -1 || propertyIndexStart >= str.length()) {
+    result+=str.substring(propertyIndexEnd);
+  }
+ else   if (propertyIndexEnd == -1) {
+    result+=str.substring(propertyIndexStart);
+  }
+  return result;
+}

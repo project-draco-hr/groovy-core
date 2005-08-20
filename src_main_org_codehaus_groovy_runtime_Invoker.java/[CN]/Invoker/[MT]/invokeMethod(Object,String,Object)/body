@@ -14,27 +14,21 @@
       return metaClass.invokeMethod(object,methodName,asArray(arguments));
     }
  else {
-      if (object instanceof Closure) {
-        Closure closure=(Closure)object;
-        return closure.invokeMethod(methodName,asArray(arguments));
-      }
- else {
-        GroovyObject groovy=(GroovyObject)object;
-        try {
-          if (groovy instanceof GroovyInterceptable) {
-            return groovy.invokeMethod(methodName,asArray(arguments));
-          }
- else {
-            return groovy.getMetaClass().invokeMethod(object,methodName,asArray(arguments));
-          }
+      GroovyObject groovy=(GroovyObject)object;
+      try {
+        if (groovy instanceof GroovyInterceptable) {
+          return groovy.invokeMethod(methodName,asArray(arguments));
         }
- catch (        MissingMethodException e) {
-          if (e.getMethod().equals(methodName) && object.getClass() == e.getType()) {
-            return groovy.invokeMethod(methodName,asArray(arguments));
-          }
  else {
-            throw e;
-          }
+          return groovy.getMetaClass().invokeMethod(object,methodName,asArray(arguments));
+        }
+      }
+ catch (      MissingMethodException e) {
+        if (e.getMethod().equals(methodName) && object.getClass() == e.getType()) {
+          return groovy.invokeMethod(methodName,asArray(arguments));
+        }
+ else {
+          throw e;
         }
       }
     }
