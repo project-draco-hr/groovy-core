@@ -5,7 +5,8 @@
       argumentArray=EMPTY_ARRAY;
     }
  else     if (paramTypes.length == 1 && argumentArray.length == 0) {
-      argumentArray=ARRAY_WITH_NULL;
+      if (isVargsMethod(paramTypes,argumentArray))       argumentArray=ARRAY_WITH_EMPTY_ARRAY;
+ else       argumentArray=ARRAY_WITH_NULL;
     }
  else     if (isVargsMethod(paramTypes,argumentArray)) {
       Object[] newArg=new Object[paramTypes.length];
