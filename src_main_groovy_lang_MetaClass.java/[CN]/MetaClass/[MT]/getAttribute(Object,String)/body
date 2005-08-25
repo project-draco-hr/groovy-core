@@ -3,14 +3,17 @@
   try {
     try {
       final Class clazz=theClass;
-      Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-        public Object run() throws NoSuchFieldException {
-          return clazz.getDeclaredField(attribute);
+      final String attribute1=attribute;
+      final Object object1=object;
+      Object value=(Object)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+        public Object run() throws NoSuchFieldException, IllegalAccessException {
+          Field field=clazz.getDeclaredField(attribute);
+          field.setAccessible(true);
+          return field.get(object1);
         }
       }
 );
-      field.setAccessible(true);
-      return field.get(object);
+      return value;
     }
  catch (    PrivilegedActionException pae) {
       firstException=pae;
@@ -18,14 +21,17 @@
     if (object instanceof Class) {
       try {
         final Class clazz=(Class)object;
-        Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-          public Object run() throws NoSuchFieldException {
-            return clazz.getDeclaredField(attribute);
+        final String attribute1=attribute;
+        final Object object1=object;
+        Object value=(Object)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+          public Object run() throws NoSuchFieldException, IllegalAccessException {
+            Field field=clazz.getDeclaredField(attribute);
+            field.setAccessible(true);
+            return field.get(object1);
           }
         }
 );
-        field.setAccessible(true);
-        return field.get(object);
+        return value;
       }
  catch (      PrivilegedActionException pae) {
         firstException=pae;

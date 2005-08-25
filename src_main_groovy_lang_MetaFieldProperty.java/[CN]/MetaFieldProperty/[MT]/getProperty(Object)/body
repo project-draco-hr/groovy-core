@@ -1,3 +1,12 @@
 {
-  return field.get(object);
+  final Field field1=field;
+  final Object object1=object;
+  Object value=(Object)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+    public Object run() throws IllegalAccessException {
+      field1.setAccessible(true);
+      return field1.get(object1);
+    }
+  }
+);
+  return value;
 }

@@ -14,7 +14,7 @@
     }
 );
     for (int i=0; i < fields.length; i++) {
-      if ((fields[i].getModifiers() & java.lang.reflect.Modifier.PUBLIC) == 0)       continue;
+      if ((fields[i].getModifiers() & (java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.PROTECTED)) == 0)       continue;
       if (propertyMap.get(fields[i].getName()) != null)       continue;
       propertyMap.put(fields[i].getName(),new MetaFieldProperty(fields[i]));
     }

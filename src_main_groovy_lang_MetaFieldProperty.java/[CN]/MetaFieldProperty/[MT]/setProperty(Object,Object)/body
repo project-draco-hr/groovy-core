@@ -1,16 +1,35 @@
 {
+  final Field field1=field;
+  final Object object1=object;
+  final Object newValue1=newValue;
   try {
-    field.set(object,newValue);
-  }
- catch (  IllegalArgumentException e) {
-    try {
-      field.set(object,InvokerHelper.asType(newValue,field.getType()));
+    AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws IllegalAccessException, TypeMismatchException, GroovyRuntimeException {
+        try {
+          field1.set(object1,newValue1);
+          return newValue1;
+        }
+ catch (        IllegalArgumentException e) {
+          try {
+            Object newValue2=InvokerHelper.asType(newValue1,field1.getType());
+            field1.set(object1,newValue2);
+            return newValue2;
+          }
+ catch (          Exception ex) {
+            throw new TypeMismatchException("'" + toName(object1.getClass()) + "."+ field1.getName()+ "' can not refer to the value '"+ newValue1+ "' (type "+ toName(newValue1.getClass())+ "), because it is of the type "+ toName(field1.getType()));
+          }
+        }
+catch (        Exception ex) {
+          throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",ex);
+        }
+      }
     }
- catch (    Exception ex) {
-      throw new TypeMismatchException("'" + toName(object.getClass()) + "."+ field.getName()+ "' can not refer to the value '"+ newValue+ "' (type "+ toName(newValue.getClass())+ "), because it is of the type "+ toName(field.getType()));
-    }
+);
   }
-catch (  Exception e) {
-    throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",e);
+ catch (  TypeMismatchException ex) {
+    throw ex;
+  }
+catch (  Exception ex) {
+    throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",ex);
   }
 }
