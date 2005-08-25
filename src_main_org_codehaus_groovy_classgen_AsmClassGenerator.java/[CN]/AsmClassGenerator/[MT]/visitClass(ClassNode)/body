@@ -11,6 +11,7 @@
     }
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
     cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cw.visitSource(sourceFile,null);
     classNode.visitContents(this);
     createSyntheticStaticFields();
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
