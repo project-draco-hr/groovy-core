@@ -7,6 +7,12 @@
     printf(self,format,((List)arg).toArray());
     return;
   }
+ else   if (!arg.getClass().isArray()) {
+    Object[] o=(Object[])java.lang.reflect.Array.newInstance(arg.getClass(),1);
+    o[0]=arg;
+    printf(self,format,o);
+    return;
+  }
   Object[] ans=null;
   String elemType=arg.getClass().getName();
   if (elemType.equals("[I")) {
