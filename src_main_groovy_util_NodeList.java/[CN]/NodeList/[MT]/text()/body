@@ -1,0 +1,35 @@
+{
+  String previousText=null;
+  StringBuffer buffer=null;
+  for (Iterator iter=this.iterator(); iter.hasNext(); ) {
+    Object child=iter.next();
+    String text=null;
+    if (child instanceof String) {
+      text=(String)child;
+    }
+ else     if (child instanceof Node) {
+      text=((Node)child).text();
+    }
+    if (text != null) {
+      if (previousText == null) {
+        previousText=text;
+      }
+ else {
+        if (buffer == null) {
+          buffer=new StringBuffer();
+          buffer.append(previousText);
+        }
+        buffer.append(text);
+      }
+    }
+  }
+  if (buffer != null) {
+    return buffer.toString();
+  }
+ else {
+    if (previousText != null) {
+      return previousText;
+    }
+  }
+  return "";
+}
