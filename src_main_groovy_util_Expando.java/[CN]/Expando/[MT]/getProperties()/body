@@ -1,9 +1,6 @@
 {
-  List ret=new ArrayList();
-  Iterator itr=getExpandoProperties().entrySet().iterator();
-  while (itr.hasNext()) {
-    Entry entry=(Entry)itr.next();
-    ret.add(new MetaExpandoProperty(entry));
+  if (expandoProperties == null) {
+    expandoProperties=createMap();
   }
-  return ret;
+  return expandoProperties;
 }
