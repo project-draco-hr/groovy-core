@@ -1,6 +1,13 @@
 {
+  boolean isTwoParams=(closure.getParameterTypes().length == 2);
   for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
-    collection.add(closure.call(iter.next()));
+    if (isTwoParams) {
+      Map.Entry entry=(Map.Entry)iter.next();
+      collection.add(closure.call(new Object[]{entry.getKey(),entry.getValue()}));
+    }
+ else {
+      collection.add(closure.call(iter.next()));
+    }
   }
   return collection;
 }
