@@ -3,10 +3,18 @@
   final List children=this.body;
   final Map attributes=(Map)this.body.remove(0);
   this.body=(List)this.body.remove(0);
+  final XmlList xmlList;
   if (namespaceURI.length() == 0) {
-    this.body.add(new XmlList(qName,attributes,children,namespaceURI));
+    xmlList=new XmlList(qName,attributes,children,namespaceURI);
   }
  else {
-    this.body.add(new XmlList(localName,attributes,children,namespaceURI));
+    xmlList=new XmlList(localName,attributes,children,namespaceURI);
+  }
+  this.body.add(xmlList);
+  for (final Iterator it=children.iterator(); it.hasNext(); ) {
+    final Object child=it.next();
+    if (child instanceof XmlList) {
+      ((XmlList)child).setElementsParent(xmlList);
+    }
   }
 }
