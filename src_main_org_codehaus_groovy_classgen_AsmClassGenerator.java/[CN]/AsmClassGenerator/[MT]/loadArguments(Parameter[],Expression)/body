@@ -5,12 +5,9 @@
     Expression argExp=argListExp.getExpression(i);
     Parameter param=parameters[i];
     visitAndAutoboxBoolean(argExp);
-    String type=param.getType();
-    if (BytecodeHelper.isPrimitiveType(type)) {
-      helper.unbox(type);
-    }
-    String expType=getExpressionType(argExp);
-    if (isValidTypeForCast(type) && (expType == null || !type.equals(expType))) {
+    Type type=param.getType();
+    Type expType=getExpressionType(argExp);
+    if (!type.equals(expType)) {
       doConvertAndCast(type);
     }
   }

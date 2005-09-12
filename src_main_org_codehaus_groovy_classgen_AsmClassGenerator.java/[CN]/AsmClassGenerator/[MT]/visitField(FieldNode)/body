@@ -1,28 +1,4 @@
 {
   onLineNumber(fieldNode,"visitField: " + fieldNode.getName());
-  fieldNode.setType(checkValidType(fieldNode.getType(),fieldNode,"Must be a valid field class for field: " + fieldNode.getName()));
-  Object fieldValue=null;
-  Class type=null;
-  Expression expression=fieldNode.getInitialValueExpression();
-  if (expression instanceof ConstantExpression) {
-    ConstantExpression constantExp=(ConstantExpression)expression;
-    Object value=constantExp.getValue();
-    if (isPrimitiveFieldType(fieldNode.getType()) || "java.lang.String".equals(fieldNode.getType()) || "java.lang.Integer".equals(fieldNode.getType())) {
-      try {
-        type=loadClass(fieldNode.getType());
-        fieldValue=asType(value,type);
-      }
- catch (      Exception e) {
-        log.warning("Caught unexpected: " + e);
-      }
-    }
-  }
-  if (!classNode.isInterface()) {
-    cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),BytecodeHelper.getTypeDescription(fieldNode.getType()),null,null);
-  }
- else   if (fieldValue != null && fieldNode.isStatic()) {
-    if ("java.lang.String".equals(fieldNode.getType())) {
-      cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),BytecodeHelper.getTypeDescription(fieldNode.getType()),null,fieldValue);
-    }
-  }
+  cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),BytecodeHelper.getTypeDescription(fieldNode.getType()),null,null);
 }

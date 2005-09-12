@@ -1,11 +1,11 @@
 {
-  ClassNode classNode=new ClassNode("Foo",ACC_PUBLIC,"java.lang.Object");
-  classNode.addField("x",ACC_PUBLIC,"java.lang.Object",null);
-  classNode.addField("y",ACC_PUBLIC,"java.lang.Integer",null);
-  classNode.addField("z",ACC_PRIVATE,"java.lang.String",null);
+  ClassNode classNode=new ClassNode(Type.makeType("Foo"),ACC_PUBLIC,Type.OBJECT_TYPE);
+  classNode.addField("x",ACC_PUBLIC,Type.OBJECT_TYPE,null);
+  classNode.addField("y",ACC_PUBLIC,Type.Integer_TYPE,null);
+  classNode.addField("z",ACC_PRIVATE,Type.STRING_TYPE,null);
   Class fooClass=loadClass(classNode);
   assertTrue("Loaded a new class",fooClass != null);
-  assertField(fooClass,"x",Modifier.PUBLIC,"java.lang.Object");
-  assertField(fooClass,"y",Modifier.PUBLIC,"java.lang.Integer");
-  assertField(fooClass,"z",Modifier.PRIVATE,"java.lang.String");
+  assertField(fooClass,"x",Modifier.PUBLIC,Type.OBJECT_TYPE);
+  assertField(fooClass,"y",Modifier.PUBLIC,Type.Integer_TYPE);
+  assertField(fooClass,"z",Modifier.PRIVATE,Type.STRING_TYPE);
 }

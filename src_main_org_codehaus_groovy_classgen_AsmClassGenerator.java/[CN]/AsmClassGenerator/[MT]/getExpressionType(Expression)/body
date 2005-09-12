@@ -1,16 +1,14 @@
 {
   if (isComparisonExpression(expression)) {
-    return "boolean";
+    return Type.boolean_TYPE;
   }
   if (expression instanceof VariableExpression) {
     VariableExpression varExpr=(VariableExpression)expression;
-    Variable variable=(Variable)variableStack.get(varExpr.getVariable());
+    Variable variable=(Variable)variableStack.get(varExpr.getName());
     if (variable != null && !variable.isHolder()) {
       Type type=variable.getType();
-      if (!type.isDynamic()) {
-        return type.getName();
-      }
+      if (!type.isDynamic())       return type;
     }
   }
-  return null;
+  return expression.getType();
 }

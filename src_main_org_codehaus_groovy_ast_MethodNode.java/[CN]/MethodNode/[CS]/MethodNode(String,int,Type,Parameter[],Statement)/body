@@ -1,0 +1,16 @@
+{
+  this.name=name;
+  this.modifiers=modifiers;
+  this.parameters=parameters;
+  this.code=code;
+  this.returnType=returnType;
+  if (returnType == null)   this.returnType=Type.OBJECT_TYPE;
+  if (parameters != null && parameters.length > 0) {
+    for (int i=0; i < parameters.length; i++) {
+      if (parameters[i].hasInitialExpression()) {
+        this.hasDefaultValue=true;
+        break;
+      }
+    }
+  }
+}

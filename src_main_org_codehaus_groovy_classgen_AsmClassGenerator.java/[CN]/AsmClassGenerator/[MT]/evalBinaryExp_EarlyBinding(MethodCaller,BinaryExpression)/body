@@ -1,14 +1,13 @@
 {
   Expression leftExp=expression.getLeftExpression();
   Expression rightExp=expression.getRightExpression();
-  expression.resolve(this);
-  if (expression.isResolveFailed() || expression.getTypeClass() == null) {
+  if (expression.getType() == Type.DYNAMIC_TYPE) {
     evalBinaryExp_LateBinding(compareMethod,expression);
     return;
   }
  else {
-    Class lclass=leftExp.getTypeClass();
-    Class rclass=rightExp.getTypeClass();
+    Class lclass=leftExp.getType().getTypeClass();
+    Class rclass=rightExp.getType().getTypeClass();
     if (lclass == null || rclass == null) {
       if ((lclass == null && rclass != null) || (lclass != null && rclass == null)) {
         if (leftExp == ConstantExpression.NULL && !rclass.isPrimitive() || rightExp == ConstantExpression.NULL && !lclass.isPrimitive()) {

@@ -1,8 +1,8 @@
 {
   FieldNode field=expression.getField();
   boolean holder=field.isHolder() && !isInClosureConstructor();
-  String type=field.getType();
-  String ownerName=(field.getOwner().equals(classNode.getName())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
+  Type type=field.getType();
+  String ownerName=(field.getOwner().equals(classNode.getType())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
   if (holder) {
     Variable tv=visitASTOREInTemp(field.getName());
     int tempIndex=tv.getIndex();
@@ -17,12 +17,7 @@
       helper.doCast(type);
     }
  else {
-      if (ENABLE_EARLY_BINDING) {
-        helper.doCast(type);
-      }
- else {
-        doConvertAndCast(type);
-      }
+      doConvertAndCast(type);
     }
     Variable tmpVar=defineVariable(createVariableName(field.getName()),field.getType(),false);
     helper.store(tmpVar,MARK_START);

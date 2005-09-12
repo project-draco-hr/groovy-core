@@ -5,11 +5,11 @@
   for (int i=0; i < size; i++) {
     interfaceNames[i]=classInterfaces[i].getName();
   }
-  String className=null;
+  Type superClass=null;
   if (theClass.getSuperclass() != null) {
-    className=theClass.getSuperclass().getName();
+    superClass=Type.makeType(theClass.getSuperclass());
   }
-  ClassNode answer=new ClassNode(theClass.getName(),theClass.getModifiers(),className,interfaceNames,MixinNode.EMPTY_ARRAY);
+  ClassNode answer=new ClassNode(Type.makeType(theClass),theClass.getModifiers(),superClass,interfaceNames,MixinNode.EMPTY_ARRAY);
   answer.compileUnit=getCompileUnit();
   Method[] declaredMethods=theClass.getDeclaredMethods();
   for (int i=0; i < declaredMethods.length; i++) {

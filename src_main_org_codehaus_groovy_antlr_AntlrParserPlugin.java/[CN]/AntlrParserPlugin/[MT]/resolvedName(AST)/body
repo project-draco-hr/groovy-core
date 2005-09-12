@@ -2,28 +2,29 @@
   if (isType(TYPE,node)) {
     node=node.getFirstChild();
   }
-  String answer=null;
+  Type answer=null;
   if (isType(DOT,node) || isType(OPTIONAL_DOT,node)) {
-    answer=qualifiedName(node);
+    answer=Type.makeType(qualifiedName(node));
   }
  else   if (isPrimitiveTypeLiteral(node)) {
-    answer=node.getText();
+    answer=Type.makeType(node.getText());
   }
  else   if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
     AST child=node.getFirstChild();
-    String text=resolvedName(child);
-    if (text.endsWith("[]")) {
-      return text;
+    Type ret=resolvedName(child);
+    if (ret.isArray()) {
+      return ret;
     }
-    return text + "[]";
+    return ret.makeArray();
   }
  else {
     String identifier=node.getText();
-    answer=resolveTypeName(identifier);
+    String ret=resolveTypeName(identifier);
+    if (ret != null)     answer=Type.makeType(ret);
   }
   AST nextSibling=node.getNextSibling();
   if (isType(INDEX_OP,nextSibling) || isType(ARRAY_DECLARATOR,node)) {
-    return answer + "[]";
+    return answer.makeArray();
   }
  else {
     return answer;

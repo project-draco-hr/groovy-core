@@ -1,0 +1,22 @@
+{
+  if (type.getTypeClass() != null)   return type;
+  CompileUnit theCompileUnit=getCompileUnit();
+  if (theCompileUnit != null) {
+    if (theCompileUnit.getClass(type.getName()) != null) {
+      return type;
+    }
+    try {
+      theCompileUnit.loadClass(type);
+      return type;
+    }
+ catch (    AccessControlException ace) {
+      throw ace;
+    }
+catch (    ClassGeneratorException cge) {
+      throw cge;
+    }
+catch (    ClassNotFoundException e) {
+    }
+  }
+  return null;
+}

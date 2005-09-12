@@ -53,222 +53,31 @@ case Types.BITWISE_XOR_EQUAL:
 evaluateBinaryExpressionWithAsignment("xor",expression);
 break;
 case Types.PLUS:
-{
-if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
 evaluateBinaryExpression("plus",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("plus",expression);
-break;
-}
-if (lclass == String.class && rclass == String.class) {
-cv.visitTypeInsn(NEW,"java/lang/StringBuffer");
-cv.visitInsn(DUP);
-cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","()V");
-load(leftExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-load(rightExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","toString","()Ljava/lang/String;");
-}
- else if (lclass == String.class && Number.class.isAssignableFrom(rclass)) {
-cv.visitTypeInsn(NEW,"java/lang/StringBuffer");
-cv.visitInsn(DUP);
-cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","()V");
-load(leftExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-load(rightExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","toString","()Ljava/lang/String;");
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","toString","()Ljava/lang/String;");
-}
- else if (rclass == String.class && Number.class.isAssignableFrom(lclass)) {
-cv.visitTypeInsn(NEW,"java/lang/StringBuffer");
-cv.visitInsn(DUP);
-cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","()V");
-load(leftExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","toString","()Ljava/lang/String;");
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
-load(rightExpression);
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","toString","()Ljava/lang/String;");
-}
- else if ((lclass == Integer.class || lclass == int.class) && (rclass == Integer.class || rclass == int.class)) {
-load(leftExpression);
-helper.quickUnboxIfNecessary(int.class);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-cv.visitInsn(IADD);
-helper.quickBoxIfNecessary(int.class);
-}
- else if (Number.class.isAssignableFrom(lclass) && Number.class.isAssignableFrom(rclass)) {
-load(leftExpression);
-load(rightExpression);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"plus","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-}
- else {
-evaluateBinaryExpression("plus",expression);
-}
-}
- else {
-evaluateBinaryExpression("plus",expression);
-}
-}
 break;
 case Types.PLUS_EQUAL:
 evaluateBinaryExpressionWithAsignment("plus",expression);
 break;
 case Types.MINUS:
-{
-if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
 evaluateBinaryExpression("minus",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("minus",expression);
-break;
-}
-if ((lclass == Integer.class || lclass == int.class) && (rclass == Integer.class || rclass == int.class)) {
-load(leftExpression);
-helper.quickUnboxIfNecessary(int.class);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-cv.visitInsn(ISUB);
-helper.quickBoxIfNecessary(int.class);
-}
- else if (Number.class.isAssignableFrom(lclass) && Number.class.isAssignableFrom(rclass)) {
-load(leftExpression);
-load(rightExpression);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"minus","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-}
- else {
-evaluateBinaryExpression("minus",expression);
-}
-}
- else {
-evaluateBinaryExpression("minus",expression);
-}
-}
 break;
 case Types.MINUS_EQUAL:
 evaluateBinaryExpressionWithAsignment("minus",expression);
 break;
 case Types.MULTIPLY:
-{
-if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
 evaluateBinaryExpression("multiply",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("multiply",expression);
-break;
-}
-if ((lclass == Integer.class || lclass == int.class) && (rclass == Integer.class || rclass == int.class)) {
-load(leftExpression);
-helper.quickUnboxIfNecessary(int.class);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-cv.visitInsn(IMUL);
-helper.quickBoxIfNecessary(int.class);
-}
- else if (Number.class.isAssignableFrom(lclass) && Number.class.isAssignableFrom(rclass)) {
-load(leftExpression);
-load(rightExpression);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"multiply","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-}
- else {
-evaluateBinaryExpression("multiply",expression);
-}
-}
- else {
-evaluateBinaryExpression("multiply",expression);
-}
-}
 break;
 case Types.MULTIPLY_EQUAL:
 evaluateBinaryExpressionWithAsignment("multiply",expression);
 break;
 case Types.DIVIDE:
-{
-if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
 evaluateBinaryExpression("div",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("div",expression);
-break;
-}
-if (Number.class.isAssignableFrom(lclass) && Number.class.isAssignableFrom(rclass)) {
-load(leftExpression);
-load(rightExpression);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"div","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-}
- else {
-evaluateBinaryExpression("div",expression);
-}
-}
- else {
-evaluateBinaryExpression("div",expression);
-}
-}
 break;
 case Types.DIVIDE_EQUAL:
 evaluateBinaryExpressionWithAsignment("div",expression);
 break;
 case Types.INTDIV:
-{
-if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
 evaluateBinaryExpression("intdiv",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("intdiv",expression);
-break;
-}
-if (Number.class.isAssignableFrom(lclass) && Number.class.isAssignableFrom(rclass)) {
-load(leftExpression);
-load(rightExpression);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"intdiv","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-}
- else {
-evaluateBinaryExpression("intdiv",expression);
-}
-}
- else {
-evaluateBinaryExpression("intdiv",expression);
-}
-}
 break;
 case Types.INTDIV_EQUAL:
 evaluateBinaryExpressionWithAsignment("intdiv",expression);
@@ -315,59 +124,6 @@ break;
 case Types.LEFT_SQUARE_BRACKET:
 if (leftHandExpression) {
 throwException("Should not be called here. Possible reason: postfix operation on array.");
-}
- else if (ENABLE_EARLY_BINDING) {
-expression.resolve(this);
-if (expression.isResolveFailed() || !expression.isTypeResolved()) {
-evaluateBinaryExpression("getAt",expression);
-break;
-}
-Expression leftExpression=expression.getLeftExpression();
-Expression rightExpression=expression.getRightExpression();
-Class lclass=leftExpression.getTypeClass();
-Class rclass=rightExpression.getTypeClass();
-if (lclass == null || rclass == null) {
-evaluateBinaryExpression("getAt",expression);
-break;
-}
-if (lclass == String.class && rclass == Integer.class) {
-load(leftExpression);
-cast(String.class);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"getAt","([Ljava/lang/String;I)Ljava/lang/String;");
-break;
-}
- else if (lclass.isArray() && rclass == Integer.class) {
-load(leftExpression);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-Class elemType=lclass.getComponentType();
-if (!elemType.isPrimitive()) {
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"getAt","([Ljava/lang/Object;I)Ljava/lang/Object;");
-cast(elemType);
-}
- else {
-evaluateBinaryExpression("getAt",expression);
-}
-break;
-}
- else if (List.class == lclass && rclass == Integer.class) {
-load(leftExpression);
-cast(List.class);
-load(rightExpression);
-helper.quickUnboxIfNecessary(int.class);
-cv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(DefaultGroovyMethods.class.getName()),"getAt","(Ljava/util/List;I)Ljava/lang/Object;");
-break;
-}
- else if (Map.class.isAssignableFrom(lclass)) {
-visitMethodCallExpression(new MethodCallExpression(leftExpression,"get",new ArgumentListExpression(new Expression[]{rightExpression})));
-break;
-}
- else {
-evaluateBinaryExpression("getAt",expression);
-break;
-}
 }
  else {
 evaluateBinaryExpression("getAt",expression);

@@ -1,14 +1,14 @@
 {
   AST constructorCallNode=node;
-  String name=resolvedName(constructorCallNode);
+  Type type=resolvedName(constructorCallNode);
   if (isType(CTOR_CALL,node) || isType(LITERAL_new,node)) {
     node=node.getFirstChild();
   }
   AST elist=node.getNextSibling();
   if (elist == null && isType(ELIST,node)) {
     elist=node;
-    if ("(".equals(name.toString())) {
-      name=classNode.getName();
+    if ("(".equals(type.getName())) {
+      type=classNode.getType();
     }
   }
   if (isType(ARRAY_DECLARATOR,elist)) {
@@ -17,12 +17,12 @@
       throw new ASTRuntimeException(elist,"No expression for the array constructor call");
     }
     Expression size=expression(expressionNode);
-    ArrayExpression arrayExpression=new ArrayExpression(name,size);
+    ArrayExpression arrayExpression=new ArrayExpression(type,size);
     configureAST(arrayExpression,constructorCallNode);
     return arrayExpression;
   }
   Expression arguments=arguments(elist);
-  ConstructorCallExpression expression=new ConstructorCallExpression(name,arguments);
+  ConstructorCallExpression expression=new ConstructorCallExpression(type,arguments);
   configureAST(expression,constructorCallNode);
   return expression;
 }

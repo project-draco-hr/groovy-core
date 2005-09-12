@@ -10,7 +10,7 @@
         Class[] paramClasses=new Class[params.length];
         for (int j=0; j < params.length; j++) {
           Parameter param=params[j];
-          String type=param.getType();
+          Type type=param.getType();
           Class paramClass=null;
           try {
             paramClass=loadClass(type);
@@ -61,10 +61,10 @@
         return null;
       }
  else       if (modies == 0) {
-        int pThis=classNode.getName().lastIndexOf(".");
-        String packageNameThis=pThis > 0 ? classNode.getName().substring(0,pThis) : "";
-        int pSuper=classNode.getSuperClass().lastIndexOf(".");
-        String packageNameSuper=pSuper > 0 ? classNode.getSuperClass().substring(0,pSuper) : "";
+        int pThis=classNode.getType().getName().lastIndexOf(".");
+        String packageNameThis=pThis > 0 ? classNode.getType().getName().substring(0,pThis) : "";
+        int pSuper=classNode.getSuperClass().getName().lastIndexOf(".");
+        String packageNameSuper=pSuper > 0 ? classNode.getSuperClass().getName().substring(0,pSuper) : "";
         if (packageNameThis.equals(packageNameSuper)) {
           return new MetaMethod(methName,null,mmethod.getParameterTypes(),mmethod.getReturnType(),mmethod.getModifiers());
         }

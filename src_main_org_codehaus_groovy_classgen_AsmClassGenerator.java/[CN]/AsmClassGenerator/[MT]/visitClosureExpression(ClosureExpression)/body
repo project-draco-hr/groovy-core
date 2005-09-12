@@ -1,9 +1,9 @@
 {
   ClassNode innerClass=createClosureClass(expression);
   addInnerClass(innerClass);
-  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass.getName());
+  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass.getType());
   ClassNode owner=innerClass.getOuterClass();
-  String ownerTypeName=owner.getName();
+  Type ownerType=owner.getType();
   passingClosureParams=true;
   List constructors=innerClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
@@ -12,20 +12,20 @@
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (variableStack.get(name) == null && classNode.getField(name) == null) {
-      defineVariable(name,"java.lang.Object");
+      defineVariable(name,Type.OBJECT_TYPE);
     }
   }
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);
   if (isStaticMethod() || classNode.isStaticClass()) {
-    visitClassExpression(new ClassExpression(ownerTypeName));
+    visitClassExpression(new ClassExpression(ownerType));
   }
  else {
     loadThisOrOwner();
   }
-  if (innerClass.getSuperClass().equals("groovy.lang.Closure")) {
+  if (innerClass.getSuperClass() == Type.CLOSURE_TYPE) {
     if (isStaticMethod()) {
-      visitClassExpression(new ClassExpression(ownerTypeName));
+      visitClassExpression(new ClassExpression(ownerType));
     }
  else {
       loadThisOrOwner();

@@ -1,0 +1,15 @@
+{
+  Type answer=Type.DYNAMIC_TYPE;
+  AST node=typeNode.getFirstChild();
+  if (node != null) {
+    if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
+      return Type.makeType(resolveTypeName(qualifiedName(node.getFirstChild()))).makeArray();
+    }
+    answer=Type.makeType(resolveTypeName(qualifiedName(node)));
+    node=node.getNextSibling();
+    if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
+      return answer.makeArray();
+    }
+  }
+  return answer;
+}

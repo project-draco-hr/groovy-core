@@ -1,11 +1,7 @@
 {
   String name=node.getName();
   FieldNode field=node.getField();
-  String getterPrefix="get";
-  if ("boolean".equals(node.getType())) {
-    getterPrefix="is";
-  }
-  String getterName=getterPrefix + capitalize(name);
+  String getterName="get" + capitalize(name);
   String setterName="set" + capitalize(name);
   Statement getterBlock=node.getGetterBlock();
   if (getterBlock == null) {
@@ -13,7 +9,7 @@
       getterBlock=createGetterBlock(node,field);
     }
   }
-  Statement setterBlock=node.getGetterBlock();
+  Statement setterBlock=node.getSetterBlock();
   if (setterBlock == null) {
     if (!node.isPrivate() && classNode.getSetterMethod(setterName) == null) {
       setterBlock=createSetterBlock(node,field);
@@ -24,7 +20,7 @@
     getter.setSynthetic(true);
     classNode.addMethod(getter);
     visitMethod(getter);
-    if ("java.lang.Boolean".equals(node.getType())) {
+    if (Type.boolean_TYPE == node.getType() || Type.Boolean_TYPE == node.getType()) {
       String secondGetterName="is" + capitalize(name);
       MethodNode secondGetter=new MethodNode(secondGetterName,node.getModifiers(),node.getType(),Parameter.EMPTY_ARRAY,getterBlock);
       secondGetter.setSynthetic(true);
@@ -34,7 +30,7 @@
   }
   if (setterBlock != null) {
     Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};
-    MethodNode setter=new MethodNode(setterName,node.getModifiers(),"void",setterParameterTypes,setterBlock);
+    MethodNode setter=new MethodNode(setterName,node.getModifiers(),Type.VOID_TYPE,setterParameterTypes,setterBlock);
     setter.setSynthetic(true);
     classNode.addMethod(setter);
     visitMethod(setter);

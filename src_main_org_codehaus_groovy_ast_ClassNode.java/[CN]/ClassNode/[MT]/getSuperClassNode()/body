@@ -1,8 +1,8 @@
 {
-  if (superClass != null && superClass.length() > 0 && superClassNode == null && !name.equals("java.lang.Object")) {
-    String temp=resolveClassName(superClass);
+  if (superClass != null && superClassNode == null && getType() != Type.OBJECT_TYPE) {
+    Type temp=resolveClassName(superClass);
     if (temp == null) {
-      throw new MissingClassException(superClass,this,"No such superclass");
+      throw new MissingClassException(superClass.getName(),this,"No such superclass");
     }
  else {
       superClass=temp;

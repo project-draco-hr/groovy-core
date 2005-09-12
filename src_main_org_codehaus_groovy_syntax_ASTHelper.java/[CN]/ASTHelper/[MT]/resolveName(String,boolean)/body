@@ -12,7 +12,9 @@
     return name;
   }
  catch (  ClassNotFoundException cnfe) {
-    if (cnfe.getCause() instanceof CompilationFailedException) {
+    if (cnfe.getCause() instanceof MultipleCompilationErrorsException) {
+      MultipleCompilationErrorsException mcee=(MultipleCompilationErrorsException)cnfe.getCause();
+      controller.getErrorCollector().addCollectorContents(mcee.getErrorCollector());
       resolutions.put(name,name);
       return name;
     }

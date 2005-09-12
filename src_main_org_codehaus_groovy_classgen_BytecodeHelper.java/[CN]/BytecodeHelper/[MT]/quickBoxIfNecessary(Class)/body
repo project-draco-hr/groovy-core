@@ -1,19 +1,19 @@
 {
-  String type=cls.getName();
+  Type type=Type.makeType(cls);
   String descr=getTypeDescription(type);
-  if (cls == boolean.class) {
+  if (type == Type.boolean_TYPE) {
     boxBoolean();
   }
- else   if (cls.isPrimitive() && cls != void.class) {
-    if (cls == Integer.TYPE) {
+ else   if (type.isPrimitiveType() && type != Type.VOID_TYPE) {
+    if (type == Type.int_TYPE) {
       cv.visitMethodInsn(INVOKESTATIC,getClassInternalName(ScriptBytecodeAdapter.class.getName()),"integerValue","(I)Ljava/lang/Integer;");
       return;
     }
-    String wrapperName=getObjectTypeForPrimitive(type);
-    String internName=getClassInternalName(wrapperName);
+    Type wrapper=type.getWrapper();
+    String internName=getClassInternalName(wrapper);
     cv.visitTypeInsn(NEW,internName);
     cv.visitInsn(DUP);
-    if (type.equals("double") || type.equals("long")) {
+    if (type == Type.double_TYPE || type == Type.long_TYPE) {
       cv.visitInsn(DUP2_X2);
       cv.visitInsn(POP2);
     }

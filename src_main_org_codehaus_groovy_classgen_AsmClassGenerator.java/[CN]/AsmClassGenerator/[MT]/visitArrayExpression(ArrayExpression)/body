@@ -1,6 +1,5 @@
 {
-  String type=expression.getElementType();
-  if (type != null && type.endsWith("[]"))   type=type.substring(0,type.length() - 2);
+  Type type=expression.getType().getComponentType();
   String typeName=BytecodeHelper.getClassInternalName(type);
   Expression sizeExpression=expression.getSizeExpression();
   int size=0;
@@ -13,37 +12,37 @@
     helper.pushConstant(size);
   }
   int storeIns=AASTORE;
-  if (BytecodeHelper.isPrimitiveType(type)) {
+  if (type.isPrimitiveType()) {
     int primType=0;
-    if (type.equals("boolean")) {
+    if (type == Type.boolean_TYPE) {
       primType=T_BOOLEAN;
       storeIns=BASTORE;
     }
- else     if (type.equals("char")) {
+ else     if (type == Type.char_TYPE) {
       primType=T_CHAR;
       storeIns=CASTORE;
     }
- else     if (type.equals("float")) {
+ else     if (type == Type.float_TYPE) {
       primType=T_FLOAT;
       storeIns=FASTORE;
     }
- else     if (type.equals("double")) {
+ else     if (type == Type.double_TYPE) {
       primType=T_DOUBLE;
       storeIns=DASTORE;
     }
- else     if (type.equals("byte")) {
+ else     if (type == Type.byte_TYPE) {
       primType=T_BYTE;
       storeIns=BASTORE;
     }
- else     if (type.equals("short")) {
+ else     if (type == Type.short_TYPE) {
       primType=T_SHORT;
       storeIns=SASTORE;
     }
- else     if (type.equals("int")) {
+ else     if (type == Type.int_TYPE) {
       primType=T_INT;
       storeIns=IASTORE;
     }
- else     if (type.equals("long")) {
+ else     if (type == Type.long_TYPE) {
       primType=T_LONG;
       storeIns=LASTORE;
     }
@@ -60,7 +59,7 @@
       ConstantExpression.NULL.visit(this);
     }
  else {
-      if (!type.equals(elementExpression.getClass().getName())) {
+      if (!type.equals(elementExpression.getType())) {
         visitCastExpression(new CastExpression(type,elementExpression,true));
       }
  else {
@@ -69,8 +68,8 @@
     }
     cv.visitInsn(storeIns);
   }
-  if (BytecodeHelper.isPrimitiveType(type)) {
-    int par=defineVariable("par","java.lang.Object").getIndex();
+  if (type.isPrimitiveType()) {
+    int par=defineVariable("par",Type.OBJECT_TYPE).getIndex();
     cv.visitVarInsn(ASTORE,par);
     cv.visitVarInsn(ALOAD,par);
   }

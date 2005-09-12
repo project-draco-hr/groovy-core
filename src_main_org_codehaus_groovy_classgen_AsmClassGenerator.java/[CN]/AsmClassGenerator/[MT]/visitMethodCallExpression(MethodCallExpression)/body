@@ -1,6 +1,5 @@
 {
   onLineNumber(call,"visitMethodCallExpression: \"" + call.getMethod() + "\":");
-  if (ENABLE_EARLY_BINDING)   call.resolve(this);
   this.leftHandExpression=false;
   Expression arguments=call.getArguments();
   boolean superMethodCall=MethodCallExpression.isSuperMethodCall(call);
@@ -36,95 +35,10 @@
           cv.visitVarInsn(ALOAD,0);
           loadArguments(superMethodNode.getParameters(),arguments);
           String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
-          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass().getName()),method,descriptor);
+          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass().getType()),method,descriptor);
         }
       }
  else {
-        if (ENABLE_EARLY_BINDING) {
-          try {
-            MetaMethod metamethod=call.getMetaMethod();
-            if (metamethod != null) {
-              Class decClass=metamethod.getDeclaringClass();
-              String ownerClassName=null;
-              if (decClass == null) {
-                ownerClassName=BytecodeHelper.getClassInternalName(classNode.getName());
-              }
- else {
-                ownerClassName=BytecodeHelper.getClassInternalName(decClass.getName());
-              }
-              String methodName=call.getMethod();
-              String descr=BytecodeHelper.getMethodDescriptor(metamethod);
-              Class[] params=metamethod.getParameterTypes();
-              Label l2=new Label();
-              if (metamethod.isStatic()) {
-              }
- else {
-                boolean wasLeft=leftHandExpression;
-                leftHandExpression=false;
-                call.getObjectExpression().visit(this);
-                if (call.isSafe()) {
-                  helper.dup();
-                  cv.visitJumpInsn(IFNULL,l2);
-                }
-                cv.visitTypeInsn(CHECKCAST,ownerClassName);
-                leftHandExpression=wasLeft;
-              }
-              if (arguments instanceof TupleExpression) {
-                TupleExpression tupleExpression=(TupleExpression)arguments;
-                List argexps=tupleExpression.getExpressions();
-                for (int i=0; i < argexps.size(); i++) {
-                  Expression expression=(Expression)argexps.get(i);
-                  load(expression);
-                  if (params[i].isPrimitive()) {
-                    cast(params[i]);
-                    helper.quickUnboxIfNecessary(params[i]);
-                  }
- else                   if (params[i].isArray() && params[i].getComponentType().isPrimitive()) {
-                    new ClassExpression(params[i].getComponentType()).visit(this);
-                    convertToPrimitiveArray.call(cv);
-                    cast(params[i]);
-                  }
- else {
-                    if (expression.getTypeClass() == GString.class && params[i] == String.class) {
-                      cast(GString.class);
-                      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","toString","()Ljava/lang/String;");
-                    }
- else {
-                      cast(params[i]);
-                    }
-                  }
-                }
-                if (metamethod.isStatic()) {
-                  cv.visitMethodInsn(INVOKESTATIC,ownerClassName,methodName,descr);
-                }
- else                 if (decClass != null && decClass.isInterface()) {
-                  cv.visitMethodInsn(INVOKEINTERFACE,ownerClassName,methodName,descr);
-                }
- else {
-                  cv.visitMethodInsn(INVOKEVIRTUAL,ownerClassName,methodName,descr);
-                }
-                call.setTypeClass(metamethod.getReturnType());
-                if (metamethod.getReturnType().isPrimitive() && metamethod.getReturnType() != void.class) {
-                  helper.quickBoxIfNecessary(metamethod.getReturnType());
-                }
-                if (call.isSafe()) {
-                  Label l3=new Label();
-                  cv.visitJumpInsn(GOTO,l3);
-                  cv.visitLabel(l2);
-                  cv.visitInsn(POP);
-                  cv.visitInsn(ACONST_NULL);
-                  cv.visitLabel(l3);
-                }
-                return;
-              }
- else {
-                throw new GroovyRuntimeException("arguments type not handled. fall through to late binding");
-              }
-            }
-          }
- catch (          Exception e) {
-          }
-        }
         if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
           call.getObjectExpression().visit(this);
           cv.visitLdcInsn(method);

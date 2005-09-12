@@ -1,10 +1,10 @@
 {
   AST node=castNode.getFirstChild();
-  String typeName=resolvedName(node);
-  assertTypeNotNull(typeName,node);
+  Type type=resolvedName(node);
+  assertTypeNotNull(type,node);
   AST expressionNode=node.getNextSibling();
   Expression expression=expression(expressionNode);
-  CastExpression castExpression=new CastExpression(typeName,expression);
+  CastExpression castExpression=new CastExpression(type,expression);
   configureAST(castExpression,castNode);
   return castExpression;
 }

@@ -2,9 +2,9 @@
   AST leftNode=node.getFirstChild();
   Expression leftExpression=expression(leftNode);
   AST rightNode=leftNode.getNextSibling();
-  String typeName=resolvedName(rightNode);
-  assertTypeNotNull(typeName,rightNode);
-  Expression rightExpression=new ClassExpression(typeName);
+  Type type=resolvedName(rightNode);
+  assertTypeNotNull(type,rightNode);
+  Expression rightExpression=new ClassExpression(type);
   configureAST(rightExpression,rightNode);
   BinaryExpression binaryExpression=new BinaryExpression(leftExpression,makeToken(Types.KEYWORD_INSTANCEOF,node),rightExpression);
   configureAST(binaryExpression,node);

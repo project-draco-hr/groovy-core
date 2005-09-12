@@ -2,8 +2,6 @@
   this.constructorNode=null;
   this.methodNode=node;
   this.variableScope=null;
-  visitParameters(node,node.getParameters());
-  node.setReturnType(checkValidType(node.getReturnType(),node,"Must be a valid return type"));
   String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
   cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,null);
   if (node.getCode() != null) {

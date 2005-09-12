@@ -4,17 +4,17 @@
  while (false);
   if (leftExpression instanceof VariableExpression) {
     VariableExpression varExp=(VariableExpression)leftExpression;
-    String type=varExp.getType();
+    Type type=varExp.getType();
     if (isValidTypeForCast(type)) {
       return type;
     }
-    String variableName=varExp.getVariable();
+    String variableName=varExp.getName();
     Variable variable=(Variable)variableStack.get(variableName);
     if (variable != null) {
       if (variable.isHolder() || variable.isProperty()) {
-        return null;
+        return variable.getType();
       }
-      type=variable.getTypeName();
+      type=variable.getType();
       if (isValidTypeForCast(type)) {
         return type;
       }
@@ -34,10 +34,10 @@
   }
  else   if (leftExpression instanceof FieldExpression) {
     FieldExpression fieldExp=(FieldExpression)leftExpression;
-    String type=fieldExp.getType();
+    Type type=fieldExp.getType();
     if (isValidTypeForCast(type)) {
       return type;
     }
   }
-  return null;
+  return Type.DYNAMIC_TYPE;
 }

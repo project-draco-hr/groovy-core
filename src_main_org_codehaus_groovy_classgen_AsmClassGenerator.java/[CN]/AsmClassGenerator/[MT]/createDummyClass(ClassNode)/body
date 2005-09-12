@@ -3,8 +3,10 @@
   byte[] code=dummyClassWriter.toByteArray();
   ClassLoader parentLoader=getClass().getClassLoader();
   GroovyClassLoader groovyLoader=new GroovyClassLoader(parentLoader);
-  Class theClass=groovyLoader.defineClass(classNode.getName(),code);
+  Type type=classNode.getType();
+  Class theClass=groovyLoader.defineClass(type.getName(),code);
   if (theClass != null) {
-    classCache.put(classNode.getName(),theClass);
+    classCache.put(type.getName(),theClass);
+    type.setTypeClass(theClass);
   }
 }

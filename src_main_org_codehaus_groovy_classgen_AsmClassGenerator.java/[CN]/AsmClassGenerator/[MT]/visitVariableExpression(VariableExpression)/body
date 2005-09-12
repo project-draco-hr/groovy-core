@@ -1,7 +1,7 @@
 {
-  String variableName=expression.getVariable();
+  String variableName=expression.getName();
   if (isStaticMethod() && variableName.equals("this")) {
-    visitClassExpression(new ClassExpression(classNode.getName()));
+    visitClassExpression(new ClassExpression(classNode.getType()));
     return;
   }
   if (variableName.equals("super")) {
@@ -15,16 +15,6 @@
       processPropertyVariable(variable);
     }
  else {
-      if (ENABLE_EARLY_BINDING && expression.isTypeResolved() && leftHandExpression) {
-        String typeName=expression.getType();
-        Type varOldType=variable.getType();
-        if (varOldType.isDynamic()) {
-          variable.setType(new Type(typeName,true));
-        }
- else         if (!varOldType.getName().equals(typeName)) {
-          throw new GroovyRuntimeException("VariableExpression data type conflicts with the existing variable. " + "[" + expression.getLineNumber() + ":"+ expression.getColumnNumber()+ "]");
-        }
-      }
       processStackVariable(variable);
     }
     handled=true;
@@ -46,19 +36,19 @@
     }
   }
   if (!handled && !variableName.equals("this")) {
-    String className=resolveClassName(variableName);
-    if (className != null) {
+    Type classType=classNode.resolveClassName(Type.makeType(variableName));
+    if (classType != null) {
       if (leftHandExpression) {
-        throwException("The variable name '" + variableName + "' conflicts with the class name '"+ className+ "'. Please use another variable name");
+        throwException("The variable name '" + variableName + "' conflicts with the class name '"+ classType.getName()+ "'. Please use another variable name");
       }
-      visitClassExpression(new ClassExpression(className));
+      visitClassExpression(new ClassExpression(classType));
       return;
     }
   }
   if (!handled) {
-    String variableType=expression.getType();
+    Type variableType=expression.getType();
     variable=defineVariable(variableName,variableType);
-    if (leftHandExpression && expression.isDynamic()) {
+    if (leftHandExpression && variableType.isDynamic()) {
       variable.setDynamic(true);
     }
  else {
