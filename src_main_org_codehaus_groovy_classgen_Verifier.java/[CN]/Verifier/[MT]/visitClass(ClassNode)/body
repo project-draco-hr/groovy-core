@@ -1,6 +1,8 @@
 {
   this.classNode=node;
   if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+    ConstructorNode dummy=new ConstructorNode(0,null);
+    addFieldInitialization(node,dummy);
     node.visitContents(this);
     return;
   }
