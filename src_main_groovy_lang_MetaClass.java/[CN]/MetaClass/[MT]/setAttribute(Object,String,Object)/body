@@ -1,29 +1,45 @@
 {
-  try {
-    final Class clazz=theClass;
-    try {
-      Field field=(Field)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-        public Object run() throws NoSuchFieldException {
-          return clazz.getDeclaredField(attribute);
-        }
-      }
-);
-      field.setAccessible(true);
-      field.set(object,newValue);
-    }
- catch (    PrivilegedActionException pae) {
-      if (pae.getException() instanceof NoSuchFieldException) {
-        throw (NoSuchFieldException)pae.getException();
-      }
- else {
-        throw new RuntimeException(pae.getException());
-      }
-    }
+  PrivilegedActionException firstException=null;
+  final Class clazz;
+  if (object instanceof Class) {
+    clazz=(Class)object;
   }
- catch (  NoSuchFieldException e) {
+ else {
+    clazz=theClass;
+  }
+  try {
+    AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws NoSuchFieldException, IllegalAccessException {
+        final Field field=clazz.getDeclaredField(attribute);
+        field.setAccessible(true);
+        field.set(object,newValue);
+        return null;
+      }
+    }
+);
+    return;
+  }
+ catch (  final PrivilegedActionException pae) {
+    firstException=pae;
+  }
+  try {
+    AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws NoSuchFieldException, IllegalAccessException {
+        final Field field=clazz.getField(attribute);
+        field.setAccessible(true);
+        field.set(object,newValue);
+        return null;
+      }
+    }
+);
+    return;
+  }
+ catch (  final PrivilegedActionException pae) {
+  }
+  if (firstException.getException() instanceof NoSuchFieldException) {
     throw new MissingFieldException(attribute,theClass);
   }
-catch (  IllegalAccessException e) {
-    throw new MissingFieldException(attribute,theClass,e);
+ else {
+    throw new RuntimeException(firstException.getException());
   }
 }
