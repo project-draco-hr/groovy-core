@@ -61,15 +61,11 @@
       return DefaultGroovyMethods.getAt(Arrays.asList((Object[])object),property);
     }
     if (object instanceof Object) {
-      Field field=null;
       try {
-        field=object.getClass().getDeclaredField(property);
-        return field.get(object);
+        return getAttribute(object,property);
       }
- catch (      IllegalAccessException iae) {
-        lastException=new IllegalPropertyAccessException(field,object.getClass());
-      }
-catch (      Exception e1) {
+ catch (      MissingFieldException mfe) {
+        lastException=mfe;
       }
     }
     MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
