@@ -1,6 +1,7 @@
 {
   String[] result=new String[CLASS_OTHER_IDX + 1];
-  result[CLASS_PACKAGE_IDX]="package " + getClassUnderInspection().getPackage().getName();
+  Package pack=getClassUnderInspection().getPackage();
+  result[CLASS_PACKAGE_IDX]="package " + ((pack == null) ? NOT_APPLICABLE : pack.getName());
   String modifiers=Modifier.toString(getClassUnderInspection().getModifiers());
   String classOrInterface="class";
   if (getClassUnderInspection().isInterface()) {
