@@ -2,6 +2,9 @@
   if (object == null) {
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
+  if (log.isLoggable(Level.FINER)) {
+    logMethodCall(object,methodName,arguments);
+  }
   MetaMethod method=retrieveMethod(object,methodName,arguments);
   boolean isClosure=object instanceof Closure;
   if (isClosure) {
