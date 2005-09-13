@@ -1,29 +1,12 @@
 {
-  Exception lastException=null;
-  try {
-    Field field=aClass.getField(property);
-    if (field != null) {
-      if ((field.getModifiers() & Modifier.STATIC) != 0) {
-        return field.get(null);
-      }
-    }
-  }
- catch (  Exception e) {
-    lastException=e;
+  MetaMethod method=findStaticGetter(aClass,"get" + capitalize(property));
+  if (method != null) {
+    return doMethodInvoke(aClass,method,EMPTY_ARRAY);
   }
   try {
-    MetaMethod method=findStaticGetter(aClass,"get" + capitalize(property));
-    if (method != null) {
-      return doMethodInvoke(aClass,method,EMPTY_ARRAY);
-    }
+    return getAttribute(aClass,property);
   }
- catch (  GroovyRuntimeException e) {
-    throw new MissingPropertyException(property,aClass,e);
-  }
-  if (lastException == null) {
-    throw new MissingPropertyException(property,aClass);
-  }
- else {
-    throw new MissingPropertyException(property,aClass,lastException);
+ catch (  MissingFieldException mfe) {
+    throw new MissingPropertyException(property,aClass,mfe);
   }
 }
