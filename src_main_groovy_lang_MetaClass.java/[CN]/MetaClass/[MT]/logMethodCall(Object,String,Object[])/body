@@ -1,5 +1,6 @@
 {
-  String logname="methodCalls." + object.getClass().getName() + "."+ methodName;
+  String className=getClassName(object);
+  String logname="methodCalls." + className + "."+ methodName;
   Logger objLog=Logger.getLogger(logname);
   if (!objLog.isLoggable(Level.FINER))   return;
   StringBuffer msg=new StringBuffer(methodName);
@@ -13,5 +14,5 @@
     }
   }
   msg.append(")");
-  objLog.logp(Level.FINER,object.getClass().getName(),msg.toString(),"called from MetaClass.invokeMethod");
+  objLog.logp(Level.FINER,className,msg.toString(),"called from MetaClass.invokeMethod");
 }
