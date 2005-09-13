@@ -1,6 +1,13 @@
 {
   if (log.isLoggable(Level.FINE)) {
-    log.fine("Setting bean property on: " + object + " name: "+ name+ " value: "+ value);
+    String objStr;
+    try {
+      objStr=object.toString();
+    }
+ catch (    Exception e) {
+      objStr=object.getClass().getName();
+    }
+    log.fine("Setting bean property on: " + objStr + " name: "+ name+ " value: "+ value);
   }
   IntrospectionHelper ih=IntrospectionHelper.getHelper(object.getClass());
   if (value instanceof String) {
