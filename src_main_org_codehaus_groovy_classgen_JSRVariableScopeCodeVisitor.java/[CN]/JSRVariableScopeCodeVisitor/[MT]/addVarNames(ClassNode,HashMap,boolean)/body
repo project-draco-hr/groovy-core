@@ -4,7 +4,7 @@
   for (Iterator iter=l.iterator(); iter.hasNext(); ) {
     FieldNode f=(FieldNode)iter.next();
     if (visitParent && Modifier.isPrivate(f.getModifiers()))     continue;
-    refs.put(f.getName(),new Var(f));
+    refs.put(f.getName(),f);
   }
   l=cn.getMethods();
   for (Iterator iter=l.iterator(); iter.hasNext(); ) {
@@ -18,7 +18,7 @@
   for (Iterator iter=l.iterator(); iter.hasNext(); ) {
     PropertyNode f=(PropertyNode)iter.next();
     if (visitParent && Modifier.isPrivate(f.getModifiers()))     continue;
-    refs.put(f.getName(),new Var(f));
+    refs.put(f.getName(),f);
   }
   if (!visitParent)   return;
   addVarNames(cn.getSuperClass(),refs,visitParent);
@@ -26,7 +26,7 @@
   if (enclosingMethod == null)   return;
   Parameter[] params=enclosingMethod.getParameters();
   for (int i=0; i < params.length; i++) {
-    refs.put(params[i].getName(),new Var(params[i],enclosingMethod.isStatic()));
+    refs.put(params[i].getName(),params[i]);
   }
   if (visitParent)   addVarNames(enclosingMethod.getDeclaringClass(),refs,visitParent);
   addVarNames(cn.getOuterClass(),refs,visitParent);

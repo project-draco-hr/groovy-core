@@ -4,12 +4,11 @@
   if (expression.isParameterSpecified()) {
     Parameter[] parameters=expression.getParameters();
     for (int i=0; i < parameters.length; i++) {
-      declare(new Var(parameters[i],scope.isInStaticContext),expression);
+      declare(parameters[i],expression);
     }
   }
  else {
-    Var var=new Var("it");
-    var.isInStaticContext=scope.isInStaticContext;
+    Var var=new Var("it",scope);
     if (jroseRule) {
       JRoseCheck check=new JRoseCheck();
       expression.visit(check);

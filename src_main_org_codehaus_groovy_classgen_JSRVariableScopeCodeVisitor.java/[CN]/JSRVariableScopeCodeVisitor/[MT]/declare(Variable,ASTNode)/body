@@ -1,0 +1,32 @@
+{
+  String scopeType="scope";
+  String variableType="variable";
+  if (expr.getClass() == FieldNode.class) {
+    scopeType="class";
+    variableType="field";
+  }
+ else   if (expr.getClass() == PropertyNode.class) {
+    scopeType="class";
+    variableType="property";
+  }
+  StringBuffer msg=new StringBuffer();
+  msg.append("The current ").append(scopeType);
+  msg.append(" does already contain a ").append(variableType);
+  msg.append(" of the name ").append(var.getName());
+  if (currentScope.declares.get(var.getName()) != null) {
+    addError(msg.toString(),expr);
+    return;
+  }
+  if (currentScope.isClass) {
+    currentScope.declares.put(var.getName(),var);
+  }
+  for (VarScope scope=currentScope.parent; scope != null; scope=scope.parent) {
+    HashMap declares=scope.declares;
+    if (scope.isClass)     break;
+    if (declares.get(var.getName()) != null) {
+      addError(msg.toString(),expr);
+      break;
+    }
+  }
+  currentScope.declares.put(var.getName(),var);
+}

@@ -1,6 +1,7 @@
 {
   expression.getRightExpression().visit(this);
   VariableExpression vex=expression.getVariableExpression();
+  vex.setInStaticContext(currentScope.isInStaticContext);
   if (!jroseRule && "it".equals(vex.getName())) {
     addError("'it' is a keyword in this mode.",vex);
   }

@@ -4,13 +4,12 @@
   Set fields=new HashSet();
   for (Iterator iter=l.iterator(); iter.hasNext(); ) {
     FieldNode f=(FieldNode)iter.next();
-    Var var=new Var(f);
-    if (fields.contains(var)) {
-      declare(var,f);
+    if (fields.contains(f)) {
+      declare(f,f);
     }
  else {
-      fields.add(var);
-      currentScope.declares.put(var.name,var);
+      fields.add(f);
+      currentScope.declares.put(f.getName(),f);
     }
   }
   l=cn.getMethods();
@@ -28,13 +27,12 @@
   Set props=new HashSet();
   for (Iterator iter=l.iterator(); iter.hasNext(); ) {
     PropertyNode f=(PropertyNode)iter.next();
-    Var var=new Var(f);
-    if (props.contains(var)) {
-      declare(var,f);
+    if (props.contains(f)) {
+      declare(f,f);
     }
  else {
-      props.add(var);
-      currentScope.declares.put(var.name,var);
+      props.add(f);
+      currentScope.declares.put(f.getName(),f);
     }
   }
 }
