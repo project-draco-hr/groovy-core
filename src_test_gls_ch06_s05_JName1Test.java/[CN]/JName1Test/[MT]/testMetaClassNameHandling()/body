@@ -1,0 +1,18 @@
+{
+  final Tt1gi obj=new Tt1gi();
+  final String newX="new x";
+  final String newX1="new x1";
+  final String newX2="new x2";
+  final String newX3="new x3";
+  assertTrue("dynamic property".equals(obj.getProperty("x")));
+  assertTrue(obj.getMetaClass().getAttribute(obj,"x") == obj.x);
+  assertTrue("dynamic method".equals(obj.invokeMethod("x",new Object[]{})));
+  obj.setProperty("x",newX);
+  obj.getMetaClass().setAttribute(obj,"x",newX1);
+  assertTrue("dynamic property".equals(obj.getProperty("x")));
+  assertTrue(obj.getMetaClass().getAttribute(obj,"x") == newX1);
+  obj.setX(newX2);
+  obj.x=newX3;
+  assertTrue("dynamic property".equals(obj.getProperty("x")));
+  assertTrue(obj.getMetaClass().getAttribute(obj,"x") == newX3);
+}
