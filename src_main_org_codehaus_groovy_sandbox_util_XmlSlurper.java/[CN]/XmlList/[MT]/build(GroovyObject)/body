@@ -6,5 +6,33 @@
     }
   }
 ;
-  builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
+  if (this.namespaceURI.length() == 0) {
+    builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
+  }
+ else {
+    builder.getProperty("mkp");
+    final List namespaces=(List)builder.invokeMethod("getNamespaces",new Object[]{});
+    final Map current=(Map)namespaces.get(0);
+    final Map pending=(Map)namespaces.get(1);
+    String tag=findNamespaceTag(pending);
+    if (tag == null) {
+      tag=findNamespaceTag(current);
+      if (tag == null) {
+        int suffix=0;
+        do {
+          final String posibleTag="tag" + suffix++;
+          if (!pending.containsKey(posibleTag) && !current.containsKey(posibleTag)) {
+            tag=posibleTag;
+          }
+        }
+ while (tag == null);
+      }
+    }
+    final Map newNamespace=new HashMap();
+    newNamespace.put(tag,this.namespaceURI);
+    builder.getProperty("mkp");
+    builder.invokeMethod("declareNamespace",new Object[]{newNamespace});
+    builder.getProperty(tag);
+    builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
+  }
 }
