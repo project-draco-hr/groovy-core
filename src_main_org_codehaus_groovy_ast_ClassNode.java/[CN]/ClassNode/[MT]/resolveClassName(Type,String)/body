@@ -1,0 +1,17 @@
+{
+  Type answer=null;
+  if (type != null) {
+    if (getType().equals(type) || getNameWithoutPackage().equals(type.getName())) {
+      return getType();
+    }
+    answer=tryResolveClassAndInnerClass(type);
+    String replacedPointType=type.getName();
+    while (answer == null && replacedPointType.indexOf('.') > -1) {
+      int lastPoint=replacedPointType.lastIndexOf('.');
+      replacedPointType=new StringBuffer().append(replacedPointType.substring(0,lastPoint)).append("$").append(replacedPointType.substring(lastPoint + 1)).toString();
+      answer=tryResolveClassAndInnerClass(Type.makeType(replacedPointType));
+    }
+  }
+  if (answer == null && message != null)   throw new MissingClassException(type,message);
+  return answer;
+}
