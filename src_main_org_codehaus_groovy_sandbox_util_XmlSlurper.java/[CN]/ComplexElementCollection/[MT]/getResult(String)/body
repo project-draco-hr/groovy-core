@@ -1,3 +1,8 @@
 {
-  return new ComplexElementCollection(this.parents,this.nextParentElements,this.parentElementNames,property);
+  if (property.startsWith("@")) {
+    return new AttributeCollection(this,property.substring(1));
+  }
+ else {
+    return new ComplexElementCollection(this.parents,this.nextParentElements,this.parentElementNames,property);
+  }
 }

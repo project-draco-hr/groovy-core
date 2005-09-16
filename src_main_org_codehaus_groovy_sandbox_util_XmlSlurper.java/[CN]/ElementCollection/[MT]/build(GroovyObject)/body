@@ -1,6 +1,13 @@
 {
   final Iterator iter=iterator();
   while (iter.hasNext()) {
-    ((Buildable)iter.next()).build(builder);
+    final Object next=iter.next();
+    if (next instanceof Buildable) {
+      ((Buildable)next).build(builder);
+    }
+ else {
+      GroovyObject b=(GroovyObject)builder.getProperty("mkp");
+      b=(GroovyObject)b.invokeMethod("yield",new Object[]{next});
+    }
   }
 }

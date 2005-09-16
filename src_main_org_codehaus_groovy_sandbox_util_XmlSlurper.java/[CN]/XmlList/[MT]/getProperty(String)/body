@@ -13,12 +13,12 @@
  * Used by the Invoker when it wants to iterate over this object
  * @return
  */
-        public ElementIterator iterator(){
+        public NameIterator iterator(){
           return new ElementIterator(new XmlList[]{XmlList.this},new int[]{-1}){
 {
               findNextChild();
             }
-            protected void findNextChild(){
+            public void findNextChild(){
               this.nextParentElements[0]=-1;
             }
           }
@@ -33,15 +33,20 @@
  else {
       return new ElementCollection(){
         protected ElementCollection getResult(        final String property){
-          return new ComplexElementCollection(new XmlList[]{XmlList.this},new int[]{indexOfFirst},new String[]{elementName},property);
+          if (property.startsWith("@")) {
+            return new AttributeCollection(this,property.substring(1));
+          }
+ else {
+            return new ComplexElementCollection(new XmlList[]{XmlList.this},new int[]{indexOfFirst},new String[]{elementName},property);
+          }
         }
         /** 
  * Used by the Invoker when it wants to iterate over this object
  * @return
  */
-        public ElementIterator iterator(){
+        public NameIterator iterator(){
           return new ElementIterator(new XmlList[]{XmlList.this},new int[]{indexOfFirst}){
-            protected void findNextChild(){
+            public void findNextChild(){
               this.nextParentElements[0]=XmlList.this.getNextXmlElement(elementName,this.nextParentElements[0]);
             }
           }
