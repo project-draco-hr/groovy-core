@@ -6,7 +6,7 @@
     }
   }
 ;
-  if (this.namespaceURI.length() == 0) {
+  if (this.elementNamespaceURI.length() == 0 && this.attributeNamespaces.isEmpty()) {
     builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
   }
  else {
@@ -14,25 +14,22 @@
     final List namespaces=(List)builder.invokeMethod("getNamespaces",new Object[]{});
     final Map current=(Map)namespaces.get(0);
     final Map pending=(Map)namespaces.get(1);
-    String tag=findNamespaceTag(pending);
-    if (tag == null) {
-      tag=findNamespaceTag(current);
-      if (tag == null) {
-        int suffix=0;
-        do {
-          final String posibleTag="tag" + suffix++;
-          if (!pending.containsKey(posibleTag) && !current.containsKey(posibleTag)) {
-            tag=posibleTag;
-          }
-        }
- while (tag == null);
-      }
+    if (this.attributeNamespaces.isEmpty()) {
+      builder.getProperty(getTagFor(this.elementNamespaceURI,current,pending,builder));
+      builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
     }
-    final Map newNamespace=new HashMap();
-    newNamespace.put(tag,this.namespaceURI);
-    builder.getProperty("mkp");
-    builder.invokeMethod("declareNamespace",new Object[]{newNamespace});
-    builder.getProperty(tag);
-    builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
+ else {
+      final Map attributesWithNamespaces=new HashMap(this.attributes);
+      final Iterator attrs=this.attributes.keySet().iterator();
+      while (attrs.hasNext()) {
+        final Object key=attrs.next();
+        final Object attributeNamespaceURI=this.attributeNamespaces.get(key);
+        if (attributeNamespaceURI != null) {
+          attributesWithNamespaces.put(getTagFor(attributeNamespaceURI,current,pending,builder) + "$" + key,attributesWithNamespaces.remove(key));
+        }
+      }
+      builder.getProperty(getTagFor(this.elementNamespaceURI,current,pending,builder));
+      builder.invokeMethod(this.name,new Object[]{attributesWithNamespaces,rest});
+    }
   }
 }
