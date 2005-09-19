@@ -1,2 +1,15 @@
 {
+  Iterator it=node.getAnnotations().keySet().iterator();
+  while (it.hasNext()) {
+    String clazz=(String)it.next();
+    AnnotationVisitor av=cw.visitAnnotation(BytecodeHelper.getClassInternalName(clazz),true);
+    AnnotationNode an=(AnnotationNode)node.getAnnotations(clazz);
+    Iterator mIt=an.getMembers().keySet().iterator();
+    while (mIt.hasNext()) {
+      String name=(String)mIt.next();
+      ConstantExpression exp=(ConstantExpression)an.getMember(name);
+      av.visit(name,exp.getValue());
+    }
+    av.visitEnd();
+  }
 }
