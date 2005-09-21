@@ -1,8 +1,10 @@
 {
-  Iterator it=node.getAnnotations().keySet().iterator();
+  Map annotionMap=node.getAnnotations();
+  if (annotionMap.isEmpty())   return;
+  Iterator it=annotionMap.keySet().iterator();
   while (it.hasNext()) {
     String clazz=(String)it.next();
-    AnnotationVisitor av=cw.visitAnnotation(BytecodeHelper.getClassInternalName(clazz),true);
+    AnnotationVisitor av=cw.visitAnnotation(BytecodeHelper.formatNameForClassLoading(clazz),true);
     AnnotationNode an=(AnnotationNode)node.getAnnotations(clazz);
     Iterator mIt=an.getMembers().keySet().iterator();
     while (mIt.hasNext()) {
