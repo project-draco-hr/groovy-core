@@ -1,10 +1,11 @@
 {
+  if (ast != null) {
 switch (ast.getType()) {
 case GroovyTokenTypes.ABSTRACT:
-    v.visitAbstract(ast,n);
-  break;
+      v.visitAbstract(ast,n);
+    break;
 case GroovyTokenTypes.ANNOTATION:
-v.visitAnnotation(ast,n);
+  v.visitAnnotation(ast,n);
 break;
 case GroovyTokenTypes.ANNOTATIONS:
 v.visitAnnotations(ast,n);
@@ -654,5 +655,9 @@ break;
 default :
 v.visitDefault(ast,n);
 break;
+}
+}
+ else {
+v.visitDefault(null,n);
 }
 }

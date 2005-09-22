@@ -1,0 +1,9 @@
+{
+  if (visit == OPENING_VISIT) {
+    ClassSource classSource=new AntlrClassSource(t.childOfType(GroovyTokenTypes.IDENT).getText(),t);
+    GroovySourceAST modifiers=t.childOfType(GroovyTokenTypes.MODIFIERS);
+    if (isPublic(modifiers)) {
+      sourceSummary.addPublic(classSource);
+    }
+  }
+}

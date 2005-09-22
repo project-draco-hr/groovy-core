@@ -1,0 +1,11 @@
+{
+  boolean isPublic=true;
+  if (modifiers != null) {
+    GroovySourceAST modprot=modifiers.childOfType(GroovyTokenTypes.LITERAL_protected);
+    GroovySourceAST modpriv=modifiers.childOfType(GroovyTokenTypes.LITERAL_private);
+    if (modpriv != null || modprot != null) {
+      isPublic=false;
+    }
+  }
+  return isPublic;
+}
