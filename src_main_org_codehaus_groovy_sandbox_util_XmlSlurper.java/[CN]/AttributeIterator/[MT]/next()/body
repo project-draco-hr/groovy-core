@@ -1,5 +1,19 @@
 {
-  final Object result=this.nextAttributeValue;
+  final XmlList resultElement=this.nextElement;
   findNextChild();
-  return result;
+  return new Object(){
+    public XmlList element(){
+      return resultElement;
+    }
+    public String text(){
+      return (String)resultElement.attributes.get(AttributeIterator.this.attributeName);
+    }
+    public boolean equals(    final Object obj){
+      return toString().equals(obj);
+    }
+    public String toString(){
+      return text();
+    }
+  }
+;
 }
