@@ -12,12 +12,25 @@
   Type type=call.getType();
   type=classNode.resolveClassName(type,"");
   call.setType(type);
-  visitClassExpression(new ClassExpression(type));
-  if (arguments != null) {
-    arguments.visit(this);
-    invokeConstructorOfMethod.call(cv);
+  if (this.classNode != null) {
+    pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
+    pushClassTypeArgument(this.classNode.getType(),type);
+    if (arguments != null) {
+      arguments.visit(this);
+      invokeConstructorAtMethod.call(cv);
+    }
+ else {
+      invokeNoArgumentsConstructorAt.call(cv);
+    }
   }
  else {
-    invokeNoArgumentsConstructorOf.call(cv);
+    pushClassTypeArgument(this.classNode.getType(),type);
+    if (arguments != null) {
+      arguments.visit(this);
+      invokeConstructorOfMethod.call(cv);
+    }
+ else {
+      invokeNoArgumentsConstructorOf.call(cv);
+    }
   }
 }
