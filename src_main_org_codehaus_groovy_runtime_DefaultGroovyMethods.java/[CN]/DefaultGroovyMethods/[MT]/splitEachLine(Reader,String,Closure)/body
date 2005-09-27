@@ -2,7 +2,6 @@
   BufferedReader br=null;
   if (self instanceof BufferedReader)   br=(BufferedReader)self;
  else   br=new BufferedReader(self);
-  List args=new ArrayList();
   try {
     while (true) {
       String line=br.readLine();
@@ -11,9 +10,7 @@
       }
  else {
         List vals=Arrays.asList(line.split(sep));
-        args.clear();
-        args.add(vals);
-        closure.call(args);
+        closure.call(vals);
       }
     }
     br.close();
