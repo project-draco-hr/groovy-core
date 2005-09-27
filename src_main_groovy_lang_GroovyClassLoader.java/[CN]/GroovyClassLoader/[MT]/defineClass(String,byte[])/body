@@ -1,3 +1,7 @@
 {
-  return super.defineClass(name,b,0,b.length);
+  Class c=super.defineClass(name,b,0,b.length);
+synchronized (cache) {
+    cache.put(name,c);
+  }
+  return c;
 }
