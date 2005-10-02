@@ -1,21 +1,7 @@
 {
   addNonWhitespaceCdata();
-  final List children=this.body;
-  final Map attributes=(Map)this.body.remove(0);
-  final Map attributeNamespaces=(Map)this.body.remove(0);
-  this.body=(List)this.body.remove(0);
-  final XmlList xmlList;
-  if (namespaceURI.length() == 0) {
-    xmlList=new XmlList(qName,attributes,attributeNamespaces,children,namespaceURI);
-  }
- else {
-    xmlList=new XmlList(localName,attributes,attributeNamespaces,children,namespaceURI);
-  }
-  this.body.add(xmlList);
-  for (final Iterator it=children.iterator(); it.hasNext(); ) {
-    final Object child=it.next();
-    if (child instanceof XmlList) {
-      ((XmlList)child).parent=xmlList;
-    }
+  final Object oldCurrentNode=this.stack.pop();
+  if (oldCurrentNode != null) {
+    this.currentNode=(Node)oldCurrentNode;
   }
 }

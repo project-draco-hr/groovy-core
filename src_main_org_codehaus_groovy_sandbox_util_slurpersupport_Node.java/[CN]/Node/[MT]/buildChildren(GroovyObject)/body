@@ -1,0 +1,13 @@
+{
+  final Iterator iter=this.children.iterator();
+  while (iter.hasNext()) {
+    final Object child=iter.next();
+    if (child instanceof Buildable) {
+      ((Buildable)child).build(builder);
+    }
+ else {
+      builder.getProperty("mkp");
+      builder.invokeMethod("yield",new Object[]{child});
+    }
+  }
+}

@@ -11,9 +11,16 @@
       attributeNamespaces.put(atts.getLocalName(i),atts.getURI(i));
     }
   }
-  final List newBody=new LinkedList();
-  newBody.add(attributes);
-  newBody.add(attributeNamespaces);
-  newBody.add(this.body);
-  this.body=newBody;
+  final Node newElement;
+  if (namespaceURI.length() == 0) {
+    newElement=new Node(this.currentNode,qName,attributes,attributeNamespaces,namespaceURI);
+  }
+ else {
+    newElement=new Node(this.currentNode,localName,attributes,attributeNamespaces,namespaceURI);
+  }
+  if (this.currentNode != null) {
+    this.currentNode.addChild(newElement);
+  }
+  this.stack.push(this.currentNode);
+  this.currentNode=newElement;
 }

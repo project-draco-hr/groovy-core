@@ -1,0 +1,20 @@
+{
+  return new Iterator(){
+    private boolean hasNext=true;
+    public boolean hasNext(){
+      return this.hasNext;
+    }
+    public Object next(){
+      try {
+        return (this.hasNext) ? Node.this : null;
+      }
+  finally {
+        this.hasNext=false;
+      }
+    }
+    public void remove(){
+      throw new UnsupportedOperationException();
+    }
+  }
+;
+}

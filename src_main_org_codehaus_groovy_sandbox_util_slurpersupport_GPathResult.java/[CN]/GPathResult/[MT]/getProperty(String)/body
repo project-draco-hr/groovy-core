@@ -1,0 +1,14 @@
+{
+  if ("..".equals(property)) {
+    return parent();
+  }
+ else   if ("*".equals(property)) {
+    return children();
+  }
+ else   if (property.startsWith("@")) {
+    return new Attributes(this,property);
+  }
+ else {
+    return new NodeChildren(this,property);
+  }
+}

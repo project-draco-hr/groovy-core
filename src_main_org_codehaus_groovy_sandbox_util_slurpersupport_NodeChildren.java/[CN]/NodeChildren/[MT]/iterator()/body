@@ -1,0 +1,19 @@
+{
+  if ("*".equals(this.name)) {
+    return this.parent.childNodes();
+  }
+ else {
+    return new NodeIterator(this.parent.childNodes()){
+      protected Object getNextNode(      Iterator iter){
+        while (iter.hasNext()) {
+          final Node node=(Node)iter.next();
+          if (NodeChildren.this.name.equals(node.name())) {
+            return node;
+          }
+        }
+        return null;
+      }
+    }
+;
+  }
+}

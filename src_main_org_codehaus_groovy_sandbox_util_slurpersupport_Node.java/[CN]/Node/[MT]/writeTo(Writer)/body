@@ -1,0 +1,13 @@
+{
+  final Iterator iter=this.children.iterator();
+  while (iter.hasNext()) {
+    final Object child=iter.next();
+    if (child instanceof Writable) {
+      ((Writable)child).writeTo(out);
+    }
+ else {
+      out.write(child.toString());
+    }
+  }
+  return out;
+}

@@ -1,0 +1,14 @@
+{
+  return new NodeIterator(this.parent.iterator()){
+    protected Object getNextNode(    final Iterator iter){
+      while (iter.hasNext()) {
+        final Object value=((Node)iter.next()).attributes().get(Attributes.this.attributeName);
+        if (value != null) {
+          return value;
+        }
+      }
+      return null;
+    }
+  }
+;
+}

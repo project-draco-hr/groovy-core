@@ -1,0 +1,15 @@
+{
+  return new NodeIterator(this.parent.iterator()){
+    protected Object getNextNode(    final Iterator iter){
+      while (iter.hasNext()) {
+        final Object node=iter.next();
+        final Boolean result=(Boolean)FilteredAttributes.this.closure.call(new Object[]{node});
+        if (result != null && result.booleanValue()) {
+          return node;
+        }
+      }
+      return null;
+    }
+  }
+;
+}

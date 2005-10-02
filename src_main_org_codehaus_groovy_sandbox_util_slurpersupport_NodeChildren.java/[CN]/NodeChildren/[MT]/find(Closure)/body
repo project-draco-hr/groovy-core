@@ -1,0 +1,11 @@
+{
+  final Iterator iter=iterator();
+  while (iter.hasNext()) {
+    final Object node=iter.next();
+    final Boolean result=(Boolean)closure.call(new Object[]{node});
+    if (result != null && result.booleanValue()) {
+      return (GPathResult)node;
+    }
+  }
+  return null;
+}
