@@ -7,16 +7,16 @@
   }
 ;
   if (this.namespaceURI.length() == 0 && this.attributeNamespaces.isEmpty()) {
-    builder.invokeMethodAt(this.getClass(),this.name,new Object[]{this.attributes,rest});
+    builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
   }
  else {
     builder.getProperty("mkp");
-    final List namespaces=(List)builder.invokeMethodAt(this.getClass(),"getNamespaces",new Object[]{});
+    final List namespaces=(List)builder.invokeMethod("getNamespaces",new Object[]{});
     final Map current=(Map)namespaces.get(0);
     final Map pending=(Map)namespaces.get(1);
     if (this.attributeNamespaces.isEmpty()) {
-      builder.getProperty(getTagFor(this.namespaceURI,current,pending,builder));
-      builder.invokeMethodAt(this.getClass(),this.name,new Object[]{this.attributes,rest});
+      builder.getProperty(getTagFor(this.namespaceURI,current,pending,this.namespaceMap,builder));
+      builder.invokeMethod(this.name,new Object[]{this.attributes,rest});
     }
  else {
       final Map attributesWithNamespaces=new HashMap(this.attributes);
@@ -25,11 +25,11 @@
         final Object key=attrs.next();
         final Object attributeNamespaceURI=this.attributeNamespaces.get(key);
         if (attributeNamespaceURI != null) {
-          attributesWithNamespaces.put(getTagFor(attributeNamespaceURI,current,pending,builder) + "$" + key,attributesWithNamespaces.remove(key));
+          attributesWithNamespaces.put(getTagFor(attributeNamespaceURI,current,pending,this.namespaceMap,builder) + "$" + key,attributesWithNamespaces.remove(key));
         }
       }
-      builder.getProperty(getTagFor(this.namespaceURI,current,pending,builder));
-      builder.invokeMethodAt(this.getClass(),this.name,new Object[]{attributesWithNamespaces,rest});
+      builder.getProperty(getTagFor(this.namespaceURI,current,pending,this.namespaceMap,builder));
+      builder.invokeMethod(this.name,new Object[]{attributesWithNamespaces,rest});
     }
   }
 }

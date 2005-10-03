@@ -43,7 +43,7 @@
       if (delegate != closure && (delegate instanceof GroovyObject)) {
         try {
           GroovyObject go=(GroovyObject)delegate;
-          return go.invokeMethodAt(delegate.getClass(),methodName,arguments);
+          return go.invokeMethod(methodName,arguments);
         }
  catch (        MissingMethodException mme) {
           last=mme;
@@ -52,7 +52,7 @@
       if (owner != closure && (owner instanceof GroovyObject)) {
         try {
           GroovyObject go=(GroovyObject)owner;
-          return go.invokeMethodAt(owner.getClass(),methodName,arguments);
+          return go.invokeMethod(methodName,arguments);
         }
  catch (        MissingMethodException mme) {
           if (last == null)           last=mme;

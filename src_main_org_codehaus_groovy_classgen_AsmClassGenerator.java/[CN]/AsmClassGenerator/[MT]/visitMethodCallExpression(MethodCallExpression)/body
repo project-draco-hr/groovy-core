@@ -39,55 +39,12 @@
         }
       }
  else {
-        if (emptyArguments(arguments)) {
-          if (!call.isSafe() && !call.isSpreadSafe()) {
-            if (this.classNode != null) {
-              if (this.classNode instanceof InnerClassNode && outermostClass != null)               pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
- else               pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
-            }
-            call.getObjectExpression().visit(this);
-            cv.visitLdcInsn(method);
-            if (this.classNode != null) {
-              invokeNoArgumentsMethodAt.call(cv);
-            }
- else {
-              invokeNoArgumentsMethod.call(cv);
-            }
-          }
- else           if (call.isSpreadSafe()) {
-            if (this.classNode != null) {
-              if (this.classNode instanceof InnerClassNode && outermostClass != null)               pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
- else               pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
-            }
-            call.getObjectExpression().visit(this);
-            cv.visitLdcInsn(method);
-            if (this.classNode != null) {
-              invokeNoArgumentsSpreadSafeMethodAt.call(cv);
-            }
- else {
-              invokeNoArgumentsSpreadSafeMethod.call(cv);
-            }
-          }
- else           if (call.isSafe()) {
-            if (this.classNode != null) {
-              if (this.classNode instanceof InnerClassNode && outermostClass != null)               pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
- else               pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
-            }
-            call.getObjectExpression().visit(this);
-            cv.visitLdcInsn(method);
-            if (this.classNode != null) {
-              invokeNoArgumentsSafeMethodAt.call(cv);
-            }
- else {
-              invokeNoArgumentsSafeMethod.call(cv);
-            }
-          }
+        if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
+          call.getObjectExpression().visit(this);
+          cv.visitLdcInsn(method);
+          invokeNoArgumentsMethod.call(cv);
         }
  else {
-          if (this.classNode != null) {
-            if (this.classNode instanceof InnerClassNode && outermostClass != null)             pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
- else             pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
-          }
           if (argumentsUseStack(arguments)) {
             arguments.visit(this);
             Variable tv=visitASTOREInTemp(method + "_arg");
@@ -102,29 +59,14 @@
             cv.visitLdcInsn(method);
             arguments.visit(this);
           }
-          if (!call.isSafe() && !call.isSpreadSafe()) {
-            if (this.classNode != null) {
-              invokeMethodMethodAt.call(cv);
-            }
- else {
-              invokeMethodMethod.call(cv);
-            }
-          }
- else           if (call.isSpreadSafe()) {
-            if (this.classNode != null) {
-              invokeMethodSpreadSafeMethodAt.call(cv);
-            }
- else {
-              invokeMethodSpreadSafeMethod.call(cv);
-            }
+          if (call.isSpreadSafe()) {
+            invokeMethodSpreadSafeMethod.call(cv);
           }
  else           if (call.isSafe()) {
-            if (this.classNode != null) {
-              invokeMethodSafeMethodAt.call(cv);
-            }
+            invokeMethodSafeMethod.call(cv);
+          }
  else {
-              invokeMethodSafeMethod.call(cv);
-            }
+            invokeMethodMethod.call(cv);
           }
         }
       }

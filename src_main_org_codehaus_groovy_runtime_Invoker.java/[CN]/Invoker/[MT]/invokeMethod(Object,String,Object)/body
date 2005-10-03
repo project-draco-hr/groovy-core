@@ -17,7 +17,7 @@
       GroovyObject groovy=(GroovyObject)object;
       try {
         if (groovy instanceof GroovyInterceptable) {
-          return groovy.invokeMethodAt(object.getClass(),methodName,asArray(arguments));
+          return groovy.invokeMethod(methodName,asArray(arguments));
         }
  else {
           return groovy.getMetaClass().invokeMethod(object,methodName,asArray(arguments));
@@ -25,7 +25,7 @@
       }
  catch (      MissingMethodException e) {
         if (e.getMethod().equals(methodName) && object.getClass() == e.getType()) {
-          return groovy.invokeMethodAt(object.getClass(),methodName,asArray(arguments));
+          return groovy.invokeMethod(methodName,asArray(arguments));
         }
  else {
           throw e;
