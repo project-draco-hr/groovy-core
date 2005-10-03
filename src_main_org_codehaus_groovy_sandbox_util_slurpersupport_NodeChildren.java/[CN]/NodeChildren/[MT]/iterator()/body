@@ -8,7 +8,9 @@
         while (iter.hasNext()) {
           final Node node=(Node)iter.next();
           if (NodeChildren.this.name.equals(node.name())) {
-            return node;
+            if ("*".equals(NodeChildren.this.namespacePrefix) || ("".equals(NodeChildren.this.namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(NodeChildren.this.namespaceMap.get(NodeChildren.this.namespacePrefix))) {
+              return node;
+            }
           }
         }
         return null;

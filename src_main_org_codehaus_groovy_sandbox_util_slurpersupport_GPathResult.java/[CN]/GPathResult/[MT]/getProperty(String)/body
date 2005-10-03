@@ -6,9 +6,21 @@
     return children();
   }
  else   if (property.startsWith("@")) {
-    return new Attributes(this,property);
+    if (property.contains(":")) {
+      final int i=property.indexOf(":");
+      return new Attributes(this,"@" + property.substring(i + 1),property.substring(1,i));
+    }
+ else {
+      return new Attributes(this,property);
+    }
   }
  else {
-    return new NodeChildren(this,property);
+    if (property.contains(":")) {
+      final int i=property.indexOf(":");
+      return new NodeChildren(this,property.substring(i + 1),property.substring(0,i));
+    }
+ else {
+      return new NodeChildren(this,property);
+    }
   }
 }

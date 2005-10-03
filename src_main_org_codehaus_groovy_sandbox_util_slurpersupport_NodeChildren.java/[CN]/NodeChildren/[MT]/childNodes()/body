@@ -32,7 +32,9 @@
         if (NodeChildren.this.name.equals(node.name())) {
           final Iterator result=node.childNodes();
           if (result.hasNext()) {
-            return result;
+            if ("*".equals(NodeChildren.this.namespacePrefix) || ("".equals(NodeChildren.this.namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(NodeChildren.this.namespaceMap.get(NodeChildren.this.namespacePrefix))) {
+              return result;
+            }
           }
         }
       }
