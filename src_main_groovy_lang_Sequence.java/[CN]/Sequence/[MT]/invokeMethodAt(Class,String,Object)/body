@@ -1,0 +1,14 @@
+{
+  try {
+    return getMetaClass().invokeMethodAt(at,this,name,args);
+  }
+ catch (  MissingMethodException e) {
+    List answer=new ArrayList(size());
+    for (Iterator iter=iterator(); iter.hasNext(); ) {
+      Object element=iter.next();
+      Object value=InvokerHelper.invokeMethodAt(at,element,name,args);
+      answer.add(value);
+    }
+    return answer;
+  }
+}

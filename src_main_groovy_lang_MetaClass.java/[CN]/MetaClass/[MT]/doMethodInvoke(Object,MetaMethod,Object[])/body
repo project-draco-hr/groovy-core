@@ -22,9 +22,11 @@
     return method.invoke(object,argumentArray);
   }
  catch (  ClassCastException e) {
-    if (coerceGStrings(argumentArray)) {
+    Object[] newArg=new Object[argumentArray.length];
+    System.arraycopy(argumentArray,0,newArg,0,newArg.length);
+    if (coerceGStrings(newArg)) {
       try {
-        return doMethodInvoke(object,method,argumentArray);
+        return doMethodInvoke(object,method,newArg);
       }
  catch (      Exception e2) {
       }

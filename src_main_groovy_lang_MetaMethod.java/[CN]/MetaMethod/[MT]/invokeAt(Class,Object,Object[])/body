@@ -1,0 +1,17 @@
+{
+  if (reflector != null) {
+    return reflector.invoke(this,object,arguments);
+  }
+ else {
+    if (at != null && object != null) {
+      boolean accessible=accessibleToThisMethod(at);
+      if (!accessible) {
+        throw new IllegalAccessException("Tried from the class [" + at + "] to a "+ makeAccessString(modifiers)+ " method ["+ this.method+ "]");
+      }
+      return invoke(object,arguments);
+    }
+ else {
+      return invoke(object,arguments);
+    }
+  }
+}

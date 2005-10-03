@@ -2,9 +2,18 @@
   this.leftHandExpression=false;
   Expression arguments=call.getArguments();
   if (emptyArguments(arguments)) {
-    cv.visitLdcInsn(call.getType());
-    cv.visitLdcInsn(call.getMethod());
-    invokeStaticNoArgumentsMethod.call(cv);
+    if (this.classNode != null) {
+      if (this.classNode instanceof InnerClassNode && outermostClass != null)       pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
+ else       pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
+      cv.visitLdcInsn(call.getOwnerType().getName());
+      cv.visitLdcInsn(call.getMethod());
+      invokeStaticNoArgumentsMethodAt.call(cv);
+    }
+ else {
+      cv.visitLdcInsn(call.getOwnerType().getName());
+      cv.visitLdcInsn(call.getMethod());
+      invokeStaticNoArgumentsMethod.call(cv);
+    }
   }
  else {
     if (arguments instanceof TupleExpression) {
@@ -14,9 +23,19 @@
         arguments=(Expression)tupleExpression.getExpressions().get(0);
       }
     }
-    cv.visitLdcInsn(call.getOwnerType().getName());
-    cv.visitLdcInsn(call.getMethod());
-    arguments.visit(this);
-    invokeStaticMethodMethod.call(cv);
+    if (this.classNode != null) {
+      if (this.classNode instanceof InnerClassNode && outermostClass != null)       pushClassTypeArgument(outermostClass.getType(),outermostClass.getType());
+ else       pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
+      cv.visitLdcInsn(call.getOwnerType().getName());
+      cv.visitLdcInsn(call.getMethod());
+      arguments.visit(this);
+      invokeStaticMethodMethodAt.call(cv);
+    }
+ else {
+      cv.visitLdcInsn(call.getOwnerType().getName());
+      cv.visitLdcInsn(call.getMethod());
+      arguments.visit(this);
+      invokeStaticMethodMethod.call(cv);
+    }
   }
 }

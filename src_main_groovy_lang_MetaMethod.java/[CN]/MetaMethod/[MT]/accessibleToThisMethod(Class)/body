@@ -1,0 +1,53 @@
+{
+  boolean accessible=false;
+  if (Modifier.isPublic(modifiers)) {
+    accessible=true;
+  }
+ else   if (Modifier.isPrivate(modifiers)) {
+    accessible=at.getName().equals(declaringClass.getName());
+  }
+ else   if (Modifier.isProtected(modifiers)) {
+    if (at.getPackage() == null && declaringClass.getPackage() == null) {
+      accessible=true;
+    }
+ else     if (at.getPackage() == null && declaringClass.getPackage() != null) {
+      accessible=false;
+    }
+ else     if (at.getPackage() != null && declaringClass.getPackage() == null) {
+      accessible=false;
+    }
+ else     if (at.getPackage().equals(declaringClass.getPackage())) {
+      accessible=true;
+    }
+    if (!accessible) {
+      boolean flag=false;
+      Class clazz=at;
+      while (!flag && clazz != null) {
+        if (clazz.equals(declaringClass)) {
+          flag=true;
+          break;
+        }
+        if (clazz.equals(Object.class)) {
+          break;
+        }
+        clazz=clazz.getSuperclass();
+      }
+      accessible=flag;
+    }
+  }
+ else {
+    if (at.getPackage() == null && declaringClass.getPackage() == null) {
+      accessible=true;
+    }
+ else     if (at.getPackage() == null && declaringClass.getPackage() != null) {
+      accessible=false;
+    }
+ else     if (at.getPackage() != null && declaringClass.getPackage() == null) {
+      accessible=false;
+    }
+ else     if (at.getPackage().equals(declaringClass.getPackage())) {
+      accessible=true;
+    }
+  }
+  return accessible;
+}

@@ -1,29 +1,31 @@
 {
+  int modi=constructor.getModifiers();
+  Class klass=constructor.getDeclaringClass();
   boolean accessible=false;
-  if (Modifier.isPublic(constructor.getModifiers())) {
+  if (Modifier.isPublic(modi)) {
     accessible=true;
   }
- else   if (Modifier.isPrivate(constructor.getModifiers())) {
+ else   if (Modifier.isPrivate(modi)) {
     accessible=at.getName().equals(constructor.getName());
   }
- else   if (Modifier.isProtected(constructor.getModifiers())) {
-    if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() == null) {
+ else   if (Modifier.isProtected(modi)) {
+    if (at.getPackage() == null && klass.getPackage() == null) {
       accessible=true;
     }
- else     if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() != null) {
+ else     if (at.getPackage() == null && klass.getPackage() != null) {
       accessible=false;
     }
- else     if (at.getPackage() != null && constructor.getDeclaringClass().getPackage() == null) {
+ else     if (at.getPackage() != null && klass.getPackage() == null) {
       accessible=false;
     }
- else     if (at.getPackage().equals(constructor.getDeclaringClass().getPackage())) {
+ else     if (at.getPackage().equals(klass.getPackage())) {
       accessible=true;
     }
- else {
+    if (!accessible) {
       boolean flag=false;
       Class clazz=at;
       while (!flag && clazz != null) {
-        if (clazz.equals(constructor.getDeclaringClass())) {
+        if (clazz.equals(klass)) {
           flag=true;
           break;
         }
@@ -36,16 +38,16 @@
     }
   }
  else {
-    if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() == null) {
+    if (at.getPackage() == null && klass.getPackage() == null) {
       accessible=true;
     }
- else     if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() != null) {
+ else     if (at.getPackage() == null && klass.getPackage() != null) {
       accessible=false;
     }
- else     if (at.getPackage() != null && constructor.getDeclaringClass().getPackage() == null) {
+ else     if (at.getPackage() != null && klass.getPackage() == null) {
       accessible=false;
     }
- else     if (at.getPackage().equals(constructor.getDeclaringClass().getPackage())) {
+ else     if (at.getPackage().equals(klass.getPackage())) {
       accessible=true;
     }
   }

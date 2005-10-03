@@ -1,0 +1,20 @@
+{
+  boolean accessible=true;
+  if (at != null && object != null) {
+    accessible=accessibleToThisMethod(at);
+  }
+  if (!accessible) {
+    throw new IllegalAccessException("Illegal access from the class [" + at + "] to a "+ makeAccessString(this.method.getModifiers())+ " method ["+ this.method+ "]");
+  }
+  if (!alreadySetAccessible) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
+    }
+);
+    alreadySetAccessible=true;
+  }
+  return method.invoke(object,arguments);
+}

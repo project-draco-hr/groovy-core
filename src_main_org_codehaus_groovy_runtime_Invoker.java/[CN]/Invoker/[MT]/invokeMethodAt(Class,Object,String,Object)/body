@@ -1,0 +1,36 @@
+{
+  if (object == null) {
+    throw new NullPointerException("Cannot invoke method " + methodName + "() on null object");
+  }
+  if (object instanceof Class) {
+    Class theClass=(Class)object;
+    MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+    return metaClass.invokeStaticMethodAt(at,object,methodName,asArray(arguments));
+  }
+ else {
+    if (!(object instanceof GroovyObject)) {
+      Class theClass=object.getClass();
+      MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+      return metaClass.invokeMethodAt(at,object,methodName,asArray(arguments));
+    }
+ else {
+      GroovyObject groovy=(GroovyObject)object;
+      try {
+        if (groovy instanceof GroovyInterceptable) {
+          return groovy.invokeMethodAt(object.getClass(),methodName,asArray(arguments));
+        }
+ else {
+          return groovy.getMetaClass().invokeMethodAt(at,object,methodName,asArray(arguments));
+        }
+      }
+ catch (      MissingMethodException e) {
+        if (e.getMethod().equals(methodName) && object.getClass() == e.getType()) {
+          return groovy.invokeMethodAt(at,methodName,asArray(arguments));
+        }
+ else {
+          throw e;
+        }
+      }
+    }
+  }
+}

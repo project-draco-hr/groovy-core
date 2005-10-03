@@ -45,7 +45,7 @@
   final Class groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"C","x"));
   try {
     final GroovyObject object=(GroovyObject)groovyClass.newInstance();
-    this.template=(Closure)object.invokeMethod("getTemplate",null);
+    this.template=(Closure)object.invokeMethodAt(this.getClass(),"getTemplate",null);
   }
  catch (  InstantiationException e) {
     throw new ClassNotFoundException(e.getMessage());
