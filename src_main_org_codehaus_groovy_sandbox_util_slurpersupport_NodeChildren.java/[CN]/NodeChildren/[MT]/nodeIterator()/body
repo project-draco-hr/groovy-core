@@ -1,0 +1,21 @@
+{
+  if ("*".equals(this.name)) {
+    return this.parent.childNodes();
+  }
+ else {
+    return new NodeIterator(this.parent.childNodes()){
+      protected Object getNextNode(      Iterator iter){
+        while (iter.hasNext()) {
+          final Node node=(Node)iter.next();
+          if (NodeChildren.this.name.equals(node.name())) {
+            if ("*".equals(NodeChildren.this.namespacePrefix) || ("".equals(NodeChildren.this.namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(NodeChildren.this.namespaceMap.get(NodeChildren.this.namespacePrefix))) {
+              return node;
+            }
+          }
+        }
+        return null;
+      }
+    }
+;
+  }
+}
