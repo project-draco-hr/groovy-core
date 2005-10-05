@@ -8,19 +8,19 @@
  else   if (property.startsWith("@")) {
     if (property.indexOf(":") != -1) {
       final int i=property.indexOf(":");
-      return new Attributes(this,"@" + property.substring(i + 1),property.substring(1,i));
+      return new Attributes(this,"@" + property.substring(i + 1),property.substring(1,i),this.namespaceTagHints);
     }
  else {
-      return new Attributes(this,property);
+      return new Attributes(this,property,this.namespaceTagHints);
     }
   }
  else {
     if (property.indexOf(":") != -1) {
       final int i=property.indexOf(":");
-      return new NodeChildren(this,property.substring(i + 1),property.substring(0,i));
+      return new NodeChildren(this,property.substring(i + 1),property.substring(0,i),this.namespaceTagHints);
     }
  else {
-      return new NodeChildren(this,property);
+      return new NodeChildren(this,property,this.namespaceTagHints);
     }
   }
 }
