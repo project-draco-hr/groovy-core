@@ -1,3 +1,10 @@
 {
-  this.delegate=delegate;
+  this.writer=delegate;
+  if (delegate instanceof OutputStreamWriter) {
+    this.encoding=((OutputStreamWriter)delegate).getEncoding();
+  }
+ else {
+    this.encoding="US-ASCII";
+  }
+  this.encoder=Charset.forName(this.encoding).newEncoder();
 }
