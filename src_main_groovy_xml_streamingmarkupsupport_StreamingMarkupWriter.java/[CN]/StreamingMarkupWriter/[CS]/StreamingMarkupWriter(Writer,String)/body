@@ -1,0 +1,13 @@
+{
+  this.writer=writer;
+  if (encoding != null) {
+    this.encoding=encoding;
+  }
+ else   if (writer instanceof OutputStreamWriter) {
+    this.encoding=((OutputStreamWriter)writer).getEncoding();
+  }
+ else {
+    this.encoding="US-ASCII";
+  }
+  this.encoder=Charset.forName(this.encoding).newEncoder();
+}
