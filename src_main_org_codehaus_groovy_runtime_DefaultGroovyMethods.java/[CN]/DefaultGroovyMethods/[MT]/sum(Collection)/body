@@ -1,0 +1,11 @@
+{
+  Object result=Integer.valueOf(0);
+  Object[] param=new Object[1];
+  for (Iterator iter=self.iterator(); iter.hasNext(); ) {
+    Object operand=iter.next();
+    param[0]=operand;
+    MetaClass metaClass=InvokerHelper.getMetaClass(result);
+    result=metaClass.invokeMethod(result,"plus",param);
+  }
+  return result;
+}
