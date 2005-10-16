@@ -1,0 +1,12 @@
+{
+  if (initialised) {
+    throw new RuntimeException("Already initialized, cannot add new method: " + method);
+  }
+ else {
+    NewInstanceMetaMethod newMethod=new NewInstanceMetaMethod(createMetaMethod(method));
+    if (!newGroovyMethodsList.contains(newMethod)) {
+      newGroovyMethodsList.add(newMethod);
+      addMethod(newMethod,false);
+    }
+  }
+}

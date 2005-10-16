@@ -1,0 +1,31 @@
+{
+  MetaMethod method=null;
+  List methods=getMethods(methodName);
+  if (!methods.isEmpty()) {
+    Class[] argClasses=convertToTypeArray(arguments);
+    method=(MetaMethod)chooseMethod(methodName,methods,argClasses,true);
+    if (method == null) {
+      int size=(arguments != null) ? arguments.length : 0;
+      if (size == 1) {
+        Object firstArgument=arguments[0];
+        if (firstArgument instanceof List) {
+          List list=(List)firstArgument;
+          arguments=list.toArray();
+          argClasses=convertToTypeArray(arguments);
+          method=(MetaMethod)chooseMethod(methodName,methods,argClasses,true);
+          if (method == null)           return null;
+          return new TransformMetaMethod(method){
+            public Object invoke(            Object object,            Object[] arguments) throws Exception {
+              Object firstArgument=arguments[0];
+              List list=(List)firstArgument;
+              arguments=list.toArray();
+              return super.invoke(object,arguments);
+            }
+          }
+;
+        }
+      }
+    }
+  }
+  return method;
+}

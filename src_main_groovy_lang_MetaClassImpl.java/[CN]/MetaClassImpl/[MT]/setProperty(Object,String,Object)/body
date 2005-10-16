@@ -1,0 +1,90 @@
+{
+  MetaProperty mp=(MetaProperty)propertyMap.get(property);
+  if (mp != null) {
+    try {
+      mp.setProperty(object,newValue);
+      return;
+    }
+ catch (    ReadOnlyPropertyException e) {
+      throw e;
+    }
+catch (    TypeMismatchException e) {
+      throw e;
+    }
+catch (    Exception e) {
+      if (newValue == null)       return;
+      if (newValue instanceof List) {
+        List list=(List)newValue;
+        int params=list.size();
+        Constructor[] constructors=mp.getType().getConstructors();
+        for (int i=0; i < constructors.length; i++) {
+          Constructor constructor=constructors[i];
+          if (constructor.getParameterTypes().length == params) {
+            Object value=doConstructorInvoke(constructor,list.toArray());
+            mp.setProperty(object,value);
+            return;
+          }
+        }
+        Class parameterType=mp.getType();
+        if (parameterType.isArray()) {
+          Object objArray=asPrimitiveArray(list,parameterType);
+          mp.setProperty(object,objArray);
+          return;
+        }
+      }
+      if (newValue.getClass().isArray() && mp instanceof MetaBeanProperty) {
+        MetaBeanProperty mbp=(MetaBeanProperty)mp;
+        List list=Arrays.asList((Object[])newValue);
+        MetaMethod setter=mbp.getSetter();
+        Class parameterType=setter.getParameterTypes()[0];
+        Class arrayType=parameterType.getComponentType();
+        Object objArray=Array.newInstance(arrayType,list.size());
+        for (int i=0; i < list.size(); i++) {
+          List list2=Arrays.asList((Object[])list.get(i));
+          Object objArray2=asPrimitiveArray(list2,arrayType);
+          Array.set(objArray,i,objArray2);
+        }
+        doMethodInvoke(object,setter,new Object[]{objArray});
+        return;
+      }
+      throw new MissingPropertyException(property,theClass,e);
+    }
+  }
+  try {
+    MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
+    if (addListenerMethod != null && newValue instanceof Closure) {
+      Object proxy=createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
+      doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
+      return;
+    }
+    if (genericSetMethod == null) {
+      List possibleGenericMethods=getMethods("set");
+      if (possibleGenericMethods != null) {
+        for (Iterator i=possibleGenericMethods.iterator(); i.hasNext(); ) {
+          MetaMethod mmethod=(MetaMethod)i.next();
+          Class[] paramTypes=mmethod.getParameterTypes();
+          if (paramTypes.length == 2 && paramTypes[0] == String.class) {
+            Object[] arguments={property,newValue};
+            Object answer=doMethodInvoke(object,mmethod,arguments);
+            return;
+          }
+        }
+      }
+    }
+ else {
+      Object[] arguments={property,newValue};
+      doMethodInvoke(object,genericSetMethod,arguments);
+      return;
+    }
+    String method="set" + capitalize(property);
+    try {
+      invokeMethod(object,method,new Object[]{newValue});
+    }
+ catch (    MissingMethodException e1) {
+      setAttribute(object,property,newValue);
+    }
+  }
+ catch (  GroovyRuntimeException e) {
+    throw new MissingPropertyException(property,theClass,e);
+  }
+}

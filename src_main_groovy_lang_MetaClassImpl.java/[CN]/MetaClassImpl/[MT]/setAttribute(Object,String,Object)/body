@@ -1,0 +1,45 @@
+{
+  PrivilegedActionException firstException=null;
+  final Class clazz;
+  if (object instanceof Class) {
+    clazz=(Class)object;
+  }
+ else {
+    clazz=theClass;
+  }
+  try {
+    AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws NoSuchFieldException, IllegalAccessException {
+        final Field field=clazz.getDeclaredField(attribute);
+        field.setAccessible(true);
+        field.set(object,newValue);
+        return null;
+      }
+    }
+);
+    return;
+  }
+ catch (  final PrivilegedActionException pae) {
+    firstException=pae;
+  }
+  try {
+    AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws NoSuchFieldException, IllegalAccessException {
+        final Field field=clazz.getField(attribute);
+        field.setAccessible(true);
+        field.set(object,newValue);
+        return null;
+      }
+    }
+);
+    return;
+  }
+ catch (  final PrivilegedActionException pae) {
+  }
+  if (firstException.getException() instanceof NoSuchFieldException) {
+    throw new MissingFieldException(attribute,theClass);
+  }
+ else {
+    throw new RuntimeException(firstException.getException());
+  }
+}
