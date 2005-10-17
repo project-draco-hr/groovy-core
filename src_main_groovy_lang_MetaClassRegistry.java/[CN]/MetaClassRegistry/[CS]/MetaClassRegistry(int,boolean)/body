@@ -1,8 +1,10 @@
 {
   this.useAccessible=useAccessible;
   if (loadDefault == LOAD_DEFAULT) {
-    ((MetaClassImpl)lookup(DefaultGroovyMethods.class)).registerInstanceMethods();
-    ((MetaClassImpl)lookup(DefaultGroovyStaticMethods.class)).registerStaticMethods();
+    lookup(DefaultGroovyMethods.class);
+    registerMethods(DefaultGroovyMethods.class,true);
+    lookup(DefaultGroovyStaticMethods.class);
+    registerMethods(DefaultGroovyStaticMethods.class,false);
     checkInitialised();
   }
 }
