@@ -3,7 +3,7 @@
   if (isGenericGetMethod(method) && genericGetMethod == null) {
     genericGetMethod=method;
   }
- else   if (isGenericSetMethod(method) && genericSetMethod == null) {
+ else   if (MetaClassHelper.isGenericSetMethod(method) && genericSetMethod == null) {
     genericSetMethod=method;
   }
   if (method.isStatic()) {
@@ -14,7 +14,7 @@
       list.add(method);
     }
  else {
-      if (!containsMatchingMethod(list,method)) {
+      if (!MetaClassHelper.containsMatchingMethod(list,method)) {
         list.add(method);
       }
     }
@@ -30,7 +30,7 @@
       removeMatchingMethod(list,method);
       list.add(method);
     }
- else     if (!containsMatchingMethod(list,method)) {
+ else     if (!MetaClassHelper.containsMatchingMethod(list,method)) {
       list.add(method);
     }
   }

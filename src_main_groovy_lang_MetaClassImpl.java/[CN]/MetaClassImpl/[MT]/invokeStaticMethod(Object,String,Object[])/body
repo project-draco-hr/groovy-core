@@ -1,6 +1,6 @@
 {
   if (log.isLoggable(Level.FINER)) {
-    logMethodCall(object,methodName,arguments);
+    MetaClassHelper.logMethodCall(object,methodName,arguments);
   }
   MethodKey methodKey=new TemporaryMethodKey(methodName,arguments);
   MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
@@ -11,7 +11,7 @@
     }
   }
   if (method != null) {
-    return doMethodInvoke(object,method,arguments);
+    return MetaClassHelper.doMethodInvoke(object,method,arguments);
   }
   throw new MissingMethodException(methodName,theClass,arguments);
 }

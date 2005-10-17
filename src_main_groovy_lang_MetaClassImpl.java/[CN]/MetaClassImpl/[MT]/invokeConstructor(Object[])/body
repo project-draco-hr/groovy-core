@@ -1,21 +1,21 @@
 {
-  Class[] argClasses=convertToTypeArray(arguments);
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   Constructor constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,false);
   if (constructor != null) {
-    return doConstructorInvoke(constructor,arguments);
+    return MetaClassHelper.doConstructorInvoke(constructor,arguments);
   }
  else {
     constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
     if (constructor != null) {
-      return doConstructorInvoke(constructor,arguments);
+      return MetaClassHelper.doConstructorInvoke(constructor,arguments);
     }
   }
   if (arguments.length == 1) {
     Object firstArgument=arguments[0];
     if (firstArgument instanceof Map) {
-      constructor=(Constructor)chooseMethod("<init>",constructors,EMPTY_TYPE_ARRAY,false);
+      constructor=(Constructor)chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY,false);
       if (constructor != null) {
-        Object bean=doConstructorInvoke(constructor,EMPTY_ARRAY);
+        Object bean=MetaClassHelper.doConstructorInvoke(constructor,MetaClassHelper.EMPTY_ARRAY);
         setProperties(bean,((Map)firstArgument));
         return bean;
       }

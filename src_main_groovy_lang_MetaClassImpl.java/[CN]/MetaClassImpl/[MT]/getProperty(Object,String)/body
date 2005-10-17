@@ -16,7 +16,7 @@
         Class[] paramTypes=mmethod.getParameterTypes();
         if (paramTypes.length == 1 && paramTypes[0] == String.class) {
           Object[] arguments={property};
-          Object answer=doMethodInvoke(object,mmethod,arguments);
+          Object answer=MetaClassHelper.doMethodInvoke(object,mmethod,arguments);
           return answer;
         }
       }
@@ -24,7 +24,7 @@
   }
  else {
     Object[] arguments={property};
-    Object answer=doMethodInvoke(object,genericGetMethod,arguments);
+    Object answer=MetaClassHelper.doMethodInvoke(object,genericGetMethod,arguments);
     if (answer != null) {
       return answer;
     }
@@ -38,9 +38,9 @@
   Exception lastException=null;
   try {
     if (!(object instanceof Class)) {
-      MetaMethod method=findGetter(object,"get" + capitalize(property));
+      MetaMethod method=findGetter(object,"get" + MetaClassHelper.capitalize(property));
       if (method != null) {
-        return doMethodInvoke(object,method,EMPTY_ARRAY);
+        return MetaClassHelper.doMethodInvoke(object,method,MetaClassHelper.EMPTY_ARRAY);
       }
     }
   }

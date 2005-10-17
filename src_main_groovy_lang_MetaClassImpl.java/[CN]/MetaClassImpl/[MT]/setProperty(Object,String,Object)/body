@@ -20,14 +20,14 @@ catch (    Exception e) {
         for (int i=0; i < constructors.length; i++) {
           Constructor constructor=constructors[i];
           if (constructor.getParameterTypes().length == params) {
-            Object value=doConstructorInvoke(constructor,list.toArray());
+            Object value=MetaClassHelper.doConstructorInvoke(constructor,list.toArray());
             mp.setProperty(object,value);
             return;
           }
         }
         Class parameterType=mp.getType();
         if (parameterType.isArray()) {
-          Object objArray=asPrimitiveArray(list,parameterType);
+          Object objArray=MetaClassHelper.asPrimitiveArray(list,parameterType);
           mp.setProperty(object,objArray);
           return;
         }
@@ -41,10 +41,10 @@ catch (    Exception e) {
         Object objArray=Array.newInstance(arrayType,list.size());
         for (int i=0; i < list.size(); i++) {
           List list2=Arrays.asList((Object[])list.get(i));
-          Object objArray2=asPrimitiveArray(list2,arrayType);
+          Object objArray2=MetaClassHelper.asPrimitiveArray(list2,arrayType);
           Array.set(objArray,i,objArray2);
         }
-        doMethodInvoke(object,setter,new Object[]{objArray});
+        MetaClassHelper.doMethodInvoke(object,setter,new Object[]{objArray});
         return;
       }
       throw new MissingPropertyException(property,theClass,e);
@@ -53,8 +53,8 @@ catch (    Exception e) {
   try {
     MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
     if (addListenerMethod != null && newValue instanceof Closure) {
-      Object proxy=createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
-      doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
+      Object proxy=MetaClassHelper.createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
+      MetaClassHelper.doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
       return;
     }
     if (genericSetMethod == null) {
@@ -65,7 +65,7 @@ catch (    Exception e) {
           Class[] paramTypes=mmethod.getParameterTypes();
           if (paramTypes.length == 2 && paramTypes[0] == String.class) {
             Object[] arguments={property,newValue};
-            Object answer=doMethodInvoke(object,mmethod,arguments);
+            Object answer=MetaClassHelper.doMethodInvoke(object,mmethod,arguments);
             return;
           }
         }
@@ -73,10 +73,10 @@ catch (    Exception e) {
     }
  else {
       Object[] arguments={property,newValue};
-      doMethodInvoke(object,genericSetMethod,arguments);
+      MetaClassHelper.doMethodInvoke(object,genericSetMethod,arguments);
       return;
     }
-    String method="set" + capitalize(property);
+    String method="set" + MetaClassHelper.capitalize(property);
     try {
       invokeMethod(object,method,new Object[]{newValue});
     }

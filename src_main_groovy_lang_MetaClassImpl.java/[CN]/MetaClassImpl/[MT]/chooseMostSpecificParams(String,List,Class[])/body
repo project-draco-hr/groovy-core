@@ -1,12 +1,12 @@
 {
-  Class[] wrappedArguments=wrap(arguments);
+  Class[] wrappedArguments=MetaClassHelper.wrap(arguments);
   int matchesDistance=-1;
   LinkedList matches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
-    Class[] paramTypes=getParameterTypes(method);
-    if (!parametersAreCompatible(arguments,paramTypes))     continue;
-    int dist=calculateParameterDistance(arguments,paramTypes);
+    Class[] paramTypes=MetaClassHelper.getParameterTypes(method);
+    if (!MetaClassHelper.parametersAreCompatible(arguments,paramTypes))     continue;
+    int dist=MetaClassHelper.calculateParameterDistance(arguments,paramTypes);
     if (matches.size() == 0) {
       matches.add(method);
       matchesDistance=dist;
@@ -32,7 +32,7 @@
   msg+=InvokerHelper.toString(arguments);
   msg+=" due to overlapping prototypes between:";
   for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
-    Class[] types=getParameterTypes(iter.next());
+    Class[] types=MetaClassHelper.getParameterTypes(iter.next());
     msg+="\n\t" + InvokerHelper.toString(types);
   }
   throw new GroovyRuntimeException(msg);

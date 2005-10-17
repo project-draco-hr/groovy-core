@@ -2,7 +2,7 @@
   MetaMethod method=null;
   List methods=getMethods(methodName);
   if (!methods.isEmpty()) {
-    Class[] argClasses=convertToTypeArray(arguments);
+    Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
     method=(MetaMethod)chooseMethod(methodName,methods,argClasses,true);
     if (method == null) {
       int size=(arguments != null) ? arguments.length : 0;
@@ -11,7 +11,7 @@
         if (firstArgument instanceof List) {
           List list=(List)firstArgument;
           arguments=list.toArray();
-          argClasses=convertToTypeArray(arguments);
+          argClasses=MetaClassHelper.convertToTypeArray(arguments);
           method=(MetaMethod)chooseMethod(methodName,methods,argClasses,true);
           if (method == null)           return null;
           return new TransformMetaMethod(method){
