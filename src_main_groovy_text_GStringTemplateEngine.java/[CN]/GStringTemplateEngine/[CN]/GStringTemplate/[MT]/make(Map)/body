@@ -1,21 +1,5 @@
 {
-  final Closure delegatedClosure=(Closure)this.template.clone();
-  delegatedClosure.setDelegate(new Binding(map));
-  return new Writable(){
-    public Writer writeTo(    final Writer writer) throws IOException {
-      delegatedClosure.call(new PrintWriter(writer));
-      return writer;
-    }
-    public String toString(){
-      final StringWriter stringWriter=new StringWriter();
-      try {
-        writeTo(stringWriter);
-        return stringWriter.toString();
-      }
- catch (      final IOException e) {
-        return e.toString();
-      }
-    }
-  }
-;
+  final Closure template=(Closure)this.template.clone();
+  template.setDelegate(new Binding(map));
+  return (Writable)template;
 }
