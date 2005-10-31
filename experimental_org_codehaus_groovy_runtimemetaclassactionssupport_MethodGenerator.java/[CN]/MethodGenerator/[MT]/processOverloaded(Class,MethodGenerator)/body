@@ -1,0 +1,15 @@
+{
+  final Class[] p1=getParameterTypes();
+  final Class[] p2=other.getParameterTypes();
+  for (int i=0; i != p1.length; i++) {
+    if (p1[i] != p2[i]) {
+      return new OverloadedMethodsGenerator(this,other);
+    }
+  }
+  if (this.method.getDeclaringClass() == claz) {
+    return this;
+  }
+ else {
+    return other;
+  }
+}

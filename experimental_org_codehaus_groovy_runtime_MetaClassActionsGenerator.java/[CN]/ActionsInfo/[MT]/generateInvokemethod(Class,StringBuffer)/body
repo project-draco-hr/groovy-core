@@ -1,0 +1,31 @@
+{
+  code.append("public Object doInvokeMethod(final Object target, final String name, final Object[] args) ");
+  code.append("throws Exception {\n");
+  if (this.generators.size() != 0) {
+    int currentArgsLength=-1;
+    boolean firstMethod=true;
+    final Iterator iter=this.generators.iterator();
+    while (iter.hasNext()) {
+      final MethodGenerator generator=(MethodGenerator)iter.next();
+      final int argsLength=generator.getNumberOfParameters();
+      if (argsLength == currentArgsLength) {
+        code.setLength(code.length() - 1);
+        code.append(" else ");
+      }
+ else {
+        currentArgsLength=argsLength;
+        if (firstMethod) {
+          firstMethod=false;
+        }
+ else {
+          code.append("} else ");
+        }
+        code.append("if (args.length == ").append(argsLength).append(") {\n");
+      }
+      code.append("if (\"").append(generator.getName()).append("\".equals(name)) {\n");
+      code.append(generator.generateCall(claz)).append("}\n");
+    }
+    code.append("}\n");
+  }
+  code.append("return groovy.lang.MetaClass.NO_METHOD_FOUND;\n}\n");
+}

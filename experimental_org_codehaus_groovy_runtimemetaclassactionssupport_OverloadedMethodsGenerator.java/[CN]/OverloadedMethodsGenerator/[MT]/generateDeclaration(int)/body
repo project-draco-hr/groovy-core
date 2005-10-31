@@ -1,0 +1,58 @@
+{
+  final StringBuffer code=new StringBuffer();
+  final Iterator iter=this.generatorList.iterator();
+  int i=1;
+  this.methodIndex=methodIndex;
+  while (iter.hasNext()) {
+    final MethodGenerator generator=(MethodGenerator)iter.next();
+    code.append(generator.generateDeclaration((methodIndex << 16) | i));
+  }
+  code.append("private final Class[][] possible").append(getName()).append("Parameters").append(methodIndex).append(" = new Class[][]{\n");
+  final Iterator iter1=this.generatorList.iterator();
+  while (iter1.hasNext()) {
+    final MethodGenerator generator=(MethodGenerator)iter1.next();
+    final Class[] parameterTypes=generator.getParameterTypes();
+    code.append("new Class[] {");
+    for (int j=0; j != parameterTypes.length; j++) {
+      final Class parameterType=parameterTypes[j];
+      if (parameterType.isPrimitive()) {
+        if (parameterType == int.class) {
+          code.append("int");
+        }
+ else         if (parameterType == long.class) {
+          code.append("long");
+        }
+ else         if (parameterType == short.class) {
+          code.append("short");
+        }
+ else         if (parameterType == char.class) {
+          code.append("char");
+        }
+ else         if (parameterType == byte.class) {
+          code.append("byte");
+        }
+ else         if (parameterType == boolean.class) {
+          code.append("boolean");
+        }
+ else         if (parameterType == float.class) {
+          code.append("float");
+        }
+ else         if (parameterType == double.class) {
+          code.append("double");
+        }
+ else {
+          code.append("**** ERROR ***** found primative parameter type: " + parameterType.getName());
+        }
+      }
+ else {
+        getFullName(parameterType,code);
+      }
+      code.append(".class, ");
+    }
+    code.setLength(code.length() - 2);
+    code.append("},\n ");
+  }
+  code.setLength(code.length() - 3);
+  code.append("\n};\n");
+  return code.toString();
+}

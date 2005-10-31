@@ -1,0 +1,13 @@
+{
+  final StringBuffer code=new StringBuffer();
+  generateStartOfFile(claz,code);
+  final Iterator iter=this.generators.iterator();
+  int methodIndex=0;
+  while (iter.hasNext()) {
+    final MethodGenerator gen=(MethodGenerator)iter.next();
+    code.append(gen.generateDeclaration(methodIndex++));
+  }
+  generateInvokemethod(claz,code);
+  generateEndOfFile(claz,code);
+  return code.toString();
+}
