@@ -1,13 +1,13 @@
 {
   final Package pack=claz.getPackage();
   final String packageName="groovy.runtime.metaclassactions." + ((pack == null) ? "" : pack.getName() + ".");
+  setUpGenerators(claz);
   try {
     final Class actionsClass=Class.forName(packageName + claz.getSimpleName() + "MetaClassActions");
     this.actions=(MetaClassActions)actionsClass.newInstance();
   }
  catch (  final Exception e1) {
     final File generatedFile=new File("generated/" + packageName.replace('.','/'));
-    setUpGenerators(claz);
     generatedFile.mkdirs();
     try {
       final Writer out=new FileWriter(new File(generatedFile,claz.getSimpleName() + "MetaClassActions.java"));
