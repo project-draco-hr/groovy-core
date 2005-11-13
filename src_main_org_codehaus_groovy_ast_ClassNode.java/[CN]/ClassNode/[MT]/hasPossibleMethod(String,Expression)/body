@@ -6,13 +6,13 @@
   }
   ClassNode node=this;
   do {
-    for (Iterator iter=node.methods.iterator(); iter.hasNext(); ) {
+    for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
       MethodNode method=(MethodNode)iter.next();
       if (name.equals(method.getName()) && method.getParameters().length == count) {
         return true;
       }
     }
-    node=node.getSuperClassNode();
+    node=node.getSuperClass();
   }
  while (node != null);
   return false;

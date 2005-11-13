@@ -1,9 +1,8 @@
 {
   ClassNode innerClass=createClosureClass(expression);
   addInnerClass(innerClass);
-  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass.getType());
+  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
   ClassNode owner=innerClass.getOuterClass();
-  Type ownerType=owner.getType();
   passingClosureParams=true;
   List constructors=innerClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
@@ -12,20 +11,20 @@
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (variableStack.get(name) == null && classNode.getField(name) == null) {
-      defineVariable(name,Type.OBJECT_TYPE);
+      defineVariable(name,ClassHelper.OBJECT_TYPE);
     }
   }
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);
   if (isStaticMethod() || classNode.isStaticClass()) {
-    visitClassExpression(new ClassExpression(ownerType));
+    visitClassExpression(new ClassExpression(owner));
   }
  else {
     loadThisOrOwner();
   }
-  if (innerClass.getSuperClass() == Type.CLOSURE_TYPE) {
+  if (innerClass.getSuperClass() == ClassHelper.CLOSURE_TYPE) {
     if (isStaticMethod()) {
-      visitClassExpression(new ClassExpression(ownerType));
+      visitClassExpression(new ClassExpression(owner));
     }
  else {
       cv.visitVarInsn(ALOAD,0);
@@ -42,5 +41,5 @@
     }
   }
   passingClosureParams=false;
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor("void",localVariableParams));
+  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
 }

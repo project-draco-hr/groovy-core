@@ -1,13 +1,13 @@
 {
   try {
     this.classNode=classNode;
-    this.internalClassName=BytecodeHelper.getClassInternalName(classNode.getType());
+    this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
     cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,(String)null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     classNode.visitContents(this);
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
       ClassNode innerClass=(ClassNode)iter.next();
-      Type innerClassType=innerClass.getType();
+      ClassNode innerClassType=innerClass;
       String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassType);
       String outerClassName=internalClassName;
       MethodNode enclosingMethod=innerClass.getEnclosingMethod();

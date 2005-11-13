@@ -2,7 +2,7 @@
   String methodName=call.getMethod();
   TupleExpression argExpr=(TupleExpression)call.getArguments();
   int argCount=argExpr.getExpressions().size();
-  ClassNode superClassNode=classNode.getSuperClassNode();
+  ClassNode superClassNode=classNode.getSuperClass();
   if (superClassNode != null) {
     List methods=superClassNode.getMethods(methodName);
     for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
@@ -12,6 +12,6 @@
       }
     }
   }
-  throwException("No such method: " + methodName + " for class: "+ classNode.getType().getName());
+  throwException("No such method: " + methodName + " for class: "+ classNode.getName());
   return null;
 }

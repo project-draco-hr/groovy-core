@@ -1,30 +1,35 @@
 {
   gotoPhase(Phases.INITIALIZATION);
   do {
-    if (throughPhase < Phases.PARSING) {
-      break;
-    }
+    if (dequeued())     continue;
+    if (throughPhase < Phases.PARSING)     break;
     gotoPhase(Phases.PARSING);
     parse();
-    if (throughPhase < Phases.CONVERSION) {
-      break;
-    }
+    if (dequeued())     continue;
+    if (throughPhase < Phases.CONVERSION)     break;
     gotoPhase(Phases.CONVERSION);
     convert();
-    if (throughPhase < Phases.CLASS_GENERATION) {
-      break;
-    }
+    if (dequeued())     continue;
+    if (throughPhase < Phases.CLASS_GENERATION)     break;
+    gotoPhase(Phases.SEMANTIC_ANALYSIS);
+    semanticAnalysis();
+    if (dequeued())     continue;
+    if (throughPhase < Phases.CLASS_GENERATION)     break;
     gotoPhase(Phases.CLASS_GENERATION);
-    classgen();
-    if (throughPhase < Phases.OUTPUT) {
-      break;
+    Iterator modules=this.ast.getModules().iterator();
+    while (modules.hasNext()) {
+      ModuleNode module=(ModuleNode)modules.next();
+      module.sortClasses();
     }
+    classgen();
+    if (dequeued())     continue;
+    if (throughPhase < Phases.OUTPUT)     break;
     gotoPhase(Phases.OUTPUT);
     output();
-    if (throughPhase < Phases.FINALIZATION) {
-      break;
-    }
+    if (dequeued())     continue;
+    if (throughPhase < Phases.FINALIZATION)     break;
     gotoPhase(Phases.FINALIZATION);
+    break;
   }
- while (false);
+ while (true);
 }

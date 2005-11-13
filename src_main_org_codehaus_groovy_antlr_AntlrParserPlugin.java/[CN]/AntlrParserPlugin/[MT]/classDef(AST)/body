@@ -8,20 +8,19 @@
   }
   String name=identifier(node);
   node=node.getNextSibling();
-  Type superClass=null;
+  ClassNode superClass=null;
   if (isType(EXTENDS_CLAUSE,node)) {
     superClass=makeType(node);
     node=node.getNextSibling();
   }
-  String[] interfaces={};
+  ClassNode[] interfaces={};
   if (isType(IMPLEMENTS_CLAUSE,node)) {
     interfaces=interfaces(node);
     node=node.getNextSibling();
   }
   MixinNode[] mixins={};
   addNewClassName(name);
-  Type fullClassType=Type.makeType(dot(getPackageName(),name));
-  classNode=new ClassNode(fullClassType,modifiers,superClass,interfaces,mixins);
+  classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,mixins);
   classNode.addAnnotations(annotations);
   configureAST(classNode,classDef);
   assertNodeType(OBJBLOCK,node);

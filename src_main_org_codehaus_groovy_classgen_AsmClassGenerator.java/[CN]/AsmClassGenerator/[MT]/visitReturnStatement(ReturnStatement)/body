@@ -1,7 +1,7 @@
 {
   onLineNumber(statement,"visitReturnStatement");
-  Type returnType=methodNode.getReturnType();
-  if (returnType == Type.VOID_TYPE) {
+  ClassNode returnType=methodNode.getReturnType();
+  if (returnType == ClassHelper.VOID_TYPE) {
     if (!(statement == ReturnStatement.RETURN_NULL_OR_VOID)) {
       throwException("Cannot use return statement with an expression on a method that returns void");
     }
@@ -11,26 +11,25 @@
   }
   Expression expression=statement.getExpression();
   evaluateExpression(expression);
-  if (returnType == Type.OBJECT_TYPE && expression.getType() != null && expression.getType() == Type.VOID_TYPE) {
+  if (returnType == ClassHelper.OBJECT_TYPE && expression.getType() != null && expression.getType() == ClassHelper.VOID_TYPE) {
     cv.visitInsn(ACONST_NULL);
     cv.visitInsn(ARETURN);
   }
  else {
     helper.unbox(returnType);
-    String returnTypeName=returnType.getName();
-    if (returnTypeName.equals("double")) {
+    if (returnType == ClassHelper.double_TYPE) {
       cv.visitInsn(DRETURN);
     }
- else     if (returnTypeName.equals("float")) {
+ else     if (returnType == ClassHelper.float_TYPE) {
       cv.visitInsn(FRETURN);
     }
- else     if (returnTypeName.equals("long")) {
+ else     if (returnType == ClassHelper.long_TYPE) {
       cv.visitInsn(LRETURN);
     }
- else     if (returnTypeName.equals("boolean")) {
+ else     if (returnType == ClassHelper.boolean_TYPE) {
       cv.visitInsn(IRETURN);
     }
- else     if (returnTypeName.equals("char") || returnTypeName.equals("byte") || returnTypeName.equals("int")|| returnTypeName.equals("short")) {
+ else     if (returnType == ClassHelper.char_TYPE || returnType == ClassHelper.byte_TYPE || returnType == ClassHelper.int_TYPE || returnType == ClassHelper.short_TYPE) {
       cv.visitInsn(IRETURN);
     }
  else {

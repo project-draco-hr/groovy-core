@@ -20,7 +20,7 @@
     getter.setSynthetic(true);
     classNode.addMethod(getter);
     visitMethod(getter);
-    if (Type.boolean_TYPE == node.getType() || Type.Boolean_TYPE == node.getType()) {
+    if (ClassHelper.boolean_TYPE == node.getType() || ClassHelper.Boolean_TYPE == node.getType()) {
       String secondGetterName="is" + capitalize(name);
       MethodNode secondGetter=new MethodNode(secondGetterName,node.getModifiers(),node.getType(),Parameter.EMPTY_ARRAY,getterBlock);
       secondGetter.setSynthetic(true);
@@ -30,7 +30,7 @@
   }
   if (setterBlock != null) {
     Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};
-    MethodNode setter=new MethodNode(setterName,node.getModifiers(),Type.VOID_TYPE,setterParameterTypes,setterBlock);
+    MethodNode setter=new MethodNode(setterName,node.getModifiers(),ClassHelper.VOID_TYPE,setterParameterTypes,setterBlock);
     setter.setSynthetic(true);
     classNode.addMethod(setter);
     visitMethod(setter);

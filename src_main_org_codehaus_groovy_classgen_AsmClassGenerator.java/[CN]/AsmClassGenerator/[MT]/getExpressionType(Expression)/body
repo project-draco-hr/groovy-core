@@ -1,13 +1,13 @@
 {
   if (isComparisonExpression(expression)) {
-    return Type.boolean_TYPE;
+    return ClassHelper.boolean_TYPE;
   }
   if (expression instanceof VariableExpression) {
     VariableExpression varExpr=(VariableExpression)expression;
     Variable variable=(Variable)variableStack.get(varExpr.getName());
     if (variable != null && !variable.isHolder()) {
-      Type type=variable.getType();
-      if (!type.isDynamic())       return type;
+      ClassNode type=variable.getType();
+      if (!variable.isDynamicTyped())       return type;
     }
   }
   return expression.getType();

@@ -3,7 +3,7 @@
     syntheticStaticFields.clear();
     this.classNode=classNode;
     this.outermostClass=null;
-    this.internalClassName=BytecodeHelper.getClassInternalName(classNode.getType());
+    this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
     cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cw.visitSource(sourceFile,null);
@@ -12,7 +12,7 @@
     createSyntheticStaticFields();
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
       ClassNode innerClass=(ClassNode)iter.next();
-      String innerClassName=innerClass.getType().getName();
+      String innerClassName=innerClass.getName();
       String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
 {
         int index=innerClassName.lastIndexOf('$');

@@ -1,7 +1,10 @@
 {
   String name=source.getName();
   source.setClassLoader(this.classLoader);
-  names.add(name);
-  sources.put(name,source);
+  for (Iterator iter=queuedSources.iterator(); iter.hasNext(); ) {
+    SourceUnit su=(SourceUnit)iter.next();
+    if (name.equals(su.getName()))     return su;
+  }
+  queuedSources.add(source);
   return source;
 }

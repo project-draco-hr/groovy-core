@@ -1,11 +1,11 @@
 {
   List interfaceList=new ArrayList();
   for (AST implementNode=node.getFirstChild(); implementNode != null; implementNode=implementNode.getNextSibling()) {
-    interfaceList.add(resolveTypeName(qualifiedName(implementNode)));
+    interfaceList.add(ClassHelper.make(qualifiedName(implementNode)));
   }
-  String[] interfaces={};
+  ClassNode[] interfaces={};
   if (!interfaceList.isEmpty()) {
-    interfaces=new String[interfaceList.size()];
+    interfaces=new ClassNode[interfaceList.size()];
     interfaceList.toArray(interfaces);
   }
   return interfaces;

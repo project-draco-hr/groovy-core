@@ -3,8 +3,16 @@
   String packagePrefix="gjdk.";
   String name=packagePrefix + className + "_GroovyReflector";
   if (theClass.isArray()) {
-    String componentName=theClass.getComponentType().getName();
+    Class clazz=theClass;
+    name=packagePrefix;
+    int level=0;
+    while (clazz.isArray()) {
+      clazz=clazz.getComponentType();
+      level++;
+    }
+    String componentName=clazz.getName();
     name=packagePrefix + componentName + "_GroovyReflectorArray";
+    if (level > 1)     name+=level;
   }
   return name;
 }

@@ -9,15 +9,14 @@
   modifiers|=Opcodes.ACC_ABSTRACT | Opcodes.ACC_INTERFACE;
   String name=identifier(node);
   node=node.getNextSibling();
-  Type superClass=Type.OBJECT_TYPE;
-  String[] interfaces={};
+  ClassNode superClass=ClassHelper.OBJECT_TYPE;
+  ClassNode[] interfaces={};
   if (isType(EXTENDS_CLAUSE,node)) {
     interfaces=interfaces(node);
     node=node.getNextSibling();
   }
   addNewClassName(name);
-  Type classType=Type.makeType(dot(getPackageName(),name));
-  classNode=new ClassNode(classType,modifiers,superClass,interfaces,null);
+  classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,null);
   classNode.addAnnotations(annotations);
   configureAST(classNode,classDef);
   assertNodeType(OBJBLOCK,node);

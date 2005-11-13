@@ -1,5 +1,5 @@
 {
-  ClassNode parent=getSuperClassNode();
+  ClassNode parent=getSuperClass();
   Map result=null;
   if (parent != null) {
     result=parent.getDeclaredMethodsMap();
@@ -7,9 +7,9 @@
  else {
     result=new HashMap();
   }
+  ClassNode[] interfaces=getInterfaces();
   for (int i=0; i < interfaces.length; i++) {
-    String interfaceName=interfaces[i];
-    ClassNode iface=findClassNode(Type.makeType(interfaceName));
+    ClassNode iface=interfaces[i];
     Map ifaceMethodsMap=iface.getDeclaredMethodsMap();
     for (Iterator iter=ifaceMethodsMap.keySet().iterator(); iter.hasNext(); ) {
       String methSig=(String)iter.next();

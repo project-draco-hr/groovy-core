@@ -9,12 +9,10 @@
       arguments=null;
     }
   }
-  Type type=call.getType();
-  type=classNode.resolveClassName(type,"");
-  call.setType(type);
+  ClassNode type=call.getType();
   if (this.classNode != null) {
-    pushClassTypeArgument(this.classNode.getType(),this.classNode.getType());
-    pushClassTypeArgument(this.classNode.getType(),type);
+    pushClassTypeArgument(this.classNode,this.classNode);
+    pushClassTypeArgument(this.classNode,type);
     if (arguments != null) {
       arguments.visit(this);
       invokeConstructorAtMethod.call(cv);
@@ -24,7 +22,7 @@
     }
   }
  else {
-    pushClassTypeArgument(this.classNode.getType(),type);
+    pushClassTypeArgument(this.classNode,type);
     if (arguments != null) {
       arguments.visit(this);
       invokeConstructorOfMethod.call(cv);

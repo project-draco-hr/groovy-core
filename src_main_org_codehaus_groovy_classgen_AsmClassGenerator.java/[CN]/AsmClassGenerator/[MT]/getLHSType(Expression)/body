@@ -4,7 +4,7 @@
  while (false);
   if (leftExpression instanceof VariableExpression) {
     VariableExpression varExp=(VariableExpression)leftExpression;
-    Type type=varExp.getType();
+    ClassNode type=varExp.getType();
     if (isValidTypeForCast(type)) {
       return type;
     }
@@ -34,10 +34,10 @@
   }
  else   if (leftExpression instanceof FieldExpression) {
     FieldExpression fieldExp=(FieldExpression)leftExpression;
-    Type type=fieldExp.getType();
+    ClassNode type=fieldExp.getType();
     if (isValidTypeForCast(type)) {
       return type;
     }
   }
-  return Type.DYNAMIC_TYPE;
+  return ClassHelper.DYNAMIC_TYPE;
 }

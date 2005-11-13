@@ -27,7 +27,7 @@
           ConstructorNode superConstructorNode=findSuperConstructor(call);
           cv.visitVarInsn(ALOAD,0);
           loadArguments(superConstructorNode.getParameters(),arguments);
-          String descriptor=BytecodeHelper.getMethodDescriptor("void",superConstructorNode.getParameters());
+          String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,superConstructorNode.getParameters());
           cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>",descriptor);
         }
  else {
@@ -35,7 +35,7 @@
           cv.visitVarInsn(ALOAD,0);
           loadArguments(superMethodNode.getParameters(),arguments);
           String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
-          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass().getType()),method,descriptor);
+          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),method,descriptor);
         }
       }
  else {

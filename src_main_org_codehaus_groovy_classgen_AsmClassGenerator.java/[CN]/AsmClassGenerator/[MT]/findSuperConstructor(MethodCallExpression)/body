@@ -1,7 +1,7 @@
 {
   TupleExpression argExpr=(TupleExpression)call.getArguments();
   int argCount=argExpr.getExpressions().size();
-  ClassNode superClassNode=classNode.getSuperClassNode();
+  ClassNode superClassNode=classNode.getSuperClass();
   if (superClassNode != null) {
     List constructors=superClassNode.getDeclaredConstructors();
     for (Iterator iter=constructors.iterator(); iter.hasNext(); ) {
@@ -11,6 +11,6 @@
       }
     }
   }
-  throwException("No such constructor for class: " + classNode.getType().getName());
+  throwException("No such constructor for class: " + classNode.getName());
   return null;
 }

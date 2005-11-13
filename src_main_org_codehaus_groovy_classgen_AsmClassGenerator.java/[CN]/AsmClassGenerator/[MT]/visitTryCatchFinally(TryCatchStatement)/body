@@ -6,8 +6,8 @@
     final Label l0=new Label();
     cv.visitLabel(l0);
     tryStatement.visit(this);
-    int index1=defineVariable(this.createVariableName("exception"),Type.OBJECT_TYPE).getIndex();
-    int index2=defineVariable(this.createVariableName("exception"),Type.OBJECT_TYPE).getIndex();
+    int index1=defineVariable(this.createVariableName("exception"),ClassHelper.OBJECT_TYPE).getIndex();
+    int index2=defineVariable(this.createVariableName("exception"),ClassHelper.OBJECT_TYPE).getIndex();
     final Label l1=new Label();
     cv.visitJumpInsn(JSR,l1);
     final Label l2=new Label();
@@ -36,8 +36,8 @@
 );
   }
  else {
-    int finallySubAddress=defineVariable(this.createVariableName("exception"),Type.OBJECT_TYPE).getIndex();
-    int anyExceptionIndex=defineVariable(this.createVariableName("exception"),Type.OBJECT_TYPE).getIndex();
+    int finallySubAddress=defineVariable(this.createVariableName("exception"),ClassHelper.OBJECT_TYPE).getIndex();
+    int anyExceptionIndex=defineVariable(this.createVariableName("exception"),ClassHelper.OBJECT_TYPE).getIndex();
     final Label tryStart=new Label();
     cv.visitLabel(tryStart);
     tryStatement.visit(this);
@@ -47,7 +47,7 @@
     cv.visitLabel(tryEnd);
     for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
       catchStatement=(CatchStatement)it.next();
-      Type exceptionType=catchStatement.getExceptionType();
+      ClassNode exceptionType=catchStatement.getExceptionType();
       int exceptionIndex=defineVariable(catchStatement.getVariable(),exceptionType,false).getIndex();
       final Label catchStart=new Label();
       cv.visitLabel(catchStart);

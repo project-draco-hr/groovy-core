@@ -9,12 +9,12 @@
   }
   leftHandExpression=false;
   Expression rightExpression=expression.getRightExpression();
-  Type type=getLHSType(leftExpression);
-  if (type.isPrimitiveType()) {
+  ClassNode type=getLHSType(leftExpression);
+  if (ClassHelper.isPrimitiveType(type)) {
     rightExpression.visit(this);
   }
  else {
-    if (type != Type.OBJECT_TYPE) {
+    if (type != ClassHelper.OBJECT_TYPE) {
       visitCastExpression(new CastExpression(type,rightExpression));
     }
  else {

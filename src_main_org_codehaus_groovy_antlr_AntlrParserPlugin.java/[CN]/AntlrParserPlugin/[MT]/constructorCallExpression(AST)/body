@@ -1,6 +1,6 @@
 {
   AST constructorCallNode=node;
-  Type type=resolvedName(constructorCallNode);
+  ClassNode type=buildName(constructorCallNode);
   if (isType(CTOR_CALL,node) || isType(LITERAL_new,node)) {
     node=node.getFirstChild();
   }
@@ -8,7 +8,7 @@
   if (elist == null && isType(ELIST,node)) {
     elist=node;
     if ("(".equals(type.getName())) {
-      type=classNode.getType();
+      type=classNode;
     }
   }
   if (isType(ARRAY_DECLARATOR,elist)) {

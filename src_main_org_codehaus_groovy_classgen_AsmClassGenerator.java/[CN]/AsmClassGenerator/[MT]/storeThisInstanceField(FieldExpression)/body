@@ -1,8 +1,8 @@
 {
   FieldNode field=expression.getField();
   boolean holder=field.isHolder() && !isInClosureConstructor();
-  Type type=field.getType();
-  String ownerName=(field.getOwner().equals(classNode.getType())) ? internalClassName : org.objectweb.asm.Type.getInternalName(loadClass(field.getOwner()));
+  ClassNode type=field.getType();
+  String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : BytecodeHelper.getClassInternalName(field.getOwner());
   if (holder) {
     Variable tv=visitASTOREInTemp(field.getName());
     int tempIndex=tv.getIndex();

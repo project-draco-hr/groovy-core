@@ -1,8 +1,8 @@
 {
+  MixinNode[] mixins=redirect().mixins;
   boolean skip=false;
-  Type mixinName=mixin.getType();
   for (int i=0; i < mixins.length; i++) {
-    if (mixinName.equals(mixins[i].getType())) {
+    if (mixin.equals(mixins[i])) {
       skip=true;
     }
   }
@@ -10,6 +10,6 @@
     MixinNode[] newMixins=new MixinNode[mixins.length + 1];
     System.arraycopy(mixins,0,newMixins,0,mixins.length);
     newMixins[mixins.length]=mixin;
-    mixins=newMixins;
+    redirect().mixins=newMixins;
   }
 }

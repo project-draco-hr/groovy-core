@@ -1,0 +1,9 @@
+{
+  ClassNode expType=getExpressionType(expression);
+  if (!ignoreAutoboxing && ClassHelper.isPrimitiveType(type)) {
+    type=ClassHelper.getWrapper(type);
+  }
+  if (forceCast || (type != null && !type.equals(expType))) {
+    doConvertAndCast(type);
+  }
+}

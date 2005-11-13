@@ -3,29 +3,26 @@
   if (name == null) {
     name="";
   }
- else {
-    name=name + ".";
-  }
   if (getDescription() == null) {
     throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
   }
   name+=extractClassFromFileDescription();
   String baseClassName=null;
   if (unit != null)   baseClassName=unit.getConfig().getScriptBaseClass();
-  Type baseClass=null;
+  ClassNode baseClass=null;
   if (baseClassName != null) {
-    baseClass=Type.makeType(baseClassName);
+    baseClass=ClassHelper.make(baseClassName);
   }
   if (baseClass == null) {
-    baseClass=Type.SCRIPT_TYPE;
+    baseClass=ClassHelper.SCRIPT_TYPE;
   }
-  ClassNode classNode=new ClassNode(Type.makeType(name),ACC_PUBLIC,baseClass);
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
   classNode.setScript(true);
-  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,Type.VOID_TYPE,new Parameter[]{new Parameter(Type.STRING_TYPE.makeArray(),"args")},new ExpressionStatement(new MethodCallExpression(new ClassExpression(Type.makeType(InvokerHelper.class)),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode.getType()),new VariableExpression("args")})))));
-  classNode.addMethod(new MethodNode("run",ACC_PUBLIC,Type.OBJECT_TYPE,Parameter.EMPTY_ARRAY,statementBlock));
+  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE.makeArray(),"args")},new ExpressionStatement(new MethodCallExpression(new ClassExpression(ClassHelper.make(InvokerHelper.class)),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode),new VariableExpression("args")})))));
+  classNode.addMethod(new MethodNode("run",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,statementBlock));
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,new BlockStatement());
   Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new Expression[]{new VariableExpression("context")})));
-  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(Type.makeType(Binding.class),"context")},stmt);
+  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ClassHelper.make(Binding.class),"context")},stmt);
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode node=(MethodNode)iter.next();
     int modifiers=node.getModifiers();

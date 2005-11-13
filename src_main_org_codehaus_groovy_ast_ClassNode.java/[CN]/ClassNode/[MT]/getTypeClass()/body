@@ -1,0 +1,11 @@
+{
+  Class c=redirect().clazz;
+  if (c != null)   return c;
+  ClassNode component=redirect().componentType;
+  if (component != null && component.isResolved()) {
+    ClassNode cn=component.makeArray();
+    setRedirect(cn);
+    return redirect().clazz;
+  }
+  throw new GroovyBugError("ClassNode#getTypeClass for " + getName() + " is called before the type class is set ");
+}

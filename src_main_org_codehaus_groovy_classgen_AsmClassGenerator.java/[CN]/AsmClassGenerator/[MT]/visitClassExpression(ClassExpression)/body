@@ -1,11 +1,11 @@
 {
-  Type type=expression.getType();
-  if (type.isPrimitiveType()) {
-    Type objectType=type.getWrapper();
+  ClassNode type=expression.getType();
+  if (ClassHelper.isPrimitiveType(type)) {
+    ClassNode objectType=ClassHelper.getWrapper(type);
     cv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(objectType),"TYPE","Ljava/lang/Class;");
   }
  else {
-    final String staticFieldName=(type.equals(classNode.getType())) ? "class$0" : "class$" + type.getName().replace('.','$').replace('[','_').replace(';','_');
+    final String staticFieldName=(type.equals(classNode)) ? "class$0" : getStaticFieldName(type);
     syntheticStaticFields.add(staticFieldName);
     cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
     Label l0=new Label();

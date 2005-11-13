@@ -1,3 +1,9 @@
 {
-  return superClass;
+  if (!lazyInitDone) {
+    lazyClassInit();
+  }
+  if (!isResolved()) {
+    throw new GroovyBugError("Classnode#getSuperClass for " + getName() + " called before class resolving");
+  }
+  return redirect().superClass;
 }

@@ -1,7 +1,7 @@
 {
   String variableName=expression.getName();
   if (isStaticMethod() && variableName.equals("this")) {
-    visitClassExpression(new ClassExpression(classNode.getType()));
+    visitClassExpression(new ClassExpression(classNode));
     return;
   }
   if (variableName.equals("super")) {
@@ -35,24 +35,14 @@
       handled=true;
     }
   }
-  if (!handled && !variableName.equals("this")) {
-    Type classType=classNode.resolveClassName(Type.makeType(variableName));
-    if (classType != null) {
-      if (leftHandExpression) {
-        throwException("The variable name '" + variableName + "' conflicts with the class name '"+ classType.getName()+ "'. Please use another variable name");
-      }
-      visitClassExpression(new ClassExpression(classType));
-      return;
-    }
-  }
   if (!handled) {
-    Type variableType=expression.getType();
+    ClassNode variableType=expression.getType();
     variable=defineVariable(variableName,variableType);
-    if (leftHandExpression && variableType.isDynamic()) {
-      variable.setDynamic(true);
+    if (leftHandExpression && variableType == ClassHelper.DYNAMIC_TYPE) {
+      variable.setDynamicTyped(true);
     }
  else {
-      variable.setDynamic(false);
+      variable.setDynamicTyped(false);
     }
     if (isInScriptBody() || !leftHandExpression) {
       variable.setProperty(true);

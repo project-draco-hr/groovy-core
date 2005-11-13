@@ -24,16 +24,17 @@ synchronized (cache) {
     if (config != null && config.getTargetDirectory() != null)     goalPhase=Phases.OUTPUT;
     unit.compile(goalPhase);
     answer=collector.generatedClass;
-synchronized (this.loadedClasses) {
-      this.loadedClasses.addAll(collector.getLoadedClasses());
+    if (shouldCache) {
+      for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
+        Class clazz=(Class)iter.next();
+        cache.put(clazz.getName(),clazz);
+      }
     }
   }
   finally {
 synchronized (cache) {
-      if (answer == null || !shouldCache) {
-        cache.remove(name);
-      }
- else {
+      cache.remove(name);
+      if (shouldCache) {
         cache.put(name,answer);
       }
     }

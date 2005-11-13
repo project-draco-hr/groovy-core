@@ -2,13 +2,13 @@
   List answer=new ArrayList();
   ClassNode node=this;
   do {
-    for (Iterator iter=node.methods.iterator(); iter.hasNext(); ) {
+    for (Iterator iter=node.getMethods().iterator(); iter.hasNext(); ) {
       MethodNode method=(MethodNode)iter.next();
       if (name.equals(method.getName())) {
         answer.add(method);
       }
     }
-    node=node.getSuperClassNode();
+    node=node.getSuperClass();
   }
  while (node != null);
   return answer;

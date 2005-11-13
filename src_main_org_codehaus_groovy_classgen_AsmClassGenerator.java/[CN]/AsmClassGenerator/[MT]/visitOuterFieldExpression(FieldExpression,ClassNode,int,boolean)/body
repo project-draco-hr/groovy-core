@@ -1,7 +1,7 @@
 {
   FieldNode field=expression.getField();
   boolean isStatic=field.isStatic();
-  Variable fieldTemp=defineVariable(createVariableName(field.getName()),Type.OBJECT_TYPE,false);
+  Variable fieldTemp=defineVariable(createVariableName(field.getName()),ClassHelper.OBJECT_TYPE,false);
   int valueIdx=fieldTemp.getIndex();
   if (leftHandExpression && first) {
     cv.visitVarInsn(ASTORE,valueIdx);
@@ -9,11 +9,11 @@
   }
   if (steps > 1 || !isStatic) {
     cv.visitVarInsn(ALOAD,0);
-    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode.getType()));
+    cv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode));
   }
   if (steps == 1) {
     int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
-    String ownerName=BytecodeHelper.getClassInternalName(outerClassNode.getType());
+    String ownerName=BytecodeHelper.getClassInternalName(outerClassNode);
     if (leftHandExpression) {
       cv.visitVarInsn(ALOAD,valueIdx);
       boolean holder=field.isHolder() && !isInClosureConstructor();
@@ -23,7 +23,7 @@
     }
     cv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
     if (!leftHandExpression) {
-      if (field.getType().isPrimitiveType()) {
+      if (ClassHelper.isPrimitiveType(field.getType())) {
         helper.box(field.getType());
       }
     }

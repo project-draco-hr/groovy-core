@@ -4,7 +4,7 @@
   while (keys.hasNext()) {
     String name=(String)keys.next();
     SourceUnit source=(SourceUnit)sources.get(name);
-    if (source.phase <= phase) {
+    if ((source.phase < phase) || (source.phase == phase && !source.phaseComplete)) {
       try {
         body.call(source);
       }

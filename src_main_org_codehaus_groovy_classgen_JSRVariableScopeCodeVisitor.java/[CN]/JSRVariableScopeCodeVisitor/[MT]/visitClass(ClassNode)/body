@@ -9,14 +9,9 @@
   ClassNode classBackup=currentClass;
   currentClass=node;
   HashMap declares=currentScope.declares;
-  try {
-    addVarNames(node);
-    addVarNames(node.getOuterClass(),currentScope.visibles,true);
-    addVarNames(node.getSuperClass(),currentScope.visibles,true);
-  }
- catch (  ClassNotFoundException cnfe) {
-    cnfe.printStackTrace();
-  }
+  addVarNames(node);
+  addVarNames(node.getOuterClass(),currentScope.visibles,true);
+  addVarNames(node.getSuperClass(),currentScope.visibles,true);
   node.visitContents(this);
   currentClass=classBackup;
   currentScope=scope;

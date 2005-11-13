@@ -1,5 +1,5 @@
 {
-  ClassNode classNode=new ClassNode(Type.makeType("Foo"),ACC_PUBLIC,Type.OBJECT_TYPE);
+  ClassNode classNode=new ClassNode("Foo",ACC_PUBLIC,ClassHelper.OBJECT_TYPE);
   GStringExpression compositeStringExpr=new GStringExpression("hello ${user}!");
   compositeStringExpr.addString(new ConstantExpression("Hello "));
   compositeStringExpr.addValue(new VariableExpression("user"));
@@ -10,7 +10,7 @@
   block.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"println",new VariableExpression("str"))));
   block.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("text"),Token.newSymbol("=",-1,-1),new MethodCallExpression(new VariableExpression("str"),"toString",ConstantExpression.NULL))));
   block.addStatement(new AssertStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("text"),Token.newSymbol("==",-1,-1),new ConstantExpression("Hello World!")))));
-  classNode.addMethod(new MethodNode("stringDemo",ACC_PUBLIC,Type.VOID_TYPE,Parameter.EMPTY_ARRAY,block));
+  classNode.addMethod(new MethodNode("stringDemo",ACC_PUBLIC,ClassHelper.VOID_TYPE,Parameter.EMPTY_ARRAY,block));
   Class fooClass=loadClass(classNode);
   assertTrue("Loaded a new class",fooClass != null);
   Object bean=fooClass.newInstance();

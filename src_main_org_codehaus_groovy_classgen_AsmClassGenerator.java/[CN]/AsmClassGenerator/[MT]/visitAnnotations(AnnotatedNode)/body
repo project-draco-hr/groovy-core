@@ -1,14 +1,13 @@
 {
   Map annotionMap=node.getAnnotations();
   if (annotionMap.isEmpty())   return;
-  Iterator it=annotionMap.keySet().iterator();
+  Iterator it=annotionMap.values().iterator();
   while (it.hasNext()) {
-    String clazz=(String)it.next();
-    if (clazz.equals("Property"))     continue;
-    Type type=Type.makeType(clazz);
-    type=classNode.resolveClassName(type,"unable to find class for annotation");
+    AnnotationNode an=(AnnotationNode)it.next();
+    if (an.isBuiltIn())     continue;
+    ClassNode type=an.getClassNode();
+    String clazz=type.getName();
     AnnotationVisitor av=cw.visitAnnotation(BytecodeHelper.formatNameForClassLoading(clazz),false);
-    AnnotationNode an=(AnnotationNode)node.getAnnotations(clazz);
     Iterator mIt=an.getMembers().keySet().iterator();
     while (mIt.hasNext()) {
       String name=(String)mIt.next();

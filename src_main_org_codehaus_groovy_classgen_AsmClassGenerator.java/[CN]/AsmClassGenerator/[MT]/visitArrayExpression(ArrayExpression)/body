@@ -1,5 +1,5 @@
 {
-  Type type=expression.getType().getComponentType();
+  ClassNode type=expression.getType().getComponentType();
   String typeName=BytecodeHelper.getClassInternalName(type);
   Expression sizeExpression=expression.getSizeExpression();
   int size=0;
@@ -12,37 +12,37 @@
     helper.pushConstant(size);
   }
   int storeIns=AASTORE;
-  if (type.isPrimitiveType()) {
+  if (ClassHelper.isPrimitiveType(type)) {
     int primType=0;
-    if (type == Type.boolean_TYPE) {
+    if (type == ClassHelper.boolean_TYPE) {
       primType=T_BOOLEAN;
       storeIns=BASTORE;
     }
- else     if (type == Type.char_TYPE) {
+ else     if (type == ClassHelper.char_TYPE) {
       primType=T_CHAR;
       storeIns=CASTORE;
     }
- else     if (type == Type.float_TYPE) {
+ else     if (type == ClassHelper.float_TYPE) {
       primType=T_FLOAT;
       storeIns=FASTORE;
     }
- else     if (type == Type.double_TYPE) {
+ else     if (type == ClassHelper.double_TYPE) {
       primType=T_DOUBLE;
       storeIns=DASTORE;
     }
- else     if (type == Type.byte_TYPE) {
+ else     if (type == ClassHelper.byte_TYPE) {
       primType=T_BYTE;
       storeIns=BASTORE;
     }
- else     if (type == Type.short_TYPE) {
+ else     if (type == ClassHelper.short_TYPE) {
       primType=T_SHORT;
       storeIns=SASTORE;
     }
- else     if (type == Type.int_TYPE) {
+ else     if (type == ClassHelper.int_TYPE) {
       primType=T_INT;
       storeIns=IASTORE;
     }
- else     if (type == Type.long_TYPE) {
+ else     if (type == ClassHelper.long_TYPE) {
       primType=T_LONG;
       storeIns=LASTORE;
     }
@@ -68,8 +68,8 @@
     }
     cv.visitInsn(storeIns);
   }
-  if (type.isPrimitiveType()) {
-    int par=defineVariable("par",Type.OBJECT_TYPE).getIndex();
+  if (ClassHelper.isPrimitiveType(type)) {
+    int par=defineVariable("par",ClassHelper.OBJECT_TYPE).getIndex();
     cv.visitVarInsn(ASTORE,par);
     cv.visitVarInsn(ALOAD,par);
   }

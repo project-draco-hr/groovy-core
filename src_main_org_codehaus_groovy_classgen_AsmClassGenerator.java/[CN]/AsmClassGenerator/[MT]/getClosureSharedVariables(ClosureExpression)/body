@@ -17,7 +17,7 @@
   for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
     String var=(String)iter.next();
     if (outerDecls.contains(var) && (isNotFieldOfOutermostClass(var))) {
-      Type type=getVariableType(var);
+      ClassNode type=getVariableType(var);
       vars.add(new Parameter(type,var));
       varSet.add(var);
     }
@@ -25,7 +25,7 @@
   for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
     String var=(String)iter.next();
     if (innerDecls.contains(var) && (isNotFieldOfOutermostClass(var)) && !varSet.contains(var)) {
-      Type type=getVariableType(var);
+      ClassNode type=getVariableType(var);
       vars.add(new Parameter(type,var));
     }
   }

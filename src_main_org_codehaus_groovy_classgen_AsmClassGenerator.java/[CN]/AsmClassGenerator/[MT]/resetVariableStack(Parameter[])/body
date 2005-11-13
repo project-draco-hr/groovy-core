@@ -4,14 +4,14 @@
   scope=new BlockScope(null);
   definingParameters=true;
   if (!isStaticMethod()) {
-    defineVariable("this",classNode.getType()).getIndex();
+    defineVariable("this",classNode).getIndex();
   }
   for (int i=0; i < parameters.length; i++) {
     Parameter parameter=parameters[i];
-    Type type=parameter.getType();
+    ClassNode type=parameter.getType();
     Variable v=defineVariable(parameter.getName(),type);
     int idx=v.getIndex();
-    if (type.isPrimitiveType()) {
+    if (ClassHelper.isPrimitiveType(type)) {
       helper.load(type,idx);
       helper.box(type);
       cv.visitVarInsn(ASTORE,idx);

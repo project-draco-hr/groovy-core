@@ -1,28 +1,24 @@
 {
   onLineNumber(loop,"visitForLoop");
   Class elemType=null;
-  Type variableType=loop.getVariableType();
+  ClassNode variableType=loop.getVariableType();
   Variable variable=defineVariable(loop.getVariable(),variableType,true);
   if (isInScriptBody()) {
     variable.setProperty(true);
   }
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
-  final Variable iterTemp=storeInTemp("iterator",Type.makeType(java.util.Iterator.class));
+  final Variable iterTemp=storeInTemp("iterator",ClassHelper.make(java.util.Iterator.class));
   final int iteratorIdx=iterTemp.getIndex();
   pushBlockScope();
   Label continueLabel=scope.getContinueLabel();
   cv.visitJumpInsn(GOTO,continueLabel);
   Label label2=new Label();
   cv.visitLabel(label2);
-  final Class elemClass=elemType;
   BytecodeExpression expression=new BytecodeExpression(){
     public void visit(    GroovyCodeVisitor visitor){
       cv.visitVarInsn(ALOAD,iteratorIdx);
       iteratorNextMethod.call(cv);
-    }
-    protected void resolveType(    AsmClassGenerator resolver){
-      setType(Type.makeType(elemClass));
     }
   }
 ;

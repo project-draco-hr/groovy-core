@@ -1,7 +1,14 @@
 {
-  String name=node.getType().getName();
-  if (classes.containsKey(name)) {
+  node=node.redirect();
+  String name=node.getName();
+  Object stored=classes.get(name);
+  if (stored != null && stored != node) {
     throw new RuntimeException("Error: duplicate class declaration for name: " + name + " and class: "+ node);
   }
   classes.put(name,node);
+  if (classesToCompile.containsKey(name)) {
+    ClassNode cn=(ClassNode)classesToCompile.get(name);
+    cn.setRedirect(node);
+    classesToCompile.remove(name);
+  }
 }
