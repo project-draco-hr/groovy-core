@@ -1,0 +1,16 @@
+{
+  String name=type.getName();
+  if (cachedClasses.get(name) == NO_CLASS)   return false;
+  if (name.startsWith("java."))   return false;
+  if (name.indexOf('$') != -1)   return false;
+  ModuleNode module=currentClass.getModule();
+  if (module.hasPackageName() && name.indexOf('.') == -1)   return false;
+  GroovyClassLoader gcl=compilationUnit.getClassLoader();
+  File f=gcl.getResourceLoader().loadGroovyFile(name);
+  if (f != null) {
+    compilationUnit.addSource(f);
+    currentClass.getCompileUnit().addClassNodeToCompile(type);
+    return true;
+  }
+  return false;
+}

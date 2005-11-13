@@ -1,0 +1,10 @@
+{
+  Expression left=transform(be.getLeftExpression());
+  if (be.getOperation().getType() == Types.ASSIGNMENT_OPERATOR && left instanceof ClassExpression) {
+    ClassExpression ce=(ClassExpression)left;
+    addError("you tried to assign a value to " + ce.getType().getName(),be.getLeftExpression());
+    return be;
+  }
+  Expression right=transform(be.getRightExpression());
+  return new BinaryExpression(left,be.getOperation(),right);
+}

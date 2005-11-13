@@ -1,0 +1,12 @@
+{
+  ClassNode oldNode=currentClass;
+  currentClass=node;
+  ClassNode sn=node.getSuperClass();
+  if (sn != null)   resolveOrFail(sn,node);
+  ClassNode[] interfaces=node.getInterfaces();
+  for (int i=0; i < interfaces.length; i++) {
+    resolveOrFail(interfaces[i],node);
+  }
+  node.visitContents(this);
+  currentClass=oldNode;
+}

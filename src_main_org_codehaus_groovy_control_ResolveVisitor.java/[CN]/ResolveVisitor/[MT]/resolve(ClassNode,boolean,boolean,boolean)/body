@@ -1,0 +1,18 @@
+{
+  if (type.isResolved())   return true;
+  if (type.isArray()) {
+    ClassNode element=type.getComponentType();
+    boolean resolved=resolve(element,testModuleImports,testDefaultImports,testStaticInnerClasses);
+    if (resolved) {
+      ClassNode cn=element.makeArray();
+      type.setRedirect(cn);
+    }
+    return resolved;
+  }
+  if (currentClass == type)   return true;
+  if (currentClass.getNameWithoutPackage().equals(type.getName())) {
+    type.setRedirect(currentClass);
+    return true;
+  }
+  return resolveFromModule(type,testModuleImports) || resolveFromCompileUnit(type) || resovleFromDefaultImports(type,testDefaultImports)|| resolveFromStaticInnerClasses(type,testStaticInnerClasses)|| resolveFromClassCache(type)|| resolveToScript(type)|| resolveToClass(type);
+}

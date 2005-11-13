@@ -1,0 +1,14 @@
+{
+  testDefaultImports&=!type.hasPackageName();
+  if (testDefaultImports) {
+    for (int i=0, size=DEFAULT_IMPORTS.length; i < size; i++) {
+      String packagePrefix=DEFAULT_IMPORTS[i];
+      String name=type.getName();
+      String fqn=packagePrefix + name;
+      type.setName(fqn);
+      if (resolve(type,false,false,false))       return true;
+      type.setName(name);
+    }
+  }
+  return false;
+}

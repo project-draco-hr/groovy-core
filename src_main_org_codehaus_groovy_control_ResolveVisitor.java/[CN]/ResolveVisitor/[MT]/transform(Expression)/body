@@ -1,0 +1,28 @@
+{
+  if (exp == null)   return null;
+  if (exp instanceof VariableExpression) {
+    return transformVariableExpression((VariableExpression)exp);
+  }
+ else   if (exp instanceof PropertyExpression) {
+    return transformPropertyExpression((PropertyExpression)exp);
+  }
+ else   if (exp instanceof DeclarationExpression) {
+    return transformDeclarationExpression((DeclarationExpression)exp);
+  }
+ else   if (exp instanceof BinaryExpression) {
+    return transformBinaryExpression((BinaryExpression)exp);
+  }
+ else   if (exp instanceof MethodCallExpression) {
+    return transformMethodCallExpression((MethodCallExpression)exp);
+  }
+ else   if (exp instanceof ClosureExpression) {
+    return transformClosureExpression((ClosureExpression)exp);
+  }
+ else   if (exp instanceof ConstructorCallExpression) {
+    return transformConstructorCallExpression((ConstructorCallExpression)exp);
+  }
+ else {
+    resolveOrFail(exp.getType(),exp);
+    return exp.transformExpression(this);
+  }
+}

@@ -1,0 +1,10 @@
+{
+  Parameter[] paras=ce.getParameters();
+  for (int i=0; i < paras.length; i++) {
+    ClassNode t=paras[i].getType();
+    resolveOrFail(t,ce);
+  }
+  Statement code=ce.getCode();
+  if (code != null)   code.visit(this);
+  return new ClosureExpression(paras,code);
+}

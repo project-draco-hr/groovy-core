@@ -1,0 +1,12 @@
+{
+  Expression oldLeft=de.getLeftExpression();
+  Expression left=transform(oldLeft);
+  if (left != oldLeft) {
+    ClassExpression ce=(ClassExpression)left;
+    addError("you tried to assign a value to " + ce.getType().getName(),oldLeft);
+    return de;
+  }
+  Expression right=transform(de.getRightExpression());
+  if (right == de.getRightExpression())   return de;
+  return new DeclarationExpression((VariableExpression)left,de.getOperation(),right);
+}

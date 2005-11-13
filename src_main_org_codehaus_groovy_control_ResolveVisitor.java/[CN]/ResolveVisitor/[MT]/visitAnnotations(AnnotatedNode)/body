@@ -1,0 +1,11 @@
+{
+  Map annotionMap=node.getAnnotations();
+  if (annotionMap.isEmpty())   return;
+  Iterator it=annotionMap.values().iterator();
+  while (it.hasNext()) {
+    AnnotationNode an=(AnnotationNode)it.next();
+    if (an.isBuiltIn())     continue;
+    ClassNode type=an.getClassNode();
+    resolveOrFail(type,"unable to find class for annotation",an);
+  }
+}
