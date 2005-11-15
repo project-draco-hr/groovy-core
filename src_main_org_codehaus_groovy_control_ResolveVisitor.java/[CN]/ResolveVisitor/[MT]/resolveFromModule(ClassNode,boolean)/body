@@ -15,33 +15,36 @@
   }
   type.setName(name);
 {
-    String aliased=module.getImport(name);
-    if (aliased != null && !aliased.equals(name)) {
-      type.setName(aliased);
-      boolean useInnerStaticClasses=aliased.indexOf('.') == -1;
-      if (resolve(type,true,true,useInnerStaticClasses))       return true;
-      type.setName(name);
+    String pname=name;
+    int index=name.length();
+    while (true) {
+      pname=name.substring(0,index);
+      String aliased=module.getImport(pname);
+      if (aliased != null && !aliased.equals(name)) {
+        if (pname.length() < name.length()) {
+          aliased+=name.substring(pname.length());
+        }
+        type.setName(aliased);
+        if (resolve(type,true,true,true))         return true;
+        type.setName(name);
+      }
+      index=pname.lastIndexOf('.');
+      if (index == -1)       break;
     }
   }
-  testModuleImports&=!type.hasPackageName();
   if (testModuleImports) {
     String packageName="";
     if (module.hasPackageName())     packageName=module.getPackageName();
     type.setName(packageName + name);
     boolean resolved=resolve(type,false,false,false);
     List packages=module.getImportPackages();
-    ClassNode iType=ClassHelper.make(name);
+    ClassNode iType=ClassHelper.makeWithoutCaching(name);
     for (Iterator iter=packages.iterator(); iter.hasNext(); ) {
       String packagePrefix=(String)iter.next();
       String fqn=packagePrefix + name;
       iType.setName(fqn);
-      if (resolve(iType,false,false,false)) {
-        if (resolved) {
-          addError("reference to " + name + " is ambigous, both class "+ type.getName()+ " and "+ fqn+ " match",type);
-        }
- else {
-          type.setRedirect(iType);
-        }
+      if (resolve(iType,false,false,true)) {
+        ambigousClass(type,iType,name,resolved);
         return true;
       }
       iType.setName(name);
