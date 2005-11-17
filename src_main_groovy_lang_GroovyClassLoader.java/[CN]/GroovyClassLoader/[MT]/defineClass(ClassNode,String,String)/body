@@ -7,7 +7,7 @@
   }
   CompilationUnit unit=new CompilationUnit(config,codeSource,this);
   try {
-    ClassCollector collector=createCollector(unit);
+    ClassCollector collector=createCollector(unit,classNode.getModule().getContext());
     unit.addClassNode(classNode);
     unit.setClassgenCallback(collector);
     unit.compile(Phases.CLASS_GENERATION);

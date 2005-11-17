@@ -3,7 +3,12 @@
   Class theClass=cl.defineClass(classNode.getName(),code,0,code.length,unit.getAST().getCodeSource());
   this.loadedClasses.add(theClass);
   if (generatedClass == null) {
-    generatedClass=theClass;
+    ModuleNode mn=classNode.getModule();
+    SourceUnit msu=null;
+    if (mn != null)     msu=mn.getContext();
+    ClassNode main=null;
+    if (mn != null)     main=(ClassNode)mn.getClasses().get(0);
+    if (msu == su && main == classNode)     generatedClass=theClass;
   }
   return theClass;
 }
