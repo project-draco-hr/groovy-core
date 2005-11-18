@@ -1,10 +1,10 @@
 {
   String name=type.getName();
   if (cachedClasses.get(name) == NO_CLASS)   return false;
-  if (name.startsWith("java."))   return false;
-  if (name.indexOf('$') != -1)   return false;
+  if (name.startsWith("java."))   return type.isResolved();
+  if (name.indexOf('$') != -1)   return type.isResolved();
   ModuleNode module=currentClass.getModule();
-  if (module.hasPackageName() && name.indexOf('.') == -1)   return false;
+  if (module.hasPackageName() && name.indexOf('.') == -1)   return type.isResolved();
   GroovyClassLoader gcl=compilationUnit.getClassLoader();
   File f=gcl.getResourceLoader().loadGroovyFile(name);
   if (f != null) {
