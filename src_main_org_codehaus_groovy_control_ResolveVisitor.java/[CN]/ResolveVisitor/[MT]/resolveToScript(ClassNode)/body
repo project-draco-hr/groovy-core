@@ -8,6 +8,12 @@
   GroovyClassLoader gcl=compilationUnit.getClassLoader();
   File f=gcl.getResourceLoader().loadGroovyFile(name);
   if (f != null) {
+    if (type.isResolved()) {
+      Class cls=type.getTypeClass();
+      if (!isSourceNewer(f,cls))       return true;
+      cachedClasses.remove(type.getName());
+      type.setRedirect(null);
+    }
     compilationUnit.addSource(f);
     currentClass.getCompileUnit().addClassNodeToCompile(type);
     return true;
