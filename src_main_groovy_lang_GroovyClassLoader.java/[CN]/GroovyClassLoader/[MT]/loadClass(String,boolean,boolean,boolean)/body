@@ -37,9 +37,14 @@ synchronized (cache) {
   }
   if (lookupScriptFiles) {
     try {
-      File source=(File)AccessController.doPrivileged(new PrivilegedAction(){
+      URL source=(URL)AccessController.doPrivileged(new PrivilegedAction(){
         public Object run(){
-          return resourceLoader.loadGroovyFile(name);
+          try {
+            return resourceLoader.loadGroovySource(name);
+          }
+ catch (          MalformedURLException e) {
+            return null;
+          }
         }
       }
 );
@@ -48,7 +53,7 @@ synchronized (cache) {
 synchronized (cache) {
             cache.put(name,PARSING.class);
           }
-          cls=parseClass(source);
+          cls=parseClass(source.openStream());
         }
       }
     }
