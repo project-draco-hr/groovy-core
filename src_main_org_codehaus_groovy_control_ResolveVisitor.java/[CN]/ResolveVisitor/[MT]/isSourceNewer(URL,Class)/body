@@ -1,6 +1,15 @@
 {
   try {
-    return source.openConnection().getLastModified() > getTimeStamp(cls);
+    long lastMod;
+    if (source.getProtocol().equals("file")) {
+      String path=source.getPath().replace('/',File.separatorChar).replace('|',':');
+      File file=new File(path);
+      lastMod=file.lastModified();
+    }
+ else {
+      lastMod=source.openConnection().getLastModified();
+    }
+    return lastMod > getTimeStamp(cls);
   }
  catch (  IOException e) {
     return false;
