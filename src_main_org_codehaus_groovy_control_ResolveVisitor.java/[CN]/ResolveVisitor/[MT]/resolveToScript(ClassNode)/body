@@ -1,6 +1,7 @@
 {
   String name=type.getName();
   if (cachedClasses.get(name) == NO_CLASS)   return false;
+  if (cachedClasses.get(name) == SCRIPT)   cachedClasses.put(name,NO_CLASS);
   if (name.startsWith("java."))   return type.isResolved();
   if (name.indexOf('$') != -1)   return type.isResolved();
   ModuleNode module=currentClass.getModule();
