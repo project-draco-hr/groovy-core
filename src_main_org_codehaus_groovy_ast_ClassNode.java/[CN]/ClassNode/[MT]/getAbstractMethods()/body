@@ -1,15 +1,15 @@
 {
   HashSet abstractNodes=new HashSet();
-  abstractNodes.add(this);
-  ClassNode parent=this.getSuperClass();
+  abstractNodes.add(this.redirect());
+  ClassNode parent=this.getSuperClass().redirect();
   while (parent != null && ((parent.getModifiers() & Opcodes.ACC_ABSTRACT) != 0)) {
     abstractNodes.add(parent);
-    parent=parent.getSuperClass();
+    parent=parent.getSuperClass().redirect();
   }
   List result=new ArrayList();
   for (Iterator methIt=getAllDeclaredMethods().iterator(); methIt.hasNext(); ) {
     MethodNode method=(MethodNode)methIt.next();
-    if (abstractNodes.contains(method.getDeclaringClass()) && (method.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
+    if (abstractNodes.contains(method.getDeclaringClass().redirect()) && (method.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
       result.add(method);
     }
   }
