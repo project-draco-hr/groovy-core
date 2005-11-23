@@ -1,6 +1,7 @@
 {
   HashSet abstractNodes=new HashSet();
-  ClassNode parent=this;
+  abstractNodes.add(this);
+  ClassNode parent=this.getSuperClass();
   while (parent != null && ((parent.getModifiers() & Opcodes.ACC_ABSTRACT) != 0)) {
     abstractNodes.add(parent);
     parent=parent.getSuperClass();
