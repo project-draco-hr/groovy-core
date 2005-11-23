@@ -9,7 +9,7 @@
   List result=new ArrayList();
   for (Iterator methIt=getAllDeclaredMethods().iterator(); methIt.hasNext(); ) {
     MethodNode method=(MethodNode)methIt.next();
-    if (abstractNodes.contains(method.getDeclaringClass())) {
+    if (abstractNodes.contains(method.getDeclaringClass()) && (method.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
       result.add(method);
     }
   }
