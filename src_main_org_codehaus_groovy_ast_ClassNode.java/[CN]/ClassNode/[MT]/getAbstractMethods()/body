@@ -1,8 +1,14 @@
 {
+  HashSet abstractNodes=new HashSet();
+  ClassNode parent=this;
+  while (parent != null && ((parent.getModifiers() & Opcodes.ACC_ABSTRACT) != 0)) {
+    abstractNodes.add(parent);
+    parent=parent.getSuperClass();
+  }
   List result=new ArrayList();
   for (Iterator methIt=getAllDeclaredMethods().iterator(); methIt.hasNext(); ) {
     MethodNode method=(MethodNode)methIt.next();
-    if (method.isAbstract()) {
+    if (abstractNodes.contains(method.getDeclaringClass())) {
       result.add(method);
     }
   }
