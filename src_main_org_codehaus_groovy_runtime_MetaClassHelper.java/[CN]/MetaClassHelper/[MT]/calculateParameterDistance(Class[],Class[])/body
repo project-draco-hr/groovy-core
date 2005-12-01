@@ -3,12 +3,16 @@
   for (int i=0; i < arguments.length; i++) {
     if (parameters[i] == arguments[i])     continue;
     if (parameters[i].isInterface()) {
-      dist+=2;
+      dist+=3;
       continue;
     }
     if (arguments[i] != null) {
+      if (autoboxType(parameters[i]) == autoboxType(arguments[i])) {
+        dist+=1;
+        continue;
+      }
       if (arguments[i].isPrimitive() || parameters[i].isPrimitive()) {
-        dist++;
+        dist+=2;
         continue;
       }
       dist++;
@@ -20,7 +24,7 @@
           break;
         }
         clazz=clazz.getSuperclass();
-        dist+=2;
+        dist+=3;
       }
     }
  else {

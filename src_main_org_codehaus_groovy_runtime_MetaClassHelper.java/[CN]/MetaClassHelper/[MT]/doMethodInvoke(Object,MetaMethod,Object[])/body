@@ -12,7 +12,22 @@
       Object[] newArg=new Object[paramTypes.length];
       System.arraycopy(argumentArray,0,newArg,0,newArg.length - 1);
       Object[] vargs=new Object[argumentArray.length - newArg.length + 1];
-      System.arraycopy(argumentArray,newArg.length - 1,vargs,0,vargs.length);
+      Class lastArgumentClass=null;
+      Object lastArgument=argumentArray[argumentArray.length - 1];
+      if (lastArgument != null) {
+        lastArgumentClass=lastArgument.getClass();
+      }
+      if (argumentArray.length == paramTypes.length && lastArgumentClass != null && lastArgumentClass.isArray()) {
+        lastArgumentClass=lastArgumentClass.getComponentType();
+        if (lastArgumentClass.isPrimitive()) {
+          lastArgument=asWrapperArray(lastArgument,lastArgumentClass);
+        }
+        System.arraycopy(lastArgument,newArg.length - 1,vargs,0,vargs.length);
+        argumentArray=newArg;
+      }
+ else {
+        System.arraycopy(argumentArray,newArg.length - 1,vargs,0,vargs.length);
+      }
       if (vargs.length == 1 && vargs[0] == null)       newArg[newArg.length - 1]=null;
  else {
         newArg[newArg.length - 1]=vargs;

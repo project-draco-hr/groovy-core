@@ -3,13 +3,9 @@
   AST node=typeNode.getFirstChild();
   if (node != null) {
     if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
-      return ClassHelper.make(qualifiedName(node.getFirstChild())).makeArray();
+      return makeType(node).makeArray();
     }
-    answer=ClassHelper.make(qualifiedName(node));
-    node=node.getNextSibling();
-    if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
-      return answer.makeArray();
-    }
+    return ClassHelper.make(qualifiedName(node));
   }
   return answer;
 }

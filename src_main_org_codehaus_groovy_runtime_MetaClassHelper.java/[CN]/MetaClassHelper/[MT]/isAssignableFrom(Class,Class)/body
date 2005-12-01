@@ -1,36 +1,34 @@
 {
-  if (mostSpecificType == null)   return true;
-  if (mostSpecificType.isPrimitive() && type.isPrimitive()) {
-    if (mostSpecificType == type) {
-      return true;
-    }
- else {
-      if (type == int.class) {
-        return mostSpecificType == int.class || mostSpecificType == short.class || mostSpecificType == byte.class;
-      }
- else       if (type == double.class) {
-        return mostSpecificType == double.class || mostSpecificType == int.class || mostSpecificType == long.class || mostSpecificType == short.class || mostSpecificType == byte.class || mostSpecificType == float.class;
-      }
- else       if (type == long.class) {
-        return mostSpecificType == long.class || mostSpecificType == int.class || mostSpecificType == short.class || mostSpecificType == byte.class;
-      }
- else       if (type == float.class) {
-        return mostSpecificType == float.class || mostSpecificType == int.class || mostSpecificType == long.class || mostSpecificType == short.class || mostSpecificType == byte.class;
-      }
- else       if (type == short.class) {
-        return mostSpecificType == short.class || mostSpecificType == byte.class;
-      }
- else {
-        return false;
-      }
-    }
+  if (classToTransformFrom == null)   return true;
+  classToTransformTo=autoboxType(classToTransformTo);
+  classToTransformFrom=autoboxType(classToTransformFrom);
+  if (classToTransformTo == classToTransformFrom) {
+    return true;
   }
-  if (type == String.class) {
-    return mostSpecificType == String.class || GString.class.isAssignableFrom(mostSpecificType);
+ else   if (classToTransformTo == Integer.class) {
+    if (classToTransformFrom == Integer.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
   }
-  boolean answer=type.isAssignableFrom(mostSpecificType);
-  if (!answer) {
-    answer=autoboxType(type).isAssignableFrom(autoboxType(mostSpecificType));
+ else   if (classToTransformTo == Double.class) {
+    if (classToTransformFrom == Double.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == Float.class || classToTransformFrom == BigDecimal.class || classToTransformFrom == BigInteger.class)     return true;
   }
+ else   if (classToTransformTo == BigDecimal.class) {
+    if (classToTransformFrom == Double.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == Float.class || classToTransformFrom == BigDecimal.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == BigInteger.class) {
+    if (classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == Long.class) {
+    if (classToTransformFrom == Long.class || classToTransformFrom == Integer.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == Float.class) {
+    if (classToTransformFrom == Float.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == Short.class) {
+    if (classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == String.class) {
+    if (classToTransformFrom == String.class || GString.class.isAssignableFrom(classToTransformFrom))     return true;
+  }
+  boolean answer=classToTransformTo.isAssignableFrom(classToTransformFrom);
   return answer;
 }

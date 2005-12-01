@@ -11,11 +11,7 @@
   }
  else   if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
     AST child=node.getFirstChild();
-    ClassNode ret=buildName(child);
-    if (!ret.isArray()) {
-      ret=ret.makeArray();
-    }
-    return ret;
+    return buildName(child).makeArray();
   }
  else {
     String identifier=node.getText();
