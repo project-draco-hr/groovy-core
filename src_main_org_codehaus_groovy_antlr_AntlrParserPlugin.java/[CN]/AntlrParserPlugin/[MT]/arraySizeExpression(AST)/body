@@ -1,0 +1,20 @@
+{
+  List list;
+  Expression size=null;
+  if (isType(ARRAY_DECLARATOR,node)) {
+    AST right=node.getNextSibling();
+    if (right != null) {
+      size=expression(right);
+    }
+ else {
+      size=ConstantExpression.EMTPY_EXPRESSION;
+    }
+    list=arraySizeExpression(node.getFirstChild());
+  }
+ else {
+    size=expression(node);
+    list=new ArrayList();
+  }
+  list.add(size);
+  return list;
+}

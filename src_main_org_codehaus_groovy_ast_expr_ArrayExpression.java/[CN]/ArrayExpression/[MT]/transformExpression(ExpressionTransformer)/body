@@ -1,3 +1,6 @@
 {
-  return new ArrayExpression(elementType,transformExpressions(expressions,transformer),transformer.transform(sizeExpression));
+  List exprList=transformExpressions(expressions,transformer);
+  List sizes=null;
+  if (sizeExpression != null)   sizes=transformExpressions(sizeExpression,transformer);
+  return new ArrayExpression(elementType,exprList,sizes);
 }

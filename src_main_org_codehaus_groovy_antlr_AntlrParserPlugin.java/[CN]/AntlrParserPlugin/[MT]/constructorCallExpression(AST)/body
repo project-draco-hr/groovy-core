@@ -16,8 +16,8 @@
     if (expressionNode == null) {
       throw new ASTRuntimeException(elist,"No expression for the array constructor call");
     }
-    Expression size=expression(expressionNode);
-    ArrayExpression arrayExpression=new ArrayExpression(type,size);
+    List size=arraySizeExpression(expressionNode);
+    ArrayExpression arrayExpression=new ArrayExpression(type,null,size);
     configureAST(arrayExpression,constructorCallNode);
     return arrayExpression;
   }
