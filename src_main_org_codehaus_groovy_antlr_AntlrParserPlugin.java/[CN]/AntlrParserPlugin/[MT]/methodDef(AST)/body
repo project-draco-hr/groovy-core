@@ -24,6 +24,14 @@
   assertNodeType(PARAMETERS,node);
   Parameter[] parameters=parameters(node);
   node=node.getNextSibling();
+  ClassNode[] exceptions=new ClassNode[0];
+  if (isType(LITERAL_throws,node)) {
+    AST throwsNode=node.getFirstChild();
+    List exceptionList=new ArrayList();
+    throwsList(throwsNode,exceptionList);
+    exceptions=(ClassNode[])exceptionList.toArray(exceptions);
+    node=node.getNextSibling();
+  }
   Statement code=null;
   if ((modifiers & Opcodes.ACC_ABSTRACT) == 0) {
     if (node == null) {
@@ -32,7 +40,7 @@
     assertNodeType(SLIST,node);
     code=statementList(node);
   }
-  MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,code);
+  MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
   methodNode.addAnnotations(annotations);
   configureAST(methodNode,methodDef);
   if (classNode != null) {

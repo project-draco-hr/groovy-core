@@ -3,7 +3,12 @@
   this.methodNode=null;
   this.variableScope=null;
   String methodType=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,node.getParameters());
-  cv=cw.visitMethod(node.getModifiers(),"<init>",methodType,null,null);
+  ClassNode[] nodeExceptions=node.getExceptions();
+  String[] exceptions=new String[nodeExceptions.length];
+  for (int i=0; i < nodeExceptions.length; i++) {
+    exceptions[i]=BytecodeHelper.getClassInternalName(nodeExceptions[i]);
+  }
+  cv=cw.visitMethod(node.getModifiers(),"<init>",methodType,null,exceptions);
   helper=new BytecodeHelper(cv);
   findMutableVariables();
   resetVariableStack(node.getParameters());

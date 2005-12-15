@@ -3,7 +3,12 @@
   this.methodNode=node;
   this.variableScope=null;
   String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
-  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,null);
+  ClassNode[] nodeExceptions=node.getExceptions();
+  String[] exceptions=new String[nodeExceptions.length];
+  for (int i=0; i < nodeExceptions.length; i++) {
+    exceptions[i]=BytecodeHelper.getClassInternalName(nodeExceptions[i]);
+  }
+  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,exceptions);
   visitAnnotations(node);
   if (node.getCode() != null) {
     Label labelStart=new Label();

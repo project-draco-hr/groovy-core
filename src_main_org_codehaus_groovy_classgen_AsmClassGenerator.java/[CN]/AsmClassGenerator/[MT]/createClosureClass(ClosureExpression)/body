@@ -20,7 +20,7 @@
   if (isInScriptBody()) {
     answer.setScriptBody(true);
   }
-  MethodNode method=answer.addMethod("doCall",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,expression.getCode());
+  MethodNode method=answer.addMethod("doCall",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,expression.getCode());
   method.setLineNumber(expression.getLineNumber());
   method.setColumnNumber(expression.getColumnNumber());
   VariableScope varScope=expression.getVariableScope();
@@ -31,7 +31,7 @@
     method.setVariableScope(varScope);
   }
   if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && parameters[0].getType() != ClassHelper.OBJECT_TYPE)) {
-    answer.addMethod("call",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));
+    answer.addMethod("call",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));
   }
   FieldNode ownerField=answer.addField("owner",ACC_PRIVATE,outerClass,null);
   BlockStatement block=new BlockStatement();
@@ -53,7 +53,7 @@
       paramField.setHolder(true);
       String methodName=Verifier.capitalize(paramName);
       Expression fieldExp=new FieldExpression(paramField);
-      answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,new ReturnStatement(fieldExp));
+      answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new ReturnStatement(fieldExp));
     }
  else {
       PropertyNode propertyNode=answer.addProperty(paramName,ACC_PUBLIC,type,initialValue,null,null);
@@ -65,6 +65,6 @@
   params[0]=new Parameter(outerClass,"_outerInstance");
   params[1]=new Parameter(ClassHelper.OBJECT_TYPE,"_delegate");
   System.arraycopy(localVariableParams,0,params,2,localVariableParams.length);
-  answer.addConstructor(ACC_PUBLIC,params,block);
+  answer.addConstructor(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,block);
   return answer;
 }
