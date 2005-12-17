@@ -1,28 +1,22 @@
 {
-  boolean result=false;
   if (getErrorCollector().hasErrors()) {
     Message last=(Message)getErrorCollector().getLastError();
+    Throwable cause=null;
     if (last instanceof SyntaxErrorMessage) {
-      SyntaxException cause=((SyntaxErrorMessage)last).getCause();
-      if (cause instanceof UnexpectedTokenException) {
-        Token unexpected=((UnexpectedTokenException)cause).getUnexpectedToken();
-        if (unexpected.isA(Types.EOF)) {
-          result=true;
-        }
-      }
+      cause=((SyntaxErrorMessage)last).getCause().getCause();
     }
-    if (last instanceof ExceptionMessage) {
-      ExceptionMessage exceptionMessage=(ExceptionMessage)last;
-      Exception cause=exceptionMessage.getCause();
+    if (cause != null) {
       if (cause instanceof NoViableAltException) {
-        NoViableAltException antlrException=(NoViableAltException)cause;
-        result=isEofToken(antlrException.token);
+        return isEofToken(((NoViableAltException)cause).token);
       }
-      if (cause instanceof MismatchedTokenException) {
-        MismatchedTokenException antlrException=(MismatchedTokenException)cause;
-        result=isEofToken(antlrException.token);
+ else       if (cause instanceof NoViableAltForCharException) {
+        char badChar=((NoViableAltForCharException)cause).foundChar;
+        return badChar == CharScanner.EOF_CHAR;
+      }
+ else       if (cause instanceof MismatchedTokenException) {
+        return isEofToken(((MismatchedTokenException)cause).token);
       }
     }
   }
-  return result;
+  return false;
 }
