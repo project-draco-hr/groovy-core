@@ -1,0 +1,22 @@
+{
+  AllTestSuite suite=new AllTestSuite();
+  String fileName="";
+  try {
+    String basedir=System.getProperty(SYSPROP_TEST_DIR,"./test/");
+    String pattern=System.getProperty(SYSPROP_TEST_PATTERN,"**/*Test.groovy");
+    Collection filenames=FINDER.getFileNames(basedir,pattern);
+    for (Iterator iter=filenames.iterator(); iter.hasNext(); ) {
+      fileName=(String)iter.next();
+      LOG.finest("trying to load " + fileName);
+      suite.loadTest(fileName);
+    }
+  }
+ catch (  CompilationFailedException e1) {
+    e1.printStackTrace();
+    throw new RuntimeException("CompilationFailedException when loading " + fileName,e1);
+  }
+catch (  IOException e2) {
+    throw new RuntimeException("IOException when loading " + fileName,e2);
+  }
+  return suite;
+}
