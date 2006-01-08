@@ -1,0 +1,9 @@
+{
+  if (notYetImplemented())   return;
+  ModuleNode module=parse("x = [1, 2, 3]; println(x)","Cheese.groovy");
+  assertTrue("Should have statements",!module.getStatementBlock().isEmpty());
+  List classes=module.getClasses();
+  assertEquals("Number of classes",1,classes.size());
+  ClassNode classNode=(ClassNode)classes.get(0);
+  assertEquals("Class name","Cheese",classNode.getName());
+}
