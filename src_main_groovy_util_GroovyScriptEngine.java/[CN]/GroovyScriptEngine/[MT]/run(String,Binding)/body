@@ -31,7 +31,7 @@ synchronized (script) {
       final ScriptCacheEntry finalEntry=entry;
       GroovyClassLoader groovyLoader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
         public Object run(){
-          return new GroovyClassLoader(getClass().getClassLoader()){
+          return new GroovyClassLoader(getParentClassLoader()){
             protected Class findClass(            String className) throws ClassNotFoundException {
               String filename=className.replace('.',File.separatorChar) + ".groovy";
               URLConnection dependentScriptConn=null;
