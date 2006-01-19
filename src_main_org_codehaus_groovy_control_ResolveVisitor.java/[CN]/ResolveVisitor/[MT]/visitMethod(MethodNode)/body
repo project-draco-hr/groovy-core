@@ -1,4 +1,6 @@
 {
+  VariableScope oldScope=currentScope;
+  currentScope=node.getVariableScope();
   Parameter[] paras=node.getParameters();
   for (int i=0; i < paras.length; i++) {
     ClassNode t=paras[i].getType();
@@ -12,4 +14,5 @@
   resolveOrFail(node.getReturnType(),node);
   Statement code=node.getCode();
   if (code != null)   code.visit(this);
+  currentScope=oldScope;
 }

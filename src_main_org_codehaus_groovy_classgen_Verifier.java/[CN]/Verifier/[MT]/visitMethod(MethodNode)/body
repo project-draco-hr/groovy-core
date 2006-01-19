@@ -14,7 +14,7 @@
         Statement last=(Statement)list.get(idx);
         if (last instanceof ExpressionStatement) {
           ExpressionStatement expStmt=(ExpressionStatement)last;
-          list.set(idx,new ReturnStatement(expStmt.getExpression()));
+          list.set(idx,new ReturnStatement(expStmt));
         }
  else         if (!(last instanceof ReturnStatement)) {
           list.add(new ReturnStatement(ConstantExpression.NULL));
@@ -23,7 +23,7 @@
  else {
         list.add(new ReturnStatement(ConstantExpression.NULL));
       }
-      node.setCode(new BlockStatement(filterStatements(list)));
+      node.setCode(new BlockStatement(filterStatements(list),block.getVariableScope()));
     }
   }
  else   if (!node.isAbstract()) {

@@ -1,35 +1,18 @@
 {
-  List vars=new ArrayList();
-  VariableScope outerScope=getVariableScope().createRecursiveParentScope();
-  VariableScope innerScope=expression.getVariableScope();
-  if (innerScope == null) {
-    System.out.println("No variable scope for: " + expression + " method: "+ methodNode+ " constructor: "+ constructorNode);
-    innerScope=new VariableScope(getVariableScope());
-  }
+  VariableScope scope=ce.getVariableScope();
+  Map references=scope.getReferencedLocalVariables();
+  Parameter[] ret=new Parameter[references.size()];
+  int index=0;
+  for (Iterator iter=references.values().iterator(); iter.hasNext(); ) {
+    org.codehaus.groovy.ast.Variable element=(org.codehaus.groovy.ast.Variable)iter.next();
+    if (element instanceof Parameter) {
+      ret[index]=(Parameter)element;
+    }
  else {
-    innerScope=innerScope.createRecursiveChildScope();
-  }
-  Set outerDecls=outerScope.getDeclaredVariables();
-  Set outerRefs=outerScope.getReferencedVariables();
-  Set innerDecls=innerScope.getDeclaredVariables();
-  Set innerRefs=innerScope.getReferencedVariables();
-  Set varSet=new HashSet();
-  for (Iterator iter=innerRefs.iterator(); iter.hasNext(); ) {
-    String var=(String)iter.next();
-    if (outerDecls.contains(var) && (isNotFieldOfOutermostClass(var))) {
-      ClassNode type=getVariableType(var);
-      vars.add(new Parameter(type,var));
-      varSet.add(var);
+      Parameter p=new Parameter(element.getType(),element.getName());
+      ret[index]=p;
     }
+    index++;
   }
-  for (Iterator iter=outerRefs.iterator(); iter.hasNext(); ) {
-    String var=(String)iter.next();
-    if (innerDecls.contains(var) && (isNotFieldOfOutermostClass(var)) && !varSet.contains(var)) {
-      ClassNode type=getVariableType(var);
-      vars.add(new Parameter(type,var));
-    }
-  }
-  Parameter[] answer=new Parameter[vars.size()];
-  vars.toArray(answer);
-  return answer;
+  return ret;
 }

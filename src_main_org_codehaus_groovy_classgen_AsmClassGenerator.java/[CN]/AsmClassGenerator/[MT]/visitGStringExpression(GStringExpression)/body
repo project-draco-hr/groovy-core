@@ -8,8 +8,7 @@
     visitAndAutoboxBoolean(expression.getValue(i));
     cv.visitInsn(AASTORE);
   }
-  Variable tv=visitASTOREInTemp("iterator");
-  int paramIdx=tv.getIndex();
+  int paramIdx=compileStack.defineTemporaryVariable("iterator",true);
   ClassNode innerClass=createGStringClass(expression);
   addInnerClass(innerClass);
   String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
@@ -17,5 +16,5 @@
   cv.visitInsn(DUP);
   cv.visitVarInsn(ALOAD,paramIdx);
   cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>","([Ljava/lang/Object;)V");
-  removeVar(tv);
+  compileStack.removeVar(paramIdx);
 }

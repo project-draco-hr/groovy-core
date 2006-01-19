@@ -6,5 +6,7 @@
     return be;
   }
   Expression right=transform(be.getRightExpression());
-  return new BinaryExpression(left,be.getOperation(),right);
+  Expression ret=new BinaryExpression(left,be.getOperation(),right);
+  ret.setSourcePosition(be);
+  return ret;
 }

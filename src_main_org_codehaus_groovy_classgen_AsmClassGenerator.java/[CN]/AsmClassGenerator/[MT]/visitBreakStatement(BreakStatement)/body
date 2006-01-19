@@ -1,9 +1,13 @@
 {
   onLineNumber(statement,"visitBreakStatement");
-  Label breakLabel=scope.getBreakLabel();
-  if (breakLabel != null) {
-    cv.visitJumpInsn(GOTO,breakLabel);
+  visitStatement(statement);
+  String name=statement.getLabel();
+  Label breakLabel;
+  if (name != null) {
+    breakLabel=compileStack.getNamedBreakLabel(name);
   }
  else {
+    breakLabel=compileStack.getBreakLabel();
   }
+  cv.visitJumpInsn(GOTO,breakLabel);
 }

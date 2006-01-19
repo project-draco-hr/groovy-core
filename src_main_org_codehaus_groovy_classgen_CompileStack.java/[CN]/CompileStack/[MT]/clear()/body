@@ -1,0 +1,26 @@
+{
+  clear=true;
+  Label endBlock=new Label();
+  if (false && AsmClassGenerator.CREATE_DEBUG_INFO) {
+    for (Iterator iterator=usedVariables.iterator(); iterator.hasNext(); ) {
+      Variable v=(Variable)iterator.next();
+      String type=BytecodeHelper.getTypeDescription(v.getType());
+      Label start=v.getStartLabel();
+      Label end=v.getEndLabel();
+      if (end == null)       end=endBlock;
+      mv.visitLocalVariable(v.getName(),type,null,start,end,v.getIndex());
+    }
+  }
+  stackVariables.clear();
+  usedVariables.clear();
+  scope=null;
+  mv=null;
+  resetVariableIndex(false);
+  superBlockNamedLabels.clear();
+  currentBlockNamedLabels.clear();
+  namedLoopBreakLabel.clear();
+  continueLabel=null;
+  breakLabel=null;
+  finallyLabel=null;
+  helper=null;
+}

@@ -1,0 +1,63 @@
+{
+  if ("super".equals(name) || "this".equals(name))   return null;
+  VariableScope scope=currentScope;
+  Variable var=new DynamicVariable(name,currentScope.isInStaticContext());
+  Variable dummyStart=var;
+  VariableScope dynamicScope=null;
+  while (!scope.isRoot()) {
+    if (dynamicScope == null && scope.isResolvingDynamic()) {
+      dynamicScope=scope;
+    }
+    Map declares=scope.getDeclaredVariables();
+    if (declares.get(var.getName()) != null) {
+      var=(Variable)declares.get(var.getName());
+      break;
+    }
+    Map localReferenced=scope.getReferencedLocalVariables();
+    if (localReferenced.get(var.getName()) != null) {
+      var=(Variable)localReferenced.get(var.getName());
+      break;
+    }
+    Map classReferenced=scope.getReferencedClassVariables();
+    if (classReferenced.get(var.getName()) != null) {
+      var=(Variable)classReferenced.get(var.getName());
+      break;
+    }
+    ClassNode classScope=scope.getClassScope();
+    if (classScope != null) {
+      Variable member=findClassMember(classScope,var.getName());
+      if (member != null)       var=member;
+      break;
+    }
+    scope=scope.getParent();
+  }
+  VariableScope end=scope;
+  if (scope.isRoot() && dynamicScope == null) {
+    declare(var,expression);
+    addError("The variable " + var.getName() + " is undefined in the current scope",expression);
+  }
+ else   if (scope.isRoot() && dynamicScope != null) {
+    scope=dynamicScope;
+  }
+  if (!scope.isRoot()) {
+    scope=currentScope;
+    while (scope != end) {
+      Map references=null;
+      if (end.isClassScope() || end.isRoot() || end.isReferencedClassVariable(name)) {
+        references=scope.getReferencedClassVariables();
+      }
+ else {
+        references=scope.getReferencedLocalVariables();
+        var.setClosureSharedVariable(var.isClosureSharedVariable() || inClosure);
+      }
+      references.put(var.getName(),var);
+      scope=scope.getParent();
+    }
+    if (end.isResolvingDynamic()) {
+      if (end.getDeclaredVariable(var.getName()) == null) {
+        end.getDeclaredVariables().put(var.getName(),var);
+      }
+    }
+  }
+  return var;
+}

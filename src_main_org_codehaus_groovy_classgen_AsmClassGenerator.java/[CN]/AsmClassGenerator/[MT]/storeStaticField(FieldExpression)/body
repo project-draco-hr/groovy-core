@@ -4,12 +4,9 @@
   ClassNode type=field.getType();
   String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : helper.getClassInternalName(field.getOwner());
   if (holder) {
-    Variable tv=visitASTOREInTemp(field.getName());
-    int tempIndex=tv.getIndex();
     cv.visitFieldInsn(GETSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
-    cv.visitVarInsn(ALOAD,tempIndex);
+    cv.visitInsn(SWAP);
     cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
-    removeVar(tv);
   }
  else {
     if (isInClosureConstructor()) {

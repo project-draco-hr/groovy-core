@@ -4,13 +4,10 @@
   ClassNode type=field.getType();
   String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : BytecodeHelper.getClassInternalName(field.getOwner());
   if (holder) {
-    Variable tv=visitASTOREInTemp(field.getName());
-    int tempIndex=tv.getIndex();
     cv.visitVarInsn(ALOAD,0);
     cv.visitFieldInsn(GETFIELD,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
-    cv.visitVarInsn(ALOAD,tempIndex);
+    cv.visitInsn(SWAP);
     cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
-    removeVar(tv);
   }
  else {
     if (isInClosureConstructor()) {
@@ -19,11 +16,8 @@
  else {
       doConvertAndCast(type);
     }
-    Variable tmpVar=defineVariable(createVariableName(field.getName()),field.getType(),false);
-    helper.store(tmpVar,MARK_START);
     helper.loadThis();
-    helper.load(tmpVar);
+    helper.swapObjectWith(type);
     helper.putField(field,ownerName);
-    removeVar(tmpVar);
   }
 }

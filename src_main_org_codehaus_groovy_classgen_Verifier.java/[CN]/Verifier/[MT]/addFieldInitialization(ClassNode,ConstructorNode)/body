@@ -6,10 +6,11 @@
   }
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
-    List otherStatements=new ArrayList();
+    BlockStatement block=new BlockStatement();
+    List otherStatements=block.getStatements();
     if (code instanceof BlockStatement) {
-      BlockStatement block=(BlockStatement)code;
-      otherStatements.addAll(block.getStatements());
+      block=(BlockStatement)code;
+      otherStatements=block.getStatements();
     }
  else     if (code != null) {
       otherStatements.add(code);
@@ -22,7 +23,7 @@
       }
       statements.addAll(otherStatements);
     }
-    constructorNode.setCode(new BlockStatement(statements));
+    constructorNode.setCode(new BlockStatement(statements,block.getVariableScope()));
   }
   if (!staticStatements.isEmpty()) {
     node.addStaticInitializerStatements(staticStatements);

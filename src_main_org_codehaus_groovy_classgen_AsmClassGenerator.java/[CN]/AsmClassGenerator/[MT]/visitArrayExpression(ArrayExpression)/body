@@ -79,8 +79,7 @@
     cv.visitInsn(storeIns);
   }
   if (sizeExpression == null && ClassHelper.isPrimitiveType(type)) {
-    int par=defineVariable("par",ClassHelper.OBJECT_TYPE).getIndex();
-    cv.visitVarInsn(ASTORE,par);
+    int par=compileStack.defineTemporaryVariable("par",true);
     cv.visitVarInsn(ALOAD,par);
   }
 }

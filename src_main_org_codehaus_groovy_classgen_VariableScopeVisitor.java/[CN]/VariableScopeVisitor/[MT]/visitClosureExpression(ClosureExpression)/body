@@ -1,0 +1,19 @@
+{
+  pushState();
+  inClosure=true;
+  currentScope.setDynamicResolving(true);
+  expression.setVariableScope(currentScope);
+  if (expression.isParameterSpecified()) {
+    Parameter[] parameters=expression.getParameters();
+    for (int i=0; i < parameters.length; i++) {
+      parameters[i].setInStaticContext(currentScope.isInStaticContext());
+      declare(parameters[i],expression);
+    }
+  }
+ else   if (expression.getParameters() != null) {
+    DynamicVariable var=new DynamicVariable("it",currentScope.isInStaticContext());
+    currentScope.getDeclaredVariables().put("it",var);
+  }
+  super.visitClosureExpression(expression);
+  popState();
+}

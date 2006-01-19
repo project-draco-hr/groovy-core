@@ -1,8 +1,8 @@
 {
   onLineNumber(statement,"visitSynchronizedStatement");
+  visitStatement(statement);
   statement.getExpression().visit(this);
-  int index=defineVariable(createVariableName("synchronized"),ClassHelper.Integer_TYPE).getIndex();
-  cv.visitVarInsn(ASTORE,index);
+  int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.Integer_TYPE,true);
   cv.visitVarInsn(ALOAD,index);
   cv.visitInsn(MONITORENTER);
   final Label l0=new Label();

@@ -1,15 +1,10 @@
 {
-  classNode=a_node;
-  if ((classNode.getModifiers() & Opcodes.ACC_ABSTRACT) == 0) {
-    List abstractMethods=classNode.getAbstractMethods();
-    if (abstractMethods != null) {
-      List methodNames=new ArrayList();
-      for (Iterator iter=abstractMethods.iterator(); iter.hasNext(); ) {
-        MethodNode method=(MethodNode)iter.next();
-        String methodName=method.getTypeDescriptor();
-        methodNames.add(methodName);
-      }
-      throw new RuntimeIncompleteClassException(methodNames,classNode);
-    }
-  }
+  ClassNode oldClass=currentClass;
+  currentClass=node;
+  checkImplementsAndExtends(node);
+  checkClassForOverwritingFinal(node);
+  checkMethodsForOverwritingFinal(node);
+  checkNoAbstractMethodsNonabstractClass(node);
+  super.visitClass(node);
+  currentClass=oldClass;
 }

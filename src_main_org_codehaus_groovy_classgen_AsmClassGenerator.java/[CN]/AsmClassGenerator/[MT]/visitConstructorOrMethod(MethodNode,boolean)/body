@@ -1,0 +1,24 @@
+{
+  String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
+  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,buildExceptions(node.getExceptions()));
+  helper=new BytecodeHelper(cv);
+  if (!node.isAbstract()) {
+    Statement code=node.getCode();
+    if (isConstructor && (code == null || !firstStatementIsSuperInit(code))) {
+      cv.visitVarInsn(ALOAD,0);
+      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
+    }
+    compileStack.init(node.getVariableScope(),node.getParameters(),cv);
+    super.visitConstructorOrMethod(node,isConstructor);
+    compileStack.clear();
+    if (!outputReturn || node.isVoidMethod()) {
+      cv.visitInsn(RETURN);
+    }
+    for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
+      Runnable runnable=(Runnable)iter.next();
+      runnable.run();
+    }
+    exceptionBlocks.clear();
+    cv.visitMaxs(0,0);
+  }
+}

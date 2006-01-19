@@ -1,8 +1,17 @@
 {
   if (ve.getName().equals("this"))   return VariableExpression.THIS_EXPRESSION;
   if (ve.getName().equals("super"))   return VariableExpression.SUPER_EXPRESSION;
-  ClassNode t=ClassHelper.make(ve.getName());
-  if (resolve(t))   return new ClassExpression(t);
+  Variable v=ve.getAccessedVariable();
+  if (v instanceof DynamicVariable) {
+    ClassNode t=ClassHelper.make(ve.getName());
+    if (resolve(t)) {
+      for (VariableScope scope=currentScope; scope != null && !scope.isRoot(); scope=scope.getParent()) {
+        if (scope.isRoot())         break;
+        if (scope.getReferencedClassVariables().remove(ve.getName()) == null)         break;
+      }
+      return new ClassExpression(t);
+    }
+  }
   resolveOrFail(ve.getType(),ve);
   return ve;
 }

@@ -1,0 +1,26 @@
+{
+  Label startLabel=new Label();
+  mv.visitLabel(startLabel);
+  makeLocalVariablesOffset(paras,isInStaticContext);
+  boolean hasHolder=false;
+  for (int i=0; i < paras.length; i++) {
+    String name=paras[i].getName();
+    Variable answer;
+    if (paras[i].isClosureSharedVariable()) {
+      answer=defineVar(name,ClassHelper.getWrapper(paras[i].getType()),true);
+      ClassNode type=paras[i].getType();
+      helper.load(type,currentVariableIndex);
+      helper.box(type);
+      createReference(answer);
+      hasHolder=true;
+    }
+ else {
+      answer=defineVar(name,paras[i].getType(),false);
+    }
+    answer.setStartLabel(startLabel);
+    stackVariables.put(name,answer);
+  }
+  if (hasHolder) {
+    nextVariableIndex=localVariableOffset;
+  }
+}

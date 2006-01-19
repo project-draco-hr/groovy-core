@@ -12,7 +12,8 @@
   String variable=identifier(variableNode);
   Expression collectionExpression=expression(collectionNode);
   Statement block=statement(inNode.getNextSibling());
-  ForStatement forStatement=new ForStatement(variable,type,collectionExpression,block);
+  Parameter forParameter=new Parameter(type,variable);
+  ForStatement forStatement=new ForStatement(forParameter,collectionExpression,block);
   configureAST(forStatement,forNode);
   return forStatement;
 }

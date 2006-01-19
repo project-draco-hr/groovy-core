@@ -8,48 +8,12 @@
     visitClassExpression(new ClassExpression(classNode.getSuperClass()));
     return;
   }
-  boolean handled=false;
-  Variable variable=(Variable)variableStack.get(variableName);
-  if (variable != null) {
-    if (variable.isProperty()) {
-      processPropertyVariable(variable);
-    }
- else {
-      processStackVariable(variable);
-    }
-    handled=true;
+  Variable variable=compileStack.getVariable(variableName,false);
+  VariableScope scope=compileStack.getScope();
+  if (variable == null) {
+    processClassVariable(variableName);
   }
  else {
-    int steps=0;
-    ClassNode currentClassNode=classNode;
-    FieldNode field=null;
-    do {
-      if ((field=currentClassNode.getField(variableName)) != null) {
-        if (methodNode == null || !methodNode.isStatic() || field.isStatic())         break;
-      }
-      steps++;
-    }
- while ((currentClassNode=currentClassNode.getOuterClass()) != null);
-    if (field != null) {
-      processFieldAccess(variableName,field,steps);
-      handled=true;
-    }
-  }
-  if (!handled) {
-    ClassNode variableType=expression.getType();
-    variable=defineVariable(variableName,variableType);
-    if (leftHandExpression && variableType == ClassHelper.DYNAMIC_TYPE) {
-      variable.setDynamicTyped(true);
-    }
- else {
-      variable.setDynamicTyped(false);
-    }
-    if (isInScriptBody() || !leftHandExpression) {
-      variable.setProperty(true);
-      processPropertyVariable(variable);
-    }
- else {
-      processStackVariable(variable);
-    }
+    processStackVariable(variable);
   }
 }

@@ -6,5 +6,8 @@
   }
   Statement code=ce.getCode();
   if (code != null)   code.visit(this);
-  return new ClosureExpression(paras,code);
+  ClosureExpression newCe=new ClosureExpression(paras,code);
+  newCe.setVariableScope(ce.getVariableScope());
+  newCe.setSourcePosition(ce);
+  return newCe;
 }

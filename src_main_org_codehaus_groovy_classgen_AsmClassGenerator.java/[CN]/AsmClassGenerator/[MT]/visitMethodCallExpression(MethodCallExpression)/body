@@ -47,12 +47,11 @@
  else {
           if (argumentsUseStack(arguments)) {
             arguments.visit(this);
-            Variable tv=visitASTOREInTemp(method + "_arg");
-            int paramIdx=tv.getIndex();
+            int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
             call.getObjectExpression().visit(this);
             cv.visitLdcInsn(method);
             cv.visitVarInsn(ALOAD,paramIdx);
-            removeVar(tv);
+            compileStack.removeVar(paramIdx);
           }
  else {
             call.getObjectExpression().visit(this);

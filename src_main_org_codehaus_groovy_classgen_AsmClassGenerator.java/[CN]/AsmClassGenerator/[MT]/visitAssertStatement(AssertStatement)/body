@@ -1,5 +1,6 @@
 {
   onLineNumber(statement,"visitAssertStatement");
+  visitStatement(statement);
   BooleanExpression booleanExpression=statement.getBooleanExpression();
   booleanExpression.visit(this);
   Label l0=new Label();
@@ -19,8 +20,7 @@
     cv.visitInsn(DUP);
     cv.visitLdcInsn(expressionText + ". Values: ");
     cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
-    Variable assertTemp=visitASTOREInTemp("assert");
-    int tempIndex=assertTemp.getIndex();
+    int tempIndex=compileStack.defineTemporaryVariable("assert",true);
     for (Iterator iter=list.iterator(); iter.hasNext(); ) {
       String name=(String)iter.next();
       String text=name + " = ";
@@ -40,7 +40,7 @@
       cv.visitInsn(POP);
     }
     cv.visitVarInsn(ALOAD,tempIndex);
-    removeVar(assertTemp);
+    compileStack.removeVar(tempIndex);
   }
   statement.getMessageExpression().visit(this);
   assertFailedMethod.call(cv);

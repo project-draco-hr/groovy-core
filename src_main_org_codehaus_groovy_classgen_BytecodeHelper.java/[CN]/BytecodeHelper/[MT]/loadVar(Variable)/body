@@ -1,0 +1,13 @@
+{
+  int index=variable.getIndex();
+  if (variable.isHolder()) {
+    cv.visitVarInsn(ALOAD,index);
+    cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+  }
+ else {
+    load(variable);
+    if (variable != Variable.THIS_VARIABLE && variable != Variable.SUPER_VARIABLE) {
+      box(variable.getType());
+    }
+  }
+}

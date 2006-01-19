@@ -2,9 +2,10 @@
   boolean failures=false;
   Iterator classNodes=getPrimaryClassNodes(sort).iterator();
   while (classNodes.hasNext()) {
+    SourceUnit context=null;
     try {
       ClassNode classNode=(ClassNode)classNodes.next();
-      SourceUnit context=classNode.getModule().getContext();
+      context=classNode.getModule().getContext();
       if (context == null || context.phase <= phase) {
         body.call(context,new GeneratorContext(this.ast),classNode);
       }
@@ -13,6 +14,10 @@
     }
 catch (    NullPointerException npe) {
       throw npe;
+    }
+catch (    GroovyBugError e) {
+      changeBugText(e,context);
+      throw e;
     }
 catch (    Exception e) {
       failures=true;

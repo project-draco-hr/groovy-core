@@ -1,0 +1,19 @@
+{
+  String label=statement.getLabel();
+  boolean hasNamedLabel=label != null;
+  if (!hasNamedLabel && !inLoop) {
+    addError("the continue statement is only allowed inside loops",statement);
+  }
+  if (label != null) {
+    boolean found=false;
+    for (Iterator iter=visitedLabels.iterator(); iter.hasNext(); ) {
+      String element=(String)iter.next();
+      if (element.equals(label)) {
+        found=true;
+        break;
+      }
+    }
+    if (!found)     continueLabels.add(statement);
+  }
+  super.visitContinueStatement(statement);
+}

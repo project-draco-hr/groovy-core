@@ -3,5 +3,7 @@
   resolveOrFail(type,cce);
   Expression args=cce.getArguments();
   args=transform(args);
-  return new ConstructorCallExpression(type,args);
+  Expression expr=new ConstructorCallExpression(type,args);
+  expr.setSourcePosition(cce);
+  return expr;
 }

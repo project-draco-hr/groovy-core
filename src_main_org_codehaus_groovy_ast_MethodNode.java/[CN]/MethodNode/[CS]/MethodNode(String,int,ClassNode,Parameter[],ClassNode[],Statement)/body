@@ -5,12 +5,15 @@
   this.code=code;
   this.returnType=returnType;
   if (returnType == null)   this.returnType=ClassHelper.OBJECT_TYPE;
+  variableScope=new VariableScope();
   if (parameters != null && parameters.length > 0) {
     for (int i=0; i < parameters.length; i++) {
-      if (parameters[i].hasInitialExpression()) {
+      Parameter para=parameters[i];
+      if (para.hasInitialExpression()) {
         this.hasDefaultValue=true;
       }
-      parameters[i].setInStaticContext(isStatic());
+      para.setInStaticContext(isStatic());
+      variableScope.getDeclaredVariables().put(para.getName(),para);
     }
   }
   this.exceptions=exceptions;

@@ -4,10 +4,14 @@
   }
   if (expression instanceof VariableExpression) {
     VariableExpression varExpr=(VariableExpression)expression;
-    Variable variable=(Variable)variableStack.get(varExpr.getName());
+    Variable variable=compileStack.getVariable(varExpr.getName(),false);
     if (variable != null && !variable.isHolder()) {
       ClassNode type=variable.getType();
       if (!variable.isDynamicTyped())       return type;
+    }
+    if (variable == null) {
+      org.codehaus.groovy.ast.Variable var=(org.codehaus.groovy.ast.Variable)compileStack.getScope().getReferencedClassVariables().get(varExpr.getName());
+      if (var != null && !var.isDynamicTyped())       return var.getType();
     }
   }
   return expression.getType();

@@ -7,13 +7,6 @@
   List constructors=innerClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
   Parameter[] localVariableParams=node.getParameters();
-  for (int i=2; i < localVariableParams.length; i++) {
-    Parameter param=localVariableParams[i];
-    String name=param.getName();
-    if (variableStack.get(name) == null && classNode.getField(name) == null) {
-      defineVariable(name,ClassHelper.OBJECT_TYPE);
-    }
-  }
   cv.visitTypeInsn(NEW,innerClassinternalName);
   cv.visitInsn(DUP);
   if (isStaticMethod() || classNode.isStaticClass()) {
@@ -33,11 +26,19 @@
   for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    if (variableStack.get(name) == null) {
+    if (compileStack.getScope().isReferencedClassVariable(name)) {
       visitFieldExpression(new FieldExpression(classNode.getField(name)));
     }
  else {
-      visitVariableExpression(new VariableExpression(name));
+      Variable v=compileStack.getVariable(name,classNode.getSuperClass() != ClassHelper.CLOSURE_TYPE);
+      if (v == null) {
+        FieldNode field=classNode.getField(name);
+        cv.visitVarInsn(ALOAD,0);
+        cv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
+        v=compileStack.defineVariable(param,true);
+        v.setHolder(true);
+      }
+      cv.visitVarInsn(ALOAD,v.getIndex());
     }
   }
   passingClosureParams=false;

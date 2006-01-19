@@ -1,0 +1,11 @@
+{
+  makeNextVariableID(type);
+  int index=currentVariableIndex;
+  if (methodParameterUsedInClosure) {
+    index=localVariableOffset++;
+  }
+  Variable answer=new Variable(index,type,name);
+  usedVariables.add(answer);
+  answer.setHolder(methodParameterUsedInClosure);
+  return answer;
+}

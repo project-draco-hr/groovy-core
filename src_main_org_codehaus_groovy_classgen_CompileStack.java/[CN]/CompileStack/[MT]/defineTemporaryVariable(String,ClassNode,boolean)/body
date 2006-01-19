@@ -1,0 +1,11 @@
+{
+  Variable answer=defineVar(name,node,false);
+  temporaryVariables.add(answer);
+  Label startLabel=new Label();
+  answer.setStartLabel(startLabel);
+  if (store) {
+    mv.visitVarInsn(ASTORE,currentVariableIndex);
+    mv.visitLabel(startLabel);
+  }
+  return answer.getIndex();
+}

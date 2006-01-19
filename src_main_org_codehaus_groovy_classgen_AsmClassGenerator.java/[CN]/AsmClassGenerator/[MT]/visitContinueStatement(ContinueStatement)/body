@@ -1,9 +1,8 @@
 {
   onLineNumber(statement,"visitContinueStatement");
-  Label continueLabel=scope.getContinueLabel();
-  if (continueLabel != null) {
-    cv.visitJumpInsn(GOTO,continueLabel);
-  }
- else {
-  }
+  visitStatement(statement);
+  String name=statement.getLabel();
+  Label continueLabel=compileStack.getContinueLabel();
+  if (name != null)   continueLabel=compileStack.getLabel(name);
+  cv.visitJumpInsn(GOTO,continueLabel);
 }

@@ -1,34 +1,22 @@
 {
   onLineNumber(loop,"visitForLoop");
-  Class elemType=null;
-  ClassNode variableType=loop.getVariableType();
-  Variable variable=defineVariable(loop.getVariable(),variableType,true);
-  if (isInScriptBody()) {
-    variable.setProperty(true);
-  }
+  visitStatement(loop);
+  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
+  Variable variable=compileStack.defineVariable(loop.getVariable(),false);
   loop.getCollectionExpression().visit(this);
   asIteratorMethod.call(cv);
-  final Variable iterTemp=storeInTemp("iterator",ClassHelper.make(java.util.Iterator.class));
-  final int iteratorIdx=iterTemp.getIndex();
-  pushBlockScope();
-  Label continueLabel=scope.getContinueLabel();
-  cv.visitJumpInsn(GOTO,continueLabel);
-  Label label2=new Label();
-  cv.visitLabel(label2);
-  BytecodeExpression expression=new BytecodeExpression(){
-    public void visit(    GroovyCodeVisitor visitor){
-      cv.visitVarInsn(ALOAD,iteratorIdx);
-      iteratorNextMethod.call(cv);
-    }
-  }
-;
-  evaluateEqual(BinaryExpression.newAssignmentExpression(loop.getVariable(),expression));
-  cv.visitInsn(POP);
-  loop.getLoopBlock().visit(this);
+  final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.make(java.util.Iterator.class),true);
+  Label continueLabel=compileStack.getContinueLabel();
+  Label breakLabel=compileStack.getBreakLabel();
   cv.visitLabel(continueLabel);
   cv.visitVarInsn(ALOAD,iteratorIdx);
   iteratorHasNextMethod.call(cv);
-  cv.visitJumpInsn(IFNE,label2);
-  cv.visitLabel(scope.getBreakLabel());
-  popScope();
+  cv.visitJumpInsn(IFEQ,breakLabel);
+  cv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorNextMethod.call(cv);
+  helper.storeVar(variable);
+  loop.getLoopBlock().visit(this);
+  cv.visitJumpInsn(GOTO,continueLabel);
+  cv.visitLabel(breakLabel);
+  compileStack.pop();
 }

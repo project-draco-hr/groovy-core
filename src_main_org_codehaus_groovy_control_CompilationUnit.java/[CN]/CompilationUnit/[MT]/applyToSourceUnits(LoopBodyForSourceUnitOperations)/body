@@ -12,7 +12,13 @@
         throw e;
       }
 catch (      Exception e) {
-        throw new GroovyBugError(e);
+        GroovyBugError gbe=new GroovyBugError(e);
+        changeBugText(gbe,source);
+        throw gbe;
+      }
+catch (      GroovyBugError e) {
+        changeBugText(e,source);
+        throw e;
       }
     }
   }
