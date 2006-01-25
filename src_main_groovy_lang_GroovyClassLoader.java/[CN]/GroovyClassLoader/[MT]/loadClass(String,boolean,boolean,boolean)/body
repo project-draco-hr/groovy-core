@@ -2,7 +2,10 @@
 synchronized (cache) {
     Class cls=(Class)cache.get(name);
     if (cls == NOT_RESOLVED.class)     throw new ClassNotFoundException(name);
-    if (cls != null)     return cls;
+    if (cls != null) {
+      boolean reloadable=GroovyObject.class.isAssignableFrom(cls);
+      if (!reloadable)       return cls;
+    }
   }
   SecurityManager sm=System.getSecurityManager();
   if (sm != null) {
@@ -51,9 +54,9 @@ synchronized (cache) {
       if (source != null) {
         if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
 synchronized (cache) {
-            cache.put(name,PARSING.class);
+            cache.put(name,null);
           }
-          cls=parseClass(source.openStream(),source.getFile());
+          cls=parseClass(source.openStream(),name);
         }
       }
     }
