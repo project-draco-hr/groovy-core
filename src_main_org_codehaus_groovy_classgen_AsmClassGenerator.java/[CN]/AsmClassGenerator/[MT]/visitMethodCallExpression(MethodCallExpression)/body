@@ -39,23 +39,34 @@
         }
       }
  else {
+        Expression objectExpression=call.getObjectExpression();
+        boolean objectExpressionIsMethodName=false;
+        if (method.equals("call")) {
+          if (objectExpression instanceof GStringExpression) {
+            objectExpressionIsMethodName=true;
+            objectExpression=new CastExpression(ClassHelper.STRING_TYPE,objectExpression);
+          }
+ else           if (objectExpression instanceof ConstantExpression) {
+            Object value=((ConstantExpression)objectExpression).getValue();
+            if (value != null && value instanceof String)             objectExpressionIsMethodName=true;
+          }
+        }
         if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
-          call.getObjectExpression().visit(this);
-          cv.visitLdcInsn(method);
+          loadMethodName(objectExpression,objectExpressionIsMethodName,method);
           invokeNoArgumentsMethod.call(cv);
         }
  else {
           if (argumentsUseStack(arguments)) {
             arguments.visit(this);
             int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
-            call.getObjectExpression().visit(this);
-            cv.visitLdcInsn(method);
+            objectExpression.visit(this);
+            loadMethodName(objectExpression,objectExpressionIsMethodName,method);
             cv.visitVarInsn(ALOAD,paramIdx);
             compileStack.removeVar(paramIdx);
           }
  else {
-            call.getObjectExpression().visit(this);
-            cv.visitLdcInsn(method);
+            objectExpression.visit(this);
+            loadMethodName(objectExpression,objectExpressionIsMethodName,method);
             arguments.visit(this);
           }
           if (call.isSpreadSafe()) {
