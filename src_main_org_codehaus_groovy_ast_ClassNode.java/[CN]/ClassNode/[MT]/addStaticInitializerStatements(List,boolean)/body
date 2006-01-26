@@ -20,5 +20,13 @@
     block=new BlockStatement();
     block.addStatement(statement);
   }
-  block.addStatements(staticStatements);
+  if (!fieldInit) {
+    block.addStatements(staticStatements);
+  }
+ else {
+    List blockStatements=block.getStatements();
+    staticStatements.addAll(blockStatements);
+    blockStatements.clear();
+    blockStatements.addAll(staticStatements);
+  }
 }
