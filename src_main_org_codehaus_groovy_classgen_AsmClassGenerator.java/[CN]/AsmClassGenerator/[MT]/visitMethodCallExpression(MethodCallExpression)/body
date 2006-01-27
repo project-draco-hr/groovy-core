@@ -52,21 +52,19 @@
           }
         }
         if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
-          loadMethodName(objectExpression,objectExpressionIsMethodName,method);
+          prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
           invokeNoArgumentsMethod.call(cv);
         }
  else {
           if (argumentsUseStack(arguments)) {
             arguments.visit(this);
             int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
-            objectExpression.visit(this);
-            loadMethodName(objectExpression,objectExpressionIsMethodName,method);
+            prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
             cv.visitVarInsn(ALOAD,paramIdx);
             compileStack.removeVar(paramIdx);
           }
  else {
-            objectExpression.visit(this);
-            loadMethodName(objectExpression,objectExpressionIsMethodName,method);
+            prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
             arguments.visit(this);
           }
           if (call.isSpreadSafe()) {
