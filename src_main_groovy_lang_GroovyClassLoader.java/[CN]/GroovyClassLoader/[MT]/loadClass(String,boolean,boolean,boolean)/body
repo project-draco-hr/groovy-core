@@ -1,6 +1,7 @@
 {
+  Class cls=null;
 synchronized (cache) {
-    Class cls=(Class)cache.get(name);
+    cls=(Class)cache.get(name);
     if (cls == NOT_RESOLVED.class)     throw new ClassNotFoundException(name);
     if (cls != null) {
       boolean reloadable=GroovyObject.class.isAssignableFrom(cls);
@@ -15,7 +16,6 @@ synchronized (cache) {
       sm.checkPackageAccess(className.substring(0,i));
     }
   }
-  Class cls=null;
   ClassNotFoundException last=null;
   try {
     cls=super.loadClass(name,resolve);
