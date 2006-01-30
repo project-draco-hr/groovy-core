@@ -1,7 +1,9 @@
 {
-  Variable v=checkVariableNameForDeclaration(call.getMethod(),call);
-  if (v != null && !(v instanceof DynamicVariable)) {
-    checkVariableContextAccess(v,call);
+  if (call.isImplicitThis()) {
+    Variable v=checkVariableNameForDeclaration(call.getMethod(),call);
+    if (v != null && !(v instanceof DynamicVariable)) {
+      checkVariableContextAccess(v,call);
+    }
   }
   super.visitMethodCallExpression(call);
 }

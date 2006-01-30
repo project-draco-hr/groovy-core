@@ -49,10 +49,9 @@
     for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
       catchStatement=(CatchStatement)it.next();
       ClassNode exceptionType=catchStatement.getExceptionType();
-      int exceptionIndex=compileStack.defineVariable(catchStatement.getVariable(),false).getIndex();
       final Label catchStart=new Label();
       cv.visitLabel(catchStart);
-      cv.visitVarInsn(ASTORE,exceptionIndex);
+      compileStack.defineVariable(catchStatement.getVariable(),true);
       catchStatement.visit(this);
       cv.visitJumpInsn(GOTO,finallyStart);
       final String exceptionTypeInternalName=BytecodeHelper.getClassInternalName(exceptionType);
