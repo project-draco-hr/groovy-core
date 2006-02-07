@@ -8,12 +8,12 @@
       cv.visitVarInsn(ALOAD,0);
       cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
     }
-    compileStack.init(node.getVariableScope(),node.getParameters(),cv);
+    compileStack.init(node.getVariableScope(),node.getParameters(),cv,BytecodeHelper.getTypeDescription(classNode));
     super.visitConstructorOrMethod(node,isConstructor);
-    compileStack.clear();
     if (!outputReturn || node.isVoidMethod()) {
       cv.visitInsn(RETURN);
     }
+    compileStack.clear();
     for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
       Runnable runnable=(Runnable)iter.next();
       runnable.run();

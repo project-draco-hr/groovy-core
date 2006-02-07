@@ -1,11 +1,7 @@
 {
   FieldNode field=expression.getField();
   boolean isStatic=field.isStatic();
-  int tempIdx=compileStack.defineTemporaryVariable(field,false);
-  if (leftHandExpression && first) {
-    cv.visitVarInsn(ASTORE,tempIdx);
-    visitVariableStartLabel(compileStack.getTemporaryVariable(tempIdx));
-  }
+  int tempIdx=compileStack.defineTemporaryVariable(field,leftHandExpression && first);
   if (steps > 1 || !isStatic) {
     cv.visitVarInsn(ALOAD,0);
     cv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode));

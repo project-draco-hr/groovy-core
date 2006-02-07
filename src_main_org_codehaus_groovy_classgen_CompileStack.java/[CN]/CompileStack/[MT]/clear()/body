@@ -1,13 +1,15 @@
 {
   clear=true;
-  Label endBlock=new Label();
-  if (false && AsmClassGenerator.CREATE_DEBUG_INFO) {
+  if (true) {
+    if (thisEndLabel == null)     setEndLabels();
+    if (!scope.isInStaticContext()) {
+      mv.visitLocalVariable("this",className,null,thisStartLabel,thisEndLabel,0);
+    }
     for (Iterator iterator=usedVariables.iterator(); iterator.hasNext(); ) {
       Variable v=(Variable)iterator.next();
       String type=BytecodeHelper.getTypeDescription(v.getType());
       Label start=v.getStartLabel();
       Label end=v.getEndLabel();
-      if (end == null)       end=endBlock;
       mv.visitLocalVariable(v.getName(),type,null,start,end,v.getIndex());
     }
   }
@@ -24,4 +26,6 @@
   breakLabel=null;
   finallyLabel=null;
   helper=null;
+  thisStartLabel=null;
+  thisEndLabel=null;
 }
