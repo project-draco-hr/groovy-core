@@ -2,8 +2,7 @@
   final Iterator iter=iterator();
   while (iter.hasNext()) {
     final Object node=iter.next();
-    final Boolean result=(Boolean)closure.call(new Object[]{node});
-    if (result != null && result.booleanValue()) {
+    if (InvokerHelper.asBool(closure.call(new Object[]{node}))) {
       return (GPathResult)node;
     }
   }
