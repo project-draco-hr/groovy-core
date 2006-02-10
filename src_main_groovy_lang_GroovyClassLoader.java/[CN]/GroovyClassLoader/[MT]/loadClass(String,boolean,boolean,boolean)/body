@@ -40,17 +40,7 @@ synchronized (cache) {
   }
   if (lookupScriptFiles) {
     try {
-      URL source=(URL)AccessController.doPrivileged(new PrivilegedAction(){
-        public Object run(){
-          try {
-            return resourceLoader.loadGroovySource(name);
-          }
- catch (          MalformedURLException e) {
-            return null;
-          }
-        }
-      }
-);
+      URL source=resourceLoader.loadGroovySource(name);
       if (source != null) {
         if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
 synchronized (cache) {

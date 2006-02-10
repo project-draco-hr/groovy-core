@@ -20,11 +20,10 @@ class DoSetContext implements PrivilegedAction {
   }
   AccessController.doPrivileged(new DoSetContext(loader));
   Class scriptClass;
-  final ShellLoader loader=new ShellLoader();
   try {
     scriptClass=(Class)AccessController.doPrivileged(new PrivilegedExceptionAction(){
       public Object run() throws CompilationFailedException, IOException {
-        return loader.parseClass(scriptFile);
+        return new ShellLoader().parseClass(scriptFile);
       }
     }
 );

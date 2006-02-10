@@ -29,6 +29,12 @@ catch (  TokenStreamException e) {
   ast=parser.getAST();
   AntlrASTProcessor snippets=new AntlrASTProcessSnippets(sourceBuffer);
   ast=snippets.process(ast);
-  outputASTInVariousFormsIfNeeded(sourceUnit);
+  AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      outputASTInVariousFormsIfNeeded(sourceUnit);
+      return null;
+    }
+  }
+);
   return null;
 }

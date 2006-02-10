@@ -5,7 +5,12 @@
   if (config == null) {
     throw new IllegalArgumentException("Compiler configuration must not be null.");
   }
-  this.loader=new MainClassLoader(parent);
+  this.loader=(MainClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new MainClassLoader(parent);
+    }
+  }
+);
   this.context=binding;
   this.config=config;
 }

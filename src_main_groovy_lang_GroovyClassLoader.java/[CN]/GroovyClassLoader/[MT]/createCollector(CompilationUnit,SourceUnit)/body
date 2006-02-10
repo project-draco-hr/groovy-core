@@ -1,3 +1,9 @@
 {
-  return new ClassCollector(new InnerLoader(),unit,su);
+  InnerLoader loader=(InnerLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new InnerLoader();
+    }
+  }
+);
+  return new ClassCollector(loader,unit,su);
 }
