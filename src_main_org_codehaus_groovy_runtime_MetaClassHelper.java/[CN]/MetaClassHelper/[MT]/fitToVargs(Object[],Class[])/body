@@ -1,0 +1,44 @@
+{
+  Class vargsClass=autoboxType(paramTypes[paramTypes.length - 1].getComponentType());
+  if (paramTypes.length == 1) {
+    if (argumentArray.length == 1) {
+      Object argument=argumentArray[0];
+      if (argument == null || !argument.getClass().isArray()) {
+        Object result=makeArray(argument,vargsClass,1);
+        System.arraycopy(argumentArray,0,result,0,1);
+        argumentArray[0]=result;
+        return argumentArray;
+      }
+ else {
+        return argumentArray;
+      }
+    }
+ else {
+      Object result=makeCommonArray(argumentArray,0);
+      return new Object[]{result};
+    }
+  }
+ else {
+    if (argumentArray.length == paramTypes.length) {
+      Object lastArgument=argumentArray[argumentArray.length - 1];
+      if (lastArgument == null || !lastArgument.getClass().isArray()) {
+        Object result=makeArray(lastArgument,vargsClass,1);
+        System.arraycopy(argumentArray,argumentArray.length - 1,result,0,1);
+        argumentArray[argumentArray.length - 1]=result;
+        return argumentArray;
+      }
+ else {
+        return argumentArray;
+      }
+    }
+ else     if (argumentArray.length > paramTypes.length) {
+      Object[] newArgs=new Object[paramTypes.length];
+      System.arraycopy(argumentArray,0,newArgs,0,paramTypes.length - 1);
+      int numberOfVargs=argumentArray.length - paramTypes.length;
+      Object vargs=makeCommonArray(argumentArray,paramTypes.length - 1);
+      newArgs[newArgs.length - 1]=vargs;
+      return newArgs;
+    }
+  }
+  return argumentArray;
+}

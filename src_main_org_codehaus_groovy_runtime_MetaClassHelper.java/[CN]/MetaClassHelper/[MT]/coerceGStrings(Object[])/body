@@ -6,6 +6,16 @@
       arguments[i]=argument.toString();
       coerced=true;
     }
+ else     if (argument instanceof GString[]) {
+      GString[] gstrings=(GString[])arguments[i];
+      String[] strings=new String[gstrings.length];
+      for (int j=0; j < gstrings.length; j++) {
+        if (gstrings[j] == null)         continue;
+        strings[j]=gstrings[j].toString();
+      }
+      arguments[i]=strings;
+      coerced=true;
+    }
   }
   return coerced;
 }
