@@ -12,13 +12,14 @@
       }
     }
   }
-catch (  Exception e) {
+catch (  Throwable e) {
     th=e;
   }
   if (th == null) {
-    assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName(),false);
+    fail("Closure " + code + " should have failed with an exception of type "+ clazz.getName());
   }
  else   if (!clazz.isInstance(th)) {
-    assertTrue("Closure " + code + " should have failed with an exception of type "+ clazz.getName()+ ", instead got Exception "+ th,false);
+    fail("Closure " + code + " should have failed with an exception of type "+ clazz.getName()+ ", instead got Exception "+ th);
   }
+  return th.getMessage();
 }

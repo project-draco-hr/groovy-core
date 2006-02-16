@@ -1,10 +1,13 @@
 {
   boolean failed=false;
+  String result=null;
   try {
     code.call();
   }
- catch (  Exception e) {
+ catch (  Throwable e) {
     failed=true;
+    result=e.getMessage();
   }
   assertTrue("Closure " + code + " should have failed",failed);
+  return result;
 }
