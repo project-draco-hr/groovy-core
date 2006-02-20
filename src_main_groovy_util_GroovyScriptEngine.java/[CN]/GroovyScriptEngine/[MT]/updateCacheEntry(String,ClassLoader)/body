@@ -1,10 +1,10 @@
 {
   ScriptCacheEntry entry;
-  script=script.intern();
-synchronized (script) {
-    URLConnection groovyScriptConn=rc.getResourceConnection(script);
+  scriptName=scriptName.intern();
+synchronized (scriptName) {
+    URLConnection groovyScriptConn=rc.getResourceConnection(scriptName);
     long lastModified=groovyScriptConn.getLastModified();
-    entry=(ScriptCacheEntry)scriptCache.get(script);
+    entry=(ScriptCacheEntry)scriptCache.get(scriptName);
     boolean dependencyOutOfDate=false;
     if (entry != null) {
       for (Iterator i=entry.dependencies.keySet().iterator(); i.hasNext(); ) {
@@ -58,13 +58,13 @@ catch (              IOException e2) {
       }
 );
       try {
-        entry.scriptClass=groovyLoader.parseClass(groovyScriptConn.getInputStream(),script);
+        entry.scriptClass=groovyLoader.parseClass(groovyScriptConn.getInputStream(),scriptName);
       }
  catch (      Exception e) {
-        throw new ScriptException("Could not parse script: " + script,e);
+        throw new ScriptException("Could not parse scriptName: " + scriptName,e);
       }
       entry.lastModified=lastModified;
-      scriptCache.put(script,entry);
+      scriptCache.put(scriptName,entry);
     }
   }
   return entry;
