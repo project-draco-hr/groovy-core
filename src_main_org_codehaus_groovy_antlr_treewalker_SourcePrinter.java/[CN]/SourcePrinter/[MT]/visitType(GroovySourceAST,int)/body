@@ -1,10 +1,14 @@
 {
-  if (visit == OPENING_VISIT) {
-    if (t.getNumberOfChildren() == 0) {
-      print(t,visit,"def");
+  GroovySourceAST parent=getParentNode();
+  GroovySourceAST modifiers=parent.childOfType(GroovyTokenTypes.MODIFIERS);
+  if (modifiers == null || modifiers.getNumberOfChildren() == 0) {
+    if (visit == OPENING_VISIT) {
+      if (t.getNumberOfChildren() == 0) {
+        print(t,visit,"def");
+      }
     }
-  }
-  if (visit == CLOSING_VISIT) {
-    print(t,visit," ");
+    if (visit == CLOSING_VISIT) {
+      print(t,visit," ");
+    }
   }
 }
