@@ -25,15 +25,7 @@ synchronized (cache) {
   }
   if (cls != null) {
     boolean recompile=false;
-    if (getTimeStamp(cls) < Long.MAX_VALUE) {
-      Class[] inters=cls.getInterfaces();
-      for (int i=0; i < inters.length; i++) {
-        if (inters[i].getName().equals(GroovyObject.class.getName())) {
-          recompile=true;
-          break;
-        }
-      }
-    }
+    recompile=getTimeStamp(cls) < Long.MAX_VALUE && GroovyObject.class.isAssignableFrom(cls);
     preferClassOverScript|=cls.getClassLoader() == this;
     preferClassOverScript|=!recompile;
     if (preferClassOverScript)     return cls;
