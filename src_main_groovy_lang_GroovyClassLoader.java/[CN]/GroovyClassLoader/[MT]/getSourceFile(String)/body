@@ -1,5 +1,24 @@
 {
   String filename=name.replace('.','/') + config.getDefaultScriptExtension();
   URL ret=getResource(filename);
+  if (ret != null && ret.getProtocol().equals("file")) {
+    File path=new File(ret.getFile());
+    if (path.exists()) {
+      if (path.isDirectory()) {
+        File file=new File(path,filename);
+        if (file.exists()) {
+          int sepp=filename.lastIndexOf('/');
+          String fn=filename;
+          if (sepp >= 0)           fn=filename.substring(sepp + 1);
+          File parent=file.getParentFile();
+          String[] files=parent.list();
+          for (int j=0; j < files.length; j++) {
+            if (files[j].equals(fn))             return ret;
+          }
+        }
+      }
+    }
+    return null;
+  }
   return ret;
 }

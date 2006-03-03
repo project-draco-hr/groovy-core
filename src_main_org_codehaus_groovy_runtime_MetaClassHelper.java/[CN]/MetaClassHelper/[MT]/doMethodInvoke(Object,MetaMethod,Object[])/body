@@ -1,50 +1,16 @@
 {
   Class[] paramTypes=method.getParameterTypes();
+  argumentArray=coerceArgumentsToClasses(argumentArray,paramTypes);
   try {
-    if (argumentArray == null) {
-      argumentArray=EMPTY_ARRAY;
-    }
- else     if (paramTypes.length == 1 && argumentArray.length == 0) {
-      if (isVargsMethod(paramTypes,argumentArray))       argumentArray=new Object[]{Array.newInstance(paramTypes[0].getComponentType(),0)};
- else       argumentArray=ARRAY_WITH_NULL;
-    }
- else     if (isVargsMethod(paramTypes,argumentArray)) {
-      argumentArray=fitToVargs(argumentArray,paramTypes);
-    }
     return method.invoke(object,argumentArray);
   }
- catch (  ClassCastException e) {
-    if (coerceGStrings(argumentArray)) {
-      try {
-        return doMethodInvoke(object,method,argumentArray);
-      }
- catch (      Exception e2) {
-      }
-    }
-    throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
-  }
-catch (  InvocationTargetException e) {
+ catch (  InvocationTargetException e) {
     throw new InvokerInvocationException(e);
   }
 catch (  IllegalAccessException e) {
     throw new GroovyRuntimeException("could not access method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
   }
 catch (  IllegalArgumentException e) {
-    if (coerceGStrings(argumentArray)) {
-      try {
-        return doMethodInvoke(object,method,argumentArray);
-      }
- catch (      Exception e2) {
-      }
-    }
-    Object[] args=coerceNumbers(method,argumentArray);
-    if (args != null && !Arrays.equals(argumentArray,args)) {
-      try {
-        return doMethodInvoke(object,method,args);
-      }
- catch (      Exception e3) {
-      }
-    }
     throw new GroovyRuntimeException("failed to invoke method: " + method + " on: "+ object+ " with arguments: "+ InvokerHelper.toString(argumentArray)+ "reason: "+ e);
   }
 catch (  RuntimeException e) {

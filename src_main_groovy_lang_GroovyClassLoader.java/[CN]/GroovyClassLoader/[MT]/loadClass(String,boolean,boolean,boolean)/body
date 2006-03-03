@@ -23,6 +23,14 @@ synchronized (cache) {
  catch (  ClassNotFoundException cnfe) {
     last=cnfe;
   }
+catch (  NoClassDefFoundError ncdfe) {
+    if (ncdfe.getMessage().indexOf("wrong name") > 0) {
+      last=new ClassNotFoundException(name);
+    }
+ else {
+      throw ncdfe;
+    }
+  }
   if (cls != null) {
     boolean recompile=false;
     recompile=getTimeStamp(cls) < Long.MAX_VALUE && GroovyObject.class.isAssignableFrom(cls);

@@ -2,6 +2,7 @@
   if (log.isLoggable(Level.FINER)) {
     logMethodCall(constructor.getDeclaringClass(),constructor.getName(),argumentArray);
   }
+  argumentArray=coerceArgumentsToClasses(argumentArray,constructor.getParameterTypes());
   try {
     return constructor.newInstance(argumentArray);
   }
@@ -9,13 +10,6 @@
     throw new InvokerInvocationException(e);
   }
 catch (  IllegalArgumentException e) {
-    if (coerceGStrings(argumentArray)) {
-      try {
-        return constructor.newInstance(argumentArray);
-      }
- catch (      Exception e2) {
-      }
-    }
     throw new GroovyRuntimeException("failed to invoke constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e);
   }
 catch (  IllegalAccessException e) {

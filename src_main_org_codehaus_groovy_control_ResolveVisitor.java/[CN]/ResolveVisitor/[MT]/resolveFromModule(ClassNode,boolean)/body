@@ -33,10 +33,11 @@
     }
   }
   if (testModuleImports) {
-    String packageName="";
-    if (module.hasPackageName())     packageName=module.getPackageName();
-    type.setName(packageName + name);
-    boolean resolved=resolve(type,false,false,false);
+    boolean resolved=false;
+    if (module.hasPackageName()) {
+      type.setName(module.getPackageName() + name);
+      resolved=resolve(type,false,false,false);
+    }
     List packages=module.getImportPackages();
     ClassNode iType=ClassHelper.makeWithoutCaching(name);
     for (Iterator iter=packages.iterator(); iter.hasNext(); ) {

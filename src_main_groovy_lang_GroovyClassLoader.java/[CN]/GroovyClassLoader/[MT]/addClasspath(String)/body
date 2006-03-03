@@ -1,13 +1,19 @@
 {
-  try {
-    File f=new File(path);
-    URL newURL=f.toURI().toURL();
-    URL[] urls=getURLs();
-    for (int i=0; i < urls.length; i++) {
-      if (urls[i].equals(newURL))       return;
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      try {
+        File f=new File(path);
+        URL newURL=f.toURI().toURL();
+        URL[] urls=getURLs();
+        for (int i=0; i < urls.length; i++) {
+          if (urls[i].equals(newURL))           return null;
+        }
+        addURL(newURL);
+      }
+ catch (      MalformedURLException e) {
+      }
+      return null;
     }
-    addURL(newURL);
   }
- catch (  MalformedURLException e) {
-  }
+);
 }
