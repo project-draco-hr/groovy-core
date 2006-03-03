@@ -25,12 +25,14 @@ synchronized (cache) {
     if (config != null && config.getTargetDirectory() != null)     goalPhase=Phases.OUTPUT;
     unit.compile(goalPhase);
     answer=collector.generatedClass;
-    if (shouldCache) {
-      for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
-        Class clazz=(Class)iter.next();
+    for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
+      Class clazz=(Class)iter.next();
+      if (shouldCache) {
         cache.put(clazz.getName(),clazz);
       }
+      if (name.equals(clazz.getName()))       answer=clazz;
     }
+    shouldCache=shouldCache && name.equals(answer.getName());
   }
   finally {
 synchronized (cache) {
