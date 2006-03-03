@@ -35,7 +35,9 @@
         FieldNode field=classNode.getField(name);
         cv.visitVarInsn(ALOAD,0);
         cv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
+        param.setClosureSharedVariable(false);
         v=compileStack.defineVariable(param,true);
+        param.setClosureSharedVariable(true);
         v.setHolder(true);
       }
       cv.visitVarInsn(ALOAD,v.getIndex());
