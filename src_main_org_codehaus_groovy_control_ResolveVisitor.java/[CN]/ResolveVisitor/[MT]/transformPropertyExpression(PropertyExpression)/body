@@ -10,6 +10,11 @@
     ClassNode type=ClassHelper.make(className);
     if (resolve(type))     return new ClassExpression(type);
   }
+  if (objectExpression instanceof ClassExpression) {
+    ClassExpression ce=(ClassExpression)objectExpression;
+    ClassNode type=ClassHelper.make(ce.getType().getName() + "$" + pe.getProperty());
+    if (resolve(type,false,false,false))     return new ClassExpression(type);
+  }
   if (isTopLevelProperty)   return correctClassClassChain(pe);
   return pe;
 }
