@@ -15,6 +15,7 @@
     semanticAnalysis();
     if (dequeued())     continue;
     if (throughPhase < Phases.CLASS_GENERATION)     break;
+    if (ast.hasClassNodeToCompile())     break;
     gotoPhase(Phases.CLASS_GENERATION);
     Iterator modules=this.ast.getModules().iterator();
     while (modules.hasNext()) {
@@ -32,4 +33,10 @@
     break;
   }
  while (true);
+  for (Iterator iter=ast.iterateClassNodeToCompile(); iter.hasNext(); ) {
+    String name=(String)iter.next();
+    String location=ast.getScriptSourceLocation(name);
+    getErrorCollector().addErrorAndContinue(new SimpleMessage("Compilation incomplete: expected to find the class " + name + " in "+ location,this));
+  }
+  errorCollector.failIfErrors();
 }
