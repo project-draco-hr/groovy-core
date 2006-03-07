@@ -1,4 +1,11 @@
 {
   super.setType(type);
-  this.arguments=arguments;
+  if (!(arguments instanceof TupleExpression)) {
+    TupleExpression tuple=new TupleExpression();
+    tuple.addExpression(arguments);
+    this.arguments=tuple;
+  }
+ else {
+    this.arguments=arguments;
+  }
 }
