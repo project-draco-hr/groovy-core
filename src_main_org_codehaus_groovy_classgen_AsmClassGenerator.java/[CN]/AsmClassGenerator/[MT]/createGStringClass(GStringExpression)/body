@@ -10,7 +10,6 @@
   FieldNode stringsField=answer.addField("strings",ACC_PRIVATE,ClassHelper.STRING_TYPE.makeArray(),new ArrayExpression(ClassHelper.STRING_TYPE,expression.getStrings()));
   answer.addMethod("getStrings",ACC_PUBLIC,ClassHelper.STRING_TYPE.makeArray(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new ReturnStatement(new FieldExpression(stringsField)));
   BlockStatement block=new BlockStatement();
-  TupleExpression values=new TupleExpression();
   block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,new VariableExpression("values"))));
   Parameter[] contructorParams=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE.makeArray(),"values")};
   answer.addConstructor(ACC_PUBLIC,contructorParams,ClassNode.EMPTY_ARRAY,block);
