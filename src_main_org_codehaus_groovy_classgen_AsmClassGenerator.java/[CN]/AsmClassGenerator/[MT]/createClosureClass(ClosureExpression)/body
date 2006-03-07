@@ -43,7 +43,7 @@
   VariableExpression outer=new VariableExpression("_outerInstance");
   outer.setSourcePosition(expression);
   block.getVariableScope().getReferencedLocalVariables().put("_outerInstance",outer);
-  block.addStatement(new ExpressionStatement(new ConstructorCallExpression(VariableExpression.SUPER_EXPRESSION,outer)));
+  block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,outer)));
   block.addStatement(new ExpressionStatement(new BinaryExpression(new FieldExpression(ownerField),Token.newSymbol(Types.EQUAL,-1,-1),outer)));
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
