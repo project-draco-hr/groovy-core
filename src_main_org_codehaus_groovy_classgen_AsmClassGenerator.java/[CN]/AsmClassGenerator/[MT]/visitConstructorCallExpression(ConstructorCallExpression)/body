@@ -1,6 +1,16 @@
 {
   onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
   this.leftHandExpression=false;
+  if (call.isSpecialCall()) {
+    ClassNode callNode=classNode;
+    if (call.isSuperCall())     callNode=callNode.getSuperClass();
+    ConstructorNode constructorNode=findConstructor(call,callNode);
+    cv.visitVarInsn(ALOAD,0);
+    loadArguments(constructorNode.getParameters(),call.getArguments());
+    String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,constructorNode.getParameters());
+    cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
+    return;
+  }
   Expression arguments=call.getArguments();
   if (arguments instanceof TupleExpression) {
     TupleExpression tupleExpression=(TupleExpression)arguments;

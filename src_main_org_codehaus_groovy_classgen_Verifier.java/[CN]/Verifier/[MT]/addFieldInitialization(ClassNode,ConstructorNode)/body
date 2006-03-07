@@ -1,8 +1,10 @@
 {
+  ConstructorCallExpression first=getFirstIfSpecialConstructorCall(constructorNode);
+  if (first != null && first.isThisCall())   return;
   List statements=new ArrayList();
   List staticStatements=new ArrayList();
   for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
-    addFieldInitialization(statements,staticStatements,constructorNode,(FieldNode)iter.next());
+    addFieldInitialization(statements,staticStatements,(FieldNode)iter.next());
   }
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
@@ -16,8 +18,7 @@
       otherStatements.add(code);
     }
     if (!otherStatements.isEmpty()) {
-      Statement first=(Statement)otherStatements.get(0);
-      if (isSuperMethodCall(first)) {
+      if (first != null) {
         otherStatements.remove(0);
         statements.add(0,first);
       }

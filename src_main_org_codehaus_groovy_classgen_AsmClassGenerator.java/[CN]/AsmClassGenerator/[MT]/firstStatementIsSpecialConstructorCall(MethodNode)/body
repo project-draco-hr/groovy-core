@@ -1,0 +1,8 @@
+{
+  Statement code=node.getFirstStatement();
+  if (code == null || !(code instanceof ExpressionStatement))   return false;
+  Expression expression=((ExpressionStatement)code).getExpression();
+  if (!(expression instanceof ConstructorCallExpression))   return false;
+  ConstructorCallExpression cce=(ConstructorCallExpression)expression;
+  return cce.isSpecialCall();
+}

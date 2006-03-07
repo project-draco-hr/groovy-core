@@ -4,9 +4,9 @@
   helper=new BytecodeHelper(cv);
   if (!node.isAbstract()) {
     Statement code=node.getCode();
-    if (isConstructor && (code == null || !firstStatementIsSuperInit(code))) {
+    if (isConstructor && (code == null || !firstStatementIsSpecialConstructorCall(node))) {
       cv.visitVarInsn(ALOAD,0);
-      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","()V");
+      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }
     compileStack.init(node.getVariableScope(),node.getParameters(),cv,BytecodeHelper.getTypeDescription(classNode));
     super.visitConstructorOrMethod(node,isConstructor);

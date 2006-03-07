@@ -10,13 +10,13 @@ return blockExpression(node);
 case CLOSED_BLOCK:
 return closureExpression(node);
 case SUPER_CTOR_CALL:
-return superMethodCallExpression(node);
+return specialConstructorCallExpression(node,ClassNode.SUPER);
 case METHOD_CALL:
 return methodCallExpression(node);
 case LITERAL_new:
 return constructorCallExpression(node.getFirstChild());
 case CTOR_CALL:
-return constructorCallExpression(node);
+return specialConstructorCallExpression(node,ClassNode.THIS);
 case QUESTION:
 return ternaryExpression(node);
 case OPTIONAL_DOT:

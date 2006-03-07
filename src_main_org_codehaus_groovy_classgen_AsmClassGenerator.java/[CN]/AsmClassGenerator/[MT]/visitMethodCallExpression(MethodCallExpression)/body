@@ -4,78 +4,56 @@
   Expression arguments=call.getArguments();
   boolean superMethodCall=MethodCallExpression.isSuperMethodCall(call);
   String method=call.getMethod();
-  if (superMethodCall && method.equals("<init>")) {
-    cv.visitVarInsn(ALOAD,0);
-    if (isInClosureConstructor()) {
-      cv.visitVarInsn(ALOAD,2);
-      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
-    }
- else {
-      cv.visitVarInsn(ALOAD,1);
-      cv.visitMethodInsn(INVOKESPECIAL,internalBaseClassName,"<init>","(Ljava/lang/Object;)V");
-    }
+  if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(method) && !classNode.hasPossibleMethod(method,arguments)) {
+    visitVariableExpression(new VariableExpression(method));
+    arguments.visit(this);
+    invokeClosureMethod.call(cv);
   }
  else {
-    if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(method) && !classNode.hasPossibleMethod(method,arguments)) {
-      visitVariableExpression(new VariableExpression(method));
-      arguments.visit(this);
-      invokeClosureMethod.call(cv);
+    if (superMethodCall) {
+      MethodNode superMethodNode=findSuperMethod(call);
+      cv.visitVarInsn(ALOAD,0);
+      loadArguments(superMethodNode.getParameters(),arguments);
+      String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
+      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),method,descriptor);
     }
  else {
-      if (superMethodCall) {
-        if (method.equals("super") || method.equals("<init>")) {
-          ConstructorNode superConstructorNode=findSuperConstructor(call);
-          cv.visitVarInsn(ALOAD,0);
-          loadArguments(superConstructorNode.getParameters(),arguments);
-          String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,superConstructorNode.getParameters());
-          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>",descriptor);
+      Expression objectExpression=call.getObjectExpression();
+      boolean objectExpressionIsMethodName=false;
+      if (method.equals("call")) {
+        if (objectExpression instanceof GStringExpression) {
+          objectExpressionIsMethodName=true;
+          objectExpression=new CastExpression(ClassHelper.STRING_TYPE,objectExpression);
         }
- else {
-          MethodNode superMethodNode=findSuperMethod(call);
-          cv.visitVarInsn(ALOAD,0);
-          loadArguments(superMethodNode.getParameters(),arguments);
-          String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
-          cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),method,descriptor);
+ else         if (objectExpression instanceof ConstantExpression) {
+          Object value=((ConstantExpression)objectExpression).getValue();
+          if (value != null && value instanceof String)           objectExpressionIsMethodName=true;
         }
       }
+      if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
+        prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
+        invokeNoArgumentsMethod.call(cv);
+      }
  else {
-        Expression objectExpression=call.getObjectExpression();
-        boolean objectExpressionIsMethodName=false;
-        if (method.equals("call")) {
-          if (objectExpression instanceof GStringExpression) {
-            objectExpressionIsMethodName=true;
-            objectExpression=new CastExpression(ClassHelper.STRING_TYPE,objectExpression);
-          }
- else           if (objectExpression instanceof ConstantExpression) {
-            Object value=((ConstantExpression)objectExpression).getValue();
-            if (value != null && value instanceof String)             objectExpressionIsMethodName=true;
-          }
-        }
-        if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
+        if (argumentsUseStack(arguments)) {
+          arguments.visit(this);
+          int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
           prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
-          invokeNoArgumentsMethod.call(cv);
+          cv.visitVarInsn(ALOAD,paramIdx);
+          compileStack.removeVar(paramIdx);
         }
  else {
-          if (argumentsUseStack(arguments)) {
-            arguments.visit(this);
-            int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
-            prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
-            cv.visitVarInsn(ALOAD,paramIdx);
-            compileStack.removeVar(paramIdx);
-          }
+          prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
+          arguments.visit(this);
+        }
+        if (call.isSpreadSafe()) {
+          invokeMethodSpreadSafeMethod.call(cv);
+        }
+ else         if (call.isSafe()) {
+          invokeMethodSafeMethod.call(cv);
+        }
  else {
-            prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
-            arguments.visit(this);
-          }
-          if (call.isSpreadSafe()) {
-            invokeMethodSpreadSafeMethod.call(cv);
-          }
- else           if (call.isSafe()) {
-            invokeMethodSafeMethod.call(cv);
-          }
- else {
-            invokeMethodMethod.call(cv);
-          }
+          invokeMethodMethod.call(cv);
         }
       }
     }
