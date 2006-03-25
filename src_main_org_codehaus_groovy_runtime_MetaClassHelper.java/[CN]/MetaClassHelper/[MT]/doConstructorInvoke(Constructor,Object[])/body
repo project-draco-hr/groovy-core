@@ -10,12 +10,12 @@
     throw new InvokerInvocationException(e);
   }
 catch (  IllegalArgumentException e) {
-    throw new GroovyRuntimeException("failed to invoke constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e);
+    throw createExceptionText("failed to invoke constructor: ",constructor,argumentArray,e,false);
   }
 catch (  IllegalAccessException e) {
-    throw new GroovyRuntimeException("could not access constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e);
+    throw createExceptionText("could not access constructor: ",constructor,argumentArray,e,false);
   }
 catch (  Exception e) {
-    throw new GroovyRuntimeException("failed to invoke constructor: " + constructor + " with arguments: "+ InvokerHelper.toString(argumentArray)+ " reason: "+ e,e);
+    throw createExceptionText("failed to invoke constructor: ",constructor,argumentArray,e,true);
   }
 }
