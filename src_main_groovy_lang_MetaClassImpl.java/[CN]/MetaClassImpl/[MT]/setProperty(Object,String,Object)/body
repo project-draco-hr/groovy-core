@@ -50,8 +50,9 @@ catch (    Exception e) {
       throw new MissingPropertyException(property,theClass,e);
     }
   }
+  RuntimeException runtimeException=null;
+  MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
   try {
-    MetaMethod addListenerMethod=(MetaMethod)listeners.get(property);
     if (addListenerMethod != null && newValue instanceof Closure) {
       Object proxy=MetaClassHelper.createListenerProxy(addListenerMethod.getParameterTypes()[0],property,(Closure)newValue);
       MetaClassHelper.doMethodInvoke(object,addListenerMethod,new Object[]{proxy});
@@ -85,6 +86,12 @@ catch (    Exception e) {
     }
   }
  catch (  GroovyRuntimeException e) {
-    throw new MissingPropertyException(property,theClass,e);
+    runtimeException=e;
+  }
+  if (addListenerMethod == AMBIGOUS_LISTENER_METHOD) {
+    throw new GroovyRuntimeException("There are multiple listeners for the property " + property + ". Please do not use the bean short form to access this listener.");
+  }
+ else   if (runtimeException != null) {
+    throw new MissingPropertyException(property,theClass,runtimeException);
   }
 }

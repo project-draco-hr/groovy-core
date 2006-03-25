@@ -34,7 +34,13 @@
     for (int j=0; j < listenerMethods.length; j++) {
       Method listenerMethod=listenerMethods[j];
       MetaMethod metaMethod=createMetaMethod(descriptor.getAddListenerMethod());
-      listeners.put(listenerMethod.getName(),metaMethod);
+      String name=listenerMethod.getName();
+      if (listeners.containsKey(name)) {
+        listeners.put(name,AMBIGOUS_LISTENER_METHOD);
+      }
+ else {
+        listeners.put(name,metaMethod);
+      }
     }
   }
 }
