@@ -11,7 +11,8 @@
   Expression rightExpression=expression.getRightExpression();
   ClassNode type=getLHSType(leftExpression);
   if (ClassHelper.isPrimitiveType(type)) {
-    visitAndAutoboxBoolean(rightExpression);
+    rightExpression.visit(this);
+    helper.box(rightExpression.getType());
     helper.unbox(type);
   }
  else {
