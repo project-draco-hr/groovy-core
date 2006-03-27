@@ -11,17 +11,13 @@
   Expression rightExpression=expression.getRightExpression();
   ClassNode type=getLHSType(leftExpression);
   if (ClassHelper.isPrimitiveType(type)) {
-    rightExpression.visit(this);
-    helper.box(rightExpression.getType());
-    helper.unbox(type);
+    visitAndAutoboxBoolean(rightExpression);
+  }
+ else   if (type != ClassHelper.OBJECT_TYPE) {
+    visitCastExpression(new CastExpression(type,rightExpression));
   }
  else {
-    if (type != ClassHelper.OBJECT_TYPE) {
-      visitCastExpression(new CastExpression(type,rightExpression));
-    }
- else {
-      visitAndAutoboxBoolean(rightExpression);
-    }
+    visitAndAutoboxBoolean(rightExpression);
   }
   cv.visitInsn(DUP);
   leftHandExpression=true;

@@ -13,11 +13,12 @@
     if (isInClosureConstructor()) {
       helper.doCast(type);
     }
- else {
+ else     if (!ClassHelper.isPrimitiveType(type)) {
       doConvertAndCast(type);
     }
     helper.loadThis();
-    helper.swapObjectWith(type);
+    cv.visitInsn(SWAP);
+    helper.unbox(type);
     helper.putField(field,ownerName);
   }
 }
