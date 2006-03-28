@@ -14,24 +14,7 @@
     }
   }
   type.setName(name);
-{
-    String pname=name;
-    int index=name.length();
-    while (true) {
-      pname=name.substring(0,index);
-      String aliased=module.getImport(pname);
-      if (aliased != null && !aliased.equals(name)) {
-        if (pname.length() < name.length()) {
-          aliased+=name.substring(pname.length());
-        }
-        type.setName(aliased);
-        if (resolve(type,true,true,true))         return true;
-        type.setName(name);
-      }
-      index=pname.lastIndexOf('.');
-      if (index == -1)       break;
-    }
-  }
+  if (resolveAliasFromModule(type))   return true;
   if (testModuleImports) {
     boolean resolved=false;
     if (module.hasPackageName()) {

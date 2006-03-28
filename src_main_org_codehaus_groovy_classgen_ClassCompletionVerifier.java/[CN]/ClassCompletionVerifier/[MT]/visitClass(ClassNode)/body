@@ -2,9 +2,11 @@
   ClassNode oldClass=currentClass;
   currentClass=node;
   checkImplementsAndExtends(node);
-  checkClassForOverwritingFinal(node);
-  checkMethodsForOverwritingFinal(node);
-  checkNoAbstractMethodsNonabstractClass(node);
+  if (!getSourceUnit().getErrorCollector().hasErrors()) {
+    checkClassForOverwritingFinal(node);
+    checkMethodsForOverwritingFinal(node);
+    checkNoAbstractMethodsNonabstractClass(node);
+  }
   super.visitClass(node);
   currentClass=oldClass;
 }
