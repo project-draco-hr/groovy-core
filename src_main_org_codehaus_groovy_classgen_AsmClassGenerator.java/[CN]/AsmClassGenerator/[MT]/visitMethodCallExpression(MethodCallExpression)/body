@@ -16,6 +16,7 @@
       loadArguments(superMethodNode.getParameters(),arguments);
       String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
       cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),method,descriptor);
+      helper.box(superMethodNode.getReturnType());
     }
  else {
       Expression objectExpression=call.getObjectExpression();
