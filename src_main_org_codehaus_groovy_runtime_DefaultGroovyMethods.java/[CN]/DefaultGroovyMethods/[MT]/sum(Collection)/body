@@ -1,5 +1,25 @@
 {
-  Object result=new Integer(0);
+  Object result=null;
+  if (self.size() == 0)   return result;
+  boolean isNumber=true;
+  Class classref=null;
+  try {
+    classref=Class.forName("java.lang.Number");
+  }
+ catch (  Exception ex) {
+  }
+  for (Iterator iter=self.iterator(); iter.hasNext(); ) {
+    if (!classref.isInstance(iter.next())) {
+      isNumber=false;
+      break;
+    }
+  }
+  if (isNumber) {
+    result=new Integer(0);
+  }
+ else {
+    result=new String();
+  }
   Object[] param=new Object[1];
   for (Iterator iter=self.iterator(); iter.hasNext(); ) {
     Object operand=iter.next();
