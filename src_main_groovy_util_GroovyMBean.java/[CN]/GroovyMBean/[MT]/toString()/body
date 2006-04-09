@@ -1,0 +1,17 @@
+{
+  StringBuffer buf=new StringBuffer();
+  buf.append("MBean Name:").append("\n  ").append(name.getCanonicalName()).append("\n  ");
+  if (!listAttributeDescriptions().isEmpty()) {
+    buf.append("\nAttributes:");
+    for (Iterator iterator=listAttributeDescriptions().iterator(); iterator.hasNext(); ) {
+      buf.append("\n  ").append((String)iterator.next());
+    }
+  }
+  if (!listOperationDescriptions().isEmpty()) {
+    buf.append("\nOperations:");
+    for (Iterator iterator=listOperationDescriptions().iterator(); iterator.hasNext(); ) {
+      buf.append("\n  ").append((String)iterator.next());
+    }
+  }
+  return buf.toString();
+}

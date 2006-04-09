@@ -1,0 +1,15 @@
+{
+  ArrayList list=new ArrayList();
+  try {
+    MBeanOperationInfo[] operations=beanInfo.getOperations();
+    for (int i=0; i < operations.length; i++) {
+      MBeanOperationInfo operation=operations[i];
+      if (operation.getName().equals(operationName)) {
+        list.add(describeOperation(operation));
+      }
+    }
+  }
+ catch (  Throwable t) {
+  }
+  return list;
+}
