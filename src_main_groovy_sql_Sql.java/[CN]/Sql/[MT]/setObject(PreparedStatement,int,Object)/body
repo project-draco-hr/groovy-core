@@ -1,3 +1,26 @@
 {
-  statement.setObject(i,value);
+  if (value instanceof InParameter || value instanceof OutParameter) {
+    if (value instanceof InParameter) {
+      InParameter in=(InParameter)value;
+      Object val=in.getValue();
+      if (null == val) {
+        statement.setNull(i,in.getType());
+      }
+ else {
+        statement.setObject(i,val,in.getType());
+      }
+    }
+    if (value instanceof OutParameter) {
+      try {
+        OutParameter out=(OutParameter)value;
+        ((CallableStatement)statement).registerOutParameter(i,out.getType());
+      }
+ catch (      ClassCastException e) {
+        throw new SQLException("Cannot register out parameter.");
+      }
+    }
+  }
+ else {
+    statement.setObject(i,value);
+  }
 }
