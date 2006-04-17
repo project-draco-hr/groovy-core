@@ -5,6 +5,8 @@
   MBeanOperationInfo[] operationInfos=beanInfo.getOperations();
   for (int i=0; i < operationInfos.length; i++) {
     MBeanOperationInfo info=operationInfos[i];
-    operations.put(info.getName(),createSignature(info));
+    String signature[]=createSignature(info);
+    String operationKey=createOperationKey(info.getName(),signature.length);
+    operations.put(operationKey,signature);
   }
 }
