@@ -1,13 +1,7 @@
 {
-  Class cls=null;
-synchronized (cache) {
-    cls=(Class)cache.get(name);
-    if (cls == NOT_RESOLVED.class)     throw new ClassNotFoundException(name);
-    if (cls != null) {
-      boolean reloadable=GroovyObject.class.isAssignableFrom(cls);
-      if (!reloadable)       return cls;
-    }
-  }
+  Class cls=getClassCacheEntry(name);
+  boolean recompile=isRecompilable(cls);
+  if (!recompile)   return cls;
   SecurityManager sm=System.getSecurityManager();
   if (sm != null) {
     String className=name.replace('/','.');
@@ -18,7 +12,9 @@ synchronized (cache) {
   }
   ClassNotFoundException last=null;
   try {
-    cls=super.loadClass(name,resolve);
+    Class parentClassLoaderClass=super.loadClass(name,resolve);
+    if (cls != parentClassLoaderClass)     return parentClassLoaderClass;
+    cls=parentClassLoaderClass;
   }
  catch (  ClassNotFoundException cnfe) {
     last=cnfe;
@@ -32,38 +28,36 @@ catch (  NoClassDefFoundError ncdfe) {
     }
   }
   if (cls != null) {
-    boolean recompile=false;
-    recompile=getTimeStamp(cls) < Long.MAX_VALUE && GroovyObject.class.isAssignableFrom(cls);
-    preferClassOverScript|=cls.getClassLoader() == this;
     preferClassOverScript|=!recompile;
     if (preferClassOverScript)     return cls;
   }
   if (lookupScriptFiles) {
-    try {
-      URL source=resourceLoader.loadGroovySource(name);
-      if (source != null) {
-        if ((cls != null && isSourceNewer(source,cls)) || (cls == null)) {
-synchronized (cache) {
-            cache.put(name,null);
-          }
-          cls=parseClass(source.openStream(),name);
+synchronized (classCache) {
+      try {
+        if (getClassCacheEntry(name) != cls)         return getClassCacheEntry(name);
+        URL source=resourceLoader.loadGroovySource(name);
+        Class newCls=recompile(source,name,cls);
+        if (newCls != null)         cls=newCls;
+      }
+ catch (      CompilationFailedException cfe) {
+        last=new ClassNotFoundException("Failed to parse groovy source: " + name,cfe);
+      }
+catch (      IOException ioe) {
+        last=new ClassNotFoundException("IOException while openening groovy source: " + name,ioe);
+      }
+ finally {
+        if (cls == null) {
+          removeClassCacheEntry(name);
+        }
+ else {
+          setClassCacheEntry(cls);
         }
       }
-    }
- catch (    Exception e) {
-      cls=null;
-      last=new ClassNotFoundException("Failed to parse groovy file: " + name,e);
     }
   }
   if (cls == null) {
     if (last == null)     throw new AssertionError(true);
-synchronized (cache) {
-      cache.put(name,NOT_RESOLVED.class);
-    }
     throw last;
-  }
-synchronized (cache) {
-    cache.put(name,cls);
   }
   return cls;
 }

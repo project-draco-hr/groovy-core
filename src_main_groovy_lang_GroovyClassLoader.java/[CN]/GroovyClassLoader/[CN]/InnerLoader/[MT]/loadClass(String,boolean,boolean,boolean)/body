@@ -1,3 +1,5 @@
 {
-  return GroovyClassLoader.this.loadClass(name,lookupScriptFiles,preferClassOverScript,resolve);
+  Class c=findLoadedClass(name);
+  if (c != null)   return c;
+  return delegate.loadClass(name,lookupScriptFiles,preferClassOverScript,resolve);
 }

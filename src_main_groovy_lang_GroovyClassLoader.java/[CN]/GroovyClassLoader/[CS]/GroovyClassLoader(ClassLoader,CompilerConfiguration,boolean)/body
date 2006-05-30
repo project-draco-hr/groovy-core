@@ -1,11 +1,11 @@
 {
-  super(new URL[0],loader);
+  super(new URL[0],parent);
   if (config == null)   config=CompilerConfiguration.DEFAULT;
   this.config=config;
-  if (!skipConfigClassPath) {
-    for (Iterator iter=config.getClasspath().iterator(); iter.hasNext(); ) {
-      String path=(String)iter.next();
-      addClasspath(path);
+  if (useConfigurationClasspath) {
+    for (Iterator it=config.getClasspath().iterator(); it.hasNext(); ) {
+      String path=(String)it.next();
+      this.addClasspath(path);
     }
   }
 }

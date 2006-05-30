@@ -8,6 +8,7 @@
  else {
     lastMod=source.openConnection().getLastModified();
   }
-  if (lastMod > System.currentTimeMillis())   return false;
+  long newTime=System.currentTimeMillis();
+  if (lastMod + config.getMinimumRecompilationIntervall() > newTime)   return false;
   return lastMod > getTimeStamp(cls);
 }

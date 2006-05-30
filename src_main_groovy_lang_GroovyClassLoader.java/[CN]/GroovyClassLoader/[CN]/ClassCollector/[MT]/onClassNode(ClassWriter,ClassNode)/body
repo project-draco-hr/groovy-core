@@ -1,6 +1,7 @@
 {
   byte[] code=classWriter.toByteArray();
   Class theClass=cl.defineClass(classNode.getName(),code,0,code.length,unit.getAST().getCodeSource());
+  cl.resolveClass(theClass);
   this.loadedClasses.add(theClass);
   if (generatedClass == null) {
     ModuleNode mn=classNode.getModule();

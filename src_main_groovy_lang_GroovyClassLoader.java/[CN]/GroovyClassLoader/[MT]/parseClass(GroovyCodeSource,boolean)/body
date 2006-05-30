@@ -1,52 +1,36 @@
 {
-  String name=codeSource.getName();
-  Class answer=null;
-synchronized (cache) {
-    answer=(Class)cache.get(name);
-    if (answer != null) {
-      return (answer == PARSING.class ? null : answer);
-    }
- else {
-      cache.put(name,PARSING.class);
-    }
-  }
-  try {
-    CompilationUnit unit=new CompilationUnit(config,codeSource.getCodeSource(),this);
-    SourceUnit su=null;
-    if (codeSource.getFile() == null) {
-      su=unit.addSource(name,codeSource.getInputStream());
-    }
- else {
-      su=unit.addSource(codeSource.getFile());
-    }
-    ClassCollector collector=createCollector(unit,su);
-    unit.setClassgenCallback(collector);
-    int goalPhase=Phases.CLASS_GENERATION;
-    if (config != null && config.getTargetDirectory() != null)     goalPhase=Phases.OUTPUT;
-    unit.compile(goalPhase);
-    answer=collector.generatedClass;
-    for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
-      Class clazz=(Class)iter.next();
-      if (shouldCache) {
-        cache.put(clazz.getName(),clazz);
-      }
-      if (name.equals(clazz.getName()))       answer=clazz;
-    }
-    shouldCache=shouldCache && name.equals(answer.getName());
-  }
-  finally {
-synchronized (cache) {
-      cache.remove(name);
-      if (shouldCache) {
-        cache.put(name,answer);
-      }
-    }
+synchronized (classCache) {
+    Class answer=null;
     try {
-      codeSource.getInputStream().close();
+      CompilationUnit unit=createCompilationUnit(config,codeSource.getCodeSource());
+      SourceUnit su=null;
+      if (codeSource.getFile() == null) {
+        su=unit.addSource(codeSource.getName(),codeSource.getInputStream());
+      }
+ else {
+        su=unit.addSource(codeSource.getFile());
+      }
+      ClassCollector collector=createCollector(unit,su);
+      unit.setClassgenCallback(collector);
+      int goalPhase=Phases.CLASS_GENERATION;
+      if (config != null && config.getTargetDirectory() != null)       goalPhase=Phases.OUTPUT;
+      unit.compile(goalPhase);
+      answer=collector.generatedClass;
+      if (shouldCache) {
+        for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
+          Class clazz=(Class)iter.next();
+          setClassCacheEntry(clazz);
+        }
+      }
     }
- catch (    IOException e) {
-      throw new GroovyRuntimeException("unable to close stream",e);
+  finally {
+      try {
+        codeSource.getInputStream().close();
+      }
+ catch (      IOException e) {
+        throw new GroovyRuntimeException("unable to close stream",e);
+      }
     }
+    return answer;
   }
-  return answer;
 }
