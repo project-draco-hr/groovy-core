@@ -10,5 +10,20 @@
   this.generatedClasses=new ArrayList();
   this.verifier=new Verifier();
   this.resolveVisitor=new ResolveVisitor(this);
+  phaseOperations=new LinkedList[Phases.ALL + 1];
+  for (int i=0; i < phaseOperations.length; i++) {
+    phaseOperations[i]=new LinkedList();
+  }
+  addPhaseOperation(new LoopBodyForSourceUnitOperations(){
+    public void call(    SourceUnit source) throws CompilationFailedException {
+      source.parse();
+    }
+  }
+,Phases.PARSING);
+  addPhaseOperation(summarize,Phases.PARSING);
+  addPhaseOperation(convert,Phases.CONVERSION);
+  addPhaseOperation(resolve,Phases.SEMANTIC_ANALYSIS);
+  addPhaseOperation(classgen,Phases.CLASS_GENERATION);
+  addPhaseOperation(output);
   this.classgenCallback=null;
 }

@@ -1,6 +1,5 @@
 {
-  boolean failures=false;
-  Iterator classNodes=getPrimaryClassNodes(sort).iterator();
+  Iterator classNodes=getPrimaryClassNodes(body.needSortedInput()).iterator();
   while (classNodes.hasNext()) {
     SourceUnit context=null;
     try {
@@ -20,7 +19,6 @@ catch (    GroovyBugError e) {
       throw e;
     }
 catch (    Exception e) {
-      failures=true;
       ErrorCollector nestedCollector=null;
       for (Throwable next=e.getCause(); next != e && next != null; next=next.getCause()) {
         if (!(next instanceof MultipleCompilationErrorsException))         continue;

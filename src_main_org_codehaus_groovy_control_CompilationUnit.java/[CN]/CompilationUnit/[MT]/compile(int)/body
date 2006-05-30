@@ -1,34 +1,31 @@
 {
   gotoPhase(Phases.INITIALIZATION);
-  do {
+  throughPhase=Math.min(throughPhase,Phases.ALL);
+  while (throughPhase >= phase && phase <= Phases.ALL) {
+    for (Iterator it=phaseOperations[phase].iterator(); it.hasNext(); ) {
+      Object operation=it.next();
+      if (operation instanceof LoopBodyForPrimaryClassNodeOperations) {
+        applyToPrimaryClassNodes((LoopBodyForPrimaryClassNodeOperations)operation);
+      }
+ else       if (operation instanceof LoopBodyForSourceUnitOperations) {
+        applyToSourceUnits((LoopBodyForSourceUnitOperations)operation);
+      }
+ else {
+        applyToGeneratedGroovyClasses((LoopBodyForGeneratedGroovyClassOperations)operation);
+      }
+    }
     if (dequeued())     continue;
-    if (throughPhase < Phases.PARSING)     break;
-    gotoPhase(Phases.PARSING);
-    parse();
-    if (dequeued())     continue;
-    if (throughPhase < Phases.CONVERSION)     break;
-    gotoPhase(Phases.CONVERSION);
-    convert();
-    if (dequeued())     continue;
-    if (throughPhase < Phases.CLASS_GENERATION)     break;
-    gotoPhase(Phases.SEMANTIC_ANALYSIS);
-    semanticAnalysis();
-    if (dequeued())     continue;
-    if (throughPhase < Phases.CLASS_GENERATION)     break;
-    if (ast.hasClassNodeToCompile())     break;
-    gotoPhase(Phases.CLASS_GENERATION);
-    sortClasses();
-    classgen();
-    if (dequeued())     continue;
-    if (throughPhase < Phases.OUTPUT)     break;
-    gotoPhase(Phases.OUTPUT);
-    output();
-    if (dequeued())     continue;
-    if (throughPhase < Phases.FINALIZATION)     break;
-    gotoPhase(Phases.FINALIZATION);
-    break;
+    if (phase == Phases.CLASS_GENERATION && ast.hasClassNodeToCompile()) {
+      break;
+    }
+    if (progressCallback != null)     progressCallback.call(this,phase);
+    completePhase();
+    applyToSourceUnits(mark);
+    gotoPhase(phase + 1);
+    if (phase == Phases.CLASS_GENERATION) {
+      sortClasses();
+    }
   }
- while (true);
   for (Iterator iter=ast.iterateClassNodeToCompile(); iter.hasNext(); ) {
     String name=(String)iter.next();
     String location=ast.getScriptSourceLocation(name);
