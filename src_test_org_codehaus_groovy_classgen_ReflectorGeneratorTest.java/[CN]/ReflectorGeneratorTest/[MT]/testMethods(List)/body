@@ -11,7 +11,7 @@
   out.close();
   ASMifierClassVisitor.main(new String[]{fileName});
   MetaClassRegistry registry=new MetaClassRegistry();
-  Class type=registry.loadClass(name,bytecode);
+  Class type=registry.createReflectorClass(getClass().getClassLoader(),name,bytecode);
   Object reflector=type.newInstance();
   System.out.println("Created new reflector: " + reflector);
 }
