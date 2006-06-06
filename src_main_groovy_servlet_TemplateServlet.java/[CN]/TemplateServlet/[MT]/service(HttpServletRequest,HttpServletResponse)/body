@@ -18,6 +18,7 @@
   ServletBinding binding=new ServletBinding(request,response,servletContext);
   setVariables(binding);
   response.setContentType(CONTENT_TYPE_TEXT_HTML);
+  response.setStatus(HttpServletResponse.SC_OK);
   Writer out=(Writer)binding.getVariable("out");
   if (out == null) {
     out=response.getWriter();
@@ -37,7 +38,6 @@
     sb.append(" ms] -->\n");
     out.write(sb.toString());
   }
-  response.setStatus(HttpServletResponse.SC_OK);
   response.flushBuffer();
   if (verbose) {
     log("Template \"" + name + "\" request responded. [create/get="+ getMillis+ " ms, make="+ makeMillis+ " ms]");
