@@ -14,8 +14,9 @@
     Object[] info=(Object[])AccessController.doPrivileged(new PrivilegedExceptionAction(){
       public Object run() throws MalformedURLException {
         Object[] info=new Object[2];
-        info[0]=file.getName();
-        info[1]=new CodeSource(file.toURI().toURL(),(Certificate[])null);
+        URL url=file.toURI().toURL();
+        info[0]=url.toExternalForm();
+        info[1]=new CodeSource(url,(Certificate[])null);
         return info;
       }
     }

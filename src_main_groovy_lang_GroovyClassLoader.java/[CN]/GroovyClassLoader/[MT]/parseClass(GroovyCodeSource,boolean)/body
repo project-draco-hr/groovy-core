@@ -1,6 +1,7 @@
 {
 synchronized (classCache) {
-    Class answer=null;
+    Class answer=(Class)sourceCache.get(codeSource.getName());
+    if (answer != null)     return answer;
     try {
       CompilationUnit unit=createCompilationUnit(config,codeSource.getCodeSource());
       SourceUnit su=null;
@@ -16,12 +17,11 @@ synchronized (classCache) {
       if (config != null && config.getTargetDirectory() != null)       goalPhase=Phases.OUTPUT;
       unit.compile(goalPhase);
       answer=collector.generatedClass;
-      if (shouldCache) {
-        for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
-          Class clazz=(Class)iter.next();
-          setClassCacheEntry(clazz);
-        }
+      for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
+        Class clazz=(Class)iter.next();
+        setClassCacheEntry(clazz);
       }
+      if (shouldCacheSource)       sourceCache.put(codeSource.getName(),answer);
     }
   finally {
       try {

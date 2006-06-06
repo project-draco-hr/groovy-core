@@ -4,14 +4,14 @@
   while (throughPhase >= phase && phase <= Phases.ALL) {
     for (Iterator it=phaseOperations[phase].iterator(); it.hasNext(); ) {
       Object operation=it.next();
-      if (operation instanceof LoopBodyForPrimaryClassNodeOperations) {
-        applyToPrimaryClassNodes((LoopBodyForPrimaryClassNodeOperations)operation);
+      if (operation instanceof PrimaryClassNodeOperation) {
+        applyToPrimaryClassNodes((PrimaryClassNodeOperation)operation);
       }
- else       if (operation instanceof LoopBodyForSourceUnitOperations) {
-        applyToSourceUnits((LoopBodyForSourceUnitOperations)operation);
+ else       if (operation instanceof SourceUnitOperation) {
+        applyToSourceUnits((SourceUnitOperation)operation);
       }
  else {
-        applyToGeneratedGroovyClasses((LoopBodyForGeneratedGroovyClassOperations)operation);
+        applyToGeneratedGroovyClasses((GroovyClassOperation)operation);
       }
     }
     if (dequeued())     continue;

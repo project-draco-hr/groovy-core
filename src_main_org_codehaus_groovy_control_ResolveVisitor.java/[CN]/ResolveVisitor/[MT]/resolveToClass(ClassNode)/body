@@ -11,6 +11,10 @@
     cachedClasses.put(name,SCRIPT);
     return false;
   }
+catch (  CompilationFailedException cfe) {
+    compilationUnit.getErrorCollector().addErrorAndContinue(new ExceptionMessage(cfe,true,source));
+    return false;
+  }
   if (cls == null)   return false;
   cachedClasses.put(name,cls);
   setClass(type,cls);

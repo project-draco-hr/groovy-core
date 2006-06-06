@@ -14,7 +14,6 @@
   try {
     Class parentClassLoaderClass=super.loadClass(name,resolve);
     if (cls != parentClassLoaderClass)     return parentClassLoaderClass;
-    cls=parentClassLoaderClass;
   }
  catch (  ClassNotFoundException cnfe) {
     last=cnfe;
@@ -36,13 +35,9 @@ synchronized (classCache) {
       try {
         if (getClassCacheEntry(name) != cls)         return getClassCacheEntry(name);
         URL source=resourceLoader.loadGroovySource(name);
-        Class newCls=recompile(source,name,cls);
-        if (newCls != null)         cls=newCls;
+        cls=recompile(source,name,cls);
       }
- catch (      CompilationFailedException cfe) {
-        last=new ClassNotFoundException("Failed to parse groovy source: " + name,cfe);
-      }
-catch (      IOException ioe) {
+ catch (      IOException ioe) {
         last=new ClassNotFoundException("IOException while openening groovy source: " + name,ioe);
       }
  finally {
