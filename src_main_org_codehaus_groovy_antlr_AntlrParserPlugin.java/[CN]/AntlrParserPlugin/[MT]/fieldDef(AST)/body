@@ -53,14 +53,15 @@
   FieldNode fieldNode=new FieldNode(name,modifiers,type,classNode,initialValue);
   fieldNode.addAnnotations(annotations);
   configureAST(fieldNode,fieldDef);
-  if (fieldNode.getAnnotations("Property") != null) {
+  if (!hasVisibility(modifiers)) {
     int fieldModifiers=0;
     int flags=Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT | Opcodes.ACC_VOLATILE| Opcodes.ACC_FINAL;
-    fieldModifiers|=(modifiers & flags);
-    fieldNode.setModifiers(fieldModifiers);
     if (!hasVisibility(modifiers)) {
       modifiers|=Opcodes.ACC_PUBLIC;
+      fieldModifiers|=Opcodes.ACC_PRIVATE;
     }
+    fieldModifiers|=(modifiers & flags);
+    fieldNode.setModifiers(fieldModifiers);
     PropertyNode propertyNode=new PropertyNode(fieldNode,modifiers,null,null);
     configureAST(propertyNode,fieldDef);
     classNode.addProperty(propertyNode);
