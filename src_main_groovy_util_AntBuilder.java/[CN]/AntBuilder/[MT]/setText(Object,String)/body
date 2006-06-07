@@ -1,12 +1,9 @@
 {
-  Method method=getAccessibleMethod(task.getClass(),"addText",addTaskParamTypes);
-  if (method != null) {
-    Object[] args={text};
-    try {
-      method.invoke(task,args);
-    }
- catch (    Exception e) {
-      log.log(Level.WARNING,"Cannot call addText on: " + task + ". Reason: "+ e,e);
-    }
+  final char[] characters=text.toCharArray();
+  try {
+    antElementHandler.characters(characters,0,characters.length,antXmlContext);
+  }
+ catch (  final SAXParseException e) {
+    log.log(Level.WARNING,"SetText failed: " + task + ". Reason: "+ e,e);
   }
 }

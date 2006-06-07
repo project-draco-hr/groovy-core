@@ -1,85 +1,11 @@
 {
-  if (name.equals("fileScanner")) {
-    return new FileScanner(project);
+  final String tagName=name.toString();
+  try {
+    antElementHandler.onStartElement("",tagName,tagName,buildAttributes(attributes),antXmlContext);
   }
-  String tagName=name.toString();
-  Object answer=null;
-  Object parentObject=getCurrent();
-  Object parentTask=getParentTask();
-  Object nested=null;
-  if (parentObject != null && !(parentTask instanceof TaskContainer)) {
-    nested=createNestedObject(parentObject,tagName);
+ catch (  final SAXParseException e) {
+    log.log(Level.SEVERE,"Caught: " + e,e);
   }
-  Task task=null;
-  if (nested == null) {
-    task=createTask(tagName);
-    if (task != null) {
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Creating an ant Task for name: " + tagName);
-      }
-      if (task instanceof TaskAdapter) {
-        answer=((TaskAdapter)task).getProxy();
-      }
- else {
-        answer=task;
-      }
-      Object id=attributes.remove("id");
-      if (id != null) {
-        project.addReference((String)id,task);
-      }
-      task.init();
-      setBeanProperties(task,attributes);
-      if (parentObject instanceof TaskContainer) {
-        ((TaskContainer)parentObject).addTask(task);
-      }
-    }
-  }
-  if (task == null) {
-    if (nested == null) {
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Trying to create a data type for tag: " + tagName);
-      }
-      nested=createDataType(tagName);
-    }
- else {
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Created nested property tag: " + tagName);
-      }
-    }
-    if (nested != null) {
-      answer=nested;
-      Object id=attributes.remove("id");
-      if (id != null) {
-        project.addReference((String)id,nested);
-      }
-      try {
-        InvokerHelper.setProperty(nested,"name",tagName);
-      }
- catch (      Exception e) {
-      }
-      setBeanProperties(nested,attributes);
-      if (parentObject != null) {
-        IntrospectionHelper ih=IntrospectionHelper.getHelper(parentObject.getClass());
-        try {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("About to set the: " + tagName + " property on: "+ parentObject+ " to value: "+ nested+ " with type: "+ nested.getClass());
-          }
-          ih.storeElement(project,parentObject,nested,tagName);
-        }
- catch (        Exception e) {
-          log.log(Level.WARNING,"Caught exception setting nested: " + tagName,e);
-        }
-        try {
-          InvokerHelper.setProperty(parentObject,tagName,nested);
-        }
- catch (        Exception e) {
-          log.fine("Caught exception trying to set property: " + tagName + " on: "+ parentObject);
-        }
-      }
-    }
- else {
-      log.log(Level.WARNING,"Could not convert tag: " + tagName + " into an Ant task, data type or property. Maybe the task is not on the classpath?");
-    }
-  }
-  return answer;
+  final RuntimeConfigurable wrapper=(RuntimeConfigurable)antXmlContext.getWrapperStack().lastElement();
+  return wrapper.getProxy();
 }

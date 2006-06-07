@@ -1,10 +1,24 @@
 {
-  if (parent instanceof TaskContainer) {
-    log.finest("parent is TaskContainer: no perform on nodeCompleted");
+  antElementHandler.onEndElement(null,null,antXmlContext);
+  lastCompletedNode=node;
+  if (parent != null) {
+    log.finest("parent is not null: no perform on nodeCompleted");
     return;
   }
   if (node instanceof Task) {
-    Task task=(Task)node;
-    task.perform();
+    Object task=node;
+    if (node instanceof UnknownElement) {
+      final UnknownElement unknownElement=(UnknownElement)node;
+      unknownElement.maybeConfigure();
+      task=unknownElement.getRealThing();
+    }
+    lastCompletedNode=task;
+    if (task instanceof Task) {
+      ((Task)task).perform();
+    }
+  }
+ else {
+    final RuntimeConfigurable r=(RuntimeConfigurable)node;
+    r.maybeConfigure(project);
   }
 }
