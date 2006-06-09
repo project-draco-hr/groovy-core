@@ -1,0 +1,15 @@
+{
+  final List li=new ArrayList();
+  final Closure closure=new Closure(null){
+    public Object doCall(    final Object params){
+      li.add(params);
+      return null;
+    }
+  }
+;
+  DefaultGroovyMethods.downto(new BigInteger("1"),new BigDecimal("0"),closure);
+  assertEquals("[1, 0]",DefaultGroovyMethods.toString(li));
+  li.clear();
+  DefaultGroovyMethods.downto(new BigInteger("1"),new BigDecimal("0.123"),closure);
+  assertEquals("[1]",DefaultGroovyMethods.toString(li));
+}
