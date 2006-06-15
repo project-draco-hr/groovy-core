@@ -18,6 +18,7 @@
   }
   ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
   classNode.setScript(true);
+  classNode.setScriptBody(true);
   classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE.makeArray(),"args")},ClassNode.EMPTY_ARRAY,new ExpressionStatement(new MethodCallExpression(new ClassExpression(ClassHelper.make(InvokerHelper.class)),"runScript",new ArgumentListExpression(new Expression[]{new ClassExpression(classNode),new VariableExpression("args")})))));
   classNode.addMethod(new MethodNode("run",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,statementBlock));
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
