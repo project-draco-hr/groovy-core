@@ -8,7 +8,9 @@
   }
   if (node.getNumberOfChildren() == 0) {
     String name=identifier(node);
-    importClass(null,name,alias);
+    ClassNode type=ClassHelper.make(name);
+    configureAST(type,importNode);
+    importClass(type,name,alias);
     return;
   }
   AST packageNode=node.getFirstChild();
@@ -20,6 +22,8 @@
   }
  else {
     String name=identifier(nameNode);
-    importClass(packageName,name,alias);
+    ClassNode type=ClassHelper.make(packageName + "." + name);
+    configureAST(type,importNode);
+    importClass(type,name,alias);
   }
 }

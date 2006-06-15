@@ -1,6 +1,17 @@
 {
   ClassNode oldNode=currentClass;
   currentClass=node;
+  ModuleNode module=node.getModule();
+  if (!module.hasImportsResolved()) {
+    List l=module.getImports();
+    for (Iterator iter=l.iterator(); iter.hasNext(); ) {
+      ImportNode element=(ImportNode)iter.next();
+      ClassNode type=element.getType();
+      if (resolve(type,false,false,false))       continue;
+      addError("unable to resolve class " + type.getName(),type);
+    }
+    module.setImportsResolved(true);
+  }
   ClassNode sn=node.getUnresolvedSuperClass();
   if (sn != null)   resolveOrFail(sn,node,true);
   ClassNode[] interfaces=node.getInterfaces();

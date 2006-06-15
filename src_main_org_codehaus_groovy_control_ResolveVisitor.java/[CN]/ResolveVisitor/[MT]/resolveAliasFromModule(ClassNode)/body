@@ -6,14 +6,18 @@
   int index=name.length();
   while (true) {
     pname=name.substring(0,index);
-    String aliased=module.getImport(pname);
-    if (aliased != null && !aliased.equals(name)) {
-      if (pname.length() < name.length()) {
-        aliased+=name.substring(pname.length());
+    ClassNode aliasedNode=module.getImport(pname);
+    if (aliasedNode != null) {
+      if (pname.length() == name.length()) {
+        type.setRedirect(aliasedNode);
+        return true;
       }
-      type.setName(aliased);
-      if (resolve(type,true,true,true))       return true;
-      type.setName(name);
+ else {
+        String newName=aliasedNode.getName() + name.substring(pname.length());
+        type.setName(newName);
+        if (resolve(type,true,true,true))         return true;
+        type.setName(name);
+      }
     }
     index=pname.lastIndexOf('.');
     if (index == -1)     break;
