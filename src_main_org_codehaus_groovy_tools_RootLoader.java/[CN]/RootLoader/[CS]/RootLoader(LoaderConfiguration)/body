@@ -1,5 +1,8 @@
 {
-  this(RootLoader.class.getClassLoader());
+  this(chooseParent());
   Thread.currentThread().setContextClassLoader(this);
-  inner=new InnerLoader(lc.getClassPathUrls());
+  URL[] urls=lc.getClassPathUrls();
+  for (int i=0; i < urls.length; i++) {
+    addURL(urls[i]);
+  }
 }

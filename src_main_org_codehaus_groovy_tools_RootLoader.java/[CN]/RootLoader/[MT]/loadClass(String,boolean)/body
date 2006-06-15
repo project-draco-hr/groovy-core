@@ -1,3 +1,12 @@
 {
-  return loadClassByName(name,false,resolve);
+  Class c=this.findLoadedClass(name);
+  if (c != null)   return c;
+  try {
+    c=findClass(name);
+  }
+ catch (  ClassNotFoundException cnfe) {
+  }
+  if (c == null)   c=super.loadClass(name,resolve);
+  if (resolve)   resolveClass(c);
+  return c;
 }
