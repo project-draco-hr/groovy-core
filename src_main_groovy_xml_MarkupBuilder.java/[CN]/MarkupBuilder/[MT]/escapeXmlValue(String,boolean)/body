@@ -2,14 +2,16 @@
   if (value.matches(".*&.*")) {
     value=value.replaceAll("&","&amp;");
   }
-  if (value.matches(".*\\'.*")) {
-    value=value.replaceAll("\\'","&apos;");
-  }
   if (value.matches(".*<.*")) {
     value=value.replaceAll("<","&lt;");
   }
   if (value.matches(".*>.*")) {
     value=value.replaceAll(">","&gt;");
+  }
+  if (isAttrValue) {
+    if (value.matches(".*\\'.*")) {
+      value=value.replaceAll("\\'","&apos;");
+    }
   }
   return value;
 }
