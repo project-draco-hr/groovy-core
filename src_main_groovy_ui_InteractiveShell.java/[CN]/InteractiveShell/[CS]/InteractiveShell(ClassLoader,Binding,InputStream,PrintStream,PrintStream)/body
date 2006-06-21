@@ -1,0 +1,17 @@
+{
+  this.in=in;
+  this.out=out;
+  this.err=err;
+  prompt=PromptFactory.buildPrompt(in,out,err);
+  prompt.setPrompt("groovy> ");
+  if (parent != null) {
+    shell=new GroovyShell(parent,binding);
+  }
+ else {
+    shell=new GroovyShell(binding);
+  }
+  Map map=shell.getContext().getVariables();
+  if (map.get("shell") != null) {
+    map.put("shell",shell);
+  }
+}
