@@ -5,6 +5,11 @@
   if (log.isLoggable(Level.FINER)) {
     MetaClassHelper.logMethodCall(object,methodName,arguments);
   }
+  for (int i=0; i != arguments.length; i++) {
+    if (arguments[i] instanceof Wrapper) {
+      arguments[i]=((Wrapper)arguments[i]).unwrap();
+    }
+  }
   MetaMethod method=retrieveMethod(object,methodName,arguments);
   boolean isClosure=object instanceof Closure;
   if (isClosure) {
