@@ -7,6 +7,7 @@
   for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
     addFieldInitialization(statements,staticStatements,(FieldNode)iter.next());
   }
+  statements.addAll(node.getObjectInitializerStatements());
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
     BlockStatement block=new BlockStatement();
