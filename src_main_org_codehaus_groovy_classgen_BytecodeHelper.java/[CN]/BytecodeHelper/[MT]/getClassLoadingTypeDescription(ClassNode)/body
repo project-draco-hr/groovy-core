@@ -8,9 +8,14 @@
       array=true;
     }
  else {
-      if (array)       buf.append('L');
-      buf.append(c.getName());
-      if (array)       buf.append(';');
+      if (ClassHelper.isPrimitiveType(c)) {
+        buf.append(getTypeDescription(c));
+      }
+ else {
+        if (array)         buf.append('L');
+        buf.append(c.getName());
+        if (array)         buf.append(';');
+      }
       return buf.toString();
     }
   }
