@@ -1,0 +1,10 @@
+{
+  ClassNode goalClass=argument.getType();
+  visitClassExpression(new ClassExpression(goalClass));
+  if (goalClass.isDerivedFromGroovyObject()) {
+    createGroovyObjectWrapperMethod.call(cv);
+  }
+ else {
+    createPojoWrapperMethod.call(cv);
+  }
+}
