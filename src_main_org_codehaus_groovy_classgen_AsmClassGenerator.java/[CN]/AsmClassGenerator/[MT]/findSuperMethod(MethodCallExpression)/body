@@ -1,5 +1,6 @@
 {
-  String methodName=call.getMethod();
+  String methodName=call.getMethodAsString();
+  if (methodName == null)   throw new GroovyBugError("FIXME: new MOP required to make a super call with a dynamic method name");
   TupleExpression argExpr=(TupleExpression)call.getArguments();
   int argCount=argExpr.getExpressions().size();
   ClassNode superClassNode=classNode.getSuperClass();

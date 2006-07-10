@@ -5,7 +5,7 @@
     if (identifierNode != null) {
       Expression leftExpression=expression(leftNode);
       if (isType(SELECT_SLOT,identifierNode)) {
-        String field=identifier(identifierNode.getFirstChild());
+        Expression field=expression(identifierNode.getFirstChild(),true);
         AttributeExpression attributeExpression=new AttributeExpression(leftExpression,field,node.getType() != DOT);
         if (node.getType() == SPREAD_DOT) {
           attributeExpression.setSpreadSafe(true);
@@ -13,7 +13,7 @@
         configureAST(attributeExpression,node);
         return attributeExpression;
       }
-      String property=identifier(identifierNode);
+      Expression property=expression(identifierNode,true);
       PropertyExpression propertyExpression=new PropertyExpression(leftExpression,property,node.getType() != DOT);
       if (node.getType() == SPREAD_DOT) {
         propertyExpression.setSpreadSafe(true);

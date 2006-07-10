@@ -3,9 +3,9 @@
   this.leftHandExpression=false;
   Expression arguments=call.getArguments();
   boolean superMethodCall=MethodCallExpression.isSuperMethodCall(call);
-  String method=call.getMethod();
-  if (isThisExpression(call.getObjectExpression()) && isFieldOrVariable(method) && !classNode.hasPossibleMethod(method,arguments)) {
-    visitVariableExpression(new VariableExpression(method));
+  String methodName=call.getMethodAsString();
+  if (methodName != null && isThisExpression(call.getObjectExpression()) && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
+    visitVariableExpression(new VariableExpression(methodName));
     arguments.visit(this);
     invokeClosureMethod.call(cv);
   }
@@ -15,36 +15,26 @@
       cv.visitVarInsn(ALOAD,0);
       loadArguments(superMethodNode.getParameters(),arguments);
       String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
-      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),method,descriptor);
+      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),methodName,descriptor);
       helper.box(superMethodNode.getReturnType());
     }
  else {
       Expression objectExpression=call.getObjectExpression();
-      boolean objectExpressionIsMethodName=false;
-      if (method.equals("call")) {
-        if (objectExpression instanceof GStringExpression) {
-          objectExpressionIsMethodName=true;
-          objectExpression=new CastExpression(ClassHelper.STRING_TYPE,objectExpression);
-        }
- else         if (objectExpression instanceof ConstantExpression) {
-          Object value=((ConstantExpression)objectExpression).getValue();
-          if (value != null && value instanceof String)           objectExpressionIsMethodName=true;
-        }
-      }
+      Expression method=call.getMethod();
       if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
-        prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
+        prepareMethodcallObjectAndName(objectExpression,method);
         invokeNoArgumentsMethod.call(cv);
       }
  else {
         if (argumentsUseStack(arguments)) {
           arguments.visit(this);
-          int paramIdx=compileStack.defineTemporaryVariable(method + "_arg",true);
-          prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
+          int paramIdx=compileStack.defineTemporaryVariable("_arg",true);
+          prepareMethodcallObjectAndName(objectExpression,method);
           cv.visitVarInsn(ALOAD,paramIdx);
           compileStack.removeVar(paramIdx);
         }
  else {
-          prepareMethodcallObjectAndName(objectExpression,objectExpressionIsMethodName,method);
+          prepareMethodcallObjectAndName(objectExpression,method);
           arguments.visit(this);
         }
         if (call.isSpreadSafe()) {

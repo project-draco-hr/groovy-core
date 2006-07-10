@@ -6,7 +6,7 @@
       found=(ClassExpression)it;
       break;
     }
- else     if (!(it instanceof PropertyExpression)) {
+ else     if (!(it.getClass() == PropertyExpression.class)) {
       return pe;
     }
     stack.addFirst(it);
@@ -14,12 +14,13 @@
   if (found == null)   return pe;
   if (stack.isEmpty())   return pe;
   Object stackElement=stack.removeFirst();
-  if (!(stackElement instanceof PropertyExpression))   return pe;
+  if (!(stackElement.getClass() == PropertyExpression.class))   return pe;
   PropertyExpression classPropertyExpression=(PropertyExpression)stackElement;
-  if (!classPropertyExpression.getProperty().equals("class"))   return pe;
+  String propertyNamePart=classPropertyExpression.getPropertyAsString();
+  if (propertyNamePart == null || !propertyNamePart.equals("class"))   return pe;
   if (stack.isEmpty())   return found;
   stackElement=stack.removeFirst();
-  if (!(stackElement instanceof PropertyExpression))   return pe;
+  if (!(stackElement.getClass() == PropertyExpression.class))   return pe;
   PropertyExpression classPropertyExpressionContainer=(PropertyExpression)stackElement;
   classPropertyExpressionContainer.setObjectExpression(found);
   return pe;

@@ -1,18 +1,21 @@
 {
   Expression objectExpression=expression.getObjectExpression();
   if (isThisExpression(objectExpression)) {
-    String name=expression.getProperty();
-    FieldNode field=classNode.getField(name);
-    if (field != null) {
-      visitFieldExpression(new FieldExpression(field));
-      return;
+    String name=expression.getPropertyAsString();
+    if (name != null) {
+      FieldNode field=classNode.getField(name);
+      if (field != null) {
+        visitFieldExpression(new FieldExpression(field));
+        return;
+      }
     }
   }
   boolean left=leftHandExpression;
   leftHandExpression=false;
   objectExpression.visit(this);
   leftHandExpression=left;
-  cv.visitLdcInsn(expression.getProperty());
+  CastExpression cast=new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty());
+  cast.visit(this);
   if (isGroovyObject(objectExpression) && !expression.isSafe()) {
     if (left) {
       setGroovyObjectPropertyMethod.call(cv);

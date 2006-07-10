@@ -9,13 +9,13 @@
       name=ve.getName() + "." + name;
       break;
     }
- else     if (!(it instanceof PropertyExpression)) {
+ else     if (!(it.getClass() == PropertyExpression.class)) {
       return null;
     }
  else {
       PropertyExpression current=(PropertyExpression)it;
-      String propertyPart=current.getProperty();
-      if (propertyPart.equals("class")) {
+      String propertyPart=current.getPropertyAsString();
+      if (propertyPart == null || propertyPart.equals("class")) {
         return null;
       }
       name=propertyPart + "." + name;

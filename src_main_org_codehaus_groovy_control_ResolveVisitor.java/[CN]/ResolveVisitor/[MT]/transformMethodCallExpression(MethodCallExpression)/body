@@ -2,7 +2,8 @@
   Expression obj=mce.getObjectExpression();
   Expression newObject=transform(obj);
   Expression args=transform(mce.getArguments());
-  MethodCallExpression ret=new MethodCallExpression(newObject,mce.getMethod(),args);
+  Expression method=transform(mce.getMethod());
+  MethodCallExpression ret=new MethodCallExpression(newObject,method,args);
   ret.setSafe(mce.isSafe());
   ret.setImplicitThis(mce.isImplicitThis());
   ret.setSpreadSafe(mce.isSpreadSafe());

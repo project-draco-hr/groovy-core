@@ -8,9 +8,10 @@
     FieldExpression fieldExp=(FieldExpression)expression;
     field=classNode.getField(fieldExp.getFieldName());
   }
- else   if (expression instanceof PropertyExpression) {
+ else   if (expression.getClass() == PropertyExpression.class) {
     PropertyExpression fieldExp=(PropertyExpression)expression;
-    field=classNode.getField(fieldExp.getProperty());
+    String possibleField=fieldExp.getPropertyAsString();
+    if (possibleField != null)     field=classNode.getField(possibleField);
   }
   if (field != null) {
     return !field.isStatic();
