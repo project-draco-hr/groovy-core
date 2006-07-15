@@ -1,10 +1,16 @@
 {
-  return new NodeIterator(this.parent.nodeIterator()){
+  return new NodeIterator(nodeIterator()){
     protected Object getNextNode(    final Iterator iter){
       while (iter.hasNext()) {
-        final Object value=((Node)iter.next()).attributes().get(Attributes.this.attributeName);
-        if (value != null) {
-          return value;
+        final Object next=iter.next();
+        if (next instanceof Attribute) {
+          return next;
+        }
+ else {
+          final String value=(String)((Node)next).attributes().get(Attributes.this.attributeName);
+          if (value != null) {
+            return new Attribute(Attributes.this.attributeName,value,new NodeChild((Node)next,Attributes.this.parent.parent,"",Attributes.this.namespaceTagHints),"",Attributes.this.namespaceTagHints);
+          }
         }
       }
       return null;
