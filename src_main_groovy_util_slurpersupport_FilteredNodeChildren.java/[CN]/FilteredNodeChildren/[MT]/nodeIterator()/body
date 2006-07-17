@@ -1,9 +1,9 @@
 {
-  return new NodeIterator(this.parent.iterator()){
+  return new NodeIterator(this.parent.nodeIterator()){
     protected Object getNextNode(    final Iterator iter){
       while (iter.hasNext()) {
         final Object node=iter.next();
-        if (InvokerHelper.asBool(FilteredNodeChildren.this.closure.call(new Object[]{node}))) {
+        if (InvokerHelper.asBool(FilteredNodeChildren.this.closure.call(new Object[]{new NodeChild((Node)node,FilteredNodeChildren.this.parent,FilteredNodeChildren.this.namespaceTagHints)}))) {
           return node;
         }
       }
