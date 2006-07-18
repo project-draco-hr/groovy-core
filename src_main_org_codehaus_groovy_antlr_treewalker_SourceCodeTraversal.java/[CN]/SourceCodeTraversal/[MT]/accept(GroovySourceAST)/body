@@ -30,6 +30,7 @@ case GroovyTokenTypes.PARAMETER_DEF:
 case GroovyTokenTypes.SLIST:
 accept_v_AllChildren_v(t);
 break;
+case GroovyTokenTypes.ANNOTATION_MEMBER_VALUE_PAIR:
 case GroovyTokenTypes.ASSIGN:
 case GroovyTokenTypes.EQUAL:
 case GroovyTokenTypes.NOT_EQUAL:
@@ -39,6 +40,9 @@ accept_FirstChild_v_RestOfTheChildren(t);
  else {
 accept_v_FirstChild_v_RestOfTheChildren(t);
 }
+break;
+case GroovyTokenTypes.ANNOTATION_FIELD_DEF:
+accept_FirstSecondAndThirdChild_v_v_ForthChild(t);
 break;
 case GroovyTokenTypes.ANNOTATION_DEF:
 case GroovyTokenTypes.CLASS_DEF:
@@ -86,6 +90,7 @@ accept_v_AllChildren_v(t);
 accept_v_FirstChild_v_RestOfTheChildren_v(t);
 }
 break;
+case GroovyTokenTypes.ANNOTATION:
 case GroovyTokenTypes.FOR_IN_ITERABLE:
 case GroovyTokenTypes.LITERAL_for:
 case GroovyTokenTypes.LITERAL_new:
