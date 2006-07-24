@@ -3,7 +3,7 @@
   GroovySourceAST modifiers=parent.childOfType(GroovyTokenTypes.MODIFIERS);
   if (modifiers == null || modifiers.getNumberOfChildren() == 0) {
     if (visit == OPENING_VISIT) {
-      if (t.getNumberOfChildren() == 0) {
+      if (t.getNumberOfChildren() == 0 && parent.getType() != GroovyTokenTypes.PARAMETER_DEF) {
         print(t,visit,"def");
       }
     }
