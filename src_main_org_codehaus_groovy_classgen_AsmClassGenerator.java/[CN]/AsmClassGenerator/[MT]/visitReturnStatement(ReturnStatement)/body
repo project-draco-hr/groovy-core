@@ -14,29 +14,13 @@
   evaluateExpression(expression);
   if (returnType == ClassHelper.OBJECT_TYPE && expression.getType() != null && expression.getType() == ClassHelper.VOID_TYPE) {
     cv.visitInsn(ACONST_NULL);
-    cv.visitInsn(ARETURN);
   }
  else {
     helper.unbox(returnType);
-    if (returnType == ClassHelper.double_TYPE) {
-      cv.visitInsn(DRETURN);
-    }
- else     if (returnType == ClassHelper.float_TYPE) {
-      cv.visitInsn(FRETURN);
-    }
- else     if (returnType == ClassHelper.long_TYPE) {
-      cv.visitInsn(LRETURN);
-    }
- else     if (returnType == ClassHelper.boolean_TYPE) {
-      cv.visitInsn(IRETURN);
-    }
- else     if (returnType == ClassHelper.char_TYPE || returnType == ClassHelper.byte_TYPE || returnType == ClassHelper.int_TYPE || returnType == ClassHelper.short_TYPE) {
-      cv.visitInsn(IRETURN);
-    }
- else {
+    if (!returnType.isPrimaryClassNode()) {
       doConvertAndCast(returnType,expression,false,true);
-      cv.visitInsn(ARETURN);
     }
   }
+  helper.doReturn(returnType);
   outputReturn=true;
 }

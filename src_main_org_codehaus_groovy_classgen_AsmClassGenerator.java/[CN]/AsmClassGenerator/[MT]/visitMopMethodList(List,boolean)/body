@@ -1,0 +1,12 @@
+{
+  LinkedList mopCalls=new LinkedList();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode mn=(MethodNode)iter.next();
+    if (!isThis && (mn.getModifiers() & Opcodes.ACC_PUBLIC) == 0)     continue;
+    String methodName=mn.getName();
+    if (isMopMethod(methodName) || methodName.startsWith("<"))     continue;
+    mopCalls.add(mn);
+  }
+  generateMopCalls(mopCalls,isThis);
+  mopCalls.clear();
+}
