@@ -1,4 +1,6 @@
 {
+  boolean oldInClosure=inClosure;
+  inClosure=true;
   Parameter[] paras=ce.getParameters();
   if (paras != null) {
     for (int i=0; i < paras.length; i++) {
@@ -11,5 +13,6 @@
   ClosureExpression newCe=new ClosureExpression(paras,code);
   newCe.setVariableScope(ce.getVariableScope());
   newCe.setSourcePosition(ce);
+  inClosure=oldInClosure;
   return newCe;
 }
