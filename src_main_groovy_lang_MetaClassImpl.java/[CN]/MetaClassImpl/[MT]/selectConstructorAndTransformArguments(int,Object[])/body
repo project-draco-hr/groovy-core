@@ -1,0 +1,35 @@
+{
+  if (numberOfCosntructors != constructors.size()) {
+    throw new IncompatibleClassChangeError("the number of constructors during runtime and compile time for " + this.theClass.getName() + " does not match. Expected "+ numberOfCosntructors+ " but have "+ constructors.size());
+  }
+  if (arguments == null)   arguments=EMPTY_ARGUMENTS;
+  unwrap(arguments);
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  Constructor constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,false);
+  if (constructor == null) {
+    constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
+  }
+  if (constructor == null) {
+    throw new GroovyRuntimeException("Could not find matching constructor for: " + theClass.getName() + "("+ InvokerHelper.toTypeString(arguments)+ ")");
+  }
+  List l=new ArrayList(constructors);
+  Comparator comp=new Comparator(){
+    public int compare(    Object arg0,    Object arg1){
+      Constructor c0=(Constructor)arg0;
+      Constructor c1=(Constructor)arg1;
+      String descriptor0=BytecodeHelper.getMethodDescriptor(Void.TYPE,c0.getParameterTypes());
+      String descriptor1=BytecodeHelper.getMethodDescriptor(Void.TYPE,c1.getParameterTypes());
+      return descriptor0.compareTo(descriptor1);
+    }
+  }
+;
+  Collections.sort(l,comp);
+  int found=-1;
+  for (int i=0; i < l.size(); i++) {
+    if (l.get(i) != constructor)     continue;
+    found=i;
+    break;
+  }
+  int ret=0 | (found << 8);
+  return ret;
+}
