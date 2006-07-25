@@ -34,11 +34,12 @@ case GroovyTokenTypes.SLIST:
 accept_v_AllChildren_v(t);
 break;
 case GroovyTokenTypes.ANNOTATION_MEMBER_VALUE_PAIR:
+case GroovyTokenTypes.ASSIGN:
 case GroovyTokenTypes.BAND_ASSIGN:
 case GroovyTokenTypes.BOR_ASSIGN:
 case GroovyTokenTypes.BSR_ASSIGN:
 case GroovyTokenTypes.BXOR_ASSIGN:
-case GroovyTokenTypes.ASSIGN:
+case GroovyTokenTypes.COMPARE_TO:
 case GroovyTokenTypes.EQUAL:
 case GroovyTokenTypes.NOT_EQUAL:
 if (t.childAt(1) != null) {
@@ -72,6 +73,7 @@ case GroovyTokenTypes.RANGE_INCLUSIVE:
 case GroovyTokenTypes.STAR:
 accept_FirstChild_v_RestOfTheChildren(t);
 break;
+case GroovyTokenTypes.CTOR_CALL:
 case GroovyTokenTypes.METHOD_CALL:
 if (t.getNumberOfChildren() == 2 && t.childAt(1) != null && t.childAt(1).getType() == GroovyTokenTypes.CLOSED_BLOCK) {
 accept_FirstChild_v_SecondChild(t);
