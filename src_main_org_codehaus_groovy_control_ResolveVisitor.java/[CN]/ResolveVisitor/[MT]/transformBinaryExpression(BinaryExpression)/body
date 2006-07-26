@@ -5,6 +5,13 @@
     addError("you tried to assign a value to " + ce.getType().getName(),be.getLeftExpression());
     return be;
   }
+  if (left instanceof ClassExpression && be.getRightExpression() instanceof ListExpression) {
+    ListExpression list=(ListExpression)be.getRightExpression();
+    ClassExpression ce=(ClassExpression)left;
+    if (list.getExpressions().isEmpty()) {
+      return new ClassExpression(left.getType().makeArray());
+    }
+  }
   Expression right=transform(be.getRightExpression());
   Expression ret=new BinaryExpression(left,be.getOperation(),right);
   ret.setSourcePosition(be);
