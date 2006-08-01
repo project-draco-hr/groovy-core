@@ -1,17 +1,32 @@
 {
-  if (value.matches(".*&.*")) {
-    value=value.replaceAll("&","&amp;");
-  }
-  if (value.matches(".*<.*")) {
-    value=value.replaceAll("<","&lt;");
-  }
-  if (value.matches(".*>.*")) {
-    value=value.replaceAll(">","&gt;");
-  }
-  if (isAttrValue) {
-    if (value.matches(".*\\'.*")) {
-      value=value.replaceAll("\\'","&apos;");
-    }
-  }
-  return value;
+  StringBuffer buffer=new StringBuffer(value);
+  for (int i=0, n=buffer.length(); i < n; i++) {
+switch (buffer.charAt(i)) {
+case '&':
+      buffer.replace(i,i + 1,"&amp;");
+    i+=4;
+  n+=4;
+break;
+case '<':
+buffer.replace(i,i + 1,"&lt;");
+i+=3;
+n+=3;
+break;
+case '>':
+buffer.replace(i,i + 1,"&gt;");
+i+=3;
+n+=3;
+break;
+case '\'':
+if (isAttrValue) {
+buffer.replace(i,i + 1,"&apos;");
+i+=5;
+n+=5;
+}
+break;
+default :
+break;
+}
+}
+return buffer.toString();
 }
