@@ -71,6 +71,57 @@
     }
 ;
   }
+ else   if (value instanceof Reader) {
+    return iteratorForReader((Reader)value);
+  }
+ else   if (value instanceof InputStream) {
+    final DataInputStream dis=new DataInputStream((InputStream)value);
+    return new Iterator(){
+      Byte nextVal=null;
+      boolean nextMustRead=true;
+      boolean hasNext=true;
+      public boolean hasNext(){
+        if (nextMustRead && hasNext) {
+          try {
+            byte bPrimitive=dis.readByte();
+            nextVal=new Byte(bPrimitive);
+            nextMustRead=false;
+          }
+ catch (          IOException e) {
+            hasNext=false;
+          }
+        }
+        return hasNext;
+      }
+      public Object next(){
+        Byte retval=null;
+        if (nextMustRead) {
+          try {
+            byte b=dis.readByte();
+            retval=new Byte(b);
+          }
+ catch (          IOException e) {
+            hasNext=false;
+          }
+        }
+ else         retval=nextVal;
+        nextMustRead=true;
+        return retval;
+      }
+      public void remove(){
+        throw new UnsupportedOperationException("Cannot remove() from an InputStream Iterator");
+      }
+    }
+;
+  }
+ else   if (value instanceof File) {
+    try {
+      return iteratorForReader(DefaultGroovyMethods.newReader((File)value));
+    }
+ catch (    IOException e) {
+      throw new GroovyRuntimeException("Error reading file: " + value,e);
+    }
+  }
  else {
     try {
       return (Iterator)invokeMethod(value,"iterator",EMPTY_ARGUMENTS);
