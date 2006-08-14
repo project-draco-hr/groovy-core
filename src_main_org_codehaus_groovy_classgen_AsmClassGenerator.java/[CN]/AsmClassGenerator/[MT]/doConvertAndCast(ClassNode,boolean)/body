@@ -1,0 +1,13 @@
+{
+  if (type == ClassHelper.OBJECT_TYPE)   return;
+  if (isValidTypeForCast(type)) {
+    visitClassExpression(new ClassExpression(type));
+    if (coerce) {
+      asTypeMethod.call(cv);
+    }
+ else {
+      castToTypeMethod.call(cv);
+    }
+  }
+  helper.doCast(type);
+}
