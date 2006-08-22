@@ -1,4 +1,6 @@
 {
+  visitStatement(ifElse);
   ifElse.setBooleanExpression((BooleanExpression)(transform(ifElse.getBooleanExpression())));
-  super.visitIfElse(ifElse);
+  ifElse.getIfBlock().visit(this);
+  ifElse.getElseBlock().visit(this);
 }

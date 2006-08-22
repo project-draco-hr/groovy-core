@@ -17,7 +17,7 @@
   for (int i=1; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    if (compileStack.getScope().isReferencedClassVariable(name)) {
+    if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {
       visitFieldExpression(new FieldExpression(classNode.getField(name)));
     }
  else {
