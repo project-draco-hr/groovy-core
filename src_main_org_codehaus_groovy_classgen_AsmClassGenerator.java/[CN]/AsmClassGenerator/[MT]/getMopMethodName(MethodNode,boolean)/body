@@ -1,7 +1,7 @@
 {
   ClassNode declaringNode=method.getDeclaringClass();
   int distance=0;
-  for (; declaringNode != ClassHelper.OBJECT_TYPE; declaringNode=declaringNode.getSuperClass()) {
+  for (; declaringNode != null; declaringNode=declaringNode.getSuperClass()) {
     distance++;
   }
   return (useThis ? "this" : "super") + "$" + distance+ "$"+ method.getName();
