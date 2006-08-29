@@ -4,28 +4,31 @@
     return;
   }
   log("Groovy: " + txt,Project.MSG_VERBOSE);
-  GroovyShell groovy=null;
   Object mavenPom=null;
-  Project project=getProject();
+  final Project project=getProject();
+  final ClassLoader baseClassLoader;
   if ("org.apache.commons.grant.GrantProject".equals(project.getClass().getName())) {
     try {
-      Object propsHandler=project.getClass().getMethod("getPropsHandler",new Class[0]).invoke(project,new Object[0]);
-      Field contextField=propsHandler.getClass().getDeclaredField("context");
+      final Object propsHandler=project.getClass().getMethod("getPropsHandler",new Class[0]).invoke(project,new Object[0]);
+      final Field contextField=propsHandler.getClass().getDeclaredField("context");
       contextField.setAccessible(true);
-      Object context=contextField.get(propsHandler);
+      final Object context=contextField.get(propsHandler);
       mavenPom=InvokerHelper.invokeMethod(context,"getProject",new Object[0]);
     }
  catch (    Exception e) {
       throw new BuildException("Impossible to retrieve Maven's Ant project: " + e.getMessage(),getLocation());
     }
     Thread.currentThread().setContextClassLoader(GroovyShell.class.getClassLoader());
-    groovy=new GroovyShell(mavenPom.getClass().getClassLoader(),new Binding(),configuration);
+    baseClassLoader=mavenPom.getClass().getClassLoader();
   }
  else {
-    groovy=new GroovyShell(GroovyShell.class.getClassLoader(),new Binding(),configuration);
+    baseClassLoader=GroovyShell.class.getClassLoader();
   }
+  final GroovyClassLoader classLoader=new GroovyClassLoader(baseClassLoader);
+  addClassPathes(classLoader);
+  final GroovyShell groovy=new GroovyShell(classLoader,new Binding(),configuration);
   try {
-    Script script=groovy.parse(txt);
+    final Script script=groovy.parse(txt);
     script.setProperty("ant",new AntBuilder(project));
     script.setProperty("project",project);
     script.setProperty("properties",new AntProjectPropertiesDelegate(project));
