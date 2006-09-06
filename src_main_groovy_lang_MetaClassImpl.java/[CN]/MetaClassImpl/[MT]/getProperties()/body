@@ -1,3 +1,9 @@
 {
-  return new ArrayList(propertyMap.values());
+  List ret=new ArrayList(propertyMap.size());
+  for (Iterator iter=propertyMap.values().iterator(); iter.hasNext(); ) {
+    MetaProperty element=(MetaProperty)iter.next();
+    if (element instanceof MetaFieldProperty)     continue;
+    ret.add(element);
+  }
+  return ret;
 }
