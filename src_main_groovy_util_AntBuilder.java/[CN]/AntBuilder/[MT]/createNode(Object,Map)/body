@@ -1,7 +1,13 @@
 {
-  final String tagName=name.toString();
+  String tagName=name.toString();
+  String ns="";
+  if (name instanceof QName) {
+    QName q=(QName)name;
+    tagName=q.getLocalPart();
+    ns=q.getNamespaceURI();
+  }
   try {
-    antElementHandler.onStartElement("",tagName,tagName,buildAttributes(attributes),antXmlContext);
+    antElementHandler.onStartElement(ns,tagName,tagName,buildAttributes(attributes),antXmlContext);
   }
  catch (  final SAXParseException e) {
     log.log(Level.SEVERE,"Caught: " + e,e);
