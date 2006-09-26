@@ -3,17 +3,29 @@
   OutputStream output=socket.getOutputStream();
   try {
     closure.call(new Object[]{input,output});
+    InputStream temp1=input;
+    input=null;
+    temp1.close();
+    OutputStream temp2=output;
+    output=null;
+    temp2.close();
   }
   finally {
-    try {
-      input.close();
+    if (input != null) {
+      try {
+        input.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing InputStream: " + e);
+      }
     }
- catch (    IOException e) {
-    }
-    try {
-      output.close();
-    }
- catch (    IOException e) {
+    if (output != null) {
+      try {
+        output.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing OutputStream: " + e);
+      }
     }
   }
 }

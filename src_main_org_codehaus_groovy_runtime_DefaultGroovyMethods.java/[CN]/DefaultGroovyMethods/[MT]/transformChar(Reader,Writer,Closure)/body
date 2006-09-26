@@ -6,7 +6,30 @@
       chars[0]=(char)c;
       writer.write((String)closure.call(new String(chars)));
     }
+    writer.flush();
+    Writer temp2=writer;
+    writer=null;
+    temp2.close();
+    Reader temp1=reader;
+    reader=null;
+    temp1.close();
   }
- catch (  IOException e) {
+  finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Reader: " + e);
+      }
+    }
+    if (writer != null) {
+      try {
+        writer.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Writer: " + e);
+      }
+    }
   }
 }

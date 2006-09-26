@@ -2,7 +2,21 @@
   byte[] bytes=new byte[(int)file.length()];
   FileInputStream fileInputStream=new FileInputStream(file);
   DataInputStream dis=new DataInputStream(fileInputStream);
-  dis.readFully(bytes);
-  dis.close();
+  try {
+    dis.readFully(bytes);
+    InputStream temp=dis;
+    dis=null;
+    temp.close();
+  }
+  finally {
+    if (dis != null) {
+      try {
+        dis.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing DataInputStream: " + e);
+      }
+    }
+  }
   return bytes;
 }

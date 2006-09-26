@@ -9,16 +9,18 @@
         closure.call(new Byte((byte)b));
       }
     }
-    is.close();
+    InputStream temp=is;
+    is=null;
+    temp.close();
   }
- catch (  IOException e) {
+  finally {
     if (is != null) {
       try {
         is.close();
       }
- catch (      Exception e2) {
+ catch (      IOException e) {
+        log.warning("Caught exception closing InputStream: " + e);
       }
-      throw e;
     }
   }
 }

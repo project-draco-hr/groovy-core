@@ -1,6 +1,7 @@
 {
   try {
     closure.call(writer);
+    writer.flush();
     Writer temp=writer;
     writer=null;
     temp.close();
@@ -10,8 +11,8 @@
       try {
         writer.close();
       }
- catch (      IOException e) {
-        log.warning("Caught exception closing writer: " + e);
+ catch (      Exception e) {
+        log.warning("Caught exception closing Writer: " + e);
       }
     }
   }

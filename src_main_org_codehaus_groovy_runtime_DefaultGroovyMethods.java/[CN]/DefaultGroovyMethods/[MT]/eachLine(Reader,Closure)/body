@@ -12,16 +12,26 @@
         closure.call(line);
       }
     }
-    br.close();
+    Reader temp=self;
+    self=null;
+    temp.close();
   }
- catch (  IOException e) {
+  finally {
     if (self != null) {
+      try {
+        self.close();
+      }
+ catch (      Exception e) {
+        log.warning("Caught exception closing Reader: " + e);
+      }
+    }
+    if (br != null) {
       try {
         br.close();
       }
- catch (      Exception e2) {
+ catch (      Exception e) {
+        log.warning("Caught exception closing Reader: " + e);
       }
-      throw e;
     }
   }
 }

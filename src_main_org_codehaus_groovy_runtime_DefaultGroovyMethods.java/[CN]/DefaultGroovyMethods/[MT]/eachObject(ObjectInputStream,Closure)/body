@@ -9,22 +9,18 @@
         break;
       }
     }
-    ois.close();
+    InputStream temp=ois;
+    ois=null;
+    temp.close();
   }
- catch (  ClassNotFoundException e) {
-    try {
-      ois.close();
+  finally {
+    if (ois != null) {
+      try {
+        ois.close();
+      }
+ catch (      Exception e) {
+        log.warning("Caught exception closing ObjectInputStream: " + e);
+      }
     }
- catch (    Exception e2) {
-    }
-    throw e;
-  }
-catch (  IOException e) {
-    try {
-      ois.close();
-    }
- catch (    Exception e2) {
-    }
-    throw e;
   }
 }

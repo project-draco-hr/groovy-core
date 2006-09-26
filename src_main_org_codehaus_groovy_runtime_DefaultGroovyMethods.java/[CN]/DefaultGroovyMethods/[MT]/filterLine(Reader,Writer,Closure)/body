@@ -2,11 +2,53 @@
   BufferedReader br=new BufferedReader(reader);
   BufferedWriter bw=new BufferedWriter(writer);
   String line;
-  while ((line=br.readLine()) != null) {
-    if (InvokerHelper.asBool(closure.call(line))) {
-      bw.write(line);
-      bw.newLine();
+  try {
+    while ((line=br.readLine()) != null) {
+      if (InvokerHelper.asBool(closure.call(line))) {
+        bw.write(line);
+        bw.newLine();
+      }
+    }
+    bw.flush();
+    Writer temp2=writer;
+    writer=null;
+    temp2.close();
+    Reader temp1=reader;
+    reader=null;
+    temp1.close();
+  }
+  finally {
+    if (br != null) {
+      try {
+        br.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Reader: " + e);
+      }
+    }
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Reader: " + e);
+      }
+    }
+    if (bw != null) {
+      try {
+        bw.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Writer: " + e);
+      }
+    }
+    if (writer != null) {
+      try {
+        writer.close();
+      }
+ catch (      IOException e) {
+        log.warning("Caught exception closing Writer: " + e);
+      }
     }
   }
-  bw.flush();
 }

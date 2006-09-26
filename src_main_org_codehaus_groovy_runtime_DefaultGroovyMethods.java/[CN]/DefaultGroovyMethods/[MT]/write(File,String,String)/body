@@ -1,5 +1,21 @@
 {
-  BufferedWriter writer=newWriter(file,charset);
-  writer.write(text);
-  writer.close();
+  BufferedWriter writer=null;
+  try {
+    writer=newWriter(file,charset);
+    writer.write(text);
+    writer.flush();
+    Writer temp=writer;
+    writer=null;
+    temp.close();
+  }
+  finally {
+    if (writer != null) {
+      try {
+        writer.close();
+      }
+ catch (      Exception e) {
+        log.warning("Caught exception closing Writer: " + e);
+      }
+    }
+  }
 }

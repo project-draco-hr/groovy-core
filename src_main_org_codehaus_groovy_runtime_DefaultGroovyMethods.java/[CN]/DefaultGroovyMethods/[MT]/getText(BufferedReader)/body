@@ -2,9 +2,23 @@
   StringBuffer answer=new StringBuffer();
   char[] charBuffer=new char[4096];
   int nbCharRead=0;
-  while ((nbCharRead=reader.read(charBuffer)) != -1) {
-    answer.append(charBuffer,0,nbCharRead);
+  try {
+    while ((nbCharRead=reader.read(charBuffer)) != -1) {
+      answer.append(charBuffer,0,nbCharRead);
+    }
+    Reader temp=reader;
+    reader=null;
+    temp.close();
   }
-  reader.close();
+  finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      Exception e) {
+        log.warning("Caught exception closing Reader: " + e);
+      }
+    }
+  }
   return answer.toString();
 }

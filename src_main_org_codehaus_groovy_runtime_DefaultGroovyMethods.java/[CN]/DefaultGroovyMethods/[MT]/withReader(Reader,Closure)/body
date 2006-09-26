@@ -1,17 +1,17 @@
 {
   try {
-    closure.call(writer);
-    Reader temp=writer;
-    writer=null;
+    closure.call(reader);
+    Reader temp=reader;
+    reader=null;
     temp.close();
   }
   finally {
-    if (writer != null) {
+    if (reader != null) {
       try {
-        writer.close();
+        reader.close();
       }
- catch (      IOException e) {
-        log.warning("Caught exception closing writer: " + e);
+ catch (      Exception e) {
+        log.warning("Caught exception closing Reader: " + e);
       }
     }
   }
