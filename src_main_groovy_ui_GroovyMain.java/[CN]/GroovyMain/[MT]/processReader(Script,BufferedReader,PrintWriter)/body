@@ -1,8 +1,10 @@
 {
   String line=null;
+  String autoSplitName="split";
   s.setProperty("out",pw);
   while ((line=reader.readLine()) != null) {
     s.setProperty("line",line);
+    if (autoSplit)     s.setProperty(autoSplitName,line.split(splitPattern));
     Object o=s.run();
     if (autoOutput) {
       pw.println(o);
