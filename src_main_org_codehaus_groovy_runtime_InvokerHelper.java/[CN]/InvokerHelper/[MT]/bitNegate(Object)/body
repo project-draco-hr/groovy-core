@@ -1,7 +1,7 @@
 {
   if (value instanceof Integer) {
     Integer number=(Integer)value;
-    return integerValue(~number.intValue());
+    return new Integer(~number.intValue());
   }
  else   if (value instanceof Long) {
     Long number=(Long)value;
@@ -11,10 +11,10 @@
     return ((BigInteger)value).not();
   }
  else   if (value instanceof String) {
-    return getInstance().regexPattern(value);
+    return DefaultGroovyMethods.negate(value.toString());
   }
  else   if (value instanceof GString) {
-    return getInstance().regexPattern(value.toString());
+    return DefaultGroovyMethods.negate(value.toString());
   }
  else   if (value instanceof ArrayList) {
     ArrayList newlist=new ArrayList();

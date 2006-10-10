@@ -1,10 +1,5 @@
 {
-  if (isNonStaticField(expression) && !isHolderVariable(expression) && !isStaticMethod()) {
-    cv.visitVarInsn(ALOAD,0);
-  }
-  expression.visit(this);
-  cv.visitLdcInsn(method);
-  invokeNoArgumentsMethod.call(cv);
+  makeCall(expression,new ConstantExpression(method),MethodCallExpression.NO_ARGUMENTS,invokeMethod,false,false);
   leftHandExpression=true;
   expression.visit(this);
   leftHandExpression=false;

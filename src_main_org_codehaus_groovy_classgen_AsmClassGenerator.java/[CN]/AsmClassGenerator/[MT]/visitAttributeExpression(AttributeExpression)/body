@@ -1,40 +1,13 @@
 {
   Expression objectExpression=expression.getObjectExpression();
-  if (isThisExpression(objectExpression)) {
-    String name=expression.getPropertyAsString();
-    if (name != null) {
-      FieldNode field=classNode.getField(name);
-      if (field != null) {
-        visitFieldExpression(new FieldExpression(field));
-        return;
-      }
-    }
-  }
-  boolean left=leftHandExpression;
-  leftHandExpression=false;
-  objectExpression.visit(this);
-  leftHandExpression=left;
-  CastExpression cast=new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty());
-  cast.visit(this);
-  if (expression.isSafe()) {
-    if (left) {
-      setAttributeSafeMethod2.call(cv);
-    }
- else {
-      if (expression.isSpreadSafe()) {
-        getAttributeSpreadSafeMethod.call(cv);
-      }
- else {
-        getAttributeSafeMethod.call(cv);
-      }
-    }
+  MethodCallerMultiAdapter adapter;
+  if (leftHandExpression) {
+    adapter=setField;
+    if (isGroovyObject(objectExpression))     adapter=setGroovyObjectField;
   }
  else {
-    if (left) {
-      setAttributeMethod2.call(cv);
-    }
- else {
-      getAttributeMethod.call(cv);
-    }
+    adapter=getField;
+    if (isGroovyObject(objectExpression))     adapter=getGroovyObjectField;
   }
+  visitAttributeOrProperty(expression,adapter);
 }

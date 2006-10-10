@@ -1,8 +1,19 @@
 {
-  try {
-    return InvokerHelper.createRange(from,to,inclusive);
+  if (!inclusive) {
+    if (compareEqual(from,to)) {
+      return new EmptyRange((Comparable)from);
+    }
+    if (compareGreaterThan(from,to)) {
+      to=invokeMethod0(ScriptBytecodeAdapter.class,to,"next");
+    }
+ else {
+      to=invokeMethod0(ScriptBytecodeAdapter.class,to,"previous");
+    }
   }
- catch (  GroovyRuntimeException gre) {
-    return (List)unwrap(gre);
+  if (from instanceof Integer && to instanceof Integer) {
+    return new IntRange(DefaultTypeTransformation.intUnbox(from),DefaultTypeTransformation.intUnbox(to));
+  }
+ else {
+    return new ObjectRange((Comparable)from,(Comparable)to);
   }
 }

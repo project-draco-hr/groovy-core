@@ -1,16 +1,20 @@
 {
   onLineNumber(call,"visitMethodCallExpression: \"" + call.getMethod() + "\":");
-  this.leftHandExpression=false;
   Expression arguments=call.getArguments();
-  boolean superMethodCall=MethodCallExpression.isSuperMethodCall(call);
   String methodName=call.getMethodAsString();
-  if (methodName != null && isThisExpression(call.getObjectExpression()) && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
+  boolean isSuperMethodCall=MethodCallExpression.isSuperMethodCall(call);
+  boolean isThisExpression=isThisExpression(call.getObjectExpression());
+  if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
     visitVariableExpression(new VariableExpression(methodName));
     arguments.visit(this);
     invokeClosureMethod.call(cv);
   }
  else {
-    if (superMethodCall) {
+    MethodCallerMultiAdapter adapter=invokeMethod;
+    if (isThisExpression)     adapter=invokeMethodOnCurrent;
+    if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
+    if (isStaticMethod() && isThisExpression)     adapter=invokeStaticMethod;
+    if (isSuperMethodCall) {
       MethodNode superMethodNode=findSuperMethod(call);
       cv.visitVarInsn(ALOAD,0);
       loadArguments(superMethodNode.getParameters(),arguments);
@@ -19,34 +23,7 @@
       helper.box(superMethodNode.getReturnType());
     }
  else {
-      Expression objectExpression=call.getObjectExpression();
-      Expression method=call.getMethod();
-      if (emptyArguments(arguments) && !call.isSafe() && !call.isSpreadSafe()) {
-        prepareMethodcallObjectAndName(objectExpression,method);
-        invokeNoArgumentsMethod.call(cv);
-      }
- else {
-        if (argumentsUseStack(arguments)) {
-          arguments.visit(this);
-          int paramIdx=compileStack.defineTemporaryVariable("_arg",true);
-          prepareMethodcallObjectAndName(objectExpression,method);
-          cv.visitVarInsn(ALOAD,paramIdx);
-          compileStack.removeVar(paramIdx);
-        }
- else {
-          prepareMethodcallObjectAndName(objectExpression,method);
-          arguments.visit(this);
-        }
-        if (call.isSpreadSafe()) {
-          invokeMethodSpreadSafeMethod.call(cv);
-        }
- else         if (call.isSafe()) {
-          invokeMethodSafeMethod.call(cv);
-        }
- else {
-          invokeMethodMethod.call(cv);
-        }
-      }
+      makeInvokeMethodCall(call,adapter);
     }
   }
 }

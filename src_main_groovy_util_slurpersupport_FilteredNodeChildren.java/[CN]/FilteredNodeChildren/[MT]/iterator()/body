@@ -7,7 +7,7 @@
     public Object next(){
       while (iter.hasNext()) {
         final Object childNode=iter.next();
-        if (InvokerHelper.asBool(FilteredNodeChildren.this.closure.call(new Object[]{childNode}))) {
+        if (DefaultTypeTransformation.castToBoolean(FilteredNodeChildren.this.closure.call(new Object[]{childNode}))) {
           return childNode;
         }
       }

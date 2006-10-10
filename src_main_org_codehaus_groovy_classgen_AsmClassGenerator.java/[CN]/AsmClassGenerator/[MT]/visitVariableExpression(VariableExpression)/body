@@ -1,7 +1,12 @@
 {
   String variableName=expression.getName();
-  if (isStaticMethod() && variableName.equals("this")) {
-    visitClassExpression(new ClassExpression(classNode));
+  if (variableName.equals("this")) {
+    if (isStaticMethod()) {
+      visitClassExpression(new ClassExpression(classNode));
+    }
+ else {
+      cv.visitVarInsn(ALOAD,0);
+    }
     return;
   }
   if (variableName.equals("super")) {

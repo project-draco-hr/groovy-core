@@ -3,7 +3,7 @@
     protected Object getNextNode(    final Iterator iter){
       while (iter.hasNext()) {
         final Object node=iter.next();
-        if (InvokerHelper.asBool(FilteredAttributes.this.closure.call(new Object[]{node}))) {
+        if (DefaultTypeTransformation.castToBoolean(FilteredAttributes.this.closure.call(new Object[]{node}))) {
           return node;
         }
       }

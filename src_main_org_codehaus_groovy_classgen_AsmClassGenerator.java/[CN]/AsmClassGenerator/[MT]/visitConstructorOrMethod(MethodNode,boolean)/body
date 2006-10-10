@@ -8,7 +8,11 @@
       cv.visitVarInsn(ALOAD,0);
       cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }
-    compileStack.init(node.getVariableScope(),node.getParameters(),cv,BytecodeHelper.getTypeDescription(classNode));
+    compileStack.init(node.getVariableScope(),node.getParameters(),cv,classNode);
+    (new ClassExpression(classNode)).visit(this);
+    cv.visitInsn(POP);
+    (new ClassExpression(ClassHelper.METACLASS_TYPE)).visit(this);
+    cv.visitInsn(POP);
     super.visitConstructorOrMethod(node,isConstructor);
     if (!outputReturn || node.isVoidMethod()) {
       cv.visitInsn(RETURN);

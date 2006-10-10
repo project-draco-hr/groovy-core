@@ -1,3 +1,21 @@
 {
-  return getInstance().asList(args);
+  if (value == null) {
+    return Collections.EMPTY_LIST;
+  }
+ else   if (value instanceof List) {
+    return (List)value;
+  }
+ else   if (value.getClass().isArray()) {
+    return Arrays.asList((Object[])value);
+  }
+ else   if (value instanceof Enumeration) {
+    List answer=new ArrayList();
+    for (Enumeration e=(Enumeration)value; e.hasMoreElements(); ) {
+      answer.add(e.nextElement());
+    }
+    return answer;
+  }
+ else {
+    return Collections.singletonList(value);
+  }
 }

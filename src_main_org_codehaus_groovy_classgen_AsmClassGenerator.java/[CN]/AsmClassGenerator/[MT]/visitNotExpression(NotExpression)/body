@@ -1,10 +1,8 @@
 {
   Expression subExpression=expression.getExpression();
   subExpression.visit(this);
-  if (isComparisonExpression(expression.getExpression())) {
-    notBoolean.call(cv);
+  if (!isComparisonExpression(subExpression) && !(subExpression instanceof BooleanExpression)) {
+    helper.unbox(boolean.class);
   }
- else {
-    notObject.call(cv);
-  }
+  helper.negateBoolean();
 }

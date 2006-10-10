@@ -1,0 +1,14 @@
+{
+  Expression objectExpression=expression.getObjectExpression();
+  if (isThisExpression(objectExpression)) {
+    String name=expression.getPropertyAsString();
+    if (name != null) {
+      FieldNode field=classNode.getField(name);
+      if (field != null) {
+        visitFieldExpression(new FieldExpression(field));
+        return;
+      }
+    }
+  }
+  makeCall(expression.getObjectExpression(),new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe());
+}

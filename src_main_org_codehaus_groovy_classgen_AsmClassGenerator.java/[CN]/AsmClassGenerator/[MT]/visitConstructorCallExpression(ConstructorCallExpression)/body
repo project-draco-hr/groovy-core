@@ -1,6 +1,5 @@
 {
   onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
-  this.leftHandExpression=false;
   if (call.isSpecialCall()) {
     visitSpecialConstructorCall(call);
     return;
@@ -10,29 +9,9 @@
     TupleExpression tupleExpression=(TupleExpression)arguments;
     int size=tupleExpression.getExpressions().size();
     if (size == 0) {
-      arguments=null;
+      arguments=MethodCallExpression.NO_ARGUMENTS;
     }
   }
-  ClassNode type=call.getType();
-  if (this.classNode != null) {
-    pushClassTypeArgument(this.classNode,this.classNode);
-    pushClassTypeArgument(this.classNode,type);
-    if (arguments != null) {
-      arguments.visit(this);
-      invokeConstructorAtMethod.call(cv);
-    }
- else {
-      invokeNoArgumentsConstructorAt.call(cv);
-    }
-  }
- else {
-    pushClassTypeArgument(this.classNode,type);
-    if (arguments != null) {
-      arguments.visit(this);
-      invokeConstructorOfMethod.call(cv);
-    }
- else {
-      invokeNoArgumentsConstructorOf.call(cv);
-    }
-  }
+  Expression receiverClass=new ClassExpression(call.getType());
+  makeCall(receiverClass,null,arguments,invokeNew,false,false);
 }

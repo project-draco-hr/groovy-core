@@ -1,0 +1,33 @@
+{
+  boolean lhs=leftHandExpression;
+  leftHandExpression=false;
+  sender.visit(this);
+  receiver.visit(this);
+  if (message != null)   message.visit(this);
+  int numberOfArguments=argumentSize(arguments);
+  if (numberOfArguments > adapter.maxArgs) {
+    ArgumentListExpression ae;
+    if (arguments instanceof ArgumentListExpression) {
+      ae=(ArgumentListExpression)arguments;
+    }
+ else     if (arguments instanceof TupleExpression) {
+      TupleExpression te=(TupleExpression)arguments;
+      ae=new ArgumentListExpression(te.getExpressions());
+    }
+ else {
+      ae=new ArgumentListExpression();
+      ae.addExpression(arguments);
+    }
+    ae.visit(this);
+  }
+ else   if (numberOfArguments > 0) {
+    TupleExpression te=(TupleExpression)arguments;
+    for (int i=0; i < numberOfArguments; i++) {
+      Expression argument=te.getExpression(i);
+      visitAndAutoboxBoolean(argument);
+      if (argument instanceof CastExpression)       loadWrapper(argument);
+    }
+  }
+  adapter.call(cv,numberOfArguments,safe,spreadSafe);
+  leftHandExpression=lhs;
+}

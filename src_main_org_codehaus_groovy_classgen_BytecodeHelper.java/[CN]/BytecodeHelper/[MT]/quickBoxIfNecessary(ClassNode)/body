@@ -4,10 +4,6 @@
     boxBoolean();
   }
  else   if (ClassHelper.isPrimitiveType(type) && type != ClassHelper.VOID_TYPE) {
-    if (type == ClassHelper.int_TYPE) {
-      cv.visitMethodInsn(INVOKESTATIC,getClassInternalName(ScriptBytecodeAdapter.class.getName()),"integerValue","(I)Ljava/lang/Integer;");
-      return;
-    }
     ClassNode wrapper=ClassHelper.getWrapper(type);
     String internName=getClassInternalName(wrapper);
     cv.visitTypeInsn(NEW,internName);

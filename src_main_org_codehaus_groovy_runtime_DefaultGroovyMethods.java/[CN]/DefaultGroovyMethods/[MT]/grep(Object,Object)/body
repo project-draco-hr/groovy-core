@@ -3,7 +3,7 @@
   MetaClass metaClass=InvokerHelper.getMetaClass(filter);
   for (Iterator iter=InvokerHelper.asIterator(self); iter.hasNext(); ) {
     Object object=iter.next();
-    if (InvokerHelper.asBool(metaClass.invokeMethod(filter,"isCase",object))) {
+    if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",object))) {
       answer.add(object);
     }
   }

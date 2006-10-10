@@ -1,32 +1,6 @@
 {
-  if (this.warnings != null) {
-    Iterator iterator=this.warnings.iterator();
-    while (iterator.hasNext()) {
-      WarningMessage warning=(WarningMessage)iterator.next();
-      warning.write(writer,janitor);
-    }
-    writer.println();
-    writer.print(warnings.size());
-    writer.print(" warning");
-    if (warnings.size() > 1)     writer.print("s");
-    writer.println();
-    this.warnings=null;
-  }
-  if (this.errors != null) {
-    Iterator iterator=this.errors.iterator();
-    while (iterator.hasNext()) {
-      Message message=(Message)iterator.next();
-      message.write(writer,janitor);
-      if (configuration.getDebug() && (message instanceof SyntaxErrorMessage)) {
-        SyntaxErrorMessage sem=(SyntaxErrorMessage)message;
-        SyntaxException se=sem.getCause();
-        se.printStackTrace(writer);
-      }
-    }
-    writer.println();
-    writer.print(errors.size());
-    writer.print(" error");
-    if (errors.size() > 1)     writer.print("s");
-    writer.println();
-  }
+  write(writer,janitor,warnings,"warning");
+  warnings=null;
+  write(writer,janitor,errors,"error");
+  errors=null;
 }

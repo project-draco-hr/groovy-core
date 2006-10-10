@@ -1,19 +1,14 @@
 {
-  if (!inclusive) {
-    if (compareEqual(from,to)) {
-      return new EmptyRange((Comparable)from);
-    }
-    if (compareGreaterThan(from,to)) {
-      to=invokeMethod(to,"next",EMPTY_ARGS);
-    }
- else {
-      to=invokeMethod(to,"previous",EMPTY_ARGS);
-    }
+  try {
+    return ScriptBytecodeAdapter.createRange(from,to,inclusive);
   }
-  if (from instanceof Integer && to instanceof Integer) {
-    return new IntRange(asInt(from),asInt(to));
+ catch (  RuntimeException re) {
+    throw re;
   }
- else {
-    return new ObjectRange((Comparable)from,(Comparable)to);
+catch (  Error e) {
+    throw e;
+  }
+catch (  Throwable t) {
+    throw new RuntimeException(t);
   }
 }

@@ -1,29 +1,37 @@
 {
   for (Iterator iter=syntheticStaticFields.iterator(); iter.hasNext(); ) {
     String staticFieldName=(String)iter.next();
-    cw.visitField(ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null,null);
+    FieldNode fn=classNode.getField(staticFieldName);
+    if (fn != null) {
+      boolean type=fn.getType() == ClassHelper.CLASS_Type;
+      boolean modifiers=fn.getModifiers() == ACC_STATIC + ACC_SYNTHETIC;
+      if (type && modifiers)       continue;
+      String text="";
+      if (!type)       text=" with wrong type: " + fn.getType() + " (java.lang.Class needed)";
+      if (!modifiers)       text=" with wrong modifiers: " + fn.getModifiers() + " ("+ (ACC_STATIC + ACC_SYNTHETIC)+ " needed)";
+      throwException("tried to set a static syntethic field " + staticFieldName + " in "+ classNode.getName()+ " for class resolving, but found alreeady a node of that"+ " name "+ text);
+    }
+ else {
+      cw.visitField(ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null,null);
+    }
   }
-  if (!syntheticStaticFields.isEmpty()) {
-    cv=cw.visitMethod(ACC_STATIC + ACC_SYNTHETIC,"class$","(Ljava/lang/String;)Ljava/lang/Class;",null,null);
-    helper=new BytecodeHelper(cv);
-    Label l0=new Label();
-    cv.visitLabel(l0);
-    cv.visitVarInsn(ALOAD,0);
-    cv.visitMethodInsn(INVOKESTATIC,"java/lang/Class","forName","(Ljava/lang/String;)Ljava/lang/Class;");
-    Label l1=new Label();
-    cv.visitLabel(l1);
-    cv.visitInsn(ARETURN);
-    Label l2=new Label();
-    cv.visitLabel(l2);
-    cv.visitVarInsn(ASTORE,1);
-    cv.visitTypeInsn(NEW,"java/lang/NoClassDefFoundError");
-    cv.visitInsn(DUP);
-    cv.visitVarInsn(ALOAD,1);
-    cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/ClassNotFoundException","getMessage","()Ljava/lang/String;");
-    cv.visitMethodInsn(INVOKESPECIAL,"java/lang/NoClassDefFoundError","<init>","(Ljava/lang/String;)V");
-    cv.visitInsn(ATHROW);
-    cv.visitTryCatchBlock(l0,l2,l2,"java/lang/ClassNotFoundException");
-    cv.visitMaxs(3,2);
-    cw.visitEnd();
-  }
+  cv=cw.visitMethod(ACC_STATIC + ACC_SYNTHETIC,"class$","(Ljava/lang/String;)Ljava/lang/Class;",null,null);
+  Label l0=new Label();
+  cv.visitLabel(l0);
+  cv.visitVarInsn(ALOAD,0);
+  cv.visitMethodInsn(INVOKESTATIC,"java/lang/Class","forName","(Ljava/lang/String;)Ljava/lang/Class;");
+  Label l1=new Label();
+  cv.visitLabel(l1);
+  cv.visitInsn(ARETURN);
+  Label l2=new Label();
+  cv.visitLabel(l2);
+  cv.visitVarInsn(ASTORE,1);
+  cv.visitTypeInsn(NEW,"java/lang/NoClassDefFoundError");
+  cv.visitInsn(DUP);
+  cv.visitVarInsn(ALOAD,1);
+  cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/ClassNotFoundException","getMessage","()Ljava/lang/String;");
+  cv.visitMethodInsn(INVOKESPECIAL,"java/lang/NoClassDefFoundError","<init>","(Ljava/lang/String;)V");
+  cv.visitInsn(ATHROW);
+  cv.visitTryCatchBlock(l0,l2,l2,"java/lang/ClassNotFoundException");
+  cv.visitMaxs(3,2);
 }

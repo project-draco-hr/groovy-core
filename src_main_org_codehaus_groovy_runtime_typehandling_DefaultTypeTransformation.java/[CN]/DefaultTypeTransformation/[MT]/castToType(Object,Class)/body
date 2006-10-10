@@ -1,0 +1,118 @@
+{
+  if (object == null) {
+    return null;
+  }
+  if (type == object.getClass())   return object;
+  if (type.isArray()) {
+    return asArray(object,type);
+  }
+  if (type.isInstance(object)) {
+    return object;
+  }
+  if (type.isAssignableFrom(Collection.class)) {
+    if (object.getClass().isArray()) {
+      Collection answer=null;
+      try {
+        answer=(Collection)type.newInstance();
+      }
+ catch (      Exception e) {
+        throw new ClassCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
+      }
+      int length=Array.getLength(object);
+      for (int i=0; i < length; i++) {
+        Object element=Array.get(object,i);
+        answer.add(element);
+      }
+      return answer;
+    }
+  }
+  if (type == String.class) {
+    return object.toString();
+  }
+ else   if (type == Character.class) {
+    return box(castToChar(object));
+  }
+ else   if (type == Boolean.class) {
+    return box(castToBoolean(object));
+  }
+ else   if (Number.class.isAssignableFrom(type)) {
+    Number n=castToNumber(object);
+    if (type == Byte.class) {
+      return new Byte(n.byteValue());
+    }
+ else     if (type == Character.class) {
+      return new Character((char)n.intValue());
+    }
+ else     if (type == Short.class) {
+      return new Short(n.shortValue());
+    }
+ else     if (type == Integer.class) {
+      return new Integer(n.intValue());
+    }
+ else     if (type == Long.class) {
+      return new Long(n.longValue());
+    }
+ else     if (type == Float.class) {
+      return new Float(n.floatValue());
+    }
+ else     if (type == Double.class) {
+      Double answer=new Double(n.doubleValue());
+      if (!(n instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
+        throw new GroovyRuntimeException("Automatic coercion of " + n.getClass().getName() + " value "+ n+ " to double failed.  Value is out of range.");
+      }
+      return answer;
+    }
+ else     if (type == BigDecimal.class) {
+      return new BigDecimal(n.toString());
+    }
+ else     if (type == BigInteger.class) {
+      return new BigInteger(n.toString());
+    }
+  }
+ else   if (type.isPrimitive()) {
+    if (type == byte.class) {
+      return box(byteUnbox(object));
+    }
+ else     if (type == char.class) {
+      return box(charUnbox(object));
+    }
+ else     if (type == short.class) {
+      return box(shortUnbox(object));
+    }
+ else     if (type == int.class) {
+      return box(intUnbox(object));
+    }
+ else     if (type == long.class) {
+      return box(longUnbox(object));
+    }
+ else     if (type == float.class) {
+      return box(floatUnbox(object));
+    }
+ else     if (type == double.class) {
+      Double answer=new Double(doubleUnbox(object));
+      if (!(object instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
+        throw new GroovyRuntimeException("Automatic coercion of " + object.getClass().getName() + " value "+ object+ " to double failed.  Value is out of range.");
+      }
+      return answer;
+    }
+  }
+  Object[] args=null;
+  if (object instanceof Collection) {
+    Collection list=(Collection)object;
+    args=list.toArray();
+  }
+ else   if (object instanceof Object[]) {
+    args=(Object[])object;
+  }
+  if (args != null) {
+    try {
+      return InvokerHelper.invokeConstructorOf(type,args);
+    }
+ catch (    InvokerInvocationException iie) {
+      throw iie;
+    }
+catch (    Exception e) {
+    }
+  }
+  throw new ClassCastException("unable to cast " + object.getClass() + " to "+ type);
+}

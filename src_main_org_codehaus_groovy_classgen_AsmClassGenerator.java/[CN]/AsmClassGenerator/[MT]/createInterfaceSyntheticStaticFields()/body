@@ -1,0 +1,8 @@
+{
+  if (syntheticStaticFields.isEmpty())   return;
+  addInnerClass(interfaceClassLoadingClass);
+  for (Iterator iter=syntheticStaticFields.iterator(); iter.hasNext(); ) {
+    String staticFieldName=(String)iter.next();
+    interfaceClassLoadingClass.addField(staticFieldName,ACC_STATIC + ACC_SYNTHETIC,ClassHelper.CLASS_Type,null);
+  }
+}

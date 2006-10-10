@@ -1,0 +1,11 @@
+{
+  if (!(receiver instanceof List)) {
+    setFieldOnSuper(messageArgument,senderClass,receiver,messageName);
+    return;
+  }
+  List list=(List)receiver;
+  List answer=new ArrayList();
+  for (Iterator it=list.iterator(); it.hasNext(); ) {
+    setFieldOnSuper(messageArgument,senderClass,it.next(),messageName);
+  }
+}

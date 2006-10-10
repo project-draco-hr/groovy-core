@@ -2,7 +2,7 @@
   if (value instanceof Number) {
     Class arrayComponentClass=array.getClass().getComponentType();
     if (!arrayComponentClass.equals(value.getClass())) {
-      Object newVal=InvokerHelper.asType(value,arrayComponentClass);
+      Object newVal=DefaultTypeTransformation.castToType(value,arrayComponentClass);
       array[normaliseIndex(idx,array.length)]=newVal;
       return;
     }

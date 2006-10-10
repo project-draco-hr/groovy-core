@@ -1,0 +1,10 @@
+{
+  if (receiver == null)   return null;
+  if (!(receiver instanceof List))   return getGroovyObjectField(senderClass,receiver,messageName);
+  List list=(List)receiver;
+  List answer=new ArrayList();
+  for (Iterator it=list.iterator(); it.hasNext(); ) {
+    answer.add(getFieldSafe(senderClass,it.next(),messageName));
+  }
+  return answer;
+}

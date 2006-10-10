@@ -1,0 +1,9 @@
+{
+  if (!(receiver instanceof List))   return invokeMethodOnSuperN(senderClass,receiver,messageName,messageArguments);
+  List list=(List)receiver;
+  List answer=new ArrayList();
+  for (Iterator it=list.iterator(); it.hasNext(); ) {
+    answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
+  }
+  return answer;
+}
