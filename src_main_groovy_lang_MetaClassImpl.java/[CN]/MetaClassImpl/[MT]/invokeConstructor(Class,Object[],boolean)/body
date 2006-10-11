@@ -1,0 +1,27 @@
+{
+  if (arguments == null)   arguments=EMPTY_ARGUMENTS;
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  unwrap(arguments);
+  Constructor constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,false);
+  if (constructor != null) {
+    return doConstructorInvoke(at,constructor,arguments,true);
+  }
+ else {
+    constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
+    if (constructor != null) {
+      return doConstructorInvoke(at,constructor,arguments,true);
+    }
+  }
+  if (arguments.length == 1) {
+    Object firstArgument=arguments[0];
+    if (firstArgument instanceof Map) {
+      constructor=(Constructor)chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY,false);
+      if (constructor != null) {
+        Object bean=doConstructorInvoke(at,constructor,MetaClassHelper.EMPTY_ARRAY,true);
+        setProperties(bean,((Map)firstArgument));
+        return bean;
+      }
+    }
+  }
+  throw new GroovyRuntimeException("Could not find matching constructor for: " + theClass.getName() + "("+ InvokerHelper.toTypeString(arguments)+ ")");
+}

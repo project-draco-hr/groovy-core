@@ -6,8 +6,25 @@
     MetaClassHelper.logMethodCall(object,methodName,arguments);
   }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
-  MetaMethod method=retrieveMethod(object,methodName,arguments);
+  MetaMethod method=retrieveMethod(methodName,argClasses);
+  if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
+    arguments=((List)arguments[0]).toArray();
+    argClasses=MetaClassHelper.convertToTypeArray(arguments);
+    method=retrieveMethod(methodName,argClasses);
+    if (method != null) {
+      method=new TransformMetaMethod(method){
+        public Object invoke(        Object object,        Object[] arguments) throws Exception {
+          Object firstArgument=arguments[0];
+          List list=(List)firstArgument;
+          arguments=list.toArray();
+          return super.invoke(object,arguments);
+        }
+      }
+;
+    }
+  }
   boolean isClosure=object instanceof Closure;
   if (isClosure) {
     Closure closure=(Closure)object;
@@ -32,12 +49,12 @@
     }
     if (method == null && owner != closure) {
       MetaClass ownerMetaClass=registry.getMetaClass(owner.getClass());
-      method=ownerMetaClass.retrieveMethod(owner,methodName,arguments);
+      method=ownerMetaClass.retrieveMethod(methodName,argClasses);
       if (method != null)       return ownerMetaClass.invokeMethod(owner,methodName,arguments);
     }
     if (method == null && delegate != closure && delegate != null) {
       MetaClass delegateMetaClass=registry.getMetaClass(delegate.getClass());
-      method=delegateMetaClass.retrieveMethod(delegate,methodName,arguments);
+      method=delegateMetaClass.retrieveMethod(methodName,argClasses);
       if (method != null)       return delegateMetaClass.invokeMethod(delegate,methodName,arguments);
     }
     if (method == null) {

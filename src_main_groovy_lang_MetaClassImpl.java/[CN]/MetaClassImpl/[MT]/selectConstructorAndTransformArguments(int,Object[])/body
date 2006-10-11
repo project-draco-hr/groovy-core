@@ -3,8 +3,8 @@
     throw new IncompatibleClassChangeError("the number of constructors during runtime and compile time for " + this.theClass.getName() + " do not match. Expected "+ numberOfCosntructors+ " but got "+ constructors.size());
   }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
-  unwrap(arguments);
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  unwrap(arguments);
   Constructor constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,false);
   if (constructor == null) {
     constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);

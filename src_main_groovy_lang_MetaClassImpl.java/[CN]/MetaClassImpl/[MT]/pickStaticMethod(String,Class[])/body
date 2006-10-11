@@ -8,5 +8,8 @@
     MetaClass classMetaClass=registry.getMetaClass(Class.class);
     method=classMetaClass.pickMethod(methodName,arguments);
   }
+  if (method == null) {
+    method=(MetaMethod)chooseMethod(methodName,methods,MetaClassHelper.convertToTypeArray(arguments),true);
+  }
   return method;
 }
