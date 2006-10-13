@@ -4,17 +4,7 @@
     return element.getAttribute(attrName);
   }
   if (element.hasChildNodes()) {
-    NodeList nodeList=element.getChildNodes();
-    for (int i=0; i < nodeList.getLength(); i++) {
-      Object node=nodeList.item(i);
-      if (node instanceof Element) {
-        Element child=(Element)node;
-        child.hasChildNodes();
-        if (child.getTagName().equals(elementName)) {
-          return child;
-        }
-      }
-    }
+    return element.getElementsByTagName(elementName);
   }
   return null;
 }
