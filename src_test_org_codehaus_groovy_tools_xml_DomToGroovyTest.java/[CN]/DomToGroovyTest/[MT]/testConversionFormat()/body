@@ -1,8 +1,5 @@
 {
-  ByteArrayInputStream inputStream=new ByteArrayInputStream("<a href='http://groovy.codehaus.org'>Groovy</a>".getBytes());
-  Document document=builder.parse(inputStream);
-  StringWriter writer=new StringWriter();
-  converter=new DomToGroovy(new PrintWriter(writer));
-  converter.print(document);
-  assertEquals("a(href:'http://groovy.codehaus.org', \"Groovy\")",writer.toString().trim());
+  checkConversion(TEST_XML_1,EXPECTED_BUILDER_SCRIPT_1);
+  checkConversion(TEST_XML_2,EXPECTED_BUILDER_SCRIPT_2);
+  checkConversion(TEST_XML_3,EXPECTED_BUILDER_SCRIPT_3);
 }

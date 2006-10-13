@@ -12,17 +12,17 @@
   NodeList list=element.getChildNodes();
   int length=list.getLength();
   if (length == 0) {
-    printEnd("",endWithComma);
+    printEnd(hasAttributes ? ")" : "()",endWithComma);
   }
  else {
     Node node=list.item(0);
     if (length == 1 && node instanceof Text) {
       Text textNode=(Text)node;
       String text=getTextNodeData(textNode);
-      if (hasAttributes)       print(", \"");
- else       print("(\"");
+      if (hasAttributes)       print(", '");
+ else       print("('");
       print(text);
-      printEnd("\")",endWithComma);
+      printEnd("')",endWithComma);
     }
  else     if (mixedContent(list)) {
       println(" [");
@@ -36,7 +36,7 @@
       printEnd("]",endWithComma);
     }
  else {
-      println(" {");
+      println(") {");
       out.incrementIndent();
       printChildren(element,namespaces);
       out.decrementIndent();
