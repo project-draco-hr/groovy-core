@@ -1,0 +1,11 @@
+{
+  if (!isObjectMethod(method)) {
+    return invokeCustom(proxy,method,args);
+  }
+  try {
+    return method.invoke(this,args);
+  }
+ catch (  InvocationTargetException ite) {
+    throw ite.getTargetException();
+  }
+}

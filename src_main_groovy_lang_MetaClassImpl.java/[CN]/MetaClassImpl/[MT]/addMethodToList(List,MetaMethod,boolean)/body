@@ -1,0 +1,27 @@
+{
+  MetaMethod match=removeMatchingMethod(list,method);
+  if (forceOverwrite) {
+    list.add(method);
+  }
+ else   if (match == null) {
+    list.add(method);
+  }
+ else {
+    Class methodC=method.getDeclaringClass();
+    Class matchC=match.getDeclaringClass();
+    if (methodC == matchC) {
+      if (method instanceof NewInstanceMetaMethod) {
+        list.add(method);
+      }
+ else {
+        list.add(match);
+      }
+    }
+ else     if (MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+      list.add(match);
+    }
+ else {
+      list.add(method);
+    }
+  }
+}
