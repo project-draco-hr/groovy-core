@@ -3,8 +3,7 @@
   Object[] closureParam=new Object[1];
   Object[] plusParam=new Object[1];
   for (Iterator iter=self.iterator(); iter.hasNext(); ) {
-    Object item=iter.next();
-    closureParam[0]=item;
+    closureParam[0]=iter.next();
     plusParam[0]=closure.call(closureParam);
     MetaClass metaClass=InvokerHelper.getMetaClass(result);
     result=metaClass.invokeMethod(result,"plus",plusParam);
