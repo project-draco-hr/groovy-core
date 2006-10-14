@@ -1,16 +1,11 @@
 {
-  List result=new ArrayList();
+  List results=new ArrayList();
   for (int i=0; i < nodeList.getLength(); i++) {
     Node node=nodeList.item(i);
-    if (!(node instanceof Element))     continue;
-    Element element=(Element)node;
-    if (elementName.startsWith("@")) {
-      String attrName=elementName.substring(1);
-      result.add(element.getAttribute(attrName));
-    }
- else     if (element.hasChildNodes()) {
-      result.add(element.getElementsByTagName(elementName));
-    }
+    addResult(results,getAt(node,elementName));
   }
-  return result;
+  if (elementName.startsWith("@")) {
+    return results;
+  }
+  return new NodeListHolder(results);
 }
