@@ -1,5 +1,6 @@
 {
   return new Iterator(){
+    private final List list=new LinkedList();
     private final Stack stack=new Stack();
     private Iterator iter=iterator();
     private GPathResult next=getNextByDepth();
@@ -20,16 +21,18 @@
     private GPathResult getNextByDepth(){
       while (this.iter.hasNext()) {
         final GPathResult node=(GPathResult)this.iter.next();
-        this.stack.push(node);
+        this.list.add(node);
         this.stack.push(this.iter);
         this.iter=node.children().iterator();
       }
-      if (this.stack.empty()) {
+      if (this.list.isEmpty()) {
         return null;
       }
  else {
+        GPathResult result=(GPathResult)this.list.get(0);
+        this.list.remove(0);
         this.iter=(Iterator)this.stack.pop();
-        return (GPathResult)this.stack.pop();
+        return result;
       }
     }
   }
