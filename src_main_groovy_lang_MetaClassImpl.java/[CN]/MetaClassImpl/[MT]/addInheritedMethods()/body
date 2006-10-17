@@ -5,7 +5,7 @@
   }
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     Class c=(Class)iter.next();
-    addMethods(c,true);
+    addMethods(c);
     addNewStaticMethodsFrom(c);
   }
   Class[] interfaces=theClass.getInterfaces();
@@ -13,10 +13,10 @@
     addNewStaticMethodsFrom(interfaces[i]);
   }
   if (theClass != Object.class) {
-    addMethods(Object.class,false);
+    addMethods(Object.class);
     addNewStaticMethodsFrom(Object.class);
   }
-  if (theClass.isArray() && !theClass.equals(Object[].class)) {
+  if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
     addNewStaticMethodsFrom(Object[].class);
   }
 }

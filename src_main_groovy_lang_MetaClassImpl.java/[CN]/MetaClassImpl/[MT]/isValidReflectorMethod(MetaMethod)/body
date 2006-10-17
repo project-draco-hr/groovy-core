@@ -6,11 +6,11 @@
   for (Iterator iter=interfaceMethods.iterator(); iter.hasNext(); ) {
     MetaMethod aMethod=(MetaMethod)iter.next();
     if (method.isSame(aMethod)) {
-      method.setInterfaceClass(aMethod.getDeclaringClass());
+      method.setInterfaceClass(aMethod.getCallClass());
       return true;
     }
   }
-  Class declaringClass=method.getDeclaringClass();
+  Class declaringClass=method.getCallClass();
   for (Class clazz=declaringClass; clazz != null; clazz=clazz.getSuperclass()) {
     try {
       final Class klazz=clazz;
@@ -44,6 +44,6 @@ catch (    NoSuchMethodException e) {
     }
   }
   if (!Modifier.isPublic(declaringClass.getModifiers()))   return false;
-  method.setDeclaringClass(declaringClass);
+  method.setCallClass(declaringClass);
   return true;
 }
