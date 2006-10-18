@@ -1,17 +1,15 @@
 {
   List answer=new NodeList();
-  for (Iterator iter=InvokerHelper.asIterator(value); iter.hasNext(); ) {
-    Object child=iter.next();
-    if (child instanceof Node) {
-      Node childNode=(Node)child;
+  List nextLevelChildren=getDirectChildren();
+  while (!nextLevelChildren.isEmpty()) {
+    List working=new NodeList(nextLevelChildren);
+    nextLevelChildren=new NodeList();
+    for (Iterator iter=working.iterator(); iter.hasNext(); ) {
+      Node childNode=(Node)iter.next();
       answer.add(childNode);
+      List children=childNode.getDirectChildren();
+      nextLevelChildren.addAll(children);
     }
-  }
-  List copy=new NodeList(answer);
-  for (Iterator iter=copy.iterator(); iter.hasNext(); ) {
-    Node childNode=(Node)iter.next();
-    List children=childNode.breadthFirstRest();
-    answer.addAll(children);
   }
   return answer;
 }
