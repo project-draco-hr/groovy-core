@@ -1,21 +1,3 @@
 {
-  DocumentBuilder documentBuilder=null;
-  try {
-    documentBuilder=(DocumentBuilder)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      }
-    }
-);
-  }
- catch (  PrivilegedActionException pae) {
-    Exception e=pae.getException();
-    if (e instanceof ParserConfigurationException) {
-      throw (ParserConfigurationException)e;
-    }
- else {
-      throw new RuntimeException(e);
-    }
-  }
-  return documentBuilder.parse(new InputSource(reader));
+  return parse(reader,false,true);
 }
