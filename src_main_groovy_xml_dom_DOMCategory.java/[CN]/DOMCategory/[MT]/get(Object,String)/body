@@ -5,6 +5,8 @@
   if (o instanceof NodeList) {
     return get((NodeList)o,elementName);
   }
-  org.apache.xerces.dom.DeferredElementImpl x;
+  if (o instanceof NamedNodeMap) {
+    return get((NamedNodeMap)o,elementName);
+  }
   return null;
 }
