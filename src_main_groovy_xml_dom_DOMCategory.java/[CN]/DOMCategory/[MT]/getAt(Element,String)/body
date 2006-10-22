@@ -1,12 +1,12 @@
 {
-  if (elementName.equals("..")) {
+  if ("..".equals(elementName)) {
     return parent(element);
+  }
+  if ("**".equals(elementName)) {
+    return depthFirst(element);
   }
   if (elementName.startsWith("@")) {
     return element.getAttribute(elementName.substring(1));
   }
-  if (element.hasChildNodes()) {
-    return element.getElementsByTagName(elementName);
-  }
-  return null;
+  return getChildElements(element,elementName);
 }

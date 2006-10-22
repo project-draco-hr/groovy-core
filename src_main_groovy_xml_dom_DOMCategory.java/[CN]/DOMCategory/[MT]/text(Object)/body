@@ -2,11 +2,14 @@
   if (o instanceof Element) {
     return text((Element)o);
   }
- else   if (o instanceof NodeList) {
-    return text((NodeList)o);
+  if (o instanceof Node) {
+    Node n=(Node)o;
+    if (n.getNodeType() == Node.TEXT_NODE) {
+      return n.getNodeValue();
+    }
   }
- else   if (o instanceof List) {
-    return text((List)o);
+  if (o instanceof NodeList) {
+    return text((NodeList)o);
   }
   return null;
 }
