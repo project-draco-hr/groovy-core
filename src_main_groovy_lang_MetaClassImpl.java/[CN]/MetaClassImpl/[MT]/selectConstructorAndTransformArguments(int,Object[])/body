@@ -1,6 +1,6 @@
 {
   if (numberOfCosntructors != constructors.size()) {
-    throw new IncompatibleClassChangeError("the number of constructors during runtime and compile time for " + this.theClass.getName() + " do not match. Expected "+ numberOfCosntructors+ " but got "+ constructors.size());
+    throw new IncompatibleClassChangeError("the number of constructors during runtime and compile time for " + this.getTheClass().getName() + " do not match. Expected "+ numberOfCosntructors+ " but got "+ constructors.size());
   }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
@@ -10,7 +10,7 @@
     constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
   }
   if (constructor == null) {
-    throw new GroovyRuntimeException("Could not find matching constructor for: " + theClass.getName() + "("+ InvokerHelper.toTypeString(arguments)+ ")");
+    throw new GroovyRuntimeException("Could not find matching constructor for: " + getTheClass().getName() + "("+ InvokerHelper.toTypeString(arguments)+ ")");
   }
   List l=new ArrayList(constructors);
   Comparator comp=new Comparator(){

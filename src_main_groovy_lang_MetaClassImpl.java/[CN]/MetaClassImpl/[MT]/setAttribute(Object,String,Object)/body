@@ -5,7 +5,7 @@
     clazz=(Class)object;
   }
  else {
-    clazz=theClass;
+    clazz=getTheClass();
   }
   try {
     AccessController.doPrivileged(new PrivilegedExceptionAction(){
@@ -37,7 +37,7 @@
  catch (  final PrivilegedActionException pae) {
   }
   if (firstException.getException() instanceof NoSuchFieldException) {
-    throw new MissingFieldException(attribute,theClass);
+    throw new MissingFieldException(attribute,getTheClass());
   }
  else {
     throw new RuntimeException(firstException.getException());
