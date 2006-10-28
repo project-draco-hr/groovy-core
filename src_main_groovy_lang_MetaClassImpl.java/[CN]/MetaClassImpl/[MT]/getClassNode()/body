@@ -1,13 +1,13 @@
 {
-  if (classNode == null && GroovyObject.class.isAssignableFrom(getTheClass())) {
-    String className=getTheClass().getName();
+  if (classNode == null && GroovyObject.class.isAssignableFrom(theClass)) {
+    String className=theClass.getName();
     String groovyFile=className;
     int idx=groovyFile.indexOf('$');
     if (idx > 0) {
       groovyFile=groovyFile.substring(0,idx);
     }
     groovyFile=groovyFile.replace('.','/') + ".groovy";
-    URL url=getTheClass().getClassLoader().getResource(groovyFile);
+    URL url=theClass.getClassLoader().getResource(groovyFile);
     if (url == null) {
       url=Thread.currentThread().getContextClassLoader().getResource(groovyFile);
     }
@@ -15,13 +15,13 @@
       try {
         CompilationUnit.ClassgenCallback search=new CompilationUnit.ClassgenCallback(){
           public void call(          ClassVisitor writer,          ClassNode node){
-            if (node.getName().equals(getTheClass().getName())) {
+            if (node.getName().equals(theClass.getName())) {
               MetaClassImpl.this.classNode=node;
             }
           }
         }
 ;
-        final ClassLoader parent=getTheClass().getClassLoader();
+        final ClassLoader parent=theClass.getClassLoader();
         GroovyClassLoader gcl=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
           public Object run(){
             return new GroovyClassLoader(parent);

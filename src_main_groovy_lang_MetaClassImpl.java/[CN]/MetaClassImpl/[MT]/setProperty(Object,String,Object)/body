@@ -48,7 +48,7 @@ catch (    Exception e) {
         MetaClassHelper.doMethodInvoke(object,setter,new Object[]{objArray});
         return;
       }
-      throw new MissingPropertyException(property,getTheClass(),e);
+      throw new MissingPropertyException(property,theClass,e);
     }
   }
   RuntimeException runtimeException=null;
@@ -93,6 +93,6 @@ catch (    Exception e) {
     throw new GroovyRuntimeException("There are multiple listeners for the property " + property + ". Please do not use the bean short form to access this listener.");
   }
  else   if (runtimeException != null) {
-    throw new MissingPropertyException(property,getTheClass(),runtimeException);
+    throw new MissingPropertyException(property,theClass,runtimeException);
   }
 }
