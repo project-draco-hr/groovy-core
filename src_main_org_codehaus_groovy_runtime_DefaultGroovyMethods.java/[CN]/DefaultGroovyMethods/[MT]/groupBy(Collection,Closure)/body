@@ -1,16 +1,7 @@
 {
   Map answer=new HashMap();
   for (Iterator iter=self.iterator(); iter.hasNext(); ) {
-    Object element=iter.next();
-    Object value=closure.call(element);
-    if (answer.containsKey(value)) {
-      ((List)answer.get(value)).add(element);
-    }
- else {
-      ArrayList grouppedElements=new ArrayList();
-      grouppedElements.add(element);
-      answer.put(value,grouppedElements);
-    }
+    groupCurrentElement(closure,answer,iter);
   }
   return answer;
 }
