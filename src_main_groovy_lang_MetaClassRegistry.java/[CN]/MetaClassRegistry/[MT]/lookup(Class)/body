@@ -1,8 +1,10 @@
 {
-  MetaClass answer=(MetaClass)metaClasses.get(theClass);
-  if (answer == null) {
-    answer=getMetaClassFor(theClass);
-    metaClasses.put(theClass,answer);
+synchronized (theClass) {
+    MetaClass answer=(MetaClass)metaClasses.get(theClass);
+    if (answer == null) {
+      answer=getMetaClassFor(theClass);
+      metaClasses.put(theClass,answer);
+    }
+    return answer;
   }
-  return answer;
 }

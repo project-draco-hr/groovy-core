@@ -1,0 +1,9 @@
+{
+  Object ret=super.get(key);
+  if (ret != null) {
+    WeakReference weak=(WeakReference)ret;
+    ret=weak.get();
+    if (ret == null)     remove(key);
+  }
+  return ret;
+}
