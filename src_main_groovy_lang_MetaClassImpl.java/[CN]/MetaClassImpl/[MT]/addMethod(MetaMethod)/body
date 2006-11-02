@@ -19,6 +19,11 @@
       }
     }
   }
+  Map methodIndex=(Map)classMethodIndex.get(method.getDeclaringClass());
+  if (methodIndex == null) {
+    methodIndex=new HashMap();
+    classMethodIndex.put(method.getDeclaringClass(),methodIndex);
+  }
   List list=(List)methodIndex.get(name);
   if (list == null) {
     list=new ArrayList();

@@ -1,8 +1,25 @@
 {
+  Object result=null;
   try {
-    return InvokerHelper.invokeMethod(receiver,messageName,messageArguments);
+    try {
+      if (receiver instanceof GroovyInterceptable) {
+        result=receiver.invokeMethod(messageName,messageArguments);
+      }
+ else {
+        result=receiver.getMetaClass().invokeMethod(senderClass,receiver,messageName,messageArguments);
+      }
+    }
+ catch (    MissingMethodException e) {
+      if (receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
+        result=receiver.invokeMethod(messageName,messageArguments);
+      }
+ else {
+        throw e;
+      }
+    }
   }
- catch (  GroovyRuntimeException gre) {
-    return unwrap(gre);
+ catch (  GroovyRuntimeException t) {
+    unwrap(t);
   }
+  return result;
 }

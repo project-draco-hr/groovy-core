@@ -9,7 +9,7 @@
     }
   }
   if (genericGetMethod == null) {
-    List possibleGenericMethods=getMethods("get");
+    List possibleGenericMethods=getMethods(theClass,"get");
     if (possibleGenericMethods != null) {
       for (Iterator i=possibleGenericMethods.iterator(); i.hasNext(); ) {
         MetaMethod mmethod=(MetaMethod)i.next();
@@ -30,7 +30,7 @@
     }
   }
   if (!CompilerConfiguration.isJsrGroovy()) {
-    List methods=getMethods(property);
+    List methods=getMethods(theClass,property);
     if (!methods.isEmpty()) {
       return new MethodClosure(object,property);
     }

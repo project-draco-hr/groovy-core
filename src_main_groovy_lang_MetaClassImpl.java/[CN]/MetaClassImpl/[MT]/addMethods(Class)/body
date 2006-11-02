@@ -1,4 +1,9 @@
 {
+  Map methodIndex=(Map)classMethodIndex.get(theClass);
+  if (methodIndex == null) {
+    methodIndex=new HashMap();
+    classMethodIndex.put(theClass,methodIndex);
+  }
   Method[] methodArray=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
       return theClass.getDeclaredMethods();
@@ -10,7 +15,22 @@
     if (reflectionMethod.getName().indexOf('+') >= 0) {
       continue;
     }
+ else     if (Modifier.isAbstract(reflectionMethod.getModifiers())) {
+      continue;
+    }
     MetaMethod method=createMetaMethod(reflectionMethod);
     addMethod(method);
+  }
+  List methods=registry.getInstanceMethods();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    Method element=(Method)iter.next();
+    if (element.getParameterTypes()[0] != theClass)     continue;
+    addNewInstanceMethod(element);
+  }
+  methods=registry.getStaticMethods();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    Method element=(Method)iter.next();
+    if (element.getParameterTypes()[0] != theClass)     continue;
+    addNewStaticMethod(element);
   }
 }

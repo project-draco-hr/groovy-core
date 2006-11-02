@@ -1,0 +1,14 @@
+{
+  Map currentIndex=(Map)classMethodIndex.get(theClass);
+  Map index=new HashMap();
+  copyNonPrivateMethods(currentIndex,index);
+  for (Iterator iter=interfaces.iterator(); iter.hasNext(); ) {
+    Class iClass=(Class)iter.next();
+    Map methodIndex=(Map)classMethodIndex.get(iClass);
+    if (methodIndex == null || methodIndex.size() == 0) {
+      classMethodIndex.put(iClass,index);
+      continue;
+    }
+    copyNonPrivateMethods(currentIndex,methodIndex);
+  }
+}

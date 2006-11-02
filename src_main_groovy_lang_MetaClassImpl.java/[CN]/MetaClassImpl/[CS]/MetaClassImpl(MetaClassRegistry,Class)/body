@@ -7,8 +7,6 @@
     }
   }
 );
-  addMethods(theClass);
-  BeanInfo info=null;
   try {
     info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
       public Object run() throws IntrospectionException {
@@ -23,24 +21,6 @@
     }
  else {
       throw new RuntimeException(pae.getException());
-    }
-  }
-  PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
-  setupProperties(descriptors);
-  EventSetDescriptor[] eventDescriptors=info.getEventSetDescriptors();
-  for (int i=0; i < eventDescriptors.length; i++) {
-    EventSetDescriptor descriptor=eventDescriptors[i];
-    Method[] listenerMethods=descriptor.getListenerMethods();
-    for (int j=0; j < listenerMethods.length; j++) {
-      Method listenerMethod=listenerMethods[j];
-      MetaMethod metaMethod=createMetaMethod(descriptor.getAddListenerMethod());
-      String name=listenerMethod.getName();
-      if (listeners.containsKey(name)) {
-        listeners.put(name,AMBIGOUS_LISTENER_METHOD);
-      }
- else {
-        listeners.put(name,metaMethod);
-      }
     }
   }
 }

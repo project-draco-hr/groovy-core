@@ -5,12 +5,11 @@
     if (MethodHelper.isStatic(method)) {
       Class[] paramTypes=method.getParameterTypes();
       if (paramTypes.length > 0) {
-        Class owner=paramTypes[0];
-        if (instanceMethods) {
-          lookup(owner).addNewInstanceMethod(method);
+        if (useInstanceMethods) {
+          instanceMethods.add(method);
         }
  else {
-          lookup(owner).addNewStaticMethod(method);
+          staticMethods.add(method);
         }
       }
     }

@@ -1,0 +1,29 @@
+{
+  List methods=registry.getInstanceMethods();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    Method element=(Method)iter.next();
+    Class dgmClass=element.getParameterTypes()[0];
+    if (!interfaces.contains(dgmClass))     continue;
+    NewInstanceMetaMethod method=new NewInstanceMetaMethod(createMetaMethod(element));
+    if (!newGroovyMethodsList.contains(method)) {
+      newGroovyMethodsList.add(method);
+    }
+    Map methodIndex=(Map)classMethodIndex.get(theClass);
+    List list=(List)methodIndex.get(method.getName());
+    if (list == null) {
+      list=new ArrayList();
+      methodIndex.put(method.getName(),list);
+      list.add(method);
+    }
+ else {
+      addMethodToList(list,method);
+    }
+  }
+  methods=registry.getStaticMethods();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    Method element=(Method)iter.next();
+    Class dgmClass=element.getParameterTypes()[0];
+    if (!interfaces.contains(dgmClass))     continue;
+    addNewStaticMethod(element);
+  }
+}

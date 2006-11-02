@@ -1,22 +1,19 @@
 {
   LinkedList superClasses=new LinkedList();
-  for (Class c=theClass.getSuperclass(); c != Object.class && c != null; c=c.getSuperclass()) {
+  for (Class c=theClass; c != null; c=c.getSuperclass()) {
     superClasses.addFirst(c);
+  }
+  if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
+    superClasses.addFirst(Object[].class);
   }
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     Class c=(Class)iter.next();
     addMethods(c);
-    addNewStaticMethodsFrom(c);
   }
-  Class[] interfaces=theClass.getInterfaces();
-  for (int i=0; i < interfaces.length; i++) {
-    addNewStaticMethodsFrom(interfaces[i]);
-  }
-  if (theClass != Object.class) {
-    addMethods(Object.class);
-    addNewStaticMethodsFrom(Object.class);
-  }
-  if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
-    addNewStaticMethodsFrom(Object[].class);
-  }
+  inheritMethods(superClasses);
+  Set interfaces=new HashSet();
+  makeInterfaceSet(theClass,interfaces);
+  inheritInterfaceMethods(interfaces);
+  connectMultimethods(superClasses);
+  populateInterfaces(interfaces);
 }

@@ -1,0 +1,15 @@
+{
+  Map methodIndex=(Map)classMethodIndex.get(sender);
+  List answer=(List)methodIndex.get(name);
+  List used=GroovyCategorySupport.getCategoryMethods(theClass,name);
+  if (used != null) {
+    if (answer != null) {
+      used.addAll(answer);
+    }
+    answer=used;
+  }
+  if (answer == null) {
+    answer=Collections.EMPTY_LIST;
+  }
+  return answer;
+}
