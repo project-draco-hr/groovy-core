@@ -1,8 +1,9 @@
 {
+  removeDereferencedEntries();
   Collection origColl=super.values();
   ArrayList newColl=new ArrayList(origColl.size());
   for (Iterator iter=origColl.iterator(); iter.hasNext(); ) {
-    WeakReference element=(WeakReference)iter.next();
+    SoftReference element=(SoftReference)iter.next();
     if (element != null) {
       Object strong=element.get();
       if (strong == null)       continue;
