@@ -7,7 +7,7 @@
     public Object next(){
       while (iter.hasNext()) {
         final Object childNode=iter.next();
-        if (DefaultTypeTransformation.castToBoolean(FilteredNodeChildren.this.closure.call(new Object[]{childNode}))) {
+        if (closureYieldsTrueForNode(childNode)) {
           return childNode;
         }
       }
