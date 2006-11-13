@@ -10,7 +10,12 @@
     return;
   }
   if (variableName.equals("super")) {
-    visitClassExpression(new ClassExpression(classNode.getSuperClass()));
+    if (isStaticMethod()) {
+      visitClassExpression(new ClassExpression(classNode.getSuperClass()));
+    }
+ else {
+      cv.visitVarInsn(ALOAD,0);
+    }
     return;
   }
   Variable variable=compileStack.getVariable(variableName,false);

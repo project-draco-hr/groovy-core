@@ -10,10 +10,12 @@
     Class c=(Class)iter.next();
     addMethods(c);
   }
-  inheritMethods(superClasses);
+  inheritMethods(superClasses,classMethodIndex);
+  copyClassMethodIndexForSuper();
   Set interfaces=new HashSet();
   makeInterfaceSet(theClass,interfaces);
   inheritInterfaceMethods(interfaces);
   connectMultimethods(superClasses);
   populateInterfaces(interfaces);
+  replaceWithMOPCalls();
 }

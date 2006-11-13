@@ -1,8 +1,18 @@
 {
+  MetaClass metaClass=null;
+  if (!(receiver instanceof GroovyObject)) {
+    Class theClass=receiver.getClass();
+    metaClass=InvokerHelper.getInstance().getMetaRegistry().getMetaClass(theClass);
+  }
+ else {
+    metaClass=((GroovyObject)receiver).getMetaClass();
+  }
+  Object result=null;
   try {
-    return InvokerHelper.invokeMethod(receiver,messageName,messageArguments);
+    result=metaClass.invokeMethod(senderClass,receiver,messageName,messageArguments,true);
   }
- catch (  GroovyRuntimeException gre) {
-    return unwrap(gre);
+ catch (  GroovyRuntimeException t) {
+    unwrap(t);
   }
+  return result;
 }

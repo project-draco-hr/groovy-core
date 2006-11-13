@@ -4,5 +4,10 @@
     objectExpression=new CastExpression(ClassHelper.make(GroovyObject.class),objectExpression);
   }
   Expression messageName=new CastExpression(ClassHelper.STRING_TYPE,call.getMethod());
-  makeCall(objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe());
+  if (useSuper) {
+    makeCall(new ClassExpression(classNode.getSuperClass()),objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe());
+  }
+ else {
+    makeCall(objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe());
+  }
 }

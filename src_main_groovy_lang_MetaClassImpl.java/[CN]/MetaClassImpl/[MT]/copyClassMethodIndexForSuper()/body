@@ -1,0 +1,13 @@
+{
+  classMethodIndexForSuper=new HashMap(classMethodIndex.size());
+  for (Iterator iter=classMethodIndex.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry cmiEntry=(Map.Entry)iter.next();
+    Map methodIndex=(Map)cmiEntry.getValue();
+    Map copy=new HashMap(methodIndex.size());
+    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry mEntry=(Map.Entry)iterator.next();
+      copy.put(mEntry.getKey(),new ArrayList((List)mEntry.getValue()));
+    }
+    classMethodIndexForSuper.put(cmiEntry.getKey(),copy);
+  }
+}

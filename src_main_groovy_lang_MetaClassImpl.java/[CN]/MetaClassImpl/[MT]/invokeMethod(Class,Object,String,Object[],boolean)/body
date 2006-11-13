@@ -9,8 +9,7 @@
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
-  boolean ignoreHiddenMethods=sender == null || sender == theClass;
-  MetaMethod method=retrieveMethod(sender,methodName,argClasses);
+  MetaMethod method=retrieveMethod(sender,methodName,argClasses,isCallToSuper);
   if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
     arguments=((List)arguments[0]).toArray();
     argClasses=MetaClassHelper.convertToTypeArray(arguments);
@@ -37,7 +36,7 @@
         MethodClosure mc=(MethodClosure)object;
         methodName=mc.getMethod();
         MetaClass ownerMetaClass=registry.getMetaClass(owner.getClass());
-        return ownerMetaClass.invokeMethod(owner.getClass(),owner,methodName,arguments);
+        return ownerMetaClass.invokeMethod(owner.getClass(),owner,methodName,arguments,false);
       }
  else       if (object.getClass() == CurriedClosure.class) {
         CurriedClosure cc=(CurriedClosure)object;
@@ -91,7 +90,7 @@
       if (value instanceof Closure) {
         Closure closure=(Closure)value;
         MetaClass delegateMetaClass=closure.getMetaClass();
-        return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments);
+        return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments,false);
       }
     }
  catch (    MissingPropertyException mpe) {

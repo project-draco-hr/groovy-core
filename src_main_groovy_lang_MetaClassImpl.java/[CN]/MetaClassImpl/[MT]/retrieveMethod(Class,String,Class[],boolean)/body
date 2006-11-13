@@ -2,7 +2,7 @@
   MethodKey methodKey=new TemporaryMethodKey(sender,methodName,arguments);
   MetaMethod method=(MetaMethod)methodCache.get(methodKey);
   if (method == null) {
-    method=pickMethod(sender,methodName,arguments);
+    method=pickMethod(sender,methodName,arguments,isCallToSuper);
     if (method != null && method.isCacheable()) {
       methodCache.put(methodKey.createCopy(),method);
     }

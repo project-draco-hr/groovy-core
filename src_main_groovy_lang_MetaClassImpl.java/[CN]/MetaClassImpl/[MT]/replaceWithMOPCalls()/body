@@ -1,0 +1,62 @@
+{
+  if (!GroovyObject.class.isAssignableFrom(theClass))   return;
+  Map mainClassMethodIndex=(Map)classMethodIndex.get(theClass);
+  for (Iterator iter=classMethodIndexForSuper.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry classEntry=(Map.Entry)iter.next();
+    if (classEntry.getKey() == theClass)     continue;
+    Map methodIndex=(Map)classEntry.getValue();
+    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry nameEntry=(Map.Entry)iterator.next();
+      List oldList=(List)nameEntry.getValue();
+      List newList=new ArrayList(oldList.size());
+      for (Iterator methodIter=oldList.iterator(); methodIter.hasNext(); ) {
+        MetaMethod method=(MetaMethod)methodIter.next();
+        String mopName=getMOPMethodName(method.getDeclaringClass(),method.getName(),false);
+        List matches=(List)mainClassMethodIndex.get(mopName);
+        if (matches == null) {
+          newList.add(method);
+          continue;
+        }
+        matches=new ArrayList(matches);
+        MetaMethod matchingMethod=removeMatchingMethod(matches,method);
+        if (matchingMethod == null) {
+          newList.add(method);
+          continue;
+        }
+ else {
+          newList.add(matchingMethod);
+        }
+      }
+      nameEntry.setValue(newList);
+    }
+  }
+  for (Iterator iter=classMethodIndex.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry classEntry=(Map.Entry)iter.next();
+    Class clazz=(Class)classEntry.getKey();
+    Map methodIndex=(Map)classEntry.getValue();
+    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry nameEntry=(Map.Entry)iterator.next();
+      List oldList=(List)nameEntry.getValue();
+      List newList=new ArrayList(oldList.size());
+      for (Iterator methodIter=oldList.iterator(); methodIter.hasNext(); ) {
+        MetaMethod method=(MetaMethod)methodIter.next();
+        String mopName=getMOPMethodName(clazz,method.getName(),true);
+        List matches=(List)mainClassMethodIndex.get(mopName);
+        if (matches == null) {
+          newList.add(method);
+          continue;
+        }
+        matches=new ArrayList(matches);
+        MetaMethod matchingMethod=removeMatchingMethod(matches,method);
+        if (matchingMethod == null) {
+          newList.add(method);
+          continue;
+        }
+ else {
+          newList.add(matchingMethod);
+        }
+      }
+      nameEntry.setValue(newList);
+    }
+  }
+}

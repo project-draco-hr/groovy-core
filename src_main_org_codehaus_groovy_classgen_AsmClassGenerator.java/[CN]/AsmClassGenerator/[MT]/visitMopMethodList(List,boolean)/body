@@ -3,9 +3,11 @@
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode mn=(MethodNode)iter.next();
     if ((mn.getModifiers() & ACC_ABSTRACT) != 0)     continue;
-    if (!isThis && (mn.getModifiers() & ACC_PUBLIC) == 0)     continue;
+    if (isThis ^ (mn.getModifiers() & (ACC_PUBLIC | ACC_PROTECTED)) == 0)     continue;
     String methodName=mn.getName();
     if (isMopMethod(methodName) || methodName.startsWith("<"))     continue;
+    String name=getMopMethodName(mn,isThis);
+    if (containsMethod(methods,name,mn.getParameters()))     continue;
     mopCalls.add(mn);
   }
   generateMopCalls(mopCalls,isThis);

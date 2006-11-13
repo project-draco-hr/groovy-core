@@ -14,16 +14,6 @@
     if (isThisExpression)     adapter=invokeMethodOnCurrent;
     if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
     if (isStaticMethod() && isThisExpression)     adapter=invokeStaticMethod;
-    if (isSuperMethodCall) {
-      MethodNode superMethodNode=findSuperMethod(call);
-      cv.visitVarInsn(ALOAD,0);
-      loadArguments(superMethodNode.getParameters(),arguments);
-      String descriptor=BytecodeHelper.getMethodDescriptor(superMethodNode.getReturnType(),superMethodNode.getParameters());
-      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superMethodNode.getDeclaringClass()),methodName,descriptor);
-      helper.box(superMethodNode.getReturnType());
-    }
- else {
-      makeInvokeMethodCall(call,adapter);
-    }
+    makeInvokeMethodCall(call,isSuperMethodCall,adapter);
   }
 }
