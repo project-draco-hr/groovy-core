@@ -12,10 +12,11 @@
   unwrap(arguments);
   MetaMethod method=retrieveMethod(sender,methodName,argClasses,isCallToSuper);
   if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
-    arguments=((List)arguments[0]).toArray();
-    argClasses=MetaClassHelper.convertToTypeArray(arguments);
-    method=retrieveMethod(methodName,argClasses);
+    Object[] newArguments=((List)arguments[0]).toArray();
+    Class[] newArgClasses=MetaClassHelper.convertToTypeArray(newArguments);
+    method=retrieveMethod(sender,methodName,newArgClasses,isCallToSuper);
     if (method != null) {
+      MethodKey methodKey=new DefaultMethodKey(sender,methodName,argClasses);
       method=new TransformMetaMethod(method){
         public Object invoke(        Object object,        Object[] arguments) throws Exception {
           Object firstArgument=arguments[0];
@@ -25,6 +26,8 @@
         }
       }
 ;
+      methodCache.put(methodKey,method);
+      return invokeMethod(sender,object,methodName,originalArguments,isCallToSuper);
     }
   }
   boolean isClosure=object instanceof Closure;
