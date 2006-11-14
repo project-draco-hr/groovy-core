@@ -1,19 +1,20 @@
 {
+  Map methodIndex;
   if (isCallToSuper) {
-    Map methodIndex=(Map)classMethodIndexForSuper.get(sender);
-    return (List)methodIndex.get(name);
+    methodIndex=(Map)classMethodIndexForSuper.get(sender);
   }
-  Map methodIndex=(Map)classMethodIndex.get(sender);
+ else {
+    methodIndex=(Map)classMethodIndex.get(sender);
+  }
+  if (methodIndex == null)   throw new IllegalArgumentException("invalid index class " + sender + " for "+ theClass);
   List answer=(List)methodIndex.get(name);
-  List used=GroovyCategorySupport.getCategoryMethods(theClass,name);
-  if (used != null) {
-    if (answer != null) {
+  if (answer == null)   answer=Collections.EMPTY_LIST;
+  if (!isCallToSuper) {
+    List used=GroovyCategorySupport.getCategoryMethods(sender,name);
+    if (used != null) {
       used.addAll(answer);
+      answer=used;
     }
-    answer=used;
-  }
-  if (answer == null) {
-    answer=Collections.EMPTY_LIST;
   }
   return answer;
 }
