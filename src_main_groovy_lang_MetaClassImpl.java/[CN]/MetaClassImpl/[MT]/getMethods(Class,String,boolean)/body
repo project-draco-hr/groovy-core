@@ -6,9 +6,14 @@
  else {
     methodIndex=(Map)classMethodIndex.get(sender);
   }
-  if (methodIndex == null)   throw new IllegalArgumentException("invalid index class " + sender + " for "+ theClass);
-  List answer=(List)methodIndex.get(name);
-  if (answer == null)   answer=Collections.EMPTY_LIST;
+  List answer;
+  if (methodIndex != null) {
+    answer=(List)methodIndex.get(name);
+    if (answer == null)     answer=Collections.EMPTY_LIST;
+  }
+ else {
+    answer=Collections.EMPTY_LIST;
+  }
   if (!isCallToSuper) {
     List used=GroovyCategorySupport.getCategoryMethods(sender,name);
     if (used != null) {

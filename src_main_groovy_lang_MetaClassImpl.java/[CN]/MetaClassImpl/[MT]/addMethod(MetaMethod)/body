@@ -1,5 +1,4 @@
 {
-  String name=method.getName();
   if (isGenericGetMethod(method) && genericGetMethod == null) {
     genericGetMethod=method;
   }
@@ -7,30 +6,7 @@
     genericSetMethod=method;
   }
   if (method.isStatic()) {
-    List list=(List)staticMethodIndex.get(name);
-    if (list == null) {
-      list=new ArrayList();
-      staticMethodIndex.put(name,list);
-      list.add(method);
-    }
- else {
-      if (!MetaClassHelper.containsMatchingMethod(list,method)) {
-        list.add(method);
-      }
-    }
+    addtoClassMethodIndex(method,classStaticMethodIndex);
   }
-  Map methodIndex=(Map)classMethodIndex.get(method.getDeclaringClass());
-  if (methodIndex == null) {
-    methodIndex=new HashMap();
-    classMethodIndex.put(method.getDeclaringClass(),methodIndex);
-  }
-  List list=(List)methodIndex.get(name);
-  if (list == null) {
-    list=new ArrayList();
-    methodIndex.put(name,list);
-    list.add(method);
-  }
- else {
-    addMethodToList(list,method);
-  }
+  addtoClassMethodIndex(method,classMethodIndex);
 }

@@ -3,13 +3,19 @@
   if (log.isLoggable(Level.FINER)) {
     MetaClassHelper.logMethodCall(object,methodName,arguments);
   }
+  Class sender=object.getClass();
+  if (object instanceof Class)   sender=(Class)object;
+  if (sender != theClass) {
+    MetaClass mc=registry.getMetaClass(sender);
+    return mc.invokeStaticMethod(sender,methodName,arguments);
+  }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
-  MethodKey methodKey=new TemporaryMethodKey(theClass,methodName,arguments);
+  MethodKey methodKey=new DefaultMethodKey(sender,methodName,argClasses);
   MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
   if (method == null) {
-    method=pickStaticMethod(methodName,argClasses);
+    method=pickStaticMethod(sender,methodName,argClasses);
     if (method != null) {
       staticMethodCache.put(methodKey.createCopy(),method);
     }
@@ -17,5 +23,5 @@
   if (method != null) {
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
   }
-  throw new MissingMethodException(methodName,theClass,arguments);
+  throw new MissingMethodException(methodName,sender,arguments);
 }

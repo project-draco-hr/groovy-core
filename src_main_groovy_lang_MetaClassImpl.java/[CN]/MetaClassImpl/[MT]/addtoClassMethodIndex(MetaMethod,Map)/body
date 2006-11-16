@@ -1,0 +1,17 @@
+{
+  Map methodIndex=(Map)classMethodIndex.get(method.getDeclaringClass());
+  if (methodIndex == null) {
+    methodIndex=new HashMap();
+    classMethodIndex.put(method.getDeclaringClass(),methodIndex);
+  }
+  String name=method.getName();
+  List list=(List)methodIndex.get(name);
+  if (list == null) {
+    list=new ArrayList();
+    methodIndex.put(name,list);
+    list.add(method);
+  }
+ else {
+    addMethodToList(list,method);
+  }
+}

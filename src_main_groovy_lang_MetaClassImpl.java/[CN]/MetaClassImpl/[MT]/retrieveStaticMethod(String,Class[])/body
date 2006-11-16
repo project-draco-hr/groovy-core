@@ -1,10 +1,10 @@
 {
-  MethodKey methodKey=new TemporaryMethodKey(theClass,methodName,arguments);
+  MethodKey methodKey=new DefaultMethodKey(theClass,methodName,arguments);
   MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
   if (method == null) {
-    method=pickStaticMethod(methodName,arguments);
+    method=pickStaticMethod(theClass,methodName,arguments);
     if (method != null) {
-      staticMethodCache.put(methodKey.createCopy(),method);
+      staticMethodCache.put(methodKey,method);
     }
   }
   return method;
