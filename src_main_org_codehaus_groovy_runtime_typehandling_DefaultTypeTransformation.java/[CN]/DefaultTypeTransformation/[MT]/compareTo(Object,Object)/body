@@ -13,7 +13,9 @@
       if (isValidCharacterString(right)) {
         return castToChar(left) - castToChar(right);
       }
-      return DefaultGroovyMethods.compareTo((Number)left,castToNumber(right));
+ else       if (right instanceof Character || right instanceof Number) {
+        return DefaultGroovyMethods.compareTo((Number)left,castToNumber(right));
+      }
     }
  else     if (left instanceof Character) {
       if (isValidCharacterString(right)) {
@@ -27,7 +29,6 @@
       if (isValidCharacterString(left)) {
         return castToChar(left) - castToChar(right);
       }
-      return DefaultGroovyMethods.compareTo(castToNumber(left),(Number)right);
     }
  else     if (left instanceof String && right instanceof Character) {
       return ((String)left).compareTo(right.toString());
