@@ -1,0 +1,19 @@
+{
+  Map properties=getProperties();
+  List methodList=new ArrayList();
+  for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
+    Class current=(Class)i.next();
+    if (current.isAssignableFrom(categorizedClass)) {
+      Map metaMethodsMap=(Map)properties.get(current);
+      Collection collection=metaMethodsMap.values();
+      for (Iterator iterator=collection.iterator(); iterator.hasNext(); ) {
+        List newMethodList=(List)iterator.next();
+        if (newMethodList != null) {
+          methodList.addAll(newMethodList);
+        }
+      }
+    }
+  }
+  if (methodList.size() == 0)   return null;
+  return methodList;
+}
