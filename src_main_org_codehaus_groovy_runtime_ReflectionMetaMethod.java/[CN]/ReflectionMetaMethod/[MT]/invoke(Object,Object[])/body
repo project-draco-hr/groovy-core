@@ -9,5 +9,16 @@
 );
     alreadySetAccessible=true;
   }
-  return method.invoke(object,arguments);
+  try {
+    return method.invoke(object,arguments);
+  }
+ catch (  IllegalArgumentException e) {
+    throw new InvokerInvocationException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new InvokerInvocationException(e);
+  }
+catch (  InvocationTargetException e) {
+    throw new InvokerInvocationException(e);
+  }
 }

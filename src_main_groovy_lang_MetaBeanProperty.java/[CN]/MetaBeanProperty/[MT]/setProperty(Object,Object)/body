@@ -2,34 +2,6 @@
   if (setter == null) {
     throw new GroovyRuntimeException("Cannot set read-only property: " + name);
   }
-  try {
-    if (newValue != null && getType() == String.class && !(newValue instanceof String)) {
-      newValue=newValue.toString();
-    }
- else {
-      newValue=coercePrimitiveValue(newValue,getType());
-    }
-    setter.invoke(object,new Object[]{newValue});
-  }
- catch (  IllegalArgumentException e) {
-    try {
-      newValue=DefaultTypeTransformation.castToType(newValue,getType());
-      setter.invoke(object,new Object[]{newValue});
-    }
- catch (    Exception ex) {
-      throw new TypeMismatchException("The property '" + toName(object.getClass()) + "."+ name+ "' can not refer to the value '"+ newValue+ "' (type "+ toName(newValue.getClass())+ "), because it is of the type "+ toName(getType())+ ". The reason is from java.lang.IllegalArgumentException.");
-    }
-  }
-catch (  ClassCastException e) {
-    try {
-      newValue=DefaultTypeTransformation.castToType(newValue,getType());
-      setter.invoke(object,new Object[]{newValue});
-    }
- catch (    Exception ex) {
-      throw new TypeMismatchException("The property '" + toName(object.getClass()) + "."+ name+ "' can not refer to the value '"+ newValue+ "' (type "+ toName(newValue.getClass())+ "), because it is of the type "+ toName(getType())+ ". The reason is from java.lang.ClassCastException.");
-    }
-  }
-catch (  Exception e) {
-    throw new GroovyRuntimeException("Cannot set property: " + name + " reason: "+ e.getMessage(),e);
-  }
+  newValue=DefaultTypeTransformation.castToType(newValue,getType());
+  setter.invoke(object,new Object[]{newValue});
 }

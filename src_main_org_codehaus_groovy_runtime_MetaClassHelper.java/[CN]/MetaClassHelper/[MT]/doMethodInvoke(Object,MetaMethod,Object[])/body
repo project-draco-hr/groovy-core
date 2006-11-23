@@ -4,13 +4,7 @@
   try {
     return method.invoke(object,argumentArray);
   }
- catch (  InvocationTargetException e) {
-    throw new InvokerInvocationException(e);
-  }
-catch (  IllegalAccessException e) {
-    throw createExceptionText("could not access method: ",method,object,argumentArray,e,true);
-  }
-catch (  IllegalArgumentException e) {
+ catch (  IllegalArgumentException e) {
     boolean setReason=e.getClass() != IllegalArgumentException.class;
     throw createExceptionText("failed to invoke method: ",method,object,argumentArray,e,setReason);
   }

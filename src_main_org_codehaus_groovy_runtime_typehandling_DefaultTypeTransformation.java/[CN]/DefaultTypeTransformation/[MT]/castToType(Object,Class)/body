@@ -16,7 +16,7 @@
         answer=(Collection)type.newInstance();
       }
  catch (      Exception e) {
-        throw new ClassCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
+        throw new GroovyCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
       }
       int length=Array.getLength(object);
       for (int i=0; i < length; i++) {
@@ -79,7 +79,10 @@
     }
   }
  else   if (type.isPrimitive()) {
-    if (type == byte.class) {
+    if (type == boolean.class) {
+      return box(booleanUnbox(object));
+    }
+ else     if (type == byte.class) {
       return box(byteUnbox(object));
     }
  else     if (type == char.class) {
@@ -123,5 +126,5 @@
 catch (    Exception e) {
     }
   }
-  throw new ClassCastException("unable to cast " + object.getClass() + " to "+ type);
+  throw new GroovyCastException(object,type);
 }

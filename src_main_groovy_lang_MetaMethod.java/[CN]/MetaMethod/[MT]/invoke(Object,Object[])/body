@@ -1,15 +1,20 @@
 {
-  if (reflector != null) {
-    return reflector.invoke(this,object,arguments);
-  }
- else {
-    AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        method.setAccessible(true);
-        return null;
-      }
+  try {
+    if (reflector != null) {
+      return reflector.invoke(this,object,arguments);
     }
+ else {
+      AccessController.doPrivileged(new PrivilegedAction(){
+        public Object run(){
+          method.setAccessible(true);
+          return null;
+        }
+      }
 );
-    return method.invoke(object,arguments);
+      return method.invoke(object,arguments);
+    }
+  }
+ catch (  Exception e) {
+    throw new InvokerInvocationException(e);
   }
 }
