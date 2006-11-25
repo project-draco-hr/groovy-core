@@ -1,0 +1,28 @@
+{
+  Map privates=new HashMap();
+  MethodIndexAction mia=new MethodIndexAction(){
+    public List methodNameAction(    Class clazz,    String methodName,    List methods){
+      boolean hasPrivate=false;
+      for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+        MetaMethod method=(MetaMethod)iter.next();
+        if (method.isPrivate()) {
+          hasPrivate=true;
+          break;
+        }
+      }
+      if (!hasPrivate)       return null;
+      for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+        MetaMethod method=(MetaMethod)iter.next();
+        if (method.getDeclaringClass() != clazz || method instanceof NewInstanceMetaMethod) {
+          iter.remove();
+        }
+      }
+      return null;
+    }
+    public boolean replaceMethodList(){
+      return false;
+    }
+  }
+;
+  mia.iterate(classMethodIndex);
+}

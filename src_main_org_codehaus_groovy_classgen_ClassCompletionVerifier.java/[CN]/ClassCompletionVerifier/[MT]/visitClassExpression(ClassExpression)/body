@@ -1,0 +1,9 @@
+{
+  ClassNode type=expression.getType();
+  CompileUnit cu=currentClass.getCompileUnit();
+  if (!type.isResolved() && cu.hasClassNodeToCompile()) {
+    String location=cu.getScriptSourceLocation(type.getName());
+    if (location == null)     return;
+    addError("expected to find the class " + type.getName() + " in "+ location+ ", but failed to find it.",expression);
+  }
+}

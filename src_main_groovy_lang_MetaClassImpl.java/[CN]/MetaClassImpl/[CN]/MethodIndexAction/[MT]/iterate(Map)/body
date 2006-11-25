@@ -1,0 +1,15 @@
+{
+  for (Iterator iter=classMethodIndex.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry classEntry=(Map.Entry)iter.next();
+    Map methodIndex=(Map)classEntry.getValue();
+    Class clazz=(Class)classEntry.getKey();
+    if (skipClass(clazz))     continue;
+    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry nameEntry=(Map.Entry)iterator.next();
+      String name=(String)nameEntry.getKey();
+      List oldList=(List)nameEntry.getValue();
+      List newList=methodNameAction(clazz,name,oldList);
+      if (replaceMethodList())       nameEntry.setValue(newList);
+    }
+  }
+}
