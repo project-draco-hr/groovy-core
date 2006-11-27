@@ -1,11 +1,16 @@
 {
-  MethodKey methodKey=new DefaultMethodKey(sender,methodName,arguments);
-  MetaMethod method=(MetaMethod)methodCache.get(methodKey);
-  if (method == null) {
-    method=pickMethod(sender,methodName,arguments,isCallToSuper);
-    if (method != null && method.isCacheable()) {
-      methodCache.put(methodKey,method);
-    }
+  if (GroovyCategorySupport.hasCategoryInAnyThread() && !isCallToSuper) {
+    return pickMethod(sender,methodName,arguments,isCallToSuper);
   }
-  return method;
+ else {
+    MethodKey methodKey=new DefaultMethodKey(sender,methodName,arguments);
+    MetaMethod method=(MetaMethod)methodCache.get(methodKey);
+    if (method == null) {
+      method=pickMethod(sender,methodName,arguments,isCallToSuper);
+      if (method != null && method.isCacheable()) {
+        methodCache.put(methodKey,method);
+      }
+    }
+    return method;
+  }
 }

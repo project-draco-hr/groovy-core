@@ -17,8 +17,12 @@
   if (!isCallToSuper) {
     List used=GroovyCategorySupport.getCategoryMethods(sender,name);
     if (used != null) {
-      used.addAll(answer);
-      answer=used;
+      answer=new ArrayList(answer);
+      for (Iterator iter=used.iterator(); iter.hasNext(); ) {
+        MetaMethod element=(MetaMethod)iter.next();
+        removeMatchingMethod(answer,element);
+      }
+      answer.addAll(used);
     }
   }
   return answer;
