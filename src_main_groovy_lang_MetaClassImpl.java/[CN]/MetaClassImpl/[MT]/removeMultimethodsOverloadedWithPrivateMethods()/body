@@ -5,19 +5,15 @@
       boolean hasPrivate=false;
       for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
         MetaMethod method=(MetaMethod)iter.next();
-        if (method.isPrivate()) {
+        if (method.isPrivate() && clazz == method.getDeclaringClass()) {
           hasPrivate=true;
           break;
         }
       }
       if (!hasPrivate)       return null;
-      for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-        MetaMethod method=(MetaMethod)iter.next();
-        if (method.getDeclaringClass() != clazz || method instanceof NewInstanceMetaMethod) {
-          iter.remove();
-        }
-      }
-      return null;
+      methods.clear();
+      methods.addAll((Collection)((Map)classMethodIndexForSuper.get(clazz)).get(methodName));
+      return methods;
     }
     public boolean replaceMethodList(){
       return false;

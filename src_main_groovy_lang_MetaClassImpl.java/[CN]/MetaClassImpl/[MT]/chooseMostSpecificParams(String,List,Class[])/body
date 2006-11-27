@@ -1,12 +1,12 @@
 {
-  Class[] wrappedArguments=MetaClassHelper.wrap(arguments);
-  int matchesDistance=-1;
+  long matchesDistance=-1;
   LinkedList matches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
     Class[] paramTypes=MetaClassHelper.getParameterTypes(method);
     if (!MetaClassHelper.parametersAreCompatible(arguments,paramTypes))     continue;
-    int dist=MetaClassHelper.calculateParameterDistance(arguments,paramTypes);
+    long dist=MetaClassHelper.calculateParameterDistance(arguments,paramTypes);
+    if (dist == 0)     return method;
     if (matches.size() == 0) {
       matches.add(method);
       matchesDistance=dist;
