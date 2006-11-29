@@ -1,13 +1,18 @@
 {
-  final Iterator iter=this.children.iterator();
-  while (iter.hasNext()) {
-    final Object child=iter.next();
-    if (child instanceof Writable) {
-      ((Writable)child).writeTo(out);
-    }
+  if (this.replacementNode == null) {
+    final Iterator iter=this.children.iterator();
+    while (iter.hasNext()) {
+      final Object child=iter.next();
+      if (child instanceof Writable) {
+        ((Writable)child).writeTo(out);
+      }
  else {
-      out.write(child.toString());
+        out.write(child.toString());
+      }
     }
+    return out;
   }
-  return out;
+ else {
+    return this.replacementNode.writeTo(out);
+  }
 }

@@ -1,7 +1,10 @@
 {
   final MetaClass newMetaClass=new DelegatingMetaClass(metaClass){
-    public Object getAttribute(    Object object,    String attribute){
+    public Object getAttribute(    final Object object,    final String attribute){
       return GPathResult.this.getProperty("@" + attribute);
+    }
+    public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
+      GPathResult.this.setProperty("@" + attribute,newValue);
     }
   }
 ;

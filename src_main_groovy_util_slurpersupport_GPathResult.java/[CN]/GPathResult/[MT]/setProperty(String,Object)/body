@@ -1,0 +1,30 @@
+{
+  if (property.startsWith("@")) {
+    if (newValue instanceof String || newValue instanceof GString) {
+      final Iterator iter=iterator();
+      while (iter.hasNext()) {
+        final NodeChild child=(NodeChild)iter.next();
+        child.attributes().put(property.substring(1),newValue);
+      }
+    }
+  }
+ else {
+    final GPathResult result=new NodeChildren(this,property,this.namespaceTagHints);
+    if (newValue instanceof Closure) {
+      result.replaceNode(new ReplacementNode(){
+        public void build(        final GroovyObject builder,        final Map namespaceMap,        final Map namespaceTagHints){
+          builder.getProperty("mkp");
+          builder.invokeMethod("yield",new Object[]{newValue});
+        }
+        public Writer writeTo(        final Writer out) throws IOException {
+          out.write((String)newValue);
+          return out;
+        }
+      }
+);
+    }
+ else {
+      result.replaceBody(newValue);
+    }
+  }
+}
