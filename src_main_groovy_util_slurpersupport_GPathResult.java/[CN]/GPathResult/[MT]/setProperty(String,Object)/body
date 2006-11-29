@@ -19,17 +19,7 @@
     }
  else {
       if (newValue instanceof Closure) {
-        result.replaceNode(new ReplacementNode(){
-          public void build(          final GroovyObject builder,          final Map namespaceMap,          final Map namespaceTagHints){
-            builder.getProperty("mkp");
-            builder.invokeMethod("yield",new Object[]{newValue});
-          }
-          public Writer writeTo(          final Writer out) throws IOException {
-            out.write((String)newValue);
-            return out;
-          }
-        }
-);
+        result.replaceNode((Closure)newValue);
       }
  else {
         result.replaceBody(newValue);

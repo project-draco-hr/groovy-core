@@ -1,0 +1,12 @@
+{
+  this.replacementNode=new ReplacementNode(){
+    public void build(    final GroovyObject builder,    final Map namespaceMap,    final Map namespaceTagHints){
+      final Closure c=(Closure)replacementClosure.clone();
+      Node.this.replacementNode=null;
+      c.setDelegate(builder);
+      c.call(new Object[]{result});
+      Node.this.replacementNode=this;
+    }
+  }
+;
+}
