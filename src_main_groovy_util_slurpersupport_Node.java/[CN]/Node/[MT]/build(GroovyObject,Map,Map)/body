@@ -1,5 +1,5 @@
 {
-  if (this.replacementNode == null) {
+  if (this.replacementNodeStack.empty()) {
     final Closure rest=new Closure(null){
       public Object doCall(      final Object o){
         buildChildren(builder,namespaceMap,namespaceTagHints);
@@ -43,6 +43,6 @@
     }
   }
  else {
-    this.replacementNode.build(builder,namespaceMap,namespaceTagHints);
+    ((ReplacementNode)this.replacementNodeStack.peek()).build(builder,namespaceMap,namespaceTagHints);
   }
 }

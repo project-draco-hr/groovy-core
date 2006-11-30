@@ -1,5 +1,5 @@
 {
-  if (this.replacementNode == null) {
+  if (this.replacementNodeStack.empty()) {
     final Iterator iter=this.children.iterator();
     while (iter.hasNext()) {
       final Object child=iter.next();
@@ -13,6 +13,6 @@
     return out;
   }
  else {
-    return this.replacementNode.writeTo(out);
+    return ((Writable)this.replacementNodeStack.peek()).writeTo(out);
   }
 }
