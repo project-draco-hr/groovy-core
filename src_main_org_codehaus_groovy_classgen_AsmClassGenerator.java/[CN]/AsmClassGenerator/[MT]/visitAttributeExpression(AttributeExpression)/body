@@ -4,10 +4,12 @@
   if (leftHandExpression) {
     adapter=setField;
     if (isGroovyObject(objectExpression))     adapter=setGroovyObjectField;
+    if (usesSuper(expression))     adapter=setPropertyOnSuper;
   }
  else {
     adapter=getField;
     if (isGroovyObject(objectExpression))     adapter=getGroovyObjectField;
+    if (usesSuper(expression))     adapter=getFieldOnSuper;
   }
   visitAttributeOrProperty(expression,adapter);
 }

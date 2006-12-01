@@ -1,4 +1,16 @@
 {
+  BeanInfo info;
+  try {
+    info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+      public Object run() throws IntrospectionException {
+        return Introspector.getBeanInfo(theClass);
+      }
+    }
+);
+  }
+ catch (  PrivilegedActionException pae) {
+    throw new GroovyRuntimeException("exception while bean introspection",pae.getException());
+  }
   PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
   setupProperties(descriptors);
   EventSetDescriptor[] eventDescriptors=info.getEventSetDescriptors();

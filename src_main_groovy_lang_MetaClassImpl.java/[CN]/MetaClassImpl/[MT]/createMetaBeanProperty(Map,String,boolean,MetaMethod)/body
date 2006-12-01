@@ -1,0 +1,35 @@
+{
+  MetaProperty mp=(MetaProperty)propertyIndex.get(propName);
+  if (mp == null) {
+    if (isGetter) {
+      mp=new MetaBeanProperty(propName,propertyMethod.getReturnType(),propertyMethod,null);
+    }
+ else {
+      mp=new MetaBeanProperty(propName,propertyMethod.getParameterTypes()[0],null,propertyMethod);
+    }
+  }
+ else {
+    MetaBeanProperty mbp;
+    MetaFieldProperty mfp;
+    if (mp instanceof MetaBeanProperty) {
+      mbp=(MetaBeanProperty)mp;
+      mfp=mbp.getField();
+    }
+ else     if (mp instanceof MetaFieldProperty) {
+      mfp=(MetaFieldProperty)mp;
+      mbp=new MetaBeanProperty(propName,mfp.getType(),null,null);
+    }
+ else {
+      throw new GroovyBugError("unknown MetaProperty class used. Class is " + mp.getClass());
+    }
+    if (isGetter && mbp.getGetter() == null) {
+      mbp.setGetter(propertyMethod);
+    }
+ else     if (!isGetter && mbp.getSetter() == null) {
+      mbp.setSetter(propertyMethod);
+    }
+    mbp.setField(mfp);
+    mp=mbp;
+  }
+  propertyIndex.put(propName,mp);
+}

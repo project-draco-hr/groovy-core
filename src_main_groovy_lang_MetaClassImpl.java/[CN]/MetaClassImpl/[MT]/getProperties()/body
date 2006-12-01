@@ -1,9 +1,28 @@
 {
   checkInitalised();
+  Map propertyMap=(Map)classPropertyIndex.get(theClass);
   List ret=new ArrayList(propertyMap.size());
   for (Iterator iter=propertyMap.values().iterator(); iter.hasNext(); ) {
     MetaProperty element=(MetaProperty)iter.next();
     if (element instanceof MetaFieldProperty)     continue;
+    if (element instanceof MetaBeanProperty) {
+      MetaBeanProperty mp=(MetaBeanProperty)element;
+      boolean setter=true;
+      boolean getter=true;
+      if (mp.getGetter() == null || mp.getGetter() instanceof NewInstanceMetaMethod) {
+        getter=false;
+      }
+      if (mp.getSetter() == null || mp.getSetter() instanceof NewInstanceMetaMethod) {
+        setter=false;
+      }
+      if (!setter && !getter)       continue;
+      if (!setter && mp.getSetter() != null) {
+        element=new MetaBeanProperty(mp.getName(),mp.getType(),mp.getGetter(),null);
+      }
+      if (!getter && mp.getGetter() != null) {
+        element=new MetaBeanProperty(mp.getName(),mp.getType(),null,mp.getSetter());
+      }
+    }
     ret.add(element);
   }
   return ret;

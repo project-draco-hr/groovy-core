@@ -5,12 +5,7 @@
     return (MetaClass)customMetaClassConstructor.newInstance(new Object[]{this,theClass});
   }
  catch (  final ClassNotFoundException e) {
-    try {
-      return new MetaClassImpl(this,theClass);
-    }
- catch (    final IntrospectionException e1) {
-      throw new GroovyRuntimeException("Could not introspect class: " + theClass.getName() + ". Reason: "+ e1,e1);
-    }
+    return new MetaClassImpl(this,theClass);
   }
 catch (  final Exception e) {
     throw new GroovyRuntimeException("Could not instantiate custom Metaclass for class: " + theClass.getName() + ". Reason: "+ e,e);

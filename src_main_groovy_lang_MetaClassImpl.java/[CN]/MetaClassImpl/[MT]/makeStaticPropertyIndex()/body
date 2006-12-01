@@ -1,0 +1,56 @@
+{
+  Map propertyMap=(Map)classPropertyIndex.get(theClass);
+  for (Iterator iter=propertyMap.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    MetaProperty mp=(MetaProperty)entry.getValue();
+    if (mp instanceof MetaFieldProperty) {
+      MetaFieldProperty mfp=(MetaFieldProperty)mp;
+      if (!mfp.isStatic())       continue;
+    }
+ else     if (mp instanceof MetaBeanProperty) {
+      MetaBeanProperty mbp=(MetaBeanProperty)mp;
+      boolean getter=mbp.getGetter() == null || mbp.getGetter().isStatic();
+      boolean setter=mbp.getSetter() == null || mbp.getSetter().isStatic();
+      boolean field=mbp.getField() == null || mbp.getField().isStatic();
+      if (!getter && !setter && !field) {
+        continue;
+      }
+ else       if (setter && getter) {
+        if (field) {
+          mp=mbp;
+        }
+ else {
+          mp=new MetaBeanProperty(mbp.getName(),mbp.getType(),mbp.getGetter(),mbp.getSetter());
+        }
+      }
+ else       if (getter && !setter) {
+        if (mbp.getGetter() == null) {
+          mp=mbp.getField();
+        }
+ else {
+          MetaBeanProperty newmp=new MetaBeanProperty(mbp.getName(),mbp.getType(),mbp.getGetter(),null);
+          if (field)           newmp.setField(mbp.getField());
+          mp=newmp;
+        }
+      }
+ else       if (setter && !getter) {
+        if (mbp.getSetter() == null) {
+          mp=mbp.getField();
+        }
+ else {
+          MetaBeanProperty newmp=new MetaBeanProperty(mbp.getName(),mbp.getType(),null,mbp.getSetter());
+          if (field)           newmp.setField(mbp.getField());
+          mp=newmp;
+        }
+      }
+ else       if (field) {
+        mp=mbp.getField();
+      }
+    }
+ else {
+      continue;
+    }
+    if (mp == null)     continue;
+    staticPropertyIndex.put(entry.getKey(),mp);
+  }
+}

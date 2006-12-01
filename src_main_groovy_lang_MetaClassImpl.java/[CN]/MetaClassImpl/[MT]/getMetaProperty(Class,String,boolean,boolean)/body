@@ -1,0 +1,21 @@
+{
+  Map propertyMap;
+  if (useStatic) {
+    propertyMap=staticPropertyIndex;
+  }
+ else   if (useSuper) {
+    propertyMap=(Map)classPropertyIndexForSuper.get(clazz);
+  }
+ else {
+    propertyMap=(Map)classPropertyIndex.get(clazz);
+  }
+  if (propertyMap == null) {
+    if (clazz != theClass) {
+      return getMetaProperty(theClass,name,useSuper,useStatic);
+    }
+ else {
+      return null;
+    }
+  }
+  return (MetaProperty)propertyMap.get(name);
+}

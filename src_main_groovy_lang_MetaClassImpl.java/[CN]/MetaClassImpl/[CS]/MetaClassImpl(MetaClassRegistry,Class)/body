@@ -7,20 +7,4 @@
     }
   }
 );
-  try {
-    info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws IntrospectionException {
-        return Introspector.getBeanInfo(theClass);
-      }
-    }
-);
-  }
- catch (  PrivilegedActionException pae) {
-    if (pae.getException() instanceof IntrospectionException) {
-      throw (IntrospectionException)pae.getException();
-    }
- else {
-      throw new RuntimeException(pae.getException());
-    }
-  }
 }

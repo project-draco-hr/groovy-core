@@ -37,7 +37,13 @@
   VariableExpression outer=new VariableExpression("_outerInstance");
   outer.setSourcePosition(expression);
   block.getVariableScope().getReferencedLocalVariables().put("_outerInstance",outer);
-  block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,outer)));
+  VariableExpression thisObject=new VariableExpression("_thisObject");
+  thisObject.setSourcePosition(expression);
+  block.getVariableScope().getReferencedLocalVariables().put("_thisObject",thisObject);
+  TupleExpression conArgs=new TupleExpression();
+  conArgs.addExpression(outer);
+  conArgs.addExpression(thisObject);
+  block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,conArgs)));
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String paramName=param.getName();
@@ -56,9 +62,10 @@
       answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new ReturnStatement(fieldExp));
     }
   }
-  Parameter[] params=new Parameter[1 + localVariableParams.length];
+  Parameter[] params=new Parameter[2 + localVariableParams.length];
   params[0]=new Parameter(ClassHelper.OBJECT_TYPE,"_outerInstance");
-  System.arraycopy(localVariableParams,0,params,1,localVariableParams.length);
+  params[1]=new Parameter(ClassHelper.OBJECT_TYPE,"_thisObject");
+  System.arraycopy(localVariableParams,0,params,2,localVariableParams.length);
   ASTNode sn=answer.addConstructor(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,block);
   sn.setSourcePosition(expression);
   return answer;

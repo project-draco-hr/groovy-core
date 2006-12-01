@@ -47,7 +47,12 @@
       Map.Entry entry=(Map.Entry)iter.next();
       buffer.append(format(entry.getKey(),verbose));
       buffer.append(":");
-      buffer.append(format(entry.getValue(),verbose));
+      if (entry.getValue() == map) {
+        buffer.append("this Map_");
+      }
+ else {
+        buffer.append(format(entry.getValue(),verbose));
+      }
     }
     buffer.append("]");
     return buffer.toString();

@@ -10,11 +10,13 @@
   cv.visitInsn(DUP);
   if (isStaticMethod() || classNode.isStaticClass()) {
     visitClassExpression(new ClassExpression(classNode));
+    visitClassExpression(new ClassExpression(getOutermostClass()));
   }
  else {
     cv.visitVarInsn(ALOAD,0);
+    loadThis();
   }
-  for (int i=1; i < localVariableParams.length; i++) {
+  for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {

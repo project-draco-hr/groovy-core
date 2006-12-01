@@ -1,0 +1,20 @@
+{
+  this.owner=owner;
+  this.delegate=owner;
+  this.thisObject=thisObject;
+  Class closureClass=this.getClass();
+  maximumNumberOfParameters=0;
+  final Class clazz=closureClass;
+  final Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return clazz.getDeclaredMethods();
+    }
+  }
+);
+  for (int j=0; j < methods.length; j++) {
+    if ("doCall".equals(methods[j].getName()) && methods[j].getParameterTypes().length > maximumNumberOfParameters) {
+      parameterTypes=methods[j].getParameterTypes();
+      maximumNumberOfParameters=parameterTypes.length;
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  checkInitalised();
+  boolean isStatic=theClass != Class.class && object instanceof Class;
+  if (isStatic && object != theClass) {
+    MetaClass mc=registry.getMetaClass((Class)object);
+    return mc.getProperty(sender,object,name,useSuper);
+  }
+  MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
+  if (mp != null) {
+    if (mp instanceof MetaBeanProperty) {
+      MetaBeanProperty mbp=(MetaBeanProperty)mp;
+      if (forceFields || mbp.getGetter() == null) {
+        mp=mbp.getField();
+      }
+    }
+    try {
+      if (mp != null)       return mp.getProperty(object);
+    }
+ catch (    InvokerInvocationException e) {
+      throw e;
+    }
+catch (    Exception e) {
+      throw new GroovyRuntimeException("Cannot read property: " + name,e);
+    }
+  }
+  if (forceFields)   throw new MissingFieldException(name,theClass);
+  MetaMethod method=null;
+  Object[] arguments=null;
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+    List possibleGenericMethods=GroovyCategorySupport.getCategoryMethods(sender,"get");
+    if (possibleGenericMethods != null) {
+      for (Iterator iter=possibleGenericMethods.iterator(); iter.hasNext(); ) {
+        MetaMethod mmethod=(MetaMethod)iter.next();
+        Class[] paramTypes=mmethod.getParameterTypes();
+        if (paramTypes.length == 1 && paramTypes[0] == String.class) {
+          arguments=new Object[]{name};
+          method=mmethod;
+          break;
+        }
+      }
+    }
+  }
+  if (method == null && genericGetMethod != null && !(!genericGetMethod.isStatic() && isStatic)) {
+    arguments=new Object[]{name};
+    method=genericGetMethod;
+  }
+  if (method == null) {
+    if (theClass != Class.class && object instanceof Class) {
+      MetaClass mc=registry.getMetaClass(Class.class);
+      return mc.getProperty(Class.class,object,name,useSuper);
+    }
+ else     if (object instanceof Collection) {
+      return DefaultGroovyMethods.getAt((Collection)object,name);
+    }
+ else     if (object instanceof Object[]) {
+      return DefaultGroovyMethods.getAt(Arrays.asList((Object[])object),name);
+    }
+ else {
+      MetaMethod addListenerMethod=(MetaMethod)listeners.get(name);
+      if (addListenerMethod != null) {
+        return null;
+      }
+    }
+  }
+ else {
+    return MetaClassHelper.doMethodInvoke(object,method,arguments);
+  }
+  throw new MissingPropertyException(name,theClass);
+}

@@ -1,0 +1,32 @@
+{
+  LinkedList ret=new LinkedList();
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MetaMethod element=(MetaMethod)iter.next();
+    if (!isGetter && (element.getReturnType() == Void.class || element.getReturnType() == Void.TYPE) && element.getParameterTypes().length == 1) {
+      ret.add(element);
+    }
+    if (isGetter && !(element.getReturnType() == Void.class || element.getReturnType() == Void.TYPE) && element.getParameterTypes().length == 0) {
+      ret.add(element);
+    }
+  }
+  if (ret.size() == 0)   return null;
+  if (ret.size() == 1)   return (MetaMethod)ret.getFirst();
+  MetaMethod method=null;
+  int distance=-1;
+  for (Iterator iter=ret.iterator(); iter.hasNext(); ) {
+    MetaMethod element=(MetaMethod)iter.next();
+    Class c;
+    if (isGetter) {
+      c=element.getReturnType();
+    }
+ else {
+      c=element.getParameterTypes()[0];
+    }
+    int localDistance=distanceToObject(c);
+    if (distance == -1 || distance > localDistance) {
+      distance=localDistance;
+      method=element;
+    }
+  }
+  return method;
+}

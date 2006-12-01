@@ -2,7 +2,7 @@
   onLineNumber(call,"visitMethodCallExpression: \"" + call.getMethod() + "\":");
   Expression arguments=call.getArguments();
   String methodName=call.getMethodAsString();
-  boolean isSuperMethodCall=MethodCallExpression.isSuperMethodCall(call);
+  boolean isSuperMethodCall=usesSuper(call);
   boolean isThisExpression=isThisExpression(call.getObjectExpression());
   if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
     visitVariableExpression(new VariableExpression(methodName));

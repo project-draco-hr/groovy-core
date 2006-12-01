@@ -1,19 +1,11 @@
 {
-  final Field field1=field;
-  final Object object1=object;
-  final Object newValue1=newValue;
+  final Object goalValue=DefaultTypeTransformation.castToType(newValue,field.getType());
   try {
     AccessController.doPrivileged(new PrivilegedExceptionAction(){
       public Object run() throws IllegalAccessException, GroovyRuntimeException {
-        try {
-          field1.set(object1,newValue1);
-          return newValue1;
-        }
- catch (        IllegalArgumentException e) {
-          Object newValue2=DefaultTypeTransformation.castToType(newValue1,field1.getType());
-          field1.set(object1,newValue2);
-          return newValue2;
-        }
+        field.setAccessible(true);
+        field.set(object,goalValue);
+        return null;
       }
     }
 );

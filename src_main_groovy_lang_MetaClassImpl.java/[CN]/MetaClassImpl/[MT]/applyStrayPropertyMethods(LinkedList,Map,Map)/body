@@ -1,0 +1,19 @@
+{
+  for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
+    Class klass=(Class)iter.next();
+    Map methodIndex=(Map)classMethodIndex.get(klass);
+    Map propertyIndex=getMap2MapNotNull(classPropertyIndex,klass);
+    for (Iterator nameMethodIterator=methodIndex.entrySet().iterator(); nameMethodIterator.hasNext(); ) {
+      Map.Entry entry=(Map.Entry)nameMethodIterator.next();
+      String methodName=(String)entry.getKey();
+      if (methodName.length() < 4)       continue;
+      boolean isGetter=methodName.startsWith("get");
+      boolean isSetter=methodName.startsWith("set");
+      if (!isGetter && !isSetter)       continue;
+      String propName=methodName.substring(3,4).toLowerCase() + methodName.substring(4);
+      MetaMethod propertyMethod=findPropertyMethod((List)entry.getValue(),isGetter);
+      if (propertyMethod == null)       continue;
+      createMetaBeanProperty(propertyIndex,propName,isGetter,propertyMethod);
+    }
+  }
+}

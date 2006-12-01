@@ -1,0 +1,13 @@
+{
+  for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
+    Class iclass=(Class)interfaceIter.next();
+    Map iPropertyIndex=getMap2MapNotNull(classPropertyIndex,iclass);
+    addFields(iclass,iPropertyIndex);
+    for (Iterator classIter=superClasses.iterator(); classIter.hasNext(); ) {
+      Class sclass=(Class)classIter.next();
+      if (!iclass.isAssignableFrom(sclass))       continue;
+      Map sPropertyIndex=getMap2MapNotNull(classPropertyIndex,sclass);
+      copyNonPrivateFields(iPropertyIndex,sPropertyIndex);
+    }
+  }
+}

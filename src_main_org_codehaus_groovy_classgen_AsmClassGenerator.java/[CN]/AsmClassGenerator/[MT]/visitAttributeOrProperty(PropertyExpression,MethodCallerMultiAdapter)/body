@@ -1,14 +1,18 @@
 {
   Expression objectExpression=expression.getObjectExpression();
   if (isThisExpression(objectExpression)) {
+    ClassNode thisClassNode=classNode;
+    if (!expression.isImplicitThis() && isInClosure()) {
+      thisClassNode=getOutermostClass();
+    }
     String name=expression.getPropertyAsString();
     if (name != null) {
-      FieldNode field=classNode.getField(name);
+      FieldNode field=thisClassNode.getField(name);
       if (field != null) {
         visitFieldExpression(new FieldExpression(field));
         return;
       }
     }
   }
-  makeCall(expression.getObjectExpression(),new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe());
+  makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
 }

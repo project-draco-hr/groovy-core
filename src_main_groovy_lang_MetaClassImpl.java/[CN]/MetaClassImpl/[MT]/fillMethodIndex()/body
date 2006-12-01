@@ -1,11 +1,5 @@
 {
-  LinkedList superClasses=new LinkedList();
-  for (Class c=theClass; c != null; c=c.getSuperclass()) {
-    superClasses.addFirst(c);
-  }
-  if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
-    superClasses.addFirst(Object[].class);
-  }
+  LinkedList superClasses=getSuperClasses();
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     Class c=(Class)iter.next();
     addMethods(c);

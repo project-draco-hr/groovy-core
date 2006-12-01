@@ -1,0 +1,8 @@
+{
+  for (Iterator iter=from.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    MetaFieldProperty mfp=(MetaFieldProperty)entry.getValue();
+    if (!Modifier.isPublic(mfp.getModifiers()) && !Modifier.isProtected(mfp.getModifiers()))     continue;
+    to.put(entry.getKey(),mfp);
+  }
+}

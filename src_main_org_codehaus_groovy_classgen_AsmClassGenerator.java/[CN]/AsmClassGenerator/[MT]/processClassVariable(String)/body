@@ -7,6 +7,8 @@
     cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
   }
  else {
-    visitPropertyExpression(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name));
+    PropertyExpression pexp=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);
+    pexp.setImplicitThis(true);
+    visitPropertyExpression(pexp);
   }
 }

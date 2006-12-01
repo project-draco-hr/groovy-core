@@ -5,9 +5,9 @@
   }
   Expression messageName=new CastExpression(ClassHelper.STRING_TYPE,call.getMethod());
   if (useSuper) {
-    makeCall(new ClassExpression(classNode.getSuperClass()),objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe());
+    makeCall(new ClassExpression(getOutermostClass().getSuperClass()),objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe(),false);
   }
  else {
-    makeCall(objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe());
+    makeCall(objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe(),call.isImplicitThis());
   }
 }
