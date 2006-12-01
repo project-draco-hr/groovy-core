@@ -5,5 +5,6 @@
     source.getErrorCollector().getError(i).write(writer);
   }
   writer.close();
-  assertTrue(stringWriter.toString().indexOf(expectedErrorMessage) != -1);
+  assertTrue("Expected an error message but none found.",source.getErrorCollector().hasErrors());
+  assertTrue("Expected message to contain <" + expectedErrorMessage + "> but was <"+ stringWriter.toString()+ ">.",stringWriter.toString().indexOf(expectedErrorMessage) != -1);
 }
