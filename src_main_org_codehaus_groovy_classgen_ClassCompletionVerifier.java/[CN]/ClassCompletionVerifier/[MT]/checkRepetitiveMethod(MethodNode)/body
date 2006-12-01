@@ -1,5 +1,5 @@
 {
-  if (node.getName().equals("<clinit>"))   return;
+  if (isConstructor(node))   return;
   List methods=currentClass.getMethods(node.getName());
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode element=(MethodNode)iter.next();
@@ -8,13 +8,6 @@
     Parameter[] p1=node.getParameters();
     Parameter[] p2=element.getParameters();
     if (p1.length != p2.length)     continue;
-    boolean isEqual=true;
-    for (int i=0; i < p2.length; i++) {
-      isEqual&=p1[i].equals(p2[i]);
-    }
-    isEqual&=node.getReturnType().equals(element.getReturnType());
-    if (isEqual) {
-      addError("Repetitive method name/signature for method " + node.getName() + " in class "+ currentClass.getName(),node);
-    }
+    addErrorIfParamsAndReturnTypeEqual(p2,p1,node,element);
   }
 }

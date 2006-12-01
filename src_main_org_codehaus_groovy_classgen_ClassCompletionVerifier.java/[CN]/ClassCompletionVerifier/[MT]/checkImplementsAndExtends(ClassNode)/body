@@ -1,9 +1,13 @@
 {
   ClassNode cn=node.getSuperClass();
-  if (cn.isInterface() && !node.isInterface())   addError("You are not allowed to extend the Interface " + cn.getName() + ", use implements instead",node);
+  if (cn.isInterface() && !node.isInterface()) {
+    addError("You are not allowed to extend the Interface " + cn.getName() + ", use implements instead.",node);
+  }
   ClassNode[] interfaces=node.getInterfaces();
   for (int i=0; i < interfaces.length; i++) {
     cn=interfaces[i];
-    if (!cn.isInterface())     addError("You are not allowed to implement the Class " + cn.getName() + ", use extends instead",node);
+    if (!cn.isInterface()) {
+      addError("You are not allowed to implement the Class " + cn.getName() + ", use extends instead.",node);
+    }
   }
 }

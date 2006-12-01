@@ -1,0 +1,10 @@
+{
+  ClassNode node=new ClassNode("zzz",ACC_ABSTRACT | ACC_INTERFACE,ClassHelper.OBJECT_TYPE);
+  node.addMethod(new MethodNode("xxx",ACC_PUBLIC | ACC_FINAL,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null));
+  node.addMethod(new MethodNode("yyy",ACC_PUBLIC | ACC_STATIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null));
+  node.addMethod(new MethodNode("<clinit>",ACC_PUBLIC | ACC_STATIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null));
+  verifier.visitClass(node);
+  assertEquals(2,source.getErrorCollector().getErrorCount());
+  checkErrorMessage(EXPECTED_INTERFACE_FINAL_METHOD_ERROR_MESSAGE);
+  checkErrorMessage(EXPECTED_INTERFACE_STATIC_METHOD_ERROR_MESSAGE);
+}
