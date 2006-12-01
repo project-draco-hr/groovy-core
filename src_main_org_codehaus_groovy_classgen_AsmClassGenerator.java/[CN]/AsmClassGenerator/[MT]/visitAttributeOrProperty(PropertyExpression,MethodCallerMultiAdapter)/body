@@ -1,13 +1,9 @@
 {
   Expression objectExpression=expression.getObjectExpression();
   if (isThisExpression(objectExpression)) {
-    ClassNode thisClassNode=classNode;
-    if (!expression.isImplicitThis() && isInClosure()) {
-      thisClassNode=getOutermostClass();
-    }
     String name=expression.getPropertyAsString();
     if (name != null) {
-      FieldNode field=thisClassNode.getField(name);
+      FieldNode field=classNode.getField(name);
       if (field != null) {
         visitFieldExpression(new FieldExpression(field));
         return;
