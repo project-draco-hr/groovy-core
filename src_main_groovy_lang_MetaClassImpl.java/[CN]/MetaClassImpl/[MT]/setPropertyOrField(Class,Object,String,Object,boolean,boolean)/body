@@ -3,7 +3,7 @@
   boolean isStatic=theClass != Class.class && object instanceof Class;
   if (isStatic && object != theClass) {
     MetaClass mc=registry.getMetaClass((Class)object);
-    mc.setProperty(sender,object,name,newValue,useSuper);
+    mc.setProperty(sender,object,name,newValue,useSuper,false);
     return;
   }
   MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
@@ -50,7 +50,7 @@
   if (method == null) {
     String methodName="set" + MetaClassHelper.capitalize(name);
     try {
-      invokeMethod(sender,object,methodName,new Object[]{newValue},useSuper);
+      invokeMethod(sender,object,methodName,new Object[]{newValue},useSuper,false);
       return;
     }
  catch (    MissingMethodException mme) {

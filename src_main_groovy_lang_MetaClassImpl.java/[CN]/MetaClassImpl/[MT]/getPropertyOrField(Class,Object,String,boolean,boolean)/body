@@ -3,7 +3,7 @@
   boolean isStatic=theClass != Class.class && object instanceof Class;
   if (isStatic && object != theClass) {
     MetaClass mc=registry.getMetaClass((Class)object);
-    return mc.getProperty(sender,object,name,useSuper);
+    return mc.getProperty(sender,object,name,useSuper,false);
   }
   MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
   if (mp != null) {
@@ -47,7 +47,7 @@ catch (    Exception e) {
   if (method == null) {
     if (theClass != Class.class && object instanceof Class) {
       MetaClass mc=registry.getMetaClass(Class.class);
-      return mc.getProperty(Class.class,object,name,useSuper);
+      return mc.getProperty(Class.class,object,name,useSuper,false);
     }
  else     if (object instanceof Collection) {
       return DefaultGroovyMethods.getAt((Collection)object,name);
