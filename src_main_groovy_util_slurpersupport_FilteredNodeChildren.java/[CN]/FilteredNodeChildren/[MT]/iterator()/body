@@ -1,17 +1,19 @@
 {
   return new Iterator(){
     final Iterator iter=FilteredNodeChildren.this.parent.iterator();
+    Object next=null;
     public boolean hasNext(){
-      return this.iter.hasNext();
-    }
-    public Object next(){
-      while (iter.hasNext()) {
-        final Object childNode=iter.next();
+      while (this.iter.hasNext()) {
+        final Object childNode=this.iter.next();
         if (closureYieldsTrueForNode(childNode)) {
-          return childNode;
+          this.next=childNode;
+          return true;
         }
       }
-      return null;
+      return false;
+    }
+    public Object next(){
+      return this.next;
     }
     public void remove(){
       throw new UnsupportedOperationException();
