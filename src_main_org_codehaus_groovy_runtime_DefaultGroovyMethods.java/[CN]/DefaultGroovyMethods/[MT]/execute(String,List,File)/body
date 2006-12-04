@@ -1,2 +1,16 @@
 {
+  if (envp == null) {
+    return execute(self,(String[])null,dir);
+  }
+  String[] commandArray=new String[envp.size()];
+  if (envp != null) {
+    Iterator it=envp.iterator();
+    for (int i=0; it.hasNext(); ++i) {
+      commandArray[i]=it.next().toString();
+    }
+  }
+ else {
+    commandArray=null;
+  }
+  return execute(self,commandArray,dir);
 }
