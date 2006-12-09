@@ -7,11 +7,12 @@
   if (constructor != null) {
     return doConstructorInvoke(at,constructor,arguments,true);
   }
- else {
-    constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
-    if (constructor != null) {
-      return doConstructorInvoke(at,constructor,arguments,true);
-    }
+  constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
+  if (constructor != null) {
+    return doConstructorInvoke(at,constructor,arguments,true);
+  }
+  if (List.class.isAssignableFrom(at)) {
+    return DefaultGroovyMethods.toList(arguments);
   }
   if (arguments.length == 1) {
     Object firstArgument=arguments[0];
