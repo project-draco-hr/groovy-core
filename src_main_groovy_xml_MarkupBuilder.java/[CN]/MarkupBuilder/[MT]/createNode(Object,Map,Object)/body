@@ -4,13 +4,16 @@
     Map.Entry entry=(Map.Entry)iter.next();
     out.print(" ");
     print(entry.getKey().toString());
-    out.print("='");
+    out.print(this.useDoubleQuotes ? "=\"" : "='");
     print(escapeAttributeValue(entry.getValue().toString()));
-    out.print("'");
+    out.print(this.useDoubleQuotes ? "\"" : "'");
   }
   if (value != null) {
     nodeIsEmpty=false;
     out.print(">" + escapeElementContent(value.toString()) + "</"+ name+ ">");
+  }
+ else {
+    nodeIsEmpty=true;
   }
   return name;
 }

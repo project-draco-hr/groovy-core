@@ -17,8 +17,15 @@ buffer.replace(i,i + 1,"&gt;");
 i+=3;
 n+=3;
 break;
+case '"':
+if (isAttrValue && this.useDoubleQuotes) {
+buffer.replace(i,i + 1,"&quot;");
+i+=5;
+n+=5;
+}
+break;
 case '\'':
-if (isAttrValue) {
+if (isAttrValue && !this.useDoubleQuotes) {
 buffer.replace(i,i + 1,"&apos;");
 i+=5;
 n+=5;
