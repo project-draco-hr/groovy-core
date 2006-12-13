@@ -3,88 +3,57 @@
   visitStatement(statement);
   CatchStatement catchStatement=statement.getCatchStatement(0);
   Statement tryStatement=statement.getTryStatement();
-  if (tryStatement.isEmpty() || catchStatement == null) {
-    final Label l0=new Label();
-    cv.visitLabel(l0);
-    tryStatement.visit(this);
-    int index1=compileStack.defineTemporaryVariable("exception",false);
-    int index2=compileStack.defineTemporaryVariable("exception",false);
-    final Label l1=new Label();
-    cv.visitJumpInsn(JSR,l1);
-    final Label l2=new Label();
-    cv.visitLabel(l2);
-    final Label l3=new Label();
-    cv.visitJumpInsn(GOTO,l3);
-    final Label l4=new Label();
-    cv.visitLabel(l4);
-    cv.visitVarInsn(ASTORE,index1);
-    cv.visitJumpInsn(JSR,l1);
-    final Label l5=new Label();
-    cv.visitLabel(l5);
-    cv.visitVarInsn(ALOAD,index1);
-    cv.visitInsn(ATHROW);
-    cv.visitLabel(l1);
-    cv.visitVarInsn(ASTORE,index2);
-    statement.getFinallyStatement().visit(this);
-    cv.visitVarInsn(RET,index2);
-    cv.visitLabel(l3);
-    exceptionBlocks.add(new Runnable(){
+  final Statement finallyStatement=statement.getFinallyStatement();
+  int anyExceptionIndex=compileStack.defineTemporaryVariable("exception",false);
+  if (!finallyStatement.isEmpty()) {
+    compileStack.pushFinallyBlock(new Runnable(){
       public void run(){
-        cv.visitTryCatchBlock(l0,l2,l4,null);
-        cv.visitTryCatchBlock(l4,l5,l4,null);
+        finallyStatement.visit(AsmClassGenerator.this);
       }
     }
 );
   }
- else {
-    int finallySubAddress=compileStack.defineTemporaryVariable("exception",false);
-    int anyExceptionIndex=compileStack.defineTemporaryVariable("exception",false);
-    final Label tryStart=new Label();
-    cv.visitLabel(tryStart);
-    tryStatement.visit(this);
-    final Label finallyStart=new Label();
+  final Label tryStart=new Label();
+  cv.visitLabel(tryStart);
+  tryStatement.visit(this);
+  final Label finallyStart=new Label();
+  cv.visitJumpInsn(GOTO,finallyStart);
+  final Label tryEnd=new Label();
+  cv.visitLabel(tryEnd);
+  for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
+    catchStatement=(CatchStatement)it.next();
+    ClassNode exceptionType=catchStatement.getExceptionType();
+    final Label catchStart=new Label();
+    cv.visitLabel(catchStart);
+    compileStack.defineVariable(catchStatement.getVariable(),true);
+    catchStatement.visit(this);
     cv.visitJumpInsn(GOTO,finallyStart);
-    final Label tryEnd=new Label();
-    cv.visitLabel(tryEnd);
-    for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
-      catchStatement=(CatchStatement)it.next();
-      ClassNode exceptionType=catchStatement.getExceptionType();
-      final Label catchStart=new Label();
-      cv.visitLabel(catchStart);
-      compileStack.defineVariable(catchStatement.getVariable(),true);
-      catchStatement.visit(this);
-      cv.visitJumpInsn(GOTO,finallyStart);
-      final String exceptionTypeInternalName=BytecodeHelper.getClassInternalName(exceptionType);
-      exceptionBlocks.add(new Runnable(){
-        public void run(){
-          cv.visitTryCatchBlock(tryStart,tryEnd,catchStart,exceptionTypeInternalName);
-        }
-      }
-);
-    }
-    final Label endOfAllCatches=new Label();
-    cv.visitLabel(endOfAllCatches);
-    cv.visitLabel(finallyStart);
-    Label finallySub=new Label();
-    cv.visitJumpInsn(JSR,finallySub);
-    Label afterFinally=new Label();
-    cv.visitJumpInsn(GOTO,afterFinally);
-    final Label catchAny=new Label();
-    cv.visitLabel(catchAny);
-    cv.visitVarInsn(ASTORE,anyExceptionIndex);
-    cv.visitJumpInsn(JSR,finallySub);
-    cv.visitVarInsn(ALOAD,anyExceptionIndex);
-    cv.visitInsn(ATHROW);
-    cv.visitLabel(finallySub);
-    cv.visitVarInsn(ASTORE,finallySubAddress);
-    if (!statement.getFinallyStatement().isEmpty())     statement.getFinallyStatement().visit(this);
-    cv.visitVarInsn(RET,finallySubAddress);
-    cv.visitLabel(afterFinally);
+    final String exceptionTypeInternalName=BytecodeHelper.getClassInternalName(exceptionType);
     exceptionBlocks.add(new Runnable(){
       public void run(){
-        cv.visitTryCatchBlock(tryStart,endOfAllCatches,catchAny,null);
+        cv.visitTryCatchBlock(tryStart,tryEnd,catchStart,exceptionTypeInternalName);
       }
     }
 );
   }
+  final Label endOfAllCatches=new Label();
+  cv.visitLabel(endOfAllCatches);
+  if (!finallyStatement.isEmpty())   compileStack.popFinallyBlock();
+  cv.visitLabel(finallyStart);
+  finallyStatement.visit(this);
+  Label afterFinally=new Label();
+  cv.visitJumpInsn(GOTO,afterFinally);
+  final Label catchAny=new Label();
+  cv.visitLabel(catchAny);
+  cv.visitVarInsn(ASTORE,anyExceptionIndex);
+  finallyStatement.visit(this);
+  cv.visitVarInsn(ALOAD,anyExceptionIndex);
+  cv.visitInsn(ATHROW);
+  cv.visitLabel(afterFinally);
+  exceptionBlocks.add(new Runnable(){
+    public void run(){
+      cv.visitTryCatchBlock(tryStart,endOfAllCatches,catchAny,null);
+    }
+  }
+);
 }

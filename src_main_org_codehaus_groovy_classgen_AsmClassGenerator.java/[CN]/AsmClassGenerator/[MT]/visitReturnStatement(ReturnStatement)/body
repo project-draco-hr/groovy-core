@@ -6,6 +6,7 @@
     if (!(statement == ReturnStatement.RETURN_NULL_OR_VOID)) {
       throwException("Cannot use return statement with an expression on a method that returns void");
     }
+    compileStack.applyFinallyBlocks();
     cv.visitInsn(RETURN);
     outputReturn=true;
     return;
@@ -18,6 +19,11 @@
  else {
     doConvertAndCast(returnType,expression,false,true,false);
     helper.unbox(returnType);
+  }
+  if (compileStack.hasFinallyBlocks()) {
+    int returnValueIdx=compileStack.defineTemporaryVariable("returnValue",returnType,true);
+    compileStack.applyFinallyBlocks();
+    helper.load(returnType,returnValueIdx);
   }
   helper.doReturn(returnType);
   outputReturn=true;

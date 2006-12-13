@@ -2,12 +2,7 @@
   onLineNumber(statement,"visitBreakStatement");
   visitStatement(statement);
   String name=statement.getLabel();
-  Label breakLabel;
-  if (name != null) {
-    breakLabel=compileStack.getNamedBreakLabel(name);
-  }
- else {
-    breakLabel=compileStack.getBreakLabel();
-  }
+  Label breakLabel=compileStack.getNamedBreakLabel(name);
+  compileStack.applyFinallyBlocks(breakLabel,true);
   cv.visitJumpInsn(GOTO,breakLabel);
 }

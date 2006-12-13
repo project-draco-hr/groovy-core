@@ -4,5 +4,6 @@
   String name=statement.getLabel();
   Label continueLabel=compileStack.getContinueLabel();
   if (name != null)   continueLabel=compileStack.getNamedContinueLabel(name);
+  compileStack.applyFinallyBlocks(continueLabel,false);
   cv.visitJumpInsn(GOTO,continueLabel);
 }

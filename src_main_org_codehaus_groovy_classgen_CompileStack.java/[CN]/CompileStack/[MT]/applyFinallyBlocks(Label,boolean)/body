@@ -1,0 +1,26 @@
+{
+  StateStackElement result=null;
+  for (ListIterator iter=stateStack.listIterator(stateStack.size()); iter.hasPrevious(); ) {
+    StateStackElement element=(StateStackElement)iter.previous();
+    if (!element._currentBlockNamedLabels.values().contains(label)) {
+      if (isBreakLabel && element._breakLabel != label) {
+        result=element;
+        break;
+      }
+      if (!isBreakLabel && element._continueLabel != label) {
+        result=element;
+        break;
+      }
+    }
+  }
+  List blocksToRemove;
+  if (result == null) {
+    blocksToRemove=Collections.EMPTY_LIST;
+  }
+ else {
+    blocksToRemove=result._finallyBlocks;
+  }
+  ArrayList blocks=new ArrayList(finallyBlocks);
+  blocks.removeAll(blocksToRemove);
+  applyFinallyBlocks(blocks);
+}

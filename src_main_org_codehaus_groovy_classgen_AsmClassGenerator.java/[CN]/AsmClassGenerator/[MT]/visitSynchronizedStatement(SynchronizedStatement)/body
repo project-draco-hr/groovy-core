@@ -2,25 +2,32 @@
   onLineNumber(statement,"visitSynchronizedStatement");
   visitStatement(statement);
   statement.getExpression().visit(this);
-  int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.Integer_TYPE,true);
+  final int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.Integer_TYPE,true);
+  final Label synchronizedStart=new Label();
+  final Label synchronizedEnd=new Label();
+  final Label catchAll=new Label();
   cv.visitVarInsn(ALOAD,index);
   cv.visitInsn(MONITORENTER);
-  final Label l0=new Label();
-  cv.visitLabel(l0);
+  cv.visitLabel(synchronizedStart);
+  Runnable finallyPart=new Runnable(){
+    public void run(){
+      cv.visitVarInsn(ALOAD,index);
+      cv.visitInsn(MONITOREXIT);
+    }
+  }
+;
+  compileStack.pushFinallyBlock(finallyPart);
   statement.getCode().visit(this);
-  cv.visitVarInsn(ALOAD,index);
-  cv.visitInsn(MONITOREXIT);
-  final Label l1=new Label();
-  cv.visitJumpInsn(GOTO,l1);
-  final Label l2=new Label();
-  cv.visitLabel(l2);
-  cv.visitVarInsn(ALOAD,index);
-  cv.visitInsn(MONITOREXIT);
+  finallyPart.run();
+  cv.visitJumpInsn(GOTO,synchronizedEnd);
+  cv.visitLabel(catchAll);
+  finallyPart.run();
   cv.visitInsn(ATHROW);
-  cv.visitLabel(l1);
+  cv.visitLabel(synchronizedEnd);
+  compileStack.popFinallyBlock();
   exceptionBlocks.add(new Runnable(){
     public void run(){
-      cv.visitTryCatchBlock(l0,l2,l2,null);
+      cv.visitTryCatchBlock(synchronizedStart,catchAll,catchAll,null);
     }
   }
 );
