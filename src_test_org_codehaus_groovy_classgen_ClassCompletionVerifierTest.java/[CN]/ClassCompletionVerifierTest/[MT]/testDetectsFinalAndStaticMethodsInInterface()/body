@@ -4,7 +4,7 @@
   node.addMethod(new MethodNode("yyy",ACC_PUBLIC | ACC_STATIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null));
   node.addMethod(new MethodNode("<clinit>",ACC_PUBLIC | ACC_STATIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null));
   verifier.visitClass(node);
-  assertEquals(2,source.getErrorCollector().getErrorCount());
+  checkErrorCount(2);
   checkErrorMessage(EXPECTED_INTERFACE_FINAL_METHOD_ERROR_MESSAGE);
   checkErrorMessage(EXPECTED_INTERFACE_STATIC_METHOD_ERROR_MESSAGE);
 }

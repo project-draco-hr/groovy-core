@@ -4,10 +4,10 @@
   for (Iterator cnIter=methods.iterator(); cnIter.hasNext(); ) {
     MethodNode method=(MethodNode)cnIter.next();
     if (Modifier.isFinal(method.getModifiers())) {
-      addError("Method '" + method.getName() + "' from Interface '"+ cn.getName()+ "' must not be final. It is by definition abstract.",method);
+      addError("The " + getDescription(method) + " from "+ getDescription(cn)+ " must not be final. It is by definition abstract.",method);
     }
     if (Modifier.isStatic(method.getModifiers()) && !isConstructor(method)) {
-      addError("Method '" + method.getName() + "' from Interface '"+ cn.getName()+ "' must not be static. Only fields may be static in an interface.",method);
+      addError("The " + getDescription(method) + " from "+ getDescription(cn)+ " must not be static. Only fields may be static in an interface.",method);
     }
   }
 }

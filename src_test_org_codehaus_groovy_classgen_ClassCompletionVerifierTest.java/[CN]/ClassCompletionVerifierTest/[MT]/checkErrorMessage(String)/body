@@ -1,10 +1,4 @@
 {
-  StringWriter stringWriter=new StringWriter();
-  PrintWriter writer=new PrintWriter(stringWriter,true);
-  for (int i=source.getErrorCollector().getErrorCount() - 1; i >= 0; i--) {
-    source.getErrorCollector().getError(i).write(writer);
-  }
-  writer.close();
   assertTrue("Expected an error message but none found.",source.getErrorCollector().hasErrors());
-  assertTrue("Expected message to contain <" + expectedErrorMessage + "> but was <"+ stringWriter.toString()+ ">.",stringWriter.toString().indexOf(expectedErrorMessage) != -1);
+  assertTrue("Expected message to contain <" + expectedErrorMessage + "> but was <"+ flattenErrorMessage()+ ">.",flattenErrorMessage().indexOf(expectedErrorMessage) != -1);
 }
