@@ -1,0 +1,18 @@
+{
+  List possibleGenericMethods=GroovyCategorySupport.getCategoryMethods(sender,name);
+  if (possibleGenericMethods != null) {
+    for (Iterator iter=possibleGenericMethods.iterator(); iter.hasNext(); ) {
+      MetaMethod mmethod=(MetaMethod)iter.next();
+      Class[] paramTypes=mmethod.getParameterTypes();
+      if (useLongVersion) {
+        if (paramTypes.length == 2 && paramTypes[0] == String.class) {
+          return mmethod;
+        }
+      }
+ else {
+        if (paramTypes.length == 1)         return mmethod;
+      }
+    }
+  }
+  return null;
+}

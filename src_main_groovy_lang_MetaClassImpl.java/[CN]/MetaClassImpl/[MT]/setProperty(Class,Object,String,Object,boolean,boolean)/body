@@ -1,3 +1,74 @@
 {
-  setPropertyOrField(sender,object,property,newValue,useSuper,false);
+  checkInitalised();
+  boolean isStatic=theClass != Class.class && object instanceof Class;
+  if (isStatic && object != theClass) {
+    MetaClass mc=registry.getMetaClass((Class)object);
+    mc.getProperty(sender,object,name,useSuper,fromInsideClass);
+    return;
+  }
+  if (newValue instanceof Wrapper)   newValue=((Wrapper)newValue).unwrap();
+  MetaMethod method=null;
+  Object[] arguments=null;
+  MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
+  MetaProperty field=null;
+  if (mp != null) {
+    if (mp instanceof MetaBeanProperty) {
+      MetaBeanProperty mbp=(MetaBeanProperty)mp;
+      method=mbp.getSetter();
+      if (method != null)       arguments=new Object[]{newValue};
+      field=mbp.getField();
+    }
+ else {
+      field=mp;
+    }
+  }
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+    String getterName="set" + MetaClassHelper.capitalize(name);
+    if (name.length() > 1)     getterName+=name.substring(1);
+    method=getCategoryMethodSetter(sender,getterName,false);
+    if (method != null)     arguments=new Object[]{newValue};
+  }
+  boolean ambigousListener=false;
+  boolean usesProxy=false;
+  if (method == null) {
+    method=(MetaMethod)listeners.get(name);
+    ambigousListener=method == AMBIGOUS_LISTENER_METHOD;
+    if (method != null && !ambigousListener && newValue instanceof Closure) {
+      Object proxy=MetaClassHelper.createListenerProxy(method.getParameterTypes()[0],name,(Closure)newValue);
+      arguments=new Object[]{proxy};
+      newValue=proxy;
+      usesProxy=true;
+    }
+ else {
+      method=null;
+    }
+  }
+  if (method == null && field != null) {
+    field.setProperty(object,newValue);
+    return;
+  }
+  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+    method=getCategoryMethodSetter(sender,"set",true);
+    if (method != null)     arguments=new Object[]{name,newValue};
+  }
+  if (method == null && genericSetMethod != null && !(!genericSetMethod.isStatic() && isStatic)) {
+    arguments=new Object[]{name,newValue};
+    method=genericSetMethod;
+  }
+  if (method != null) {
+    if (arguments.length == 1) {
+      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[0]);
+      arguments[0]=newValue;
+    }
+ else {
+      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[1]);
+      arguments[1]=newValue;
+    }
+    MetaClassHelper.doMethodInvoke(object,method,arguments);
+    return;
+  }
+  if (ambigousListener) {
+    throw new GroovyRuntimeException("There are multiple listeners for the property " + name + ". Please do not use the bean short form to access this listener.");
+  }
+  throw new MissingPropertyException(name,theClass);
 }
