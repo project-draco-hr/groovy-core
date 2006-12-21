@@ -7,9 +7,7 @@
     MetaMethod method=(MetaMethod)methodCache.get(methodKey);
     if (method == null) {
       method=pickMethod(sender,methodName,arguments,isCallToSuper);
-      if (method != null && method.isCacheable()) {
-        methodCache.put(methodKey,method);
-      }
+      cacheInstanceMethod(methodKey,method);
     }
     return method;
   }

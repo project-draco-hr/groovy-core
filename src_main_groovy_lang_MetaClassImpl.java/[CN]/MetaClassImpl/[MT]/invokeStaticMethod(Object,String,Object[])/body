@@ -19,9 +19,7 @@
   MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
   if (method == null) {
     method=pickStaticMethod(sender,methodName,argClasses);
-    if (method != null) {
-      staticMethodCache.put(methodKey.createCopy(),method);
-    }
+    cacheStaticMethod(methodKey.createCopy(),method);
   }
   if (method != null) {
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
