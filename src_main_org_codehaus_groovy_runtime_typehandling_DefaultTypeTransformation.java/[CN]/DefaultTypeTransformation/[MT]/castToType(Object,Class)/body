@@ -9,14 +9,20 @@
   if (type.isInstance(object)) {
     return object;
   }
-  if (type.isAssignableFrom(Collection.class)) {
+  if (Collection.class.isAssignableFrom(type)) {
     if (object.getClass().isArray()) {
-      Collection answer=null;
-      try {
-        answer=(Collection)type.newInstance();
+      Collection answer;
+      int modifiers=type.getModifiers();
+      if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+        answer=new ArrayList();
       }
- catch (      Exception e) {
-        throw new GroovyCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
+ else {
+        try {
+          answer=(Collection)type.newInstance();
+        }
+ catch (        Exception e) {
+          throw new GroovyCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
+        }
       }
       int length=Array.getLength(object);
       for (int i=0; i < length; i++) {
