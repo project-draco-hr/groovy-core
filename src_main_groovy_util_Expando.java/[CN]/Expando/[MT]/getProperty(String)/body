@@ -1,8 +1,10 @@
 {
+  Object result=getProperties().get(property);
+  if (result != null)   return result;
   try {
     return super.getProperty(property);
   }
- catch (  GroovyRuntimeException e) {
-    return getProperties().get(property);
+ catch (  MissingPropertyException e) {
   }
+  return null;
 }
