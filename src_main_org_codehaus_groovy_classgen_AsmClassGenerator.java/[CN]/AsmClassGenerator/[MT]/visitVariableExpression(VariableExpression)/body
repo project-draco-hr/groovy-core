@@ -3,7 +3,7 @@
   ClassNode classNode=this.classNode;
   if (isInClosure())   classNode=getOutermostClass();
   if (variableName.equals("this")) {
-    if (isStaticMethod()) {
+    if (isStaticMethod() || (!implicitThis && isStaticContext())) {
       visitClassExpression(new ClassExpression(classNode));
     }
  else {

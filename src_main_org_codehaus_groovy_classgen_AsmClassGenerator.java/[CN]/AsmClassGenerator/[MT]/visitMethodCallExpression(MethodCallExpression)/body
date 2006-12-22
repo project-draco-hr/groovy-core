@@ -13,7 +13,7 @@
     MethodCallerMultiAdapter adapter=invokeMethod;
     if (isThisExpression)     adapter=invokeMethodOnCurrent;
     if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
-    if (isStaticMethod() && isThisExpression)     adapter=invokeStaticMethod;
+    if (isStaticInvocation(call))     adapter=invokeStaticMethod;
     makeInvokeMethodCall(call,isSuperMethodCall,adapter);
   }
 }

@@ -1,3 +1,7 @@
 {
-  makeCall(new ClassExpression(classNode),receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
+  ClassNode cn=classNode;
+  if (isInClosure() && !implicitThis) {
+    cn=getOutermostClass();
+  }
+  makeCall(new ClassExpression(cn),receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
 }

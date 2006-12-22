@@ -1,6 +1,6 @@
 {
   Expression objectExpression=call.getObjectExpression();
-  if (!isStaticMethod() && isThisExpression(call.getObjectExpression())) {
+  if (!isStaticMethod() && !isStaticContext() && isThisExpression(call.getObjectExpression())) {
     objectExpression=new CastExpression(ClassHelper.make(GroovyObject.class),objectExpression);
   }
   Expression messageName=new CastExpression(ClassHelper.STRING_TYPE,call.getMethod());
