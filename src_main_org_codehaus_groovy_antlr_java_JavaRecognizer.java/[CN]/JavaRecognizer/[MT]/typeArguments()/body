@@ -40,7 +40,7 @@
   if (!((currentLtLevel != 0) || ltCounter == currentLtLevel))   throw new SemanticException("(currentLtLevel != 0) || ltCounter == currentLtLevel");
   if (inputState.guessing == 0) {
     typeArguments_AST=(AST)currentAST.root;
-    typeArguments_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_ARGUMENTS,"TYPE_ARGUMENTS")).add(typeArguments_AST));
+    typeArguments_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_ARGUMENTS,"TYPE_ARGUMENTS",first,LT(1))).add(typeArguments_AST));
     currentAST.root=typeArguments_AST;
     currentAST.child=typeArguments_AST != null && typeArguments_AST.getFirstChild() != null ? typeArguments_AST.getFirstChild() : typeArguments_AST;
     currentAST.advanceChildToEnd();

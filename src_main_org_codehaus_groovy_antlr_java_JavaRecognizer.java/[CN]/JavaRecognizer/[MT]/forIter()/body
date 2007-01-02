@@ -2,6 +2,7 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST forIter_AST=null;
+  Token first=LT(1);
 {
 switch (LA(1)) {
 case IDENT:
@@ -50,7 +51,7 @@ default :
 }
 if (inputState.guessing == 0) {
 forIter_AST=(AST)currentAST.root;
-forIter_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(FOR_ITERATOR,"FOR_ITERATOR")).add(forIter_AST));
+forIter_AST=(AST)astFactory.make((new ASTArray(2)).add(create(FOR_ITERATOR,"FOR_ITERATOR",first,LT(1))).add(forIter_AST));
 currentAST.root=forIter_AST;
 currentAST.child=forIter_AST != null && forIter_AST.getFirstChild() != null ? forIter_AST.getFirstChild() : forIter_AST;
 currentAST.advanceChildToEnd();

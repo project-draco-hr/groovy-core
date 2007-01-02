@@ -5,6 +5,7 @@
   AST tp_AST=null;
   AST ie_AST=null;
   AST ib_AST=null;
+  Token first=LT(1);
   match(LITERAL_interface);
   AST tmp17_AST=null;
   tmp17_AST=astFactory.create(LT(1));
@@ -34,7 +35,7 @@ interfaceBlock();
 ib_AST=(AST)returnAST;
 if (inputState.guessing == 0) {
 interfaceDefinition_AST=(AST)currentAST.root;
-interfaceDefinition_AST=(AST)astFactory.make((new ASTArray(6)).add(astFactory.create(INTERFACE_DEF,"INTERFACE_DEF")).add(modifiers).add(tmp17_AST).add(tp_AST).add(ie_AST).add(ib_AST));
+interfaceDefinition_AST=(AST)astFactory.make((new ASTArray(6)).add(create(INTERFACE_DEF,"INTERFACE_DEF",first,LT(1))).add(modifiers).add(tmp17_AST).add(tp_AST).add(ie_AST).add(ib_AST));
 currentAST.root=interfaceDefinition_AST;
 currentAST.child=interfaceDefinition_AST != null && interfaceDefinition_AST.getFirstChild() != null ? interfaceDefinition_AST.getFirstChild() : interfaceDefinition_AST;
 currentAST.advanceChildToEnd();

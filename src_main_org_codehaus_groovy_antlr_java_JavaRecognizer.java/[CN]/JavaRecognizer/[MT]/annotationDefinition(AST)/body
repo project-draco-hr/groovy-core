@@ -3,6 +3,7 @@
   ASTPair currentAST=new ASTPair();
   AST annotationDefinition_AST=null;
   AST ab_AST=null;
+  Token first=LT(1);
   AST tmp20_AST=null;
   tmp20_AST=astFactory.create(LT(1));
   match(AT);
@@ -14,7 +15,7 @@
   ab_AST=(AST)returnAST;
   if (inputState.guessing == 0) {
     annotationDefinition_AST=(AST)currentAST.root;
-    annotationDefinition_AST=(AST)astFactory.make((new ASTArray(4)).add(astFactory.create(ANNOTATION_DEF,"ANNOTATION_DEF")).add(modifiers).add(tmp22_AST).add(ab_AST));
+    annotationDefinition_AST=(AST)astFactory.make((new ASTArray(4)).add(create(ANNOTATION_DEF,"ANNOTATION_DEF",first,LT(1))).add(modifiers).add(tmp22_AST).add(ab_AST));
     currentAST.root=annotationDefinition_AST;
     currentAST.child=annotationDefinition_AST != null && annotationDefinition_AST.getFirstChild() != null ? annotationDefinition_AST.getFirstChild() : annotationDefinition_AST;
     currentAST.advanceChildToEnd();

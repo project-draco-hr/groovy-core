@@ -2,6 +2,7 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST forInit_AST=null;
+  Token first=LT(1);
 {
     boolean synPredMatched215=false;
     if (((_tokenSet_30.member(LA(1))) && (_tokenSet_31.member(LA(2))))) {
@@ -35,7 +36,7 @@
   }
   if (inputState.guessing == 0) {
     forInit_AST=(AST)currentAST.root;
-    forInit_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(FOR_INIT,"FOR_INIT")).add(forInit_AST));
+    forInit_AST=(AST)astFactory.make((new ASTArray(2)).add(create(FOR_INIT,"FOR_INIT",first,LT(1))).add(forInit_AST));
     currentAST.root=forInit_AST;
     currentAST.child=forInit_AST != null && forInit_AST.getFirstChild() != null ? forInit_AST.getFirstChild() : forInit_AST;
     currentAST.advanceChildToEnd();

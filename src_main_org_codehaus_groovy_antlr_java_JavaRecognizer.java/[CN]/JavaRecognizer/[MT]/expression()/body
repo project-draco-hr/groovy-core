@@ -2,11 +2,12 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST expression_AST=null;
+  Token first=LT(1);
   assignmentExpression();
   astFactory.addASTChild(currentAST,returnAST);
   if (inputState.guessing == 0) {
     expression_AST=(AST)currentAST.root;
-    expression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(EXPR,"EXPR")).add(expression_AST));
+    expression_AST=(AST)astFactory.make((new ASTArray(2)).add(create(EXPR,"EXPR",first,LT(1))).add(expression_AST));
     currentAST.root=expression_AST;
     currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
     currentAST.advanceChildToEnd();

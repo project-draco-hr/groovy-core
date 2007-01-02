@@ -3,6 +3,7 @@
   ASTPair currentAST=new ASTPair();
   AST typeParameters_AST=null;
   int currentLtLevel=0;
+  Token first=LT(1);
   if (inputState.guessing == 0) {
     currentLtLevel=ltCounter;
   }
@@ -60,7 +61,7 @@ default :
 if (!((currentLtLevel != 0) || ltCounter == currentLtLevel)) throw new SemanticException("(currentLtLevel != 0) || ltCounter == currentLtLevel");
 if (inputState.guessing == 0) {
 typeParameters_AST=(AST)currentAST.root;
-typeParameters_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_PARAMETERS,"TYPE_PARAMETERS")).add(typeParameters_AST));
+typeParameters_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_PARAMETERS,"TYPE_PARAMETERS",first,LT(1))).add(typeParameters_AST));
 currentAST.root=typeParameters_AST;
 currentAST.child=typeParameters_AST != null && typeParameters_AST.getFirstChild() != null ? typeParameters_AST.getFirstChild() : typeParameters_AST;
 currentAST.advanceChildToEnd();

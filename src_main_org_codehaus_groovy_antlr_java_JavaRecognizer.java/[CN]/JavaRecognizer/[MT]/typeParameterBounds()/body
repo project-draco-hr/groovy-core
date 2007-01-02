@@ -2,6 +2,7 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST typeParameterBounds_AST=null;
+  Token first=LT(1);
   match(LITERAL_extends);
   classOrInterfaceType(false);
   astFactory.addASTChild(currentAST,returnAST);
@@ -20,7 +21,7 @@
   }
   if (inputState.guessing == 0) {
     typeParameterBounds_AST=(AST)currentAST.root;
-    typeParameterBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_UPPER_BOUNDS,"TYPE_UPPER_BOUNDS")).add(typeParameterBounds_AST));
+    typeParameterBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_UPPER_BOUNDS,"TYPE_UPPER_BOUNDS",first,LT(1))).add(typeParameterBounds_AST));
     currentAST.root=typeParameterBounds_AST;
     currentAST.child=typeParameterBounds_AST != null && typeParameterBounds_AST.getFirstChild() != null ? typeParameterBounds_AST.getFirstChild() : typeParameterBounds_AST;
     currentAST.advanceChildToEnd();

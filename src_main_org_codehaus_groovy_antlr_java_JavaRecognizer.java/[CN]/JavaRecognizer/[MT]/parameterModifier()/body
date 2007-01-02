@@ -4,6 +4,7 @@
   AST parameterModifier_AST=null;
   Token f=null;
   AST f_AST=null;
+  Token first=LT(1);
 {
     _loop181:     do {
       if ((LA(1) == AT) && (LA(2) == IDENT)) {
@@ -60,7 +61,7 @@ if ((LA(1) == AT)) {
 }
 if (inputState.guessing == 0) {
 parameterModifier_AST=(AST)currentAST.root;
-parameterModifier_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(MODIFIERS,"MODIFIERS")).add(parameterModifier_AST));
+parameterModifier_AST=(AST)astFactory.make((new ASTArray(2)).add(create(MODIFIERS,"MODIFIERS",first,LT(1))).add(parameterModifier_AST));
 currentAST.root=parameterModifier_AST;
 currentAST.child=parameterModifier_AST != null && parameterModifier_AST.getFirstChild() != null ? parameterModifier_AST.getFirstChild() : parameterModifier_AST;
 currentAST.advanceChildToEnd();

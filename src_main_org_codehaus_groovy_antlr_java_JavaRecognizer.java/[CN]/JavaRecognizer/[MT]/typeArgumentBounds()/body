@@ -30,10 +30,10 @@ astFactory.addASTChild(currentAST,returnAST);
 if (inputState.guessing == 0) {
 typeArgumentBounds_AST=(AST)currentAST.root;
 if (isUpperBounds) {
-typeArgumentBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_UPPER_BOUNDS,"TYPE_UPPER_BOUNDS")).add(typeArgumentBounds_AST));
+typeArgumentBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_UPPER_BOUNDS,"TYPE_UPPER_BOUNDS",first,LT(1))).add(typeArgumentBounds_AST));
 }
  else {
-typeArgumentBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_LOWER_BOUNDS,"TYPE_LOWER_BOUNDS")).add(typeArgumentBounds_AST));
+typeArgumentBounds_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_LOWER_BOUNDS,"TYPE_LOWER_BOUNDS",first,LT(1))).add(typeArgumentBounds_AST));
 }
 currentAST.root=typeArgumentBounds_AST;
 currentAST.child=typeArgumentBounds_AST != null && typeArgumentBounds_AST.getFirstChild() != null ? typeArgumentBounds_AST.getFirstChild() : typeArgumentBounds_AST;

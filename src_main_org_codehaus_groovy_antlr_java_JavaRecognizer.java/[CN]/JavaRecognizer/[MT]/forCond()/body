@@ -2,6 +2,7 @@
   returnAST=null;
   ASTPair currentAST=new ASTPair();
   AST forCond_AST=null;
+  Token first=LT(1);
 {
 switch (LA(1)) {
 case IDENT:
@@ -50,7 +51,7 @@ default :
 }
 if (inputState.guessing == 0) {
 forCond_AST=(AST)currentAST.root;
-forCond_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(FOR_CONDITION,"FOR_CONDITION")).add(forCond_AST));
+forCond_AST=(AST)astFactory.make((new ASTArray(2)).add(create(FOR_CONDITION,"FOR_CONDITION",first,LT(1))).add(forCond_AST));
 currentAST.root=forCond_AST;
 currentAST.child=forCond_AST != null && forCond_AST.getFirstChild() != null ? forCond_AST.getFirstChild() : forCond_AST;
 currentAST.advanceChildToEnd();

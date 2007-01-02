@@ -3,6 +3,7 @@
   ASTPair currentAST=new ASTPair();
   AST superClassClause_AST=null;
   AST c_AST=null;
+  Token first=LT(1);
 {
 switch (LA(1)) {
 case LITERAL_extends:
@@ -25,7 +26,7 @@ default :
 }
 if (inputState.guessing == 0) {
 superClassClause_AST=(AST)currentAST.root;
-superClassClause_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(EXTENDS_CLAUSE,"EXTENDS_CLAUSE")).add(c_AST));
+superClassClause_AST=(AST)astFactory.make((new ASTArray(2)).add(create(EXTENDS_CLAUSE,"EXTENDS_CLAUSE",first,LT(1))).add(c_AST));
 currentAST.root=superClassClause_AST;
 currentAST.child=superClassClause_AST != null && superClassClause_AST.getFirstChild() != null ? superClassClause_AST.getFirstChild() : superClassClause_AST;
 currentAST.advanceChildToEnd();

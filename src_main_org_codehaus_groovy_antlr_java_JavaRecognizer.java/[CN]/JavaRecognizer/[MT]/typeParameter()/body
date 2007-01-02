@@ -4,6 +4,7 @@
   AST typeParameter_AST=null;
   Token id=null;
   AST id_AST=null;
+  Token first=LT(1);
 {
     id=LT(1);
     id_AST=astFactory.create(id);
@@ -23,7 +24,7 @@
   }
   if (inputState.guessing == 0) {
     typeParameter_AST=(AST)currentAST.root;
-    typeParameter_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_PARAMETER,"TYPE_PARAMETER")).add(typeParameter_AST));
+    typeParameter_AST=(AST)astFactory.make((new ASTArray(2)).add(create(TYPE_PARAMETER,"TYPE_PARAMETER",first,LT(1))).add(typeParameter_AST));
     currentAST.root=typeParameter_AST;
     currentAST.child=typeParameter_AST != null && typeParameter_AST.getFirstChild() != null ? typeParameter_AST.getFirstChild() : typeParameter_AST;
     currentAST.advanceChildToEnd();

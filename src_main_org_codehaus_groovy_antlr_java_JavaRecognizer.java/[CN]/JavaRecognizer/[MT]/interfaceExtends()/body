@@ -4,6 +4,7 @@
   AST interfaceExtends_AST=null;
   Token e=null;
   AST e_AST=null;
+  Token first=LT(1);
 {
 switch (LA(1)) {
 case LITERAL_extends:
@@ -40,7 +41,7 @@ default :
 }
 if (inputState.guessing == 0) {
 interfaceExtends_AST=(AST)currentAST.root;
-interfaceExtends_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(EXTENDS_CLAUSE,"EXTENDS_CLAUSE")).add(interfaceExtends_AST));
+interfaceExtends_AST=(AST)astFactory.make((new ASTArray(2)).add(create(EXTENDS_CLAUSE,"EXTENDS_CLAUSE",first,LT(1))).add(interfaceExtends_AST));
 currentAST.root=interfaceExtends_AST;
 currentAST.child=interfaceExtends_AST != null && interfaceExtends_AST.getFirstChild() != null ? interfaceExtends_AST.getFirstChild() : interfaceExtends_AST;
 currentAST.advanceChildToEnd();

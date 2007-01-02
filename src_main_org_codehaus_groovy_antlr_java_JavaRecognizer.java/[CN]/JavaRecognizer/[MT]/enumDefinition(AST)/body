@@ -4,6 +4,7 @@
   AST enumDefinition_AST=null;
   AST ic_AST=null;
   AST eb_AST=null;
+  Token first=LT(1);
   match(LITERAL_enum);
   AST tmp19_AST=null;
   tmp19_AST=astFactory.create(LT(1));
@@ -14,7 +15,7 @@
   eb_AST=(AST)returnAST;
   if (inputState.guessing == 0) {
     enumDefinition_AST=(AST)currentAST.root;
-    enumDefinition_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(ENUM_DEF,"ENUM_DEF")).add(modifiers).add(tmp19_AST).add(ic_AST).add(eb_AST));
+    enumDefinition_AST=(AST)astFactory.make((new ASTArray(5)).add(create(ENUM_DEF,"ENUM_DEF",first,LT(1))).add(modifiers).add(tmp19_AST).add(ic_AST).add(eb_AST));
     currentAST.root=enumDefinition_AST;
     currentAST.child=enumDefinition_AST != null && enumDefinition_AST.getFirstChild() != null ? enumDefinition_AST.getFirstChild() : enumDefinition_AST;
     currentAST.advanceChildToEnd();

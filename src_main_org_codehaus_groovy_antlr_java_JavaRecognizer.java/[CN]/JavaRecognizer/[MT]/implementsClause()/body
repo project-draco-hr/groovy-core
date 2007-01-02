@@ -4,6 +4,7 @@
   AST implementsClause_AST=null;
   Token i=null;
   AST i_AST=null;
+  Token first=LT(1);
 {
 switch (LA(1)) {
 case LITERAL_implements:
@@ -40,7 +41,7 @@ default :
 }
 if (inputState.guessing == 0) {
 implementsClause_AST=(AST)currentAST.root;
-implementsClause_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(IMPLEMENTS_CLAUSE,"IMPLEMENTS_CLAUSE")).add(implementsClause_AST));
+implementsClause_AST=(AST)astFactory.make((new ASTArray(2)).add(create(IMPLEMENTS_CLAUSE,"IMPLEMENTS_CLAUSE",first,LT(1))).add(implementsClause_AST));
 currentAST.root=implementsClause_AST;
 currentAST.child=implementsClause_AST != null && implementsClause_AST.getFirstChild() != null ? implementsClause_AST.getFirstChild() : implementsClause_AST;
 currentAST.advanceChildToEnd();
