@@ -1,0 +1,18 @@
+{
+  JavaRecognizer parser=getJavaParser(input);
+  String[] tokenNames=parser.getTokenNames();
+  parser.compilationUnit();
+  AST ast=parser.getAST();
+  modifyJavaASTintoGroovyAST(tokenNames,ast);
+  String[] groovyTokenNames=getGroovyTokenNames(input);
+  groovifyFatJavaLikeGroovyAST(ast,groovyTokenNames);
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  Visitor visitor=new SourcePrinter(new PrintStream(baos),groovyTokenNames,withNewLines);
+  AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
+  traverser.process(ast);
+  String header="";
+  if (withHeader) {
+    header="/*\n" + "  Automatically Converted from Java Source \n" + "  \n"+ "  by java2groovy v0.0.1   Copyright Jeremy Rayner 2007\n"+ "  \n"+ "  !! NOT FIT FOR ANY PURPOSE !! \n"+ "  'java2groovy' cannot be used to convert one working program into another"+ "  */\n\n";
+  }
+  return header + new String(baos.toByteArray());
+}

@@ -1,0 +1,10 @@
+{
+  JavaRecognizer parser=null;
+  SourceBuffer sourceBuffer=new SourceBuffer();
+  UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new StringReader(input),sourceBuffer);
+  JavaLexer lexer=new JavaLexer(unicodeReader);
+  unicodeReader.setLexer(lexer);
+  parser=JavaRecognizer.make(lexer);
+  parser.setSourceBuffer(sourceBuffer);
+  return parser;
+}

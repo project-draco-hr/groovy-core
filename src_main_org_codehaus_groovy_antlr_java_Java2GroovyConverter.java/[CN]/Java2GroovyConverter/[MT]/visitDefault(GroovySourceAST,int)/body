@@ -1,0 +1,11 @@
+{
+  if (visit == OPENING_VISIT) {
+    t.setType(typeMapping[t.getType()]);
+    if (t.getType() == GroovyTokenTypes.STRING_LITERAL) {
+      String text=t.getText();
+      if (isDoubleQuoted(text)) {
+        t.setText(text.substring(1,text.length() - 1));
+      }
+    }
+  }
+}
