@@ -1,12 +1,12 @@
 {
   if (GroovyCategorySupport.hasCategoryInAnyThread() && !isCallToSuper) {
-    return pickMethod(sender,methodName,arguments,isCallToSuper);
+    return getMethodWithoutCaching(sender,methodName,arguments,isCallToSuper);
   }
  else {
     MethodKey methodKey=new DefaultMethodKey(sender,methodName,arguments,isCallToSuper);
     MetaMethod method=(MetaMethod)methodCache.get(methodKey);
     if (method == null) {
-      method=pickMethod(sender,methodName,arguments,isCallToSuper);
+      method=getMethodWithoutCaching(sender,methodName,arguments,isCallToSuper);
       cacheInstanceMethod(methodKey,method);
     }
     return method;

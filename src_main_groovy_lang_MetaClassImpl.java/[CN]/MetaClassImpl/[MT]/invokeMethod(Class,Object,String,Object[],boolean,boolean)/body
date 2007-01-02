@@ -10,11 +10,11 @@
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
-  MetaMethod method=retrieveMethod(sender,methodName,argClasses,isCallToSuper);
+  MetaMethod method=getMethodWithCaching(sender,methodName,argClasses,isCallToSuper);
   if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
     Object[] newArguments=((List)arguments[0]).toArray();
     Class[] newArgClasses=MetaClassHelper.convertToTypeArray(newArguments);
-    method=retrieveMethod(sender,methodName,newArgClasses,isCallToSuper);
+    method=getMethodWithCaching(sender,methodName,newArgClasses,isCallToSuper);
     if (method != null) {
       MethodKey methodKey=new DefaultMethodKey(sender,methodName,argClasses,isCallToSuper);
       method=new TransformMetaMethod(method){
@@ -60,14 +60,14 @@
       Class ownerClass=owner.getClass();
       if (owner instanceof Class)       ownerClass=(Class)owner;
       MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
-      method=ownerMetaClass.retrieveMethod(methodName,argClasses);
+      method=ownerMetaClass.pickMethod(methodName,argClasses);
       if (method != null)       return ownerMetaClass.invokeMethod(owner,methodName,originalArguments);
     }
     if (method == null && delegate != closure && delegate != null) {
       Class delegateClass=delegate.getClass();
       if (delegate instanceof Class)       delegateClass=(Class)delegate;
       MetaClass delegateMetaClass=registry.getMetaClass(delegateClass);
-      method=delegateMetaClass.retrieveMethod(methodName,argClasses);
+      method=delegateMetaClass.pickMethod(methodName,argClasses);
       if (method != null)       return delegateMetaClass.invokeMethod(delegate,methodName,originalArguments);
     }
     if (method == null) {
