@@ -1,0 +1,33 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST packageDefinition_AST=null;
+  Token p=null;
+  AST p_AST=null;
+  try {
+    annotations();
+    astFactory.addASTChild(currentAST,returnAST);
+    p=LT(1);
+    p_AST=astFactory.create(p);
+    astFactory.makeASTRoot(currentAST,p_AST);
+    match(LITERAL_package);
+    if (inputState.guessing == 0) {
+      p_AST.setType(PACKAGE_DEF);
+    }
+    identifier();
+    astFactory.addASTChild(currentAST,returnAST);
+    match(SEMI);
+    packageDefinition_AST=(AST)currentAST.root;
+  }
+ catch (  RecognitionException ex) {
+    if (inputState.guessing == 0) {
+      reportError(ex);
+      consume();
+      consumeUntil(_tokenSet_0);
+    }
+ else {
+      throw ex;
+    }
+  }
+  returnAST=packageDefinition_AST;
+}

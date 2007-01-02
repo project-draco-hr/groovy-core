@@ -1,0 +1,24 @@
+{
+  return new TokenStream(){
+    public Token nextToken() throws TokenStreamException {
+      if (stringCtorState >= SCS_LIT) {
+        int quoteType=(stringCtorState & SCS_TYPE);
+        stringCtorState=0;
+        resetText();
+      }
+      Token token=JavaLexer.this.nextToken();
+      int lasttype=token.getType();
+      if (whitespaceIncluded) {
+switch (lasttype) {
+case WS:
+case SL_COMMENT:
+case ML_COMMENT:
+          lasttype=lastSigTokenType;
+      }
+    }
+    lastSigTokenType=lasttype;
+    return token;
+  }
+}
+;
+}

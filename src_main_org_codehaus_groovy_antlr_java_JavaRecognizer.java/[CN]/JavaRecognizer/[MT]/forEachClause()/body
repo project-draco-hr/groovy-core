@@ -1,0 +1,21 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST forEachClause_AST=null;
+  AST p_AST=null;
+  parameterDeclaration();
+  p_AST=(AST)returnAST;
+  astFactory.addASTChild(currentAST,returnAST);
+  match(COLON);
+  expression();
+  astFactory.addASTChild(currentAST,returnAST);
+  if (inputState.guessing == 0) {
+    forEachClause_AST=(AST)currentAST.root;
+    forEachClause_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(FOR_EACH_CLAUSE,"FOR_EACH_CLAUSE")).add(forEachClause_AST));
+    currentAST.root=forEachClause_AST;
+    currentAST.child=forEachClause_AST != null && forEachClause_AST.getFirstChild() != null ? forEachClause_AST.getFirstChild() : forEachClause_AST;
+    currentAST.advanceChildToEnd();
+  }
+  forEachClause_AST=(AST)currentAST.root;
+  returnAST=forEachClause_AST;
+}

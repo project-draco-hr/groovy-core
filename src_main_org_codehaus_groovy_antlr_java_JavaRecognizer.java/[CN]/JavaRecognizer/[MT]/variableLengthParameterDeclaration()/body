@@ -1,0 +1,28 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST variableLengthParameterDeclaration_AST=null;
+  AST pm_AST=null;
+  AST t_AST=null;
+  Token id=null;
+  AST id_AST=null;
+  AST pd_AST=null;
+  parameterModifier();
+  pm_AST=(AST)returnAST;
+  typeSpec(false);
+  t_AST=(AST)returnAST;
+  match(TRIPLE_DOT);
+  id=LT(1);
+  id_AST=astFactory.create(id);
+  match(IDENT);
+  declaratorBrackets(t_AST);
+  pd_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    variableLengthParameterDeclaration_AST=(AST)currentAST.root;
+    variableLengthParameterDeclaration_AST=(AST)astFactory.make((new ASTArray(4)).add(astFactory.create(VARIABLE_PARAMETER_DEF,"VARIABLE_PARAMETER_DEF")).add(pm_AST).add((AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE,"TYPE")).add(pd_AST))).add(id_AST));
+    currentAST.root=variableLengthParameterDeclaration_AST;
+    currentAST.child=variableLengthParameterDeclaration_AST != null && variableLengthParameterDeclaration_AST.getFirstChild() != null ? variableLengthParameterDeclaration_AST.getFirstChild() : variableLengthParameterDeclaration_AST;
+    currentAST.advanceChildToEnd();
+  }
+  returnAST=variableLengthParameterDeclaration_AST;
+}

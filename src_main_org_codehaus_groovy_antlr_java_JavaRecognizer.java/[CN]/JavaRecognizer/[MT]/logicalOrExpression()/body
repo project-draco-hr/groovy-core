@@ -1,0 +1,25 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST logicalOrExpression_AST=null;
+  logicalAndExpression();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop237:     do {
+      if ((LA(1) == LOR)) {
+        AST tmp191_AST=null;
+        tmp191_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp191_AST);
+        match(LOR);
+        logicalAndExpression();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop237;
+      }
+    }
+ while (true);
+  }
+  logicalOrExpression_AST=(AST)currentAST.root;
+  returnAST=logicalOrExpression_AST;
+}

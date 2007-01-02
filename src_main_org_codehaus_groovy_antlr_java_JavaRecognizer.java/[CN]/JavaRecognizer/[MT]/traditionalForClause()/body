@@ -1,0 +1,15 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST traditionalForClause_AST=null;
+  forInit();
+  astFactory.addASTChild(currentAST,returnAST);
+  match(SEMI);
+  forCond();
+  astFactory.addASTChild(currentAST,returnAST);
+  match(SEMI);
+  forIter();
+  astFactory.addASTChild(currentAST,returnAST);
+  traditionalForClause_AST=(AST)currentAST.root;
+  returnAST=traditionalForClause_AST;
+}

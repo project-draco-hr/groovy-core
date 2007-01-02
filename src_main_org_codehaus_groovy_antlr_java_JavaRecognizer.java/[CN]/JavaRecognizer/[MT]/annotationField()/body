@@ -1,0 +1,113 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST annotationField_AST=null;
+  AST mods_AST=null;
+  AST td_AST=null;
+  AST t_AST=null;
+  Token i=null;
+  AST i_AST=null;
+  AST rt_AST=null;
+  AST amvi_AST=null;
+  AST v_AST=null;
+  Token first=LT(1);
+  modifiers();
+  mods_AST=(AST)returnAST;
+{
+switch (LA(1)) {
+case AT:
+case LITERAL_class:
+case LITERAL_interface:
+case LITERAL_enum:
+{
+        typeDefinitionInternal(mods_AST);
+        td_AST=(AST)returnAST;
+        if (inputState.guessing == 0) {
+          annotationField_AST=(AST)currentAST.root;
+          annotationField_AST=td_AST;
+          currentAST.root=annotationField_AST;
+          currentAST.child=annotationField_AST != null && annotationField_AST.getFirstChild() != null ? annotationField_AST.getFirstChild() : annotationField_AST;
+          currentAST.advanceChildToEnd();
+        }
+        break;
+      }
+case IDENT:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+{
+      typeSpec(false);
+      t_AST=(AST)returnAST;
+{
+        if ((LA(1) == IDENT) && (LA(2) == LPAREN)) {
+          i=LT(1);
+          i_AST=astFactory.create(i);
+          match(IDENT);
+          match(LPAREN);
+          match(RPAREN);
+          declaratorBrackets(t_AST);
+          rt_AST=(AST)returnAST;
+{
+switch (LA(1)) {
+case LITERAL_default:
+{
+                match(LITERAL_default);
+                annotationMemberValueInitializer();
+                amvi_AST=(AST)returnAST;
+                break;
+              }
+case SEMI:
+{
+              break;
+            }
+default :
+{
+            throw new NoViableAltException(LT(1),getFilename());
+          }
+      }
+    }
+    AST tmp104_AST=null;
+    tmp104_AST=astFactory.create(LT(1));
+    match(SEMI);
+    if (inputState.guessing == 0) {
+      annotationField_AST=(AST)currentAST.root;
+      annotationField_AST=(AST)astFactory.make((new ASTArray(5)).add(astFactory.create(ANNOTATION_FIELD_DEF,"ANNOTATION_FIELD_DEF")).add(mods_AST).add((AST)astFactory.make((new ASTArray(2)).add(create(TYPE,"TYPE",first,LT(1))).add(rt_AST))).add(i_AST).add(amvi_AST));
+      currentAST.root=annotationField_AST;
+      currentAST.child=annotationField_AST != null && annotationField_AST.getFirstChild() != null ? annotationField_AST.getFirstChild() : annotationField_AST;
+      currentAST.advanceChildToEnd();
+    }
+  }
+ else   if ((LA(1) == IDENT) && (_tokenSet_19.member(LA(2)))) {
+    variableDefinitions(mods_AST,t_AST);
+    v_AST=(AST)returnAST;
+    AST tmp105_AST=null;
+    tmp105_AST=astFactory.create(LT(1));
+    match(SEMI);
+    if (inputState.guessing == 0) {
+      annotationField_AST=(AST)currentAST.root;
+      annotationField_AST=v_AST;
+      currentAST.root=annotationField_AST;
+      currentAST.child=annotationField_AST != null && annotationField_AST.getFirstChild() != null ? annotationField_AST.getFirstChild() : annotationField_AST;
+      currentAST.advanceChildToEnd();
+    }
+  }
+ else {
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+returnAST=annotationField_AST;
+}

@@ -1,0 +1,23 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST annotationDefinition_AST=null;
+  AST ab_AST=null;
+  AST tmp20_AST=null;
+  tmp20_AST=astFactory.create(LT(1));
+  match(AT);
+  match(LITERAL_interface);
+  AST tmp22_AST=null;
+  tmp22_AST=astFactory.create(LT(1));
+  match(IDENT);
+  annotationBlock();
+  ab_AST=(AST)returnAST;
+  if (inputState.guessing == 0) {
+    annotationDefinition_AST=(AST)currentAST.root;
+    annotationDefinition_AST=(AST)astFactory.make((new ASTArray(4)).add(astFactory.create(ANNOTATION_DEF,"ANNOTATION_DEF")).add(modifiers).add(tmp22_AST).add(ab_AST));
+    currentAST.root=annotationDefinition_AST;
+    currentAST.child=annotationDefinition_AST != null && annotationDefinition_AST.getFirstChild() != null ? annotationDefinition_AST.getFirstChild() : annotationDefinition_AST;
+    currentAST.advanceChildToEnd();
+  }
+  returnAST=annotationDefinition_AST;
+}

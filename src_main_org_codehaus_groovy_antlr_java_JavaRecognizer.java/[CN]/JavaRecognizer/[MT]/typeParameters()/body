@@ -1,0 +1,70 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST typeParameters_AST=null;
+  int currentLtLevel=0;
+  if (inputState.guessing == 0) {
+    currentLtLevel=ltCounter;
+  }
+  match(LT);
+  if (inputState.guessing == 0) {
+    ltCounter++;
+  }
+  typeParameter();
+  astFactory.addASTChild(currentAST,returnAST);
+{
+    _loop85:     do {
+      if ((LA(1) == COMMA)) {
+        match(COMMA);
+        typeParameter();
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+ else {
+        break _loop85;
+      }
+    }
+ while (true);
+  }
+{
+switch (LA(1)) {
+case GT:
+case SR:
+case BSR:
+{
+        typeArgumentsOrParametersEnd();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case IDENT:
+case LITERAL_extends:
+case LITERAL_void:
+case LITERAL_boolean:
+case LITERAL_byte:
+case LITERAL_char:
+case LITERAL_short:
+case LITERAL_int:
+case LITERAL_float:
+case LITERAL_long:
+case LITERAL_double:
+case LCURLY:
+case LITERAL_implements:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+if (!((currentLtLevel != 0) || ltCounter == currentLtLevel)) throw new SemanticException("(currentLtLevel != 0) || ltCounter == currentLtLevel");
+if (inputState.guessing == 0) {
+typeParameters_AST=(AST)currentAST.root;
+typeParameters_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(TYPE_PARAMETERS,"TYPE_PARAMETERS")).add(typeParameters_AST));
+currentAST.root=typeParameters_AST;
+currentAST.child=typeParameters_AST != null && typeParameters_AST.getFirstChild() != null ? typeParameters_AST.getFirstChild() : typeParameters_AST;
+currentAST.advanceChildToEnd();
+}
+typeParameters_AST=(AST)currentAST.root;
+returnAST=typeParameters_AST;
+}

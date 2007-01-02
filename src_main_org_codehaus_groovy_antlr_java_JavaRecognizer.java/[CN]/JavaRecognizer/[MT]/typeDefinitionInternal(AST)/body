@@ -1,0 +1,40 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST typeDefinitionInternal_AST=null;
+switch (LA(1)) {
+case LITERAL_class:
+{
+      classDefinition(mods);
+      astFactory.addASTChild(currentAST,returnAST);
+      typeDefinitionInternal_AST=(AST)currentAST.root;
+      break;
+    }
+case LITERAL_interface:
+{
+    interfaceDefinition(mods);
+    astFactory.addASTChild(currentAST,returnAST);
+    typeDefinitionInternal_AST=(AST)currentAST.root;
+    break;
+  }
+case LITERAL_enum:
+{
+  enumDefinition(mods);
+  astFactory.addASTChild(currentAST,returnAST);
+  typeDefinitionInternal_AST=(AST)currentAST.root;
+  break;
+}
+case AT:
+{
+annotationDefinition(mods);
+astFactory.addASTChild(currentAST,returnAST);
+typeDefinitionInternal_AST=(AST)currentAST.root;
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=typeDefinitionInternal_AST;
+}

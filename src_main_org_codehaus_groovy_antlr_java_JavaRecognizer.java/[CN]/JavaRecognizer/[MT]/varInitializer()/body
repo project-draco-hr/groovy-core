@@ -1,0 +1,30 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST varInitializer_AST=null;
+{
+switch (LA(1)) {
+case ASSIGN:
+{
+        AST tmp163_AST=null;
+        tmp163_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp163_AST);
+        match(ASSIGN);
+        initializer();
+        astFactory.addASTChild(currentAST,returnAST);
+        break;
+      }
+case SEMI:
+case COMMA:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+varInitializer_AST=(AST)currentAST.root;
+returnAST=varInitializer_AST;
+}

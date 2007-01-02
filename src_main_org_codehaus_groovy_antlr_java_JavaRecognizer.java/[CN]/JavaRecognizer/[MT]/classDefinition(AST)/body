@@ -1,0 +1,47 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST classDefinition_AST=null;
+  AST tp_AST=null;
+  AST sc_AST=null;
+  AST ic_AST=null;
+  AST cb_AST=null;
+  match(LITERAL_class);
+  AST tmp15_AST=null;
+  tmp15_AST=astFactory.create(LT(1));
+  match(IDENT);
+{
+switch (LA(1)) {
+case LT:
+{
+        typeParameters();
+        tp_AST=(AST)returnAST;
+        break;
+      }
+case LITERAL_extends:
+case LCURLY:
+case LITERAL_implements:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+superClassClause();
+sc_AST=(AST)returnAST;
+implementsClause();
+ic_AST=(AST)returnAST;
+classBlock();
+cb_AST=(AST)returnAST;
+if (inputState.guessing == 0) {
+classDefinition_AST=(AST)currentAST.root;
+classDefinition_AST=(AST)astFactory.make((new ASTArray(7)).add(astFactory.create(CLASS_DEF,"CLASS_DEF")).add(modifiers).add(tmp15_AST).add(tp_AST).add(sc_AST).add(ic_AST).add(cb_AST));
+currentAST.root=classDefinition_AST;
+currentAST.child=classDefinition_AST != null && classDefinition_AST.getFirstChild() != null ? classDefinition_AST.getFirstChild() : classDefinition_AST;
+currentAST.advanceChildToEnd();
+}
+returnAST=classDefinition_AST;
+}

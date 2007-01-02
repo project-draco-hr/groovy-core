@@ -1,0 +1,29 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST identifier_AST=null;
+  AST tmp6_AST=null;
+  tmp6_AST=astFactory.create(LT(1));
+  astFactory.addASTChild(currentAST,tmp6_AST);
+  match(IDENT);
+{
+    _loop48:     do {
+      if ((LA(1) == DOT)) {
+        AST tmp7_AST=null;
+        tmp7_AST=astFactory.create(LT(1));
+        astFactory.makeASTRoot(currentAST,tmp7_AST);
+        match(DOT);
+        AST tmp8_AST=null;
+        tmp8_AST=astFactory.create(LT(1));
+        astFactory.addASTChild(currentAST,tmp8_AST);
+        match(IDENT);
+      }
+ else {
+        break _loop48;
+      }
+    }
+ while (true);
+  }
+  identifier_AST=(AST)currentAST.root;
+  returnAST=identifier_AST;
+}
