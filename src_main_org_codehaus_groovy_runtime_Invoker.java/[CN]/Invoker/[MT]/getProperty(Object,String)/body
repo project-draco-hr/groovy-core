@@ -2,19 +2,17 @@
   if (object == null) {
     throw new NullPointerException("Cannot get property: " + property + " on null object");
   }
- else   if (object instanceof GroovyObject) {
+  if (object instanceof GroovyObject) {
     GroovyObject pogo=(GroovyObject)object;
     return pogo.getProperty(property);
   }
- else   if (object instanceof Map) {
+  if (object instanceof Map) {
     Map map=(Map)object;
     return map.get(property);
   }
- else   if (object instanceof Class) {
+  if (object instanceof Class) {
     Class c=(Class)object;
     return metaRegistry.getMetaClass(c).getProperty(object,property);
   }
- else {
-    return metaRegistry.getMetaClass(object.getClass()).getProperty(object,property);
-  }
+  return metaRegistry.getMetaClass(object.getClass()).getProperty(object,property);
 }
