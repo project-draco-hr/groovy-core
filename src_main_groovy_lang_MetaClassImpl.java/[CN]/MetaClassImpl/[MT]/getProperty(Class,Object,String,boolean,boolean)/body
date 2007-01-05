@@ -15,9 +15,10 @@
       mp=mbp.getField();
     }
   }
-  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
     String getterName="get" + MetaClassHelper.capitalize(name);
-    method=getCategoryMethodGetter(sender,getterName,false);
+    MetaMethod categoryMethod=getCategoryMethodGetter(sender,getterName,false);
+    if (categoryMethod != null)     method=categoryMethod;
   }
   if (method == null && mp != null) {
     return mp.getProperty(object);
