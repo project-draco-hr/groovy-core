@@ -12,17 +12,6 @@
     if (method != null)     setter=findMethod(method);
  else     setter=null;
     MetaBeanProperty mp=new MetaBeanProperty(pd.getName(),pd.getPropertyType(),getter,setter);
-    MetaFieldProperty field=null;
-    MetaProperty old=(MetaProperty)propertyMap.get(pd.getName());
-    if (old != null) {
-      if (old instanceof MetaBeanProperty) {
-        field=((MetaBeanProperty)old).getField();
-      }
- else {
-        field=(MetaFieldProperty)old;
-      }
-      mp.setField(field);
-    }
-    propertyMap.put(pd.getName(),mp);
+    addMetaBeanProperty(mp);
   }
 }
