@@ -1,16 +1,37 @@
 {
-  LinkedList superClasses=getSuperClasses();
-  for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-    Class c=(Class)iter.next();
-    addMethods(c);
+  if (theClass.isInterface()) {
+    LinkedList superClasses=new LinkedList();
+    superClasses.add(Object.class);
+    addMethods(Object.class);
+    Set interfaces=new HashSet();
+    interfaces.add(theClass);
+    makeInterfaceSet(theClass,interfaces);
+    inheritInterfaceMethods(interfaces);
+    Map theClassIndex=getMap2MapNotNull(classMethodIndex,theClass);
+    Map objectIndex=getMap2MapNotNull(classMethodIndex,Object.class);
+    copyNonPrivateMethods(objectIndex,theClassIndex);
+    classMethodIndexForSuper=classMethodIndex;
+    superClasses.addAll(interfaces);
+    for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
+      Class c=(Class)iter.next();
+      classMethodIndex.put(c,theClassIndex);
+      if (c != Object.class)       addMethods(c);
+    }
   }
-  Set interfaces=new HashSet();
-  makeInterfaceSet(theClass,interfaces);
-  inheritMethods(superClasses,classMethodIndex);
-  inheritInterfaceMethods(interfaces);
-  copyClassMethodIndexForSuper();
-  connectMultimethods(superClasses);
-  populateInterfaces(interfaces);
-  removeMultimethodsOverloadedWithPrivateMethods();
+ else {
+    LinkedList superClasses=getSuperClasses();
+    for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
+      Class c=(Class)iter.next();
+      addMethods(c);
+    }
+    Set interfaces=new HashSet();
+    makeInterfaceSet(theClass,interfaces);
+    inheritMethods(superClasses,classMethodIndex);
+    inheritInterfaceMethods(interfaces);
+    copyClassMethodIndexForSuper();
+    connectMultimethods(superClasses);
+    populateInterfaces(interfaces);
+    removeMultimethodsOverloadedWithPrivateMethods();
+  }
   replaceWithMOPCalls();
 }

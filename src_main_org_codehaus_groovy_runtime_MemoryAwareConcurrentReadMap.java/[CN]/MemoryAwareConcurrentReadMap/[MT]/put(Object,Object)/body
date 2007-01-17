@@ -1,0 +1,10 @@
+{
+  if (value == null) {
+    remove(key);
+    return;
+  }
+synchronized (writeLock) {
+    waitForWriteState();
+    putNonBlocking(key,value,false);
+  }
+}

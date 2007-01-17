@@ -1,10 +1,15 @@
 {
   LinkedList superClasses=new LinkedList();
-  for (Class c=theClass; c != null; c=c.getSuperclass()) {
-    superClasses.addFirst(c);
+  if (theClass.isInterface()) {
+    superClasses.addFirst(Object.class);
   }
-  if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
-    superClasses.addFirst(Object[].class);
+ else {
+    for (Class c=theClass; c != null; c=c.getSuperclass()) {
+      superClasses.addFirst(c);
+    }
+    if (theClass.isArray() && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
+      superClasses.addFirst(Object[].class);
+    }
   }
   return superClasses;
 }

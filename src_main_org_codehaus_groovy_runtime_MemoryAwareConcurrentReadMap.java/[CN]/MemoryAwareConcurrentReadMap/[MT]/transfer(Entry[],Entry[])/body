@@ -1,0 +1,13 @@
+{
+  for (int oldIndex=0; oldIndex < oldTable.length; oldIndex++) {
+    Entry current=oldTable[oldIndex];
+    while (current != null) {
+      int index=index(current.hash,newTable.length);
+      Entry newHead=newTable[index];
+      Entry newEntry=current;
+      current=current.next;
+      newEntry.next=newHead;
+      newTable[index]=newEntry;
+    }
+  }
+}

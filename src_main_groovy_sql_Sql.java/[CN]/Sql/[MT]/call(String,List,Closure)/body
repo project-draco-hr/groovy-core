@@ -12,12 +12,12 @@
       Object value=iter.next();
       if (value instanceof OutParameter) {
         if (value instanceof ResultSetOutParameter) {
-          results.add(new CallResultSet(statement,indx));
+          results.add(CallResultSet.getImpl(statement,indx));
         }
  else {
           Object o=statement.getObject(indx + 1);
           if (o instanceof ResultSet) {
-            results.add(new GroovyResultSet((ResultSet)o));
+            results.add(new GroovyResultSetProxy((ResultSet)o).getImpl());
           }
  else {
             results.add(o);

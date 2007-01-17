@@ -1,0 +1,35 @@
+{
+  removeDereferencedEntries();
+  int hash=key.hashCode();
+  int index=index(hash,table.length);
+  Entry current=table[index];
+  Entry prev=null;
+  while (current != null) {
+    if (hash == current.hash) {
+      Object oldKey=current.getKey();
+      if (!current.isValid()) {
+        if (prev != null) {
+          prev.next=current.next;
+        }
+ else {
+          table[index]=current.next;
+        }
+        current=current.invalidate();
+        size--;
+        continue;
+      }
+      if (key == oldKey | key.equals(oldKey)) {
+        current.setValue(oldKey,value,hard);
+        return;
+      }
+    }
+    prev=current;
+    current=current.next;
+  }
+  Entry newEntry=new Entry(key,value,hash,hard);
+  Entry oldEntry=table[index];
+  newEntry.next=oldEntry;
+  table[index]=newEntry;
+  size++;
+  if (size > threshold)   rehash();
+}

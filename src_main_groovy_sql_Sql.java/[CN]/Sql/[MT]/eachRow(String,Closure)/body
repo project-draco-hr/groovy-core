@@ -6,7 +6,7 @@
   try {
     log.fine(sql);
     results=statement.executeQuery(sql);
-    GroovyResultSet groovyRS=new GroovyResultSet(results);
+    GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();
     while (groovyRS.next()) {
       closure.call(groovyRS);
     }

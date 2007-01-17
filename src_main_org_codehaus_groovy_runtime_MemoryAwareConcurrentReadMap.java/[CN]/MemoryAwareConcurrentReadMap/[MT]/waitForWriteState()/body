@@ -1,0 +1,11 @@
+{
+synchronized (writeQueue) {
+    while (concurrentReads != 0) {
+      try {
+        writeQueue.wait();
+      }
+ catch (      InterruptedException e) {
+      }
+    }
+  }
+}

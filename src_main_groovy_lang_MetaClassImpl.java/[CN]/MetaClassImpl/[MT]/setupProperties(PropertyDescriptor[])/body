@@ -1,17 +1,37 @@
 {
-  LinkedList superClasses=getSuperClasses();
-  Set interfaces=new HashSet();
-  makeInterfaceSet(theClass,interfaces);
-  if (theClass.isArray()) {
-    Map map=new HashMap();
-    map.put("length",arrayLengthProperty);
-    classPropertyIndex.put(theClass,map);
+  if (theClass.isInterface()) {
+    LinkedList superClasses=new LinkedList();
+    superClasses.add(Object.class);
+    Set interfaces=new HashSet();
+    makeInterfaceSet(theClass,interfaces);
+    interfaces.add(theClass);
+    classPropertyIndexForSuper=classPropertyIndex;
+    for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
+      Class iclass=(Class)interfaceIter.next();
+      Map iPropertyIndex=getMap2MapNotNull(classPropertyIndex,theClass);
+      addFields(iclass,iPropertyIndex);
+      classPropertyIndex.put(iclass,iPropertyIndex);
+    }
+    classPropertyIndex.put(Object.class,getMap2MapNotNull(classPropertyIndex,theClass));
+    applyPropertyDescriptors(propertyDescriptors);
+    applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
+    makeStaticPropertyIndex();
   }
-  inheritStaticInterfaceFields(superClasses,interfaces);
-  inheritFields(superClasses);
-  applyPropertyDescriptors(propertyDescriptors);
-  applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
-  applyStrayPropertyMethods(superClasses,classMethodIndexForSuper,classPropertyIndexForSuper);
-  copyClassPropertyIndexForSuper();
-  makeStaticPropertyIndex();
+ else {
+    LinkedList superClasses=getSuperClasses();
+    Set interfaces=new HashSet();
+    makeInterfaceSet(theClass,interfaces);
+    if (theClass.isArray()) {
+      Map map=new HashMap();
+      map.put("length",arrayLengthProperty);
+      classPropertyIndex.put(theClass,map);
+    }
+    inheritStaticInterfaceFields(superClasses,interfaces);
+    inheritFields(superClasses);
+    applyPropertyDescriptors(propertyDescriptors);
+    applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
+    applyStrayPropertyMethods(superClasses,classMethodIndexForSuper,classPropertyIndexForSuper);
+    copyClassPropertyIndexForSuper();
+    makeStaticPropertyIndex();
+  }
 }

@@ -1,0 +1,29 @@
+{
+synchronized (writeLock) {
+    waitForWriteState();
+    removeDereferencedEntries();
+    int hash=key.hashCode();
+    int index=index(hash,table.length);
+    Entry current=table[index];
+    Entry prev=null;
+    while (current != null) {
+      if (hash == current.hash) {
+        Object oldKey=current.getKey();
+        if (!current.isValid()) {
+          if (prev != null)           prev.next=current.next;
+          current=current.invalidate();
+          size--;
+          continue;
+        }
+        if (key == oldKey || key.equals(oldKey)) {
+          if (prev != null)           prev.next=current.next;
+          current.invalidate();
+          size--;
+          return;
+        }
+      }
+      prev=current;
+      current=current.next;
+    }
+  }
+}

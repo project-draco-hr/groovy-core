@@ -1,0 +1,15 @@
+{
+  if (size < threshold)   return;
+synchronized (writeLock) {
+    waitForWriteState();
+    removeDereferencedEntries();
+    if (size < threshold)     return;
+    removeStaleEntries();
+    if (size < threshold)     return;
+    tableSize*=2;
+    Entry[] newTable=new Entry[tableSize];
+    transfer(table,newTable);
+    table=newTable;
+    threshold=newThreshold();
+  }
+}
