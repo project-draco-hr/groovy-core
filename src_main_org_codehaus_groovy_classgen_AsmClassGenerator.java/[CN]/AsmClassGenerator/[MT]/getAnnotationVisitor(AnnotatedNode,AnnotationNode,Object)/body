@@ -1,0 +1,14 @@
+{
+  final String annotationDescriptor=BytecodeHelper.getTypeDescription(an.getClassNode());
+  if (targetNode instanceof MethodNode) {
+    return ((MethodVisitor)visitor).visitAnnotation(annotationDescriptor,an.hasRuntimeRetention());
+  }
+ else   if (targetNode instanceof FieldNode) {
+    return ((FieldVisitor)visitor).visitAnnotation(annotationDescriptor,an.hasRuntimeRetention());
+  }
+ else   if (targetNode instanceof ClassNode) {
+    return ((ClassVisitor)visitor).visitAnnotation(annotationDescriptor,an.hasRuntimeRetention());
+  }
+  throwException("Cannot create an AnnotationVisitor. Please report Groovy bug");
+  return null;
+}

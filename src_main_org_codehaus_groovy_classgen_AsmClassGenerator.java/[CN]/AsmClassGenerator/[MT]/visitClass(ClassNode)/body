@@ -5,8 +5,9 @@
     this.outermostClass=null;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cw.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cw.visitSource(sourceFile,null);
+    visitAnnotations(classNode,cw);
     if (classNode.isInterface()) {
       ClassNode owner=classNode;
       if (owner instanceof InnerClassNode) {

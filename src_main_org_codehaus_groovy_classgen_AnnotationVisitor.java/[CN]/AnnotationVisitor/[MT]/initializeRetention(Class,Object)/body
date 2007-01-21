@@ -1,0 +1,13 @@
+{
+  Object retentionPolicyEnum=invoke(retentionClass,"value",new Class[0],retentionAnnotation,new Object[0]);
+  if (retentionPolicyEnum == null) {
+    addError("Cannot read @RetentionPolicy on the @" + this.annotationClass.getName() + ExtendedVerifier.JVM_ERROR_MESSAGE);
+    return;
+  }
+  if ("RUNTIME".equals(retentionPolicyEnum.toString())) {
+    this.annotation.setRuntimeRetention(true);
+  }
+ else   if ("SOURCE".equals(retentionPolicyEnum.toString())) {
+    this.annotation.setSourceRetention(true);
+  }
+}

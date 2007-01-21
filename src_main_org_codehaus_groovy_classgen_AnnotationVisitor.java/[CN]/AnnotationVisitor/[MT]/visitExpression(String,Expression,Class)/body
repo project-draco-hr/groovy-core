@@ -1,0 +1,17 @@
+{
+  if (attrType.isArray()) {
+    addError("Attribute '" + attrName + "' is of Array type which is not yet supported",attrAst);
+    return;
+  }
+  if (attrType.isPrimitive()) {
+    visitConstantExpression(attrName,(ConstantExpression)attrAst,attrType);
+  }
+ else   if (String.class.equals(attrType)) {
+    visitConstantExpression(attrName,(ConstantExpression)attrAst,String.class);
+  }
+ else   if (Class.class.equals(attrType)) {
+  }
+ else   if (isEnum(attrType)) {
+    visitEnumExpression(attrName,(PropertyExpression)attrAst,attrType);
+  }
+}

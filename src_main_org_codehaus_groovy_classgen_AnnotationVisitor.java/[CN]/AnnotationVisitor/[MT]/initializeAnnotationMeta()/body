@@ -1,0 +1,17 @@
+{
+  Object[] annotations=(Object[])invoke(this.annotationClass.getClass(),"getAnnotations",new Class[0],this.annotationClass,new Object[0]);
+  if (annotations == null) {
+    addError("Cannot retrieve annotation meta information. " + ExtendedVerifier.JVM_ERROR_MESSAGE);
+    return;
+  }
+  for (int i=0; i < annotations.length; i++) {
+    Class annotationType=(Class)invoke(Annotation.class,"annotationType",new Class[0],annotations[i],new Object[0]);
+    if (annotationType == null)     continue;
+    if ("java.lang.annotation.Retention".equals(annotationType.getName())) {
+      initializeRetention(annotationType,annotations[i]);
+    }
+ else     if ("java.lang.annotation.Target".equals(annotationType.getName())) {
+      initializeTarget(annotationType,annotations[i]);
+    }
+  }
+}

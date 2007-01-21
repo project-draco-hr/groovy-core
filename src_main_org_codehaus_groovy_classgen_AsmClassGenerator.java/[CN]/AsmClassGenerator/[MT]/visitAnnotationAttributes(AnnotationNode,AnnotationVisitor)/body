@@ -1,0 +1,27 @@
+{
+  Map constantAttrs=new HashMap();
+  Map enumAttrs=new HashMap();
+  Iterator mIt=an.getMembers().keySet().iterator();
+  while (mIt.hasNext()) {
+    String name=(String)mIt.next();
+    Expression expr=an.getMember(name);
+    if (expr instanceof ConstantExpression) {
+      constantAttrs.put(name,((ConstantExpression)expr).getValue());
+    }
+ else     if (expr instanceof ClassExpression) {
+      constantAttrs.put(name,Type.getType(expr.getType().getTypeClass()));
+    }
+ else     if (expr instanceof PropertyExpression) {
+      enumAttrs.put(name,expr);
+    }
+  }
+  for (Iterator it=constantAttrs.entrySet().iterator(); it.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)it.next();
+    av.visit((String)entry.getKey(),entry.getValue());
+  }
+  for (Iterator it=enumAttrs.entrySet().iterator(); it.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)it.next();
+    PropertyExpression propExp=(PropertyExpression)entry.getValue();
+    av.visitEnum((String)entry.getKey(),BytecodeHelper.getTypeDescription(propExp.getObjectExpression().getType()),String.valueOf(((ConstantExpression)propExp.getProperty()).getValue()));
+  }
+}

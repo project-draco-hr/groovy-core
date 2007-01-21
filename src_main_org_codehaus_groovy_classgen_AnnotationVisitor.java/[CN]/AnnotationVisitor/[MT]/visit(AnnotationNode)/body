@@ -1,0 +1,30 @@
+{
+  if (!isValidAnnotationClass(node)) {
+    node.setValid(false);
+    return node;
+  }
+  this.annotation=node;
+  this.annotationClass=node.getClassNode().getTypeClass();
+  extractAnnotationMeta();
+  if (this.errorCollector.hasErrors()) {
+    this.annotation.setValid(false);
+    return this.annotation;
+  }
+  Map attributes=this.annotation.getMembers();
+  for (Iterator it=attributes.entrySet().iterator(); it.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)it.next();
+    String attrName=(String)entry.getKey();
+    Expression attrExpr=(Expression)entry.getValue();
+    Class attrType=getAttributeType(attrName);
+    if (attrType == null) {
+      addError("Unknown attribute '" + attrName,attrExpr);
+      break;
+    }
+    visitExpression(attrName,attrExpr,attrType);
+  }
+  if (!this.requiredAttrTypes.isEmpty()) {
+    addError("Required attributes " + this.requiredAttrTypes.keySet() + " not found",this.annotation);
+  }
+  this.annotation.setValid(!this.errorCollector.hasErrors());
+  return this.annotation;
+}

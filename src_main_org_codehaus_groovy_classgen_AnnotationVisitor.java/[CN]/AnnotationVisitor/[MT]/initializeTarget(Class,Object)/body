@@ -1,0 +1,33 @@
+{
+  Object[] elementTypeEnum=(Object[])invoke(targetClass,"value",new Class[0],targetAnnotation,new Object[0]);
+  if (elementTypeEnum == null) {
+    addError("Cannot read @Target on the @" + this.annotationClass.getName() + ExtendedVerifier.JVM_ERROR_MESSAGE);
+    return;
+  }
+  int bitmap=0;
+  for (int i=0; i < elementTypeEnum.length; i++) {
+    String targetName=elementTypeEnum[i].toString();
+    if ("TYPE".equals(targetName)) {
+      bitmap|=AnnotationNode.TYPE_TARGET;
+    }
+ else     if ("CONSTRUCTOR".equals(targetName)) {
+      bitmap|=AnnotationNode.CONSTRUCTOR_TARGET;
+    }
+ else     if ("METHOD".equals(targetName)) {
+      bitmap|=AnnotationNode.METHOD_TARGET;
+    }
+ else     if ("FIELD".equals(targetName)) {
+      bitmap|=AnnotationNode.FIELD_TARGET;
+    }
+ else     if ("PARAMETER".equals(targetName)) {
+      bitmap|=AnnotationNode.PARAMETER_TARGET;
+    }
+ else     if ("LOCAL_VARIABLE".equals(targetName)) {
+      bitmap|=AnnotationNode.LOCAL_VARIABLE_TARGET;
+    }
+ else     if ("ANNOTATION".equals(targetName)) {
+      bitmap|=AnnotationNode.ANNOTATION_TARGET;
+    }
+  }
+  this.annotation.setAllowedTargets(bitmap);
+}
