@@ -2,25 +2,19 @@
   if (attributes == null || attributes.isEmpty()) {
     return;
   }
-  out.print(" ");
-  boolean first=true;
   for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry entry=(Map.Entry)iter.next();
-    if (first) {
-      first=false;
-    }
- else {
-      out.print(" ");
-    }
+    out.print(" ");
     out.print(entry.getKey().toString());
     out.print("=");
     Object value=entry.getValue();
+    out.print(quote);
     if (value instanceof String) {
-      out.print(quote);
       out.print((String)value);
-      out.print(quote);
-      continue;
     }
-    out.print(InvokerHelper.toString(value));
+ else {
+      out.print(InvokerHelper.toString(value));
+    }
+    out.print(quote);
   }
 }
