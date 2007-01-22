@@ -1,7 +1,6 @@
 {
   if (attrType.isArray()) {
-    addError("Attribute '" + attrName + "' is of Array type which is not yet supported",attrAst);
-    return;
+    visitListExpression(attrName,(ListExpression)attrAst,attrType.getComponentType());
   }
   if (attrType.isPrimitive()) {
     visitConstantExpression(attrName,(ConstantExpression)attrAst,attrType);

@@ -1,6 +1,7 @@
 {
   Map constantAttrs=new HashMap();
   Map enumAttrs=new HashMap();
+  Map arrayAttrs=new HashMap();
   Iterator mIt=an.getMembers().keySet().iterator();
   while (mIt.hasNext()) {
     String name=(String)mIt.next();
@@ -14,6 +15,9 @@
  else     if (expr instanceof PropertyExpression) {
       enumAttrs.put(name,expr);
     }
+ else     if (expr instanceof ListExpression) {
+      arrayAttrs.put(name,expr);
+    }
   }
   for (Iterator it=constantAttrs.entrySet().iterator(); it.hasNext(); ) {
     Map.Entry entry=(Map.Entry)it.next();
@@ -24,4 +28,5 @@
     PropertyExpression propExp=(PropertyExpression)entry.getValue();
     av.visitEnum((String)entry.getKey(),BytecodeHelper.getTypeDescription(propExp.getObjectExpression().getType()),String.valueOf(((ConstantExpression)propExp.getProperty()).getValue()));
   }
+  visitArrayAttributes(an,arrayAttrs,av);
 }
