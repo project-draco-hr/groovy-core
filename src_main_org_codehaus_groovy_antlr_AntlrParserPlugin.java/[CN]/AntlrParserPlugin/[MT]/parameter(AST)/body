@@ -1,5 +1,6 @@
 {
   List annotations=new ArrayList();
+  boolean variableParameterDef=isType(VARIABLE_PARAMETER_DEF,paramNode);
   AST node=paramNode.getFirstChild();
   int modifiers=0;
   if (isType(MODIFIERS,node)) {
@@ -9,6 +10,7 @@
   ClassNode type=ClassHelper.DYNAMIC_TYPE;
   if (isType(TYPE,node)) {
     type=makeType(node);
+    if (variableParameterDef)     type=type.makeArray();
     node=node.getNextSibling();
   }
   String name=identifier(node);
