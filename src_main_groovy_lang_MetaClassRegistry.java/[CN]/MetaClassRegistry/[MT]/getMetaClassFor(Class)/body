@@ -1,3 +1,9 @@
 {
-  return metaClassCreationHandle.create(theClass,this);
+  final Class theSuperClass=theClass.getSuperclass();
+  if (theSuperClass == null) {
+    return getMetaClass(Object.class).createMetaClass(theClass,this);
+  }
+ else {
+    return getMetaClass(theClass.getSuperclass()).createMetaClass(theClass,this);
+  }
 }

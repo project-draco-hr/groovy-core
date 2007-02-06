@@ -4,4 +4,18 @@
     registerMethods(DefaultGroovyMethods.class,true);
     registerMethods(DefaultGroovyStaticMethods.class,false);
   }
+  MetaClass objectMetaClass;
+  try {
+    final Class customMetaClass=Class.forName("groovy.runtime.metaclass.java.lang.ObjectMetaClass");
+    final Constructor customMetaClassConstructor=customMetaClass.getConstructor(new Class[]{MetaClassRegistry.class,Class.class});
+    objectMetaClass=(MetaClass)customMetaClassConstructor.newInstance(new Object[]{this,Object.class});
+  }
+ catch (  final ClassNotFoundException e) {
+    objectMetaClass=new MetaClassImpl(this,Object.class);
+  }
+catch (  final Exception e) {
+    throw new GroovyRuntimeException("Could not instantiate custom Metaclass for class: java.lang.Object. Reason: " + e,e);
+  }
+  objectMetaClass.initialize();
+  metaClasses.putStrong(Object.class,objectMetaClass);
 }
