@@ -18,13 +18,13 @@
     MetaMethod method=createMetaMethod(reflectionMethod);
     addMetaMethod(method);
   }
-  List methods=registry.getInstanceMethods();
+  List methods=((MetaClassRegistryImpl)registry).getInstanceMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Method element=(Method)iter.next();
     if (element.getParameterTypes()[0] != theClass)     continue;
     addNewInstanceMethod(element);
   }
-  methods=registry.getStaticMethods();
+  methods=((MetaClassRegistryImpl)registry).getStaticMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Method element=(Method)iter.next();
     if (element.getParameterTypes()[0] != theClass)     continue;

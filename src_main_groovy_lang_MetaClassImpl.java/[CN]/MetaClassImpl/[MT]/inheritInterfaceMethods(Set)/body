@@ -1,5 +1,5 @@
 {
-  List methods=registry.getInstanceMethods();
+  List methods=((MetaClassRegistryImpl)registry).getInstanceMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Method element=(Method)iter.next();
     Class dgmClass=element.getParameterTypes()[0];
@@ -19,7 +19,7 @@
       addMethodToList(list,method);
     }
   }
-  methods=registry.getStaticMethods();
+  methods=((MetaClassRegistryImpl)registry).getStaticMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Method element=(Method)iter.next();
     Class dgmClass=element.getParameterTypes()[0];
