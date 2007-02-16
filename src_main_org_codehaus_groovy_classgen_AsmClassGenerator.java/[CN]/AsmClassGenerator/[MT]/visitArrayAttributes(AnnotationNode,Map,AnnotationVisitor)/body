@@ -9,25 +9,34 @@
     if (values.size() > 0) {
       Expression expr=(Expression)values.get(0);
       int arrayElementType=-1;
-      if (expr instanceof ConstantExpression) {
+      if (expr instanceof AnnotationConstantExpression) {
         arrayElementType=1;
       }
- else       if (expr instanceof ClassExpression) {
+ else       if (expr instanceof ConstantExpression) {
         arrayElementType=2;
       }
- else       if (expr instanceof PropertyExpression) {
+ else       if (expr instanceof ClassExpression) {
         arrayElementType=3;
+      }
+ else       if (expr instanceof PropertyExpression) {
+        arrayElementType=4;
       }
       for (Iterator exprIt=listExpr.getExpressions().iterator(); exprIt.hasNext(); ) {
 switch (arrayElementType) {
 case 1:
-          av2.visit(null,((ConstantExpression)exprIt.next()).getValue());
-        break;
+          AnnotationNode atAttr=(AnnotationNode)((AnnotationConstantExpression)exprIt.next()).getValue();
+        AnnotationVisitor av3=av2.visitAnnotation(null,BytecodeHelper.getTypeDescription(atAttr.getClassNode()));
+      visitAnnotationAttributes(atAttr,av3);
+    av3.visitEnd();
+  break;
 case 2:
-      av2.visit(null,Type.getType(((Expression)exprIt.next()).getType().getTypeClass()));
-    break;
+av2.visit(null,((ConstantExpression)exprIt.next()).getValue());
+break;
 case 3:
-  PropertyExpression propExpr=(PropertyExpression)exprIt.next();
+av2.visit(null,Type.getType(((Expression)exprIt.next()).getType().getTypeClass()));
+break;
+case 4:
+PropertyExpression propExpr=(PropertyExpression)exprIt.next();
 av2.visitEnum(null,BytecodeHelper.getTypeDescription(propExpr.getObjectExpression().getType()),String.valueOf(((ConstantExpression)propExpr.getProperty()).getValue()));
 break;
 }

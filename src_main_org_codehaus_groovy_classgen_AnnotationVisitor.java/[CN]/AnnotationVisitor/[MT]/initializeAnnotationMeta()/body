@@ -1,11 +1,11 @@
 {
-  Object[] annotations=(Object[])invoke(this.annotationClass.getClass(),"getAnnotations",new Class[0],this.annotationClass,new Object[0]);
+  Object[] annotations=(Object[])invoke(this.annotationClass.getClass(),"getAnnotations",EMPTY_ARG_TYPES,this.annotationClass,EMPTY_ARGS);
   if (annotations == null) {
     addError("Cannot retrieve annotation meta information. " + ExtendedVerifier.JVM_ERROR_MESSAGE);
     return;
   }
   for (int i=0; i < annotations.length; i++) {
-    Class annotationType=(Class)invoke(this.annotationRootClass,"annotationType",new Class[0],annotations[i],new Object[0]);
+    Class annotationType=(Class)invoke(this.annotationRootClass,"annotationType",EMPTY_ARG_TYPES,annotations[i],EMPTY_ARGS);
     if (annotationType == null)     continue;
     if ("java.lang.annotation.Retention".equals(annotationType.getName())) {
       initializeRetention(annotationType,annotations[i]);
