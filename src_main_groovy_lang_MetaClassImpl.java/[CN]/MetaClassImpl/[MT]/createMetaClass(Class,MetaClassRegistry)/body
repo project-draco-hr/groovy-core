@@ -2,7 +2,7 @@
   try {
     final Class customMetaClass=Class.forName("groovy.runtime.metaclass." + theClass.getName() + "MetaClass");
     final Constructor customMetaClassConstructor=customMetaClass.getConstructor(new Class[]{MetaClassRegistry.class,Class.class});
-    return (MetaClass)customMetaClassConstructor.newInstance(new Object[]{this,theClass});
+    return (MetaClass)customMetaClassConstructor.newInstance(new Object[]{registry,theClass});
   }
  catch (  final ClassNotFoundException e) {
     return new MetaClassImpl(registry,theClass);
