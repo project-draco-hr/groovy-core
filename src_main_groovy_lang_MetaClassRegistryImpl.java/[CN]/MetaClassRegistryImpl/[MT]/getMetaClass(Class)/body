@@ -2,22 +2,7 @@
 synchronized (theClass) {
     MetaClass answer=(MetaClass)metaClasses.get(theClass);
     if (answer == null) {
-      if (theClass == Object.class) {
-        try {
-          final Class customMetaClass=Class.forName("groovy.runtime.metaclass.java.lang.ObjectMetaClass");
-          final Constructor customMetaClassConstructor=customMetaClass.getConstructor(new Class[]{MetaClassRegistry.class,Class.class});
-          answer=(MetaClass)customMetaClassConstructor.newInstance(new Object[]{this,Object.class});
-        }
- catch (        final ClassNotFoundException e) {
-          answer=new MetaClassImpl(this,Object.class);
-        }
-catch (        final Exception e) {
-          throw new GroovyRuntimeException("Could not instantiate custom Metaclass for class: java.lang.Object. Reason: " + e,e);
-        }
-      }
- else {
-        answer=getMetaClassFor(theClass);
-      }
+      answer=getMetaClassFor(theClass);
       answer.initialize();
       metaClasses.put(theClass,answer);
     }
