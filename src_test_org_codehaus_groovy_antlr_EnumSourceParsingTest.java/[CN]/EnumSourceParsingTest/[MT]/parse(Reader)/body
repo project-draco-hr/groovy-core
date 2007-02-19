@@ -1,0 +1,15 @@
+{
+  SourceBuffer sourceBuffer=new SourceBuffer();
+  UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(reader,sourceBuffer);
+  GroovyLexer lexer=new GroovyLexer(unicodeReader);
+  unicodeReader.setLexer(lexer);
+  GroovyRecognizer parser=GroovyRecognizer.make(lexer);
+  parser.setSourceBuffer(sourceBuffer);
+  parser.setFilename("EnumTestScript");
+  try {
+    parser.compilationUnit();
+  }
+ catch (  Exception ex) {
+    fail(ex.getMessage());
+  }
+}
