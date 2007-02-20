@@ -5,6 +5,9 @@
     MetaClass mc=registry.getMetaClass((Class)object);
     return mc.getProperty(sender,object,name,useSuper,false);
   }
+  if (!isStatic && this.isMap) {
+    return ((Map)object).get(name);
+  }
   MetaMethod method=null;
   Object[] arguments=EMPTY_ARGUMENTS;
   MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);

@@ -7,6 +7,10 @@
     return;
   }
   if (newValue instanceof Wrapper)   newValue=((Wrapper)newValue).unwrap();
+  if (!isStatic && this.isMap) {
+    ((Map)object).put(name,newValue);
+    return;
+  }
   MetaMethod method=null;
   Object[] arguments=null;
   MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
