@@ -10,13 +10,13 @@
   String type=BytecodeHelper.getClassInternalName(callClass.getName());
   String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
   if (method.isStatic()) {
-    loadParameters(method,3);
+    loadParameters(method,3,cv);
     cv.visitMethodInsn(INVOKESTATIC,type,method.getName(),descriptor);
   }
  else {
     cv.visitVarInsn(ALOAD,2);
     helper.doCast(callClass);
-    loadParameters(method,3);
+    loadParameters(method,3,cv);
     cv.visitMethodInsn((useInterface) ? INVOKEINTERFACE : INVOKEVIRTUAL,type,method.getName(),descriptor);
   }
   helper.box(method.getReturnType());
