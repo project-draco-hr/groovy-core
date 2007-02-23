@@ -1,5 +1,9 @@
 {
   URL script=loader.getResource("groovy/ArrayTest.groovy");
-  GroovyCodeSource gcs=new GroovyCodeSource(script);
-  Class result=loader.parseClass(gcs);
+  try {
+    new GroovyCodeSource(script);
+  }
+ catch (  RuntimeException re) {
+    assertEquals("Could not construct a GroovyCodeSource from a null URL",re.getMessage());
+  }
 }
