@@ -1,5 +1,19 @@
 {
   Class theClass=object.getClass();
+  if (theClass.isArray() && methodName.equals("equals") && arguments.getClass().isArray()) {
+    Object arg=((Object[])arguments)[0];
+    if (arg.getClass().isArray()) {
+      return Boolean.valueOf(DefaultGroovyMethods.equals((Object[])object,(Object[])arg));
+    }
+    return Boolean.valueOf(DefaultGroovyMethods.equals((Object[])object,(List)arg));
+  }
+ else   if (object instanceof List && methodName.equals("equals") && arguments.getClass().isArray()) {
+    Object arg=((Object[])arguments)[0];
+    if (arg.getClass().isArray()) {
+      return Boolean.valueOf(DefaultGroovyMethods.equals((List)object,(Object[])arg));
+    }
+    return Boolean.valueOf(DefaultGroovyMethods.equals((List)object,(List)arg));
+  }
   MetaClass metaClass=metaRegistry.getMetaClass(theClass);
   return metaClass.invokeMethod(object,methodName,asArray(arguments));
 }
