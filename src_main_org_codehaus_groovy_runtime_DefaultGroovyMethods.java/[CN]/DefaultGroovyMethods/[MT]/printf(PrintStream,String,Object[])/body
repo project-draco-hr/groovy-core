@@ -1,0 +1,20 @@
+{
+  char version=System.getProperty("java.version").charAt(2);
+  if (version >= '5') {
+    try {
+      out.getClass().getMethod("printf",new Class[]{String.class,Object[].class}).invoke(out,new Object[]{format,values});
+    }
+ catch (    NoSuchMethodException nsme) {
+      throw new RuntimeException("getMethod threw a NoSuchMethodException.  This is impossible.");
+    }
+catch (    IllegalAccessException iae) {
+      throw new RuntimeException("invoke threw a IllegalAccessException.  This is impossible.");
+    }
+catch (    java.lang.reflect.InvocationTargetException ite) {
+      throw new RuntimeException("invoke threw a InvocationTargetException.  This is impossible.");
+    }
+  }
+ else {
+    throw new RuntimeException("printf requires JDK1.5 or later.");
+  }
+}

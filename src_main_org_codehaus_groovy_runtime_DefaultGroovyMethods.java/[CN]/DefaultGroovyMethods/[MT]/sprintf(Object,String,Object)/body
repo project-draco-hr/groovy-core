@@ -1,0 +1,75 @@
+{
+  if (arg instanceof Object[]) {
+    return sprintf(self,format,(Object[])arg);
+  }
+  if (arg instanceof List) {
+    return sprintf(self,format,((List)arg).toArray());
+  }
+  if (!arg.getClass().isArray()) {
+    Object[] o=(Object[])java.lang.reflect.Array.newInstance(arg.getClass(),1);
+    o[0]=arg;
+    return sprintf(self,format,o);
+  }
+  Object[] ans;
+  String elemType=arg.getClass().getName();
+  if (elemType.equals("[I")) {
+    int[] ia=(int[])arg;
+    ans=new Integer[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Integer(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[C")) {
+    char[] ia=(char[])arg;
+    ans=new Character[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Character(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[Z")) {
+    boolean[] ia=(boolean[])arg;
+    ans=new Boolean[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Boolean(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[B")) {
+    byte[] ia=(byte[])arg;
+    ans=new Byte[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Byte(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[S")) {
+    short[] ia=(short[])arg;
+    ans=new Short[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Short(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[F")) {
+    float[] ia=(float[])arg;
+    ans=new Float[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Float(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[J")) {
+    long[] ia=(long[])arg;
+    ans=new Long[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Long(ia[i]);
+    }
+  }
+ else   if (elemType.equals("[D")) {
+    double[] ia=(double[])arg;
+    ans=new Double[ia.length];
+    for (int i=0; i < ia.length; i++) {
+      ans[i]=new Double(ia[i]);
+    }
+  }
+ else {
+    throw new RuntimeException("sprintf(String," + arg + ")");
+  }
+  return sprintf(self,format,(Object[])ans);
+}
