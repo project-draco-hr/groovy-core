@@ -10,9 +10,12 @@
     return object;
   }
   if (Collection.class.isAssignableFrom(type)) {
+    int modifiers=type.getModifiers();
+    Collection answer;
+    if (object instanceof Collection && type.isAssignableFrom(HashSet.class) && (type == HashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+      return new HashSet((Collection)object);
+    }
     if (object.getClass().isArray()) {
-      Collection answer;
-      int modifiers=type.getModifiers();
       if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
         answer=new ArrayList();
       }
