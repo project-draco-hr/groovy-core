@@ -3,11 +3,7 @@
   Package pack=getClassUnderInspection().getPackage();
   result[CLASS_PACKAGE_IDX]="package " + ((pack == null) ? NOT_APPLICABLE : pack.getName());
   String modifiers=Modifier.toString(getClassUnderInspection().getModifiers());
-  String classOrInterface="class";
-  if (getClassUnderInspection().isInterface()) {
-    classOrInterface="interface";
-  }
-  result[CLASS_CLASS_IDX]=modifiers + " " + classOrInterface+ " "+ shortName(getClassUnderInspection());
+  result[CLASS_CLASS_IDX]=modifiers + " class " + shortName(getClassUnderInspection());
   result[CLASS_INTERFACE_IDX]="implements ";
   Class[] interfaces=getClassUnderInspection().getInterfaces();
   for (int i=0; i < interfaces.length; i++) {
