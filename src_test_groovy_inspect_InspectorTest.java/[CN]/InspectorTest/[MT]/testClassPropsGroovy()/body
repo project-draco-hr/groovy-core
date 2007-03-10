@@ -1,0 +1,10 @@
+{
+  Object testObject=new GroovyShell().evaluate("class Test {def meth1(a,b){}}\nreturn new Test()");
+  Inspector insp=new Inspector(testObject);
+  String[] classProps=insp.getClassProps();
+  assertEquals("package n/a",classProps[Inspector.CLASS_PACKAGE_IDX]);
+  assertEquals("public class Test",classProps[Inspector.CLASS_CLASS_IDX]);
+  assertEquals("implements GroovyObject ",classProps[Inspector.CLASS_INTERFACE_IDX]);
+  assertEquals("extends Object",classProps[Inspector.CLASS_SUPERCLASS_IDX]);
+  assertEquals("is Primitive: false, is Array: false, is Groovy: true",classProps[Inspector.CLASS_OTHER_IDX]);
+}
