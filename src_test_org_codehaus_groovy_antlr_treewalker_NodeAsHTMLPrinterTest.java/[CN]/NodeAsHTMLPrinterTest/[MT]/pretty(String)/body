@@ -1,0 +1,18 @@
+{
+  GroovyRecognizer parser;
+  SourceBuffer sourceBuffer=new SourceBuffer();
+  UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new StringReader(input),sourceBuffer);
+  GroovyLexer lexer=new GroovyLexer(unicodeReader);
+  unicodeReader.setLexer(lexer);
+  parser=GroovyRecognizer.make(lexer);
+  parser.setSourceBuffer(sourceBuffer);
+  String[] tokenNames;
+  tokenNames=parser.getTokenNames();
+  parser.compilationUnit();
+  AST ast=parser.getAST();
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  Visitor visitor=new NodeAsHTMLPrinter(new PrintStream(baos),tokenNames);
+  AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
+  traverser.process(ast);
+  return new String(baos.toByteArray());
+}
