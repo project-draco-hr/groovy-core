@@ -1,0 +1,25 @@
+{
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  GroovyRecognizer parser;
+  SourceBuffer sourceBuffer=new SourceBuffer();
+  UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new StringReader(input),sourceBuffer);
+  GroovyLexer lexer=new GroovyLexer(unicodeReader);
+  unicodeReader.setLexer(lexer);
+  parser=GroovyRecognizer.make(lexer);
+  parser.setSourceBuffer(sourceBuffer);
+  String[] tokenNames=parser.getTokenNames();
+  parser.compilationUnit();
+  AST ast=parser.getAST();
+  Visitor directVisitor=new SourcePrinter(new PrintStream(baos),tokenNames,false);
+  AntlrASTProcessor traverser=new SourceCodeTraversal(directVisitor);
+  traverser.process(ast);
+  String directResult=new String(baos.toByteArray());
+  baos.reset();
+  List wrappedVisitors=new ArrayList();
+  wrappedVisitors.add(directVisitor);
+  Visitor compositeVisitor=new CompositeVisitor(wrappedVisitors);
+  traverser=new SourceCodeTraversal(compositeVisitor);
+  traverser.process(ast);
+  String compositeResult=new String(baos.toByteArray());
+  assertEquals(directResult,compositeResult);
+}
