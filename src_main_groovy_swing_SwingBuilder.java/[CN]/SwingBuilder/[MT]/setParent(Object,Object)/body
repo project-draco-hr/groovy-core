@@ -24,11 +24,12 @@
     }
   }
  else   if (child instanceof LayoutManager) {
+    Container target=(Container)parent;
     if (parent instanceof RootPaneContainer) {
       RootPaneContainer rpc=(RootPaneContainer)parent;
-      parent=rpc.getContentPane();
+      target=rpc.getContentPane();
     }
-    InvokerHelper.setProperty(parent,"layout",child);
+    InvokerHelper.setProperty(target,"layout",child);
   }
  else   if (child instanceof JToolTip && parent instanceof JComponent) {
     ((JToolTip)child).setComponent((JComponent)parent);

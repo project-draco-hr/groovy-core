@@ -16,27 +16,25 @@
   }
   if (widget == null) {
     Factory factory=(Factory)factories.get(name);
-    if (factory != null) {
-      try {
-        widget=factory.newInstance(attributes);
-        if (widgetName != null) {
-          widgets.put(widgetName,widget);
-        }
-        if (widget == null) {
-          log.log(Level.WARNING,"Factory for name: " + name + " returned null");
-        }
- else {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("For name: " + name + " created widget: "+ widget);
-          }
-        }
+    if (factory == null) {
+      log.log(Level.WARNING,"Could not find match for name: " + name);
+      return null;
+    }
+    try {
+      widget=factory.newInstance(attributes);
+      if (widget == null) {
+        log.log(Level.WARNING,"Factory for name: " + name + " returned null");
+        return null;
       }
- catch (      Exception e) {
-        throw new RuntimeException("Failed to create component for" + name + " reason: "+ e,e);
+      if (widgetName != null) {
+        widgets.put(widgetName,widget);
+      }
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("For name: " + name + " created widget: "+ widget);
       }
     }
- else {
-      log.log(Level.WARNING,"Could not find match for name: " + name);
+ catch (    Exception e) {
+      throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
     }
   }
   handleWidgetAttributes(widget,attributes);
