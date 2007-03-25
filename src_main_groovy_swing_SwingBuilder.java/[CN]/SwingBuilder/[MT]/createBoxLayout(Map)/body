@@ -7,10 +7,7 @@
       Integer i=(Integer)axisObject;
       axis=i.intValue();
     }
-    Container target=(Container)parent;
-    if (target instanceof RootPaneContainer) {
-      target=((RootPaneContainer)target).getContentPane();
-    }
+    Container target=getLayoutTarget(parent);
     BoxLayout answer=new BoxLayout(target,axis);
     InvokerHelper.setProperty(target,"layout",answer);
     return answer;
