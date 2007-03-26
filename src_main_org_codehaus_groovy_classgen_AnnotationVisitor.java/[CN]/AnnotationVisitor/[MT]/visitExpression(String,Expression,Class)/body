@@ -8,15 +8,15 @@
     }
   }
   if (attrType.isPrimitive()) {
-    visitConstantExpression(attrName,(ConstantExpression)attrAst,attrType);
+    visitConstantExpression(attrName,(ConstantExpression)attrAst,ClassHelper.getWrapper(ClassHelper.make(attrType)));
   }
  else   if (String.class.equals(attrType)) {
-    visitConstantExpression(attrName,(ConstantExpression)attrAst,String.class);
+    visitConstantExpression(attrName,(ConstantExpression)attrAst,ClassHelper.make(String.class));
   }
  else   if (Class.class.equals(attrType)) {
   }
  else   if (isEnum(attrType)) {
-    visitEnumExpression(attrName,(PropertyExpression)attrAst,attrType);
+    visitEnumExpression(attrName,(PropertyExpression)attrAst,ClassHelper.make(attrType));
   }
  else   if (isAnnotation(attrType)) {
     visitAnnotationExpression(attrName,(AnnotationConstantExpression)attrAst,attrType);

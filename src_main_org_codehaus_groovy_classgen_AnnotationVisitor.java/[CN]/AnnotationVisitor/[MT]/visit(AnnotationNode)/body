@@ -4,8 +4,13 @@
     return node;
   }
   this.annotation=node;
+  if (!node.getClassNode().isResolved()) {
+    addError("Current type was not yet resolved. Cannot introspect it.");
+    node.setValid(false);
+    return node;
+  }
   this.annotationClass=node.getClassNode().getTypeClass();
-  extractAnnotationMeta();
+  extractAnnotationMeta(this.annotationClass);
   if (this.errorCollector.hasErrors()) {
     this.annotation.setValid(false);
     return this.annotation;
