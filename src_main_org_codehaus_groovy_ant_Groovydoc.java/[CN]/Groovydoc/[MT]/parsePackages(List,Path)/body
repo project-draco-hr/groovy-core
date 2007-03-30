@@ -1,0 +1,86 @@
+{
+  List addedPackages=new ArrayList();
+  List dirSets=new ArrayList(packageSets);
+  if (sourcePath != null) {
+    PatternSet ps=new PatternSet();
+    if (packageNames.size() > 0) {
+      Iterator itr=packageNames.iterator();
+      while (itr.hasNext()) {
+        String p=(String)itr.next();
+        String pkg=p.replace('.','/');
+        if (pkg.endsWith("*")) {
+          pkg+="*";
+        }
+        ps.createInclude().setName(pkg);
+      }
+    }
+ else {
+      ps.createInclude().setName("**");
+    }
+    Iterator itr2=excludePackageNames.iterator();
+    while (itr2.hasNext()) {
+      String p=(String)itr2.next();
+      String pkg=p.replace('.','/');
+      if (pkg.endsWith("*")) {
+        pkg+="*";
+      }
+      ps.createExclude().setName(pkg);
+    }
+    String[] pathElements=sourcePath.list();
+    for (int i=0; i < pathElements.length; i++) {
+      File dir=new File(pathElements[i]);
+      if (dir.isDirectory()) {
+        DirSet ds=new DirSet();
+        ds.setDefaultexcludes(useDefaultExcludes);
+        ds.setDir(dir);
+        ds.createPatternSet().addConfiguredPatternset(ps);
+        dirSets.add(ds);
+      }
+ else {
+        log("Skipping " + pathElements[i] + " since it is no directory.",Project.MSG_WARN);
+      }
+    }
+  }
+  Iterator itr3=dirSets.iterator();
+  while (itr3.hasNext()) {
+    DirSet ds=(DirSet)itr3.next();
+    File baseDir=ds.getDir(getProject());
+    log("scanning " + baseDir + " for packages.",Project.MSG_DEBUG);
+    DirectoryScanner dsc=ds.getDirectoryScanner(getProject());
+    String[] dirs=dsc.getIncludedDirectories();
+    boolean containsPackages=false;
+    for (int i=0; i < dirs.length; i++) {
+      File pd=new File(baseDir,dirs[i]);
+      String[] files=pd.list(new FilenameFilter(){
+        public boolean accept(        File dir1,        String name){
+          return name.endsWith(".java") || name.endsWith(".groovy") || name.endsWith(".gv")|| name.endsWith(".gvy")|| name.endsWith(".gsh")|| (includeNoSourcePackages && name.equals("package.html"));
+        }
+      }
+);
+      Iterator itr4=Arrays.asList(files).iterator();
+      while (itr4.hasNext()) {
+        String filename=(String)itr4.next();
+        sourceFilesToDoc.add(dirs[i] + File.separator + filename);
+      }
+      if (files.length > 0) {
+        if ("".equals(dirs[i])) {
+          log(baseDir + " contains source files in the default package," + " you must specify them as source files"+ " not packages.",Project.MSG_WARN);
+        }
+ else {
+          containsPackages=true;
+          String packageName=dirs[i].replace(File.separatorChar,'.');
+          if (!addedPackages.contains(packageName)) {
+            addedPackages.add(packageName);
+            resultantPackages.add(packageName);
+          }
+        }
+      }
+    }
+    if (containsPackages) {
+      sp.createPathElement().setLocation(baseDir);
+    }
+ else {
+      log(baseDir + " doesn\'t contain any packages, dropping it.",Project.MSG_VERBOSE);
+    }
+  }
+}

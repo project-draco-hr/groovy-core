@@ -1,0 +1,18 @@
+{
+  String templatePath=template;
+  String templateWithBindingApplied="";
+  try {
+    Template t=(Template)docTemplates.get(templatePath);
+    if (t == null) {
+      t=engine.createTemplate(resourceManager.getReader(templatePath));
+      docTemplates.put(templatePath,t);
+    }
+    Map binding=new HashMap();
+    binding.put("rootDoc",rootDoc);
+    templateWithBindingApplied=t.make(binding).toString();
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+  }
+  return templateWithBindingApplied;
+}

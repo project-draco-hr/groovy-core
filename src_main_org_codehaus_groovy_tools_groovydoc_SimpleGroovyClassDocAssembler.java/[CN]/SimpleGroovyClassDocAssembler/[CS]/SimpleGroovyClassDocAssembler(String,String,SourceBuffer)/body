@@ -1,0 +1,14 @@
+{
+  this.sourceBuffer=sourceBuffer;
+  this.packagePath=packagePath;
+  stack=new Stack();
+  classDocs=new HashMap();
+  String className=file;
+  if (file != null) {
+    int idx=file.lastIndexOf(".");
+    className=file.substring(0,idx);
+  }
+  currentClassDoc=new SimpleGroovyClassDoc(className);
+  currentClassDoc.setFullPathName(packagePath + "/" + className);
+  classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+}

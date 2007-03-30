@@ -1,0 +1,24 @@
+{
+  if (visit == OPENING_VISIT) {
+    String methodName=t.childOfType(GroovyTokenTypes.IDENT).getText();
+    currentMethodDoc=new SimpleGroovyMethodDoc(methodName);
+    String commentText=getJavaDocCommentsBeforeNode(t);
+    currentMethodDoc.setRawCommentText(commentText);
+    String returnTypeName=getTypeNodeAsText(t.childOfType(GroovyTokenTypes.TYPE),"def");
+    SimpleGroovyType returnType=new SimpleGroovyType(returnTypeName);
+    currentMethodDoc.setReturnType(returnType);
+    GroovySourceAST parametersNode=t.childOfType(GroovyTokenTypes.PARAMETERS);
+    if (parametersNode != null && parametersNode.getNumberOfChildren() > 0) {
+      GroovySourceAST currentNode=(GroovySourceAST)parametersNode.getFirstChild();
+      while (currentNode != null) {
+        String parameterTypeName=getTypeNodeAsText(currentNode.childOfType(GroovyTokenTypes.TYPE),"def");
+        String parameterName=getText(currentNode.childOfType(GroovyTokenTypes.IDENT));
+        SimpleGroovyParameter parameter=new SimpleGroovyParameter(parameterName);
+        parameter.setTypeName(parameterTypeName);
+        currentMethodDoc.add(parameter);
+        currentNode=(GroovySourceAST)currentNode.getNextSibling();
+      }
+    }
+    currentClassDoc.add(currentMethodDoc);
+  }
+}

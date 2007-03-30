@@ -1,0 +1,11 @@
+{
+  if (visit == OPENING_VISIT) {
+    String className=t.childOfType(GroovyTokenTypes.IDENT).getText();
+    currentClassDoc=(SimpleGroovyClassDoc)classDocs.get(packagePath + "/" + className);
+    if (currentClassDoc == null) {
+      currentClassDoc=new SimpleGroovyClassDoc(className);
+    }
+    currentClassDoc.setFullPathName(packagePath + "/" + currentClassDoc.name());
+    classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+  }
+}

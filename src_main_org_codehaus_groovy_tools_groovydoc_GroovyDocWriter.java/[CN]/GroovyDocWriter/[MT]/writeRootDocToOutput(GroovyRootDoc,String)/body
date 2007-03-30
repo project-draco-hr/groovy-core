@@ -1,0 +1,10 @@
+{
+  Iterator templates=templateEngine.docTemplatesIterator();
+  while (templates.hasNext()) {
+    String template=(String)templates.next();
+    String renderedSrc=templateEngine.applyRootDocTemplate(template,rootDoc);
+    String destFileName=destdir + File.separator + tool.getFile(template);
+    System.out.println("Generating " + destFileName);
+    output.writeToOutput(destFileName,renderedSrc);
+  }
+}
