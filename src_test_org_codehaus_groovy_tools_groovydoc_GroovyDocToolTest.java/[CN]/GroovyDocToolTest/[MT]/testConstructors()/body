@@ -1,0 +1,9 @@
+{
+  xmlTool.add("groovy" + FS + "ui/Console.groovy");
+  MockOutputTool output=new MockOutputTool();
+  xmlTool.renderToOutput(output,"mock/doc");
+  String consoleDoc=output.getText("mock/doc/groovy/ui/Console.html");
+  System.out.println(consoleDoc);
+  assertTrue(consoleDoc.indexOf("<constructor name=\"Console\">") > 0);
+  assertTrue(consoleDoc.indexOf("<parameter type=\"ClassLoader\" name=\"parent\" />") > 0);
+}
