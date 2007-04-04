@@ -3,5 +3,13 @@
     if (t.getType() == LITERAL_public) {
       t.setType(EXPR);
     }
+    if (t.getType() == METHOD_DEF) {
+      String methodName=t.childOfType(IDENT).getText();
+      if (methodName != null && methodName.length() > 0) {
+        if (Character.isUpperCase(methodName.charAt(0))) {
+          t.setType(CTOR_IDENT);
+        }
+      }
+    }
   }
 }
