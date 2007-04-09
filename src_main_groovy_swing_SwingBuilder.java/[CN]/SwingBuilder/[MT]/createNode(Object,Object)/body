@@ -1,18 +1,3 @@
 {
-  if (passThroughNodes.containsKey(name) && (value != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(value.getClass())) {
-    if (value instanceof Window) {
-      containingWindows.add(value);
-    }
-    return value;
-  }
- else   if (value instanceof String) {
-    Object widget=createNode(name);
-    if (widget != null) {
-      InvokerHelper.invokeMethod(widget,"setText",value);
-    }
-    return widget;
-  }
- else {
-    throw new MissingMethodException((String)name,getClass(),new Object[]{value},false);
-  }
+  return createNode(name,Collections.EMPTY_MAP,value);
 }
