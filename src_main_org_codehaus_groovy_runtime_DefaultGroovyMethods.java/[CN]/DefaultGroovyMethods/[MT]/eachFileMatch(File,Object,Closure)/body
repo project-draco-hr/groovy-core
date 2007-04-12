@@ -1,10 +1,3 @@
 {
-  checkDir(self);
-  File[] files=self.listFiles();
-  MetaClass metaClass=InvokerHelper.getMetaClass(filter);
-  for (int i=0; i < files.length; i++) {
-    if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",files[i].getName()))) {
-      closure.call(files[i]);
-    }
-  }
+  eachFileMatch(self,filter,closure,false);
 }
