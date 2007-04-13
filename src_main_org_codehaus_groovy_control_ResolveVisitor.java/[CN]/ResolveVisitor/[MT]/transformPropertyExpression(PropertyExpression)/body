@@ -1,10 +1,14 @@
 {
   boolean itlp=isTopLevelProperty;
+  boolean ipe=inPropertyExpression;
   Expression objectExpression=pe.getObjectExpression();
+  inPropertyExpression=true;
   isTopLevelProperty=!(objectExpression.getClass() == PropertyExpression.class);
   objectExpression=transform(objectExpression);
+  inPropertyExpression=false;
   Expression property=transform(pe.getProperty());
   isTopLevelProperty=itlp;
+  inPropertyExpression=ipe;
   boolean spreadSafe=pe.isSpreadSafe();
   pe=new PropertyExpression(objectExpression,property,pe.isSafe());
   pe.setSpreadSafe(spreadSafe);
@@ -18,6 +22,10 @@
     ClassNode type=ClassHelper.make(ce.getType().getName() + "$" + pe.getPropertyAsString());
     if (resolve(type,false,false,false))     return new ClassExpression(type);
   }
-  if (isTopLevelProperty)   return correctClassClassChain(pe);
-  return pe;
+  Expression ret=pe;
+  if (isTopLevelProperty) {
+    checkStaticScope(pe);
+    ret=correctClassClassChain(pe);
+  }
+  return ret;
 }
