@@ -1,5 +1,5 @@
 {
-  if (v.isInStaticContext() || !currentScope.isInStaticContext())   return;
+  if (inPropertyExpression || v.isInStaticContext() || !currentScope.isInStaticContext())   return;
   String msg=v.getName() + " is declared in a dynamic context, but you tried to" + " access it from a static context.";
   addError(msg,expr);
   DynamicVariable v2=new DynamicVariable(v.getName(),currentScope.isInStaticContext());
