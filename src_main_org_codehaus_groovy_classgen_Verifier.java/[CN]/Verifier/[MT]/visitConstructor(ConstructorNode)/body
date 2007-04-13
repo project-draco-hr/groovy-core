@@ -6,6 +6,7 @@
       if (!firstMethodCall)       return;
       firstMethodCall=false;
       String name=call.getMethodAsString();
+      if (name == null)       return;
       if (!name.equals("super") && !name.equals("this"))       return;
       type=name;
       call.getArguments().visit(this);
