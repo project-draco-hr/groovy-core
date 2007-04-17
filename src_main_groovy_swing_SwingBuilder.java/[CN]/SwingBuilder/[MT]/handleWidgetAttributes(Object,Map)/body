@@ -7,19 +7,23 @@
       defaultAction.setClosure(closure);
     }
     Object accel=attributes.remove("accelerator");
-    KeyStroke stroke=null;
-    if (accel instanceof KeyStroke) {
-      stroke=(KeyStroke)accel;
+    if (accel != null) {
+      KeyStroke stroke=null;
+      if (accel instanceof KeyStroke) {
+        stroke=(KeyStroke)accel;
+      }
+ else {
+        stroke=KeyStroke.getKeyStroke(accel.toString());
+      }
+      action.putValue(Action.ACCELERATOR_KEY,stroke);
     }
- else     if (accel != null) {
-      stroke=KeyStroke.getKeyStroke(accel.toString());
-    }
-    action.putValue(Action.ACCELERATOR_KEY,stroke);
     Object mnemonic=attributes.remove("mnemonic");
-    if ((mnemonic != null) && !(mnemonic instanceof Number)) {
-      mnemonic=new Integer(mnemonic.toString().charAt(0));
+    if (mnemonic != null) {
+      if (!(mnemonic instanceof Number)) {
+        mnemonic=new Integer(mnemonic.toString().charAt(0));
+      }
+      action.putValue(Action.MNEMONIC_KEY,mnemonic);
     }
-    action.putValue(Action.MNEMONIC_KEY,mnemonic);
     for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
       Map.Entry entry=(Map.Entry)iter.next();
       String actionName=(String)entry.getKey();
@@ -37,11 +41,13 @@
       }
     }
     Object mnemonic=attributes.remove("mnemonic");
-    if ((mnemonic != null) && (mnemonic instanceof Number)) {
-      InvokerHelper.setProperty(widget,"mnemonic",new Character((char)((Number)mnemonic).intValue()));
-    }
- else     if (mnemonic != null) {
-      InvokerHelper.setProperty(widget,"mnemonic",new Character(mnemonic.toString().charAt(0)));
+    if (mnemonic != null) {
+      if (mnemonic instanceof Number) {
+        InvokerHelper.setProperty(widget,"mnemonic",new Character((char)((Number)mnemonic).intValue()));
+      }
+ else {
+        InvokerHelper.setProperty(widget,"mnemonic",new Character(mnemonic.toString().charAt(0)));
+      }
     }
     for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
       Map.Entry entry=(Map.Entry)iter.next();
