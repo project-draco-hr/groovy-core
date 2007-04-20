@@ -16,7 +16,13 @@
     reset();
     if (command.length() > 0) {
       try {
+        if (this.beforeExecution != null) {
+          this.beforeExecution.call();
+        }
         lastResult=shell.evaluate(command,"CommandLine.groovy");
+        if (this.afterExecution != null) {
+          this.afterExecution.call();
+        }
         out.println("\n===> " + lastResult);
       }
  catch (      CompilationFailedException e) {
