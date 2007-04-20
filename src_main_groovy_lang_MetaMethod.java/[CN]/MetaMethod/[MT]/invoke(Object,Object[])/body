@@ -14,7 +14,10 @@
       return method.invoke(object,arguments);
     }
   }
- catch (  Exception e) {
+ catch (  InvocationTargetException ite) {
+    throw new InvokerInvocationException(ite.getCause());
+  }
+catch (  Exception e) {
     throw new InvokerInvocationException(e);
   }
 }
