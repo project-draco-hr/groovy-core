@@ -2,49 +2,35 @@
   String widgetName=(String)attributes.remove("id");
   constraints=attributes.remove("constraints");
   Object widget=null;
-  if (passThroughNodes.containsKey(name)) {
-    widget=value;
+  Factory factory=(Factory)factories.get(name);
+  if (factory == null) {
+    log.log(Level.WARNING,"Could not find match for name: " + name);
+    return null;
+  }
+  try {
+    widget=factory.newInstance(this,name,value,attributes);
     if (widget == null) {
-      widget=attributes.remove(name);
-    }
-    if ((widget != null) && ((Class)passThroughNodes.get(name)).isAssignableFrom(widget.getClass())) {
-      if (widget instanceof Window) {
-        containingWindows.add(widget);
-      }
-    }
- else {
-      widget=null;
-    }
-  }
- else   if ((value != null) && !(value instanceof String)) {
-    throw new MissingMethodException((String)name,getClass(),new Object[]{value},false);
-  }
-  if (widget == null) {
-    Factory factory=(Factory)factories.get(name);
-    if (factory == null) {
-      log.log(Level.WARNING,"Could not find match for name: " + name);
+      log.log(Level.WARNING,"Factory for name: " + name + " returned null");
       return null;
     }
-    try {
-      widget=factory.newInstance(attributes);
-      if (widget == null) {
-        log.log(Level.WARNING,"Factory for name: " + name + " returned null");
-        return null;
-      }
-      if (widgetName != null) {
-        widgets.put(widgetName,widget);
-      }
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("For name: " + name + " created widget: "+ widget);
-      }
+    if (widgetName != null) {
+      widgets.put(widgetName,widget);
     }
- catch (    Exception e) {
-      throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("For name: " + name + " created widget: "+ widget);
     }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
   }
   handleWidgetAttributes(widget,attributes);
   if ((widget != null) && (value != null) && (widget != value)) {
-    InvokerHelper.invokeMethod(widget,"setText",value.toString());
+    if (value instanceof String) {
+      InvokerHelper.invokeMethod(widget,"setText",(String)value);
+    }
+ else {
+      throw new RuntimeException("The first argument of " + name + " must be a String.");
+    }
   }
   return widget;
 }

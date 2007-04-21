@@ -1,0 +1,16 @@
+{
+  Dimension dim;
+  Object o=properties.remove("size");
+  if (o instanceof Dimension) {
+    dim=(Dimension)o;
+  }
+ else {
+    int w, h;
+    o=properties.remove("width");
+    w=((o instanceof Number)) ? ((Number)o).intValue() : 6;
+    o=properties.remove("height");
+    h=((o instanceof Number)) ? ((Number)o).intValue() : 6;
+    dim=new Dimension(w,h);
+  }
+  return Box.createRigidArea(dim);
+}

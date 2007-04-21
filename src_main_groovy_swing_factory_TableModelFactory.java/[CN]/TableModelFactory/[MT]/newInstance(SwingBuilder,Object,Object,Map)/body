@@ -1,0 +1,19 @@
+{
+  if (value instanceof TableModel) {
+    return value;
+  }
+ else   if (properties.get(name) instanceof TableModel) {
+    return properties.remove(name);
+  }
+ else {
+    ValueModel model=(ValueModel)properties.remove("model");
+    if (model == null) {
+      Object list=properties.remove("list");
+      if (list == null) {
+        list=new ArrayList();
+      }
+      model=new ValueHolder(list);
+    }
+    return new DefaultTableModel(model);
+  }
+}

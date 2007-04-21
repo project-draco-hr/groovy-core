@@ -1,52 +1,21 @@
 {
-  registerBeanFactory("action",DefaultAction.class);
-  passThroughNodes.put("action",Action.class);
+  registerFactory("action",new ActionFactory());
   registerBeanFactory("buttonGroup",ButtonGroup.class);
-  registerFactory("map",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return properties;
-    }
-  }
-);
-  passThroughNodes.put("widget",Component.class);
-  registerFactory("dialog",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createDialog(properties);
-    }
-  }
-);
+  registerFactory("map",new MapFactory());
+  registerFactory("widget",new WidgetFactory());
+  registerFactory("dialog",new DialogFactory());
   registerBeanFactory("fileChooser",JFileChooser.class);
-  registerFactory("frame",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createFrame(properties);
-    }
-  }
-);
+  registerFactory("frame",new FrameFactory());
   registerBeanFactory("optionPane",JOptionPane.class);
-  registerFactory("window",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createWindow(properties);
-    }
-  }
-);
+  registerFactory("window",new WindowFactory());
   registerBeanFactory("button",JButton.class);
   registerBeanFactory("checkBox",JCheckBox.class);
   registerBeanFactory("checkBoxMenuItem",JCheckBoxMenuItem.class);
   registerBeanFactory("colorChooser",JColorChooser.class);
-  registerFactory("comboBox",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createComboBox(properties);
-    }
-  }
-);
+  registerFactory("comboBox",new ComboBoxFactory());
   registerBeanFactory("desktopPane",JDesktopPane.class);
   registerBeanFactory("editorPane",JEditorPane.class);
-  registerFactory("formattedTextField",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createFormattedTextField(properties);
-    }
-  }
-);
+  registerFactory("formattedTextField",new FormattedTextFactory());
   registerBeanFactory("internalFrame",JInternalFrame.class);
   registerBeanFactory("label",JLabel.class);
   registerBeanFactory("layeredPane",JLayeredPane.class);
@@ -65,17 +34,7 @@
   registerBeanFactory("separator",JSeparator.class);
   registerBeanFactory("slider",JSlider.class);
   registerBeanFactory("spinner",JSpinner.class);
-  registerFactory("splitPane",new Factory(){
-    public Object newInstance(    Map properties){
-      JSplitPane answer=new JSplitPane();
-      answer.setLeftComponent(null);
-      answer.setRightComponent(null);
-      answer.setTopComponent(null);
-      answer.setBottomComponent(null);
-      return answer;
-    }
-  }
-);
+  registerFactory("splitPane",new SplitPaneFactory());
   registerBeanFactory("tabbedPane",JTabbedPane.class);
   registerBeanFactory("table",JTable.class);
   registerBeanFactory("tableColumn",TableColumn.class);
@@ -90,72 +49,9 @@
   registerBeanFactory("spinnerDateModel",SpinnerDateModel.class);
   registerBeanFactory("spinnerListModel",SpinnerListModel.class);
   registerBeanFactory("spinnerNumberModel",SpinnerNumberModel.class);
-  registerFactory("tableModel",new Factory(){
-    public Object newInstance(    Map properties){
-      ValueModel model=(ValueModel)properties.remove("model");
-      if (model == null) {
-        Object list=properties.remove("list");
-        if (list == null) {
-          list=new ArrayList();
-        }
-        model=new ValueHolder(list);
-      }
-      return new DefaultTableModel(model);
-    }
-  }
-);
-  passThroughNodes.put("tableModel",TableModel.class);
-  registerFactory("propertyColumn",new Factory(){
-    public Object newInstance(    Map properties){
-      Object current=getCurrent();
-      if (current instanceof DefaultTableModel) {
-        DefaultTableModel model=(DefaultTableModel)current;
-        Object header=properties.remove("header");
-        if (header == null) {
-          header="";
-        }
-        String property=(String)properties.remove("propertyName");
-        if (property == null) {
-          throw new IllegalArgumentException("Must specify a property for a propertyColumn");
-        }
-        Class type=(Class)properties.remove("type");
-        if (type == null) {
-          type=Object.class;
-        }
-        return model.addPropertyColumn(header,property,type);
-      }
- else {
-        throw new RuntimeException("propertyColumn must be a child of a tableModel");
-      }
-    }
-  }
-);
-  registerFactory("closureColumn",new Factory(){
-    public Object newInstance(    Map properties){
-      Object current=getCurrent();
-      if (current instanceof DefaultTableModel) {
-        DefaultTableModel model=(DefaultTableModel)current;
-        Object header=properties.remove("header");
-        if (header == null) {
-          header="";
-        }
-        Closure readClosure=(Closure)properties.remove("read");
-        if (readClosure == null) {
-          throw new IllegalArgumentException("Must specify 'read' Closure property for a closureColumn");
-        }
-        Closure writeClosure=(Closure)properties.remove("write");
-        Class type=(Class)properties.remove("type");
-        if (type == null) {
-          type=Object.class;
-        }
-        return model.addClosureColumn(header,readClosure,writeClosure,type);
-      }
- else {
-        throw new RuntimeException("closureColumn must be a child of a tableModel");
-      }
-    }
-  }
-);
+  registerFactory("tableModel",new TableModelFactory());
+  registerFactory("propertyColumn",new TableModelFactory.PropertyColumnFactory());
+  registerFactory("closureColumn",new TableModelFactory.ClosureColumnFactory());
   registerBeanFactory("borderLayout",BorderLayout.class);
   registerBeanFactory("cardLayout",CardLayout.class);
   registerBeanFactory("flowLayout",FlowLayout.class);
@@ -165,108 +61,17 @@
   registerBeanFactory("springLayout",SpringLayout.class);
   registerBeanFactory("gridBagConstraints",GridBagConstraints.class);
   registerBeanFactory("gbc",GridBagConstraints.class);
-  registerFactory("boxLayout",new Factory(){
-    public Object newInstance(    Map properties) throws InstantiationException, IllegalAccessException {
-      return createBoxLayout(properties);
-    }
-  }
-);
-  registerFactory("hbox",new Factory(){
-    public Object newInstance(    Map properties){
-      return Box.createHorizontalBox();
-    }
-  }
-);
-  registerFactory("hglue",new Factory(){
-    public Object newInstance(    Map properties){
-      return Box.createHorizontalGlue();
-    }
-  }
-);
-  registerFactory("hstrut",new Factory(){
-    public Object newInstance(    Map properties){
-      Object num=properties.remove("width");
-      if (num instanceof Number) {
-        return Box.createHorizontalStrut(((Number)num).intValue());
-      }
- else {
-        return Box.createHorizontalStrut(6);
-      }
-    }
-  }
-);
-  registerFactory("vbox",new Factory(){
-    public Object newInstance(    Map properties){
-      return Box.createVerticalBox();
-    }
-  }
-);
-  registerFactory("vglue",new Factory(){
-    public Object newInstance(    Map properties){
-      return Box.createVerticalGlue();
-    }
-  }
-);
-  registerFactory("vstrut",new Factory(){
-    public Object newInstance(    Map properties){
-      Object num=properties.remove("height");
-      if (num instanceof Number) {
-        return Box.createVerticalStrut(((Number)num).intValue());
-      }
- else {
-        return Box.createVerticalStrut(6);
-      }
-    }
-  }
-);
-  registerFactory("glue",new Factory(){
-    public Object newInstance(    Map properties){
-      return Box.createGlue();
-    }
-  }
-);
-  registerFactory("rigidArea",new Factory(){
-    public Object newInstance(    Map properties){
-      Dimension dim;
-      Object o=properties.remove("size");
-      if (o instanceof Dimension) {
-        dim=(Dimension)o;
-      }
- else {
-        int w, h;
-        o=properties.remove("width");
-        w=((o instanceof Number)) ? ((Number)o).intValue() : 6;
-        o=properties.remove("height");
-        h=((o instanceof Number)) ? ((Number)o).intValue() : 6;
-        dim=new Dimension(w,h);
-      }
-      return Box.createRigidArea(dim);
-    }
-  }
-);
-  registerBeanFactory("tableLayout",TableLayout.class);
-  registerFactory("tr",new Factory(){
-    public Object newInstance(    Map properties){
-      Object parent=getCurrent();
-      if (parent instanceof TableLayout) {
-        return new TableLayoutRow((TableLayout)parent);
-      }
- else {
-        throw new RuntimeException("'tr' must be within a 'tableLayout'");
-      }
-    }
-  }
-);
-  registerFactory("td",new Factory(){
-    public Object newInstance(    Map properties){
-      Object parent=getCurrent();
-      if (parent instanceof TableLayoutRow) {
-        return new TableLayoutCell((TableLayoutRow)parent);
-      }
- else {
-        throw new RuntimeException("'td' must be within a 'tr'");
-      }
-    }
-  }
-);
+  registerFactory("boxLayout",new BoxLayoutFactory());
+  registerFactory("box",new BoxFactory());
+  registerFactory("hbox",new BoxFactory.HBoxFactory());
+  registerFactory("hglue",new BoxFactory.HGlueFactory());
+  registerFactory("hstrut",new BoxFactory.HStrutFactory());
+  registerFactory("vbox",new BoxFactory.VBoxFactory());
+  registerFactory("vglue",new BoxFactory.VGlueFactory());
+  registerFactory("vstrut",new BoxFactory.VStrutFactory());
+  registerFactory("glue",new BoxFactory.GlueFactory());
+  registerFactory("rigidArea",new BoxFactory.RigidAreaFactory());
+  registerFactory("tableLayout",new TableLayoutFactory());
+  registerFactory("tr",new TableLayoutFactory.TRFactory());
+  registerFactory("td",new TableLayoutFactory.TDFactory());
 }

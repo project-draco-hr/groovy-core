@@ -1,59 +1,27 @@
 {
-  if (widget instanceof Action) {
-    Action action=(Action)widget;
-    Closure closure=(Closure)attributes.remove("closure");
-    if (closure != null && action instanceof DefaultAction) {
-      DefaultAction defaultAction=(DefaultAction)action;
-      defaultAction.setClosure(closure);
-    }
-    Object accel=attributes.remove("accelerator");
-    if (accel != null) {
-      KeyStroke stroke=null;
-      if (accel instanceof KeyStroke) {
-        stroke=(KeyStroke)accel;
-      }
- else {
-        stroke=KeyStroke.getKeyStroke(accel.toString());
-      }
-      action.putValue(Action.ACCELERATOR_KEY,stroke);
-    }
-    Object mnemonic=attributes.remove("mnemonic");
-    if (mnemonic != null) {
-      if (!(mnemonic instanceof Number)) {
-        mnemonic=new Integer(mnemonic.toString().charAt(0));
-      }
-      action.putValue(Action.MNEMONIC_KEY,mnemonic);
-    }
-    for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
-      Map.Entry entry=(Map.Entry)iter.next();
-      String actionName=(String)entry.getKey();
-      actionName=capitalize(actionName);
-      Object value=entry.getValue();
-      action.putValue(actionName,value);
+  if (attributes.isEmpty() || (widget == null)) {
+    return;
+  }
+  if (attributes.containsKey("buttonGroup")) {
+    Object o=attributes.get("buttonGroup");
+    if ((o instanceof ButtonGroup) && (widget instanceof AbstractButton)) {
+      ((AbstractButton)widget).getModel().setGroup((ButtonGroup)o);
+      attributes.remove("buttonGroup");
     }
   }
+  Object mnemonic=attributes.remove("mnemonic");
+  if (mnemonic != null) {
+    if (mnemonic instanceof Number) {
+      InvokerHelper.setProperty(widget,"mnemonic",new Character((char)((Number)mnemonic).intValue()));
+    }
  else {
-    if (attributes.containsKey("buttonGroup")) {
-      Object o=attributes.get("buttonGroup");
-      if ((o instanceof ButtonGroup) && (widget instanceof AbstractButton)) {
-        ((AbstractButton)widget).getModel().setGroup((ButtonGroup)o);
-        attributes.remove("buttonGroup");
-      }
+      InvokerHelper.setProperty(widget,"mnemonic",new Character(mnemonic.toString().charAt(0)));
     }
-    Object mnemonic=attributes.remove("mnemonic");
-    if (mnemonic != null) {
-      if (mnemonic instanceof Number) {
-        InvokerHelper.setProperty(widget,"mnemonic",new Character((char)((Number)mnemonic).intValue()));
-      }
- else {
-        InvokerHelper.setProperty(widget,"mnemonic",new Character(mnemonic.toString().charAt(0)));
-      }
-    }
-    for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
-      Map.Entry entry=(Map.Entry)iter.next();
-      String property=entry.getKey().toString();
-      Object value=entry.getValue();
-      InvokerHelper.setProperty(widget,property,value);
-    }
+  }
+  for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String property=entry.getKey().toString();
+    Object value=entry.getValue();
+    InvokerHelper.setProperty(widget,property,value);
   }
 }

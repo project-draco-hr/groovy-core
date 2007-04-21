@@ -1,0 +1,19 @@
+{
+  JWindow window;
+  Object owner=properties.remove("owner");
+  LinkedList containingWindows=builder.getContainingWindows();
+  if ((owner == null) && !containingWindows.isEmpty()) {
+    owner=containingWindows.getLast();
+  }
+  if (owner instanceof Frame) {
+    window=new JWindow((Frame)owner);
+  }
+ else   if (owner instanceof Dialog) {
+    window=new JWindow((Dialog)owner);
+  }
+ else {
+    window=new JWindow();
+  }
+  containingWindows.add(window);
+  return window;
+}

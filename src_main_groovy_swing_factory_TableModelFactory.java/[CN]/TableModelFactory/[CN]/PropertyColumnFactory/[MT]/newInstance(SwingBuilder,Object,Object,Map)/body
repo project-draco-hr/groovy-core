@@ -1,0 +1,22 @@
+{
+  Object current=builder.getCurrent();
+  if (current instanceof DefaultTableModel) {
+    DefaultTableModel model=(DefaultTableModel)current;
+    Object header=properties.remove("header");
+    if (header == null) {
+      header="";
+    }
+    String property=(String)properties.remove("propertyName");
+    if (property == null) {
+      throw new IllegalArgumentException("Must specify a property for a propertyColumn");
+    }
+    Class type=(Class)properties.remove("type");
+    if (type == null) {
+      type=Object.class;
+    }
+    return model.addPropertyColumn(header,property,type);
+  }
+ else {
+    throw new RuntimeException("propertyColumn must be a child of a tableModel");
+  }
+}

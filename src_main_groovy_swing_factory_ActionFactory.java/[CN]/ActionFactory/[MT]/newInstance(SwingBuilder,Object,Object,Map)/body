@@ -1,0 +1,47 @@
+{
+  Action action=null;
+  if (value instanceof Action) {
+    action=(Action)value;
+  }
+ else   if (properties.get(name) instanceof Action) {
+    action=(Action)properties.remove(name);
+  }
+ else {
+    action=new DefaultAction();
+  }
+  if ((properties.get("closure") instanceof Closure) && (action instanceof DefaultAction)) {
+    Closure closure=(Closure)properties.remove("closure");
+    ((DefaultAction)action).setClosure(closure);
+  }
+  Object accel=properties.remove("accelerator");
+  if (accel != null) {
+    KeyStroke stroke=null;
+    if (accel instanceof KeyStroke) {
+      stroke=(KeyStroke)accel;
+    }
+ else {
+      stroke=KeyStroke.getKeyStroke(accel.toString());
+    }
+    action.putValue(Action.ACCELERATOR_KEY,stroke);
+  }
+  Object mnemonic=properties.remove("mnemonic");
+  if (mnemonic != null) {
+    if (!(mnemonic instanceof Number)) {
+      mnemonic=new Integer(mnemonic.toString().charAt(0));
+    }
+    action.putValue(Action.MNEMONIC_KEY,mnemonic);
+  }
+  for (Iterator iter=properties.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    String propertyName=(String)entry.getKey();
+    try {
+      InvokerHelper.setProperty(action,propertyName,entry.getValue());
+    }
+ catch (    MissingPropertyException mpe) {
+      propertyName=SwingBuilder.capitalize(propertyName);
+      action.putValue(propertyName,entry.getValue());
+    }
+  }
+  properties.clear();
+  return action;
+}
