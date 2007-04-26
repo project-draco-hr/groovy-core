@@ -1,6 +1,9 @@
 {
-  if (obj != null && obj.getClass() == this.getClass()) {
-    return (((ConversionHandler)obj).getDelegate()).equals(obj);
+  if (obj instanceof Proxy) {
+    obj=Proxy.getInvocationHandler(obj);
+  }
+  if (obj instanceof ConversionHandler) {
+    return (((ConversionHandler)obj).getDelegate()).equals(delegate);
   }
  else {
     return false;
