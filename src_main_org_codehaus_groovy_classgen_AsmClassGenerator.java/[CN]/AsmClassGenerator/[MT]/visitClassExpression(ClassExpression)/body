@@ -10,27 +10,15 @@
       staticFieldName="class$0";
       if (compileStack.getCurrentClassIndex() != -1) {
         cv.visitVarInsn(ALOAD,compileStack.getCurrentClassIndex());
+        return;
       }
- else {
-        cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
-        cv.visitInsn(DUP);
-        int index=compileStack.defineTemporaryVariable("class$0",ClassHelper.CLASS_Type,true);
-        compileStack.setCurrentClassIndex(index);
-      }
-      return;
     }
  else     if (type.equals(ClassHelper.METACLASS_TYPE)) {
       staticFieldName=getStaticFieldName(type);
       if (compileStack.getCurrentMetaClassIndex() != -1) {
         cv.visitVarInsn(ALOAD,compileStack.getCurrentMetaClassIndex());
+        return;
       }
- else {
-        cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
-        cv.visitInsn(DUP);
-        int index=compileStack.defineTemporaryVariable("meta$class$0",ClassHelper.CLASS_Type,true);
-        compileStack.setCurrentMetaClassIndex(index);
-      }
-      return;
     }
  else {
       staticFieldName=getStaticFieldName(type);
@@ -52,5 +40,15 @@
     cv.visitLabel(l0);
     cv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
     cv.visitLabel(l1);
+    if (type.equals(classNode)) {
+      cv.visitInsn(DUP);
+      int index=compileStack.defineTemporaryVariable("class$0",ClassHelper.CLASS_Type,true);
+      compileStack.setCurrentClassIndex(index);
+    }
+ else     if (type.equals(ClassHelper.METACLASS_TYPE)) {
+      cv.visitInsn(DUP);
+      int index=compileStack.defineTemporaryVariable("meta$class$0",ClassHelper.CLASS_Type,true);
+      compileStack.setCurrentMetaClassIndex(index);
+    }
   }
 }
