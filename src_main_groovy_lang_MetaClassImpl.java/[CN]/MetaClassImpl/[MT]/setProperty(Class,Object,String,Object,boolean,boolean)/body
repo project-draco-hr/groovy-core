@@ -19,8 +19,11 @@
     if (mp instanceof MetaBeanProperty) {
       MetaBeanProperty mbp=(MetaBeanProperty)mp;
       method=mbp.getSetter();
-      if (method != null)       arguments=new Object[]{newValue};
-      field=mbp.getField();
+      MetaProperty f=mbp.getField();
+      if (method != null || (f != null && !Modifier.isFinal(f.getModifiers()))) {
+        arguments=new Object[]{newValue};
+        field=f;
+      }
     }
  else {
       field=mp;
@@ -75,6 +78,9 @@
   }
   if (ambigousListener) {
     throw new GroovyRuntimeException("There are multiple listeners for the property " + name + ". Please do not use the bean short form to access this listener.");
+  }
+  if (mp != null) {
+    throw new ReadOnlyPropertyException(name,theClass);
   }
   throw new MissingPropertyException(name,theClass);
 }
