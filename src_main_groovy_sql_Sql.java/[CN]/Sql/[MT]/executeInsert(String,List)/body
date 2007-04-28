@@ -6,7 +6,7 @@
     statement=connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
     setParameters(params,statement);
     configure(statement);
-    boolean hasResultSet=statement.execute();
+    this.updateCount=statement.executeUpdate();
     List autoKeys=new ArrayList();
     ResultSet keys=statement.getGeneratedKeys();
     int count=keys.getMetaData().getColumnCount();
@@ -17,7 +17,6 @@
       }
       autoKeys.add(rowKeys);
     }
-    this.updateCount=statement.getUpdateCount();
     return autoKeys;
   }
  catch (  SQLException e) {
