@@ -2,10 +2,11 @@
   TestSuite suite=(TestSuite)AllTestSuite.suite("src/test/groovy","*Test.groovy");
   String osName=System.getProperty("os.name");
   if (osName.equals("Linux") || osName.equals("SunOS")) {
-    suite.addTestSuite(ExecuteTest_LinuxSolaris.class);
+    Class linuxTestClass=Class.forName("groovy.execute.ExecuteTest_LinuxSolaris");
+    suite.addTestSuite(linuxTestClass);
   }
  else {
-    System.err.println("XXXXXX  No execute testsfor this OS.  XXXXXX");
+    System.err.println("No execute tests for operating system: " + osName + "!!!");
   }
   return suite;
 }
