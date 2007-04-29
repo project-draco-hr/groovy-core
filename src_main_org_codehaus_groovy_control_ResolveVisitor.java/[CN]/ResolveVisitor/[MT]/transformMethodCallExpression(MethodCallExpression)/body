@@ -1,12 +1,18 @@
 {
-  Expression obj=mce.getObjectExpression();
-  Expression newObject=transform(obj);
   Expression args=transform(mce.getArguments());
   Expression method=transform(mce.getMethod());
-  MethodCallExpression ret=new MethodCallExpression(newObject,method,args);
-  ret.setSafe(mce.isSafe());
-  ret.setImplicitThis(mce.isImplicitThis());
-  ret.setSpreadSafe(mce.isSpreadSafe());
-  ret.setSourcePosition(mce);
-  return ret;
+  if (mce.isImplicitThis()) {
+    Expression ret=findStaticMethodImportFromModule(method,args);
+    if (ret != null) {
+      return ret;
+    }
+  }
+  Expression obj=mce.getObjectExpression();
+  Expression newObject=transform(obj);
+  MethodCallExpression result=new MethodCallExpression(newObject,method,args);
+  result.setSafe(mce.isSafe());
+  result.setImplicitThis(mce.isImplicitThis());
+  result.setSpreadSafe(mce.isSpreadSafe());
+  result.setSourcePosition(mce);
+  return result;
 }

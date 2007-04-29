@@ -1,0 +1,14 @@
+{
+  int count=0;
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tuple=(TupleExpression)arguments;
+    count=tuple.getExpressions().size();
+  }
+  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
+    MethodNode method=(MethodNode)iter.next();
+    if (name.equals(method.getName()) && method.getParameters().length == count && method.isStatic()) {
+      return true;
+    }
+  }
+  return false;
+}

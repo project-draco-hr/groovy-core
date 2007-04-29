@@ -1,7 +1,7 @@
 {
+  String name=type.getName();
   ModuleNode module=currentClass.getModule();
   if (module == null)   return false;
-  String name=type.getName();
   if (!type.hasPackageName() && module.hasPackageName()) {
     type.setName(module.getPackageName() + name);
   }
@@ -28,7 +28,7 @@
       String fqn=packagePrefix + name;
       iType.setName(fqn);
       if (resolve(iType,false,false,true)) {
-        ambigousClass(type,iType,name,resolved);
+        ambiguousClass(type,iType,name,resolved);
         return true;
       }
       iType.setName(name);

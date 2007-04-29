@@ -1,4 +1,5 @@
 {
+  boolean isStatic=importNode.getType() == STATIC_IMPORT;
   AST node=importNode.getFirstChild();
   String alias=null;
   if (isType(LITERAL_as,node)) {
@@ -17,13 +18,27 @@
   String packageName=qualifiedName(packageNode);
   AST nameNode=packageNode.getNextSibling();
   if (isType(STAR,nameNode)) {
-    importPackageWithStar(packageName);
+    if (isStatic) {
+      ClassNode type=ClassHelper.make(packageName);
+      configureAST(type,importNode);
+      staticImportClassWithStar(type,packageName);
+    }
+ else {
+      importPackageWithStar(packageName);
+    }
     if (alias != null)     throw new GroovyBugError("imports like 'import foo.* as Bar' are not " + "supported and should be caught by the grammar");
   }
  else {
     String name=identifier(nameNode);
-    ClassNode type=ClassHelper.make(packageName + "." + name);
-    configureAST(type,importNode);
-    importClass(type,name,alias);
+    if (isStatic) {
+      ClassNode type=ClassHelper.make(packageName);
+      configureAST(type,importNode);
+      staticImportMethodOrField(type,name,alias);
+    }
+ else {
+      ClassNode type=ClassHelper.make(packageName + "." + name);
+      configureAST(type,importNode);
+      importClass(type,name,alias);
+    }
   }
 }
