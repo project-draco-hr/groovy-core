@@ -7,7 +7,9 @@
       lastMod=file.lastModified();
     }
  else {
-      lastMod=source.openConnection().getLastModified();
+      URLConnection conn=source.openConnection();
+      lastMod=conn.getLastModified();
+      conn.getInputStream().close();
     }
     return lastMod > getTimeStamp(cls);
   }
