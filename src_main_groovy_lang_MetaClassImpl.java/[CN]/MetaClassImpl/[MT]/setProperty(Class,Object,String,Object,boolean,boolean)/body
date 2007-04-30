@@ -43,7 +43,7 @@
     method=(MetaMethod)listeners.get(name);
     ambigousListener=method == AMBIGOUS_LISTENER_METHOD;
     if (method != null && !ambigousListener && newValue instanceof Closure) {
-      Object proxy=DefaultGroovyMethods.asType((Closure)newValue,method.getParameterTypes()[0]);
+      Object proxy=Proxy.newProxyInstance(theClass.getClassLoader(),new Class[]{method.getParameterTypes()[0]},new ConvertedClosure((Closure)newValue,name));
       arguments=new Object[]{proxy};
       newValue=proxy;
       usesProxy=true;
