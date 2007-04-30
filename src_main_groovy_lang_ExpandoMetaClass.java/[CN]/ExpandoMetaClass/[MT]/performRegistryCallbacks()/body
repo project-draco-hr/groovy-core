@@ -1,0 +1,20 @@
+{
+  MetaClassRegistry registry=InvokerHelper.getInstance().getMetaRegistry();
+  if (!modified && !inRegistry) {
+    modified=true;
+    MetaClass currMetaClass=registry.getMetaClass(theClass);
+    if (!(currMetaClass instanceof ExpandoMetaClass) && currMetaClass instanceof AdaptingMetaClass) {
+      ((AdaptingMetaClass)currMetaClass).setAdaptee(this);
+    }
+ else {
+      registry.setMetaClass(theClass,this);
+    }
+    this.inRegistry=true;
+  }
+  if (registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle) {
+    ExpandoMetaClassCreationHandle creationHandler=(ExpandoMetaClassCreationHandle)registry.getMetaClassCreationHandler();
+    hasCreationHandle=true;
+    if (!creationHandler.hasModifiedMetaClass(this))     creationHandler.registerModifiedMetaClass(this);
+    creationHandler.notifyOfMetaClassChange(this);
+  }
+}

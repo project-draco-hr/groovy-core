@@ -1,0 +1,12 @@
+{
+  if (newValue instanceof Closure) {
+    if (property.equals(CONSTRUCTOR)) {
+      property=GROOVY_CONSTRUCTOR;
+    }
+    Closure callable=(Closure)newValue;
+    registerInstanceMethod(property,callable);
+  }
+ else   if (property.equals("allowChangesAfterInit")) {
+    this.allowChangesAfterInit=((Boolean)newValue).booleanValue();
+  }
+}

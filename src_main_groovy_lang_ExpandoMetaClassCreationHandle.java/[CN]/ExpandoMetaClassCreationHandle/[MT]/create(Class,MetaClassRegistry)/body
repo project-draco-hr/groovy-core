@@ -1,0 +1,13 @@
+{
+  if (theClass != ExpandoMetaClass.class) {
+    ExpandoMetaClass emc=new ExpandoMetaClass(theClass);
+    emc.setAllowChangesAfterInit(true);
+    List modifiedSuperExpandos=retrieveModifiedSuperExpandos(emc);
+    emc.refreshInheritedMethods(modifiedSuperExpandos);
+    registerTrackedExpando(emc);
+    return emc;
+  }
+ else {
+    return super.create(theClass,registry);
+  }
+}

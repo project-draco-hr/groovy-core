@@ -1,0 +1,12 @@
+{
+  List superClasses=emc.getSuperClasses();
+  for (Iterator i=superClasses.iterator(); i.hasNext(); ) {
+    Class c=(Class)i.next();
+    Set children=(Set)parentClassToChildMap.get(c);
+    if (children == null) {
+      children=new HashSet();
+      parentClassToChildMap.put(c,children);
+    }
+    children.add(emc);
+  }
+}

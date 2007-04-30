@@ -1,0 +1,18 @@
+{
+  List superClasses=getSuperClasses();
+  for (Iterator i=superClasses.iterator(); i.hasNext(); ) {
+    Class c=(Class)i.next();
+    Map methodMap=(Map)classInheritanceMapping.get(c);
+    if (methodMap != null) {
+      for (Iterator j=methodMap.values().iterator(); j.hasNext(); ) {
+        List methods=(List)j.next();
+        for (Iterator k=methods.iterator(); k.hasNext(); ) {
+          MetaMethod metaMethodFromSuper=(MetaMethod)k.next();
+          if (!metaMethodFromSuper.isStatic()) {
+            addSuperMethodIfNotOverriden(metaMethodFromSuper);
+          }
+        }
+      }
+    }
+  }
+}
