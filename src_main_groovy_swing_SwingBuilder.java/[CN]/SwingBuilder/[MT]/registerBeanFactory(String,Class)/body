@@ -1,7 +1,12 @@
 {
-  registerFactory(name,new Factory(){
+  registerFactory(theName,new Factory(){
     public Object newInstance(    SwingBuilder builder,    Object name,    Object value,    Map properties) throws InstantiationException, IllegalAccessException {
-      return beanClass.newInstance();
+      if (checkValueIsTypeNotString(value,name,beanClass)) {
+        return value;
+      }
+ else {
+        return beanClass.newInstance();
+      }
     }
   }
 );

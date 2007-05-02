@@ -1,4 +1,5 @@
 {
+  SwingBuilder.checkValueIsNull(value,name);
   Object parent=builder.getCurrent();
   if (parent instanceof Container) {
     Object axisObject=properties.remove("axis");
@@ -7,7 +8,7 @@
       Integer i=(Integer)axisObject;
       axis=i.intValue();
     }
-    Container target=SwingBuilder.getLayoutTarget(parent);
+    Container target=SwingBuilder.getLayoutTarget((Container)parent);
     BoxLayout answer=new BoxLayout(target,axis);
     InvokerHelper.setProperty(target,"layout",answer);
     return answer;

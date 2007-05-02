@@ -1,9 +1,12 @@
 {
-  if (child instanceof Action) {
+  if (parent instanceof Collection) {
+    ((Collection)parent).add(child);
+  }
+ else   if (child instanceof Action) {
     setParentForAction(parent,(Action)child);
   }
- else   if (child instanceof LayoutManager) {
-    Container target=getLayoutTarget(parent);
+ else   if ((child instanceof LayoutManager) && (parent instanceof Container)) {
+    Container target=getLayoutTarget((Container)parent);
     InvokerHelper.setProperty(target,"layout",child);
   }
  else   if (parent instanceof JTable && child instanceof TableColumn) {
