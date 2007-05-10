@@ -1,6 +1,11 @@
 {
   onLineNumber(loop,"visitForLoop");
   visitStatement(loop);
+  Parameter loopVar=loop.getVariable();
+  if (loopVar == ForStatement.FOR_LOOP_DUMMY) {
+    visitForLoopWithClosureList(loop);
+    return;
+  }
   compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
   Variable variable=compileStack.defineVariable(loop.getVariable(),false);
   MethodCallExpression iterator=new MethodCallExpression(loop.getCollectionExpression(),"iterator",new ArgumentListExpression());
