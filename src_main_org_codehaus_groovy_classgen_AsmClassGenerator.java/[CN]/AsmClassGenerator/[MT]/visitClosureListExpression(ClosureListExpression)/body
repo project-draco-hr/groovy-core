@@ -1,0 +1,95 @@
+{
+  compileStack.pushVariableScope(expression.getVariableScope());
+  List expressions=expression.getExpressions();
+  final int size=expressions.size();
+  LinkedList declarations=new LinkedList();
+  for (int i=0; i < size; i++) {
+    Object expr=expressions.get(i);
+    if (expr instanceof DeclarationExpression) {
+      declarations.add(expr);
+      DeclarationExpression de=(DeclarationExpression)expr;
+      BinaryExpression be=new BinaryExpression(de.getLeftExpression(),de.getOperation(),de.getRightExpression());
+      expressions.set(i,be);
+      de.setRightExpression(ConstantExpression.NULL);
+      visitDeclarationExpression(de);
+    }
+  }
+  LinkedList instructions=new LinkedList();
+  BytecodeSequence seq=new BytecodeSequence(instructions);
+  BlockStatement bs=new BlockStatement();
+  bs.addStatement(seq);
+  Parameter closureIndex=new Parameter(ClassHelper.int_TYPE,"__closureIndex");
+  ClosureExpression ce=new ClosureExpression(new Parameter[]{closureIndex},bs);
+  ce.setVariableScope(expression.getVariableScope());
+  instructions.add(ConstantExpression.NULL);
+  final Label dflt=new Label();
+  final Label tableEnd=new Label();
+  final Label[] labels=new Label[size];
+  instructions.add(new BytecodeInstruction(){
+    void visit(    MethodVisitor cv){
+      cv.visitVarInsn(ILOAD,1);
+      cv.visitTableSwitchInsn(0,size - 1,dflt,labels);
+    }
+  }
+);
+  for (int i=0; i < size; i++) {
+    final Label label=new Label();
+    Object expr=expressions.get(i);
+    final boolean isStatement=expr instanceof Statement;
+    labels[i]=label;
+    instructions.add(new BytecodeInstruction(){
+      void visit(      MethodVisitor cv){
+        cv.visitLabel(label);
+        if (!isStatement)         cv.visitInsn(POP);
+      }
+    }
+);
+    instructions.add(expr);
+    instructions.add(new BytecodeInstruction(){
+      void visit(      MethodVisitor cv){
+        cv.visitJumpInsn(GOTO,tableEnd);
+      }
+    }
+);
+  }
+{
+    instructions.add(new BytecodeInstruction(){
+      void visit(      MethodVisitor cv){
+        cv.visitLabel(dflt);
+      }
+    }
+);
+    ConstantExpression text=new ConstantExpression("invalid index for closure");
+    ConstructorCallExpression cce=new ConstructorCallExpression(ClassHelper.make(IllegalArgumentException.class),text);
+    ThrowStatement ts=new ThrowStatement(cce);
+    instructions.add(ts);
+  }
+  instructions.add(new BytecodeInstruction(){
+    void visit(    MethodVisitor cv){
+      cv.visitLabel(tableEnd);
+      cv.visitInsn(ARETURN);
+    }
+  }
+);
+  visitClosureExpression(ce);
+  helper.pushConstant(size);
+  cv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  int listArrayVar=compileStack.defineTemporaryVariable("_listOfClosures",true);
+  for (int i=0; i < size; i++) {
+    cv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/CurriedClosure");
+    cv.visitInsn(DUP2);
+    cv.visitInsn(SWAP);
+    helper.pushConstant(i);
+    cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/CurriedClosure","<init>","(Lgroovy/lang/Closure;I)V");
+    cv.visitVarInsn(ALOAD,listArrayVar);
+    cv.visitInsn(SWAP);
+    helper.pushConstant(i);
+    cv.visitInsn(SWAP);
+    cv.visitInsn(AASTORE);
+  }
+  cv.visitInsn(POP);
+  cv.visitVarInsn(ALOAD,listArrayVar);
+  createListMethod.call(cv);
+  compileStack.removeVar(listArrayVar);
+  compileStack.pop();
+}

@@ -166,6 +166,8 @@ case BSR:
 return binaryExpression(Types.RIGHT_SHIFT_UNSIGNED,node);
 case BSR_ASSIGN:
 return binaryExpression(Types.RIGHT_SHIFT_UNSIGNED_EQUAL,node);
+case VARIABLE_DEF:
+return declarationExpression(node);
 case REGEX_FIND:
 return binaryExpression(Types.FIND_REGEX,node);
 case REGEX_MATCH:
@@ -180,6 +182,8 @@ case LITERAL_in:
 return binaryExpression(Types.KEYWORD_IN,node);
 case ANNOTATION:
 return new AnnotationConstantExpression(annotation(node));
+case CLOSURE_LIST:
+return closureListExpression(node);
 default :
 unknownAST(node);
 }

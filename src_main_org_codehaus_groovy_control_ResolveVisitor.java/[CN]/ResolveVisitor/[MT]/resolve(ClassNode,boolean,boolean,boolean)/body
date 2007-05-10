@@ -10,6 +10,11 @@
     return resolved;
   }
   if (currentClass == type)   return true;
+  if (genericParameterNames.get(type.getName()) != null) {
+    ClassNode gt=(ClassNode)genericParameterNames.get(type.getName());
+    type.setRedirect(gt);
+    return true;
+  }
   if (currentClass.getNameWithoutPackage().equals(type.getName())) {
     type.setRedirect(currentClass);
     return true;

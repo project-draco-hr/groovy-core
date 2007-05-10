@@ -1,5 +1,7 @@
 {
-  if (!this.classNode.isAnnotated())   return Opcodes.V1_3;
+  if (classNode.getGenericsTypes() == null && !classNode.isAnnotated()) {
+    return Opcodes.V1_3;
+  }
   final String target=getCompileUnit().getConfig().getTargetBytecode();
   return CompilerConfiguration.POST_JDK5.equals(target) ? Opcodes.V1_5 : Opcodes.V1_3;
 }

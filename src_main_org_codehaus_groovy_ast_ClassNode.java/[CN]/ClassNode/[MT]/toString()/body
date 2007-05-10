@@ -1,3 +1,16 @@
 {
-  return super.toString() + "[name: " + getName()+ "]";
+  String ret=getClass().getName() + "[" + getName();
+  if (genericsTypes != null) {
+    ret+=" <";
+    for (int i=0; i < genericsTypes.length; i++) {
+      if (i != 0)       ret+=", ";
+      ret+=genericsTypes[i];
+    }
+    ret+=">";
+  }
+  ret+="]";
+  if (redirect != null) {
+    ret+=" -> " + redirect().toString();
+  }
+  return ret;
 }

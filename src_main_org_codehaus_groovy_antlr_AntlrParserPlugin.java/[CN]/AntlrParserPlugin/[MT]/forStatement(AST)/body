@@ -1,19 +1,26 @@
 {
-  assertNotLegacyFor(forNode);
   AST inNode=forNode.getFirstChild();
-  AST variableNode=inNode.getFirstChild();
-  AST collectionNode=variableNode.getNextSibling();
-  ClassNode type=ClassHelper.OBJECT_TYPE;
-  if (isType(VARIABLE_DEF,variableNode)) {
-    AST typeNode=variableNode.getFirstChild();
-    assertNodeType(TYPE,typeNode);
-    type=type(typeNode);
-    variableNode=typeNode.getNextSibling();
+  Expression collectionExpression;
+  Parameter forParameter;
+  if (isType(CLOSURE_LIST,inNode)) {
+    collectionExpression=closureListExpression(inNode);
+    forParameter=ForStatement.FOR_LOOP_DUMMY;
   }
-  String variable=identifier(variableNode);
-  Expression collectionExpression=expression(collectionNode);
+ else {
+    AST variableNode=inNode.getFirstChild();
+    AST collectionNode=variableNode.getNextSibling();
+    ClassNode type=ClassHelper.OBJECT_TYPE;
+    if (isType(VARIABLE_DEF,variableNode)) {
+      AST typeNode=variableNode.getFirstChild();
+      assertNodeType(TYPE,typeNode);
+      type=type(typeNode);
+      variableNode=typeNode.getNextSibling();
+    }
+    String variable=identifier(variableNode);
+    collectionExpression=expression(collectionNode);
+    forParameter=new Parameter(type,variable);
+  }
   Statement block=statement(inNode.getNextSibling());
-  Parameter forParameter=new Parameter(type,variable);
   ForStatement forStatement=new ForStatement(forParameter,collectionExpression,block);
   configureAST(forStatement,forNode);
   return forStatement;

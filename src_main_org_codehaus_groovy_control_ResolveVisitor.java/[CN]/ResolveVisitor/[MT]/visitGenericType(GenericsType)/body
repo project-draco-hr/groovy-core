@@ -1,0 +1,12 @@
+{
+  ClassNode type=genericsType.getType();
+  genericParameterNames.put(type.getName(),type);
+  ClassNode upperBound=genericsType.getUpperBound();
+  if (upperBound != null) {
+    resolveOrFail(upperBound,genericsType);
+    type.setRedirect(upperBound);
+  }
+ else {
+    type.setRedirect(ClassHelper.OBJECT_TYPE);
+  }
+}

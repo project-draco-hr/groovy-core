@@ -8,6 +8,11 @@
   }
   String name=identifier(node);
   node=node.getNextSibling();
+  GenericsType[] genericsType=null;
+  if (isType(TYPE_PARAMETERS,node)) {
+    genericsType=makeGenericsType(node);
+    node=node.getNextSibling();
+  }
   ClassNode superClass=null;
   if (isType(EXTENDS_CLAUSE,node)) {
     superClass=makeType(node);
@@ -22,6 +27,7 @@
   addNewClassName(name);
   classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,mixins);
   classNode.addAnnotations(annotations);
+  classNode.setGenericsTypes(genericsType);
   configureAST(classNode,classDef);
   assertNodeType(OBJBLOCK,node);
   objectBlock(node);

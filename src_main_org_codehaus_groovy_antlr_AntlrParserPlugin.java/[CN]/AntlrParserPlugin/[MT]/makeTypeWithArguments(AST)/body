@@ -1,0 +1,22 @@
+{
+  ClassNode basicType=makeType(rootNode);
+  LinkedList typeArgumentList=new LinkedList();
+  AST node=rootNode.getFirstChild();
+  if (node == null)   return basicType;
+  node=node.getFirstChild();
+  if (node == null)   return basicType;
+  assertNodeType(TYPE_ARGUMENTS,node);
+  AST typeArgument=node.getFirstChild();
+  while (node != null) {
+    assertNodeType(TYPE_ARGUMENT,typeArgument);
+    ClassNode argument=makeType(typeArgument.getFirstChild());
+    GenericsType gt=new GenericsType(argument);
+    configureAST(gt,node);
+    typeArgumentList.add(gt);
+    node=node.getNextSibling();
+  }
+  if (typeArgumentList.size() > 0) {
+    basicType.setGenericsTypes((GenericsType[])typeArgumentList.toArray(new GenericsType[0]));
+  }
+  return basicType;
+}
