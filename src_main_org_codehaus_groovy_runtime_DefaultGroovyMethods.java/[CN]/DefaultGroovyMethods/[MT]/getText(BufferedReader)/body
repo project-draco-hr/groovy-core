@@ -11,14 +11,7 @@
     temp.close();
   }
   finally {
-    if (reader != null) {
-      try {
-        reader.close();
-      }
- catch (      Exception e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
+    closeReaderWithWarning(reader);
   }
   return answer.toString();
 }

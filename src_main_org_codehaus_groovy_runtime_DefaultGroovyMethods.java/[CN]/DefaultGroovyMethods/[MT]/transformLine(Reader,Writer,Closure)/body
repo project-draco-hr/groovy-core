@@ -19,37 +19,9 @@
     temp1.close();
   }
   finally {
-    if (br != null) {
-      try {
-        br.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
-    if (reader != null) {
-      try {
-        reader.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
-    if (bw != null) {
-      try {
-        bw.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Writer: " + e);
-      }
-    }
-    if (writer != null) {
-      try {
-        writer.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Writer: " + e);
-      }
-    }
+    closeReaderWithWarning(br);
+    closeReaderWithWarning(reader);
+    closeWriterWithWarning(bw);
+    closeWriterWithWarning(writer);
   }
 }

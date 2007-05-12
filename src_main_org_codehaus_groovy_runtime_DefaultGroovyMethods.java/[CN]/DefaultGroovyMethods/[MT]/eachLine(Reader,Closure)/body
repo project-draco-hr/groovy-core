@@ -17,21 +17,7 @@
     temp.close();
   }
   finally {
-    if (self != null) {
-      try {
-        self.close();
-      }
- catch (      Exception e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
-    if (br != null) {
-      try {
-        br.close();
-      }
- catch (      Exception e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
+    closeReaderWithWarning(self);
+    closeReaderWithWarning(br);
   }
 }

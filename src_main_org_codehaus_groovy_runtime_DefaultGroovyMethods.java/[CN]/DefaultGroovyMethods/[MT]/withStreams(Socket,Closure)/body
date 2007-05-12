@@ -11,21 +11,7 @@
     temp2.close();
   }
   finally {
-    if (input != null) {
-      try {
-        input.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing InputStream: " + e);
-      }
-    }
-    if (output != null) {
-      try {
-        output.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing OutputStream: " + e);
-      }
-    }
+    closeInputStreamWithWarning(input);
+    closeOutputStreamWithWarning(output);
   }
 }

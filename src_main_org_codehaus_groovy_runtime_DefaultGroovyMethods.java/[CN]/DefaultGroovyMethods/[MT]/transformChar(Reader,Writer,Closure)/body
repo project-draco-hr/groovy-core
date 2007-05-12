@@ -2,7 +2,7 @@
   int c;
   try {
     char[] chars=new char[1];
-    while ((c=reader.read()) != -1) {
+    while ((c=self.read()) != -1) {
       chars[0]=(char)c;
       writer.write((String)closure.call(new String(chars)));
     }
@@ -10,26 +10,12 @@
     Writer temp2=writer;
     writer=null;
     temp2.close();
-    Reader temp1=reader;
-    reader=null;
+    Reader temp1=self;
+    self=null;
     temp1.close();
   }
   finally {
-    if (reader != null) {
-      try {
-        reader.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Reader: " + e);
-      }
-    }
-    if (writer != null) {
-      try {
-        writer.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing Writer: " + e);
-      }
-    }
+    closeReaderWithWarning(self);
+    closeWriterWithWarning(writer);
   }
 }
