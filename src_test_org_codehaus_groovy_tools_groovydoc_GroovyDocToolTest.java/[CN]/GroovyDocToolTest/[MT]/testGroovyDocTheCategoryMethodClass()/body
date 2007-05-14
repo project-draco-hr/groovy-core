@@ -1,15 +1,15 @@
 {
-  xmlTool.add("groovy" + FS + "util/CliBuilder.groovy");
-  xmlTool.add("groovy" + FS + "lang/GroovyLogTestCase.groovy");
-  xmlTool.add("groovy" + FS + "mock"+ FS+ "interceptor/StrictExpectation.groovy");
-  xmlTool.add("groovy" + FS + "ui/Console.groovy");
-  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime/GroovyCategorySupport.java");
-  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime/ConvertedMap.java");
+  xmlTool.add("groovy" + FS + "util"+ FS+ "CliBuilder.groovy");
+  xmlTool.add("groovy" + FS + "lang"+ FS+ "GroovyLogTestCase.groovy");
+  xmlTool.add("groovy" + FS + "mock"+ FS+ "interceptor"+ FS+ "StrictExpectation.groovy");
+  xmlTool.add("groovy" + FS + "ui"+ FS+ "Console.groovy");
+  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "GroovyCategorySupport.java");
+  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "ConvertedMap.java");
   MockOutputTool output=new MockOutputTool();
-  xmlTool.renderToOutput(output,MOCK_DOC);
+  xmlTool.renderToOutput(output,MOCK_DIR);
   System.out.println("output = " + output);
-  String categoryMethodDocument=output.getText(MOCK_DOC + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime/CategoryMethod.html");
+  String categoryMethodDocument=output.getText(MOCK_DIR + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "CategoryMethod.html");
   assertTrue(categoryMethodDocument.indexOf("<method returns=\"boolean\" name=\"hasCategoryInAnyThread\">") > 0);
-  String packageDocument=output.getText(MOCK_DOC + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime/packageDocStructuredData.xml");
-  String rootDocument=output.getText(MOCK_DOC + FS + "rootDocStructuredData.xml");
+  String packageDocument=output.getText(MOCK_DIR + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "packageDocStructuredData.xml");
+  String rootDocument=output.getText(MOCK_DIR + FS + "rootDocStructuredData.xml");
 }

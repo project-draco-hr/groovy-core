@@ -1,17 +1,15 @@
 {
   String returnValue="";
   String text=sourceBuffer.getSnippet(new LineColumn(1,1),new LineColumn(t.getLine(),t.getColumn()));
-  Pattern p=Pattern.compile("(?s).*/\\*\\*([^/]*?)\\*/[^\\*/}]*$");
-  Matcher m=p.matcher(text);
-  if (m.matches()) {
-    int lastGroupIndex=m.groupCount();
-    if (lastGroupIndex > 0) {
-      returnValue=m.group(lastGroupIndex);
-      int firstFullStopIndex=returnValue.indexOf(".");
-      if (firstFullStopIndex >= 0) {
-        returnValue=returnValue.substring(0,returnValue.indexOf("."));
-      }
-    }
+  int openBlockIndex=text.lastIndexOf("{");
+  int closingBlockIndex=text.lastIndexOf("}");
+  int lastBlockIndex=Math.max(openBlockIndex,closingBlockIndex);
+  if (lastBlockIndex > 0) {
+    text=text.substring(lastBlockIndex);
+  }
+  Matcher m=previousJavaDocCommentPattern.matcher(text);
+  if (m.find()) {
+    returnValue=m.group(1);
   }
   return returnValue;
 }
