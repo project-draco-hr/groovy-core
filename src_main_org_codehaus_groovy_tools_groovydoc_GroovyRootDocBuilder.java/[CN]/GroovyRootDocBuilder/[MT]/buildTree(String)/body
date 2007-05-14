@@ -1,7 +1,8 @@
 {
-  String srcFileName=sourcepath + File.separator + filename;
+  String srcFileName=sourcepath + FS + filename;
   String src=DefaultGroovyMethods.getText(new File(srcFileName));
   String packagePath=tool.getPath(filename);
+  packagePath=packagePath.replace('\\',FS);
   String file=tool.getFile(filename);
   Map classDocs=getClassDocsFromSingleSource(packagePath,file,src);
   rootDoc.putAllClasses(classDocs);
