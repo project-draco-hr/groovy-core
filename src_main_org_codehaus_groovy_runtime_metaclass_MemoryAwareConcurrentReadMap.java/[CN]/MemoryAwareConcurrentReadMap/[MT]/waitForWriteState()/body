@@ -1,8 +1,8 @@
 {
-synchronized (writeQueue) {
-    while (concurrentReads != 0) {
+synchronized (writeLock) {
+    if (concurrentReads != 0) {
       try {
-        writeQueue.wait();
+        writeLock.wait();
       }
  catch (      InterruptedException e) {
       }
