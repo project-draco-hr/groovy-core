@@ -3,17 +3,13 @@
   StringBuffer ret=new StringBuffer(100);
   ret.append('<');
   for (int i=0; i < genericsTypes.length; i++) {
-    ret.append(genericsTypes[i].getName());
+    String name=genericsTypes[i].getName();
+    ret.append(name);
     ret.append(':');
-    ret.append('L');
-    ClassNode upperBound=genericsTypes[i].getUpperBound();
-    if (upperBound != null) {
-      ret.append(getClassInternalName(upperBound));
+    if (genericsTypes[i].getType().isInterface()) {
+      ret.append(':');
     }
- else {
-      ret.append("java/lang/Object");
-    }
-    ret.append(';');
+    writeGenericsBounds(ret,genericsTypes[i]);
   }
   ret.append(">Ljava/lang/Object;");
   return ret.toString();

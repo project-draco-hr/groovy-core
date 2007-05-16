@@ -1,0 +1,27 @@
+{
+  ClassNode type=genericsType.getType();
+  String name=type.getName();
+  ClassNode upperBound=genericsType.getUpperBound();
+  if (!genericParameterNames.containsKey(name)) {
+    if (upperBound != null) {
+      resolveOrFail(upperBound,genericsType);
+      type.setRedirect(upperBound);
+    }
+ else     if (forceParameterResolving) {
+      resolveOrFail(type,genericsType);
+    }
+ else {
+      type.setRedirect(ClassHelper.OBJECT_TYPE);
+    }
+  }
+ else {
+    type.setRedirect((ClassNode)genericParameterNames.get(name));
+    genericsType.setPlaceholder(true);
+  }
+  if (!forceParameterResolving) {
+    genericParameterNames.put(name,type);
+    genericsType.setPlaceholder(true);
+  }
+  if (upperBound != null)   resolveGenericsTypes(upperBound.getGenericsTypes());
+  resolveGenericsTypes(type.getGenericsTypes());
+}

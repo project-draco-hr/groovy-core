@@ -1,7 +1,8 @@
 {
   onLineNumber(fieldNode,"visitField: " + fieldNode.getName());
   ClassNode t=fieldNode.getType();
-  FieldVisitor fv=cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),BytecodeHelper.getTypeDescription(t),null,null);
+  String signature=helper.getGenericsBounds(t);
+  FieldVisitor fv=cw.visitField(fieldNode.getModifiers(),fieldNode.getName(),BytecodeHelper.getTypeDescription(t),signature,null);
   visitAnnotations(fieldNode,fv);
   fv.visitEnd();
 }
