@@ -1,0 +1,15 @@
+{
+  performOperationOnMetaClass(new Callable(){
+    public void call(){
+      Class type=newValue == null ? Object.class : newValue.getClass();
+      MetaBeanProperty mbp=new ThreadManagedMetaBeanProperty(theClass,property,type,newValue);
+      addMetaMethod(mbp.getGetter());
+      addMetaMethod(mbp.getSetter());
+      expandoMethods.add(mbp.getSetter());
+      expandoMethods.add(mbp.getGetter());
+      expandoProperties.add(mbp);
+      addMetaBeanProperty(mbp);
+    }
+  }
+);
+}
