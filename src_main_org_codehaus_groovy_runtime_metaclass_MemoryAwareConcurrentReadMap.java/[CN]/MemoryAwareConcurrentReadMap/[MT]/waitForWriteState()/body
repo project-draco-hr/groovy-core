@@ -1,6 +1,6 @@
 {
 synchronized (writeLock) {
-    if (concurrentReads != 0) {
+    while (concurrentReads != 0) {
       try {
         writeLock.wait();
       }
