@@ -60,18 +60,14 @@
   }
  else   if (arguments instanceof Element) {
     Element node=(Element)arguments;
-    OutputFormat format=new OutputFormat(node.getOwnerDocument());
-    format.setOmitXMLDeclaration(true);
-    format.setIndenting(true);
-    format.setLineWidth(0);
-    format.setPreserveSpace(true);
+    TransformerFactory transformerFactory=TransformerFactory.newInstance();
     StringWriter sw=new StringWriter();
-    XMLSerializer serializer=new XMLSerializer(sw,format);
     try {
-      serializer.asDOMSerializer();
-      serializer.serialize(node);
+      Transformer transformer=transformerFactory.newTransformer();
+      transformer.setOutputProperty("indent","yes");
+      transformer.transform(new DOMSource(node),new StreamResult(sw));
     }
- catch (    IOException e) {
+ catch (    TransformerException e) {
     }
     return sw.toString();
   }

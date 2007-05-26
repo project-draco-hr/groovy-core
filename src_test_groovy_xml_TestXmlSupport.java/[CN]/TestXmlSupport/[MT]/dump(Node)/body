@@ -1,10 +1,11 @@
 {
-  XMLSerializer printer=createSerializer();
-  if (node instanceof Document) {
-    printer.serialize((Document)node);
+  TransformerFactory transformerFactory=TransformerFactory.newInstance();
+  try {
+    Transformer transformer=transformerFactory.newTransformer();
+    transformer.setOutputProperty("indent","yes");
+    transformer.transform(new DOMSource(node),new StreamResult(System.out));
   }
- else {
-    printer.serialize((Element)node);
+ catch (  TransformerException e) {
   }
   System.out.println();
 }
