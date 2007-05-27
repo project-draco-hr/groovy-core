@@ -7,9 +7,8 @@
       list.add(attr.getName());
     }
   }
- catch (  Throwable t) {
-  }
- finally {
+ catch (  Exception e) {
+    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not list attribute names. Reason: " + e,e);
   }
   return list;
 }

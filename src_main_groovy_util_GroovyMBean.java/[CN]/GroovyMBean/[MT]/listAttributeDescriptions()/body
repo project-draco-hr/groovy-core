@@ -7,9 +7,8 @@
       list.add(describeAttribute(attr));
     }
   }
- catch (  Throwable t) {
-  }
- finally {
+ catch (  Exception e) {
+    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not list attribute descriptions. Reason: " + e,e);
   }
   return list;
 }

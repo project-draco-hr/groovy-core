@@ -3,9 +3,9 @@
     server.setAttribute(name,new Attribute(property,value));
   }
  catch (  MBeanException e) {
-    throw new GroovyRuntimeException("Could not set property: " + property + ". Reason: "+ e,e.getTargetException());
+    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not set property: " + property + ". Reason: "+ e,e.getTargetException());
   }
 catch (  Exception e) {
-    throw new GroovyRuntimeException("Could not set property: " + property + ". Reason: "+ e,e);
+    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not set property: " + property + ". Reason: "+ e,e);
   }
 }

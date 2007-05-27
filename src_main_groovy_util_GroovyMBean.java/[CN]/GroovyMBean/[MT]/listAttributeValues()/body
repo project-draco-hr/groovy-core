@@ -9,7 +9,8 @@
         list.add(name + " : " + val.toString());
       }
     }
- catch (    RuntimeException e) {
+ catch (    Exception e) {
+      if (!ignoreErrors)       throw new GroovyRuntimeException("Could not list attribute values. Reason: " + e,e);
     }
   }
   return list;

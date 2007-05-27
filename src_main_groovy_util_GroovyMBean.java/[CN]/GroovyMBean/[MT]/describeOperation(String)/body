@@ -9,7 +9,8 @@
       }
     }
   }
- catch (  Throwable t) {
+ catch (  Exception e) {
+    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not describe operations matching name '" + operationName + "'. Reason: "+ e,e);
   }
   return list;
 }
