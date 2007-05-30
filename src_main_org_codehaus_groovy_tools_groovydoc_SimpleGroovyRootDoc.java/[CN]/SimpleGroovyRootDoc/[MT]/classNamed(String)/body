@@ -1,3 +1,14 @@
 {
+  Iterator itr=classDocs.keySet().iterator();
+  while (itr.hasNext()) {
+    String key=(String)itr.next();
+    int lastSlashIdx=key.lastIndexOf('/');
+    if (lastSlashIdx > 0) {
+      String shortKey=key.substring(lastSlashIdx + 1);
+      if (shortKey.equals(name)) {
+        return (GroovyClassDoc)classDocs.get(key);
+      }
+    }
+  }
   return null;
 }
