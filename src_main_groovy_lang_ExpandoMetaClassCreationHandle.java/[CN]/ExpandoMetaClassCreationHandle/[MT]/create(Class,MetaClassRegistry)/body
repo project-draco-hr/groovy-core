@@ -2,8 +2,9 @@
   if (theClass != ExpandoMetaClass.class) {
     ExpandoMetaClass emc=new ExpandoMetaClass(theClass);
     emc.setAllowChangesAfterInit(true);
-    List modifiedSuperExpandos=retrieveModifiedSuperExpandos(emc);
+    Set modifiedSuperExpandos=retrieveModifiedSuperExpandos(emc);
     emc.refreshInheritedMethods(modifiedSuperExpandos);
+    emc.initialize();
     registerTrackedExpando(emc);
     return emc;
   }

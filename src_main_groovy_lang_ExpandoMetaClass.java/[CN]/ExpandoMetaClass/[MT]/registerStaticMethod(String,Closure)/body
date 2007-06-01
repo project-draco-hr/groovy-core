@@ -4,7 +4,9 @@
       ClosureStaticMetaMethod metaMethod=new ClosureStaticMetaMethod(methodName,theClass,callable);
       MethodKey key=new DefaultMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
       addMetaMethod(metaMethod);
-      expandoMethods.add(metaMethod);
+synchronized (expandoMethods) {
+        expandoMethods.add(metaMethod);
+      }
       cacheStaticMethod(key,metaMethod);
     }
   }

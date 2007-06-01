@@ -1,0 +1,13 @@
+{
+  MetaProperty mp;
+synchronized (expandoProperties) {
+    mp=(MetaProperty)this.expandoProperties.get(name);
+  }
+  if (mp != null)   return mp;
+  List properties=super.getProperties();
+  for (Iterator i=properties.iterator(); i.hasNext(); ) {
+    MetaProperty metaProperty=(MetaProperty)i.next();
+    if (name.equals(metaProperty.getName()))     return metaProperty;
+  }
+  return null;
+}

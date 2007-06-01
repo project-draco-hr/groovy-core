@@ -1,11 +1,15 @@
 {
-  List modifiedSupers=new LinkedList();
+  Set modifiedSupers=new HashSet();
   List superClasses=child.getSuperClasses();
   for (Iterator i=superClasses.iterator(); i.hasNext(); ) {
     Class c=(Class)i.next();
+    Class[] interfaces=c.getInterfaces();
+    populateSupersFromInterfaces(modifiedSupers,interfaces);
     if (modifiedExpandos.containsKey(c)) {
       modifiedSupers.add(modifiedExpandos.get(c));
     }
   }
+  Class[] interfaces=child.getJavaClass().getInterfaces();
+  populateSupersFromInterfaces(modifiedSupers,interfaces);
   return modifiedSupers;
 }
