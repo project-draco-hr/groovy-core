@@ -3,7 +3,10 @@
     t.setType(typeMapping[t.getType()]);
     if (t.getType() == GroovyTokenTypes.STRING_LITERAL) {
       String text=t.getText();
-      if (isDoubleQuoted(text)) {
+      if (isSingleQuoted(text)) {
+        t.setText(text.substring(1,text.length() - 1));
+      }
+ else       if (isDoubleQuoted(text)) {
         t.setText(text.substring(1,text.length() - 1));
       }
     }

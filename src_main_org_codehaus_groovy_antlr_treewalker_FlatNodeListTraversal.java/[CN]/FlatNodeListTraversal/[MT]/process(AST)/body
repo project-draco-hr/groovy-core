@@ -1,0 +1,15 @@
+{
+  GroovySourceAST node=(GroovySourceAST)t;
+  NodeCollector collector=new NodeCollector();
+  AntlrASTProcessor internalTraversal=new PreOrderTraversal(collector);
+  internalTraversal.process(t);
+  List listOfAllNodesInThisAST=collector.getNodes();
+  setUp(node);
+  Iterator itr=listOfAllNodesInThisAST.iterator();
+  while (itr.hasNext()) {
+    GroovySourceAST currentNode=(GroovySourceAST)itr.next();
+    accept(currentNode);
+  }
+  tearDown(node);
+  return null;
+}
