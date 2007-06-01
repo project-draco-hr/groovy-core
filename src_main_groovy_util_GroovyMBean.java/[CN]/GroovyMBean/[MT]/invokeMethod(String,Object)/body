@@ -13,10 +13,10 @@
       return server.invoke(name,method,argArray,signature);
     }
  catch (    MBeanException e) {
-      if (!ignoreErrors)       throw new GroovyRuntimeException("Could not invoke method: " + method + ". Reason: "+ e,e.getTargetException());
+      throwExceptionWithTarget("Could not invoke method: " + method + ". Reason: ",e);
     }
 catch (    Exception e) {
-      if (!ignoreErrors)       throw new GroovyRuntimeException("Could not invoke method: " + method + ". Reason: "+ e,e);
+      throwException("Could not invoke method: " + method + ". Reason: ",e);
     }
     return null;
   }

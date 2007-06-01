@@ -3,10 +3,10 @@
     return server.getAttribute(name,property);
   }
  catch (  MBeanException e) {
-    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not access property: " + property + ". Reason: "+ e,e.getTargetException());
+    throwExceptionWithTarget("Could not access property: " + property + ". Reason: ",e);
   }
 catch (  Exception e) {
-    if (!ignoreErrors)     throw new GroovyRuntimeException("Could not access property: " + property + ". Reason: "+ e,e);
+    if (!ignoreErrors)     throwException("Could not access property: " + property + ". Reason: ",e);
   }
   return null;
 }
