@@ -1,0 +1,13 @@
+{
+  try {
+    final Class customMetaClassHandle=Class.forName("groovy.runtime.metaclass.CustomMetaClassCreationHandle");
+    final Constructor customMetaClassHandleConstructor=customMetaClassHandle.getConstructor(new Class[]{});
+    this.metaClassCreationHandle=(MetaClassCreationHandle)customMetaClassHandleConstructor.newInstance(new Object[]{});
+  }
+ catch (  final ClassNotFoundException e) {
+    this.metaClassCreationHandle=new MetaClassCreationHandle();
+  }
+catch (  final Exception e) {
+    throw new GroovyRuntimeException("Could not instantiate custom Metaclass creation handle: " + e,e);
+  }
+}
