@@ -1,10 +1,10 @@
 {
-  Expression expression, expr2, expr3;
+  if (list == null)   return;
   for (Iterator iter=list.iterator(); iter.hasNext(); ) {
-    expression=(Expression)iter.next();
+    Expression expression=(Expression)iter.next();
     if (expression instanceof SpreadExpression) {
-      expr2=((SpreadExpression)expression).getExpression();
-      expr2.visit(this);
+      Expression spread=((SpreadExpression)expression).getExpression();
+      spread.visit(this);
     }
  else {
       expression.visit(this);

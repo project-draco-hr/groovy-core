@@ -1,5 +1,6 @@
 {
   if (type.isResolved())   return true;
+  resolveGenericsTypes(type.getGenericsTypes());
   if (type.isArray()) {
     ClassNode element=type.getComponentType();
     boolean resolved=resolve(element,testModuleImports,testDefaultImports,testStaticInnerClasses);
@@ -11,8 +12,10 @@
   }
   if (currentClass == type)   return true;
   if (genericParameterNames.get(type.getName()) != null) {
-    ClassNode gt=(ClassNode)genericParameterNames.get(type.getName());
-    type.setRedirect(gt);
+    GenericsType gt=(GenericsType)genericParameterNames.get(type.getName());
+    type.setRedirect(gt.getType());
+    type.setGenericsTypes(new GenericsType[]{gt});
+    type.setGenericsPlaceHolder(true);
     return true;
   }
   if (currentClass.getNameWithoutPackage().equals(type.getName())) {

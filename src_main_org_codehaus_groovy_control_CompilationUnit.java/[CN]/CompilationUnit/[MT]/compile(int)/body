@@ -14,10 +14,10 @@
         applyToGeneratedGroovyClasses((GroovyClassOperation)operation);
       }
     }
-    if (dequeued())     continue;
     if (progressCallback != null)     progressCallback.call(this,phase);
     completePhase();
     applyToSourceUnits(mark);
+    if (dequeued())     continue;
     gotoPhase(phase + 1);
     if (phase == Phases.CLASS_GENERATION) {
       sortClasses();

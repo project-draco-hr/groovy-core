@@ -1,0 +1,29 @@
+{
+  if (types == null)   return;
+  ret.append(start);
+  for (int i=0; i < types.length; i++) {
+    String name=types[i].getName();
+    if (types[i].isPlaceholder()) {
+      ret.append('T');
+      ret.append(name);
+      ret.append(';');
+    }
+ else     if (types[i].isWildcard()) {
+      if (types[i].getUpperBounds() != null) {
+        ret.append('+');
+        writeGenericsBounds(ret,types[i],false);
+      }
+ else       if (types[i].getLowerBound() != null) {
+        ret.append('-');
+        writeGenericsBounds(ret,types[i],false);
+      }
+ else {
+        ret.append('*');
+      }
+    }
+ else {
+      writeGenericsBounds(ret,types[i],false);
+    }
+  }
+  ret.append(end);
+}

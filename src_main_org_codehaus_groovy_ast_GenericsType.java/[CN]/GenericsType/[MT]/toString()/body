@@ -1,5 +1,14 @@
 {
   String ret=name;
-  if (upperBound != null)   ret+=" extends " + upperBound.toString();
+  if (upperBounds != null) {
+    ret+=" extends ";
+    for (int i=0; i < upperBounds.length; i++) {
+      ret+=upperBounds[i].toString();
+      if (i + 1 < upperBounds.length)       ret+=" & ";
+    }
+  }
+ else   if (lowerBound != null) {
+    ret+=" super " + lowerBound;
+  }
   return ret;
 }

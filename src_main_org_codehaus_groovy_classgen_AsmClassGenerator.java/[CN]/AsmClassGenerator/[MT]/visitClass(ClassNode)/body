@@ -5,7 +5,7 @@
     this.outermostClass=null;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode.getGenericsTypes()),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cw.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cw.visitSource(sourceFile,null);
     visitAnnotations(classNode,cw);
     if (classNode.isInterface()) {

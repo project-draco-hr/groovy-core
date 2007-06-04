@@ -1,6 +1,7 @@
 {
   String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
-  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,null,buildExceptions(node.getExceptions()));
+  String signature=BytecodeHelper.getGenericsMethodSignature(node);
+  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,signature,buildExceptions(node.getExceptions()));
   visitAnnotations(node,cv);
   helper=new BytecodeHelper(cv);
   if (!node.isAbstract()) {

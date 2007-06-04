@@ -1,6 +1,11 @@
 {
   List annotations=new ArrayList();
   AST node=methodDef.getFirstChild();
+  GenericsType[] generics=null;
+  if (isType(TYPE_PARAMETERS,node)) {
+    generics=makeGenericsType(node);
+    node=node.getNextSibling();
+  }
   int modifiers=Opcodes.ACC_PUBLIC;
   if (isType(MODIFIERS,node)) {
     modifiers=modifiers(node,annotations,modifiers);
@@ -43,6 +48,7 @@
   }
   MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
   methodNode.addAnnotations(annotations);
+  methodNode.setGenericsTypes(generics);
   configureAST(methodNode,methodDef);
   if (classNode != null) {
     classNode.addMethod(methodNode);
