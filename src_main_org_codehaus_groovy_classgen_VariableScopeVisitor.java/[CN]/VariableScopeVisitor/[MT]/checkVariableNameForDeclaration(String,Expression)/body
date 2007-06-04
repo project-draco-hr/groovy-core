@@ -26,7 +26,11 @@
     ClassNode classScope=scope.getClassScope();
     if (classScope != null) {
       Variable member=findClassMember(classScope,var.getName());
-      if (member != null && (currentScope.isInStaticContext() ^ member instanceof DynamicVariable))       var=member;
+      if (member != null) {
+        boolean cc=currentScope.isInStaticContext();
+        boolean cm=member.isInStaticContext();
+        if (cm || cm == cc)         var=member;
+      }
       break;
     }
     scope=scope.getParent();
