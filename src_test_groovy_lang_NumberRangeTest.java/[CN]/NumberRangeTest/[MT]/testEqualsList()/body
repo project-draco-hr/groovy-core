@@ -1,0 +1,23 @@
+{
+  final List list=new ArrayList();
+  list.add(createValue(1));
+  list.add(createValue(2));
+  final Range range=createRange(1,2);
+  assertTrue("range does not equal list",range.equals((Object)list));
+  assertTrue("list does not equal range",list.equals(range));
+  assertEquals("hash codes are not equal",range.hashCode(),list.hashCode());
+  list.set(0,createValue(3));
+  assertFalse("range equals list",range.equals(list));
+  assertFalse("list equals range",list.equals(range));
+  assertFalse("hash codes are equal",range.hashCode() == list.hashCode());
+  list.set(0,createValue(1));
+  list.add(createValue(3));
+  assertFalse("range equals list",range.equals(list));
+  assertFalse("list equals range",list.equals(range));
+  assertFalse("hash are equal",range.hashCode() == list.hashCode());
+  list.remove(2);
+  list.remove(1);
+  assertFalse("range equals list",range.equals(list));
+  assertFalse("list equals range",list.equals(range));
+  assertFalse("hash are equal",range.hashCode() == list.hashCode());
+}

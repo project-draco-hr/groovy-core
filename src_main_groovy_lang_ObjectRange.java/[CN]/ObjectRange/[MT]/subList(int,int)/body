@@ -2,17 +2,14 @@
   if (fromIndex < 0) {
     throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
   }
-  int size=size();
-  if (toIndex > size) {
+  if (toIndex > size()) {
     throw new IndexOutOfBoundsException("toIndex = " + toIndex);
   }
   if (fromIndex > toIndex) {
     throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex("+ toIndex+ ")");
   }
-  if (--toIndex >= size) {
-    return new ObjectRange((Comparable)get(fromIndex),getTo(),reverse);
+  if (fromIndex == toIndex) {
+    return new EmptyRange(from);
   }
- else {
-    return new ObjectRange((Comparable)get(fromIndex),(Comparable)get(toIndex),reverse);
-  }
+  return new ObjectRange((Comparable)get(fromIndex),(Comparable)get(--toIndex),reverse);
 }
