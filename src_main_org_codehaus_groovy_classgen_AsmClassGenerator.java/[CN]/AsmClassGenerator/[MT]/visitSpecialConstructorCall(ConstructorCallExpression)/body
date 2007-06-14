@@ -3,24 +3,24 @@
   if (call.isSuperCall())   callNode=callNode.getSuperClass();
   List constructors=sortConstructors(call,callNode);
   call.getArguments().visit(this);
-  cv.visitInsn(DUP);
+  mv.visitInsn(DUP);
   helper.pushConstant(constructors.size());
   visitClassExpression(new ClassExpression(callNode));
-  selectConstructorAndTransformArguments.call(cv);
-  cv.visitInsn(DUP_X1);
-  cv.visitInsn(ICONST_1);
-  cv.visitInsn(IAND);
+  selectConstructorAndTransformArguments.call(mv);
+  mv.visitInsn(DUP_X1);
+  mv.visitInsn(ICONST_1);
+  mv.visitInsn(IAND);
   Label afterIf=new Label();
-  cv.visitJumpInsn(IFEQ,afterIf);
-  cv.visitInsn(ICONST_0);
-  cv.visitInsn(AALOAD);
-  cv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
-  cv.visitLabel(afterIf);
-  cv.visitInsn(SWAP);
-  cv.visitVarInsn(ALOAD,0);
-  cv.visitInsn(SWAP);
-  cv.visitIntInsn(BIPUSH,8);
-  cv.visitInsn(ISHR);
+  mv.visitJumpInsn(IFEQ,afterIf);
+  mv.visitInsn(ICONST_0);
+  mv.visitInsn(AALOAD);
+  mv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
+  mv.visitLabel(afterIf);
+  mv.visitInsn(SWAP);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitInsn(SWAP);
+  mv.visitIntInsn(BIPUSH,8);
+  mv.visitInsn(ISHR);
   Label[] targets=new Label[constructors.size()];
   int[] indices=new int[constructors.size()];
   for (int i=0; i < targets.length; i++) {
@@ -29,18 +29,18 @@
   }
   Label defaultLabel=new Label();
   Label afterSwitch=new Label();
-  cv.visitLookupSwitchInsn(defaultLabel,indices,targets);
+  mv.visitLookupSwitchInsn(defaultLabel,indices,targets);
   for (int i=0; i < targets.length; i++) {
-    cv.visitLabel(targets[i]);
-    cv.visitInsn(SWAP);
-    cv.visitInsn(DUP_X1);
+    mv.visitLabel(targets[i]);
+    mv.visitInsn(SWAP);
+    mv.visitInsn(DUP_X1);
     ConstructorNode cn=(ConstructorNode)constructors.get(i);
     String descriptor=helper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
     Parameter[] parameters=cn.getParameters();
     for (int p=0; p < parameters.length; p++) {
-      cv.visitInsn(DUP);
+      mv.visitInsn(DUP);
       helper.pushConstant(p);
-      cv.visitInsn(AALOAD);
+      mv.visitInsn(AALOAD);
       ClassNode type=parameters[p].getType();
       if (ClassHelper.isPrimitiveType(type)) {
         helper.unbox(type);
@@ -50,15 +50,15 @@
       }
       helper.swapWithObject(type);
     }
-    cv.visitInsn(POP);
-    cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
-    cv.visitJumpInsn(GOTO,afterSwitch);
+    mv.visitInsn(POP);
+    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
+    mv.visitJumpInsn(GOTO,afterSwitch);
   }
-  cv.visitLabel(defaultLabel);
-  cv.visitTypeInsn(NEW,"java/lang/IllegalArgumentException");
-  cv.visitInsn(DUP);
-  cv.visitLdcInsn("illegal constructor number");
-  cv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
-  cv.visitInsn(ATHROW);
-  cv.visitLabel(afterSwitch);
+  mv.visitLabel(defaultLabel);
+  mv.visitTypeInsn(NEW,"java/lang/IllegalArgumentException");
+  mv.visitInsn(DUP);
+  mv.visitLdcInsn("illegal constructor number");
+  mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
+  mv.visitInsn(ATHROW);
+  mv.visitLabel(afterSwitch);
 }

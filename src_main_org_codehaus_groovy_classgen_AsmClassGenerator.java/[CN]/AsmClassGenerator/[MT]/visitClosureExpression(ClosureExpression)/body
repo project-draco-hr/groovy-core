@@ -6,14 +6,14 @@
   List constructors=innerClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
   Parameter[] localVariableParams=node.getParameters();
-  cv.visitTypeInsn(NEW,innerClassinternalName);
-  cv.visitInsn(DUP);
+  mv.visitTypeInsn(NEW,innerClassinternalName);
+  mv.visitInsn(DUP);
   if (isStaticMethod() || classNode.isStaticClass()) {
     visitClassExpression(new ClassExpression(classNode));
     visitClassExpression(new ClassExpression(getOutermostClass()));
   }
  else {
-    cv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,0);
     loadThis();
   }
   for (int i=2; i < localVariableParams.length; i++) {
@@ -26,16 +26,16 @@
       Variable v=compileStack.getVariable(name,classNode.getSuperClass() != ClassHelper.CLOSURE_TYPE);
       if (v == null) {
         FieldNode field=classNode.getField(name);
-        cv.visitVarInsn(ALOAD,0);
-        cv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
         param.setClosureSharedVariable(false);
         v=compileStack.defineVariable(param,true);
         param.setClosureSharedVariable(true);
         v.setHolder(true);
       }
-      cv.visitVarInsn(ALOAD,v.getIndex());
+      mv.visitVarInsn(ALOAD,v.getIndex());
     }
   }
   passingClosureParams=false;
-  cv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
+  mv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
 }

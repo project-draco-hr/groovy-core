@@ -4,22 +4,22 @@
   BooleanExpression booleanExpression=statement.getBooleanExpression();
   booleanExpression.visit(this);
   Label l0=new Label();
-  cv.visitJumpInsn(IFEQ,l0);
+  mv.visitJumpInsn(IFEQ,l0);
   Label l1=new Label();
-  cv.visitJumpInsn(GOTO,l1);
-  cv.visitLabel(l0);
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
   String expressionText=booleanExpression.getText();
   List list=new ArrayList();
   addVariableNames(booleanExpression,list);
   if (list.isEmpty()) {
-    cv.visitLdcInsn(expressionText);
+    mv.visitLdcInsn(expressionText);
   }
  else {
     boolean first=true;
-    cv.visitTypeInsn(NEW,"java/lang/StringBuffer");
-    cv.visitInsn(DUP);
-    cv.visitLdcInsn(expressionText + ". Values: ");
-    cv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
+    mv.visitTypeInsn(NEW,"java/lang/StringBuffer");
+    mv.visitInsn(DUP);
+    mv.visitLdcInsn(expressionText + ". Values: ");
+    mv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
     int tempIndex=compileStack.defineTemporaryVariable("assert",true);
     for (Iterator iter=list.iterator(); iter.hasNext(); ) {
       String name=(String)iter.next();
@@ -30,19 +30,19 @@
  else {
         text=", " + text;
       }
-      cv.visitVarInsn(ALOAD,tempIndex);
-      cv.visitLdcInsn(text);
-      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-      cv.visitInsn(POP);
-      cv.visitVarInsn(ALOAD,tempIndex);
+      mv.visitVarInsn(ALOAD,tempIndex);
+      mv.visitLdcInsn(text);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
+      mv.visitInsn(POP);
+      mv.visitVarInsn(ALOAD,tempIndex);
       new VariableExpression(name).visit(this);
-      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-      cv.visitInsn(POP);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
+      mv.visitInsn(POP);
     }
-    cv.visitVarInsn(ALOAD,tempIndex);
+    mv.visitVarInsn(ALOAD,tempIndex);
     compileStack.removeVar(tempIndex);
   }
   statement.getMessageExpression().visit(this);
-  assertFailedMethod.call(cv);
-  cv.visitLabel(l1);
+  assertFailedMethod.call(mv);
+  mv.visitLabel(l1);
 }

@@ -4,11 +4,11 @@
   ClassNode type=field.getType();
   String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : BytecodeHelper.getClassInternalName(field.getOwner());
   if (holder) {
-    cv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
-    cv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+    mv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
   }
  else {
-    cv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    mv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
     if (ClassHelper.isPrimitiveType(type)) {
       helper.box(type);
     }

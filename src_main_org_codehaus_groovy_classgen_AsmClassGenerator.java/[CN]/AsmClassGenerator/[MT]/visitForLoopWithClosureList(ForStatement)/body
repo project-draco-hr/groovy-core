@@ -10,11 +10,11 @@
   }
   Label continueLabel=compileStack.getContinueLabel();
   Label breakLabel=compileStack.getBreakLabel();
-  cv.visitLabel(continueLabel);
+  mv.visitLabel(continueLabel);
 {
     Expression condExpr=(Expression)expressions.get(condIndex);
     if (condExpr == EmptyExpression.INSTANCE) {
-      cv.visitIntInsn(BIPUSH,0);
+      mv.visitIntInsn(BIPUSH,0);
     }
  else     if (isComparisonExpression(condExpr)) {
       condExpr.visit(this);
@@ -24,13 +24,13 @@
       helper.unbox(ClassHelper.boolean_TYPE);
     }
   }
-  cv.visitJumpInsn(IFEQ,breakLabel);
+  mv.visitJumpInsn(IFEQ,breakLabel);
   loop.getLoopBlock().visit(this);
   for (int i=condIndex + 1; i < size; i++) {
     visitExpressionOrStatement(expressions.get(i));
   }
-  cv.visitJumpInsn(GOTO,continueLabel);
-  cv.visitLabel(breakLabel);
+  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitLabel(breakLabel);
   compileStack.pop();
   compileStack.pop();
 }

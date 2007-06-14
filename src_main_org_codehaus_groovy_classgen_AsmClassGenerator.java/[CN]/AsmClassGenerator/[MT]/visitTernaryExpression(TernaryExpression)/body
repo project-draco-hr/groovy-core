@@ -2,11 +2,11 @@
   onLineNumber(expression,"visitTernaryExpression");
   expression.getBooleanExpression().visit(this);
   Label l0=new Label();
-  cv.visitJumpInsn(IFEQ,l0);
+  mv.visitJumpInsn(IFEQ,l0);
   visitAndAutoboxBoolean(expression.getTrueExpression());
   Label l1=new Label();
-  cv.visitJumpInsn(GOTO,l1);
-  cv.visitLabel(l0);
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
   visitAndAutoboxBoolean(expression.getFalseExpression());
-  cv.visitLabel(l1);
+  mv.visitLabel(l1);
 }

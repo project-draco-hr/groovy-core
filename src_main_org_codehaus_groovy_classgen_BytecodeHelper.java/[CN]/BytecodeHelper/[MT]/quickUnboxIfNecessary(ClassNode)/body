@@ -3,12 +3,12 @@
     ClassNode wrapper=ClassHelper.getWrapper(type);
     String internName=getClassInternalName(wrapper);
     if (type == ClassHelper.boolean_TYPE) {
-      cv.visitTypeInsn(CHECKCAST,internName);
-      cv.visitMethodInsn(INVOKEVIRTUAL,internName,type.getName() + "Value","()" + getTypeDescription(type));
+      mv.visitTypeInsn(CHECKCAST,internName);
+      mv.visitMethodInsn(INVOKEVIRTUAL,internName,type.getName() + "Value","()" + getTypeDescription(type));
     }
  else {
-      cv.visitTypeInsn(CHECKCAST,"java/lang/Number");
-      cv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Number",type.getName() + "Value","()" + getTypeDescription(type));
+      mv.visitTypeInsn(CHECKCAST,"java/lang/Number");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Number",type.getName() + "Value","()" + getTypeDescription(type));
     }
   }
 }

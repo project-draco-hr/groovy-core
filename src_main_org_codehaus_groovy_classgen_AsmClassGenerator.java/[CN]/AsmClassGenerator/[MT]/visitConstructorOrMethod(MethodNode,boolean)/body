@@ -1,23 +1,27 @@
 {
-  String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),node.getParameters());
+  Parameter[] parameters=node.getParameters();
+  String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),parameters);
   String signature=BytecodeHelper.getGenericsMethodSignature(node);
-  cv=cw.visitMethod(node.getModifiers(),node.getName(),methodType,signature,buildExceptions(node.getExceptions()));
-  visitAnnotations(node,cv);
-  helper=new BytecodeHelper(cv);
+  mv=cv.visitMethod(node.getModifiers(),node.getName(),methodType,signature,buildExceptions(node.getExceptions()));
+  visitAnnotations(node,mv);
+  for (int i=0; i < parameters.length; i++) {
+    visitParameterAnnotations(parameters[i],i,mv);
+  }
+  helper=new BytecodeHelper(mv);
   if (!node.isAbstract()) {
     Statement code=node.getCode();
     if (isConstructor && (code == null || !firstStatementIsSpecialConstructorCall(node))) {
-      cv.visitVarInsn(ALOAD,0);
-      cv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
+      mv.visitVarInsn(ALOAD,0);
+      mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }
-    compileStack.init(node.getVariableScope(),node.getParameters(),cv,classNode);
+    compileStack.init(node.getVariableScope(),parameters,mv,classNode);
     (new ClassExpression(classNode)).visit(this);
-    cv.visitInsn(POP);
+    mv.visitInsn(POP);
     (new ClassExpression(ClassHelper.METACLASS_TYPE)).visit(this);
-    cv.visitInsn(POP);
+    mv.visitInsn(POP);
     super.visitConstructorOrMethod(node,isConstructor);
     if (!outputReturn || node.isVoidMethod()) {
-      cv.visitInsn(RETURN);
+      mv.visitInsn(RETURN);
     }
     compileStack.clear();
     for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
@@ -25,7 +29,7 @@
       runnable.run();
     }
     exceptionBlocks.clear();
-    cv.visitMaxs(0,0);
+    mv.visitMaxs(0,0);
   }
-  cv.visitEnd();
+  mv.visitEnd();
 }

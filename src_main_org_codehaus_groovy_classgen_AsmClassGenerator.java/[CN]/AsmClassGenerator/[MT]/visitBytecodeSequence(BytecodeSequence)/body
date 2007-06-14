@@ -3,7 +3,7 @@
   for (Iterator iterator=instructions.iterator(); iterator.hasNext(); ) {
     Object part=iterator.next();
     if (part == EmptyExpression.INSTANCE) {
-      cv.visitInsn(ACONST_NULL);
+      mv.visitInsn(ACONST_NULL);
     }
  else     if (part instanceof Expression) {
       visitAndAutoboxBoolean((Expression)part);
@@ -11,11 +11,11 @@
  else     if (part instanceof Statement) {
       Statement stm=(Statement)part;
       stm.visit(this);
-      cv.visitInsn(ACONST_NULL);
+      mv.visitInsn(ACONST_NULL);
     }
  else {
       BytecodeInstruction runner=(BytecodeInstruction)part;
-      runner.visit(cv);
+      runner.visit(mv);
     }
   }
 }

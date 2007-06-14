@@ -3,7 +3,7 @@
     this.classNode=classNode;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,(String)null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,(String)null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     classNode.visitContents(this);
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
       ClassNode innerClass=(ClassNode)iter.next();
@@ -14,9 +14,9 @@
       if (enclosingMethod != null) {
         outerClassName=null;
       }
-      cw.visitInnerClass(innerClassInternalName,outerClassName,innerClassType.getName(),innerClass.getModifiers());
+      cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassType.getName(),innerClass.getModifiers());
     }
-    cw.visitEnd();
+    cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {
     e.setModule(classNode.getModule());

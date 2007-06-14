@@ -3,15 +3,15 @@
   visitStatement(ifElse);
   ifElse.getBooleanExpression().visit(this);
   Label l0=new Label();
-  cv.visitJumpInsn(IFEQ,l0);
+  mv.visitJumpInsn(IFEQ,l0);
   compileStack.pushBooleanExpression();
   ifElse.getIfBlock().visit(this);
   compileStack.pop();
   Label l1=new Label();
-  cv.visitJumpInsn(GOTO,l1);
-  cv.visitLabel(l0);
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
   compileStack.pushBooleanExpression();
   ifElse.getElseBlock().visit(this);
   compileStack.pop();
-  cv.visitLabel(l1);
+  mv.visitLabel(l1);
 }

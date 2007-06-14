@@ -13,15 +13,15 @@
   final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.make(java.util.Iterator.class),true);
   Label continueLabel=compileStack.getContinueLabel();
   Label breakLabel=compileStack.getBreakLabel();
-  cv.visitLabel(continueLabel);
-  cv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorHasNextMethod.call(cv);
-  cv.visitJumpInsn(IFEQ,breakLabel);
-  cv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorNextMethod.call(cv);
+  mv.visitLabel(continueLabel);
+  mv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorHasNextMethod.call(mv);
+  mv.visitJumpInsn(IFEQ,breakLabel);
+  mv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorNextMethod.call(mv);
   helper.storeVar(variable);
   loop.getLoopBlock().visit(this);
-  cv.visitJumpInsn(GOTO,continueLabel);
-  cv.visitLabel(breakLabel);
+  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitLabel(breakLabel);
   compileStack.pop();
 }

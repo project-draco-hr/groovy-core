@@ -1,10 +1,10 @@
 {
   if (passingClosureParams && isInScriptBody()) {
-    cv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/ScriptReference");
-    cv.visitInsn(DUP);
+    mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/ScriptReference");
+    mv.visitInsn(DUP);
     loadThisOrOwner();
-    cv.visitLdcInsn(name);
-    cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
+    mv.visitLdcInsn(name);
+    mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/ScriptReference","<init>","(Lgroovy/lang/Script;Ljava/lang/String;)V");
   }
  else {
     PropertyExpression pexp=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);

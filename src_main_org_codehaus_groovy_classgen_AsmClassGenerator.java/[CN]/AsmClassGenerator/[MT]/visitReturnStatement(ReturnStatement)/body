@@ -16,14 +16,14 @@
       throwException("Cannot use return statement with an expression on a method that returns void");
     }
     compileStack.applyFinallyBlocks();
-    cv.visitInsn(RETURN);
+    mv.visitInsn(RETURN);
     outputReturn=true;
     return;
   }
   Expression expression=statement.getExpression();
   evaluateExpression(expression);
   if (returnType == ClassHelper.OBJECT_TYPE && expression.getType() != null && expression.getType() == ClassHelper.VOID_TYPE) {
-    cv.visitInsn(ACONST_NULL);
+    mv.visitInsn(ACONST_NULL);
   }
  else {
     doConvertAndCast(returnType,expression,false,true,false);

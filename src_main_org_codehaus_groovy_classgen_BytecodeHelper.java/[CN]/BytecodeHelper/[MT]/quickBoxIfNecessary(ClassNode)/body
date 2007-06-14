@@ -6,16 +6,16 @@
  else   if (ClassHelper.isPrimitiveType(type) && type != ClassHelper.VOID_TYPE) {
     ClassNode wrapper=ClassHelper.getWrapper(type);
     String internName=getClassInternalName(wrapper);
-    cv.visitTypeInsn(NEW,internName);
-    cv.visitInsn(DUP);
+    mv.visitTypeInsn(NEW,internName);
+    mv.visitInsn(DUP);
     if (type == ClassHelper.double_TYPE || type == ClassHelper.long_TYPE) {
-      cv.visitInsn(DUP2_X2);
-      cv.visitInsn(POP2);
+      mv.visitInsn(DUP2_X2);
+      mv.visitInsn(POP2);
     }
  else {
-      cv.visitInsn(DUP2_X1);
-      cv.visitInsn(POP2);
+      mv.visitInsn(DUP2_X1);
+      mv.visitInsn(POP2);
     }
-    cv.visitMethodInsn(INVOKESPECIAL,internName,"<init>","(" + descr + ")V");
+    mv.visitMethodInsn(INVOKESPECIAL,internName,"<init>","(" + descr + ")V");
   }
 }

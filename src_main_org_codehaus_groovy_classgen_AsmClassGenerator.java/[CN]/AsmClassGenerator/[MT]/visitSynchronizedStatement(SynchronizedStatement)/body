@@ -6,28 +6,28 @@
   final Label synchronizedStart=new Label();
   final Label synchronizedEnd=new Label();
   final Label catchAll=new Label();
-  cv.visitVarInsn(ALOAD,index);
-  cv.visitInsn(MONITORENTER);
-  cv.visitLabel(synchronizedStart);
+  mv.visitVarInsn(ALOAD,index);
+  mv.visitInsn(MONITORENTER);
+  mv.visitLabel(synchronizedStart);
   Runnable finallyPart=new Runnable(){
     public void run(){
-      cv.visitVarInsn(ALOAD,index);
-      cv.visitInsn(MONITOREXIT);
+      mv.visitVarInsn(ALOAD,index);
+      mv.visitInsn(MONITOREXIT);
     }
   }
 ;
   compileStack.pushFinallyBlock(finallyPart);
   statement.getCode().visit(this);
   finallyPart.run();
-  cv.visitJumpInsn(GOTO,synchronizedEnd);
-  cv.visitLabel(catchAll);
+  mv.visitJumpInsn(GOTO,synchronizedEnd);
+  mv.visitLabel(catchAll);
   finallyPart.run();
-  cv.visitInsn(ATHROW);
-  cv.visitLabel(synchronizedEnd);
+  mv.visitInsn(ATHROW);
+  mv.visitLabel(synchronizedEnd);
   compileStack.popFinallyBlock();
   exceptionBlocks.add(new Runnable(){
     public void run(){
-      cv.visitTryCatchBlock(synchronizedStart,catchAll,catchAll,null);
+      mv.visitTryCatchBlock(synchronizedStart,catchAll,catchAll,null);
     }
   }
 );

@@ -1,13 +1,13 @@
 {
   int size=expression.getExpressions().size();
   helper.pushConstant(size);
-  cv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   for (int i=0; i < size; i++) {
-    cv.visitInsn(DUP);
+    mv.visitInsn(DUP);
     helper.pushConstant(i);
     Expression argument=expression.getExpression(i);
     visitAndAutoboxBoolean(argument);
     if (useWrapper && argument instanceof CastExpression)     loadWrapper(argument);
-    cv.visitInsn(AASTORE);
+    mv.visitInsn(AASTORE);
   }
 }

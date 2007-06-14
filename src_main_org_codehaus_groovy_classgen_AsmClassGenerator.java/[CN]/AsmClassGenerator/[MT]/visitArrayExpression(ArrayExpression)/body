@@ -20,7 +20,7 @@
   int storeIns=AASTORE;
   if (sizeExpression != null) {
     arrayTypeName=BytecodeHelper.getTypeDescription(expression.getType());
-    cv.visitMultiANewArrayInsn(arrayTypeName,dimensions);
+    mv.visitMultiANewArrayInsn(arrayTypeName,dimensions);
   }
  else   if (ClassHelper.isPrimitiveType(elementType)) {
     int primType=0;
@@ -56,13 +56,13 @@
       primType=T_LONG;
       storeIns=LASTORE;
     }
-    cv.visitIntInsn(NEWARRAY,primType);
+    mv.visitIntInsn(NEWARRAY,primType);
   }
  else {
-    cv.visitTypeInsn(ANEWARRAY,arrayTypeName);
+    mv.visitTypeInsn(ANEWARRAY,arrayTypeName);
   }
   for (int i=0; i < size; i++) {
-    cv.visitInsn(DUP);
+    mv.visitInsn(DUP);
     helper.pushConstant(i);
     Expression elementExpression=expression.getExpression(i);
     if (elementExpression == null) {
@@ -76,10 +76,10 @@
         visitAndAutoboxBoolean(elementExpression);
       }
     }
-    cv.visitInsn(storeIns);
+    mv.visitInsn(storeIns);
   }
   if (sizeExpression == null && ClassHelper.isPrimitiveType(elementType)) {
     int par=compileStack.defineTemporaryVariable("par",true);
-    cv.visitVarInsn(ALOAD,par);
+    mv.visitVarInsn(ALOAD,par);
   }
 }

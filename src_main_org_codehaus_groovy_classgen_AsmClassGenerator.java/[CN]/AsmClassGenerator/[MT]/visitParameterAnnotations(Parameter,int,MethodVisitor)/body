@@ -1,0 +1,14 @@
+{
+  Map annotionMap=parameter.getAnnotations();
+  if (annotionMap.isEmpty())   return;
+  Iterator it=annotionMap.values().iterator();
+  while (it.hasNext()) {
+    AnnotationNode an=(AnnotationNode)it.next();
+    if (an.isBuiltIn())     continue;
+    if (an.hasSourceRetention())     continue;
+    final String annotationDescriptor=BytecodeHelper.getTypeDescription(an.getClassNode());
+    AnnotationVisitor av=mv.visitParameterAnnotation(paramNumber,annotationDescriptor,an.hasRuntimeRetention());
+    visitAnnotationAttributes(an,av);
+    av.visitEnd();
+  }
+}

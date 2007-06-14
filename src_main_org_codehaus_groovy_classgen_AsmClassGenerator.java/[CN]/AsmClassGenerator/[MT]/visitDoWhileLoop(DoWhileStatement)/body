@@ -4,10 +4,10 @@
   compileStack.pushLoop(loop.getStatementLabel());
   Label breakLabel=compileStack.getBreakLabel();
   Label continueLabel=compileStack.getContinueLabel();
-  cv.visitLabel(continueLabel);
+  mv.visitLabel(continueLabel);
   loop.getLoopBlock().visit(this);
   loop.getBooleanExpression().visit(this);
-  cv.visitJumpInsn(IFEQ,continueLabel);
-  cv.visitLabel(breakLabel);
+  mv.visitJumpInsn(IFEQ,continueLabel);
+  mv.visitLabel(breakLabel);
   compileStack.pop();
 }

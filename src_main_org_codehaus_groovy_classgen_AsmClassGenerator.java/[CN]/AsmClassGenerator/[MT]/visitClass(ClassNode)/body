@@ -5,9 +5,9 @@
     this.outermostClass=null;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cw.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
-    cw.visitSource(sourceFile,null);
-    visitAnnotations(classNode,cw);
+    cv.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visitSource(sourceFile,null);
+    visitAnnotations(classNode,cv);
     if (classNode.isInterface()) {
       ClassNode owner=classNode;
       if (owner instanceof InnerClassNode) {
@@ -38,9 +38,9 @@
         outerClassName=null;
         innerClassName=null;
       }
-      cw.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
+      cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
     }
-    cw.visitEnd();
+    cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {
     e.setModule(classNode.getModule());

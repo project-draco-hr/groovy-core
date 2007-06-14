@@ -1,65 +1,65 @@
 {
   if (value == null) {
-    cv.visitInsn(ACONST_NULL);
+    mv.visitInsn(ACONST_NULL);
   }
  else   if (value instanceof String) {
-    cv.visitLdcInsn(value);
+    mv.visitLdcInsn(value);
   }
  else   if (value instanceof Character) {
     String className="java/lang/Character";
-    cv.visitTypeInsn(NEW,className);
-    cv.visitInsn(DUP);
-    cv.visitLdcInsn(value);
+    mv.visitTypeInsn(NEW,className);
+    mv.visitInsn(DUP);
+    mv.visitLdcInsn(value);
     String methodType="(C)V";
-    cv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
+    mv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
   }
  else   if (value instanceof Number) {
     Number n=(Number)value;
     String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
-    cv.visitTypeInsn(NEW,className);
-    cv.visitInsn(DUP);
+    mv.visitTypeInsn(NEW,className);
+    mv.visitInsn(DUP);
     String methodType;
     if (n instanceof Integer) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(I)V";
     }
  else     if (n instanceof Double) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(D)V";
     }
  else     if (n instanceof Float) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(F)V";
     }
  else     if (n instanceof Long) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(J)V";
     }
  else     if (n instanceof BigDecimal) {
-      cv.visitLdcInsn(n.toString());
+      mv.visitLdcInsn(n.toString());
       methodType="(Ljava/lang/String;)V";
     }
  else     if (n instanceof BigInteger) {
-      cv.visitLdcInsn(n.toString());
+      mv.visitLdcInsn(n.toString());
       methodType="(Ljava/lang/String;)V";
     }
  else     if (n instanceof Short) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(S)V";
     }
  else     if (n instanceof Byte) {
-      cv.visitLdcInsn(n);
+      mv.visitLdcInsn(n);
       methodType="(B)V";
     }
  else {
       throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ value.getClass().getName()+ ".  Numeric constant type not supported.");
     }
-    cv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
+    mv.visitMethodInsn(INVOKESPECIAL,className,"<init>",methodType);
   }
  else   if (value instanceof Boolean) {
     Boolean bool=(Boolean)value;
     String text=(bool.booleanValue()) ? "TRUE" : "FALSE";
-    cv.visitFieldInsn(GETSTATIC,"java/lang/Boolean",text,"Ljava/lang/Boolean;");
+    mv.visitFieldInsn(GETSTATIC,"java/lang/Boolean",text,"Ljava/lang/Boolean;");
   }
  else   if (value instanceof Class) {
     Class vc=(Class)value;

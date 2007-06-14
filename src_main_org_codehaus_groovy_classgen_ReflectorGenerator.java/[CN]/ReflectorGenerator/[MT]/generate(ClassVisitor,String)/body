@@ -1,12 +1,12 @@
 {
-  this.cw=cw;
+  this.cv=cv;
   classInternalName=BytecodeHelper.getClassInternalName(className);
-  cw.visit(ClassGenerator.asmJDKVersion,ACC_PUBLIC + ACC_SUPER,classInternalName,(String)null,"org/codehaus/groovy/runtime/Reflector",null);
-  MethodVisitor cv=cw.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
-  cv.visitVarInsn(ALOAD,0);
-  cv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/Reflector","<init>","()V");
-  cv.visitInsn(RETURN);
-  cv.visitMaxs(1,1);
+  cv.visit(ClassGenerator.asmJDKVersion,ACC_PUBLIC + ACC_SUPER,classInternalName,(String)null,"org/codehaus/groovy/runtime/Reflector",null);
+  MethodVisitor mv=cv.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/Reflector","<init>","()V");
+  mv.visitInsn(RETURN);
+  mv.visitMaxs(1,1);
   generateInvokeMethod();
-  cw.visitEnd();
+  cv.visitEnd();
 }
