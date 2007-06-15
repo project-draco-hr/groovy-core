@@ -1,8 +1,8 @@
 {
+  inDefine=true;
   Class c=defineClass(name,bytecode,0,bytecode.length,domain);
-synchronized (loadedClasses) {
-    loadedClasses.put(name,c);
-  }
+  loadedClasses.put(name,c);
   resolveClass(c);
+  inDefine=false;
   return c;
 }
