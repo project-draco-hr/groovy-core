@@ -1,7 +1,9 @@
 {
   Map answer=new HashMap();
   for (Iterator iter=self.iterator(); iter.hasNext(); ) {
-    groupCurrentElement(closure,answer,iter);
+    Object element=iter.next();
+    Object value=closure.call(element);
+    groupAnswer(answer,element,value);
   }
   return answer;
 }
