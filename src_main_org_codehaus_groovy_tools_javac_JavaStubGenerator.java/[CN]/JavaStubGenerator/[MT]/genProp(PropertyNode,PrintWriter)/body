@@ -1,0 +1,31 @@
+{
+  String name=propNode.getName().substring(0,1).toUpperCase() + propNode.getName().substring(1);
+  String getterName="get" + name;
+  boolean skipGetter=false;
+  List getterCandidates=propNode.getField().getOwner().getMethods(getterName);
+  if (getterCandidates != null)   for (Iterator it=getterCandidates.iterator(); it.hasNext(); ) {
+    MethodNode method=(MethodNode)it.next();
+    if (method.getParameters().length == 0) {
+      skipGetter=true;
+    }
+  }
+  if (!skipGetter) {
+    printModifiers(out,propNode.getModifiers());
+    out.print(propNode.getType().getName() + " " + getterName+ " () { ");
+    printReturn(out,propNode.getType());
+    out.println(" }");
+  }
+  String setterName="set" + name;
+  boolean skipSetter=false;
+  List setterCandidates=propNode.getField().getOwner().getMethods(setterName);
+  if (setterCandidates != null)   for (Iterator it=setterCandidates.iterator(); it.hasNext(); ) {
+    MethodNode method=(MethodNode)it.next();
+    if (method.getParameters().length == 1) {
+      skipSetter=true;
+    }
+  }
+  if (!skipSetter) {
+    printModifiers(out,propNode.getModifiers());
+    out.println("void " + setterName + "( "+ propNode.getType().getName()+ " value) {}");
+  }
+}

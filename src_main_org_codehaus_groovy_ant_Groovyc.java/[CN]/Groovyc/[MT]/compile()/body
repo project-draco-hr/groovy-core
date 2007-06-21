@@ -16,7 +16,13 @@
       if (encoding != null) {
         configuration.setSourceEncoding(encoding);
       }
-      CompilationUnit unit=new CompilationUnit(configuration,null,buildClassLoaderFor());
+      CompilationUnit unit;
+      if (jointCompilation) {
+        unit=new JavaAwareCompilationUnit(configuration,buildClassLoaderFor());
+      }
+ else {
+        unit=new CompilationUnit(configuration,null,buildClassLoaderFor());
+      }
       unit.addSources(compileList);
       unit.compile();
     }

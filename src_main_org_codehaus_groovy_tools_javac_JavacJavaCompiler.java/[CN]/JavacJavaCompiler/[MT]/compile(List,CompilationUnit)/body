@@ -1,0 +1,12 @@
+{
+  String[] javacParameters=makeParameters(files);
+  org.apache.tools.ant.taskdefs.Javac c;
+  try {
+    Class javac=findJavac(cu);
+    Method method=javac.getMethod("compile",new Class[]{String[].class});
+    method.invoke(null,new Object[]{javacParameters});
+  }
+ catch (  Exception e) {
+    cu.getErrorCollector().addFatalError(new ExceptionMessage(e,true,cu));
+  }
+}

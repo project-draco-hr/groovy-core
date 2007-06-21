@@ -1,14 +1,19 @@
 {
   boolean displayStackTraceOnError=false;
+  boolean jointCompilation=false;
   try {
     Options options=new Options();
     options.addOption(OptionBuilder.withLongOpt("classpath").hasArg().withArgName("classpath").create());
     options.addOption(OptionBuilder.withLongOpt("sourcepath").hasArg().withArgName("sourcepath").create());
+    options.addOption(OptionBuilder.withLongOpt("temp").hasArg().withArgName("temp").create());
     options.addOption(OptionBuilder.withLongOpt("encoding").hasArg().withArgName("encoding").create());
     options.addOption(OptionBuilder.hasArg().create('d'));
     options.addOption(OptionBuilder.withLongOpt("help").create('h'));
     options.addOption(OptionBuilder.withLongOpt("version").create('v'));
     options.addOption(OptionBuilder.withLongOpt("exception").create('e'));
+    options.addOption(OptionBuilder.withLongOpt("jointCompilation").create('j'));
+    options.addOption(OptionBuilder.withArgName("property=value").withValueSeparator().hasArgs(2).create("J"));
+    options.addOption(OptionBuilder.withArgName("property=value").hasArg().create("F"));
     PosixParser cliParser=new PosixParser();
     CommandLine cli=cliParser.parse(options,args);
     if (cli.hasOption('h')) {
@@ -29,6 +34,15 @@
       configuration.setSourceEncoding(cli.getOptionValue("encoding"));
     }
     displayStackTraceOnError=cli.hasOption('e');
+    jointCompilation=cli.hasOption('j');
+    if (jointCompilation) {
+      Map compilerOptions=new HashMap();
+      String[] opts=cli.getOptionValues("J");
+      compilerOptions.put("namedValues",opts);
+      opts=cli.getOptionValues("F");
+      compilerOptions.put("flags",opts);
+      configuration.setJointCompilationOptions(compilerOptions);
+    }
     String[] filenames=cli.getArgs();
     if (filenames.length == 0) {
       displayHelp();
@@ -36,6 +50,10 @@
     }
     int errors=checkFiles(filenames);
     if (errors == 0) {
+      if (jointCompilation) {
+        File tmpDir=createTempDir();
+        configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+      }
       FileSystemCompiler compiler=new FileSystemCompiler(configuration);
       compiler.compile(filenames);
     }

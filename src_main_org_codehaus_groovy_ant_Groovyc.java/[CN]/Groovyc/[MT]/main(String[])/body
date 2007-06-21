@@ -1,4 +1,9 @@
 {
+  Project project=new Project();
+  project.addBuildListener(new AnsiColorLogger());
+  Groovyc compiler=new Groovyc();
+  compiler.setProject(project);
+  args=compiler.evalCompilerFlags(args);
   String dest=".";
   String src=".";
   boolean listFiles=false;
@@ -14,10 +19,6 @@
       listFiles=true;
     }
   }
-  Project project=new Project();
-  project.addBuildListener(new AnsiColorLogger());
-  Groovyc compiler=new Groovyc();
-  compiler.setProject(project);
   compiler.setSrcdir(new Path(project,src));
   compiler.setDestdir(project.resolveFile(dest));
   compiler.setListfiles(listFiles);

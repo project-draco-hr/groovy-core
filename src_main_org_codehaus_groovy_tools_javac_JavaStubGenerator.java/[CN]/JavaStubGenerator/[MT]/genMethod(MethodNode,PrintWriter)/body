@@ -1,0 +1,14 @@
+{
+  if (!methodNode.getDeclaringClass().isInterface())   printModifiers(out,methodNode.getModifiers());
+  out.print(methodNode.getReturnType().getName() + " " + methodNode.getName());
+  printParams(methodNode,out);
+  if ((methodNode.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
+    out.println(";");
+  }
+ else {
+    out.print(" { ");
+    ClassNode retType=methodNode.getReturnType();
+    printReturn(out,retType);
+    out.println("}");
+  }
+}

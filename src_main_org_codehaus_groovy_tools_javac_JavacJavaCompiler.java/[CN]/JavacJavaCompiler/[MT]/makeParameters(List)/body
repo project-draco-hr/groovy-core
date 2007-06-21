@@ -1,0 +1,23 @@
+{
+  Map options=config.getJointCompilationOptions();
+  LinkedList paras=new LinkedList();
+  paras.add("-d");
+  paras.add(config.getTargetDirectory().getAbsolutePath());
+  paras.add("-sourcepath");
+  paras.add(((File)options.get("stubDir")).getAbsolutePath());
+  String[] flags=(String[])options.get("flags");
+  if (flags != null) {
+    for (int i=0; i < flags.length; i++) {
+      paras.add('-' + flags[i]);
+    }
+  }
+  String[] namedValues=(String[])options.get("namedValues");
+  if (namedValues != null) {
+    for (int i=0; i < namedValues.length; i+=2) {
+      paras.add('-' + namedValues[i]);
+      paras.add(namedValues[i + 1]);
+    }
+  }
+  paras.addAll(files);
+  return (String[])paras.toArray(new String[0]);
+}

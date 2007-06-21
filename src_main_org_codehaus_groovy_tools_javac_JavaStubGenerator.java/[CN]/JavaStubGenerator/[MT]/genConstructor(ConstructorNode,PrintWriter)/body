@@ -1,0 +1,15 @@
+{
+  out.print("public ");
+  out.print(constructorNode.getDeclaringClass().getNameWithoutPackage());
+  printParams(constructorNode,out);
+  ConstructorCallExpression constrCall=getConstructorCallExpression(constructorNode);
+  if (constrCall == null || !constrCall.isSpecialCall())   out.println(" {}");
+ else {
+    out.println(" {");
+    if (constrCall.isSuperCall())     out.print("super(");
+ else     out.print("this(");
+    genSpecialContructorArgs(out,constrCall);
+    out.println(");");
+    out.println("}");
+  }
+}

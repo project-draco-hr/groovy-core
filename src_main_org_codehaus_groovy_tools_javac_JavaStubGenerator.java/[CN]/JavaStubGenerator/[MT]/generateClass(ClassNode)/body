@@ -1,0 +1,34 @@
+{
+  String fileName=classNode.getName().replace('.','/');
+  mkdirs(outputPath,fileName);
+  toCompile.add(fileName);
+  PrintWriter out=new PrintWriter(new File(outputPath,fileName + ".java"));
+  String packageName=classNode.getPackageName();
+  if (packageName != null) {
+    out.println("package " + packageName + ";\n");
+  }
+  genImports(classNode,out);
+  boolean isInterface=classNode.isInterface();
+  printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
+  out.println((isInterface ? "interface " : "class ") + classNode.getNameWithoutPackage());
+  ClassNode superClass=classNode.getSuperClass();
+  if (!isInterface) {
+    if (superClass.equals(ClassHelper.OBJECT_TYPE))     superClass=ClassHelper.make(GroovyObjectSupport.class);
+    out.println("  extends " + superClass.getName());
+  }
+ else {
+    if (!superClass.equals(ClassHelper.OBJECT_TYPE))     out.println("  extends " + superClass.getName());
+  }
+  ClassNode[] interfaces=classNode.getInterfaces();
+  if (interfaces != null && interfaces.length > 0) {
+    out.println("  implements");
+    for (int i=0; i < interfaces.length - 1; ++i)     out.println("    " + interfaces[i].getName() + ",");
+    out.println("    " + interfaces[interfaces.length - 1].getName());
+  }
+  out.println("{");
+  genMethods(classNode,out);
+  genFields(classNode,out);
+  genProps(classNode,out);
+  out.println("}");
+  out.close();
+}
