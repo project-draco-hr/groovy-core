@@ -6,7 +6,9 @@
   for (node=node.getNextSibling(); isType(CASE_GROUP,node); node=node.getNextSibling()) {
     AST child=node.getFirstChild();
     if (isType(LITERAL_case,child)) {
-      list.addAll(caseStatements(child));
+      List cases=new LinkedList();
+      defaultStatement=caseStatements(child,cases);
+      list.addAll(cases);
     }
  else {
       defaultStatement=statement(child.getNextSibling());
