@@ -1,0 +1,24 @@
+{
+  if (SwingUtilities.isEventDispatchThread()) {
+    return super.invokeMethod(methodName,args);
+  }
+ else {
+    final Object[] ret=new Object[1];
+    Runnable run=new Runnable(){
+      public void run(){
+        ret[0]=SwingBuilder.super.invokeMethod(methodName,args);
+      }
+    }
+;
+    try {
+      SwingUtilities.invokeAndWait(run);
+    }
+ catch (    InterruptedException e) {
+      throw new GroovyRuntimeException("interrupted swing interaction",e);
+    }
+catch (    InvocationTargetException e) {
+      throw new GroovyRuntimeException("exception in event dispatch thread",e);
+    }
+    return ret[0];
+  }
+}
