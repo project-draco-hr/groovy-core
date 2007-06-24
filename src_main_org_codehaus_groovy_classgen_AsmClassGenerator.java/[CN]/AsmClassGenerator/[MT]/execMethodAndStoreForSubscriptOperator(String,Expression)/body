@@ -1,0 +1,27 @@
+{
+  makeCall(expression,new ConstantExpression(method),MethodCallExpression.NO_ARGUMENTS,invokeMethod,false,false,false);
+  boolean handled=false;
+  if (expression instanceof BinaryExpression) {
+    BinaryExpression be=(BinaryExpression)expression;
+    if (be.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      cv.visitInsn(DUP);
+      final int resultIdx=compileStack.defineTemporaryVariable("postfix_" + method,true);
+      BytecodeExpression result=new BytecodeExpression(){
+        public void visit(        GroovyCodeVisitor visitor){
+          cv.visitVarInsn(ALOAD,resultIdx);
+        }
+      }
+;
+      TupleExpression args=new ArgumentListExpression();
+      args.addExpression(be.getRightExpression());
+      args.addExpression(result);
+      makeCall(be.getLeftExpression(),new ConstantExpression("putAt"),args,invokeMethod,false,false,false);
+      handled=true;
+    }
+  }
+  if (!handled) {
+    leftHandExpression=true;
+    expression.visit(this);
+    leftHandExpression=false;
+  }
+}
