@@ -11,11 +11,18 @@
   setRecompileGroovySource(false);
   setMinimumRecompilationInterval(100);
   setTargetBytecode(getVMVersion());
+  String encoding=null;
   try {
-    setSourceEncoding(System.getProperty("file.encoding","US-ASCII"));
+    encoding=System.getProperty("groovy.source.encoding");
   }
  catch (  Exception e) {
+    try {
+      encoding=System.getProperty("file.encoding","US-ASCII");
+    }
+ catch (    Exception ee) {
+    }
   }
+  setSourceEncoding(encoding);
   try {
     setOutput(new PrintWriter(System.err));
   }
