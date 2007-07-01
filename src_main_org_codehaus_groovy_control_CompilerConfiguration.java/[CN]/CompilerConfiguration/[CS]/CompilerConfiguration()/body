@@ -1,6 +1,5 @@
 {
   setWarningLevel(WarningMessage.LIKELY_ERRORS);
-  setSourceEncoding("US-ASCII");
   setOutput(null);
   setTargetDirectory((File)null);
   setClasspath("");
@@ -13,14 +12,14 @@
   setTargetBytecode(getVMVersion());
   String encoding=null;
   try {
-    encoding=System.getProperty("groovy.source.encoding");
+    encoding=System.getProperty("file.encoding","US-ASCII");
   }
  catch (  Exception e) {
-    try {
-      encoding=System.getProperty("file.encoding","US-ASCII");
-    }
- catch (    Exception ee) {
-    }
+  }
+  try {
+    encoding=System.getProperty("groovy.source.encoding",encoding);
+  }
+ catch (  Exception e) {
   }
   setSourceEncoding(encoding);
   try {
