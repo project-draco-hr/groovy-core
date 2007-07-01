@@ -1,19 +1,23 @@
 {
-  if (from instanceof Short && to instanceof Short) {
-    this.from=new Integer(((Short)from).intValue());
-    this.to=new Integer(((Short)to).intValue());
+  if (from instanceof Short) {
+    from=new Integer(((Short)from).intValue());
   }
- else   if (from instanceof Float && to instanceof Float) {
-    this.from=new Double(((Float)from).doubleValue());
-    this.to=new Double(((Float)to).doubleValue());
+  if (to instanceof Short) {
+    to=new Integer(((Short)to).intValue());
   }
- else   if (from.getClass() == to.getClass()) {
+  if (from instanceof Float) {
+    from=new Double(((Float)from).doubleValue());
+  }
+  if (to instanceof Float) {
+    to=new Double(((Float)to).doubleValue());
+  }
+  if (from.getClass() == to.getClass()) {
     this.from=from;
     this.to=to;
   }
  else {
-    this.from=normaliseType(from);
-    this.to=normaliseType(to);
+    this.from=normaliseStringType(from);
+    this.to=normaliseStringType(to);
   }
   if (from instanceof String || to instanceof String) {
     String start=from.toString();
