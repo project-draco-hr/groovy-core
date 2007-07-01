@@ -1,4 +1,5 @@
 {
+  Object vargsMethod=null;
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
     Class[] paramTypes=getParameterTypes(method);
@@ -6,6 +7,9 @@
     if (paramLength == 0) {
       return method;
     }
+ else     if (paramLength == 1 && isVargsMethod(paramTypes,EMPTY_ARRAY)) {
+      vargsMethod=method;
+    }
   }
-  return null;
+  return vargsMethod;
 }
