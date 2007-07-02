@@ -1,20 +1,29 @@
 {
-  int hash=key.hashCode();
-  lockWrite();
-  try {
-    int index=index(hash,table.length);
-    for (Entry current=table[index]; current != null; current=current.next) {
-      if (hash != current.hash)       continue;
-      Object oldKey=current.getKey();
-      Object oldValue=current.getValue();
-      if (!current.isValid())       continue;
-      if (key == oldKey || key.equals(oldKey)) {
-        return oldValue;
+  int hash=hash(key);
+  Entry[] tab=table;
+  int index=hash & (tab.length - 1);
+  Entry first=tab[index];
+  Entry e=first;
+  for (; ; ) {
+    if (e == null) {
+      Entry[] reread=getTableForReading();
+      if (tab == reread && first == tab[index])       return null;
+ else {
+        tab=reread;
+        e=first=tab[index=hash & (tab.length - 1)];
       }
+      continue;
     }
+    Object eKey=e.getKey();
+    Object eValue=e.getValue();
+    if (e.hash == hash && eq(key,eKey)) {
+      if (eValue != null)       return eValue;
+synchronized (this) {
+        if (eKey == null && eValue == null)         expungeStaleEntries();
+        tab=table;
+      }
+      e=first=tab[index=hash & (tab.length - 1)];
+    }
+ else     e=e.next;
   }
-  finally {
-    unlockWrite();
-  }
-  return null;
 }

@@ -1,39 +1,28 @@
 {
-synchronized (writeLock) {
-    waitForWriteState();
-    removeDereferencedEntries();
-    int hash=key.hashCode();
-    int index=index(hash,table.length);
-    Entry current=table[index];
-    Entry prev=null;
-    while (current != null) {
-      if (hash == current.hash) {
-        Object oldKey=current.getKey();
-        if (!current.isValid()) {
-          current=current.invalidate();
-          if (prev != null) {
-            prev.next=current;
-          }
+  int hash=hash(key);
+  Entry[] tab=table;
+  int index=hash & (tab.length - 1);
+  Entry first=tab[index];
+  Entry e=first;
+  for (e=first; e != null; e=e.next)   if (e.hash == hash && eq(key,e.getKey()))   break;
+synchronized (this) {
+    if (tab == table) {
+      if (e == null) {
+        if (first == tab[index])         return null;
+      }
  else {
-            table[index]=current;
-          }
-          size--;
-          continue;
-        }
-        if (key == oldKey || key.equals(oldKey)) {
-          current=current.invalidate();
-          if (prev != null) {
-            prev.next=current;
-          }
- else {
-            table[index]=current;
-          }
-          size--;
-          return;
+        Object oldValue=e.getValue();
+        if (first == tab[index] && oldValue != null) {
+          e.setValue(null);
+          count--;
+          Entry head=e.next;
+          for (Entry p=first; p != e; p=p.next)           head=new Entry(p.hash,p.key,p.value,head,queue);
+          tab[index]=head;
+          recordModification(head);
+          return oldValue;
         }
       }
-      prev=current;
-      current=current.next;
     }
+    return sremove(key,hash);
   }
 }
