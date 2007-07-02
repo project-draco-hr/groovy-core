@@ -16,7 +16,6 @@
     Class[] newArgClasses=MetaClassHelper.convertToTypeArray(newArguments);
     method=getMethodWithCaching(sender,methodName,newArgClasses,isCallToSuper);
     if (method != null) {
-      MethodKey methodKey=new DefaultMethodKey(sender,methodName,argClasses,isCallToSuper);
       method=new TransformMetaMethod(method){
         public Object invoke(        Object object,        Object[] arguments){
           Object firstArgument=arguments[0];
@@ -26,8 +25,6 @@
         }
       }
 ;
-      cacheInstanceMethod(methodKey,method);
-      return invokeMethod(sender,object,methodName,originalArguments,isCallToSuper,fromInsideClass);
     }
   }
   boolean isClosure=object instanceof Closure;
