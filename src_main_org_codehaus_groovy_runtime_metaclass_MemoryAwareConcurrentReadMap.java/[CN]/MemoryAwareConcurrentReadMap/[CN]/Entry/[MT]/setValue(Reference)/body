@@ -1,9 +1,11 @@
 {
   Object oldValue=this.value.get();
-  if (value == null) {
-    value=DUMMY_REF;
+  if (value == null || value == DUMMY_REF) {
+    this.value=DUMMY_REF;
   }
  else {
+    SoftRef ref=(SoftRef)value;
+    ref.entry=this;
     this.value=value;
   }
   return oldValue;
