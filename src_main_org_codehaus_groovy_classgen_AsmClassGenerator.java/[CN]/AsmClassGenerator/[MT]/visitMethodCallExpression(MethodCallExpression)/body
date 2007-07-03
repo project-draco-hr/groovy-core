@@ -6,7 +6,12 @@
   boolean isThisExpression=isThisExpression(call.getObjectExpression());
   if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
     visitVariableExpression(new VariableExpression(methodName));
-    arguments.visit(this);
+    if (arguments instanceof TupleExpression) {
+      arguments.visit(this);
+    }
+ else {
+      new TupleExpression().addExpression(arguments).visit(this);
+    }
     invokeClosureMethod.call(mv);
   }
  else {
