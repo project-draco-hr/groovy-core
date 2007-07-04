@@ -5,9 +5,6 @@ synchronized (beanPropertyCache) {
       if (getter)       beanProperty=new MetaBeanProperty(propertyName,Object.class,metaMethod,null);
  else       beanProperty=new MetaBeanProperty(propertyName,Object.class,null,metaMethod);
       beanPropertyCache.put(propertyName,beanProperty);
-synchronized (expandoProperties) {
-        expandoProperties.put(beanProperty.getName(),beanProperty);
-      }
     }
  else {
       if (getter) {
@@ -21,6 +18,9 @@ synchronized (expandoProperties) {
         beanProperty=new MetaBeanProperty(propertyName,metaMethod.getParameterTypes()[0],getterMethod,metaMethod);
         beanPropertyCache.put(propertyName,beanProperty);
       }
+    }
+synchronized (expandoProperties) {
+      expandoProperties.put(beanProperty.getName(),beanProperty);
     }
     addMetaBeanProperty(beanProperty);
   }
