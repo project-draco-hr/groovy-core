@@ -8,6 +8,7 @@
             URLConnection dependentScriptConn=null;
             try {
               dependentScriptConn=rc.getResourceConnection(filename);
+              ScriptCacheEntry currentCacheEntry=(ScriptCacheEntry)currentCacheEntryHolder.get();
               currentCacheEntry.dependencies.put(dependentScriptConn.getURL(),new Long(dependentScriptConn.getLastModified()));
             }
  catch (            ResourceException e1) {
