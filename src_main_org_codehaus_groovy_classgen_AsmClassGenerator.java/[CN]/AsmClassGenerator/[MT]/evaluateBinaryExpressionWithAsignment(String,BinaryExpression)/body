@@ -3,9 +3,9 @@
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-      MethodCallExpression methodCall=new MethodCallExpression(expression.getLeftExpression(),method,new ArgumentListExpression(new Expression[]{expression.getRightExpression()}));
+      MethodCallExpression methodCall=new MethodCallExpression(expression.getLeftExpression(),method,new ArgumentListExpression(expression.getRightExpression()));
       Expression safeIndexExpr=createReusableExpression(leftBinExpr.getRightExpression());
-      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{safeIndexExpr,methodCall})));
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(safeIndexExpr,methodCall)));
       return;
     }
   }

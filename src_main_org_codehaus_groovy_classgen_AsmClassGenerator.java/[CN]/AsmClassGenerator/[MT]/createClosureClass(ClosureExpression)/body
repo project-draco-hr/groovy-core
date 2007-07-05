@@ -41,9 +41,7 @@
   VariableExpression thisObject=new VariableExpression("_thisObject");
   thisObject.setSourcePosition(expression);
   block.getVariableScope().getReferencedLocalVariables().put("_thisObject",thisObject);
-  TupleExpression conArgs=new TupleExpression();
-  conArgs.addExpression(outer);
-  conArgs.addExpression(thisObject);
+  TupleExpression conArgs=new TupleExpression(outer,thisObject);
   block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,conArgs)));
   for (int i=0; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
