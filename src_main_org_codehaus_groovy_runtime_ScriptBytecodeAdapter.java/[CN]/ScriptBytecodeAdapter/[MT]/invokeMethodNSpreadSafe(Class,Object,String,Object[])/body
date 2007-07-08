@@ -1,10 +1,14 @@
 {
   if (receiver == null)   return null;
-  if (!(receiver instanceof List))   return invokeMethodN(senderClass,receiver,messageName,messageArguments);
-  List list=(List)receiver;
-  List answer=new ArrayList();
-  for (Iterator it=list.iterator(); it.hasNext(); ) {
-    answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
+  if (receiver.getClass().isArray()) {
+    return invokeMethodNSpreadSafeArray(senderClass,receiver,messageName,messageArguments);
   }
-  return answer;
+  if (receiver instanceof List) {
+    List answer=new ArrayList();
+    for (Iterator it=((List)receiver).iterator(); it.hasNext(); ) {
+      answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
+    }
+    return answer;
+  }
+  return invokeMethodN(senderClass,receiver,messageName,messageArguments);
 }
