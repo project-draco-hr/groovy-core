@@ -1,0 +1,49 @@
+{
+  MetaBeanProperty mbp=(MetaBeanProperty)mp;
+  MetaProperty result=null;
+  final MetaMethod getterMethod=mbp.getGetter();
+  final MetaMethod setterMethod=mbp.getSetter();
+  final MetaFieldProperty metaField=mbp.getField();
+  boolean getter=getterMethod == null || getterMethod.isStatic();
+  boolean setter=setterMethod == null || setterMethod.isStatic();
+  boolean field=metaField == null || metaField.isStatic();
+  if (!getter && !setter && !field) {
+    return result;
+  }
+ else {
+    final String propertyName=mbp.getName();
+    final Class propertyType=mbp.getType();
+    if (setter && getter) {
+      if (field) {
+        result=mbp;
+      }
+ else {
+        result=new MetaBeanProperty(propertyName,propertyType,getterMethod,setterMethod);
+      }
+    }
+ else     if (getter && !setter) {
+      if (getterMethod == null) {
+        result=metaField;
+      }
+ else {
+        MetaBeanProperty newmp=new MetaBeanProperty(propertyName,propertyType,getterMethod,null);
+        if (field)         newmp.setField(metaField);
+        result=newmp;
+      }
+    }
+ else     if (setter && !getter) {
+      if (setterMethod == null) {
+        result=metaField;
+      }
+ else {
+        MetaBeanProperty newmp=new MetaBeanProperty(propertyName,propertyType,null,setterMethod);
+        if (field)         newmp.setField(metaField);
+        result=newmp;
+      }
+    }
+ else     if (field) {
+      result=metaField;
+    }
+  }
+  return result;
+}

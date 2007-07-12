@@ -94,15 +94,16 @@
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
   }
  else {
+    Object value=null;
     try {
-      Object value=this.getProperty(object,methodName);
-      if (value instanceof Closure) {
-        Closure closure=(Closure)value;
-        MetaClass delegateMetaClass=closure.getMetaClass();
-        return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments,false,fromInsideClass);
-      }
+      value=this.getProperty(object,methodName);
     }
  catch (    MissingPropertyException mpe) {
+    }
+    if (value instanceof Closure) {
+      Closure closure=(Closure)value;
+      MetaClass delegateMetaClass=closure.getMetaClass();
+      return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments,false,fromInsideClass);
     }
     throw new MissingMethodException(methodName,theClass,originalArguments,false);
   }

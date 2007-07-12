@@ -38,7 +38,6 @@
     }
   }
   boolean ambigousListener=false;
-  boolean usesProxy=false;
   if (method == null) {
     method=(MetaMethod)listeners.get(name);
     ambigousListener=method == AMBIGOUS_LISTENER_METHOD;
@@ -46,7 +45,6 @@
       Object proxy=Proxy.newProxyInstance(theClass.getClassLoader(),new Class[]{method.getParameterTypes()[0]},new ConvertedClosure((Closure)newValue,name));
       arguments=new Object[]{proxy};
       newValue=proxy;
-      usesProxy=true;
     }
  else {
       method=null;

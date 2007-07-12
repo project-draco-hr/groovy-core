@@ -1,15 +1,21 @@
 {
-  Map propertyMap=getMap2MapNotNull(classPropertyIndex,theClass);
-  MetaFieldProperty field=null;
-  MetaProperty old=(MetaProperty)propertyMap.get(mp.getName());
-  if (old != null) {
-    if (old instanceof MetaBeanProperty) {
-      field=((MetaBeanProperty)old).getField();
-    }
- else {
-      field=(MetaFieldProperty)old;
-    }
-    mp.setField(field);
+  MetaProperty staticProperty=establishStaticMetaProperty(mp);
+  if (staticProperty != null) {
+    staticPropertyIndex.put(mp.getName(),mp);
   }
-  propertyMap.put(mp.getName(),mp);
+ else {
+    Map propertyMap=getMap2MapNotNull(classPropertyIndex,theClass);
+    MetaFieldProperty field;
+    MetaProperty old=(MetaProperty)propertyMap.get(mp.getName());
+    if (old != null) {
+      if (old instanceof MetaBeanProperty) {
+        field=((MetaBeanProperty)old).getField();
+      }
+ else {
+        field=(MetaFieldProperty)old;
+      }
+      mp.setField(field);
+    }
+    propertyMap.put(mp.getName(),mp);
+  }
 }

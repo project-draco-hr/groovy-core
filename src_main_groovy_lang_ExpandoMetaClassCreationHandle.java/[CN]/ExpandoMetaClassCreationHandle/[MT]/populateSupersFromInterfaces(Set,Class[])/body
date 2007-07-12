@@ -1,8 +1,10 @@
 {
   for (int i=0; i < interfaces.length; i++) {
     Class anInterface=interfaces[i];
+    final Class[] superInterfaces=anInterface.getInterfaces();
     if (modifiedExpandos.containsKey(anInterface)) {
       modifiedSupers.add(modifiedExpandos.get(anInterface));
     }
+    if (superInterfaces.length > 0)     populateSupersFromInterfaces(modifiedSupers,superInterfaces);
   }
 }

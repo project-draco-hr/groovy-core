@@ -16,24 +16,20 @@
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   Object[] originalArguments=(Object[])arguments.clone();
   unwrap(arguments);
-  MethodKey methodKey=new DefaultMethodKey(sender,methodName,argClasses,false);
-  MetaMethod method=(MetaMethod)staticMethodCache.get(methodKey);
-  if (method == null) {
-    method=pickStaticMethod(sender,methodName,argClasses);
-    cacheStaticMethod(methodKey.createCopy(),method);
-  }
+  MetaMethod method=retrieveStaticMethod(methodName,argClasses);
   if (method != null) {
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
   }
+  Object prop=null;
   try {
-    Object prop=getProperty(theClass,theClass,methodName,false,false);
-    if (prop instanceof Closure) {
-      Closure closure=(Closure)prop;
-      MetaClass delegateMetaClass=closure.getMetaClass();
-      return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments,false,false);
-    }
+    prop=getProperty(theClass,theClass,methodName,false,false);
   }
  catch (  MissingPropertyException mpe) {
+  }
+  if (prop instanceof Closure) {
+    Closure closure=(Closure)prop;
+    MetaClass delegateMetaClass=closure.getMetaClass();
+    return delegateMetaClass.invokeMethod(closure.getClass(),closure,"doCall",originalArguments,false,false);
   }
   Class superClass=sender.getSuperclass();
   if (superClass != Object.class && superClass != null) {
