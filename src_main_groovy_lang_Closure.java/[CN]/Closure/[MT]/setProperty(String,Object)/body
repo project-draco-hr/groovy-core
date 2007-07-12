@@ -5,21 +5,25 @@
  else   if ("metaClass".equals(property)) {
     setMetaClass((MetaClass)newValue);
   }
- else {
-    try {
-      InvokerHelper.setProperty(this.owner,property,newValue);
-      return;
-    }
- catch (    GroovyRuntimeException e1) {
-      if (this.delegate != null && this.delegate != this && this.delegate != this.owner) {
-        try {
-          InvokerHelper.setProperty(this.delegate,property,newValue);
-          return;
-        }
- catch (        GroovyRuntimeException e2) {
-        }
-      }
-      throw e1;
-    }
+ else   if ("resolveStrategy".equals(property)) {
+    setResolveStrategy(((Number)newValue).intValue());
   }
+ else {
+switch (resolveStrategy) {
+case DELEGATE_FIRST:
+      setPropertyDelegateFirst(property,newValue);
+    break;
+case DELEGATE_ONLY:
+  InvokerHelper.setProperty(this.delegate,property,newValue);
+break;
+case OWNER_ONLY:
+InvokerHelper.setProperty(this.owner,property,newValue);
+break;
+case TO_SELF:
+super.setProperty(property,newValue);
+break;
+default :
+setPropertyOwnerFirst(property,newValue);
+}
+}
 }

@@ -1,0 +1,15 @@
+{
+  try {
+    return InvokerHelper.getProperty(firstTry,property);
+  }
+ catch (  MissingPropertyException e1) {
+    if (secondTry != null && firstTry != this && firstTry != secondTry) {
+      try {
+        return InvokerHelper.getProperty(secondTry,property);
+      }
+ catch (      GroovyRuntimeException e2) {
+      }
+    }
+    throw e1;
+  }
+}
