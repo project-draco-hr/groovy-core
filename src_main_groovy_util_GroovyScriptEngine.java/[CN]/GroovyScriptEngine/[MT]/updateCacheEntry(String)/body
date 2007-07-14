@@ -29,14 +29,21 @@ synchronized (scriptName) {
     if (entry == null || entry.lastModified < lastModified || dependencyOutOfDate) {
       ScriptCacheEntry currentCacheEntry=new ScriptCacheEntry();
       currentCacheEntryHolder.set(currentCacheEntry);
+      InputStream in=null;
       try {
-        currentCacheEntry.scriptClass=groovyLoader.parseClass(groovyScriptConn.getInputStream(),scriptName);
+        in=groovyScriptConn.getInputStream();
+        currentCacheEntry.scriptClass=groovyLoader.parseClass(in,scriptName);
       }
  catch (      Exception e) {
         throw new ScriptException("Could not parse scriptName: " + scriptName,e);
       }
  finally {
         currentCacheEntryHolder.set(null);
+        try {
+          in.close();
+        }
+ catch (        IOException e) {
+        }
       }
       currentCacheEntry.lastModified=lastModified;
       scriptCache.put(scriptName,currentCacheEntry);

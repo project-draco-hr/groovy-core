@@ -3,10 +3,11 @@
   ResourceException se=null;
   for (int i=0; i < roots.length; i++) {
     URL scriptURL=null;
+    InputStream in=null;
     try {
       scriptURL=new URL(roots[i],resourceName);
       groovyScriptConn=scriptURL.openConnection();
-      groovyScriptConn.getInputStream();
+      in=groovyScriptConn.getInputStream();
       break;
     }
  catch (    MalformedURLException e) {
@@ -25,6 +26,13 @@ catch (    IOException e1) {
       }
  else {
         se=new ResourceException(message,se);
+      }
+    }
+ finally {
+      try {
+        in.close();
+      }
+ catch (      IOException e) {
       }
     }
   }
