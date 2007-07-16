@@ -1,7 +1,12 @@
 {
   performOperationOnMetaClass(new Callable(){
     public void call(){
-      MetaMethod existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getParameterTypes());
+      MetaMethod existing=null;
+      try {
+        existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getParameterTypes());
+      }
+ catch (      GroovyRuntimeException e) {
+      }
       if (existing == null) {
         addMethodWithKey(metaMethodFromSuper);
       }

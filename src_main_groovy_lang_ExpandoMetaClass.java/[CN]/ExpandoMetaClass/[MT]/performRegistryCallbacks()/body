@@ -1,15 +1,16 @@
 {
-  MetaClassRegistry registry=InvokerHelper.getInstance().getMetaRegistry();
-  if (!modified && !inRegistry) {
+  MetaClassRegistry registry=GroovySystem.getMetaClassRegistry();
+  if (!modified) {
     modified=true;
-    MetaClass currMetaClass=registry.getMetaClass(theClass);
-    if (!(currMetaClass instanceof ExpandoMetaClass) && currMetaClass instanceof AdaptingMetaClass) {
-      ((AdaptingMetaClass)currMetaClass).setAdaptee(this);
-    }
+    if (inRegistry) {
+      MetaClass currMetaClass=registry.getMetaClass(theClass);
+      if (!(currMetaClass instanceof ExpandoMetaClass) && currMetaClass instanceof AdaptingMetaClass) {
+        ((AdaptingMetaClass)currMetaClass).setAdaptee(this);
+      }
  else {
-      registry.setMetaClass(theClass,this);
+        registry.setMetaClass(theClass,this);
+      }
     }
-    this.inRegistry=true;
   }
   if (registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle) {
     ExpandoMetaClassCreationHandle creationHandler=(ExpandoMetaClassCreationHandle)registry.getMetaClassCreationHandler();

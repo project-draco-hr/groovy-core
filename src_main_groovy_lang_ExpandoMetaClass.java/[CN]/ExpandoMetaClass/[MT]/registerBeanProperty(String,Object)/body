@@ -2,7 +2,7 @@
   performOperationOnMetaClass(new Callable(){
     public void call(){
       Class type=newValue == null ? Object.class : newValue.getClass();
-      MetaBeanProperty mbp=new ThreadManagedMetaBeanProperty(theClass,property,type,newValue);
+      MetaBeanProperty mbp=newValue instanceof MetaBeanProperty ? (MetaBeanProperty)newValue : new ThreadManagedMetaBeanProperty(theClass,property,type,newValue);
       final MetaMethod getter=mbp.getGetter();
       final MethodKey getterKey=new DefaultMethodKey(theClass,getter.getName(),new Class[0],false);
       final MetaMethod setter=mbp.getSetter();
@@ -13,6 +13,7 @@
       expandoMethods.put(getterKey,getter);
       expandoProperties.put(mbp.getName(),mbp);
       addMetaBeanProperty(mbp);
+      performRegistryCallbacks();
     }
   }
 );
