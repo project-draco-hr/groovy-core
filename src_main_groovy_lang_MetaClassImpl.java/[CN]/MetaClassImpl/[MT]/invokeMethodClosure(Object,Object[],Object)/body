@@ -1,0 +1,9 @@
+{
+  String methodName;
+  MethodClosure mc=(MethodClosure)object;
+  methodName=mc.getMethod();
+  Class ownerClass=owner.getClass();
+  if (owner instanceof Class)   ownerClass=(Class)owner;
+  MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
+  return ownerMetaClass.invokeMethod(ownerClass,owner,methodName,arguments,false,false);
+}

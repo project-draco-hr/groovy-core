@@ -1,8 +1,13 @@
 {
-  List properties=getProperties();
-  for (Iterator i=properties.iterator(); i.hasNext(); ) {
-    MetaProperty metaProperty=(MetaProperty)i.next();
-    if (name.equals(metaProperty.getName()))     return metaProperty;
+  Map propertyMap=(Map)classPropertyIndex.get(theClass);
+  if (propertyMap.containsKey(name)) {
+    return (MetaProperty)propertyMap.get(name);
   }
-  return null;
+ else   if (staticPropertyIndex.containsKey(name)) {
+    return (MetaProperty)staticPropertyIndex.get(name);
+  }
+ else {
+    propertyMap=(Map)classPropertyIndexForSuper.get(theClass);
+    return (MetaProperty)propertyMap.get(name);
+  }
 }
