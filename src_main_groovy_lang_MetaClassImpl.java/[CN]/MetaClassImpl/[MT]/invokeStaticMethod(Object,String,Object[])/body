@@ -3,8 +3,7 @@
   if (log.isLoggable(Level.FINER)) {
     MetaClassHelper.logMethodCall(object,methodName,arguments);
   }
-  Class sender=object.getClass();
-  if (object instanceof Class)   sender=(Class)object;
+  final Class sender=object instanceof Class ? (Class)object : object.getClass();
   if (sender != theClass) {
     MetaClass mc=registry.getMetaClass(sender);
     return mc.invokeStaticMethod(sender,methodName,arguments);
@@ -35,5 +34,5 @@
   if (superClass != Object.class && superClass != null) {
     return invokeStaticMethod(sender.getSuperclass(),methodName,arguments);
   }
-  throw new MissingMethodException(methodName,sender,arguments,true);
+  return invokeStaticMissingMethod(sender,methodName,arguments);
 }
