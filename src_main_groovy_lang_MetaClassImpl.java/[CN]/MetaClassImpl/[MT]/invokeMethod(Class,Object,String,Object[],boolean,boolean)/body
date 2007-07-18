@@ -33,10 +33,18 @@
     if (CLOSURE_CALL_METHOD.equals(methodName) || CLOSURE_DO_CALL_METHOD.equals(methodName)) {
       final Class objectClass=object.getClass();
       if (objectClass == MethodClosure.class) {
-        return invokeMethodClosure(object,arguments,owner);
+        final MethodClosure mc=(MethodClosure)object;
+        methodName=mc.getMethod();
+        final Class ownerClass=owner instanceof Class ? (Class)owner : owner.getClass();
+        final MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
+        return ownerMetaClass.invokeMethod(ownerClass,owner,methodName,arguments,false,false);
       }
  else       if (objectClass == CurriedClosure.class) {
-        return invokeCurriedClosure(object,methodName,arguments,owner);
+        final CurriedClosure cc=(CurriedClosure)object;
+        final Object[] curriedArguments=cc.getUncurriedArguments(arguments);
+        final Class ownerClass=owner instanceof Class ? (Class)owner : owner.getClass();
+        final MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
+        return ownerMetaClass.invokeMethod(owner,methodName,curriedArguments);
       }
     }
  else     if (CLOSURE_CURRY_METHOD.equals(methodName)) {
@@ -52,34 +60,40 @@ case Closure.TO_SELF:
   break;
 case Closure.DELEGATE_ONLY:
 if (method == null && delegate != closure && delegate != null) {
-  method=lookupMetaMethodFromObject(methodName,argClasses,delegate);
-  if (method != null)   return method.invoke(delegate,originalArguments);
+  MetaClass delegateMetaClass=lookupObjectMetaClass(delegate);
+  method=delegateMetaClass.pickMethod(methodName,argClasses);
+  if (method != null)   return delegateMetaClass.invokeMethod(delegate,methodName,originalArguments);
 }
 break;
 case Closure.OWNER_ONLY:
-if (method == null && isClosureNotOwner) {
-method=lookupMetaMethodFromObject(methodName,argClasses,owner);
-if (method != null) return method.invoke(owner,originalArguments);
+if (method == null && owner != closure) {
+MetaClass ownerMetaClass=lookupObjectMetaClass(owner);
+method=ownerMetaClass.pickMethod(methodName,argClasses);
+if (method != null) return ownerMetaClass.invokeMethod(owner,methodName,originalArguments);
 }
 break;
 case Closure.DELEGATE_FIRST:
 if (method == null && delegate != closure && delegate != null) {
-method=lookupMetaMethodFromObject(methodName,argClasses,delegate);
-if (method != null) return method.invoke(delegate,originalArguments);
+MetaClass delegateMetaClass=lookupObjectMetaClass(delegate);
+method=delegateMetaClass.pickMethod(methodName,argClasses);
+if (method != null) return delegateMetaClass.invokeMethod(delegate,methodName,originalArguments);
 }
-if (method == null && isClosureNotOwner) {
-method=lookupMetaMethodFromObject(methodName,argClasses,owner);
-if (method != null) return method.invoke(owner,originalArguments);
+if (method == null && owner != closure) {
+MetaClass ownerMetaClass=lookupObjectMetaClass(owner);
+method=ownerMetaClass.pickMethod(methodName,argClasses);
+if (method != null) return ownerMetaClass.invokeMethod(owner,methodName,originalArguments);
 }
 break;
 default :
-if (method == null && isClosureNotOwner) {
-method=lookupMetaMethodFromObject(methodName,argClasses,owner);
-if (method != null) return method.invoke(owner,originalArguments);
+if (method == null && owner != closure) {
+MetaClass ownerMetaClass=lookupObjectMetaClass(owner);
+method=ownerMetaClass.pickMethod(methodName,argClasses);
+if (method != null) return ownerMetaClass.invokeMethod(owner,methodName,originalArguments);
 }
 if (method == null && delegate != closure && delegate != null) {
-method=lookupMetaMethodFromObject(methodName,argClasses,delegate);
-if (method != null) return method.invoke(delegate,originalArguments);
+MetaClass delegateMetaClass=lookupObjectMetaClass(delegate);
+method=delegateMetaClass.pickMethod(methodName,argClasses);
+if (method != null) return delegateMetaClass.invokeMethod(delegate,methodName,originalArguments);
 }
 }
 if (method == null && closure.getResolveStrategy() != Closure.TO_SELF) {

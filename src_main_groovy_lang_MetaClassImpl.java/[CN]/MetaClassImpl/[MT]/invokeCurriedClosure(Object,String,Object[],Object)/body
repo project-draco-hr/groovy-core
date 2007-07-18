@@ -1,8 +1,6 @@
 {
   CurriedClosure cc=(CurriedClosure)object;
   Object[] curriedArguments=cc.getUncurriedArguments(arguments);
-  Class ownerClass=owner.getClass();
-  if (owner instanceof Class)   ownerClass=(Class)owner;
-  MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
+  MetaClass ownerMetaClass=lookupObjectMetaClass(owner);
   return ownerMetaClass.invokeMethod(owner,methodName,curriedArguments);
 }
