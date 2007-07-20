@@ -10,6 +10,7 @@
   this.generatedClasses=new ArrayList();
   this.verifier=new Verifier();
   this.resolveVisitor=new ResolveVisitor(this);
+  this.staticImportVisitor=new StaticImportVisitor(this);
   phaseOperations=new LinkedList[Phases.ALL + 1];
   for (int i=0; i < phaseOperations.length; i++) {
     phaseOperations[i]=new LinkedList();
@@ -22,6 +23,7 @@
 ,Phases.PARSING);
   addPhaseOperation(convert,Phases.CONVERSION);
   addPhaseOperation(resolve,Phases.SEMANTIC_ANALYSIS);
+  addPhaseOperation(staticImport,Phases.SEMANTIC_ANALYSIS);
   addPhaseOperation(compileCompleteCheck,Phases.CANONICALIZATION);
   addPhaseOperation(classgen,Phases.CLASS_GENERATION);
   addPhaseOperation(output);

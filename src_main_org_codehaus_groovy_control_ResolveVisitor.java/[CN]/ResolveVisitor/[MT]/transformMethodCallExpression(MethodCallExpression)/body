@@ -1,12 +1,6 @@
 {
   Expression args=transform(mce.getArguments());
   Expression method=transform(mce.getMethod());
-  if (mce.isImplicitThis()) {
-    Expression ret=findStaticMethodImportFromModule(method,args);
-    if (ret != null) {
-      return ret;
-    }
-  }
   Expression obj=mce.getObjectExpression();
   Expression newObject=transform(obj);
   MethodCallExpression result=new MethodCallExpression(newObject,method,args);

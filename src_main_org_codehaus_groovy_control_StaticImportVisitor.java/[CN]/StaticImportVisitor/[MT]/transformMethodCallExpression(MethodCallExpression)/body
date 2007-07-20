@@ -1,0 +1,9 @@
+{
+  Expression args=transform(mce.getArguments());
+  Expression method=transform(mce.getMethod());
+  if (mce.isImplicitThis()) {
+    Expression ret=findStaticMethodImportFromModule(method,args);
+    if (ret != null)     return ret;
+  }
+  return mce;
+}

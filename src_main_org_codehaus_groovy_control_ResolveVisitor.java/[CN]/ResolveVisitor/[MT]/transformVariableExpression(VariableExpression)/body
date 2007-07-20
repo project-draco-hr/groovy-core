@@ -3,10 +3,6 @@
   if (ve.getName().equals("super"))   return VariableExpression.SUPER_EXPRESSION;
   Variable v=ve.getAccessedVariable();
   if (v instanceof DynamicVariable) {
-    Expression result=findStaticFieldImportFromModule(ve.getName());
-    if (result != null) {
-      return result;
-    }
     ClassNode t=ClassHelper.make(ve.getName());
     if (resolve(t)) {
       for (VariableScope scope=currentScope; scope != null && !scope.isRoot(); scope=scope.getParent()) {

@@ -1,0 +1,12 @@
+{
+  if (exp == null)   return null;
+  if (exp instanceof VariableExpression) {
+    return transformVariableExpression((VariableExpression)exp);
+  }
+ else   if (exp instanceof MethodCallExpression) {
+    return transformMethodCallExpression((MethodCallExpression)exp);
+  }
+ else {
+    return exp.transformExpression(this);
+  }
+}
