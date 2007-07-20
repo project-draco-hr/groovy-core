@@ -3,7 +3,12 @@
   Expression collectionExpression;
   Parameter forParameter;
   if (isType(CLOSURE_LIST,inNode)) {
-    collectionExpression=closureListExpression(inNode);
+    ClosureListExpression clist=closureListExpression(inNode);
+    int size=clist.getExpressions().size();
+    if (size != 3) {
+      throw new ASTRuntimeException(inNode,"3 expressions are required for the classic for loop, you gave " + size);
+    }
+    collectionExpression=clist;
     forParameter=ForStatement.FOR_LOOP_DUMMY;
   }
  else {
