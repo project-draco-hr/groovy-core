@@ -3,7 +3,7 @@
   performOperationOnMetaClass(new Callable(){
     public void call(){
       ClosureMetaMethod metaMethod=new ClosureMetaMethod(methodName,theClass,callable);
-      checkIfGroovyObjectMethod(metaMethod,methodName,callable);
+      checkIfGroovyObjectMethod(metaMethod,methodName);
       MethodKey key=new DefaultMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
       addMetaMethod(metaMethod);
       expandoMethods.put(key,metaMethod);
@@ -16,9 +16,6 @@
         registerBeanPropertyForMethod(metaMethod,propertyName,false,false);
       }
       performRegistryCallbacks();
-      if (!hasCreationHandle) {
-        registerWithInheritenceManager(theClass,metaMethod);
-      }
     }
   }
 );

@@ -1,0 +1,18 @@
+{
+  Class superClass=instance instanceof Class ? (Class)instance : instance.getClass();
+  while (superClass != Object.class) {
+    final MetaMethod method=findMethodInClassHeirarchy(methodName,arguments,superClass);
+    if (method != null) {
+      addSuperMethodIfNotOverriden(method);
+      return method.invoke(instance,arguments);
+    }
+    superClass=superClass.getSuperclass();
+  }
+  final Object[] invokeMethodArgs={methodName,arguments};
+  final MetaMethod method=findMethodInClassHeirarchy(INVOKE_METHOD_METHOD,invokeMethodArgs,theClass);
+  if (method != null && method instanceof ClosureMetaMethod) {
+    this.invokeMethodMethod=(ClosureMetaMethod)method;
+    return method.invoke(instance,invokeMethodArgs);
+  }
+  return super.invokeMissingMethod(instance,methodName,arguments);
+}

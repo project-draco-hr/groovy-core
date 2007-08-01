@@ -1,0 +1,35 @@
+{
+  Class theClass=instance instanceof Class ? (Class)instance : instance.getClass();
+  Class superClass=theClass;
+  while (superClass != Object.class) {
+    final MetaBeanProperty property=findPropertyInClassHierarchy(propertyName,superClass);
+    if (property != null) {
+      addMetaBeanProperty(property);
+      if (!isGetter) {
+        property.setProperty(instance,optionalValue);
+        return null;
+      }
+ else {
+        return property.getProperty(instance);
+      }
+    }
+    superClass=superClass.getSuperclass();
+  }
+  if (isGetter) {
+    final Object[] getPropertyArgs={propertyName};
+    final MetaMethod method=findMethodInClassHeirarchy(GET_PROPERTY_METHOD,getPropertyArgs,theClass);
+    if (method != null && method instanceof ClosureMetaMethod) {
+      this.getPropertyMethod=(ClosureMetaMethod)method;
+      return method.invoke(instance,getPropertyArgs);
+    }
+  }
+ else {
+    final Object[] setPropertyArgs={propertyName,optionalValue};
+    final MetaMethod method=findMethodInClassHeirarchy(SET_PROPERTY_METHOD,setPropertyArgs,theClass);
+    if (method != null && method instanceof ClosureMetaMethod) {
+      this.setPropertyMethod=(ClosureMetaMethod)method;
+      return method.invoke(instance,setPropertyArgs);
+    }
+  }
+  return super.invokeMissingProperty(instance,propertyName,optionalValue,isGetter);
+}
