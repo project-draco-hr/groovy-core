@@ -26,13 +26,22 @@
  catch (  MissingPropertyException mpe) {
   }
   if (prop instanceof Closure) {
-    Closure closure=(Closure)prop;
-    MetaClass delegateMetaClass=closure.getMetaClass();
-    return delegateMetaClass.invokeMethod(closure.getClass(),closure,CLOSURE_DO_CALL_METHOD,originalArguments,false,false);
+    return invokeStaticClosureProperty(originalArguments,prop);
   }
   Class superClass=sender.getSuperclass();
-  if (superClass != Object.class && superClass != null) {
-    return invokeStaticMethod(sender.getSuperclass(),methodName,arguments);
+  while (superClass != Object.class && superClass != null) {
+    MetaClass mc=registry.getMetaClass(superClass);
+    method=mc.getStaticMetaMethod(methodName,argClasses);
+    if (method != null)     return MetaClassHelper.doMethodInvoke(object,method,arguments);
+    try {
+      prop=mc.getProperty(superClass,superClass,methodName,false,false);
+    }
+ catch (    MissingPropertyException mpe) {
+    }
+    if (prop instanceof Closure) {
+      return invokeStaticClosureProperty(originalArguments,prop);
+    }
+    superClass=superClass.getSuperclass();
   }
   return invokeStaticMissingMethod(sender,methodName,arguments);
 }
