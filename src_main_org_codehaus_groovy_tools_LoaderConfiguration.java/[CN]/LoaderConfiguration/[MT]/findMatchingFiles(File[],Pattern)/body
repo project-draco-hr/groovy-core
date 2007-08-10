@@ -1,0 +1,15 @@
+{
+  for (int i=0; i < files.length; i++) {
+    File file=files[i];
+    Matcher m=pattern.matcher(file.getAbsolutePath());
+    if (m.matches() && file.isFile()) {
+      addFile(file);
+    }
+    if (file.isDirectory()) {
+      final File[] dirFiles=file.listFiles();
+      if (dirFiles != null) {
+        findMatchingFiles(dirFiles,pattern);
+      }
+    }
+  }
+}
