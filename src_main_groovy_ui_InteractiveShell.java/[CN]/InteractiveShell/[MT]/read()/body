@@ -1,26 +1,28 @@
 {
   reset();
-  out.println("");
   boolean complete=false;
   boolean done=false;
   while (!done) {
     try {
-      pending=prompt.readLine();
+      pending=reader.readLine();
     }
  catch (    IOException e) {
     }
-    if (pending == null || (COMMAND_MAPPINGS.containsKey(pending) && ((Integer)COMMAND_MAPPINGS.get(pending)).intValue() == COMMAND_ID_EXIT)) {
+    if (pending == null) {
       return null;
     }
-    if (COMMAND_MAPPINGS.containsKey(pending)) {
-      int code=((Integer)COMMAND_MAPPINGS.get(pending)).intValue();
+    String command=pending.trim();
+    if (COMMAND_MAPPINGS.containsKey(command)) {
+      int code=((Integer)COMMAND_MAPPINGS.get(command)).intValue();
 switch (code) {
+case COMMAND_ID_EXIT:
+        return null;
 case COMMAND_ID_HELP:
-        displayHelp();
-      break;
+      displayHelp();
+    break;
 case COMMAND_ID_DISCARD:
-    reset();
-  done=true;
+  reset();
+done=true;
 break;
 case COMMAND_ID_DISPLAY:
 displayStatement();
@@ -36,7 +38,7 @@ if (complete) {
 done=true;
 }
  else {
-err.println("statement not complete");
+err.println(MESSAGES.getMessage("command.execute.not_complete"));
 }
 break;
 case COMMAND_ID_DISCARD_LOADED_CLASSES:
@@ -45,6 +47,8 @@ break;
 case COMMAND_ID_INSPECT:
 inspect();
 break;
+default :
+throw new Error("BUG: Unknown command for code: " + code);
 }
 continue;
 }
@@ -54,7 +58,7 @@ accept();
 continue;
 }
 final String code=current();
-if (parse(code,1)) {
+if (parse(code)) {
 accept();
 complete=true;
 }

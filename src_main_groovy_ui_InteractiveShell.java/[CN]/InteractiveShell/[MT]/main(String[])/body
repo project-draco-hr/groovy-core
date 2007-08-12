@@ -1,10 +1,13 @@
 {
   try {
+    processCommandLineArguments(args);
     final InteractiveShell groovy=new InteractiveShell();
-    groovy.run(args);
+    groovy.run();
   }
  catch (  Exception e) {
-    System.err.println("Caught: " + e);
+    System.err.println("FATAL: " + e);
     e.printStackTrace();
+    System.exit(1);
   }
+  System.exit(0);
 }

@@ -1,6 +1,18 @@
 {
-  final String[] lines=accepted.toString().split("\n");
-  for (int i=0; i < lines.length; i++) {
-    out.println((i + 1) + "> " + lines[i]);
+  final String[] lines=accepted.toString().split(NEW_LINE);
+  if (lines.length == 1 && lines[0].trim().equals("")) {
+    out.println(MESSAGES.getMessage("command.display.buffer_empty"));
+  }
+ else {
+    int padsize=2;
+    if (lines.length >= 10)     padsize++;
+    if (lines.length >= 100)     padsize++;
+    if (lines.length >= 1000)     padsize++;
+    for (int i=0; i < lines.length; i++) {
+      String lineno=DefaultGroovyMethods.padLeft(String.valueOf(i + 1),new Integer(padsize)," ");
+      out.print(lineno);
+      out.print("> ");
+      out.println(lines[i]);
+    }
   }
 }

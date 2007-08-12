@@ -1,0 +1,33 @@
+{
+  out.println(MESSAGES.getMessage("startup_banner.0",InvokerHelper.getVersion(),System.getProperty("java.vm.version")));
+  out.println(MESSAGES.getMessage("startup_banner.1"));
+  while (true) {
+    final String code=read();
+    if (code == null) {
+      break;
+    }
+    reset();
+    if (code.length() > 0) {
+      try {
+        if (beforeExecution != null) {
+          beforeExecution.call();
+        }
+        lastResult=shell.evaluate(code);
+        if (afterExecution != null) {
+          afterExecution.call();
+        }
+        out.print("===> ");
+        out.println(lastResult);
+      }
+ catch (      CompilationFailedException e) {
+        err.println(e);
+      }
+catch (      Throwable e) {
+        if (e instanceof InvokerInvocationException) {
+          e=e.getCause();
+        }
+        filterAndPrintStackTrace(e);
+      }
+    }
+  }
+}
