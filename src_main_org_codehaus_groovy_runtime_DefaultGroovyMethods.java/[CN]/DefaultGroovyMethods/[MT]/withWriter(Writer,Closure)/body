@@ -1,7 +1,11 @@
 {
   try {
     closure.call(writer);
-    writer.flush();
+    try {
+      writer.flush();
+    }
+ catch (    IOException e) {
+    }
     Writer temp=writer;
     writer=null;
     temp.close();
