@@ -1,0 +1,15 @@
+{
+  if (object instanceof Class) {
+    return getStaticMetaClass().getAttribute(sender,object,attribute,useSuper);
+  }
+ else {
+    if (!attributeInitDone)     initAttributes();
+    MetaFieldProperty mfp=(MetaFieldProperty)attributes.get(attribute);
+    if (mfp == null) {
+      return CLOSURE_METACLASS.getAttribute(sender,object,attribute,useSuper);
+    }
+ else {
+      return mfp.getProperty(object);
+    }
+  }
+}

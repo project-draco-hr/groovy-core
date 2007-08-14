@@ -1,0 +1,10 @@
+{
+  reflector=((MetaClassRegistryImpl)registry).loadReflector(theClass,closureMethods);
+  if (reflector == null) {
+    throw new RuntimeException("Should have a reflector for " + theClass.getName());
+  }
+  for (Iterator iter=closureMethods.iterator(); iter.hasNext(); ) {
+    MetaMethod metaMethod=(MetaMethod)iter.next();
+    metaMethod.setReflector(reflector);
+  }
+}

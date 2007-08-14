@@ -1,0 +1,24 @@
+{
+  if (arguments.length == 0) {
+    return MetaClassHelper.chooseEmptyMethodParams(methods);
+  }
+ else   if (arguments.length == 1 && arguments[0] == null) {
+    return MetaClassHelper.chooseMostGeneralMethodWith1NullParam(methods);
+  }
+ else {
+    List matchingMethods=new ArrayList();
+    for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+      Object method=iter.next();
+      if (MetaClassHelper.isValidMethod(method,arguments,coerce)) {
+        matchingMethods.add(method);
+      }
+    }
+    if (matchingMethods.isEmpty()) {
+      return null;
+    }
+ else     if (matchingMethods.size() == 1) {
+      return matchingMethods.get(0);
+    }
+    return chooseMostSpecificParams(CLOSURE_DO_CALL_METHOD,matchingMethods,arguments);
+  }
+}

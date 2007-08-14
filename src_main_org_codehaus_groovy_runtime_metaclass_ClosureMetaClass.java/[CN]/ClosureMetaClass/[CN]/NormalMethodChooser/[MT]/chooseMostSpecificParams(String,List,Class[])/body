@@ -1,0 +1,39 @@
+{
+  long matchesDistance=-1;
+  LinkedList matches=new LinkedList();
+  for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
+    Object method=iter.next();
+    Class[] paramTypes=MetaClassHelper.getParameterTypes(method);
+    if (!MetaClassHelper.parametersAreCompatible(arguments,paramTypes))     continue;
+    long dist=MetaClassHelper.calculateParameterDistance(arguments,paramTypes);
+    if (dist == 0)     return method;
+    if (matches.size() == 0) {
+      matches.add(method);
+      matchesDistance=dist;
+    }
+ else     if (dist < matchesDistance) {
+      matchesDistance=dist;
+      matches.clear();
+      matches.add(method);
+    }
+ else     if (dist == matchesDistance) {
+      matches.add(method);
+    }
+  }
+  if (matches.size() == 1) {
+    return matches.getFirst();
+  }
+  if (matches.size() == 0) {
+    return null;
+  }
+  String msg="Ambiguous method overloading for method ";
+  msg+=theClass.getName() + "#" + name;
+  msg+=".\nCannot resolve which method to invoke for ";
+  msg+=InvokerHelper.toString(arguments);
+  msg+=" due to overlapping prototypes between:";
+  for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
+    Class[] types=MetaClassHelper.getParameterTypes(iter.next());
+    msg+="\n\t" + InvokerHelper.toString(types);
+  }
+  throw new GroovyRuntimeException(msg);
+}

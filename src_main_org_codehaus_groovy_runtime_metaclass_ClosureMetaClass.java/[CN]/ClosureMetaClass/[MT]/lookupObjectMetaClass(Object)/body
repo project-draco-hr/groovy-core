@@ -1,0 +1,10 @@
+{
+  if (object instanceof GroovyObject) {
+    GroovyObject go=(GroovyObject)object;
+    return go.getMetaClass();
+  }
+  Class ownerClass=object.getClass();
+  if (ownerClass == Class.class)   ownerClass=(Class)object;
+  MetaClass metaClass=registry.getMetaClass(ownerClass);
+  return metaClass;
+}

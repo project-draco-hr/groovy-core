@@ -21,7 +21,9 @@
     }
  else {
       super.visitClass(classNode);
-      createMopMethods();
+      if (!classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type.getName())) {
+        createMopMethods();
+      }
       createSyntheticStaticFields();
     }
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
