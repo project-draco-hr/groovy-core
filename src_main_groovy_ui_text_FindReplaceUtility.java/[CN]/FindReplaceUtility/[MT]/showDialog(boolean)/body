@@ -1,0 +1,31 @@
+{
+  String title=isReplace ? REPLACE_ACTION_COMMAND : FIND_ACTION_COMMAND;
+  findReplaceDialog.setTitle(title);
+  String text=textComponent.getSelectedText();
+  if (text == null) {
+    text="";
+  }
+  findField.getEditor().setItem(text);
+  findField.getEditor().selectAll();
+  replacePanel.setVisible(isReplace);
+  replaceAllButton.setVisible(isReplace);
+  closeButton.setVisible(isReplace);
+  Action action=isReplace ? replaceAction : closeAction;
+  replaceButton.setAction(action);
+  replaceButton.setPreferredSize(null);
+  Dimension d=isReplace ? replaceAllButton.getPreferredSize() : replaceButton.getPreferredSize();
+  findButton.setPreferredSize(d);
+  replaceButton.setPreferredSize(d);
+  closeButton.setPreferredSize(d);
+  findReplaceDialog.invalidate();
+  findReplaceDialog.repaint();
+  findReplaceDialog.pack();
+  java.awt.Frame[] frames=java.awt.Frame.getFrames();
+  for (int i=0; i < frames.length; i++) {
+    if (frames[i].isFocused()) {
+      findReplaceDialog.setLocationRelativeTo(frames[i]);
+    }
+  }
+  findReplaceDialog.setVisible(true);
+  findField.requestFocusInWindow();
+}

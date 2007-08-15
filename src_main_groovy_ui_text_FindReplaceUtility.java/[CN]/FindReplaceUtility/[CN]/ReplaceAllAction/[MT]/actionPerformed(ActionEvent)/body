@@ -1,0 +1,30 @@
+{
+  lastAction=ae.getActionCommand();
+  findReplaceCount=0;
+  int last=textComponent.getSelectedText() == null ? textComponent.getCaretPosition() : textComponent.getSelectionStart();
+  int pos=findNext(false,last - 1);
+  String find=(String)findField.getSelectedItem();
+  String replace=(String)replaceField.getSelectedItem();
+  replace=replace == null ? "" : replace;
+  while (pos > -1) {
+    Document doc=textComponent.getDocument();
+    try {
+      doc.remove(pos,find.length());
+      doc.insertString(pos,replace,attributeSet);
+      last=pos;
+      pos=findNext(false,pos);
+    }
+ catch (    BadLocationException ble) {
+      ble.printStackTrace();
+    }
+    findReplaceCount++;
+  }
+  if (pos > -1) {
+    textComponent.select(pos,pos + find.length());
+  }
+ else {
+    textComponent.setCaretPosition(last + replace.length());
+  }
+  setListStrings();
+  fireTextEvent();
+}

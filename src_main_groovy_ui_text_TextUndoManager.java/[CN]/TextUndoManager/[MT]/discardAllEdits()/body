@@ -1,0 +1,9 @@
+{
+  boolean undoable=canUndo();
+  boolean redoable=canRedo();
+  boolean changed=hasChanged();
+  super.discardAllEdits();
+  modificationMarker=editToBeUndone();
+  firePropertyChangeEvent(UndoManager.UndoName,undoable,canUndo());
+  firePropertyChangeEvent(UndoManager.UndoName,redoable,canRedo());
+}

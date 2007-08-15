@@ -1,0 +1,19 @@
+{
+  styledDocument.getText(0,styledDocument.getLength(),segment);
+  buffer=CharBuffer.wrap(segment.array).asReadOnlyBuffer();
+  if (!lexer.isInitialized()) {
+    lexer.initialize();
+    offset=0;
+    length=styledDocument.getLength();
+  }
+ else {
+    int end=offset + length;
+    offset=calcBeginParse(offset);
+    length=calcEndParse(end) - offset;
+    SortedSet set=mlTextRunSet.subSet(new Integer(offset),new Integer(offset + length));
+    if (set != null) {
+      set.clear();
+    }
+  }
+  lexer.parse(buffer,offset,length);
+}

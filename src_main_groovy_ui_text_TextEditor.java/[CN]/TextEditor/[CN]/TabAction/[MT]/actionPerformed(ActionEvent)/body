@@ -1,0 +1,24 @@
+{
+  try {
+    Document doc=TextEditor.this.getDocument();
+    String text=tabsAsSpaces ? TABBED_SPACES : "\t";
+    if (multiLineTab && getSelectedText() != null) {
+      int end=Utilities.getRowEnd(TextEditor.this,getSelectionEnd());
+      TextEditor.this.setSelectionEnd(end);
+      Element el=Utilities.getParagraphElement(TextEditor.this,getSelectionStart());
+      int start=el.getStartOffset();
+      TextEditor.this.setSelectionStart(start);
+      String toReplace=TextEditor.this.getSelectedText();
+      toReplace=LINE_START.matcher(toReplace).replaceAll(text);
+      TextEditor.this.replaceSelection(toReplace);
+      TextEditor.this.select(start,start + toReplace.length());
+    }
+ else {
+      int pos=TextEditor.this.getCaretPosition();
+      doc.insertString(pos,text,null);
+    }
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+  }
+}

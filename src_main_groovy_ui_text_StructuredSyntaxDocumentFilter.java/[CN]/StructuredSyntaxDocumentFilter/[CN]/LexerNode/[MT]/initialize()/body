@@ -1,0 +1,20 @@
+{
+  matcher=null;
+  groupList.clear();
+  groupList.add(null);
+  Iterator iter=styleMap.keySet().iterator();
+  String regexp="";
+  while (iter.hasNext()) {
+    String nextRegexp=(String)iter.next();
+    regexp+="|(" + nextRegexp + ")";
+    groupList.add(Pattern.compile(nextRegexp).pattern());
+  }
+  if (!regexp.equals("")) {
+    matcher=Pattern.compile(regexp.substring(1)).matcher("");
+    iter=children.values().iterator();
+    while (iter.hasNext()) {
+      ((LexerNode)iter.next()).initialize();
+    }
+  }
+  initialized=true;
+}

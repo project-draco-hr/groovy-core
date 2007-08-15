@@ -1,0 +1,24 @@
+{
+  boolean cont=true;
+  while (offset > -1 && cont) {
+    Element el=doc.getCharacterElement(offset);
+    Object color=el.getAttributes().getAttribute(StyleConstants.Foreground);
+    if (!COMMENT_COLOR.equals(color)) {
+      cont=segment.array[offset] != '{' && segment.array[offset] != '}';
+    }
+    offset-=cont ? 1 : 0;
+  }
+  if (offset > -1 && segment.array[offset] == '{') {
+    while (offset > -1 && !Character.isWhitespace(segment.array[offset--])) {
+    }
+  }
+  int index=offset < 0 || segment.array[offset] == '}' ? -4 : 0;
+  if (offset > -1) {
+    Element top=doc.getDefaultRootElement();
+    offset=top.getElement(top.getElementIndex(offset)).getStartOffset();
+    while (Character.isWhitespace(segment.array[offset++])) {
+      index++;
+    }
+  }
+  return index;
+}

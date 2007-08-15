@@ -1,0 +1,28 @@
+{
+  Object findObject=(String)findField.getSelectedItem();
+  Object replaceObject=replaceField.isShowing() ? (String)replaceField.getSelectedItem() : "";
+  if (findObject != null && replaceObject != null) {
+    boolean found=false;
+    for (int i=0; !found && i < findField.getItemCount(); i++) {
+      found=findField.getItemAt(i).equals(findObject);
+    }
+    if (!found) {
+      findField.insertItemAt(findObject,0);
+      if (findField.getItemCount() > 7) {
+        findField.removeItemAt(7);
+      }
+    }
+    if (replaceField.isShowing()) {
+      found=false;
+      for (int i=0; !found && i < replaceField.getItemCount(); i++) {
+        found=replaceField.getItemAt(i).equals(findObject);
+      }
+      if (!found) {
+        replaceField.insertItemAt(replaceObject,0);
+        if (replaceField.getItemCount() > 7) {
+          replaceField.removeItemAt(7);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  String checking=regexp.replaceAll("\\\\\\(","X").replaceAll("\\(\\?","X");
+  int checked=checking.indexOf('(');
+  if (checked > -1) {
+    String msg="Only non-capturing groups allowed:\r\n" + regexp + "\r\n";
+    for (int i=0; i < checked; i++) {
+      msg+=" ";
+    }
+    msg+="^";
+    throw new IllegalArgumentException(msg);
+  }
+}

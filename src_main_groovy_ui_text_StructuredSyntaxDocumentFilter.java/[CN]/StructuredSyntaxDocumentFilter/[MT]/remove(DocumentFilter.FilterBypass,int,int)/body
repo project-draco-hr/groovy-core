@@ -1,0 +1,19 @@
+{
+  if (offset == 0 && length != fb.getDocument().getLength()) {
+    fb.replace(0,length,"\n",lexer.defaultStyle);
+    parseDocument(offset,2);
+    fb.remove(offset,1);
+  }
+ else {
+    fb.remove(offset,length);
+    if (offset + 1 < fb.getDocument().getLength()) {
+      parseDocument(offset,1);
+    }
+ else     if (offset - 1 > 0) {
+      parseDocument(offset - 1,1);
+    }
+ else {
+      mlTextRunSet.clear();
+    }
+  }
+}
