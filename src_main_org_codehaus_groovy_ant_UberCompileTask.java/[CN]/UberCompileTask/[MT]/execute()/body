@@ -1,20 +1,34 @@
 {
   validate();
+  FileSet fileset;
   GenerateStubsTask genstubs=createGeneratestubs();
   genstubs.classpath=classpath;
   genstubs.src=src;
   if (genstubs.destdir == null) {
     genstubs.destdir=createTempDir();
   }
+  fileset=genstubs.getFileSet();
+  if (!fileset.hasPatterns()) {
+    genstubs.createInclude().setName("**/*.java");
+    genstubs.createInclude().setName("**/*.groovy");
+  }
   classpath.createPathElement().setLocation(genstubs.destdir);
-  Javac javac=createJavac();
+  AccessibleJavac javac=createJavac();
   javac.setSrcdir(src);
   javac.setDestdir(destdir);
   javac.setClasspath(classpath);
+  fileset=javac.getFileSet();
+  if (!fileset.hasPatterns()) {
+    genstubs.createInclude().setName("**/*.java");
+  }
   GroovycTask groovyc=createGroovyc();
   groovyc.classpath=classpath;
   groovyc.src=src;
   groovyc.destdir=destdir;
+  fileset=groovyc.getFileSet();
+  if (!fileset.hasPatterns()) {
+    genstubs.createInclude().setName("**/*.groovy");
+  }
   log.info("Compiling...");
   genstubs.execute();
   javac.execute();
