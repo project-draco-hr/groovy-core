@@ -1,7 +1,7 @@
 {
   validate();
   FileSet fileset;
-  GenerateStubsTask genstubs=createGeneratestubs();
+  GenStubsAdapter genstubs=createGeneratestubs();
   genstubs.classpath=classpath;
   genstubs.src=src;
   if (genstubs.destdir == null) {
@@ -13,7 +13,7 @@
     genstubs.createInclude().setName("**/*.groovy");
   }
   classpath.createPathElement().setLocation(genstubs.destdir);
-  AccessibleJavac javac=createJavac();
+  JavacAdapter javac=createJavac();
   javac.setSrcdir(src);
   javac.setDestdir(destdir);
   javac.setClasspath(classpath);
@@ -21,7 +21,7 @@
   if (!fileset.hasPatterns()) {
     genstubs.createInclude().setName("**/*.java");
   }
-  GroovycTask groovyc=createGroovyc();
+  GroovycAdapter groovyc=createGroovyc();
   groovyc.classpath=classpath;
   groovyc.src=src;
   groovyc.destdir=destdir;
