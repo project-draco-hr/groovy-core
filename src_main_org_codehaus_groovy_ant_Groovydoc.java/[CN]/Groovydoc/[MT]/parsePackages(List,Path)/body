@@ -37,7 +37,7 @@
         dirSets.add(ds);
       }
  else {
-        log("Skipping " + pathElements[i] + " since it is no directory.",Project.MSG_WARN);
+        log.warn("Skipping " + pathElements[i] + " since it is no directory.");
       }
     }
   }
@@ -45,7 +45,7 @@
   while (itr3.hasNext()) {
     DirSet ds=(DirSet)itr3.next();
     File baseDir=ds.getDir(getProject());
-    log("scanning " + baseDir + " for packages.",Project.MSG_DEBUG);
+    log.debug("scanning " + baseDir + " for packages.");
     DirectoryScanner dsc=ds.getDirectoryScanner(getProject());
     String[] dirs=dsc.getIncludedDirectories();
     boolean containsPackages=false;
@@ -64,7 +64,7 @@
       }
       if (files.length > 0) {
         if ("".equals(dirs[i])) {
-          log(baseDir + " contains source files in the default package," + " you must specify them as source files"+ " not packages.",Project.MSG_WARN);
+          log.warn(baseDir + " contains source files in the default package," + " you must specify them as source files"+ " not packages.");
         }
  else {
           containsPackages=true;
@@ -80,7 +80,7 @@
       sp.createPathElement().setLocation(baseDir);
     }
  else {
-      log(baseDir + " doesn\'t contain any packages, dropping it.",Project.MSG_VERBOSE);
+      log.verbose(baseDir + " doesn\'t contain any packages, dropping it.");
     }
   }
 }

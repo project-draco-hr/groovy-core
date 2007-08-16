@@ -1,5 +1,5 @@
 {
-  log("execute()",Project.MSG_VERBOSE);
+  log.debug("execute()");
   command=command.trim();
   if (srcFile == null && command.length() == 0 && filesets.isEmpty()) {
     throw new BuildException("Source file does not exist!",getLocation());
@@ -17,7 +17,7 @@
     PrintStream out=System.out;
     try {
       if (output != null) {
-        log("Opening PrintStream to output file " + output,Project.MSG_VERBOSE);
+        log.verbose("Opening PrintStream to output file " + output);
         out=new PrintStream(new BufferedOutputStream(new FileOutputStream(output.getAbsolutePath(),append)));
       }
       if (command == null || command.trim().length() == 0) {
@@ -40,5 +40,5 @@
  catch (  IOException e) {
     throw new BuildException(e,getLocation());
   }
-  log("statements executed successfully",Project.MSG_VERBOSE);
+  log.verbose("statements executed successfully");
 }
