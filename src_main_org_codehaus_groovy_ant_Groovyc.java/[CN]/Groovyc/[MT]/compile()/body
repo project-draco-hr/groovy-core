@@ -1,41 +1,43 @@
 {
-  if (compileList.length > 0) {
-    log("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ (destDir != null ? " to " + destDir : ""));
-    if (listFiles) {
-      for (int i=0; i < compileList.length; i++) {
-        String filename=compileList[i].getAbsolutePath();
-        log(filename);
-      }
+  if (compileList.length == 0) {
+    log.info("No sources to compile");
+    return;
+  }
+  log.info("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ " to "+ destDir);
+  if (listFiles) {
+    for (int i=0; i < compileList.length; i++) {
+      String filename=compileList[i].getAbsolutePath();
+      log.info("    " + filename);
     }
-    try {
-      Path classpath=getClasspath();
-      if (classpath != null) {
-        configuration.setClasspath(classpath.toString());
-      }
-      configuration.setTargetDirectory(destDir);
-      if (encoding != null) {
-        configuration.setSourceEncoding(encoding);
-      }
-      CompilationUnit unit;
-      if (jointCompilation) {
-        unit=new JavaAwareCompilationUnit(configuration,buildClassLoaderFor());
-      }
- else {
-        unit=new CompilationUnit(configuration,null,buildClassLoaderFor());
-      }
-      unit.addSources(compileList);
-      unit.compile();
+  }
+  try {
+    Path classpath=getClasspath();
+    if (classpath != null) {
+      configuration.setClasspath(classpath.toString());
     }
- catch (    Exception e) {
-      StringWriter writer=new StringWriter();
-      new ErrorReporter(e,false).write(new PrintWriter(writer));
-      String message=writer.toString();
-      if (failOnError) {
-        throw new BuildException(message,e,getLocation());
-      }
+    configuration.setTargetDirectory(destDir);
+    if (encoding != null) {
+      configuration.setSourceEncoding(encoding);
+    }
+    CompilationUnit unit;
+    if (jointCompilation) {
+      unit=new JavaAwareCompilationUnit(configuration,buildClassLoaderFor());
+    }
  else {
-        log(message,Project.MSG_ERR);
-      }
+      unit=new CompilationUnit(configuration,null,buildClassLoaderFor());
+    }
+    unit.addSources(compileList);
+    unit.compile();
+  }
+ catch (  Exception e) {
+    StringWriter writer=new StringWriter();
+    new ErrorReporter(e,false).write(new PrintWriter(writer));
+    String message=writer.toString();
+    if (failOnError) {
+      throw new BuildException(message,e,getLocation());
+    }
+ else {
+      log(message,Project.MSG_ERR);
     }
   }
 }

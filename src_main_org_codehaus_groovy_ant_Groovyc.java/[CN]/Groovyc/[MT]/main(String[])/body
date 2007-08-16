@@ -1,6 +1,8 @@
 {
   Project project=new Project();
-  project.addBuildListener(new AnsiColorLogger());
+  DefaultLogger logger=new AnsiColorLogger();
+  logger.setMessageOutputLevel(Project.MSG_INFO);
+  project.addBuildListener(logger);
   Groovyc compiler=new Groovyc();
   compiler.setProject(project);
   args=compiler.evalCompilerFlags(args);
