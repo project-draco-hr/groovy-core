@@ -1,0 +1,24 @@
+{
+  validate();
+  GenerateStubsTask genstubs=createGeneratestubs();
+  genstubs.classpath=classpath;
+  genstubs.config=config;
+  genstubs.src=src;
+  if (genstubs.destdir == null) {
+    genstubs.destdir=createTempDir();
+  }
+  classpath.createPathElement().setLocation(genstubs.destdir);
+  Javac javac=createJavac();
+  javac.setSrcdir(src);
+  javac.setDestdir(destdir);
+  javac.setClasspath(classpath);
+  GroovycTask groovyc=createGroovyc();
+  groovyc.classpath=classpath;
+  groovyc.config=config;
+  groovyc.src=src;
+  groovyc.destdir=destdir;
+  log.info("Compiling...");
+  genstubs.execute();
+  javac.execute();
+  groovyc.execute();
+}

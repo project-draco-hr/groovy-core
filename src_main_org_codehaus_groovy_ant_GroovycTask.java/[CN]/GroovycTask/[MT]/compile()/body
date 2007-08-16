@@ -1,0 +1,37 @@
+{
+  Path path=getClasspath();
+  if (path != null) {
+    config.setClasspath(path.toString());
+  }
+  config.setTargetDirectory(destdir);
+  GroovyClassLoader gcl=createClassLoader();
+  CompilationUnit compilation=new CompilationUnit(config,null,gcl);
+  GlobPatternMapper mapper=new GlobPatternMapper();
+  mapper.setFrom("*.groovy");
+  mapper.setTo("*.class");
+  int count=0;
+  String[] list=src.list();
+  for (int i=0; i < list.length; i++) {
+    File basedir=getProject().resolveFile(list[i]);
+    if (!basedir.exists()) {
+      throw new BuildException("Source directory does not exist: " + basedir,getLocation());
+    }
+    DirectoryScanner scanner=getDirectoryScanner(basedir);
+    String[] includes=scanner.getIncludedFiles();
+    log.debug("Including files from: " + basedir);
+    SourceFileScanner sourceScanner=new SourceFileScanner(this);
+    File[] files=sourceScanner.restrictAsFiles(includes,basedir,destdir,mapper);
+    for (int j=0; j < files.length; j++) {
+      log.debug("    " + files[j]);
+      compilation.addSource(files[j]);
+      count++;
+    }
+  }
+  if (count > 0) {
+    log.info("Compiling " + count + " sources"+ (count > 1 ? "s" : "")+ " to "+ destdir);
+    compilation.compile();
+  }
+ else {
+    log.info("No sources found to compile");
+  }
+}

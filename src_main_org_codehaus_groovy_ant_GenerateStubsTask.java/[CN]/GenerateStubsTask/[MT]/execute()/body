@@ -1,11 +1,6 @@
 {
   validate();
-  CompilerConfiguration config=new CompilerConfiguration();
-  ClassLoader parent=ClassLoader.getSystemClassLoader();
-  GroovyClassLoader gcl=new GroovyClassLoader(parent,config);
-  if (classpath != null) {
-    gcl.addClasspath(classpath.toString());
-  }
+  GroovyClassLoader gcl=createClassLoader();
   JavaStubCompilationUnit compilation=new JavaStubCompilationUnit(config,gcl,destdir);
   int count=0;
   String[] list=src.list();
