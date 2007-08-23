@@ -72,7 +72,7 @@ invokeOnDelegate=delegate != closure && (delegate instanceof GroovyObject);
 invokeOnOwner=owner != closure && (owner instanceof GroovyObject);
 }
 }
-if (method == null) {
+if (method == null && (invokeOnOwner || invokeOnDelegate)) {
 try {
 if (ownerFirst) {
 return invokeOnDelegationObjects(invokeOnOwner,owner,invokeOnDelegate,delegate,methodName,arguments);
@@ -102,5 +102,6 @@ MetaClass delegateMetaClass=cl.getMetaClass();
 return delegateMetaClass.invokeMethod(cl.getClass(),closure,CLOSURE_DO_CALL_METHOD,originalArguments,false,fromInsideClass);
 }
 }
-throw last;
+if (last != null) throw last;
+throw new MissingMethodException(methodName,theClass,arguments,false);
 }
