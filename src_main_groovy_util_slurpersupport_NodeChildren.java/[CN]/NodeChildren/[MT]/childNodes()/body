@@ -1,20 +1,20 @@
 {
   return new Iterator(){
-    private final Iterator iter=NodeChildren.this.parent.childNodes();
+    private final Iterator iter=parent.childNodes();
     private Iterator childIter=nextChildIter();
     public boolean hasNext(){
-      return this.childIter != null;
+      return childIter != null;
     }
     public Object next(){
-      while (this.childIter != null) {
+      while (childIter != null) {
         try {
-          if (this.childIter.hasNext()) {
-            return this.childIter.next();
+          if (childIter.hasNext()) {
+            return childIter.next();
           }
         }
   finally {
-          if (!this.childIter.hasNext()) {
-            this.childIter=nextChildIter();
+          if (!childIter.hasNext()) {
+            childIter=nextChildIter();
           }
         }
       }
@@ -24,12 +24,12 @@
       throw new UnsupportedOperationException();
     }
     private Iterator nextChildIter(){
-      while (this.iter.hasNext()) {
-        final Node node=(Node)this.iter.next();
-        if (NodeChildren.this.name.equals(node.name())) {
+      while (iter.hasNext()) {
+        final Node node=(Node)iter.next();
+        if (name.equals(node.name()) || name.equals("*")) {
           final Iterator result=node.childNodes();
           if (result.hasNext()) {
-            if ("*".equals(NodeChildren.this.namespacePrefix) || ("".equals(NodeChildren.this.namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(NodeChildren.this.namespaceMap.get(NodeChildren.this.namespacePrefix))) {
+            if ("*".equals(namespacePrefix) || ("".equals(namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(namespaceMap.get(namespacePrefix))) {
               return result;
             }
           }

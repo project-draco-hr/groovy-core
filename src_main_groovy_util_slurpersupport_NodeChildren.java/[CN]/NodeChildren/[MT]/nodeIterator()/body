@@ -1,14 +1,14 @@
 {
-  if ("*".equals(this.name)) {
-    return this.parent.childNodes();
+  if ("*".equals(name)) {
+    return parent.childNodes();
   }
  else {
-    return new NodeIterator(this.parent.childNodes()){
+    return new NodeIterator(parent.childNodes()){
       protected Object getNextNode(      Iterator iter){
         while (iter.hasNext()) {
           final Node node=(Node)iter.next();
-          if (NodeChildren.this.name.equals(node.name())) {
-            if ("*".equals(NodeChildren.this.namespacePrefix) || ("".equals(NodeChildren.this.namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(NodeChildren.this.namespaceMap.get(NodeChildren.this.namespacePrefix))) {
+          if (name.equals(node.name())) {
+            if ("*".equals(namespacePrefix) || ("".equals(namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(namespaceMap.get(namespacePrefix))) {
               return node;
             }
           }
