@@ -1,0 +1,11 @@
+{
+  CachedClass cachedClass=getCachedClass(klazz);
+synchronized (cachedClass) {
+    if (cachedClass.distance == -1) {
+      int distance=0;
+      for (; klazz != null; klazz=klazz.getSuperclass())       distance++;
+      cachedClass.distance=distance;
+    }
+    return cachedClass.distance;
+  }
+}
