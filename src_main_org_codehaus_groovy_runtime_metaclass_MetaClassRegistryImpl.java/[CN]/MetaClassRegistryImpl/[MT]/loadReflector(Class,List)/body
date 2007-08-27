@@ -1,7 +1,13 @@
 {
   final String name=getReflectorName(theClass);
-  ClassLoader loader=theClass.getClassLoader();
-  if (loader == null)   loader=this.getClass().getClassLoader();
+  ClassLoader loader=(ClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      ClassLoader loader=theClass.getClassLoader();
+      if (loader == null)       loader=this.getClass().getClassLoader();
+      return loader;
+    }
+  }
+);
   final ReflectorLoader rloader=getReflectorLoader(loader);
   Class ref=rloader.getLoadedClass(name);
   if (ref == null) {
@@ -9,7 +15,12 @@
     ClassWriter cw=new ClassWriter(true);
     generator.generate(cw,name);
     final byte[] bytecode=cw.toByteArray();
-    ref=rloader.defineClass(name,bytecode,getClass().getProtectionDomain());
+    ref=(Class)AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return rloader.defineClass(name,bytecode,getClass().getProtectionDomain());
+      }
+    }
+);
   }
   try {
     return (Reflector)ref.getDeclaredFields()[0].get(null);

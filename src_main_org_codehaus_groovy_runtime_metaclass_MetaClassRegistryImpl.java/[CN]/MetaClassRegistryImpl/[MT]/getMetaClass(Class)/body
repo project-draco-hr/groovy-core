@@ -5,14 +5,8 @@
 synchronized (theClass) {
     answer=(MetaClass)weakMetaClasses.get(theClass);
     if (answer != null)     return answer;
-    answer=(MetaClass)AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        MetaClass answer=getMetaClassFor(theClass);
-        answer.initialize();
-        return answer;
-      }
-    }
-);
+    answer=getMetaClassFor(theClass);
+    answer.initialize();
     weakMetaClasses.put(theClass,answer);
     return answer;
   }
