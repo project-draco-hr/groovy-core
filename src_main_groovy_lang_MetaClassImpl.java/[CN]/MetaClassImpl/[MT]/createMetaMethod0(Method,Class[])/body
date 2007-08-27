@@ -1,0 +1,14 @@
+{
+  MetaMethod answer=new MetaMethod(method,pt);
+  if (isValidReflectorMethod(answer)) {
+    allMethods.add(answer);
+    answer.setMethodIndex(allMethods.size());
+  }
+ else {
+    answer=new ReflectionMetaMethod(method,pt);
+  }
+  if (GroovySystem.isUseReflection()) {
+    return new ReflectionMetaMethod(method,pt);
+  }
+  return answer;
+}

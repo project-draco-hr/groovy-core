@@ -9,40 +9,21 @@
       return true;
     }
   }
-  Class declaringClass=method.getCallClass();
-  for (Class clazz=declaringClass; clazz != null; clazz=clazz.getSuperclass()) {
+  CachedClass declaringClass=ReflectionCache.getCachedClass(method.getCallClass());
+  for (CachedClass clazz=declaringClass; clazz != null; clazz=clazz.getCachedSuperClass()) {
     try {
-      final Class klazz=clazz;
       final String mName=method.getName();
       final Class[] parms=method.getParameterTypes();
-      try {
-        Method m=(Method)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-          public Object run() throws NoSuchMethodException {
-            return klazz.getDeclaredMethod(mName,parms);
-          }
-        }
-);
-        if (!Modifier.isPublic(clazz.getModifiers()))         continue;
-        if (!Modifier.isPublic(m.getModifiers()))         continue;
-        declaringClass=clazz;
-      }
- catch (      PrivilegedActionException pae) {
-        if (pae.getException() instanceof NoSuchMethodException) {
-          throw (NoSuchMethodException)pae.getException();
-        }
- else {
-          throw new RuntimeException(pae.getException());
-        }
-      }
+      if (!Modifier.isPublic(clazz.getModifiers()))       continue;
+      Method m=clazz.searchMethods(mName,parms);
+      if (m == null || !Modifier.isPublic(m.getModifiers()))       continue;
+      declaringClass=clazz;
     }
  catch (    SecurityException e) {
       continue;
     }
-catch (    NoSuchMethodException e) {
-      continue;
-    }
   }
   if (!Modifier.isPublic(declaringClass.getModifiers()))   return false;
-  method.setCallClass(declaringClass);
+  method.setCallClass(declaringClass.getCachedClass());
   return true;
 }

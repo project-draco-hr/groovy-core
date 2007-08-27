@@ -19,7 +19,7 @@
     Method[] listenerMethods=descriptor.getListenerMethods();
     for (int j=0; j < listenerMethods.length; j++) {
       Method listenerMethod=listenerMethods[j];
-      MetaMethod metaMethod=createMetaMethod(descriptor.getAddListenerMethod());
+      MetaMethod metaMethod=createMetaMethod(CachedMethod.find(descriptor.getAddListenerMethod()));
       String name=listenerMethod.getName();
       if (listeners.containsKey(name)) {
         listeners.put(name,AMBIGOUS_LISTENER_METHOD);

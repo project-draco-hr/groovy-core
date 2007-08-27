@@ -2,11 +2,19 @@
   this.cv=cv;
   classInternalName=BytecodeHelper.getClassInternalName(className);
   cv.visit(ClassGenerator.asmJDKVersion,ACC_PUBLIC + ACC_SUPER,classInternalName,(String)null,"org/codehaus/groovy/runtime/Reflector",null);
-  MethodVisitor mv=cv.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
-  mv.visitVarInsn(ALOAD,0);
-  mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/Reflector","<init>","()V");
-  mv.visitInsn(RETURN);
-  mv.visitMaxs(1,1);
+  cv.visitField(ACC_PUBLIC + ACC_STATIC,"accessor","Ljava/lang/Object;",null,null);
+  MethodVisitor mvInit=cv.visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
+  mvInit.visitVarInsn(ALOAD,0);
+  mvInit.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/Reflector","<init>","()V");
+  mvInit.visitInsn(RETURN);
+  mvInit.visitMaxs(1,1);
+  MethodVisitor mvClinit=cv.visitMethod(ACC_STATIC,"<clinit>","()V",null,null);
+  mvClinit.visitTypeInsn(NEW,classInternalName);
+  mvClinit.visitInsn(DUP);
+  mvClinit.visitMethodInsn(INVOKESPECIAL,classInternalName,"<init>","()V");
+  mvClinit.visitFieldInsn(PUTSTATIC,classInternalName,"accessor","Ljava/lang/Object;");
+  mvClinit.visitInsn(RETURN);
+  mvClinit.visitMaxs(1,1);
   generateInvokeMethod();
   cv.visitEnd();
 }

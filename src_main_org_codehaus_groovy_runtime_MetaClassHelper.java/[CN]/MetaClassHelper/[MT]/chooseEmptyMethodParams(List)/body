@@ -2,12 +2,13 @@
   Object vargsMethod=null;
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
-    Class[] paramTypes=getParameterTypes(method);
+    final ParameterTypes pt=getParameterTypes(method);
+    Class[] paramTypes=pt.getParameterTypes();
     int paramLength=paramTypes.length;
     if (paramLength == 0) {
       return method;
     }
- else     if (paramLength == 1 && isVargsMethod(paramTypes,EMPTY_ARRAY)) {
+ else     if (paramLength == 1 && isVargsMethod(pt,EMPTY_ARRAY)) {
       vargsMethod=method;
     }
   }

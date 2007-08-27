@@ -1,0 +1,13 @@
+{
+  Class paramTypes[]=pt.getParameterTypes();
+  if (paramTypes.length == 0)   return false;
+  if (!pt.isArray(paramTypes.length - 1))   return false;
+  if (paramTypes.length - 1 == arguments.length)   return true;
+  if (paramTypes.length - 1 > arguments.length)   return false;
+  if (arguments.length > paramTypes.length)   return true;
+  Object last=arguments[arguments.length - 1];
+  if (last == null)   return true;
+  Class clazz=last.getClass();
+  if (clazz.equals(paramTypes[paramTypes.length - 1]))   return false;
+  return true;
+}

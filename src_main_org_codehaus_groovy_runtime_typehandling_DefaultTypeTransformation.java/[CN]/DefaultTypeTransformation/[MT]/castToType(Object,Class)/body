@@ -3,10 +3,10 @@
     return null;
   }
   if (type == object.getClass())   return object;
-  if (type.isArray()) {
+  if (ReflectionCache.isArray(type)) {
     return asArray(object,type);
   }
-  if (type.isInstance(object)) {
+  if (ReflectionCache.isAssignableFrom(type,object.getClass())) {
     return object;
   }
   if (Collection.class.isAssignableFrom(type)) {

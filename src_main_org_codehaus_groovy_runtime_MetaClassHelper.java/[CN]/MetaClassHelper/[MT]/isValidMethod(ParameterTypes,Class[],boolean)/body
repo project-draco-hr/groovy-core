@@ -1,0 +1,30 @@
+{
+  if (arguments == null) {
+    return true;
+  }
+  int size=arguments.length;
+  Class[] paramTypes=pt.getParameterTypes();
+  if ((size >= paramTypes.length || size == paramTypes.length - 1) && paramTypes.length > 0 && pt.isArray(paramTypes.length - 1)) {
+    for (int i=0; i < paramTypes.length - 1; i++) {
+      if (isAssignableFrom(paramTypes[i],arguments[i]))       continue;
+      return false;
+    }
+    Class clazz=paramTypes[paramTypes.length - 1].getComponentType();
+    for (int i=paramTypes.length; i < size; i++) {
+      if (isAssignableFrom(clazz,arguments[i]))       continue;
+      return false;
+    }
+    return true;
+  }
+ else   if (paramTypes.length == size) {
+    for (int i=0; i < size; i++) {
+      if (isAssignableFrom(paramTypes[i],arguments[i]))       continue;
+      return false;
+    }
+    return true;
+  }
+ else   if (paramTypes.length == 1 && size == 0) {
+    return true;
+  }
+  return false;
+}

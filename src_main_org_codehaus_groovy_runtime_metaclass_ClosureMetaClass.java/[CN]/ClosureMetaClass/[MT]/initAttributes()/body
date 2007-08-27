@@ -1,5 +1,5 @@
 {
-  if (attributes.size() > 0)   return;
+  if (!attributes.isEmpty())   return;
   attributes.put("!",null);
   Field[] fieldArray=(Field[])AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
@@ -11,5 +11,5 @@
     MetaFieldProperty mfp=new MetaFieldProperty(fieldArray[i]);
     attributes.put(fieldArray[i].getName(),mfp);
   }
-  attributeInitDone=attributes.size() != 0;
+  attributeInitDone=!attributes.isEmpty();
 }

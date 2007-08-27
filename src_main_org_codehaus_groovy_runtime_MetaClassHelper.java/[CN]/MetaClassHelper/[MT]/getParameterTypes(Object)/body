@@ -1,15 +1,14 @@
 {
   if (methodOrConstructor instanceof MetaMethod) {
-    MetaMethod method=(MetaMethod)methodOrConstructor;
-    return method.getParameterTypes();
+    return ((MetaMethod)methodOrConstructor).getParamTypes();
   }
   if (methodOrConstructor instanceof Method) {
     Method method=(Method)methodOrConstructor;
-    return method.getParameterTypes();
+    return new ParameterTypes(method.getParameterTypes());
   }
   if (methodOrConstructor instanceof Constructor) {
     Constructor constructor=(Constructor)methodOrConstructor;
-    return constructor.getParameterTypes();
+    return new ParameterTypes(constructor.getParameterTypes());
   }
   throw new IllegalArgumentException("Must be a Method or Constructor");
 }

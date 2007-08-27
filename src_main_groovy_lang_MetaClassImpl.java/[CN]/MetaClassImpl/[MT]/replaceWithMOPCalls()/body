@@ -7,7 +7,7 @@ class MOPIter extends MethodIndexAction {
       return !useThis && clazz == theClass;
     }
     public void methodListAction(    Class clazz,    String methodName,    MetaMethod method,    List oldList,    List newList){
-      String mopName=getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
+      String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
       List matches=(List)mainClassMethodIndex.get(mopName);
       if (matches == null) {
         newList.add(method);

@@ -1,7 +1,7 @@
 {
   List methods=((MetaClassRegistryImpl)registry).getInstanceMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    Method element=(Method)iter.next();
+    CachedMethod element=(CachedMethod)iter.next();
     Class dgmClass=element.getParameterTypes()[0];
     if (!interfaces.contains(dgmClass))     continue;
     NewInstanceMetaMethod method=new NewInstanceMetaMethod(createMetaMethod(element));
@@ -21,9 +21,9 @@
   }
   methods=((MetaClassRegistryImpl)registry).getStaticMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    Method element=(Method)iter.next();
+    CachedMethod element=(CachedMethod)iter.next();
     Class dgmClass=element.getParameterTypes()[0];
     if (!interfaces.contains(dgmClass))     continue;
-    addNewStaticMethod(element);
+    addNewStaticMethod(element.method);
   }
 }

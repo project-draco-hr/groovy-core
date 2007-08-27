@@ -1,14 +1,13 @@
 {
-  int size=getParameterCount();
+  int size;
   if (sender != that.sender)   return false;
   if (isCallToSuper != that.isCallToSuper)   return false;
-  if (name.equals(that.name) && size == that.getParameterCount()) {
-    for (int i=0; i < size; i++) {
-      if (!getParameterType(i).equals(that.getParameterType(i))) {
-        return false;
-      }
+  if (!name.equals(that.name))   return false;
+  if ((size=getParameterCount()) != that.getParameterCount())   return false;
+  for (int i=0; i < size; i++) {
+    if (getParameterType(i) != that.getParameterType(i)) {
+      return false;
     }
-    return true;
   }
-  return false;
+  return true;
 }

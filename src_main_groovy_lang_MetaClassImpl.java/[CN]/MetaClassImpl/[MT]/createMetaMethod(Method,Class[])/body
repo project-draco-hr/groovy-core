@@ -1,0 +1,12 @@
+{
+  if (((MetaClassRegistryImpl)registry).useAccessible()) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
+    }
+);
+  }
+  return createMetaMethod0(method,pt);
+}

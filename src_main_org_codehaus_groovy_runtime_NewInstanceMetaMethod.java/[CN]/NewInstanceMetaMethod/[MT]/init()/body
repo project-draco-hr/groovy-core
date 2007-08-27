@@ -1,11 +1,13 @@
 {
-  Class[] realParameterTypes=metaMethod.getParameterTypes();
-  int size=realParameterTypes != null ? realParameterTypes.length : 0;
+  bytecodeParameterTypes=metaMethod.getParameterTypes();
+  int size=bytecodeParameterTypes != null ? bytecodeParameterTypes.length : 0;
+  Class[] logicalParameterTypes;
   if (size <= 1) {
     logicalParameterTypes=EMPTY_TYPE_ARRAY;
   }
  else {
     logicalParameterTypes=new Class[--size];
-    System.arraycopy(realParameterTypes,1,logicalParameterTypes,0,size);
+    System.arraycopy(bytecodeParameterTypes,1,logicalParameterTypes,0,size);
   }
+  paramTypes=new ParameterTypes(logicalParameterTypes);
 }

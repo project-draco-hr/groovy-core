@@ -1,15 +1,11 @@
 {
   if (!isInitialized()) {
-    Method[] methodArray=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        return theClass.getDeclaredMethods();
-      }
-    }
-);
+    CachedMethod[] methodArray=ReflectionCache.getDeclaredMethodsCached(theClass);
     for (int i=0; i < methodArray.length; i++) {
-      Method reflectionMethod=methodArray[i];
+      final CachedMethod cachedMethod=methodArray[i];
+      Method reflectionMethod=cachedMethod.method;
       if (!reflectionMethod.getName().equals(CLOSURE_DO_CALL_METHOD))       continue;
-      MetaMethod method=createMetaMethod(reflectionMethod);
+      MetaMethod method=createMetaMethod(cachedMethod);
       closureMethods.add(method);
     }
     assignMethodChooser();

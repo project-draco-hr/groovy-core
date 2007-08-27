@@ -1,8 +1,9 @@
 {
-  Map methodIndex=(Map)classMethodIndex.get(method.getDeclaringClass());
+  final Class declaringClass=method.getDeclaringClass();
+  Map methodIndex=(Map)classMethodIndex.get(declaringClass);
   if (methodIndex == null) {
     methodIndex=new HashMap();
-    classMethodIndex.put(method.getDeclaringClass(),methodIndex);
+    classMethodIndex.put(declaringClass,methodIndex);
   }
   String name=method.getName();
   List list=(List)methodIndex.get(name);

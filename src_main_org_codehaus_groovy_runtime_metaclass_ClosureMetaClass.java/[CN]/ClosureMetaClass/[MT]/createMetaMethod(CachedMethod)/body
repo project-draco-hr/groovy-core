@@ -1,0 +1,13 @@
+{
+  if (((MetaClassRegistryImpl)registry).useAccessible()) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        method.method.setAccessible(true);
+        return null;
+      }
+    }
+);
+  }
+  if (GroovySystem.isUseReflection())   return new ReflectionMetaMethod(method);
+  return new MetaMethod(method.method,method.getParameterTypes());
+}
