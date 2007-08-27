@@ -22,6 +22,19 @@
     Map.Entry entry=(Map.Entry)iter.next();
     String property=entry.getKey().toString();
     Object value=entry.getValue();
-    InvokerHelper.setProperty(widget,property,value);
+    if (value instanceof FullBinding) {
+      FullBinding fb=(FullBinding)value;
+      PropertyTargetBinding ptb=new PropertyTargetBinding(widget,property);
+      fb.setTargetBinding(ptb);
+      fb.bind();
+      try {
+        fb.forceUpdate();
+      }
+ catch (      Exception e) {
+      }
+    }
+ else {
+      InvokerHelper.setProperty(widget,property,value);
+    }
   }
 }

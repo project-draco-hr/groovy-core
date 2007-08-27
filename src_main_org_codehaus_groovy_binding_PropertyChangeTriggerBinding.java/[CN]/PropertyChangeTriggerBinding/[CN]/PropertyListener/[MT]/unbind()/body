@@ -1,0 +1,14 @@
+{
+  try {
+    InvokerHelper.invokeMethodSafe(bean,"removePropertyChangeListener",new Object[]{propertyName,this});
+  }
+ catch (  MissingMethodException mme) {
+    mme.printStackTrace();
+    try {
+      InvokerHelper.invokeMethodSafe(bean,"removePropertyChangeListener",new Object[]{this});
+    }
+ catch (    MissingMethodException mme2) {
+      mme2.printStackTrace();
+    }
+  }
+}

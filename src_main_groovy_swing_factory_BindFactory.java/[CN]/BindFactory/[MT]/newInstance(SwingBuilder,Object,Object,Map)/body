@@ -1,0 +1,30 @@
+{
+  if (value != null) {
+    throw new RuntimeException(name + " elements do not accept a value argument.");
+  }
+  Object source=properties.remove("source");
+  Object target=properties.remove("target");
+  TargetBinding tb=null;
+  if (target != null) {
+    String targetProperty=(String)properties.remove("targetProperty");
+    tb=new PropertyTargetBinding(target,targetProperty);
+  }
+  FullBinding fb;
+  if (properties.containsKey("sourceProperty")) {
+    String property=(String)properties.remove("sourceProperty");
+    PropertySourceBinding psb=new PropertySourceBinding(this,source,property);
+    PropertyChangeTriggerBinding pctb=new PropertyChangeTriggerBinding(source,property);
+    fb=pctb.createBinding(psb,tb);
+  }
+ else   if (properties.containsKey("sourceEvent") && properties.containsKey("sourceValue")) {
+    Closure queryValue=(Closure)properties.remove("sourceValue");
+    ClosureSourceBinding psb=new ClosureSourceBinding(queryValue);
+    String trigger=(String)properties.remove("sourceEvent");
+    EventTriggerBinding etb=new EventTriggerBinding(source,trigger);
+    fb=etb.createBinding(psb,tb);
+  }
+ else {
+    throw new RuntimeException(name + " does not have suffient properties to initialize");
+  }
+  return fb;
+}
