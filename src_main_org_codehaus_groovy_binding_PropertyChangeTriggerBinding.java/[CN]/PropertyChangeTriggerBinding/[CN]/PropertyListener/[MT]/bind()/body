@@ -3,6 +3,11 @@
     InvokerHelper.invokeMethodSafe(bean,"addPropretyChangeListener",new Object[]{propertyName,this});
   }
  catch (  MissingMethodException mme) {
-    InvokerHelper.invokeMethodSafe(bean,"addPropertyChangeListener",new Object[]{this});
+    try {
+      InvokerHelper.invokeMethodSafe(bean,"addPropertyChangeListener",new Object[]{this});
+    }
+ catch (    MissingMethodException mme2) {
+      throw new RuntimeException("Properties in beans of type" + bean.getClass().getName() + " are not observable in any capacity (no PropertyChangeListener support).");
+    }
   }
 }

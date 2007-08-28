@@ -1,0 +1,15 @@
+{
+  if (bound) {
+    throw new IllegalStateException("Cannot change source while binding is bound");
+  }
+  if (!(source instanceof PropertySourceBinding)) {
+    throw new IllegalArgumentException("Only PropertySourceBindings are accepted");
+  }
+  if (!"value".equals(((PropertySourceBinding)source).getPropertyName())) {
+    throw new IllegalArgumentException("PropertyName must be 'value'");
+  }
+  if (!(((PropertySourceBinding)source).getSourceBean() instanceof JSlider)) {
+    throw new IllegalArgumentException("SourceBean must be an JSlider");
+  }
+  super.setSourceBinding(source);
+}

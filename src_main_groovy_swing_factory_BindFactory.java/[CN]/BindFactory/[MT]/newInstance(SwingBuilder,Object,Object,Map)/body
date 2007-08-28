@@ -12,9 +12,17 @@
   FullBinding fb;
   if (properties.containsKey("sourceProperty")) {
     String property=(String)properties.remove("sourceProperty");
-    PropertySourceBinding psb=new PropertySourceBinding(this,source,property);
-    PropertyChangeTriggerBinding pctb=new PropertyChangeTriggerBinding(source,property);
-    fb=pctb.createBinding(psb,tb);
+    PropertySourceBinding psb=new PropertySourceBinding(source,property);
+    TriggerBinding trigger=null;
+    Class currentClass=source.getClass();
+    while ((trigger == null) && (currentClass != null)) {
+      trigger=(TriggerBinding)syntheticBindings.get(currentClass.getName() + "#" + property);
+      currentClass=currentClass.getSuperclass();
+    }
+    if (trigger == null) {
+      trigger=new PropertyChangeTriggerBinding(source,property);
+    }
+    fb=trigger.createBinding(psb,tb);
   }
  else   if (properties.containsKey("sourceEvent") && properties.containsKey("sourceValue")) {
     Closure queryValue=(Closure)properties.remove("sourceValue");

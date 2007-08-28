@@ -1,0 +1,19 @@
+{
+  if (!bound) {
+    JTextComponent tc=(JTextComponent)((PropertySourceBinding)sourceBinding).getSourceBean();
+    try {
+      tc.addPropertyChangeListener("document",this);
+      tc.getDocument().addDocumentListener(this);
+      bound=true;
+    }
+ catch (    RuntimeException re) {
+      try {
+        tc.removePropertyChangeListener("document",this);
+        tc.getDocument().removeDocumentListener(this);
+      }
+ catch (      Exception e) {
+      }
+      throw re;
+    }
+  }
+}

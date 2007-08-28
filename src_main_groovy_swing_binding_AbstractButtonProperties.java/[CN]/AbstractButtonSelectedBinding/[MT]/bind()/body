@@ -1,0 +1,19 @@
+{
+  if (!bound) {
+    AbstractButton ab=(AbstractButton)((PropertySourceBinding)sourceBinding).getSourceBean();
+    try {
+      ab.addPropertyChangeListener("model",this);
+      ab.getModel().addItemListener(this);
+      bound=true;
+    }
+ catch (    RuntimeException re) {
+      try {
+        ab.removePropertyChangeListener("model",this);
+        ab.getModel().removeItemListener(this);
+      }
+ catch (      Exception e) {
+      }
+      throw re;
+    }
+  }
+}

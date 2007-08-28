@@ -1,0 +1,15 @@
+{
+  if (bound) {
+    throw new IllegalStateException("Cannot change source while binding is bound");
+  }
+  if (!(source instanceof PropertySourceBinding)) {
+    throw new IllegalArgumentException("Only PropertySourceBindings are accepted");
+  }
+  if (!"selected".equals(((PropertySourceBinding)source).getPropertyName())) {
+    throw new IllegalArgumentException("PropertyName must be 'selected'");
+  }
+  if (!(((PropertySourceBinding)source).getSourceBean() instanceof AbstractButton)) {
+    throw new IllegalArgumentException("SourceBean must be an AbstractButton");
+  }
+  super.setSourceBinding(source);
+}

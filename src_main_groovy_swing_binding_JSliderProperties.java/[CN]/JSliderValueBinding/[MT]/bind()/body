@@ -1,0 +1,19 @@
+{
+  if (!bound) {
+    JSlider slider=(JSlider)((PropertySourceBinding)sourceBinding).getSourceBean();
+    try {
+      slider.addPropertyChangeListener("model",this);
+      slider.getModel().addChangeListener(this);
+      bound=true;
+    }
+ catch (    RuntimeException re) {
+      try {
+        slider.removePropertyChangeListener("model",this);
+        slider.getModel().removeChangeListener(this);
+      }
+ catch (      Exception e) {
+      }
+      throw re;
+    }
+  }
+}
