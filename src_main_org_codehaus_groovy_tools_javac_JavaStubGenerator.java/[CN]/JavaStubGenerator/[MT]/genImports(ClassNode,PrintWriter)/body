@@ -1,5 +1,8 @@
 {
   HashSet imports=new HashSet();
+  for (int i=0; i < ResolveVisitor.DEFAULT_IMPORTS.length; i++) {
+    imports.add(ResolveVisitor.DEFAULT_IMPORTS[i]);
+  }
   ModuleNode moduleNode=classNode.getModule();
   for (Iterator it=moduleNode.getImportPackages().iterator(); it.hasNext(); ) {
     imports.add(it.next());
@@ -12,7 +15,9 @@
   }
   for (Iterator it=imports.iterator(); it.hasNext(); ) {
     String imp=(String)it.next();
-    out.println("import " + imp + "*;");
+    out.print("import ");
+    out.print(imp);
+    out.println("*;");
   }
   out.println();
 }

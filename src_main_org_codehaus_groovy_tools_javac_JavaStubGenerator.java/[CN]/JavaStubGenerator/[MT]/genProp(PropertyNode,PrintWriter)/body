@@ -11,7 +11,10 @@
   }
   if (!skipGetter) {
     printModifiers(out,propNode.getModifiers());
-    out.print(propNode.getType().getName() + " " + getterName+ " () { ");
+    printType(propNode.getType(),out);
+    out.print(" ");
+    out.print(getterName);
+    out.print("() { ");
     printReturn(out,propNode.getType());
     out.println(" }");
   }
@@ -26,6 +29,10 @@
   }
   if (!skipSetter) {
     printModifiers(out,propNode.getModifiers());
-    out.println("void " + setterName + "( "+ propNode.getType().getName()+ " value) {}");
+    out.print("void ");
+    out.print(setterName);
+    out.print("(");
+    printType(propNode.getType(),out);
+    out.println(" value) {}");
   }
 }
