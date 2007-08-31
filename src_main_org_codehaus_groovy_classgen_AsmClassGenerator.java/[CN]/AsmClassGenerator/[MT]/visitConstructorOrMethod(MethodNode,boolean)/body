@@ -10,7 +10,7 @@
   helper=new BytecodeHelper(mv);
   if (!node.isAbstract()) {
     Statement code=node.getCode();
-    if (isConstructor && (code == null || !firstStatementIsSpecialConstructorCall(node))) {
+    if (isConstructor && (code == null || !((ConstructorNode)node).firstStatementIsSpecialConstructorCall())) {
       mv.visitVarInsn(ALOAD,0);
       mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }

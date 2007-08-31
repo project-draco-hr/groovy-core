@@ -21,7 +21,12 @@
   mv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
   mv.visitLabel(afterIf);
   mv.visitInsn(SWAP);
-  mv.visitVarInsn(ALOAD,0);
+  if (constructorNode != null) {
+    mv.visitVarInsn(ALOAD,0);
+  }
+ else {
+    mv.visitTypeInsn(NEW,BytecodeHelper.getClassInternalName(callNode));
+  }
   mv.visitInsn(SWAP);
   mv.visitIntInsn(BIPUSH,8);
   mv.visitInsn(ISHR);
@@ -36,8 +41,15 @@
   mv.visitLookupSwitchInsn(defaultLabel,indices,targets);
   for (int i=0; i < targets.length; i++) {
     mv.visitLabel(targets[i]);
-    mv.visitInsn(SWAP);
-    mv.visitInsn(DUP_X1);
+    if (constructorNode != null) {
+      mv.visitInsn(SWAP);
+      mv.visitInsn(DUP_X1);
+    }
+ else {
+      mv.visitInsn(DUP_X1);
+      mv.visitInsn(DUP2_X1);
+      mv.visitInsn(POP);
+    }
     ConstructorNode cn=(ConstructorNode)constructors.get(i);
     String descriptor=helper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
     Parameter[] parameters=cn.getParameters();

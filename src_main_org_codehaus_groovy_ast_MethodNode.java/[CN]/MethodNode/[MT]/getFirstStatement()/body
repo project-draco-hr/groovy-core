@@ -1,9 +1,14 @@
 {
   if (code == null)   return null;
-  if (code instanceof BlockStatement) {
-    List list=((BlockStatement)code).getStatements();
-    if (!list.isEmpty())     return (Statement)list.get(0);
-    return null;
+  Statement first=code;
+  while (first instanceof BlockStatement) {
+    List list=((BlockStatement)first).getStatements();
+    if (list.isEmpty()) {
+      first=null;
+    }
+ else {
+      first=(Statement)list.get(0);
+    }
   }
-  return code;
+  return first;
 }

@@ -1,0 +1,15 @@
+{
+  VariableScope scope=new VariableScope();
+  this.parameters=parameters;
+  if (parameters != null && parameters.length > 0) {
+    for (int i=0; i < parameters.length; i++) {
+      Parameter para=parameters[i];
+      if (para.hasInitialExpression()) {
+        this.hasDefaultValue=true;
+      }
+      para.setInStaticContext(isStatic());
+      scope.getDeclaredVariables().put(para.getName(),para);
+    }
+  }
+  setVariableScope(scope);
+}

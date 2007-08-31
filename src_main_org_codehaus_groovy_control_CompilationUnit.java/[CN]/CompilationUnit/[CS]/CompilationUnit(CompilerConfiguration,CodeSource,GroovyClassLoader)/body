@@ -22,6 +22,13 @@
   }
 ,Phases.PARSING);
   addPhaseOperation(convert,Phases.CONVERSION);
+  addPhaseOperation(new PrimaryClassNodeOperation(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      EnumVisitor ev=new EnumVisitor(CompilationUnit.this,source);
+      ev.visitClass(classNode);
+    }
+  }
+,Phases.CONVERSION);
   addPhaseOperation(resolve,Phases.SEMANTIC_ANALYSIS);
   addPhaseOperation(staticImport,Phases.SEMANTIC_ANALYSIS);
   addPhaseOperation(compileCompleteCheck,Phases.CANONICALIZATION);

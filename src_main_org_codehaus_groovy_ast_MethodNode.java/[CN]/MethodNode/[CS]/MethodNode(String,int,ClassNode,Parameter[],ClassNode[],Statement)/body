@@ -1,21 +1,11 @@
 {
   this.name=name;
   this.modifiers=modifiers;
-  this.parameters=parameters;
   this.code=code;
   this.returnType=returnType;
   if (returnType == null)   this.returnType=ClassHelper.OBJECT_TYPE;
-  variableScope=new VariableScope();
-  if (parameters != null && parameters.length > 0) {
-    for (int i=0; i < parameters.length; i++) {
-      Parameter para=parameters[i];
-      if (para.hasInitialExpression()) {
-        this.hasDefaultValue=true;
-      }
-      para.setInStaticContext(isStatic());
-      variableScope.getDeclaredVariables().put(para.getName(),para);
-    }
-  }
-  variableScope.setInStaticContext(isStatic());
+  VariableScope scope=new VariableScope();
+  setVariableScope(scope);
+  setParameters(parameters);
   this.exceptions=exceptions;
 }

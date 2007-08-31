@@ -1,4 +1,6 @@
 {
-  assertValidIdentifier(expression.getFieldName(),"field name",expression);
+  if (!expression.getField().isSynthetic()) {
+    assertValidIdentifier(expression.getFieldName(),"field name",expression);
+  }
   super.visitFieldExpression(expression);
 }

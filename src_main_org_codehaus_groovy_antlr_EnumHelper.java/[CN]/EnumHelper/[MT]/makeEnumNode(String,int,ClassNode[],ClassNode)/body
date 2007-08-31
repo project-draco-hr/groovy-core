@@ -1,0 +1,17 @@
+{
+  modifiers=modifiers | Opcodes.ACC_FINAL | Opcodes.ACC_ENUM;
+  ClassNode enumClass;
+  if (outerClass == null) {
+    enumClass=new ClassNode(name,modifiers,null,interfaces,MixinNode.EMPTY_ARRAY);
+  }
+ else {
+    name=outerClass.getName() + "$" + name;
+    enumClass=new InnerClassNode(outerClass,name,modifiers,null,interfaces,MixinNode.EMPTY_ARRAY);
+  }
+  GenericsType gt=new GenericsType(enumClass);
+  ClassNode superClass=ClassHelper.makeWithoutCaching("java.lang.Enum");
+  superClass.setGenericsTypes(new GenericsType[]{gt});
+  enumClass.setSuperClass(superClass);
+  superClass.setRedirect(ClassHelper.Enum_Type);
+  return enumClass;
+}
