@@ -2,12 +2,12 @@
   StateStackElement result=null;
   for (ListIterator iter=stateStack.listIterator(stateStack.size()); iter.hasPrevious(); ) {
     StateStackElement element=(StateStackElement)iter.previous();
-    if (!element._currentBlockNamedLabels.values().contains(label)) {
-      if (isBreakLabel && element._breakLabel != label) {
+    if (!element.currentBlockNamedLabels.values().contains(label)) {
+      if (isBreakLabel && element.breakLabel != label) {
         result=element;
         break;
       }
-      if (!isBreakLabel && element._continueLabel != label) {
+      if (!isBreakLabel && element.continueLabel != label) {
         result=element;
         break;
       }
@@ -18,7 +18,7 @@
     blocksToRemove=Collections.EMPTY_LIST;
   }
  else {
-    blocksToRemove=result._finallyBlocks;
+    blocksToRemove=result.finallyBlocks;
   }
   ArrayList blocks=new ArrayList(finallyBlocks);
   blocks.removeAll(blocksToRemove);
