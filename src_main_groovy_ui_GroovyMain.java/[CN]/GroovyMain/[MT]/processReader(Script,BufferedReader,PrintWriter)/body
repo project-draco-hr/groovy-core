@@ -7,7 +7,9 @@
   while ((line=reader.readLine()) != null) {
     s.setProperty("line",line);
     s.setProperty(lineCountName,((BigInteger)s.getProperty(lineCountName)).add(BigInteger.ONE));
-    if (autoSplit)     s.setProperty(autoSplitName,line.split(splitPattern));
+    if (autoSplit) {
+      s.setProperty(autoSplitName,line.split(splitPattern));
+    }
     Object o=s.run();
     if (autoOutput && o != null) {
       pw.println(o);

@@ -1,6 +1,12 @@
 {
   GroovyMain main=new GroovyMain();
   List args=line.getArgList();
+  if (line.hasOption('D')) {
+    String[] values=line.getOptionValues('D');
+    for (int i=0; i < values.length; i++) {
+      setSystemPropertyFrom(values[i]);
+    }
+  }
   main.conf.setSourceEncoding(line.getOptionValue('c',main.conf.getSourceEncoding()));
   main.isScriptFile=!line.hasOption('e');
   main.debug=line.hasOption('d');
