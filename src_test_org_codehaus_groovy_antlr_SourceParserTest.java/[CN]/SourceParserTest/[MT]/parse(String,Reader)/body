@@ -5,11 +5,15 @@
   unicodeReader.setLexer(lexer);
   GroovyRecognizer parser=GroovyRecognizer.make(lexer);
   parser.setSourceBuffer(sourceBuffer);
-  parser.setFilename("EnumTestScript");
+  parser.setFilename(name);
   try {
     parser.compilationUnit();
   }
  catch (  Exception ex) {
-    fail(ex.getMessage());
+    StringWriter out=new StringWriter();
+    out.write(ex.getMessage());
+    out.write("\n");
+    ex.printStackTrace(new PrintWriter(out));
+    fail(out.toString());
   }
 }
