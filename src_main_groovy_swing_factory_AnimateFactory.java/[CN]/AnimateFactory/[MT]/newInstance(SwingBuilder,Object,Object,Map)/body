@@ -2,10 +2,15 @@
   if (value == null) {
     value=properties.remove("range");
   }
+  FullBinding fb=null;
   if (value instanceof List) {
-    return createListAnimation(builder,(List)value,properties);
+    fb=createListAnimation(builder,(List)value,properties);
   }
- else {
-    return null;
+  if (fb != null) {
+    Object o=properties.remove("start");
+    if (o == null || ((o instanceof Boolean) && ((Boolean)o).booleanValue()) || ((o instanceof String) && Boolean.valueOf((String)o).booleanValue())) {
+      fb.bind();
+    }
   }
+  return fb;
 }

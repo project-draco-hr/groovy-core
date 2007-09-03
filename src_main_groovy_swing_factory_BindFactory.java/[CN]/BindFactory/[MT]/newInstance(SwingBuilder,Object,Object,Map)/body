@@ -7,12 +7,12 @@
   TargetBinding tb=null;
   if (target != null) {
     String targetProperty=(String)properties.remove("targetProperty");
-    tb=new PropertyTargetBinding(target,targetProperty);
+    tb=new PropertyBinding(target,targetProperty);
   }
   FullBinding fb;
   if (properties.containsKey("sourceProperty")) {
     String property=(String)properties.remove("sourceProperty");
-    PropertySourceBinding psb=new PropertySourceBinding(source,property);
+    PropertyBinding psb=new PropertyBinding(source,property);
     TriggerBinding trigger=null;
     Class currentClass=source.getClass();
     while ((trigger == null) && (currentClass != null)) {
@@ -20,7 +20,7 @@
       currentClass=currentClass.getSuperclass();
     }
     if (trigger == null) {
-      trigger=new PropertyChangeTriggerBinding(source,property);
+      trigger=psb;
     }
     fb=trigger.createBinding(psb,tb);
   }
@@ -36,7 +36,7 @@
   }
   if (target != null) {
     fb.bind();
-    fb.forceUpdate();
+    fb.update();
   }
   return fb;
 }

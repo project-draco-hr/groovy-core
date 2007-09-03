@@ -2,13 +2,13 @@
   if (bound) {
     throw new IllegalStateException("Cannot change source while binding is bound");
   }
-  if (!(source instanceof PropertySourceBinding)) {
-    throw new IllegalArgumentException("Only PropertySourceBindings are accepted");
+  if (!(source instanceof PropertyBinding)) {
+    throw new IllegalArgumentException("Only PropertyBindings are accepted");
   }
-  if (!"text".equals(((PropertySourceBinding)source).getPropertyName())) {
+  if (!"text".equals(((PropertyBinding)source).getPropertyName())) {
     throw new IllegalArgumentException("PropertyName must be 'text'");
   }
-  if (!(((PropertySourceBinding)source).getSourceBean() instanceof JTextComponent)) {
+  if (!(((PropertyBinding)source).getBean() instanceof JTextComponent)) {
     throw new IllegalArgumentException("SourceBean must be a TextComponent");
   }
   super.setSourceBinding(source);
