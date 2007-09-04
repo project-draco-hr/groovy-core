@@ -1,0 +1,26 @@
+{
+  Object node=null;
+  Factory factory=(Factory)factories.get(name);
+  if (factory == null) {
+    log.log(Level.WARNING,"Could not find match for name '" + name + "'");
+    return null;
+  }
+  getContext().put(CURRENT_FACTORY,factory);
+  preInstantiate(name,attributes,value);
+  try {
+    node=factory.newInstance(this,name,value,attributes);
+    if (node == null) {
+      log.log(Level.WARNING,"GraphicsOperation for name '" + name + "' returned null");
+      return null;
+    }
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("For name: " + name + " created widget: "+ node);
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
+  }
+  postIstantiate(name,attributes,node);
+  handleNodeAttributes(node,attributes);
+  return node;
+}
