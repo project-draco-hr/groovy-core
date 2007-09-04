@@ -1,11 +1,11 @@
 {
-  boolean backwards=isBackwardsCBox.isSelected();
+  boolean backwards=IS_BACKWARDS_CHECKBOX.isSelected();
   backwards=backwards ? !reverse : reverse;
-  String pattern=(String)findField.getSelectedItem();
+  String pattern=(String)FIND_FIELD.getSelectedItem();
   if (pattern != null && pattern.length() > 0) {
     try {
       Document doc=textComponent.getDocument();
-      doc.getText(0,doc.getLength(),segment);
+      doc.getText(0,doc.getLength(),SEGMENT);
     }
  catch (    Exception e) {
       e.printStackTrace();
@@ -14,8 +14,8 @@
     char first=backwards ? pattern.charAt(pattern.length() - 1) : pattern.charAt(0);
     char oppFirst=Character.isUpperCase(first) ? Character.toLowerCase(first) : Character.toUpperCase(first);
     int start=pos;
-    boolean wrapped=wrapSearchCBox.isSelected();
-    int end=backwards ? 0 : segment.getEndIndex();
+    boolean wrapped=WRAP_SEARCH_CHECKBOX.isSelected();
+    int end=backwards ? 0 : SEGMENT.getEndIndex();
     pos+=backwards ? -1 : 1;
     int length=textComponent.getDocument().getLength();
     if (pos > length) {
@@ -23,23 +23,23 @@
     }
     boolean found=false;
     while (!found && (backwards ? pos > end : pos < end)) {
-      found=!matchCaseCBox.isSelected() && segment.array[pos] == oppFirst;
-      found=found ? found : segment.array[pos] == first;
+      found=!MATCH_CASE_CHECKBOX.isSelected() && SEGMENT.array[pos] == oppFirst;
+      found=found ? found : SEGMENT.array[pos] == first;
       if (found) {
         pos+=backwards ? -(pattern.length() - 1) : 0;
         for (int i=0; found && i < pattern.length(); i++) {
           char c=pattern.charAt(i);
-          found=segment.array[pos + i] == c;
-          if (!matchCaseCBox.isSelected() && !found) {
+          found=SEGMENT.array[pos + i] == c;
+          if (!MATCH_CASE_CHECKBOX.isSelected() && !found) {
             c=Character.isUpperCase(c) ? Character.toLowerCase(c) : Character.toUpperCase(c);
-            found=segment.array[pos + i] == c;
+            found=SEGMENT.array[pos + i] == c;
           }
         }
       }
       if (!found) {
         pos+=backwards ? -1 : 1;
         if (pos == end && wrapped) {
-          pos=backwards ? segment.getEndIndex() : 0;
+          pos=backwards ? SEGMENT.getEndIndex() : 0;
           end=start;
           wrapped=false;
         }

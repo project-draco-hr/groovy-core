@@ -1,31 +1,31 @@
 {
   String title=isReplace ? REPLACE_ACTION_COMMAND : FIND_ACTION_COMMAND;
-  findReplaceDialog.setTitle(title);
+  FIND_REPLACE_DIALOG.setTitle(title);
   String text=textComponent.getSelectedText();
   if (text == null) {
     text="";
   }
-  findField.getEditor().setItem(text);
-  findField.getEditor().selectAll();
-  replacePanel.setVisible(isReplace);
-  replaceAllButton.setVisible(isReplace);
-  closeButton.setVisible(isReplace);
-  Action action=isReplace ? replaceAction : closeAction;
-  replaceButton.setAction(action);
-  replaceButton.setPreferredSize(null);
-  Dimension d=isReplace ? replaceAllButton.getPreferredSize() : replaceButton.getPreferredSize();
-  findButton.setPreferredSize(d);
-  replaceButton.setPreferredSize(d);
-  closeButton.setPreferredSize(d);
-  findReplaceDialog.invalidate();
-  findReplaceDialog.repaint();
-  findReplaceDialog.pack();
+  FIND_FIELD.getEditor().setItem(text);
+  FIND_FIELD.getEditor().selectAll();
+  REPLACE_PANEL.setVisible(isReplace);
+  REPLACE_ALL_BUTTON.setVisible(isReplace);
+  CLOSE_BUTTON.setVisible(isReplace);
+  Action action=isReplace ? REPLACE_ACTION : CLOSE_ACTION;
+  REPLACE_BUTTON.setAction(action);
+  REPLACE_BUTTON.setPreferredSize(null);
+  Dimension d=isReplace ? REPLACE_ALL_BUTTON.getPreferredSize() : REPLACE_BUTTON.getPreferredSize();
+  FIND_BUTTON.setPreferredSize(d);
+  REPLACE_BUTTON.setPreferredSize(d);
+  CLOSE_BUTTON.setPreferredSize(d);
+  FIND_REPLACE_DIALOG.invalidate();
+  FIND_REPLACE_DIALOG.repaint();
+  FIND_REPLACE_DIALOG.pack();
   java.awt.Frame[] frames=java.awt.Frame.getFrames();
   for (int i=0; i < frames.length; i++) {
     if (frames[i].isFocused()) {
-      findReplaceDialog.setLocationRelativeTo(frames[i]);
+      FIND_REPLACE_DIALOG.setLocationRelativeTo(frames[i]);
     }
   }
-  findReplaceDialog.setVisible(true);
-  findField.requestFocusInWindow();
+  FIND_REPLACE_DIALOG.setVisible(true);
+  FIND_FIELD.requestFocusInWindow();
 }

@@ -1,26 +1,26 @@
 {
-  Object findObject=findField.getSelectedItem();
-  Object replaceObject=replaceField.isShowing() ? (String)replaceField.getSelectedItem() : "";
+  Object findObject=FIND_FIELD.getSelectedItem();
+  Object replaceObject=REPLACE_FIELD.isShowing() ? (String)REPLACE_FIELD.getSelectedItem() : "";
   if (findObject != null && replaceObject != null) {
     boolean found=false;
-    for (int i=0; !found && i < findField.getItemCount(); i++) {
-      found=findField.getItemAt(i).equals(findObject);
+    for (int i=0; !found && i < FIND_FIELD.getItemCount(); i++) {
+      found=FIND_FIELD.getItemAt(i).equals(findObject);
     }
     if (!found) {
-      findField.insertItemAt(findObject,0);
-      if (findField.getItemCount() > 7) {
-        findField.removeItemAt(7);
+      FIND_FIELD.insertItemAt(findObject,0);
+      if (FIND_FIELD.getItemCount() > 7) {
+        FIND_FIELD.removeItemAt(7);
       }
     }
-    if (replaceField.isShowing()) {
+    if (REPLACE_FIELD.isShowing()) {
       found=false;
-      for (int i=0; !found && i < replaceField.getItemCount(); i++) {
-        found=replaceField.getItemAt(i).equals(findObject);
+      for (int i=0; !found && i < REPLACE_FIELD.getItemCount(); i++) {
+        found=REPLACE_FIELD.getItemAt(i).equals(findObject);
       }
       if (!found) {
-        replaceField.insertItemAt(replaceObject,0);
-        if (replaceField.getItemCount() > 7) {
-          replaceField.removeItemAt(7);
+        REPLACE_FIELD.insertItemAt(replaceObject,0);
+        if (REPLACE_FIELD.getItemCount() > 7) {
+          REPLACE_FIELD.removeItemAt(7);
         }
       }
     }
