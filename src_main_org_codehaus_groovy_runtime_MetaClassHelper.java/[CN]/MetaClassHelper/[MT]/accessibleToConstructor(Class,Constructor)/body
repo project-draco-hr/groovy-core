@@ -7,17 +7,9 @@
     accessible=at.getName().equals(constructor.getName());
   }
  else   if (Modifier.isProtected(constructor.getModifiers())) {
-    if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() == null) {
-      accessible=true;
-    }
- else     if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() != null) {
-      accessible=false;
-    }
- else     if (at.getPackage() != null && constructor.getDeclaringClass().getPackage() == null) {
-      accessible=false;
-    }
- else     if (at.getPackage().equals(constructor.getDeclaringClass().getPackage())) {
-      accessible=true;
+    Boolean isAccessible=checkCompatiblePackages(at,constructor);
+    if (isAccessible != null) {
+      accessible=isAccessible.booleanValue();
     }
  else {
       boolean flag=false;
@@ -36,17 +28,9 @@
     }
   }
  else {
-    if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() == null) {
-      accessible=true;
-    }
- else     if (at.getPackage() == null && constructor.getDeclaringClass().getPackage() != null) {
-      accessible=false;
-    }
- else     if (at.getPackage() != null && constructor.getDeclaringClass().getPackage() == null) {
-      accessible=false;
-    }
- else     if (at.getPackage().equals(constructor.getDeclaringClass().getPackage())) {
-      accessible=true;
+    Boolean isAccessible=checkCompatiblePackages(at,constructor);
+    if (isAccessible != null) {
+      accessible=isAccessible.booleanValue();
     }
   }
   return accessible;
