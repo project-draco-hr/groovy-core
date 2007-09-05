@@ -1,14 +1,19 @@
 {
-  try {
-    InvokerHelper.invokeMethodSafe(bean,"removePropertyChangeListener",new Object[]{propertyName,this});
-  }
- catch (  MissingMethodException mme) {
-    mme.printStackTrace();
+  if (bound) {
     try {
-      InvokerHelper.invokeMethodSafe(bean,"removePropertyChangeListener",new Object[]{this});
+      InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{boundProperty,this});
     }
- catch (    MissingMethodException mme2) {
-      mme2.printStackTrace();
+ catch (    MissingMethodException mme) {
+      mme.printStackTrace();
+      try {
+        InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{this});
+      }
+ catch (      MissingMethodException mme2) {
+        mme2.printStackTrace();
+      }
     }
+    boundBean=null;
+    boundProperty=null;
+    bound=false;
   }
 }

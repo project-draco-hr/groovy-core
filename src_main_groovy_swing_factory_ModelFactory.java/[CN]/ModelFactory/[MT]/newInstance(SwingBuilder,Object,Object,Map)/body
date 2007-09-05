@@ -1,0 +1,11 @@
+{
+  if (value == null) {
+    throw new RuntimeException(name + " requires a value argument.");
+  }
+  ModelBinding mb=new ModelBinding(value);
+  Object o=properties.remove("bind");
+  if ((o instanceof Boolean) && ((Boolean)o).booleanValue()) {
+    mb.bind();
+  }
+  return mb;
+}

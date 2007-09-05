@@ -1,0 +1,16 @@
+{
+  PropertyBinding pb;
+synchronized (propertyBindings) {
+    Object o=propertyBindings.get(property);
+    if (o == null) {
+      o=new ModelBindingPropertyBinding(model,property);
+      propertyBindings.put(property,o);
+    }
+    pb=(PropertyBinding)o;
+  }
+  FullBinding fb=pb.createBinding(pb,null);
+  if (bound) {
+    fb.bind();
+  }
+  return fb;
+}

@@ -1,15 +1,15 @@
 {
   if (!bound) {
-    AbstractButton ab=(AbstractButton)((PropertyBinding)sourceBinding).getBean();
+    boundButton=(AbstractButton)((PropertyBinding)sourceBinding).getBean();
     try {
-      ab.addPropertyChangeListener("model",this);
-      ab.getModel().addItemListener(this);
+      boundButton.addPropertyChangeListener("model",this);
+      boundButton.getModel().addItemListener(this);
       bound=true;
     }
  catch (    RuntimeException re) {
       try {
-        ab.removePropertyChangeListener("model",this);
-        ab.getModel().removeItemListener(this);
+        boundButton.removePropertyChangeListener("model",this);
+        boundButton.getModel().removeItemListener(this);
       }
  catch (      Exception e) {
       }

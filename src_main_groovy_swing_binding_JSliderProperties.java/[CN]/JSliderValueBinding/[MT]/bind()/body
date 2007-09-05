@@ -1,15 +1,15 @@
 {
   if (!bound) {
-    JSlider slider=(JSlider)((PropertyBinding)sourceBinding).getBean();
+    boundSlider=(JSlider)((PropertyBinding)sourceBinding).getBean();
     try {
-      slider.addPropertyChangeListener("model",this);
-      slider.getModel().addChangeListener(this);
+      boundSlider.addPropertyChangeListener("model",this);
+      boundSlider.getModel().addChangeListener(this);
       bound=true;
     }
  catch (    RuntimeException re) {
       try {
-        slider.removePropertyChangeListener("model",this);
-        slider.getModel().removeChangeListener(this);
+        boundSlider.removePropertyChangeListener("model",this);
+        boundSlider.getModel().removeChangeListener(this);
       }
  catch (      Exception e) {
       }

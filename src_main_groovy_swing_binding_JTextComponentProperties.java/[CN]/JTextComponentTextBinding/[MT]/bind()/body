@@ -1,15 +1,15 @@
 {
   if (!bound) {
-    JTextComponent tc=(JTextComponent)((PropertyBinding)sourceBinding).getBean();
+    boundTextComponent=(JTextComponent)((PropertyBinding)sourceBinding).getBean();
     try {
-      tc.addPropertyChangeListener("document",this);
-      tc.getDocument().addDocumentListener(this);
+      boundTextComponent.addPropertyChangeListener("document",this);
+      boundTextComponent.getDocument().addDocumentListener(this);
       bound=true;
     }
  catch (    RuntimeException re) {
       try {
-        tc.removePropertyChangeListener("document",this);
-        tc.getDocument().removeDocumentListener(this);
+        boundTextComponent.removePropertyChangeListener("document",this);
+        boundTextComponent.getDocument().removeDocumentListener(this);
       }
  catch (      Exception e) {
       }
