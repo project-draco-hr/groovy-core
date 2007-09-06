@@ -1,6 +1,11 @@
 {
-  if (clazz.isInterface() && !(clazz.isInstance(map))) {
+  if (!(clazz.isInstance(map)) && clazz.isInterface()) {
     return Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},new ConvertedMap(map));
   }
-  return asType((Object)map,clazz);
+  try {
+    return asType((Object)map,clazz);
+  }
+ catch (  GroovyCastException ce) {
+    return makeSubClass(map,clazz);
+  }
 }
