@@ -1,4 +1,12 @@
 {
   Object name=getName(methodName);
-  return doInvokeMethod(methodName,name,args);
+  Object result=null;
+  try {
+    result=doInvokeMethod(methodName,name,args);
+  }
+ catch (  RuntimeException e) {
+    reset();
+    throw e;
+  }
+  return result;
 }
