@@ -5,10 +5,10 @@
       final int dLimit=(data.length / 3) * 3;
       for (int dIndex=0; dIndex != dLimit; dIndex+=3) {
         int d=((data[dIndex] & 0XFF) << 16) | ((data[dIndex + 1] & 0XFF) << 8) | (data[dIndex + 2] & 0XFF);
-        writer.write(tTable[d >> 18]);
-        writer.write(tTable[(d >> 12) & 0X3F]);
-        writer.write(tTable[(d >> 6) & 0X3F]);
-        writer.write(tTable[d & 0X3F]);
+        writer.write(T_TABLE[d >> 18]);
+        writer.write(T_TABLE[(d >> 12) & 0X3F]);
+        writer.write(T_TABLE[(d >> 6) & 0X3F]);
+        writer.write(T_TABLE[d & 0X3F]);
         if (++charCount == 18) {
           writer.write('\n');
           charCount=0;
@@ -19,9 +19,9 @@
         if (dLimit + 1 != data.length) {
           d|=(data[dLimit + 1] & 0XFF) << 8;
         }
-        writer.write(tTable[d >> 18]);
-        writer.write(tTable[(d >> 12) & 0X3F]);
-        writer.write((dLimit + 1 < data.length) ? tTable[(d >> 6) & 0X3F] : '=');
+        writer.write(T_TABLE[d >> 18]);
+        writer.write(T_TABLE[(d >> 12) & 0X3F]);
+        writer.write((dLimit + 1 < data.length) ? T_TABLE[(d >> 6) & 0X3F] : '=');
         writer.write('=');
       }
       return writer;

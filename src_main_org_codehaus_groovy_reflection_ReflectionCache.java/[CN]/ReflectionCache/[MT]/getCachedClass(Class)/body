@@ -2,11 +2,11 @@
   if (klazz == null)   return null;
   if (klazz == Object.class)   return OBJECT_CLASS;
   CachedClass cachedClass;
-synchronized (cachedClassMap) {
-    SoftReference ref=(SoftReference)cachedClassMap.get(klazz);
+synchronized (CACHED_CLASS_MAP) {
+    SoftReference ref=(SoftReference)CACHED_CLASS_MAP.get(klazz);
     if (ref == null || (cachedClass=(CachedClass)ref.get()) == null) {
       cachedClass=new CachedClass(klazz);
-      cachedClassMap.put(klazz,new SoftReference(cachedClass));
+      CACHED_CLASS_MAP.put(klazz,new SoftReference(cachedClass));
     }
   }
   return cachedClass;
