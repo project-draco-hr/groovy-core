@@ -5,9 +5,9 @@
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
-  Constructor constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,false);
+  CachedConstructor constructor=(CachedConstructor)chooseMethod("<init>",constructors,argClasses,false);
   if (constructor == null) {
-    constructor=(Constructor)chooseMethod("<init>",constructors,argClasses,true);
+    constructor=(CachedConstructor)chooseMethod("<init>",constructors,argClasses,true);
   }
   if (constructor == null) {
     throw new GroovyRuntimeException("Could not find matching constructor for: " + theClass.getName() + "("+ InvokerHelper.toTypeString(arguments)+ ")");
@@ -15,10 +15,10 @@
   List l=new ArrayList(constructors);
   Comparator comp=new Comparator(){
     public int compare(    Object arg0,    Object arg1){
-      Constructor c0=(Constructor)arg0;
-      Constructor c1=(Constructor)arg1;
-      String descriptor0=BytecodeHelper.getMethodDescriptor(Void.TYPE,c0.getParameterTypes());
-      String descriptor1=BytecodeHelper.getMethodDescriptor(Void.TYPE,c1.getParameterTypes());
+      CachedConstructor c0=(CachedConstructor)arg0;
+      CachedConstructor c1=(CachedConstructor)arg1;
+      String descriptor0=BytecodeHelper.getMethodDescriptor(Void.TYPE,c0.getNativeParameterTypes());
+      String descriptor1=BytecodeHelper.getMethodDescriptor(Void.TYPE,c1.getNativeParameterTypes());
       return descriptor0.compareTo(descriptor1);
     }
   }

@@ -1,7 +1,7 @@
 {
   if (closureMethods.size() == 1) {
     final MetaMethod doCall=(MetaMethod)closureMethods.get(0);
-    final Class[] c=doCall.getParameterTypes();
+    final CachedClass[] c=doCall.getParameterTypes();
     int length=c.length;
     if (length == 0) {
       chooser=new MethodChooser(){
@@ -12,7 +12,7 @@
       }
 ;
     }
- else     if (length == 1 && c[0] == Object.class) {
+ else     if (length == 1 && c[0].getCachedClass() == Object.class) {
       chooser=new MethodChooser(){
         public Object chooseMethod(        Class[] arguments,        boolean coerce){
           if (arguments.length < 2)           return doCall;
@@ -24,12 +24,12 @@
  else {
       boolean allObject=true;
       for (int i=0; i < c.length - 1; i++) {
-        if (c[i] != Object.class) {
+        if (c[i].getCachedClass() != Object.class) {
           allObject=false;
           break;
         }
       }
-      if (allObject && c[c.length - 1] == Object.class) {
+      if (allObject && c[c.length - 1].getCachedClass() == Object.class) {
         chooser=new MethodChooser(){
           public Object chooseMethod(          Class[] arguments,          boolean coerce){
             if (arguments.length == c.length)             return doCall;
@@ -38,7 +38,7 @@
         }
 ;
       }
- else       if (allObject && c[c.length - 1] == Object[].class) {
+ else       if (allObject && c[c.length - 1].getCachedClass() == Object[].class) {
         final int minimumLength=c.length - 2;
         chooser=new MethodChooser(){
           public Object chooseMethod(          Class[] arguments,          boolean coerce){
@@ -65,11 +65,11 @@
     MetaMethod m0=null, m1=null;
     for (Iterator iterator=closureMethods.iterator(); iterator.hasNext(); ) {
       MetaMethod m=(MetaMethod)iterator.next();
-      Class[] c=m.getParameterTypes();
+      CachedClass[] c=m.getParameterTypes();
       if (c.length == 0) {
         m0=m;
       }
- else       if (c.length == 1 && c[0] == Object.class) {
+ else       if (c.length == 1 && c[0].getCachedClass() == Object.class) {
         m1=m;
       }
     }

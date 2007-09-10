@@ -3,9 +3,9 @@
   if (possibleGenericMethods != null) {
     for (Iterator iter=possibleGenericMethods.iterator(); iter.hasNext(); ) {
       MetaMethod mmethod=(MetaMethod)iter.next();
-      Class[] paramTypes=mmethod.getParameterTypes();
+      CachedClass[] paramTypes=mmethod.getParameterTypes();
       if (useLongVersion) {
-        if (paramTypes.length == 2 && paramTypes[0] == String.class) {
+        if (paramTypes.length == 2 && paramTypes[0].getCachedClass() == String.class) {
           return mmethod;
         }
       }

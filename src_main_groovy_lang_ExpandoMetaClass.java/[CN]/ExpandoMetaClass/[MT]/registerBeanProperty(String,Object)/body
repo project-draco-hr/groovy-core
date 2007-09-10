@@ -4,9 +4,9 @@
       Class type=newValue == null ? Object.class : newValue.getClass();
       MetaBeanProperty mbp=newValue instanceof MetaBeanProperty ? (MetaBeanProperty)newValue : new ThreadManagedMetaBeanProperty(theClass,property,type,newValue);
       final MetaMethod getter=mbp.getGetter();
-      final MethodKey getterKey=new DefaultMethodKey(theClass,getter.getName(),new Class[0],false);
+      final MethodKey getterKey=new DefaultCachedMethodKey(theClass,getter.getName(),new CachedClass[0],false);
       final MetaMethod setter=mbp.getSetter();
-      final MethodKey setterKey=new DefaultMethodKey(theClass,setter.getName(),setter.getParameterTypes(),false);
+      final MethodKey setterKey=new DefaultCachedMethodKey(theClass,setter.getName(),setter.getParameterTypes(),false);
       addMetaMethod(getter);
       addMetaMethod(setter);
       expandoMethods.put(setterKey,setter);

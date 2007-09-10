@@ -4,7 +4,7 @@
     public void call(){
       ClosureMetaMethod metaMethod=new ClosureMetaMethod(methodName,theClass,callable);
       checkIfGroovyObjectMethod(metaMethod,methodName);
-      MethodKey key=new DefaultMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
+      MethodKey key=new DefaultCachedMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
       addMetaMethod(metaMethod);
       expandoMethods.put(key,metaMethod);
       if (inited && isGetter(methodName,metaMethod.getParameterTypes())) {

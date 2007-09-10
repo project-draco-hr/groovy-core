@@ -1,15 +1,18 @@
 {
-  try {
-    Object value=(Object)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws IllegalAccessException {
+  if (!alreadySetAccessible) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
         field.setAccessible(true);
-        return field.get(object);
+        return null;
       }
     }
 );
-    return value;
+    alreadySetAccessible=true;
   }
- catch (  PrivilegedActionException pe) {
-    throw new GroovyRuntimeException("Cannot get the property '" + name + "'.",pe.getException());
+  try {
+    return field.get(object);
+  }
+ catch (  IllegalAccessException e) {
+    throw new GroovyRuntimeException("Cannot get the property '" + name + "'.",e);
   }
 }

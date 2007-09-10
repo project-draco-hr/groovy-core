@@ -1,14 +1,18 @@
 {
+  if (methodOrConstructor instanceof ParameterTypes) {
+    ParameterTypes pt=(CachedConstructor)methodOrConstructor;
+    return pt;
+  }
   if (methodOrConstructor instanceof MetaMethod) {
     return ((MetaMethod)methodOrConstructor).getParamTypes();
   }
   if (methodOrConstructor instanceof Method) {
     Method method=(Method)methodOrConstructor;
-    return new ParameterTypes(method.getParameterTypes());
+    return ReflectionCache.getCachedMethod(method);
   }
   if (methodOrConstructor instanceof Constructor) {
     Constructor constructor=(Constructor)methodOrConstructor;
-    return new ParameterTypes(constructor.getParameterTypes());
+    return ReflectionCache.getCachedConstructor(constructor);
   }
   throw new IllegalArgumentException("Must be a Method or Constructor");
 }

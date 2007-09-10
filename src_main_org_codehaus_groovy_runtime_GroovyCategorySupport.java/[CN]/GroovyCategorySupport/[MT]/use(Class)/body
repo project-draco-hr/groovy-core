@@ -4,12 +4,12 @@
   for (int i=0; i < methods.length; i++) {
     Method method=methods[i];
     if (Modifier.isStatic(method.getModifiers())) {
-      Class[] paramTypes=method.getParameterTypes();
+      CachedClass[] paramTypes=ReflectionCache.getCachedMethod(method).getParameterTypes();
       if (paramTypes.length > 0) {
-        Class metaClass=paramTypes[0];
-        Map metaMethodsMap=getMetaMethods(properties,metaClass);
+        CachedClass metaClass=paramTypes[0];
+        Map metaMethodsMap=getMetaMethods(properties,metaClass.getCachedClass());
         List methodList=getMethodList(metaMethodsMap,method.getName());
-        MetaMethod mmethod=new CategoryMethod(new MetaMethod(method,paramTypes),metaClass);
+        MetaMethod mmethod=new CategoryMethod(new MetaMethod(method,paramTypes),metaClass.getCachedClass());
         methodList.add(mmethod);
         Collections.sort(methodList);
       }

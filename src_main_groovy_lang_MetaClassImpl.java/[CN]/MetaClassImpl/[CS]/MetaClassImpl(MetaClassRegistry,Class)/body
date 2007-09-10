@@ -3,7 +3,10 @@
   this.registry=registry;
   this.constructors=(List)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      return Arrays.asList(theClass.getDeclaredConstructors());
+      final Constructor[] declaredConstructors=theClass.getDeclaredConstructors();
+      ArrayList array=new ArrayList(declaredConstructors.length);
+      for (int i=0; i != declaredConstructors.length; ++i)       array.add(ReflectionCache.getCachedConstructor(declaredConstructors[i]));
+      return array;
     }
   }
 );

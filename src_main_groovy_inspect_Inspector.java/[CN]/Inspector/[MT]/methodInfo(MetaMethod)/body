@@ -6,10 +6,10 @@
   result[MEMBER_DECLARER_IDX]=shortName(method.getDeclaringClass());
   result[MEMBER_TYPE_IDX]=shortName(method.getReturnType());
   result[MEMBER_NAME_IDX]=method.getName();
-  Class[] params=method.getParameterTypes();
+  CachedClass[] params=method.getParameterTypes();
   StringBuffer sb=new StringBuffer();
   for (int j=0; j < params.length; j++) {
-    sb.append(shortName(params[j]));
+    sb.append(shortName(params[j].getCachedClass()));
     if (j < (params.length - 1))     sb.append(", ");
   }
   result[MEMBER_PARAMS_IDX]=sb.toString();

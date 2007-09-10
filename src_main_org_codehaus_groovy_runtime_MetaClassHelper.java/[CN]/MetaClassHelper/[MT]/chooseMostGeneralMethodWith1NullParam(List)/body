@@ -5,31 +5,31 @@
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
     final ParameterTypes pt=getParameterTypes(method);
-    Class[] paramTypes=pt.getParameterTypes();
+    CachedClass[] paramTypes=pt.getParameterTypes();
     int paramLength=paramTypes.length;
     if (paramLength == 0 || paramLength > 2)     continue;
-    Class theType=paramTypes[0];
-    if (theType.isPrimitive())     continue;
+    CachedClass theType=paramTypes[0];
+    if (theType.isPrimitive)     continue;
     if (paramLength == 2) {
       if (!isVargsMethod(pt,ARRAY_WITH_NULL))       continue;
-      if (closestClass == theType) {
+      if (closestClass == theType.getCachedClass()) {
         if (closestVargsClass == null)         continue;
-        Class newVargsClass=paramTypes[1];
+        Class newVargsClass=paramTypes[1].getCachedClass();
         if (closestVargsClass == null || isAssignableFrom(newVargsClass,closestVargsClass)) {
           closestVargsClass=newVargsClass;
           answer=method;
         }
       }
- else       if (closestClass == null || isAssignableFrom(theType,closestClass)) {
-        closestVargsClass=paramTypes[1];
-        closestClass=theType;
+ else       if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass)) {
+        closestVargsClass=paramTypes[1].getCachedClass();
+        closestClass=theType.getCachedClass();
         answer=method;
       }
     }
  else {
-      if (closestClass == null || isAssignableFrom(theType,closestClass)) {
+      if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass)) {
         closestVargsClass=null;
-        closestClass=theType;
+        closestClass=theType.getCachedClass();
         answer=method;
       }
     }

@@ -1,0 +1,11 @@
+{
+  CachedConstructor cachedConstructor;
+synchronized (CACHED_CONSTRUCTOR_MAP) {
+    SoftReference ref=(SoftReference)CACHED_CONSTRUCTOR_MAP.get(c);
+    if (ref == null || (cachedConstructor=(CachedConstructor)ref.get()) == null) {
+      cachedConstructor=new CachedConstructor(c);
+      CACHED_CONSTRUCTOR_MAP.put(c,new SoftReference(cachedConstructor));
+    }
+  }
+  return cachedConstructor;
+}

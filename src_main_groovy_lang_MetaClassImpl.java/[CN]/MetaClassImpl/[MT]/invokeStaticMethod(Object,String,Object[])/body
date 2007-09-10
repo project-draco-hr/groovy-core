@@ -13,10 +13,9 @@
   }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
-  Object[] originalArguments=(Object[])arguments.clone();
-  unwrap(arguments);
   MetaMethod method=retrieveStaticMethod(methodName,argClasses);
   if (method != null) {
+    unwrap(arguments);
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
   }
   Object prop=null;
@@ -26,8 +25,10 @@
  catch (  MissingPropertyException mpe) {
   }
   if (prop instanceof Closure) {
-    return invokeStaticClosureProperty(originalArguments,prop);
+    return invokeStaticClosureProperty(arguments,prop);
   }
+  Object[] originalArguments=(Object[])arguments.clone();
+  unwrap(arguments);
   Class superClass=sender.getSuperclass();
   while (superClass != Object.class && superClass != null) {
     MetaClass mc=registry.getMetaClass(superClass);

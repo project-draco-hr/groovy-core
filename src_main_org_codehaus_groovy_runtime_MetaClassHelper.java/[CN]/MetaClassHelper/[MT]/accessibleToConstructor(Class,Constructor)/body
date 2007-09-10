@@ -1,12 +1,13 @@
 {
   boolean accessible=false;
-  if (Modifier.isPublic(constructor.getModifiers())) {
+  final int modifiers=constructor.getModifiers();
+  if (Modifier.isPublic(modifiers)) {
     accessible=true;
   }
- else   if (Modifier.isPrivate(constructor.getModifiers())) {
+ else   if (Modifier.isPrivate(modifiers)) {
     accessible=at.getName().equals(constructor.getName());
   }
- else   if (Modifier.isProtected(constructor.getModifiers())) {
+ else   if (Modifier.isProtected(modifiers)) {
     Boolean isAccessible=checkCompatiblePackages(at,constructor);
     if (isAccessible != null) {
       accessible=isAccessible.booleanValue();

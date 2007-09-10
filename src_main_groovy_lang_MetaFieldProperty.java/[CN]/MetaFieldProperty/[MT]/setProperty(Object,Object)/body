@@ -1,16 +1,19 @@
 {
   final Object goalValue=DefaultTypeTransformation.castToType(newValue,field.getType());
-  try {
-    AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws IllegalAccessException, GroovyRuntimeException {
+  if (!alreadySetAccessible) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
         field.setAccessible(true);
-        field.set(object,goalValue);
         return null;
       }
     }
 );
+    alreadySetAccessible=true;
   }
- catch (  PrivilegedActionException ex) {
-    throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",ex.getException());
+  try {
+    field.set(object,goalValue);
+  }
+ catch (  IllegalAccessException ex) {
+    throw new GroovyRuntimeException("Cannot set the property '" + name + "'.",ex);
   }
 }

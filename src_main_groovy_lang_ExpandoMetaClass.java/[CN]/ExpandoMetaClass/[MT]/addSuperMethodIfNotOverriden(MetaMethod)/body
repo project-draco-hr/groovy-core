@@ -3,7 +3,7 @@
     public void call(){
       MetaMethod existing=null;
       try {
-        existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getParameterTypes());
+        existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getNativeParameterTypes());
       }
  catch (      GroovyRuntimeException e) {
       }
@@ -29,7 +29,7 @@
         String name=metaMethodFromSuper.getName();
         ClosureMetaMethod localMethod=new ClosureMetaMethod(name,getJavaClass(),cloned);
         addMetaMethod(localMethod);
-        MethodKey key=new DefaultMethodKey(getJavaClass(),name,localMethod.getParameterTypes(),false);
+        MethodKey key=new DefaultCachedMethodKey(getJavaClass(),name,localMethod.getParameterTypes(),false);
         cacheInstanceMethod(key,localMethod);
         checkIfGroovyObjectMethod(localMethod,name);
         expandoMethods.put(key,localMethod);

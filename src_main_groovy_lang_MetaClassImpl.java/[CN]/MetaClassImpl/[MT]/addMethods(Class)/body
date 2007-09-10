@@ -7,7 +7,7 @@
   CachedMethod[] cachedMethods=ReflectionCache.getDeclaredMethodsCached(theClass);
   for (int i=0; i < cachedMethods.length; i++) {
     final CachedMethod cachedMethod=cachedMethods[i];
-    Method reflectionMethod=cachedMethod.method;
+    Method reflectionMethod=cachedMethod.cachedMethod;
     if (reflectionMethod.getName().indexOf('+') >= 0) {
       continue;
     }
@@ -17,13 +17,13 @@
   List methods=((MetaClassRegistryImpl)registry).getInstanceMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     CachedMethod element=(CachedMethod)iter.next();
-    if (element.getParameterTypes()[0] != theClass)     continue;
-    addNewInstanceMethod(element.method,element.getParameterTypes());
+    if (element.getParameterTypes()[0].getCachedClass() != theClass)     continue;
+    addNewInstanceMethod(element.cachedMethod,element.getParameterTypes());
   }
   methods=((MetaClassRegistryImpl)registry).getStaticMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     CachedMethod element=(CachedMethod)iter.next();
-    if (element.getParameterTypes()[0] != theClass)     continue;
-    addNewStaticMethod(element.method,element.getParameterTypes());
+    if (element.getParameterTypes()[0].getCachedClass() != theClass)     continue;
+    addNewStaticMethod(element.cachedMethod,element.getParameterTypes());
   }
 }

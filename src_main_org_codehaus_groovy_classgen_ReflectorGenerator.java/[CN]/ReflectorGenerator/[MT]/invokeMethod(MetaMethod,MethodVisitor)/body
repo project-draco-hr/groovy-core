@@ -8,7 +8,7 @@
     useInterface=true;
   }
   String type=BytecodeHelper.getClassInternalName(callClass.getName());
-  String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
+  String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getNativeParameterTypes());
   if (method.isStatic()) {
     loadParameters(method,3,mv);
     mv.visitMethodInsn(INVOKESTATIC,type,method.getName(),descriptor);

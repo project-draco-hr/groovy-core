@@ -13,7 +13,7 @@
   for (CachedClass clazz=declaringClass; clazz != null; clazz=clazz.getCachedSuperClass()) {
     try {
       final String mName=method.getName();
-      final Class[] parms=method.getParameterTypes();
+      final CachedClass[] parms=method.getParameterTypes();
       if (!Modifier.isPublic(clazz.getModifiers()))       continue;
       Method m=clazz.searchMethods(mName,parms);
       if (m == null || !Modifier.isPublic(m.getModifiers()))       continue;

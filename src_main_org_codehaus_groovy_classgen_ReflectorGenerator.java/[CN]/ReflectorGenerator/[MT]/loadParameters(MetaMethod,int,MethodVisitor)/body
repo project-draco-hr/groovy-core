@@ -1,11 +1,11 @@
 {
-  Class[] parameters=method.getParameterTypes();
+  CachedClass[] parameters=method.getParameterTypes();
   int size=parameters.length;
   for (int i=0; i < size; i++) {
     mv.visitVarInsn(ALOAD,argumentIndex);
     helper.pushConstant(i);
     mv.visitInsn(AALOAD);
-    Class type=parameters[i];
+    Class type=parameters[i].getCachedClass();
     if (type.isPrimitive()) {
       helper.unbox(type);
     }
