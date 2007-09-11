@@ -1,0 +1,14 @@
+{
+  final Class declaringClass=method.getDeclaringClass();
+  Map methodIndex=getNotNull(declaringClass);
+  String name=method.getName();
+  List list=(List)methodIndex.get(name);
+  if (list == null) {
+    list=new ArrayList();
+    methodIndex.put(name,list);
+    list.add(method);
+  }
+ else {
+    addMethodToList(list,method);
+  }
+}

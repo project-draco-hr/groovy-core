@@ -12,52 +12,56 @@
       }
 ;
     }
- else     if (length == 1 && c[0].getCachedClass() == Object.class) {
-      chooser=new MethodChooser(){
-        public Object chooseMethod(        Class[] arguments,        boolean coerce){
-          if (arguments.length < 2)           return doCall;
-          return null;
-        }
-      }
-;
-    }
  else {
-      boolean allObject=true;
-      for (int i=0; i < c.length - 1; i++) {
-        if (c[i].getCachedClass() != Object.class) {
-          allObject=false;
-          break;
-        }
-      }
-      if (allObject && c[c.length - 1].getCachedClass() == Object.class) {
+      if (length == 1 && c[0].cachedClass == Object.class) {
         chooser=new MethodChooser(){
           public Object chooseMethod(          Class[] arguments,          boolean coerce){
-            if (arguments.length == c.length)             return doCall;
-            return null;
-          }
-        }
-;
-      }
- else       if (allObject && c[c.length - 1].getCachedClass() == Object[].class) {
-        final int minimumLength=c.length - 2;
-        chooser=new MethodChooser(){
-          public Object chooseMethod(          Class[] arguments,          boolean coerce){
-            if (arguments.length > minimumLength)             return doCall;
+            if (arguments.length < 2)             return doCall;
             return null;
           }
         }
 ;
       }
  else {
-        chooser=new MethodChooser(){
-          public Object chooseMethod(          Class[] arguments,          boolean coerce){
-            if (MetaClassHelper.isValidMethod(doCall,arguments,coerce)) {
-              return doCall;
+        boolean allObject=true;
+        for (int i=0; i < c.length - 1; i++) {
+          if (c[i].cachedClass != Object.class) {
+            allObject=false;
+            break;
+          }
+        }
+        if (allObject && c[c.length - 1].cachedClass == Object.class) {
+          chooser=new MethodChooser(){
+            public Object chooseMethod(            Class[] arguments,            boolean coerce){
+              if (arguments.length == c.length)               return doCall;
+              return null;
             }
-            return null;
+          }
+;
+        }
+ else {
+          if (allObject && c[c.length - 1].cachedClass == Object[].class) {
+            final int minimumLength=c.length - 2;
+            chooser=new MethodChooser(){
+              public Object chooseMethod(              Class[] arguments,              boolean coerce){
+                if (arguments.length > minimumLength)                 return doCall;
+                return null;
+              }
+            }
+;
+          }
+ else {
+            chooser=new MethodChooser(){
+              public Object chooseMethod(              Class[] arguments,              boolean coerce){
+                if (MetaClassHelper.isValidMethod(doCall,arguments,coerce)) {
+                  return doCall;
+                }
+                return null;
+              }
+            }
+;
           }
         }
-;
       }
     }
   }
@@ -69,8 +73,10 @@
       if (c.length == 0) {
         m0=m;
       }
- else       if (c.length == 1 && c[0].getCachedClass() == Object.class) {
-        m1=m;
+ else {
+        if (c.length == 1 && c[0].cachedClass == Object.class) {
+          m1=m;
+        }
       }
     }
     if (m0 != null && m1 != null) {

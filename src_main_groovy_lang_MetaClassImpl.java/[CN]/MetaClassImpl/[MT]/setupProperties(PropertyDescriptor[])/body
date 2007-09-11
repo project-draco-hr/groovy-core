@@ -8,11 +8,11 @@
     classPropertyIndexForSuper=classPropertyIndex;
     for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
       Class iclass=(Class)interfaceIter.next();
-      Map iPropertyIndex=getMap2MapNotNull(classPropertyIndex,theClass);
+      Map iPropertyIndex=classPropertyIndex.getNotNull(theClass);
       addFields(iclass,iPropertyIndex);
       classPropertyIndex.put(iclass,iPropertyIndex);
     }
-    classPropertyIndex.put(Object.class,getMap2MapNotNull(classPropertyIndex,theClass));
+    classPropertyIndex.put(Object.class,classPropertyIndex.getNotNull(theClass));
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
     makeStaticPropertyIndex();
@@ -31,7 +31,7 @@
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
     applyStrayPropertyMethods(superClasses,classMethodIndexForSuper,classPropertyIndexForSuper);
-    copyClassPropertyIndexForSuper();
+    copyClassPropertyIndexForSuper(classPropertyIndexForSuper);
     makeStaticPropertyIndex();
   }
 }

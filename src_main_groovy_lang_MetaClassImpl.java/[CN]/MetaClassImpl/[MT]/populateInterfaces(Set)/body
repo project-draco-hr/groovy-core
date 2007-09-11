@@ -1,10 +1,10 @@
 {
-  Map currentIndex=getMap2MapNotNull(classMethodIndex,theClass);
+  Map currentIndex=classMethodIndex.getNotNull(theClass);
   Map index=new HashMap();
   copyNonPrivateMethods(currentIndex,index);
   for (Iterator iter=interfaces.iterator(); iter.hasNext(); ) {
     Class iClass=(Class)iter.next();
-    Map methodIndex=(Map)classMethodIndex.get(iClass);
+    Map methodIndex=classMethodIndex.getNullable(iClass);
     if (methodIndex == null || methodIndex.isEmpty()) {
       classMethodIndex.put(iClass,index);
       continue;

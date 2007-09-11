@@ -1,0 +1,13 @@
+{
+  getParameterTypes();
+  if (parameterTypes.length == 0)   return false;
+  final int lenMinus1=parameterTypes.length - 1;
+  if (!parameterTypes[lenMinus1].isArray)   return false;
+  if (lenMinus1 == arguments.length)   return true;
+  if (lenMinus1 > arguments.length)   return false;
+  if (arguments.length > parameterTypes.length)   return true;
+  Object last=arguments[arguments.length - 1];
+  if (last == null)   return true;
+  Class clazz=last.getClass();
+  return !clazz.equals(parameterTypes[lenMinus1].cachedClass);
+}

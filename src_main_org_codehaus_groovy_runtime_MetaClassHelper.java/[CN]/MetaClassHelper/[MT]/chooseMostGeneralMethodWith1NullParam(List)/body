@@ -11,25 +11,27 @@
     CachedClass theType=paramTypes[0];
     if (theType.isPrimitive)     continue;
     if (paramLength == 2) {
-      if (!isVargsMethod(pt,ARRAY_WITH_NULL))       continue;
-      if (closestClass == theType.getCachedClass()) {
+      if (!pt.isVargsMethod(ARRAY_WITH_NULL))       continue;
+      if (closestClass == theType.cachedClass) {
         if (closestVargsClass == null)         continue;
-        Class newVargsClass=paramTypes[1].getCachedClass();
+        Class newVargsClass=paramTypes[1].cachedClass;
         if (closestVargsClass == null || isAssignableFrom(newVargsClass,closestVargsClass)) {
           closestVargsClass=newVargsClass;
           answer=method;
         }
       }
- else       if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass)) {
-        closestVargsClass=paramTypes[1].getCachedClass();
-        closestClass=theType.getCachedClass();
-        answer=method;
+ else {
+        if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass)) {
+          closestVargsClass=paramTypes[1].cachedClass;
+          closestClass=theType.cachedClass;
+          answer=method;
+        }
       }
     }
  else {
-      if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass)) {
+      if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass)) {
         closestVargsClass=null;
-        closestClass=theType.getCachedClass();
+        closestClass=theType.cachedClass;
         answer=method;
       }
     }

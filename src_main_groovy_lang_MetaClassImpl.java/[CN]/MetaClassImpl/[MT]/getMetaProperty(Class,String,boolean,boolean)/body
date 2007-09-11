@@ -5,17 +5,14 @@
       propertyMap=staticPropertyIndex;
     }
  else     if (useSuper) {
-      propertyMap=(Map)classPropertyIndexForSuper.get(clazz);
+      propertyMap=(Map)classPropertyIndexForSuper.getNullable(clazz);
     }
  else {
-      propertyMap=(Map)classPropertyIndex.get(clazz);
+      propertyMap=(Map)classPropertyIndex.getNullable(clazz);
     }
     if (propertyMap == null) {
       if (clazz != theClass) {
         clazz=theClass;
-        name=name;
-        useSuper=useSuper;
-        useStatic=useStatic;
         continue;
       }
  else {

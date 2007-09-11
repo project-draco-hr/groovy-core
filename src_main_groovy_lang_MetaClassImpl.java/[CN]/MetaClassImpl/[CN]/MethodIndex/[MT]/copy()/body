@@ -1,0 +1,14 @@
+{
+  MethodIndex result=new MethodIndex();
+  for (Iterator iter=getEntrySetIterator(); iter.hasNext(); ) {
+    Map.Entry cmiEntry=(Map.Entry)iter.next();
+    Map methodIndex=(Map)cmiEntry.getValue();
+    Map copy=new HashMap(methodIndex.size());
+    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry mEntry=(Map.Entry)iterator.next();
+      copy.put(mEntry.getKey(),new ArrayList((List)mEntry.getValue()));
+    }
+    result.put((Class)cmiEntry.getKey(),copy);
+  }
+  return result;
+}

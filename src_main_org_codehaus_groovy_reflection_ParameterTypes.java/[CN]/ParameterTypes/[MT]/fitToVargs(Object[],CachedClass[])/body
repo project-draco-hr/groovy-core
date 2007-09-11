@@ -1,0 +1,33 @@
+{
+  Class vargsClass=ReflectionCache.autoboxType(paramTypes[paramTypes.length - 1].cachedClass.getComponentType());
+  if (argumentArray.length == paramTypes.length - 1) {
+    Object[] newArgs=new Object[paramTypes.length];
+    System.arraycopy(argumentArray,0,newArgs,0,argumentArray.length);
+    Object vargs=MetaClassHelper.makeArray(null,vargsClass,0);
+    newArgs[newArgs.length - 1]=vargs;
+    return newArgs;
+  }
+ else   if (argumentArray.length == paramTypes.length) {
+    Object lastArgument=argumentArray[argumentArray.length - 1];
+    if (lastArgument != null && !lastArgument.getClass().isArray()) {
+      Object vargs=MetaClassHelper.makeArray(lastArgument,vargsClass,1);
+      System.arraycopy(argumentArray,argumentArray.length - 1,vargs,0,1);
+      argumentArray[argumentArray.length - 1]=vargs;
+      return argumentArray;
+    }
+ else {
+      return argumentArray;
+    }
+  }
+ else   if (argumentArray.length > paramTypes.length) {
+    Object[] newArgs=new Object[paramTypes.length];
+    System.arraycopy(argumentArray,0,newArgs,0,paramTypes.length - 1);
+    int numberOfVargs=argumentArray.length - paramTypes.length;
+    Object vargs=MetaClassHelper.makeCommonArray(argumentArray,paramTypes.length - 1,vargsClass);
+    newArgs[newArgs.length - 1]=vargs;
+    return newArgs;
+  }
+ else {
+    throw new GroovyBugError("trying to call a vargs method without enough arguments");
+  }
+}

@@ -3,7 +3,7 @@
   Map last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     Class c=(Class)iter.next();
-    Map methodIndex=(Map)classMethodIndex.get(c);
+    Map methodIndex=classMethodIndex.getNullable(c);
     if (methodIndex == last)     continue;
     if (last != null)     copyNonPrivateMethods(last,methodIndex);
     last=methodIndex;

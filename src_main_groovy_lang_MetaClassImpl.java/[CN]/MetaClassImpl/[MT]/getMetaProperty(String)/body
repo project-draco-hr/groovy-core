@@ -1,5 +1,5 @@
 {
-  Map propertyMap=(Map)classPropertyIndex.get(theClass);
+  Map propertyMap=classPropertyIndex.getNotNull(theClass);
   if (propertyMap.containsKey(name)) {
     return (MetaProperty)propertyMap.get(name);
   }
@@ -7,7 +7,7 @@
     return (MetaProperty)staticPropertyIndex.get(name);
   }
  else {
-    propertyMap=(Map)classPropertyIndexForSuper.get(theClass);
+    propertyMap=classPropertyIndexForSuper.getNotNull(theClass);
     return (MetaProperty)propertyMap.get(name);
   }
 }

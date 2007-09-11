@@ -7,8 +7,8 @@
     interfaces.add(theClass);
     makeInterfaceSet(theClass,interfaces);
     inheritInterfaceMethods(interfaces);
-    Map theClassIndex=getMap2MapNotNull(classMethodIndex,theClass);
-    Map objectIndex=getMap2MapNotNull(classMethodIndex,Object.class);
+    Map theClassIndex=classMethodIndex.getNotNull(theClass);
+    Map objectIndex=classMethodIndex.getNotNull(Object.class);
     copyNonPrivateMethods(objectIndex,theClassIndex);
     classMethodIndexForSuper=classMethodIndex;
     superClasses.addAll(interfaces);
@@ -26,9 +26,9 @@
     }
     Set interfaces=new HashSet();
     makeInterfaceSet(theClass,interfaces);
-    inheritMethods(superClasses,classMethodIndex);
+    inheritMethods(superClasses);
     inheritInterfaceMethods(interfaces);
-    copyClassMethodIndexForSuper();
+    classMethodIndexForSuper=classMethodIndex.copy();
     connectMultimethods(superClasses);
     populateInterfaces(interfaces);
     removeMultimethodsOverloadedWithPrivateMethods();
