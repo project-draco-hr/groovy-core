@@ -2,7 +2,8 @@
   boolean ipe=inPropertyExpression;
   inPropertyExpression=true;
   expression.getObjectExpression().visit(this);
-  ipe=false;
+  inPropertyExpression=false;
   expression.getProperty().visit(this);
+  checkPropertyOnThis(expression);
   inPropertyExpression=ipe;
 }
