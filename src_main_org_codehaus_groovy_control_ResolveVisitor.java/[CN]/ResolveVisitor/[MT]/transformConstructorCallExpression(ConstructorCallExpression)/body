@@ -1,5 +1,8 @@
 {
   ClassNode type=cce.getType();
   resolveOrFail(type,cce);
-  return cce.transformExpression(this);
+  isSpecialContructorCall=cce.isSpecialCall();
+  Expression ret=cce.transformExpression(this);
+  isSpecialContructorCall=false;
+  return ret;
 }

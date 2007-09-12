@@ -26,17 +26,12 @@
     ClassNode classScope=scope.getClassScope();
     if (classScope != null) {
       Variable member=findClassMember(classScope,var.getName());
-      boolean found=false;
       if (member != null) {
         boolean cc=currentScope.isInStaticContext() || isSpecialContructorCall;
         boolean cm=member.isInStaticContext();
-        if (cm || cm == cc) {
-          found=true;
-          var=member;
-        }
+        if (cm || cm == cc)         var=member;
       }
-      if (isSpecialContructorCall && found)       break;
-      if (!isSpecialContructorCall)       break;
+      break;
     }
     scope=scope.getParent();
   }

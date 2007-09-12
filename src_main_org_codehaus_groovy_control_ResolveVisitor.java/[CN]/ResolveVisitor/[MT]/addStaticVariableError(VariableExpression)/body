@@ -1,5 +1,5 @@
 {
-  if (inClosure || !ve.isInStaticContext())   return;
+  if (!isSpecialContructorCall && (inClosure || !ve.isInStaticContext()))   return;
   if (ve == VariableExpression.THIS_EXPRESSION || ve == VariableExpression.SUPER_EXPRESSION)   return;
   Variable v=ve.getAccessedVariable();
   if (v != null && !(v instanceof DynamicVariable) && v.isInStaticContext())   return;
