@@ -13,12 +13,21 @@
       paras.add('-' + flags[i]);
     }
   }
+  boolean hadClasspath=false;
   String[] namedValues=(String[])options.get("namedValues");
   if (namedValues != null) {
     for (int i=0; i < namedValues.length; i+=2) {
-      paras.add('-' + namedValues[i]);
+      String name=namedValues[i];
+      if (name.equals("classpath"))       hadClasspath=true;
+      paras.add('-' + name);
       paras.add(namedValues[i + 1]);
     }
+  }
+  if (!hadClasspath) {
+    paras.add("-classpath");
+    List classpath=config.getClasspath();
+    String resultPath=DefaultGroovyMethods.join(classpath,File.pathSeparator);
+    paras.add(resultPath);
   }
   paras.addAll(files);
   return (String[])paras.toArray(new String[paras.size()]);
