@@ -1,13 +1,10 @@
 {
   ConstructorNode c=selectAccessibleConstructorFromSuper(node);
   if (c != null) {
-    out.print("super(");
+    out.print("super (");
     Parameter[] params=c.getParameters();
     for (int i=0; i < params.length; i++) {
-      out.print("(");
-      printType(params[i].getType(),out);
-      out.print(")");
-      out.print("null");
+      printDefaultValue(out,params[i].getType());
       if (i + 1 < params.length) {
         out.print(", ");
       }
@@ -38,7 +35,7 @@
         }
       }
  else {
-        printDefaultValue(out,arg.getType().getName());
+        printDefaultValue(out,arg.getType());
       }
       if (arg != args.get(args.size() - 1)) {
         out.print(", ");

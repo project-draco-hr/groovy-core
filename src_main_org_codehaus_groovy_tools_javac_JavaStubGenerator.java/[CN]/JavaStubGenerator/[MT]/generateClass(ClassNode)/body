@@ -19,19 +19,25 @@
     out.println((isInterface ? "interface " : "class ") + classNode.getNameWithoutPackage());
     ClassNode superClass=classNode.getSuperClass();
     if (!isInterface) {
-      if (superClass.equals(ClassHelper.OBJECT_TYPE))       superClass=ClassHelper.make(GroovyObjectSupport.class);
-      out.println("  extends " + superClass.getName());
-    }
- else {
-      if (!superClass.equals(ClassHelper.OBJECT_TYPE))       out.println("  extends " + superClass.getName());
+      if (superClass.equals(ClassHelper.OBJECT_TYPE)) {
+        superClass=ClassHelper.make(GroovyObjectSupport.class);
+      }
+      out.print("  extends ");
+      printTypeName(superClass,out);
     }
     ClassNode[] interfaces=classNode.getInterfaces();
     if (interfaces != null && interfaces.length > 0) {
-      out.println("  implements");
+      if (isInterface) {
+        out.println("  extends");
+      }
+ else {
+        out.println("  implements");
+      }
       for (int i=0; i < interfaces.length - 1; ++i)       out.println("    " + interfaces[i].getName() + ",");
-      out.println("    " + interfaces[interfaces.length - 1].getName());
+      out.print("    ");
+      printTypeName(interfaces[interfaces.length - 1],out);
     }
-    out.println("{");
+    out.println(" {");
     genMethods(classNode,out);
     genFields(classNode,out);
     genProps(classNode,out);

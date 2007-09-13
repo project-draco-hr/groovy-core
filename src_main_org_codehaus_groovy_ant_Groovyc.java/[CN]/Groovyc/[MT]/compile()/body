@@ -19,13 +19,7 @@
     if (encoding != null) {
       configuration.setSourceEncoding(encoding);
     }
-    CompilationUnit unit;
-    if (jointCompilation) {
-      unit=new JavaAwareCompilationUnit(configuration,buildClassLoaderFor());
-    }
- else {
-      unit=new CompilationUnit(configuration,null,buildClassLoaderFor());
-    }
+    CompilationUnit unit=makeCompileUnit();
     unit.addSources(compileList);
     unit.compile();
   }
