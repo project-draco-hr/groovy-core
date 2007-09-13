@@ -15,8 +15,18 @@
     }
     genImports(classNode,out);
     boolean isInterface=classNode.isInterface();
+    boolean isEnum=(classNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
     printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
-    out.println((isInterface ? "interface " : "class ") + classNode.getNameWithoutPackage());
+    if (isInterface) {
+      out.print("interface ");
+    }
+ else     if (isEnum) {
+      out.print("enum ");
+    }
+ else {
+      out.print("class ");
+    }
+    out.println(classNode.getNameWithoutPackage());
     ClassNode superClass=classNode.getSuperClass();
     if (!isInterface) {
       if (superClass.equals(ClassHelper.OBJECT_TYPE)) {
