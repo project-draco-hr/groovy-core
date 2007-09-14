@@ -1,10 +1,10 @@
 {
-  BufferedReader br;
   if (self instanceof BufferedReader) {
-    br=(BufferedReader)self;
+    BufferedReader br=(BufferedReader)self;
+    return br.readLine();
   }
- else {
-    br=new BufferedReader(self);
+ else   if (self.markSupported()) {
+    return readLineFromReaderWithMark(self);
   }
-  return br.readLine();
+  return readLineFromReaderWithoutMark(self);
 }
