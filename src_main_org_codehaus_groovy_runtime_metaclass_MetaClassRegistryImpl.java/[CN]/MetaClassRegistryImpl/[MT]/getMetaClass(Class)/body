@@ -9,7 +9,13 @@ synchronized (theClass) {
     if (answer != null)     return answer;
     answer=getMetaClassFor(theClass);
     answer.initialize();
-    weakMetaClasses.put(theClass,answer);
+    if (GroovySystem.isKeepJavaMetaClasses()) {
+      constantMetaClassCount++;
+      constantMetaClasses.put(theClass,answer);
+    }
+ else {
+      weakMetaClasses.put(theClass,answer);
+    }
     return answer;
   }
 }
