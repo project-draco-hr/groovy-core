@@ -1,10 +1,16 @@
 {
-  reflector=((MetaClassRegistryImpl)registry).loadReflector(theClass,allMethods);
-  if (reflector == null) {
-    throw new RuntimeException("Should have a reflector for " + theClass.getName());
+  if (GroovySystem.isUseReflection()) {
+    reflector=SKIP_REFLECTOR;
   }
-  for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
-    MetaMethod metaMethod=(MetaMethod)iter.next();
-    metaMethod.setReflector(reflector);
+ else {
+    reflector=((MetaClassRegistryImpl)registry).loadReflector(theClass,allMethods);
+    if (reflector == null) {
+      reflector=SKIP_REFLECTOR;
+      return;
+    }
+    for (Iterator iter=allMethods.iterator(); iter.hasNext(); ) {
+      MetaMethod metaMethod=(MetaMethod)iter.next();
+      metaMethod.setReflector(reflector);
+    }
   }
 }
