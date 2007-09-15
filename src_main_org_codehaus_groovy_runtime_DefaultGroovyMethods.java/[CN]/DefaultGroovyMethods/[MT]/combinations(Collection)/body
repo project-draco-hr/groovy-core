@@ -1,28 +1,3 @@
 {
-  List combinations=new ArrayList();
-  for (Iterator outer=self.iterator(); outer.hasNext(); ) {
-    Object rawListValue=outer.next();
-    List listValue=(List)DefaultTypeTransformation.castToType(rawListValue,List.class);
-    if (combinations.isEmpty()) {
-      for (int i=0; i < listValue.size(); i++) {
-        List l=new ArrayList();
-        l.add(listValue.get(i));
-        combinations.add(l);
-      }
-    }
- else {
-      List savedCombinations=new ArrayList(combinations);
-      List newCombinations=new ArrayList();
-      for (Iterator inner=listValue.iterator(); inner.hasNext(); ) {
-        Object value=inner.next();
-        for (Iterator combos=savedCombinations.iterator(); combos.hasNext(); ) {
-          List oldlist=new ArrayList((List)combos.next());
-          oldlist.add(value);
-          newCombinations.add(oldlist);
-        }
-      }
-      combinations=newCombinations;
-    }
-  }
-  return combinations;
+  return groovy.util.Collections.combinations(self);
 }
