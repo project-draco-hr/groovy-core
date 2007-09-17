@@ -32,7 +32,7 @@
   msg+=InvokerHelper.toString(arguments);
   msg+=" due to overlapping prototypes between:";
   for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
-    CachedClass[] types=MetaClassHelper.getParameterTypes(iter.next()).getParameterTypes();
+    Class[] types=MetaClassHelper.getParameterTypes(iter.next()).getNativeParameterTypes();
     msg+="\n\t" + InvokerHelper.toString(types);
   }
   throw new GroovyRuntimeException(msg);

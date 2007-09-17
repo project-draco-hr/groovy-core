@@ -1,7 +1,8 @@
 {
-  Class closestClass=null;
-  Class closestVargsClass=null;
+  CachedClass closestClass=null;
+  CachedClass closestVargsClass=null;
   Object answer=null;
+  int closestDist=-1;
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
     final ParameterTypes pt=getParameterTypes(method);
@@ -12,27 +13,41 @@
     if (theType.isPrimitive)     continue;
     if (paramLength == 2) {
       if (!pt.isVargsMethod(ARRAY_WITH_NULL))       continue;
-      if (closestClass == theType.cachedClass) {
+      if (closestClass == null) {
+        closestVargsClass=paramTypes[1];
+        closestClass=theType;
+        answer=method;
+      }
+ else       if (closestClass.cachedClass == theType.cachedClass) {
         if (closestVargsClass == null)         continue;
-        Class newVargsClass=paramTypes[1].cachedClass;
-        if (closestVargsClass == null || isAssignableFrom(newVargsClass,closestVargsClass)) {
+        CachedClass newVargsClass=paramTypes[1];
+        if (closestVargsClass == null || isAssignableFrom(newVargsClass.cachedClass,closestVargsClass.cachedClass)) {
           closestVargsClass=newVargsClass;
           answer=method;
         }
       }
- else {
-        if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass)) {
-          closestVargsClass=paramTypes[1].cachedClass;
-          closestClass=theType.cachedClass;
-          answer=method;
-        }
+ else       if (isAssignableFrom(theType.cachedClass,closestClass.cachedClass)) {
+        closestVargsClass=paramTypes[1];
+        closestClass=theType;
+        answer=method;
       }
     }
  else {
-      if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass)) {
+      if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass.cachedClass)) {
         closestVargsClass=null;
-        closestClass=theType.cachedClass;
+        closestClass=theType;
         answer=method;
+        closestDist=-1;
+      }
+ else {
+        if (closestDist == -1)         closestDist=closestClass.getSuperClassDistance();
+        int newDist=theType.getSuperClassDistance();
+        if (newDist < closestDist) {
+          closestDist=newDist;
+          closestVargsClass=null;
+          closestClass=theType;
+          answer=method;
+        }
       }
     }
   }

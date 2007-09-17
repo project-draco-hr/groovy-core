@@ -1,46 +1,7 @@
 {
-  int objectDistance=0, interfaceDistance=0;
+  long ret=0;
   for (int i=0; i < arguments.length; i++) {
-    if (parameters[i] == arguments[i])     continue;
-    if (parameters[i].isInterface()) {
-      objectDistance+=PRIMITIVES.length;
-      interfaceDistance+=getMaximumInterfaceDistance(arguments[i],parameters[i]);
-      continue;
-    }
-    if (arguments[i] != null) {
-      int pd=getPrimitiveDistance(parameters[i],arguments[i]);
-      if (pd != -1) {
-        objectDistance+=pd;
-        continue;
-      }
-      objectDistance+=PRIMITIVES.length + 1;
-      Class clazz=ReflectionCache.autoboxType(arguments[i]);
-      while (clazz != null) {
-        if (clazz == parameters[i])         break;
-        if (clazz == GString.class && parameters[i] == String.class) {
-          objectDistance+=2;
-          break;
-        }
-        clazz=clazz.getSuperclass();
-        objectDistance+=3;
-      }
-    }
- else {
-      objectDistance--;
-      Class clazz=parameters[i];
-      if (clazz.isPrimitive()) {
-        objectDistance+=2;
-      }
- else {
-        while (clazz != Object.class) {
-          clazz=clazz.getSuperclass();
-          objectDistance+=2;
-        }
-      }
-    }
+    ret+=calculateParameterDistance(arguments[i],parameters[i]);
   }
-  long ret=objectDistance;
-  ret<<=32;
-  ret|=interfaceDistance;
   return ret;
 }
