@@ -1,19 +1,17 @@
 {
   int params=closure.getMaximumNumberOfParameters();
-  if (params == 1) {
-    Object answer=null;
-    Object AnswerValue=null;
-    for (Iterator iter=self.iterator(); iter.hasNext(); ) {
-      Object item=iter.next();
-      Object value=closure.call(item);
-      if (answer == null || ScriptBytecodeAdapter.compareLessThan(AnswerValue,value)) {
-        answer=item;
-        AnswerValue=value;
-      }
-    }
-    return answer;
-  }
- else {
+  if (params != 1) {
     return max(self,new ClosureComparator(closure));
   }
+  Object answer=null;
+  Object AnswerValue=null;
+  for (Iterator iter=self.iterator(); iter.hasNext(); ) {
+    Object item=iter.next();
+    Object value=closure.call(item);
+    if (answer == null || ScriptBytecodeAdapter.compareLessThan(AnswerValue,value)) {
+      answer=item;
+      AnswerValue=value;
+    }
+  }
+  return answer;
 }
