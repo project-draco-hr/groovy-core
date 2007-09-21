@@ -1,0 +1,27 @@
+{
+  if (map != null) {
+    for (Iterator entries=map.entrySet().iterator(); entries.hasNext(); ) {
+      Map.Entry entry=(Map.Entry)entries.next();
+      String key=String.valueOf(entry.getKey());
+      Object value=entry.getValue();
+      Object oldValue=null;
+      if (test != null) {
+        Object result=null;
+        if (test.getMaximumNumberOfParameters() == 2) {
+          result=test.call(new Object[]{key,value});
+        }
+ else {
+          result=test.call(value);
+        }
+        if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
+          oldValue=delegate.put(key,value);
+          pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+        }
+      }
+ else {
+        oldValue=delegate.put(key,value);
+        pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+      }
+    }
+  }
+}
