@@ -10,12 +10,16 @@
     }
     if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
       oldValue=delegate.put(key,value);
-      pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+      if (oldValue != value) {
+        pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+      }
     }
   }
  else {
     oldValue=delegate.put(key,value);
-    pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+    if (oldValue != value) {
+      pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+    }
   }
   return oldValue;
 }
