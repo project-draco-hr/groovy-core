@@ -3,10 +3,10 @@
   Map index=new HashMap();
   copyNonPrivateMethods(currentIndex,index);
   for (Iterator iter=interfaces.iterator(); iter.hasNext(); ) {
-    Class iClass=(Class)iter.next();
-    Map methodIndex=classMethodIndex.getNullable(iClass);
+    CachedClass iClass=(CachedClass)iter.next();
+    Map methodIndex=classMethodIndex.getNullable(iClass.cachedClass);
     if (methodIndex == null || methodIndex.isEmpty()) {
-      classMethodIndex.put(iClass,index);
+      classMethodIndex.put(iClass.cachedClass,index);
       continue;
     }
     copyNonPrivateMethods(currentIndex,methodIndex);

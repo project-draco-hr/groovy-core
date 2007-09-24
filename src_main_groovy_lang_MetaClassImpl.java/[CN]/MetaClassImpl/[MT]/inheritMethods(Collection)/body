@@ -1,11 +1,11 @@
 {
   Map last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-    Class c=(Class)iter.next();
-    Map methodIndex=classMethodIndex.getNullable(c);
+    CachedClass c=(CachedClass)iter.next();
+    Map methodIndex=classMethodIndex.getNullable(c.cachedClass);
     if (last != null) {
       if (methodIndex.isEmpty()) {
-        classMethodIndex.put(c,last);
+        classMethodIndex.put(c.cachedClass,last);
         continue;
       }
       copyNonPrivateMethods(last,methodIndex);

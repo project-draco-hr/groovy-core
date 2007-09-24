@@ -1,0 +1,10 @@
+{
+  List methods=getMethods(theClass,aMethod.getName(),false);
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MetaMethod method=(MetaMethod)iter.next();
+    if (method.isMethod(aMethod.cachedMethod)) {
+      return method;
+    }
+  }
+  return new ReflectionMetaMethod(aMethod);
+}

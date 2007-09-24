@@ -1,13 +1,13 @@
 {
   if (!GroovyObject.class.isAssignableFrom(theClass))   return;
-  final Map mainClassMethodIndex=(Map)classMethodIndex.getNotNull(theClass);
+  final Map mainClassMethodIndex=classMethodIndex.getNotNull(theClass);
 class MOPIter extends MethodIndexAction {
     boolean useThis;
     public boolean skipClass(    Class clazz){
       return !useThis && clazz == theClass;
     }
     public void methodListAction(    Class clazz,    String methodName,    MetaMethod method,    List oldList,    List newList){
-      String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
+      String mopName=ReflectionCache.getMOPMethodName(ReflectionCache.getCachedClass(method.getDeclaringClass().cachedClass),methodName,useThis);
       List matches=(List)mainClassMethodIndex.get(mopName);
       if (matches == null) {
         newList.add(method);

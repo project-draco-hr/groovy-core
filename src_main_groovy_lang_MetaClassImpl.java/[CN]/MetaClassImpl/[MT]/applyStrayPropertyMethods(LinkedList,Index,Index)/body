@@ -1,8 +1,8 @@
 {
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-    Class klass=(Class)iter.next();
-    Map methodIndex=(Map)classMethodIndex.getNullable(klass);
-    Map propertyIndex=((Index)classPropertyIndex).getNotNull(klass);
+    CachedClass klass=(CachedClass)iter.next();
+    Map methodIndex=classMethodIndex.getNullable(klass.cachedClass);
+    Map propertyIndex=classPropertyIndex.getNotNull(klass.cachedClass);
     for (Iterator nameMethodIterator=methodIndex.entrySet().iterator(); nameMethodIterator.hasNext(); ) {
       Map.Entry entry=(Map.Entry)nameMethodIterator.next();
       String methodName=(String)entry.getKey();

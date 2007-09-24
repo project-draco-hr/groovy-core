@@ -1,16 +1,14 @@
 {
   if (theClass.isInterface()) {
     LinkedList superClasses=new LinkedList();
-    superClasses.add(Object.class);
-    Set interfaces=new HashSet();
-    makeInterfaceSet(theClass,interfaces);
-    interfaces.add(theClass);
+    superClasses.add(ReflectionCache.OBJECT_CLASS);
+    Set interfaces=theCachedClass.getInterfaces();
     classPropertyIndexForSuper=classPropertyIndex;
     for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
-      Class iclass=(Class)interfaceIter.next();
+      CachedClass iclass=(CachedClass)interfaceIter.next();
       Map iPropertyIndex=classPropertyIndex.getNotNull(theClass);
-      addFields(iclass,iPropertyIndex);
-      classPropertyIndex.put(iclass,iPropertyIndex);
+      addFields(iclass.cachedClass,iPropertyIndex);
+      classPropertyIndex.put(iclass.cachedClass,iPropertyIndex);
     }
     classPropertyIndex.put(Object.class,classPropertyIndex.getNotNull(theClass));
     applyPropertyDescriptors(propertyDescriptors);
@@ -19,8 +17,7 @@
   }
  else {
     LinkedList superClasses=getSuperClasses();
-    Set interfaces=new HashSet();
-    makeInterfaceSet(theClass,interfaces);
+    Set interfaces=theCachedClass.getInterfaces();
     if (theClass.isArray()) {
       Map map=new HashMap();
       map.put("length",arrayLengthProperty);

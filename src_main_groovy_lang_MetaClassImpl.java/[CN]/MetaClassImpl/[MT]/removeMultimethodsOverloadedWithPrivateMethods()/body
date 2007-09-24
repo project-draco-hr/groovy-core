@@ -4,14 +4,14 @@
       boolean hasPrivate=false;
       for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
         MetaMethod method=(MetaMethod)iter.next();
-        if (method.isPrivate() && clazz == method.getDeclaringClass()) {
+        if (method.isPrivate() && clazz == method.getDeclaringClass().cachedClass) {
           hasPrivate=true;
           break;
         }
       }
       if (!hasPrivate)       return null;
       methods.clear();
-      methods.addAll((Collection)((Map)classMethodIndexForSuper.getNotNull(clazz)).get(methodName));
+      methods.addAll((Collection)classMethodIndexForSuper.getNotNull(clazz).get(methodName));
       return methods;
     }
     public boolean replaceMethodList(){

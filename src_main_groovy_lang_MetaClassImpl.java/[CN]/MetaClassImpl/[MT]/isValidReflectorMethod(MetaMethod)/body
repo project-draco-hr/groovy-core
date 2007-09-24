@@ -1,6 +1,6 @@
 {
   if (!method.isPublic())   return false;
-  if (method.getDeclaringClass().isInterface())   return true;
+  if (method.getDeclaringClass().isInterface)   return true;
   List interfaceMethods=getInterfaceMethods();
   for (Iterator iter=interfaceMethods.iterator(); iter.hasNext(); ) {
     MetaMethod aMethod=(MetaMethod)iter.next();
@@ -9,21 +9,22 @@
       return true;
     }
   }
-  CachedClass declaringClass=ReflectionCache.getCachedClass(method.getCallClass());
-  for (CachedClass clazz=declaringClass; clazz != null; clazz=clazz.getCachedSuperClass()) {
-    try {
-      final String mName=method.getName();
-      final CachedClass[] parms=method.getParameterTypes();
-      if (!Modifier.isPublic(clazz.getModifiers()))       continue;
-      Method m=clazz.searchMethods(mName,parms);
-      if (m == null || !Modifier.isPublic(m.getModifiers()))       continue;
-      declaringClass=clazz;
+  if (!GroovySystem.isUseReflection()) {
+    CachedClass declaringClass=ReflectionCache.getCachedClass(method.getCallClass());
+    for (CachedClass clazz=declaringClass; clazz != null; clazz=clazz.getCachedSuperClass()) {
+      try {
+        final String mName=method.getName();
+        final CachedClass[] parms=method.getParameterTypes();
+        if (!Modifier.isPublic(clazz.getModifiers()))         continue;
+        CachedMethod m=clazz.searchMethods(mName,parms);
+        if (m == null || !Modifier.isPublic(m.getModifiers()))         continue;
+        declaringClass=clazz;
+      }
+ catch (      SecurityException e) {
+      }
     }
- catch (    SecurityException e) {
-      continue;
-    }
+    if (!Modifier.isPublic(declaringClass.getModifiers()))     return false;
+    method.setCallClass(declaringClass.cachedClass);
   }
-  if (!Modifier.isPublic(declaringClass.getModifiers()))   return false;
-  method.setCallClass(declaringClass.cachedClass);
   return true;
 }

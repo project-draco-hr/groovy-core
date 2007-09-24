@@ -1,11 +1,9 @@
 {
   if (theClass.isInterface()) {
     LinkedList superClasses=new LinkedList();
-    superClasses.add(Object.class);
+    superClasses.add(ReflectionCache.OBJECT_CLASS);
     addMethods(Object.class);
-    Set interfaces=new HashSet();
-    interfaces.add(theClass);
-    makeInterfaceSet(theClass,interfaces);
+    Set interfaces=theCachedClass.getInterfaces();
     inheritInterfaceMethods(interfaces);
     Map theClassIndex=classMethodIndex.getNotNull(theClass);
     Map objectIndex=classMethodIndex.getNotNull(Object.class);
@@ -13,19 +11,18 @@
     classMethodIndexForSuper=classMethodIndex;
     superClasses.addAll(interfaces);
     for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-      Class c=(Class)iter.next();
-      classMethodIndex.put(c,theClassIndex);
-      if (c != Object.class)       addMethods(c);
+      CachedClass c=(CachedClass)iter.next();
+      classMethodIndex.put(c.cachedClass,theClassIndex);
+      if (c != ReflectionCache.OBJECT_CLASS)       addMethods(c.cachedClass);
     }
   }
  else {
     LinkedList superClasses=getSuperClasses();
     for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-      Class c=(Class)iter.next();
-      addMethods(c);
+      CachedClass c=(CachedClass)iter.next();
+      addMethods(c.cachedClass);
     }
-    Set interfaces=new HashSet();
-    makeInterfaceSet(theClass,interfaces);
+    Set interfaces=theCachedClass.getInterfaces();
     inheritMethods(superClasses);
     inheritInterfaceMethods(interfaces);
     classMethodIndexForSuper=classMethodIndex.copy();

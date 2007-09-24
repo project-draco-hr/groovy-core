@@ -1,12 +1,10 @@
 {
   if (interfaceMethods == null) {
     interfaceMethods=new ArrayList();
-    Set interfaces=new HashSet();
-    makeInterfaceSet(theClass,interfaces);
-    if (theClass.isInterface())     interfaces.add(theClass);
+    Set interfaces=theCachedClass.getInterfaces();
     for (Iterator iter=interfaces.iterator(); iter.hasNext(); ) {
-      Class iface=(Class)iter.next();
-      Method[] methods=iface.getMethods();
+      CachedClass iface=(CachedClass)iter.next();
+      CachedMethod[] methods=iface.getMethods();
       addInterfaceMethods(interfaceMethods,methods);
     }
   }

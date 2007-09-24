@@ -2,7 +2,7 @@
   List methods=((MetaClassRegistryImpl)registry).getInstanceMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     CachedMethod element=(CachedMethod)iter.next();
-    Class dgmClass=element.getParameterTypes()[0].cachedClass;
+    CachedClass dgmClass=element.getParameterTypes()[0];
     if (!interfaces.contains(dgmClass))     continue;
     NewInstanceMetaMethod method=new NewInstanceMetaMethod(createMetaMethod(element));
     if (!newGroovyMethodsList.contains(method)) {
@@ -22,7 +22,7 @@
   methods=((MetaClassRegistryImpl)registry).getStaticMethods();
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     CachedMethod element=(CachedMethod)iter.next();
-    Class dgmClass=element.getParameterTypes()[0].cachedClass;
+    CachedClass dgmClass=element.getParameterTypes()[0];
     if (!interfaces.contains(dgmClass))     continue;
     addNewStaticMethod(element.cachedMethod);
   }
