@@ -5,9 +5,11 @@
     boundProperty=propertyName;
     try {
       InvokerHelper.invokeMethodSafe(boundBean,"addPropertyChangeListener",new Object[]{boundProperty,this});
+      boundToProperty=true;
     }
  catch (    MissingMethodException mme) {
       try {
+        boundToProperty=false;
         InvokerHelper.invokeMethodSafe(boundBean,"addPropertyChangeListener",new Object[]{this});
       }
  catch (      MissingMethodException mme2) {

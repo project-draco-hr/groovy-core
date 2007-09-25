@@ -1,15 +1,17 @@
 {
   if (bound) {
-    try {
-      InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{boundProperty,this});
+    if (boundToProperty) {
+      try {
+        InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{boundProperty,this});
+      }
+ catch (      MissingMethodException mme) {
+      }
     }
- catch (    MissingMethodException mme) {
-      mme.printStackTrace();
+ else {
       try {
         InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{this});
       }
  catch (      MissingMethodException mme2) {
-        mme2.printStackTrace();
       }
     }
     boundBean=null;
