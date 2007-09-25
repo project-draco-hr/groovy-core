@@ -1,11 +1,13 @@
 {
-  try {
-    if (allowChangesAfterInit) {
-      this.initialized=false;
+synchronized (this) {
+    try {
+      if (allowChangesAfterInit) {
+        this.initialized=false;
+      }
+      c.call();
     }
-    c.call();
-  }
   finally {
-    if (initCalled)     this.initialized=true;
+      if (initCalled)       this.initialized=true;
+    }
   }
 }
