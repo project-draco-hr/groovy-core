@@ -12,7 +12,7 @@
   int[] indices=new int[methodCount];
   for (int i=0; i < methodCount; i++) {
     labels[i]=new Label();
-    MetaMethod method=(MetaMethod)methods.get(i);
+    StdMetaMethod method=(StdMetaMethod)methods.get(i);
     method.setMethodIndex(i + 1);
     indices[i]=method.getMethodIndex();
   }
@@ -30,7 +30,7 @@
   for (int i=0; i < methodCount; i++) {
     mv=cv.visitMethod(ACC_PRIVATE,get_m_name(i),"(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
     helper=new BytecodeHelper(mv);
-    MetaMethod method=(MetaMethod)methods.get(i);
+    StdMetaMethod method=(StdMetaMethod)methods.get(i);
     invokeMethod(method,mv);
     if (method.getReturnType() == void.class) {
       mv.visitInsn(ACONST_NULL);

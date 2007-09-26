@@ -1,0 +1,24 @@
+{
+  while (true) {
+    Map propertyMap;
+    if (useStatic) {
+      propertyMap=staticPropertyIndex;
+    }
+ else     if (useSuper) {
+      propertyMap=classPropertyIndexForSuper.getNullable(clazz);
+    }
+ else {
+      propertyMap=classPropertyIndex.getNullable(clazz);
+    }
+    if (propertyMap == null) {
+      if (clazz != theCachedClass) {
+        clazz=theCachedClass;
+        continue;
+      }
+ else {
+        return null;
+      }
+    }
+    return (MetaProperty)propertyMap.get(name);
+  }
+}

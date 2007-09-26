@@ -1,10 +1,10 @@
 {
   MethodIndexAction mia=new MethodIndexAction(){
-    public List methodNameAction(    Class clazz,    String methodName,    List methods){
+    public List methodNameAction(    CachedClass clazz,    String methodName,    List methods){
       boolean hasPrivate=false;
       for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
         MetaMethod method=(MetaMethod)iter.next();
-        if (method.isPrivate() && clazz == method.getDeclaringClass().cachedClass) {
+        if (method.isPrivate() && clazz == method.getDeclaringClass()) {
           hasPrivate=true;
           break;
         }

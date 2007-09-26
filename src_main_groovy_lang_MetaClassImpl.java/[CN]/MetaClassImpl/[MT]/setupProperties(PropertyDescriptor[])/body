@@ -4,13 +4,14 @@
     superClasses.add(ReflectionCache.OBJECT_CLASS);
     Set interfaces=theCachedClass.getInterfaces();
     classPropertyIndexForSuper=classPropertyIndex;
+    final Map cPI=classPropertyIndex.getNotNull(theCachedClass);
     for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
       CachedClass iclass=(CachedClass)interfaceIter.next();
-      Map iPropertyIndex=classPropertyIndex.getNotNull(theClass);
-      addFields(iclass.cachedClass,iPropertyIndex);
-      classPropertyIndex.put(iclass.cachedClass,iPropertyIndex);
+      Map iPropertyIndex=cPI;
+      addFields(iclass,iPropertyIndex);
+      classPropertyIndex.put(iclass,iPropertyIndex);
     }
-    classPropertyIndex.put(Object.class,classPropertyIndex.getNotNull(theClass));
+    classPropertyIndex.put(ReflectionCache.OBJECT_CLASS,cPI);
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
     makeStaticPropertyIndex();
@@ -21,7 +22,7 @@
     if (theClass.isArray()) {
       Map map=new HashMap();
       map.put("length",arrayLengthProperty);
-      classPropertyIndex.put(theClass,map);
+      classPropertyIndex.put(theCachedClass,map);
     }
     inheritStaticInterfaceFields(superClasses,interfaces);
     inheritFields(superClasses);

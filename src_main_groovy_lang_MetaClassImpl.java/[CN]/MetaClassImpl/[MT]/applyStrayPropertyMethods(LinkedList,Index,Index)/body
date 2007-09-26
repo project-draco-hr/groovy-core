@@ -1,8 +1,8 @@
 {
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     CachedClass klass=(CachedClass)iter.next();
-    Map methodIndex=classMethodIndex.getNullable(klass.cachedClass);
-    Map propertyIndex=classPropertyIndex.getNotNull(klass.cachedClass);
+    Map methodIndex=classMethodIndex.getNullable(klass);
+    Map propertyIndex=classPropertyIndex.getNotNull(klass);
     for (Iterator nameMethodIterator=methodIndex.entrySet().iterator(); nameMethodIterator.hasNext(); ) {
       Map.Entry entry=(Map.Entry)nameMethodIterator.next();
       String methodName=(String)entry.getKey();
@@ -10,7 +10,7 @@
       boolean isGetter=methodName.startsWith("get");
       boolean isSetter=methodName.startsWith("set");
       if (!isGetter && !isSetter)       continue;
-      String propName=methodName.substring(3,4).toLowerCase() + methodName.substring(4);
+      String propName=getPropName(methodName);
       MetaMethod propertyMethod=findPropertyMethod((List)entry.getValue(),isGetter);
       if (propertyMethod == null)       continue;
       createMetaBeanProperty(propertyIndex,propName,isGetter,propertyMethod);

@@ -1,10 +1,11 @@
 {
   Map methodIndex;
+  final CachedClass aClass=ReflectionCache.getCachedClass(sender);
   if (isCallToSuper) {
-    methodIndex=classMethodIndexForSuper.getNullable(sender);
+    methodIndex=classMethodIndexForSuper.getNullable(aClass);
   }
  else {
-    methodIndex=classMethodIndex.getNullable(sender);
+    methodIndex=classMethodIndex.getNullable(aClass);
   }
   List answer;
   if (methodIndex != null) {

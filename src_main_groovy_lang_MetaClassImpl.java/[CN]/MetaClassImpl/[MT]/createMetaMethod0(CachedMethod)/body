@@ -1,0 +1,12 @@
+{
+  StdMetaMethod answer=StdMetaMethod.createStdMetaMethod(method);
+  if (isValidReflectorMethod(answer)) {
+    allMethods.add(answer);
+    answer.setMethodIndex(allMethods.size());
+    if (GroovySystem.isUseReflection()) {
+      return ReflectionMetaMethod.createReflectionMetaMethod(method);
+    }
+ else     return answer;
+  }
+ else   return ReflectionMetaMethod.createReflectionMetaMethod(method);
+}

@@ -5,7 +5,7 @@
     MetaClass mc=registry.getMetaClass((Class)object);
     return mc.getAttribute(sender,object,attribute,useSuper);
   }
-  MetaProperty mp=getMetaProperty(sender,attribute,useSuper,isStatic);
+  MetaProperty mp=getMetaProperty(ReflectionCache.getCachedClass(sender),attribute,useSuper,isStatic);
   if (mp != null) {
     if (mp instanceof MetaBeanProperty) {
       MetaBeanProperty mbp=(MetaBeanProperty)mp;

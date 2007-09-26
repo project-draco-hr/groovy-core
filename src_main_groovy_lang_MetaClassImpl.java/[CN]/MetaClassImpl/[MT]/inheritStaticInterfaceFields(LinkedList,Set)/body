@@ -1,12 +1,12 @@
 {
   for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
     CachedClass iclass=(CachedClass)interfaceIter.next();
-    Map iPropertyIndex=classPropertyIndex.getNotNull(iclass.cachedClass);
-    addFields(iclass.cachedClass,iPropertyIndex);
+    Map iPropertyIndex=classPropertyIndex.getNotNull(iclass);
+    addFields(iclass,iPropertyIndex);
     for (Iterator classIter=superClasses.iterator(); classIter.hasNext(); ) {
       CachedClass sclass=(CachedClass)classIter.next();
       if (!iclass.cachedClass.isAssignableFrom(sclass.cachedClass))       continue;
-      Map sPropertyIndex=classPropertyIndex.getNotNull(sclass.cachedClass);
+      Map sPropertyIndex=classPropertyIndex.getNotNull(sclass);
       copyNonPrivateFields(iPropertyIndex,sPropertyIndex);
     }
   }

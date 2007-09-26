@@ -1,0 +1,16 @@
+{
+  try {
+    if (reflector != null) {
+      return reflector.invoke(this,object,arguments);
+    }
+ else {
+      return method.invokeByReflection(object,arguments);
+    }
+  }
+ catch (  InvocationTargetException ite) {
+    throw new InvokerInvocationException(ite.getCause());
+  }
+catch (  Exception e) {
+    throw new InvokerInvocationException(e);
+  }
+}

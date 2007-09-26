@@ -2,11 +2,11 @@
   Map last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     CachedClass klass=(CachedClass)iter.next();
-    Map propertyIndex=classPropertyIndex.getNotNull(klass.cachedClass);
+    Map propertyIndex=classPropertyIndex.getNotNull(klass);
     if (last != null) {
       copyNonPrivateFields(last,propertyIndex);
     }
     last=propertyIndex;
-    addFields(klass.cachedClass,propertyIndex);
+    addFields(klass,propertyIndex);
   }
 }

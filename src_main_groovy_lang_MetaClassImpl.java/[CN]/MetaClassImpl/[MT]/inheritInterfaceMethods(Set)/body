@@ -4,11 +4,11 @@
     CachedMethod element=(CachedMethod)iter.next();
     CachedClass dgmClass=element.getParameterTypes()[0];
     if (!interfaces.contains(dgmClass))     continue;
-    NewInstanceMetaMethod method=new NewInstanceMetaMethod(createMetaMethod(element));
+    NewInstanceMetaMethod method=NewInstanceMetaMethod.createNewInstanceMetaMethod(element);
     if (!newGroovyMethodsList.contains(method)) {
       newGroovyMethodsList.add(method);
     }
-    Map methodIndex=classMethodIndex.getNotNull(theClass);
+    Map methodIndex=classMethodIndex.getNotNull(theCachedClass);
     List list=(List)methodIndex.get(method.getName());
     if (list == null) {
       list=new ArrayList();

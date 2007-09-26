@@ -1,16 +1,6 @@
 {
-  if (!alreadySetAccessible) {
-    AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        method.cachedMethod.setAccessible(true);
-        return null;
-      }
-    }
-);
-    alreadySetAccessible=true;
-  }
   try {
-    return method.cachedMethod.invoke(object,arguments);
+    return method.invokeByReflection(object,arguments);
   }
  catch (  IllegalArgumentException e) {
     throw new InvokerInvocationException(e);
