@@ -6,6 +6,7 @@
       checkIfGroovyObjectMethod(metaMethod,methodName);
       MethodKey key=new DefaultCachedMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
       addMetaMethod(metaMethod);
+      dropMethodCache(methodName);
       expandoMethods.put(key,metaMethod);
       if (inited && isGetter(methodName,metaMethod.getParameterTypes())) {
         String propertyName=getPropertyForGetter(methodName);
