@@ -12,19 +12,8 @@
   boolean spreadSafe=pe.isSpreadSafe();
   pe=new PropertyExpression(objectExpression,property,pe.isSafe());
   pe.setSpreadSafe(spreadSafe);
-  String className=lookupClassName(pe);
-  if (className != null) {
-    ClassNode type=ClassHelper.make(className);
-    if (resolve(type))     return new ClassExpression(type);
-  }
-  if (objectExpression instanceof ClassExpression && pe.getPropertyAsString() != null) {
-    ClassExpression ce=(ClassExpression)objectExpression;
-    ClassNode type=ClassHelper.make(ce.getType().getName() + "$" + pe.getPropertyAsString());
-    if (resolve(type,false,false,false))     return new ClassExpression(type);
-  }
-  Expression ret=pe;
   if (isTopLevelProperty) {
-    ret=correctClassClassChain(pe);
+    checkStaticScope(pe);
   }
-  return ret;
+  return pe;
 }

@@ -3,8 +3,11 @@
   Expression method=transform(mce.getMethod());
   if (mce.isImplicitThis()) {
     Expression ret=findStaticMethodImportFromModule(method,args);
-    if (ret != null)     return ret;
-    return new MethodCallExpression(mce.getObjectExpression(),method,args);
+    if (ret != null) {
+      return ret;
+    }
   }
+  mce.setArguments(args);
+  mce.setMethod(method);
   return mce;
 }

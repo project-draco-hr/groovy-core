@@ -1,13 +1,19 @@
 {
   if (exp == null)   return null;
-  if (exp instanceof VariableExpression) {
+  if (exp.getClass() == VariableExpression.class) {
     return transformVariableExpression((VariableExpression)exp);
   }
-  if (exp instanceof MethodCallExpression) {
+  if (exp.getClass() == PropertyExpression.class) {
+    return transformPropertyExpression((PropertyExpression)exp);
+  }
+  if (exp.getClass() == MethodCallExpression.class) {
     return transformMethodCallExpression((MethodCallExpression)exp);
   }
-  if (exp instanceof ClosureExpression) {
+  if (exp.getClass() == ClosureExpression.class) {
     return transformClosureExpression((ClosureExpression)exp);
+  }
+  if (exp.getClass() == ConstructorCallExpression.class) {
+    return transformConstructorCallExpression((ConstructorCallExpression)exp);
   }
   return exp.transformExpression(this);
 }
