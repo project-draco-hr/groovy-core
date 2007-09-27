@@ -1,0 +1,17 @@
+{
+  if (!Boolean.parseBoolean(System.getProperty("groovy.full.stacktrace","false"))) {
+    StackTraceElement[] trace=t.getStackTrace();
+    List newTrace=new ArrayList();
+    for (int i=0; i < trace.length; i++) {
+      StackTraceElement stackTraceElement=trace[i];
+      if (isApplicationClass(stackTraceElement.getClassName())) {
+        newTrace.add(stackTraceElement);
+      }
+    }
+    STACK_LOG.log(Level.WARNING,"Sanitizing stacktrace:",t);
+    StackTraceElement[] clean=new StackTraceElement[newTrace.size()];
+    newTrace.toArray(clean);
+    t.setStackTrace(clean);
+  }
+  return t;
+}
