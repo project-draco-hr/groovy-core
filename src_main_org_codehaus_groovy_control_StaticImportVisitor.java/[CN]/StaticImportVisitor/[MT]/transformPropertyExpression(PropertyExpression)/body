@@ -1,19 +1,14 @@
 {
-  boolean itlp=isTopLevelProperty;
   boolean ipe=inPropertyExpression;
   Expression objectExpression=pe.getObjectExpression();
   inPropertyExpression=true;
-  isTopLevelProperty=!(objectExpression.getClass() == PropertyExpression.class);
-  objectExpression=transform(objectExpression);
+  objectExpression=objectExpression.transformExpression(this);
   inPropertyExpression=false;
-  Expression property=transform(pe.getProperty());
-  isTopLevelProperty=itlp;
+  Expression property=pe.getProperty().transformExpression(this);
   inPropertyExpression=ipe;
   boolean spreadSafe=pe.isSpreadSafe();
   pe=new PropertyExpression(objectExpression,property,pe.isSafe());
   pe.setSpreadSafe(spreadSafe);
-  if (isTopLevelProperty) {
-    checkStaticScope(pe);
-  }
+  checkStaticScope(pe);
   return pe;
 }
