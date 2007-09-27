@@ -1,16 +1,17 @@
 {
   try {
-    if (reflector != null) {
-      return reflector.invoke(this,object,arguments);
-    }
- else {
-      return method.invokeByReflection(object,arguments);
-    }
+    return method.invoke(object,arguments);
   }
- catch (  InvocationTargetException ite) {
-    throw new InvokerInvocationException(ite.getCause());
+ catch (  IllegalAccessError e) {
+    throw new InvokerInvocationException(e);
   }
-catch (  Exception e) {
+catch (  IllegalArgumentException e) {
+    throw new InvokerInvocationException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new InvokerInvocationException(e);
+  }
+catch (  InvocationTargetException e) {
     throw new InvokerInvocationException(e);
   }
 }

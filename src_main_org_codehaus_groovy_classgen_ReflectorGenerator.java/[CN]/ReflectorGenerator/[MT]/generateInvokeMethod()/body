@@ -1,36 +1,35 @@
 {
   int methodCount=methods.size();
-  MethodVisitor mv=cv.visitMethod(ACC_PUBLIC,"invoke","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+  MethodVisitor mv=cv.visitMethod(ACC_PUBLIC,"invoke","(Lorg/codehaus/groovy/reflection/CachedMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
   mv.visitVarInsn(ALOAD,0);
   mv.visitVarInsn(ALOAD,1);
   mv.visitVarInsn(ALOAD,2);
   mv.visitVarInsn(ALOAD,3);
   mv.visitVarInsn(ALOAD,1);
-  mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/MetaMethod","getMethodIndex","()I");
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/reflection/CachedMethod","getMethodIndex","()I");
   Label defaultLabel=new Label();
   Label[] labels=new Label[methodCount];
   int[] indices=new int[methodCount];
   for (int i=0; i < methodCount; i++) {
     labels[i]=new Label();
-    StdMetaMethod method=(StdMetaMethod)methods.get(i);
-    method.setMethodIndex(i + 1);
-    indices[i]=method.getMethodIndex();
+    CachedMethod method=(CachedMethod)methods.get(i);
+    method.setMethodIndex(indices[i]=i + 1);
   }
   mv.visitLookupSwitchInsn(defaultLabel,indices,labels);
   for (int i=0; i < methodCount; i++) {
     mv.visitLabel(labels[i]);
-    mv.visitMethodInsn(INVOKESPECIAL,classInternalName,get_m_name(i),"(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKESPECIAL,classInternalName,get_m_name(i),"(Lorg/codehaus/groovy/reflection/CachedMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     mv.visitInsn(ARETURN);
   }
   mv.visitLabel(defaultLabel);
-  mv.visitMethodInsn(INVOKEVIRTUAL,classInternalName,"noSuchMethod","(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitMethodInsn(INVOKEVIRTUAL,classInternalName,"noSuchMethod","(Lorg/codehaus/groovy/reflection/CachedMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   mv.visitInsn(ARETURN);
   mv.visitMaxs(4,4);
   mv.visitEnd();
   for (int i=0; i < methodCount; i++) {
-    mv=cv.visitMethod(ACC_PRIVATE,get_m_name(i),"(Lgroovy/lang/MetaMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+    mv=cv.visitMethod(ACC_PRIVATE,get_m_name(i),"(Lorg/codehaus/groovy/reflection/CachedMethod;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
     helper=new BytecodeHelper(mv);
-    StdMetaMethod method=(StdMetaMethod)methods.get(i);
+    CachedMethod method=(CachedMethod)methods.get(i);
     invokeMethod(method,mv);
     if (method.getReturnType() == void.class) {
       mv.visitInsn(ACONST_NULL);

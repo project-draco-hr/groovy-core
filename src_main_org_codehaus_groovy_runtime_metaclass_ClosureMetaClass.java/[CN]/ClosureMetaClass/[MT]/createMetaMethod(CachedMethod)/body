@@ -1,13 +1,4 @@
 {
-  if (((MetaClassRegistryImpl)registry).useAccessible()) {
-    AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        method.cachedMethod.setAccessible(true);
-        return null;
-      }
-    }
-);
-  }
-  if (GroovySystem.isUseReflection())   return ReflectionMetaMethod.createReflectionMetaMethod(method);
-  return StdMetaMethod.createStdMetaMethod(method);
+  if (method.canBeCalledByReflector())   return StdMetaMethod.createStdMetaMethod(method);
+ else   return ReflectionMetaMethod.createReflectionMetaMethod(method);
 }
