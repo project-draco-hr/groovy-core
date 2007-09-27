@@ -1,3 +1,11 @@
 {
-  return createTemplate(GroovyShell.class.getClassLoader(),reader);
+  SimpleTemplate template=new SimpleTemplate();
+  String script=template.parse(reader);
+  if (verbose) {
+    System.out.println("\n-- script source --");
+    System.out.print(script);
+    System.out.println("\n-- script end --\n");
+  }
+  template.script=groovyShell.parse(script);
+  return template;
 }
