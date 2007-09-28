@@ -1,0 +1,12 @@
+{
+  if (inClosure)   return;
+  for (Expression it=pe; it != null; it=((PropertyExpression)it).getObjectExpression()) {
+    if (it instanceof PropertyExpression)     continue;
+    if (it instanceof VariableExpression) {
+      VariableExpression ve=(VariableExpression)it;
+      Variable v=ve.getAccessedVariable();
+      addStaticVariableError(ve);
+    }
+    return;
+  }
+}
