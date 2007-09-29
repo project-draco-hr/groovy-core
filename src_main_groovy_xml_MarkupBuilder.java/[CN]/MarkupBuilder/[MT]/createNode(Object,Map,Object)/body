@@ -2,11 +2,14 @@
   toState(1,name);
   for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry entry=(Map.Entry)iter.next();
-    out.print(" ");
-    print(entry.getKey().toString());
-    out.print(this.useDoubleQuotes ? "=\"" : "='");
-    print(escapeAttributeValue(entry.getValue().toString()));
-    out.print(this.useDoubleQuotes ? "\"" : "'");
+    Object attributeValue=entry.getValue();
+    if (attributeValue != null) {
+      out.print(" ");
+      print(entry.getKey().toString());
+      out.print(this.useDoubleQuotes ? "=\"" : "='");
+      print(escapeAttributeValue(attributeValue.toString()));
+      out.print(this.useDoubleQuotes ? "\"" : "'");
+    }
   }
   if (value != null) {
     nodeIsEmpty=false;
