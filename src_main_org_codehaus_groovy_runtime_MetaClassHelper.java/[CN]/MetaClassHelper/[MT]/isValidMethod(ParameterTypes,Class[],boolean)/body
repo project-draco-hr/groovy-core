@@ -6,10 +6,10 @@
   CachedClass[] paramTypes=pt.getParameterTypes();
   if ((size >= paramTypes.length || size == paramTypes.length - 1) && paramTypes.length > 0 && pt.getParameterTypes()[(paramTypes.length - 1)].isArray) {
     for (int i=0; i < paramTypes.length - 1; i++) {
-      if (isAssignableFrom(paramTypes[i].cachedClass,arguments[i]))       continue;
+      if (isAssignableFrom(paramTypes[i].getCachedClass(),arguments[i]))       continue;
       return false;
     }
-    Class clazz=paramTypes[paramTypes.length - 1].cachedClass.getComponentType();
+    Class clazz=paramTypes[paramTypes.length - 1].getCachedClass().getComponentType();
     for (int i=paramTypes.length; i < size; i++) {
       if (isAssignableFrom(clazz,arguments[i]))       continue;
       return false;
@@ -18,7 +18,7 @@
   }
  else   if (paramTypes.length == size) {
     for (int i=0; i < size; i++) {
-      if (isAssignableFrom(paramTypes[i].cachedClass,arguments[i]))       continue;
+      if (isAssignableFrom(paramTypes[i].getCachedClass(),arguments[i]))       continue;
       return false;
     }
     return true;

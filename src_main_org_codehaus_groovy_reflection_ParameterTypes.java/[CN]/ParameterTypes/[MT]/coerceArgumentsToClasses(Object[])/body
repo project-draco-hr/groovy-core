@@ -5,7 +5,7 @@
   }
  else   if (parameterTypes.length == 1 && argumentArray.length == 0) {
     if (isVargsMethod(argumentArray)) {
-      argumentArray=new Object[]{Array.newInstance(parameterTypes[0].cachedClass.getComponentType(),0)};
+      argumentArray=new Object[]{Array.newInstance(parameterTypes[0].getCachedClass().getComponentType(),0)};
     }
  else     argumentArray=MetaClassHelper.ARRAY_WITH_NULL;
   }
@@ -16,7 +16,7 @@
     Object argument=argumentArray[i];
     if (argument == null)     continue;
     CachedClass parameterType=parameterTypes[i];
-    if (ReflectionCache.isAssignableFrom(parameterType.cachedClass,argument.getClass()))     continue;
+    if (ReflectionCache.isAssignableFrom(parameterType.getCachedClass(),argument.getClass()))     continue;
     argument=parameterType.coerceGString(argument);
     argument=parameterType.coerceNumber(argument);
     argument=parameterType.coerceArray(argument);

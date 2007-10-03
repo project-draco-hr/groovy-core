@@ -3,17 +3,15 @@
   this.delegate=owner;
   this.thisObject=thisObject;
   final Class clazz=this.getClass();
-  final Method[] methods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
-      return clazz.getDeclaredMethods();
-    }
-  }
-);
+  final CachedMethod[] methods=ReflectionCache.getCachedClass(clazz).getMethods();
   maximumNumberOfParameters=-1;
   for (int j=0; j < methods.length; j++) {
-    if ("doCall".equals(methods[j].getName()) && methods[j].getParameterTypes().length > maximumNumberOfParameters) {
-      parameterTypes=methods[j].getParameterTypes();
-      maximumNumberOfParameters=parameterTypes.length;
+    if ("doCall".equals(methods[j].getName())) {
+      final Class[] pt=methods[j].getNativeParameterTypes();
+      if (pt.length > maximumNumberOfParameters) {
+        parameterTypes=pt;
+        maximumNumberOfParameters=parameterTypes.length;
+      }
     }
   }
   maximumNumberOfParameters=Math.max(maximumNumberOfParameters,0);

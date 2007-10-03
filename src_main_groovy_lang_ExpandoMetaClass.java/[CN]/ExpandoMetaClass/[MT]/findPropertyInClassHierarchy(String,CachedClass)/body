@@ -1,0 +1,18 @@
+{
+  MetaBeanProperty property=null;
+  final CachedClass superClass=theClass.getCachedSuperClass();
+  MetaClass metaClass=this.registry.getMetaClass(superClass.getCachedClass());
+  if (metaClass instanceof MutableMetaClass) {
+    property=getMetaPropertyFromMutableMetaClass(propertyName,metaClass);
+    if (property == null) {
+      if (superClass != ReflectionCache.OBJECT_CLASS) {
+        property=findPropertyInClassHierarchy(propertyName,superClass);
+      }
+      if (property == null) {
+        final Class[] interfaces=theClass.getCachedClass().getInterfaces();
+        property=searchInterfacesForMetaProperty(propertyName,interfaces);
+      }
+    }
+  }
+  return property;
+}

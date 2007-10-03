@@ -10,9 +10,9 @@
       boolean isGetter=methodName.startsWith("get");
       boolean isSetter=methodName.startsWith("set");
       if (!isGetter && !isSetter)       continue;
-      String propName=getPropName(methodName);
-      MetaMethod propertyMethod=findPropertyMethod((List)entry.getValue(),isGetter);
+      MetaMethod propertyMethod=findPropertyMethod((ArrayList)entry.getValue(),isGetter);
       if (propertyMethod == null)       continue;
+      String propName=getPropName(methodName);
       createMetaBeanProperty(propertyIndex,propName,isGetter,propertyMethod);
     }
   }

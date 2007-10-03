@@ -1,8 +1,6 @@
 {
   CachedMethod[] methods=ReflectionCache.getCachedClass(method.getDeclaringClass()).getMethods();
-  for (int i=0; i < methods.length; i++) {
-    CachedMethod cachedMethod=methods[i];
-    if (cachedMethod.cachedMethod.equals(method))     return cachedMethod;
-  }
-  return null;
+  int i=Arrays.binarySearch(methods,method);
+  if (i < 0)   return null;
+  return methods[i];
 }

@@ -1,16 +1,10 @@
 {
-  if (instance.getClass() != Class.class) {
-    if (isGetter) {
-      MetaMethod propertyMissing=getMetaMethod(PROPERTY_MISSING,GETTER_MISSING_ARGS);
-      if (propertyMissing != null) {
-        return propertyMissing.invoke(instance,new Object[]{propertyName});
-      }
+  if (!(instance instanceof Class)) {
+    if (isGetter && propertyMissingGet != null) {
+      return propertyMissingGet.invoke(instance,new Object[]{propertyName});
     }
  else {
-      MetaMethod propertyMissing=getMetaMethod(PROPERTY_MISSING,SETTER_MISSING_ARGS);
-      if (propertyMissing != null) {
-        return propertyMissing.invoke(instance,new Object[]{propertyName,optionalValue});
-      }
+      if (propertyMissingSet != null)       return propertyMissingSet.invoke(instance,new Object[]{propertyName,optionalValue});
     }
   }
   throw new MissingPropertyException(propertyName,theClass);

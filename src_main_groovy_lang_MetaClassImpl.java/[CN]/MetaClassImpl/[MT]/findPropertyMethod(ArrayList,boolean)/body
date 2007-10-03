@@ -1,0 +1,33 @@
+{
+  Object ret=null;
+  int len=methods.size();
+  for (int i=0; i != len; ++i) {
+    MetaMethod element=(MetaMethod)methods.get(i);
+    if (!isGetter && element.getParameterTypes().length == 1) {
+      ret=addElementToList(ret,element);
+    }
+    if (isGetter && !(element.getReturnType() == Void.class || element.getReturnType() == Void.TYPE) && element.getParameterTypes().length == 0) {
+      ret=addElementToList(ret,element);
+    }
+  }
+  if (ret == null)   return null;
+  if (ret instanceof MetaMethod)   return (MetaMethod)ret;
+  MetaMethod method=null;
+  int distance=-1;
+  for (Iterator iter=((List)ret).iterator(); iter.hasNext(); ) {
+    MetaMethod element=(MetaMethod)iter.next();
+    Class c;
+    if (isGetter) {
+      c=element.getReturnType();
+    }
+ else {
+      c=element.getParameterTypes()[0].getCachedClass();
+    }
+    int localDistance=distanceToObject(c);
+    if (distance == -1 || distance > localDistance) {
+      distance=localDistance;
+      method=element;
+    }
+  }
+  return method;
+}

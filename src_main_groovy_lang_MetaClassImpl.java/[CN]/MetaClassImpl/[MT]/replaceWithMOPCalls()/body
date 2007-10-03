@@ -7,19 +7,18 @@ class MOPIter extends MethodIndexAction {
       return !useThis && clazz == theCachedClass;
     }
     public void methodListAction(    CachedClass clazz,    String methodName,    MetaMethod method,    List oldList,    List newList){
-      String mopName=ReflectionCache.getMOPMethodName(ReflectionCache.getCachedClass(method.getDeclaringClass().cachedClass),methodName,useThis);
-      List matches=(List)mainClassMethodIndex.get(mopName);
+      String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
+      ArrayList matches=(ArrayList)mainClassMethodIndex.get(mopName);
       if (matches == null) {
         newList.add(method);
         return;
       }
-      matches=new ArrayList(matches);
-      MetaMethod matchingMethod=removeMatchingMethod(matches,method);
-      if (matchingMethod == null) {
+      int matchingMethod=findMatchingMethod(matches,method);
+      if (matchingMethod == -1) {
         newList.add(method);
       }
  else {
-        newList.add(matchingMethod);
+        newList.add(matches.get(matchingMethod));
       }
     }
   }

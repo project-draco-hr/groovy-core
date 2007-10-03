@@ -1,0 +1,23 @@
+{
+  int found=findMatchingMethod(list,method);
+  if (found == -1) {
+    list.add(method);
+  }
+ else {
+    MetaMethod match=(MetaMethod)list.get(found);
+    if (match.isPrivate()) {
+    }
+ else {
+      Class methodC=method.getDeclaringClass().getCachedClass();
+      Class matchC=match.getDeclaringClass().getCachedClass();
+      if (methodC == matchC) {
+        if (method instanceof NewInstanceMetaMethod || method instanceof NewStaticMetaMethod || method instanceof ClosureMetaMethod|| method instanceof ClosureStaticMetaMethod) {
+          list.set(found,method);
+        }
+      }
+ else       if (!MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+        list.set(found,method);
+      }
+    }
+  }
+}

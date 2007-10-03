@@ -18,22 +18,22 @@
         closestClass=theType;
         answer=method;
       }
- else       if (closestClass.cachedClass == theType.cachedClass) {
+ else       if (closestClass.getCachedClass() == theType.getCachedClass()) {
         if (closestVargsClass == null)         continue;
         CachedClass newVargsClass=paramTypes[1];
-        if (closestVargsClass == null || isAssignableFrom(newVargsClass.cachedClass,closestVargsClass.cachedClass)) {
+        if (closestVargsClass == null || isAssignableFrom(newVargsClass.getCachedClass(),closestVargsClass.getCachedClass())) {
           closestVargsClass=newVargsClass;
           answer=method;
         }
       }
- else       if (isAssignableFrom(theType.cachedClass,closestClass.cachedClass)) {
+ else       if (isAssignableFrom(theType.getCachedClass(),closestClass.getCachedClass())) {
         closestVargsClass=paramTypes[1];
         closestClass=theType;
         answer=method;
       }
     }
  else {
-      if (closestClass == null || isAssignableFrom(theType.cachedClass,closestClass.cachedClass)) {
+      if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass.getCachedClass())) {
         closestVargsClass=null;
         closestClass=theType;
         answer=method;
