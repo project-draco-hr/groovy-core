@@ -1,0 +1,13 @@
+{
+  int h=ee.hash;
+  final ComplexKeyHashMap.Entry[] t=table;
+  final int index=h & (t.length - 1);
+  Entry entry=new Entry();
+  entry.next=t[index];
+  entry.hash=h;
+  entry.key=ee.key;
+  entry.value=ee.value;
+  t[index]=entry;
+  if (++size == threshold)   resize(2 * t.length);
+  return entry;
+}

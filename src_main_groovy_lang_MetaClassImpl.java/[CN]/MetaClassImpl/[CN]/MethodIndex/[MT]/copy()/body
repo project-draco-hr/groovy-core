@@ -1,14 +1,16 @@
 {
   MethodIndex result=new MethodIndex();
-  for (Iterator iter=getEntrySetIterator(); iter.hasNext(); ) {
-    Map.Entry cmiEntry=(Map.Entry)iter.next();
-    Map methodIndex=(Map)cmiEntry.getValue();
-    Map copy=new HashMap(methodIndex.size());
-    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
-      Map.Entry mEntry=(Map.Entry)iterator.next();
-      copy.put(mEntry.getKey(),new ArrayList((List)mEntry.getValue()));
+  for (EntryIterator iter=getEntrySetIterator(); iter.hasNext(); ) {
+    Entry cmiEntry=(Entry)iter.next();
+    SingleKeyHashMap methodIndex=(SingleKeyHashMap)cmiEntry.getValue();
+    SingleKeyHashMap copy=new SingleKeyHashMap();
+    for (EntryIterator iterator=methodIndex.getEntrySetIterator(); iterator.hasNext(); ) {
+      Entry mEntry=(Entry)iterator.next();
+      final Entry entry=copy.putCopyOfUnexisting(mEntry);
+      entry.value=copyArrayList((ArrayList)mEntry.getValue());
     }
-    result.put((CachedClass)cmiEntry.getKey(),copy);
+    Entry newEntry=result.putCopyOfUnexisting(cmiEntry);
+    newEntry.value=copy;
   }
   return result;
 }

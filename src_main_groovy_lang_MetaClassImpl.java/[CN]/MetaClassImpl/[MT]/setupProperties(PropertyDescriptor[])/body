@@ -4,10 +4,10 @@
     superClasses.add(ReflectionCache.OBJECT_CLASS);
     Set interfaces=theCachedClass.getInterfaces();
     classPropertyIndexForSuper=classPropertyIndex;
-    final Map cPI=classPropertyIndex.getNotNull(theCachedClass);
+    final SingleKeyHashMap cPI=classPropertyIndex.getNotNull(theCachedClass);
     for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
       CachedClass iclass=(CachedClass)interfaceIter.next();
-      Map iPropertyIndex=cPI;
+      SingleKeyHashMap iPropertyIndex=cPI;
       addFields(iclass,iPropertyIndex);
       classPropertyIndex.put(iclass,iPropertyIndex);
     }
@@ -20,7 +20,7 @@
     LinkedList superClasses=getSuperClasses();
     Set interfaces=theCachedClass.getInterfaces();
     if (theCachedClass.isArray) {
-      Map map=new HashMap();
+      SingleKeyHashMap map=new SingleKeyHashMap();
       map.put("length",arrayLengthProperty);
       classPropertyIndex.put(theCachedClass,map);
     }

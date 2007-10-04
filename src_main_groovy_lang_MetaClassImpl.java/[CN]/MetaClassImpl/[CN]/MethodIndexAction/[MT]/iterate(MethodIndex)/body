@@ -1,11 +1,11 @@
 {
-  for (Iterator iter=classMethodIndex.getEntrySetIterator(); iter.hasNext(); ) {
-    Map.Entry classEntry=(Map.Entry)iter.next();
+  for (ComplexKeyHashMap.EntryIterator iter=classMethodIndex.getEntrySetIterator(); iter.hasNext(); ) {
+    SingleKeyHashMap.Entry classEntry=(SingleKeyHashMap.Entry)iter.next();
     CachedClass clazz=(CachedClass)classEntry.getKey();
     if (skipClass(clazz))     continue;
-    Map methodIndex=(Map)classEntry.getValue();
-    for (Iterator iterator=methodIndex.entrySet().iterator(); iterator.hasNext(); ) {
-      Map.Entry nameEntry=(Map.Entry)iterator.next();
+    SingleKeyHashMap methodIndex=(SingleKeyHashMap)classEntry.getValue();
+    for (ComplexKeyHashMap.EntryIterator iterator=methodIndex.getEntrySetIterator(); iterator.hasNext(); ) {
+      SingleKeyHashMap.Entry nameEntry=(SingleKeyHashMap.Entry)iterator.next();
       String name=(String)nameEntry.getKey();
       List oldList=(List)nameEntry.getValue();
       List newList=methodNameAction(clazz,name,oldList);

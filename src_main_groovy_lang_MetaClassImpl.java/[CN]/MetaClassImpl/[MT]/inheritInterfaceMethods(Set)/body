@@ -8,15 +8,15 @@
     if (!newGroovyMethodsList.contains(method)) {
       newGroovyMethodsList.add(method);
     }
-    Map methodIndex=classMethodIndex.getNotNull(theCachedClass);
-    ArrayList list=(ArrayList)methodIndex.get(method.getName());
-    if (list == null) {
-      list=new ArrayList();
-      methodIndex.put(method.getName(),list);
+    SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(theCachedClass);
+    SingleKeyHashMap.Entry e=(SingleKeyHashMap.Entry)methodIndex.getOrPut(method.getName());
+    if (e.value == null) {
+      final ArrayList list=new ArrayList();
+      e.value=list;
       list.add(method);
     }
  else {
-      addMethodToList(list,method);
+      addMethodToList((ArrayList)e.value,method);
     }
   }
   methods=((MetaClassRegistryImpl)registry).getStaticMethods();

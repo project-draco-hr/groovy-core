@@ -1,0 +1,13 @@
+{
+  for (ComplexKeyHashMap.EntryIterator iterator=from.getEntrySetIterator(); iterator.hasNext(); ) {
+    SingleKeyHashMap.Entry element=(SingleKeyHashMap.Entry)iterator.next();
+    ArrayList oldList=(ArrayList)element.getValue();
+    SingleKeyHashMap.Entry e=(SingleKeyHashMap.Entry)to.getOrPut(element.getKey());
+    if (e.value == null) {
+      e.value=copyArrayList(oldList);
+    }
+ else {
+      addNonPrivateMethods((ArrayList)e.value,oldList);
+    }
+  }
+}

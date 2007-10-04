@@ -1,7 +1,7 @@
 {
-  Map propertyMap=classPropertyIndex.getNotNull(theCachedClass);
-  for (Iterator iter=propertyMap.entrySet().iterator(); iter.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)iter.next();
+  SingleKeyHashMap propertyMap=classPropertyIndex.getNotNull(theCachedClass);
+  for (ComplexKeyHashMap.EntryIterator iter=propertyMap.getEntrySetIterator(); iter.hasNext(); ) {
+    SingleKeyHashMap.Entry entry=((SingleKeyHashMap.Entry)iter.next());
     MetaProperty mp=(MetaProperty)entry.getValue();
     if (mp instanceof MetaFieldProperty) {
       MetaFieldProperty mfp=(MetaFieldProperty)mp;

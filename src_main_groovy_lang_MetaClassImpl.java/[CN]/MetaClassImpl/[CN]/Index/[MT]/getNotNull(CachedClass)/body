@@ -1,8 +1,7 @@
 {
-  Map res=(Map)map.get(key);
-  if (res == null) {
-    res=new HashMap(key.getMethods().length);
-    map.put(key,res);
+  Entry res=(Entry)getOrPut(key);
+  if (res.value == null) {
+    res.value=new SingleKeyHashMap();
   }
-  return res;
+  return (SingleKeyHashMap)res.value;
 }

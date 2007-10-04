@@ -1,9 +1,9 @@
 {
   superClasses=DefaultGroovyMethods.reverse(superClasses);
-  Map last=null;
+  SingleKeyHashMap last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     CachedClass c=(CachedClass)iter.next();
-    Map methodIndex=classMethodIndex.getNullable(c);
+    SingleKeyHashMap methodIndex=classMethodIndex.getNullable(c);
     if (methodIndex == last)     continue;
     if (last != null)     copyNonPrivateMethods(last,methodIndex);
     last=methodIndex;

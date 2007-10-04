@@ -1,9 +1,9 @@
 {
   checkInitalised();
-  Map propertyMap=classPropertyIndex.getNullable(theCachedClass);
+  SingleKeyHashMap propertyMap=classPropertyIndex.getNullable(theCachedClass);
   List ret=new ArrayList(propertyMap.size());
-  for (Iterator iter=propertyMap.values().iterator(); iter.hasNext(); ) {
-    MetaProperty element=(MetaProperty)iter.next();
+  for (ComplexKeyHashMap.EntryIterator iter=propertyMap.getEntrySetIterator(); iter.hasNext(); ) {
+    MetaProperty element=(MetaProperty)((SingleKeyHashMap.Entry)iter.next()).value;
     if (element instanceof MetaFieldProperty)     continue;
     if (element instanceof MetaBeanProperty) {
       MetaBeanProperty mp=(MetaBeanProperty)element;
