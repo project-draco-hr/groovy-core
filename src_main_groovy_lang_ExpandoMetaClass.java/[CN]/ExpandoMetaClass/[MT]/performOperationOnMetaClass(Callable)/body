@@ -1,13 +1,13 @@
 {
-synchronized (this) {
-    try {
-      if (allowChangesAfterInit) {
-        this.initialized=false;
-      }
-      c.call();
+  try {
+    if (allowChangesAfterInit) {
+      setInitialized(false);
     }
+    c.call();
+  }
   finally {
-      if (initCalled)       this.initialized=true;
+    if (initCalled) {
+      setInitialized(true);
     }
   }
 }
