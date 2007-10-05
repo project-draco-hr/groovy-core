@@ -1,12 +1,17 @@
 {
   if (nativeParamTypes == null) {
-    if (parameterTypes != null) {
-      nativeParamTypes=new Class[parameterTypes.length];
-      for (int i=0; i != parameterTypes.length; ++i) {
-        nativeParamTypes[i]=parameterTypes[i].getCachedClass();
+synchronized (this) {
+      if (nativeParamTypes != null)       return nativeParamTypes;
+      Class[] npt;
+      if (parameterTypes != null) {
+        npt=new Class[parameterTypes.length];
+        for (int i=0; i != parameterTypes.length; ++i) {
+          npt[i]=parameterTypes[i].getCachedClass();
+        }
       }
+ else       npt=getPT();
+      nativeParamTypes=npt;
     }
- else     nativeParamTypes=getPT();
   }
   return nativeParamTypes;
 }
