@@ -3,7 +3,9 @@
   if (module == null || !(method instanceof ConstantExpression))   return null;
   Map aliases=module.getStaticImportAliases();
   ConstantExpression ce=(ConstantExpression)method;
-  final String name=(String)ce.getValue();
+  Object value=ce.getValue();
+  if (!(value instanceof String))   return null;
+  final String name=(String)value;
   if (aliases.containsKey(name)) {
     ClassNode node=(ClassNode)aliases.get(name);
     Map fields=module.getStaticImportFields();

@@ -1,11 +1,23 @@
 {
-  boolean ipe=inPropertyExpression;
+  boolean oldInPropertyExpression=inPropertyExpression;
+  Expression oldFoundArgs=foundArgs;
+  Expression oldFoundMethod=foundMethod;
   Expression objectExpression=pe.getObjectExpression();
   inPropertyExpression=true;
+  foundArgs=null;
+  foundMethod=null;
   objectExpression=objectExpression.transformExpression(this);
+  if (foundArgs != null && foundMethod != null) {
+    Expression result=findStaticMethodImportFromModule(foundMethod,foundArgs);
+    if (result != null) {
+      objectExpression=result;
+    }
+  }
   inPropertyExpression=false;
   Expression property=pe.getProperty().transformExpression(this);
-  inPropertyExpression=ipe;
+  inPropertyExpression=oldInPropertyExpression;
+  foundArgs=oldFoundArgs;
+  foundMethod=oldFoundMethod;
   boolean spreadSafe=pe.isSpreadSafe();
   pe=new PropertyExpression(objectExpression,property,pe.isSafe());
   pe.setSpreadSafe(spreadSafe);
