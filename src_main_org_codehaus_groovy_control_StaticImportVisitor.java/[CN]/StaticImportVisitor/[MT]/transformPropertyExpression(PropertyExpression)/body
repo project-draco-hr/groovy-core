@@ -1,26 +1,21 @@
 {
   boolean oldInPropertyExpression=inPropertyExpression;
   Expression oldFoundArgs=foundArgs;
-  Expression oldFoundMethod=foundMethod;
-  Expression objectExpression=pe.getObjectExpression();
+  Expression oldFoundMethod=foundConstant;
   inPropertyExpression=true;
+  Expression objectExpression=transform(pe.getObjectExpression());
   foundArgs=null;
-  foundMethod=null;
-  objectExpression=objectExpression.transformExpression(this);
-  if (foundArgs != null && foundMethod != null) {
-    Expression result=findStaticMethodImportFromModule(foundMethod,foundArgs);
+  foundConstant=null;
+  if (foundArgs != null && foundConstant != null) {
+    Expression result=findStaticMethodImportFromModule(foundConstant,foundArgs);
     if (result != null) {
       objectExpression=result;
     }
   }
-  inPropertyExpression=false;
-  Expression property=pe.getProperty().transformExpression(this);
   inPropertyExpression=oldInPropertyExpression;
   foundArgs=oldFoundArgs;
-  foundMethod=oldFoundMethod;
-  boolean spreadSafe=pe.isSpreadSafe();
-  pe=new PropertyExpression(objectExpression,property,pe.isSafe());
-  pe.setSpreadSafe(spreadSafe);
+  foundConstant=oldFoundMethod;
+  pe.setObjectExpression(objectExpression);
   if (!inSpecialContructorCall)   checkStaticScope(pe);
   return pe;
 }
