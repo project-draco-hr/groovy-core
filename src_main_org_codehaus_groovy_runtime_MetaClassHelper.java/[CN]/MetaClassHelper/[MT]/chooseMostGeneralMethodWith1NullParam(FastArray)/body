@@ -1,0 +1,55 @@
+{
+  CachedClass closestClass=null;
+  CachedClass closestVargsClass=null;
+  Object answer=null;
+  int closestDist=-1;
+  for (int i=0; i != methods.size(); ++i) {
+    Object method=methods.get(i);
+    final ParameterTypes pt=getParameterTypes(method);
+    CachedClass[] paramTypes=pt.getParameterTypes();
+    int paramLength=paramTypes.length;
+    if (paramLength == 0 || paramLength > 2)     continue;
+    CachedClass theType=paramTypes[0];
+    if (theType.isPrimitive)     continue;
+    if (paramLength == 2) {
+      if (!pt.isVargsMethod(ARRAY_WITH_NULL))       continue;
+      if (closestClass == null) {
+        closestVargsClass=paramTypes[1];
+        closestClass=theType;
+        answer=method;
+      }
+ else       if (closestClass.getCachedClass() == theType.getCachedClass()) {
+        if (closestVargsClass == null)         continue;
+        CachedClass newVargsClass=paramTypes[1];
+        if (closestVargsClass == null || isAssignableFrom(newVargsClass.getCachedClass(),closestVargsClass.getCachedClass())) {
+          closestVargsClass=newVargsClass;
+          answer=method;
+        }
+      }
+ else       if (isAssignableFrom(theType.getCachedClass(),closestClass.getCachedClass())) {
+        closestVargsClass=paramTypes[1];
+        closestClass=theType;
+        answer=method;
+      }
+    }
+ else {
+      if (closestClass == null || isAssignableFrom(theType.getCachedClass(),closestClass.getCachedClass())) {
+        closestVargsClass=null;
+        closestClass=theType;
+        answer=method;
+        closestDist=-1;
+      }
+ else {
+        if (closestDist == -1)         closestDist=closestClass.getSuperClassDistance();
+        int newDist=theType.getSuperClassDistance();
+        if (newDist < closestDist) {
+          closestDist=newDist;
+          closestVargsClass=null;
+          closestClass=theType;
+          answer=method;
+        }
+      }
+    }
+  }
+  return answer;
+}

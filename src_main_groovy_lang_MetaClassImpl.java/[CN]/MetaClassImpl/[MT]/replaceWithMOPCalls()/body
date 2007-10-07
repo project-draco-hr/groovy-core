@@ -1,14 +1,14 @@
 {
-  if (!GroovyObject.class.isAssignableFrom(theClass))   return;
+  if (!isGroovyObject)   return;
   final SingleKeyHashMap mainClassMethodIndex=classMethodIndex.getNotNull(theCachedClass);
 class MOPIter extends MethodIndexAction {
     boolean useThis;
     public boolean skipClass(    CachedClass clazz){
       return !useThis && clazz == theCachedClass;
     }
-    public void methodListAction(    CachedClass clazz,    String methodName,    MetaMethod method,    List oldList,    List newList){
+    public void methodListAction(    CachedClass clazz,    String methodName,    MetaMethod method,    FastArray oldList,    FastArray newList){
       String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
-      ArrayList matches=(ArrayList)mainClassMethodIndex.get(mopName);
+      FastArray matches=(FastArray)mainClassMethodIndex.get(mopName);
       if (matches == null) {
         newList.add(method);
         return;

@@ -7,23 +7,24 @@
  else {
     methodIndex=classMethodIndex.getNullable(aClass);
   }
-  List answer;
+  FastArray answer;
   if (methodIndex != null) {
-    answer=(List)methodIndex.get(name);
-    if (answer == null)     answer=Collections.EMPTY_LIST;
+    answer=(FastArray)methodIndex.get(name);
+    if (answer == null)     answer=FastArray.EMPTY_LIST;
   }
  else {
-    answer=Collections.EMPTY_LIST;
+    answer=FastArray.EMPTY_LIST;
   }
   if (!isCallToSuper && GroovyCategorySupport.hasCategoryInAnyThread()) {
     List used=GroovyCategorySupport.getCategoryMethods(sender,name);
     if (used != null) {
-      answer=new ArrayList(answer);
+      answer=(FastArray)answer.copy();
       for (Iterator iter=used.iterator(); iter.hasNext(); ) {
         MetaMethod element=(MetaMethod)iter.next();
-        findOrRemoveMatchingMethod(answer,element,false);
+        final int found=findMatchingMethod(answer,element);
+        if (found != -1)         answer.set(found,element);
+ else         answer.add(element);
       }
-      answer.addAll(used);
     }
   }
   return answer;

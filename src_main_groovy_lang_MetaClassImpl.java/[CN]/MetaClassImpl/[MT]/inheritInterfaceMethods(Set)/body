@@ -11,12 +11,12 @@
     SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(theCachedClass);
     SingleKeyHashMap.Entry e=(SingleKeyHashMap.Entry)methodIndex.getOrPut(method.getName());
     if (e.value == null) {
-      final ArrayList list=new ArrayList();
+      final FastArray list=new FastArray();
       e.value=list;
       list.add(method);
     }
  else {
-      addMethodToList((ArrayList)e.value,method);
+      addMethodToList((FastArray)e.value,method);
     }
   }
   methods=((MetaClassRegistryImpl)registry).getStaticMethods();

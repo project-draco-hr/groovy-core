@@ -1,16 +1,3 @@
 {
-  MethodIndex result=new MethodIndex();
-  for (EntryIterator iter=getEntrySetIterator(); iter.hasNext(); ) {
-    Entry cmiEntry=(Entry)iter.next();
-    SingleKeyHashMap methodIndex=(SingleKeyHashMap)cmiEntry.getValue();
-    SingleKeyHashMap copy=new SingleKeyHashMap();
-    for (EntryIterator iterator=methodIndex.getEntrySetIterator(); iterator.hasNext(); ) {
-      Entry mEntry=(Entry)iterator.next();
-      final Entry entry=copy.putCopyOfUnexisting(mEntry);
-      entry.value=copyArrayList((ArrayList)mEntry.getValue());
-    }
-    Entry newEntry=result.putCopyOfUnexisting(cmiEntry);
-    newEntry.value=copy;
-  }
-  return result;
+  return (MethodIndex)SingleKeyHashMap.copy(new MethodIndex(false),this,METHOD_INDEX_COPIER);
 }
