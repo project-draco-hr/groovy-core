@@ -6,19 +6,18 @@ class MOPIter extends MethodIndexAction {
     public boolean skipClass(    CachedClass clazz){
       return !useThis && clazz == theCachedClass;
     }
-    public void methodListAction(    CachedClass clazz,    String methodName,    MetaMethod method,    FastArray oldList,    FastArray newList){
-      String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
-      FastArray matches=(FastArray)mainClassMethodIndex.get(mopName);
-      if (matches == null) {
-        newList.add(method);
-        return;
-      }
-      int matchingMethod=findMatchingMethod(matches,method);
-      if (matchingMethod == -1) {
-        newList.add(method);
-      }
- else {
-        newList.add(matches.get(matchingMethod));
+    public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
+      final int size=methods.size();
+      for (int i=0; i != size; ++i) {
+        MetaMethod method=(MetaMethod)methods.get(i);
+        String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
+        FastArray matches=(FastArray)mainClassMethodIndex.get(mopName);
+        if (matches != null) {
+          int matchingMethod=findMatchingMethod(matches,method);
+          if (matchingMethod != -1) {
+            methods.set(i,matches.get(matchingMethod));
+          }
+        }
       }
     }
   }

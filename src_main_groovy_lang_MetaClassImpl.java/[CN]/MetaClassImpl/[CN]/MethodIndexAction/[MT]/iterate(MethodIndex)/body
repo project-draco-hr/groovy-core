@@ -6,10 +6,7 @@
     SingleKeyHashMap methodIndex=(SingleKeyHashMap)classEntry.getValue();
     for (ComplexKeyHashMap.EntryIterator iterator=methodIndex.getEntrySetIterator(); iterator.hasNext(); ) {
       SingleKeyHashMap.Entry nameEntry=(SingleKeyHashMap.Entry)iterator.next();
-      String name=(String)nameEntry.getKey();
-      FastArray oldList=(FastArray)nameEntry.getValue();
-      FastArray newList=methodNameAction(clazz,name,oldList);
-      if (replaceMethodList())       nameEntry.setValue(newList);
+      methodNameAction(clazz,(String)nameEntry.getKey(),(FastArray)nameEntry.getValue());
     }
   }
 }

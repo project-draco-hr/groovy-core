@@ -1,6 +1,6 @@
 {
   MethodIndexAction mia=new MethodIndexAction(){
-    public FastArray methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
+    public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
       boolean hasPrivate=false;
       for (int i=0; i != methods.size(); ++i) {
         MetaMethod method=(MetaMethod)methods.get(i);
@@ -9,13 +9,9 @@
           break;
         }
       }
-      if (!hasPrivate)       return null;
+      if (!hasPrivate)       return;
       methods.clear();
       methods.addAll((FastArray)classMethodIndexForSuper.getNotNull(clazz).get(methodName));
-      return methods;
-    }
-    public boolean replaceMethodList(){
-      return false;
     }
   }
 ;
