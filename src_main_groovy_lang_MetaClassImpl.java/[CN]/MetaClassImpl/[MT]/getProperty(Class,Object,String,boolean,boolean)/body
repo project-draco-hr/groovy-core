@@ -24,7 +24,12 @@
     if (categoryMethod != null)     method=categoryMethod;
   }
   if (method == null && mp != null) {
-    return mp.getProperty(object);
+    try {
+      return mp.getProperty(object);
+    }
+ catch (    IllegalArgumentException e) {
+      mp=null;
+    }
   }
   if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
     method=getCategoryMethodGetter(sender,"get",true);
