@@ -4,17 +4,16 @@
   if (left instanceof Comparable) {
     return compareTo(left,right) == 0;
   }
-  if (left instanceof int[] && right instanceof int[]) {
-    return DefaultGroovyMethods.equals((int[])left,(int[])right);
+  Class leftClass=left.getClass();
+  Class rightClass=right.getClass();
+  if (leftClass.isArray() && rightClass.isArray()) {
+    return compareArrayEqual(left,right);
   }
-  if (left.getClass().isArray() && left.getClass().getComponentType().isPrimitive()) {
+  if (leftClass.isArray() && leftClass.getComponentType().isPrimitive()) {
     left=primitiveArrayToList(left);
   }
-  if (right.getClass().isArray() && right.getClass().getComponentType().isPrimitive()) {
+  if (rightClass.isArray() && rightClass.getComponentType().isPrimitive()) {
     right=primitiveArrayToList(right);
-  }
-  if (left instanceof Object[] && right instanceof Object[]) {
-    return DefaultGroovyMethods.equals((Object[])left,(Object[])right);
   }
   if (left instanceof Object[] && right instanceof List) {
     return DefaultGroovyMethods.equals((Object[])left,(List)right);
