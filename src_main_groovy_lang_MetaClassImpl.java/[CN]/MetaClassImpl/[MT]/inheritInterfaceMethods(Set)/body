@@ -9,7 +9,7 @@
       newGroovyMethodsList.add(method);
     }
     SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(theCachedClass);
-    SingleKeyHashMap.Entry e=(SingleKeyHashMap.Entry)methodIndex.getOrPut(method.getName());
+    SingleKeyHashMap.Entry e=methodIndex.getOrPut(method.getName());
     if (e.value == null) {
       final FastArray list=new FastArray();
       e.value=list;
@@ -18,12 +18,5 @@
  else {
       addMethodToList((FastArray)e.value,method);
     }
-  }
-  methods=((MetaClassRegistryImpl)registry).getStaticMethods();
-  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    CachedMethod element=(CachedMethod)iter.next();
-    CachedClass dgmClass=element.getParameterTypes()[0];
-    if (!interfaces.contains(dgmClass))     continue;
-    addNewStaticMethod(element.cachedMethod);
   }
 }

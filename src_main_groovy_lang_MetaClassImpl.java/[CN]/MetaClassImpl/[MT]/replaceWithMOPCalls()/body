@@ -7,9 +7,10 @@ class MOPIter extends MethodIndexAction {
       return !useThis && clazz == theCachedClass;
     }
     public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
-      final int size=methods.size();
-      for (int i=0; i != size; ++i) {
-        MetaMethod method=(MetaMethod)methods.get(i);
+      final int len=methods.size();
+      final Object[] data=methods.getArray();
+      for (int i=0; i != len; ++i) {
+        MetaMethod method=(MetaMethod)data[i];
         String mopName=ReflectionCache.getMOPMethodName(method.getDeclaringClass(),methodName,useThis);
         FastArray matches=(FastArray)mainClassMethodIndex.get(mopName);
         if (matches != null) {

@@ -1,13 +1,22 @@
 {
-  for (ComplexKeyHashMap.EntryIterator iterator=from.getEntrySetIterator(); iterator.hasNext(); ) {
-    SingleKeyHashMap.Entry element=(SingleKeyHashMap.Entry)iterator.next();
-    FastArray oldList=(FastArray)element.getValue();
-    SingleKeyHashMap.Entry e=(SingleKeyHashMap.Entry)to.getOrPut(element.getKey());
-    if (e.value == null) {
-      e.value=oldList.copy();
-    }
+  ComplexKeyHashMap.Entry[] table=from.getTable();
+  int len=table.length;
+  for (int i=0; i != len; ++i) {
+    for (SingleKeyHashMap.Entry element=(SingleKeyHashMap.Entry)table[i]; element != null; element=(SingleKeyHashMap.Entry)element.next) {
+      FastArray oldList=(FastArray)element.getValue();
+      SingleKeyHashMap.Entry e=to.getOrPutEntry(element);
+      if (e.value == null) {
+        e.value=oldList.copy();
+      }
  else {
-      addNonPrivateMethods((FastArray)e.value,oldList);
+        int len1=oldList.size();
+        Object list[]=oldList.getArray();
+        for (int j=0; j != len1; ++j) {
+          MetaMethod method=(MetaMethod)list[j];
+          if (method.isPrivate())           continue;
+          addMethodToList((FastArray)e.value,method);
+        }
+      }
     }
   }
 }
