@@ -3,10 +3,8 @@
     if (c == classes[i])     return types[i];
   }
   if (c.isArray()) {
-    ClassNode cn=make(c.getComponentType());
+    ClassNode cn=make(c.getComponentType(),includeGenerics);
     return cn.makeArray();
   }
-  ClassNode t=new ClassNode(c);
-  if (includeGenerics)   VMPluginFactory.getPlugin().setGenericsTypes(t);
-  return t;
+  return makeWithoutCaching(c,includeGenerics);
 }
