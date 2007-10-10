@@ -1,0 +1,18 @@
+{
+  GenericsType[] nTypes=n.getGenericsTypes();
+  GenericsType[] cnTypes=cn.getGenericsTypes();
+  if (nTypes == null)   return;
+  if (cnTypes == null) {
+    addError("The class " + n.getName() + " refers to the class "+ cn.getName()+ " and uses "+ nTypes.length+ " parameters, but the refered class takes no parameters",n);
+  }
+  if (nTypes.length != cnTypes.length) {
+    addError("The class " + n.getName() + " refers to the class "+ cn.getName()+ " and uses "+ nTypes.length+ " parameters, but the refered class needs "+ cnTypes.length,n);
+  }
+  for (int i=0; i < nTypes.length; i++) {
+    ClassNode nType=nTypes[i].getType();
+    ClassNode cnType=cnTypes[i].getType();
+    if (!cnType.isGenericsPlaceHolder() && !nType.isDerivedFrom(cnType)) {
+      addError("The type " + nTypes[i].getName() + " is not a valid substitute for the bounded parameter <"+ getPrintName(cnTypes[i])+ ">",n);
+    }
+  }
+}
