@@ -84,13 +84,13 @@ NotExpression notExpression=new NotExpression(expression(node.getFirstChild()));
 configureAST(notExpression,node);
 return notExpression;
 case UNARY_MINUS:
-return negateExpression(node);
+return unaryMinusExpression(node);
 case BNOT:
-BitwiseNegExpression bitwiseNegExpression=new BitwiseNegExpression(expression(node.getFirstChild()));
-configureAST(bitwiseNegExpression,node);
-return bitwiseNegExpression;
+BitwiseNegationExpression bitwiseNegationExpression=new BitwiseNegationExpression(expression(node.getFirstChild()));
+configureAST(bitwiseNegationExpression,node);
+return bitwiseNegationExpression;
 case UNARY_PLUS:
-return expression(node.getFirstChild());
+return unaryPlusExpression(node);
 case INC:
 return prefixExpression(node,Types.PLUS_PLUS);
 case DEC:

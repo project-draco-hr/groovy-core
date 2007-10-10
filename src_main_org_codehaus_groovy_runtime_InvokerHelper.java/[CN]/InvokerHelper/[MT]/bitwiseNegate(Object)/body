@@ -1,0 +1,28 @@
+{
+  if (value instanceof Integer) {
+    Integer number=(Integer)value;
+    return new Integer(~number.intValue());
+  }
+  if (value instanceof Long) {
+    Long number=(Long)value;
+    return new Long(~number.longValue());
+  }
+  if (value instanceof BigInteger) {
+    return ((BigInteger)value).not();
+  }
+  if (value instanceof String) {
+    return DefaultGroovyMethods.bitwiseNegate(value.toString());
+  }
+  if (value instanceof GString) {
+    return DefaultGroovyMethods.bitwiseNegate(value.toString());
+  }
+  if (value instanceof ArrayList) {
+    List newlist=new ArrayList();
+    Iterator it=((ArrayList)value).iterator();
+    for (; it.hasNext(); ) {
+      newlist.add(bitwiseNegate(it.next()));
+    }
+    return newlist;
+  }
+  return invokeMethod(value,"bitwiseNegate",new Object[0]);
+}

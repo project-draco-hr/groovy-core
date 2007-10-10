@@ -1,0 +1,14 @@
+{
+  if (value instanceof Integer || value instanceof Long || value instanceof BigInteger|| value instanceof BigDecimal|| value instanceof Double|| value instanceof Float) {
+    return value;
+  }
+  if (value instanceof ArrayList) {
+    List newlist=new ArrayList();
+    Iterator it=((ArrayList)value).iterator();
+    for (; it.hasNext(); ) {
+      newlist.add(unaryPlus(it.next()));
+    }
+    return newlist;
+  }
+  return invokeMethod(value,"positive",new Object[0]);
+}

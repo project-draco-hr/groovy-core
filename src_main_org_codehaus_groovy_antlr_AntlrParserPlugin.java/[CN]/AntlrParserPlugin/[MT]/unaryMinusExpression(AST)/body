@@ -1,0 +1,22 @@
+{
+  AST node=unaryMinusExpr.getFirstChild();
+  String text=node.getText();
+switch (node.getType()) {
+case NUM_DOUBLE:
+case NUM_FLOAT:
+case NUM_BIG_DECIMAL:
+    ConstantExpression constantExpression=new ConstantExpression(Numbers.parseDecimal("-" + text));
+  configureAST(constantExpression,unaryMinusExpr);
+return constantExpression;
+case NUM_BIG_INT:
+case NUM_INT:
+case NUM_LONG:
+ConstantExpression constantLongExpression=new ConstantExpression(Numbers.parseInteger("-" + text));
+configureAST(constantLongExpression,unaryMinusExpr);
+return constantLongExpression;
+default :
+UnaryMinusExpression unaryMinusExpression=new UnaryMinusExpression(expression(node));
+configureAST(unaryMinusExpression,unaryMinusExpr);
+return unaryMinusExpression;
+}
+}
