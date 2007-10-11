@@ -1,0 +1,10 @@
+{
+  ClassNode sn=classNode.getSuperClass();
+  if (sn == null)   return;
+  List declaredMethods=classNode.getMethods();
+  ArrayList methodsToAdd=new ArrayList();
+  for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
+    MethodNode method=(MethodNode)it.next();
+    addCovariantMethodInSuper(sn,method);
+  }
+}

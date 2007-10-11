@@ -1,0 +1,32 @@
+{
+  for (ClassNode current=sn; sn != null; sn=sn.getSuperClass()) {
+    List superClassMethods=sn.getMethods();
+    for (Iterator sit=superClassMethods.iterator(); sit.hasNext(); ) {
+      MethodNode superClassMethod=(MethodNode)sit.next();
+      if (!superClassMethod.getName().equals(method.getName()))       continue;
+      Map genericsSpec=createGenericsSpec(current);
+      if (!equalParameters(method,superClassMethod,genericsSpec))       continue;
+      ClassNode mr=method.getReturnType();
+      ClassNode smr=correctToGenericsSpec(genericsSpec,superClassMethod.getReturnType());
+      if (mr.equals(smr))       continue;
+      if (!mr.isDerivedFrom(smr)) {
+        throw new RuntimeParserException("the return type is incompatible with " + superClassMethod.getTypeDescriptor() + " in "+ sn.getName(),method);
+      }
+      if ((superClassMethod.getModifiers() & ACC_FINAL) != 0) {
+        throw new RuntimeParserException("cannot override final method " + superClassMethod.getTypeDescriptor() + " in "+ sn.getName(),method);
+      }
+      if ((superClassMethod.getModifiers() & ACC_STATIC) != (method.getModifiers() & ACC_STATIC)) {
+        throw new RuntimeParserException("cannot override method " + superClassMethod.getTypeDescriptor() + " in "+ sn.getName()+ " with disparate static modifier",method);
+      }
+      mv=cv.visitMethod(method.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,superClassMethod.getName(),BytecodeHelper.getMethodDescriptor(superClassMethod.getReturnType(),superClassMethod.getParameters()),BytecodeHelper.getGenericsMethodSignature(superClassMethod),buildExceptions(superClassMethod.getExceptions()));
+      boolean isStatic=(superClassMethod.getModifiers() & ACC_STATIC) == 0;
+      mv.visitVarInsn(ALOAD,0);
+      mv.visitMethodInsn(INVOKEVIRTUAL,internalClassName,method.getName(),BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameters()));
+      helper=new BytecodeHelper(mv);
+      helper.doReturn(method.getReturnType());
+      mv.visitMaxs(0,0);
+      mv.visitEnd();
+      return;
+    }
+  }
+}
