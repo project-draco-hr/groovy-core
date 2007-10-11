@@ -5,6 +5,11 @@
   ArrayList methodsToAdd=new ArrayList();
   for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
     MethodNode method=(MethodNode)it.next();
-    addCovariantMethodInSuper(sn,method);
+    if ((method.getModifiers() & ACC_STATIC) != 0)     continue;
+    addCovariantMethodInSuper(sn,method,methodsToAdd);
+  }
+  for (Iterator it=methodsToAdd.iterator(); it.hasNext(); ) {
+    MethodNode method=(MethodNode)it.next();
+    classNode.addMethod(method);
   }
 }
