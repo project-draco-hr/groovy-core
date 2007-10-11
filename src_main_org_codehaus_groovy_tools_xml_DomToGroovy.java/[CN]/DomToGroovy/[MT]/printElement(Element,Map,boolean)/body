@@ -3,37 +3,44 @@
   element.normalize();
   printIndent();
   String prefix=element.getPrefix();
-  if (prefix != null && prefix.length() > 0) {
+  boolean hasPrefix=prefix != null && prefix.length() > 0;
+  String localName=getLocalName(element);
+  boolean isKeyword=checkEscaping(localName);
+  if (isKeyword || hasPrefix)   print(qt);
+  if (hasPrefix) {
     print(prefix);
     print(".");
   }
-  print(getLocalName(element));
+  print(localName);
+  if (isKeyword || hasPrefix)   print(qt);
+  print("(");
   boolean hasAttributes=printAttributes(element);
   NodeList list=element.getChildNodes();
   int length=list.getLength();
   if (length == 0) {
-    printEnd(hasAttributes ? ")" : "()",endWithComma);
+    printEnd(")",endWithComma);
   }
  else {
     Node node=list.item(0);
     if (length == 1 && node instanceof Text) {
       Text textNode=(Text)node;
       String text=getTextNodeData(textNode);
-      if (hasAttributes)       print(", '");
- else       print("('");
-      print(text);
-      printEnd("')",endWithComma);
+      if (hasAttributes)       print(", ");
+      printQuoted(text);
+      printEnd(")",endWithComma);
     }
  else     if (mixedContent(list)) {
-      println(" [");
+      println(") {");
       out.incrementIndent();
+      boolean oldInMixed=inMixed;
+      inMixed=true;
       for (node=element.getFirstChild(); node != null; node=node.getNextSibling()) {
-        boolean useComma=node.getNextSibling() != null;
-        print(node,namespaces,useComma);
+        print(node,namespaces,false);
       }
+      inMixed=oldInMixed;
       out.decrementIndent();
       printIndent();
-      printEnd("]",endWithComma);
+      printEnd("}",endWithComma);
     }
  else {
       println(") {");

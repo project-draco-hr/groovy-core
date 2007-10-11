@@ -7,10 +7,13 @@
  else {
       print(", ");
     }
-    print(getLocalName(attribute));
-    print(":'");
-    print(getAttributeValue(attribute));
-    print("'");
+    String localName=getLocalName(attribute);
+    boolean needsEscaping=checkEscaping(localName);
+    if (needsEscaping)     print(qt);
+    print(localName);
+    if (needsEscaping)     print(qt);
+    print(":");
+    printQuoted(getAttributeValue(attribute));
   }
   return hasAttribute;
 }

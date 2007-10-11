@@ -1,0 +1,36 @@
+{
+  if (args.length < 1) {
+    System.out.println("Usage: DomToGroovy infilename [outfilename]");
+    System.exit(1);
+  }
+  Document document=null;
+  try {
+    document=parse(args[0]);
+  }
+ catch (  Exception e) {
+    System.out.println("Unable to parse input file '" + args[0] + "': "+ e.getMessage());
+    System.exit(1);
+  }
+  PrintWriter writer=null;
+  if (args.length < 2) {
+    writer=new PrintWriter(System.out);
+  }
+ else {
+    try {
+      writer=new PrintWriter(new FileWriter(new File(args[1])));
+    }
+ catch (    IOException e) {
+      System.out.println("Unable to create output file '" + args[1] + "': "+ e.getMessage());
+      System.exit(1);
+    }
+  }
+  DomToGroovy converter=new DomToGroovy(writer);
+  converter.out.incrementIndent();
+  writer.println("#!/bin/groovy");
+  writer.println();
+  writer.println("// generated from " + args[0]);
+  writer.println("System.out << new groovy.xml.StreamingMarkupBuilder().bind {");
+  converter.print(document);
+  writer.println("}");
+  writer.close();
+}
