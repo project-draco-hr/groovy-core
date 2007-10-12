@@ -88,8 +88,10 @@ if (closure != null) {
 if (getCurrentFactory().isLeaf()) {
 throw new RuntimeException("'" + name + "' doesn't support nesting.");
 }
+Object parentFactory=getCurrentFactory();
 newContext();
 getContext().put(CURRENT_NODE,node);
+getContext().put(PARENT_FACTORY,parentFactory);
 setClosureDelegate(closure,node);
 closure.call();
 popContext();
