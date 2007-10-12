@@ -10,28 +10,24 @@
               dependentScriptConn=rc.getResourceConnection(filename);
               ScriptCacheEntry currentCacheEntry=(ScriptCacheEntry)currentCacheEntryHolder.get();
               currentCacheEntry.dependencies.put(dependentScriptConn.getURL(),new Long(dependentScriptConn.getLastModified()));
+              return parseClass(dependentScriptConn.getInputStream(),filename);
             }
  catch (            ResourceException e1) {
               throw new ClassNotFoundException("Could not read " + className + ": "+ e1);
             }
-            InputStream inputStream=null;
-            try {
-              inputStream=dependentScriptConn.getInputStream();
-              return parseClass(inputStream,filename);
-            }
- catch (            CompilationFailedException e2) {
+catch (            CompilationFailedException e2) {
               throw new ClassNotFoundException("Syntax error in " + className + ": "+ e2);
             }
-catch (            IOException e2) {
-              throw new ClassNotFoundException("Problem reading " + className + ": "+ e2);
+catch (            IOException e3) {
+              throw new ClassNotFoundException("Problem reading " + className + ": "+ e3);
             }
  finally {
-              if (inputStream != null) {
-                try {
-                  inputStream.close();
+              try {
+                if (dependentScriptConn != null && dependentScriptConn.getInputStream() != null) {
+                  dependentScriptConn.getInputStream().close();
                 }
- catch (                IOException e) {
-                }
+              }
+ catch (              IOException e) {
               }
             }
           }
