@@ -77,5 +77,8 @@
   mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
   mv.visitInsn(ATHROW);
   mv.visitLabel(afterSwitch);
+  if (constructorNode == null) {
+    mv.visitInsn(SWAP);
+  }
   mv.visitInsn(POP);
 }
