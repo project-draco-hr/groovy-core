@@ -1,0 +1,20 @@
+{
+  SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(theCachedClass);
+  for (Iterator iter=theCachedClass.getInterfaces().iterator(); iter.hasNext(); ) {
+    CachedClass c=(CachedClass)iter.next();
+    final CachedMethod[] m=c.getMethods();
+    for (int i=0; i != m.length; ++i) {
+      MetaMethod method=ReflectionMetaMethod.createReflectionMetaMethod(m[i]);
+      String name=method.getName();
+      SingleKeyHashMap.Entry e=methodIndex.getOrPut(name);
+      if (e.value == null) {
+        FastArray list=new FastArray(2);
+        list.add(method);
+        e.value=list;
+      }
+ else {
+        addMethodToList((FastArray)e.value,method);
+      }
+    }
+  }
+}

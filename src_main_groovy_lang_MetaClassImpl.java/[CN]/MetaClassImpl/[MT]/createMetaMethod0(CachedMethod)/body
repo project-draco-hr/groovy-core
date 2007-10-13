@@ -1,8 +1,5 @@
 {
-  if (method.canBeCalledByReflector()) {
-    final StdMetaMethod stdMetaMethod=StdMetaMethod.createStdMetaMethod(method);
-    allMethods.add(stdMetaMethod);
-    return stdMetaMethod;
-  }
- else   return ReflectionMetaMethod.createReflectionMetaMethod(method);
+  final ReflectionMetaMethod metaMethod=ReflectionMetaMethod.createReflectionMetaMethod(method);
+  if (method.canBeCalledByReflector())   allMethods.add(metaMethod);
+  return metaMethod;
 }
