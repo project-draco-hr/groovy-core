@@ -8,17 +8,5 @@
       return setMetaClass((MetaClass)args[0]);
     }
   }
-  if (method.getDeclaringClass() != Object.class) {
-    try {
-      return InvokerHelper.invokeMethod(extension,method.getName(),args);
-    }
- catch (    MissingMethodException mme) {
-    }
-  }
-  try {
-    return method.invoke(proxy,args);
-  }
- catch (  InvocationTargetException ite) {
-    throw ite.getCause();
-  }
+  return InvokerHelper.invokeMethod(extension,method.getName(),args);
 }
