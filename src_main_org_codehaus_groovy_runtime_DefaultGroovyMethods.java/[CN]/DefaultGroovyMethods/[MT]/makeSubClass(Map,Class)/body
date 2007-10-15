@@ -19,7 +19,7 @@
     Method method=(Method)iterator1.next();
     if (map.containsKey(method.getName())) {
       selectedMethods.add(method.getName());
-      buffer.append("    ").append(method.getReturnType().getName()).append(" ").append(method.getName()).append("(");
+      buffer.append("    ").append(getSimpleName(method.getReturnType())).append(" ").append(method.getName()).append("(");
       Class[] parameterTypes=method.getParameterTypes();
       boolean first=true;
       for (int parameterTypeIndex=0; parameterTypeIndex < parameterTypes.length; parameterTypeIndex++) {
@@ -30,7 +30,7 @@
  else {
           first=false;
         }
-        buffer.append(parameter.getName()).append(" ").append("p").append(parameterTypeIndex);
+        buffer.append(getSimpleName(parameter)).append(" ").append("p").append(parameterTypeIndex);
       }
       buffer.append(") { this.@closureMap['").append(method.getName()).append("'] (");
       first=true;
