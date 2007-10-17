@@ -3,9 +3,9 @@
   Expression oldFoundArgs=foundArgs;
   Expression oldFoundMethod=foundConstant;
   inPropertyExpression=true;
-  Expression objectExpression=transform(pe.getObjectExpression());
   foundArgs=null;
   foundConstant=null;
+  Expression objectExpression=transform(pe.getObjectExpression());
   if (foundArgs != null && foundConstant != null) {
     Expression result=findStaticMethodImportFromModule(foundConstant,foundArgs);
     if (result != null) {
@@ -16,6 +16,6 @@
   foundArgs=oldFoundArgs;
   foundConstant=oldFoundMethod;
   pe.setObjectExpression(objectExpression);
-  if (!inSpecialContructorCall)   checkStaticScope(pe);
+  if (!inSpecialConstructorCall)   checkStaticScope(pe);
   return pe;
 }

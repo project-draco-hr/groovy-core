@@ -6,6 +6,13 @@
     if (ret != null) {
       return ret;
     }
+    if (inSpecialConstructorCall && method instanceof ConstantExpression && lastFoundConstructorType != null) {
+      ConstantExpression ce=(ConstantExpression)method;
+      Object value=ce.getValue();
+      if (value instanceof String) {
+        return new StaticMethodCallExpression(lastFoundConstructorType,(String)value,args);
+      }
+    }
   }
   Expression object=transform(mce.getObjectExpression());
   mce.setObjectExpression(object);

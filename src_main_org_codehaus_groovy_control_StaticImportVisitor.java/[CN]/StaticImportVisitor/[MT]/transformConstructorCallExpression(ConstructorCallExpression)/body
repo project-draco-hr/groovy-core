@@ -1,6 +1,9 @@
 {
-  inSpecialContructorCall=cce.isSpecialCall();
+  inSpecialConstructorCall=cce.isSpecialCall();
   Expression ret=cce.transformExpression(this);
-  inSpecialContructorCall=false;
+  if (!inSpecialConstructorCall) {
+    lastFoundConstructorType=ret.getType();
+  }
+  inSpecialConstructorCall=false;
   return ret;
 }
