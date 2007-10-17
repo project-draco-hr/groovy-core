@@ -2,8 +2,8 @@
   Object node=null;
   Closure closure=null;
   List list=InvokerHelper.asList(args);
-  if (contexts.isEmpty()) {
-    newContext();
+  if (proxyBuilder.getContexts().isEmpty()) {
+    proxyBuilder.newContext();
   }
 switch (list.size()) {
 case 0:
@@ -75,30 +75,30 @@ throw new MissingMethodException(name.toString(),getClass(),list.toArray(),false
 }
 }
 if (node == null) {
-if (contexts.size() == 1) {
+if (proxyBuilder.getContexts().size() == 1) {
 popContext();
 }
 return node;
 }
-Object current=getCurrent();
+Object current=proxyBuilder.getCurrent();
 if (current != null) {
 proxyBuilder.setParent(current,node);
 }
 if (closure != null) {
-if (getCurrentFactory().isLeaf()) {
+if (proxyBuilder.getCurrentFactory().isLeaf()) {
 throw new RuntimeException("'" + name + "' doesn't support nesting.");
 }
-Object parentFactory=getCurrentFactory();
-newContext();
-getContext().put(CURRENT_NODE,node);
-getContext().put(PARENT_FACTORY,parentFactory);
-setClosureDelegate(closure,node);
+Object parentFactory=proxyBuilder.getCurrentFactory();
+proxyBuilder.newContext();
+proxyBuilder.getContext().put(CURRENT_NODE,node);
+proxyBuilder.getContext().put(PARENT_FACTORY,parentFactory);
+proxyBuilder.setClosureDelegate(closure,node);
 closure.call();
-popContext();
+proxyBuilder.popContext();
 }
 proxyBuilder.nodeCompleted(current,node);
-if (contexts.size() == 1) {
-popContext();
+if (proxyBuilder.getContexts().size() == 1) {
+proxyBuilder.popContext();
 }
 return proxyBuilder.postNodeCompletion(current,node);
 }

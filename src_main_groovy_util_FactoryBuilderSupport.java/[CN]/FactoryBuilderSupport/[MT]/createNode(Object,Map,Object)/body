@@ -5,8 +5,8 @@
     LOG.log(Level.WARNING,"Could not find match for name '" + name + "'");
     return null;
   }
-  getContext().put(CURRENT_FACTORY,factory);
-  preInstantiate(name,attributes,value);
+  proxyBuilder.getContext().put(CURRENT_FACTORY,factory);
+  proxyBuilder.preInstantiate(name,attributes,value);
   try {
     node=factory.newInstance(this,name,value,attributes);
     if (node == null) {
@@ -20,7 +20,7 @@
  catch (  Exception e) {
     throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
   }
-  postInstantiate(name,attributes,node);
-  handleNodeAttributes(node,attributes);
+  proxyBuilder.postInstantiate(name,attributes,node);
+  proxyBuilder.handleNodeAttributes(node,attributes);
   return node;
 }
