@@ -1,0 +1,13 @@
+{
+  buffer.append("    ").append(getSimpleName(method.getReturnType())).append(" ").append(method.getName()).append("(");
+  Class[] parameterTypes=method.getParameterTypes();
+  for (int parameterTypeIndex=0; parameterTypeIndex < parameterTypes.length; parameterTypeIndex++) {
+    Class parameter=parameterTypes[parameterTypeIndex];
+    if (parameterTypeIndex != 0) {
+      buffer.append(", ");
+    }
+    buffer.append(getSimpleName(parameter)).append(" ").append("p").append(parameterTypeIndex);
+  }
+  buffer.append(") { ");
+  return parameterTypes;
+}

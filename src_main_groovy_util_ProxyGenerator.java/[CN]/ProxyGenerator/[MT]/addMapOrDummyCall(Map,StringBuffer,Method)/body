@@ -1,23 +1,7 @@
 {
-  buffer.append("    ").append(getSimpleName(method.getReturnType())).append(" ").append(method.getName()).append("(");
-  Class[] parameterTypes=method.getParameterTypes();
-  for (int parameterTypeIndex=0; parameterTypeIndex < parameterTypes.length; parameterTypeIndex++) {
-    Class parameter=parameterTypes[parameterTypeIndex];
-    if (parameterTypeIndex > 0) {
-      buffer.append(", ");
-    }
-    buffer.append(getSimpleName(parameter)).append(" ").append("p").append(parameterTypeIndex);
-  }
-  buffer.append(") { ");
+  Class[] parameterTypes=addMethodPrefix(buffer,method);
   if (map.containsKey(method.getName())) {
-    buffer.append("this.@closureMap['").append(method.getName()).append("'] (");
-    for (int j=0; j < parameterTypes.length; j++) {
-      if (j > 0) {
-        buffer.append(", ");
-      }
-      buffer.append("p").append(j);
-    }
-    buffer.append(")");
+    addMethodBody(buffer,method,parameterTypes);
   }
-  buffer.append(" }\n");
+  addMethodSuffix(buffer);
 }
