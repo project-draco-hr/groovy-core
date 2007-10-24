@@ -1,0 +1,13 @@
+{
+  List protectedMethodList=new ArrayList();
+  Class currentClass=baseClass;
+  while (currentClass != null) {
+    Method[] protectedMethods=currentClass.getDeclaredMethods();
+    for (int i=0; i < protectedMethods.length; i++) {
+      Method method=protectedMethods[i];
+      if (Modifier.isProtected(method.getModifiers()))       protectedMethodList.add(method);
+    }
+    currentClass=currentClass.getSuperclass();
+  }
+  return protectedMethodList;
+}
