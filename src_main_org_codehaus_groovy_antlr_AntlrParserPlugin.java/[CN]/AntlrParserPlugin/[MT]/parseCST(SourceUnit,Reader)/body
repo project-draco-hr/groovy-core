@@ -1,7 +1,7 @@
 {
   ast=null;
   setController(sourceUnit);
-  SourceBuffer sourceBuffer=new SourceBuffer();
+  final SourceBuffer sourceBuffer=new SourceBuffer();
   UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(reader,sourceBuffer);
   GroovyLexer lexer=new GroovyLexer(unicodeReader);
   unicodeReader.setLexer(lexer);
@@ -31,7 +31,7 @@ catch (  TokenStreamException e) {
   ast=snippets.process(ast);
   AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      outputASTInVariousFormsIfNeeded(sourceUnit);
+      outputASTInVariousFormsIfNeeded(sourceUnit,sourceBuffer);
       return null;
     }
   }

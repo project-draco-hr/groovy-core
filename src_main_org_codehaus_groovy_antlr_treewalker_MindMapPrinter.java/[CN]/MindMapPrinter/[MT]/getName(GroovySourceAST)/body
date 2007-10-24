@@ -12,5 +12,11 @@ case GroovyTokenTypes.VARIABLE_DEF:
   }
 }
 name=escape(name);
+if (sourceBuffer != null) {
+name+="&#xa;";
+name+=t.getLine() + "," + t.getColumn()+ " - "+ t.getLineLast()+ ","+ t.getColumnLast();
+name+="&#xa;";
+name+=escape(sourceBuffer.getSnippet(new LineColumn(t.getLine(),t.getColumn()),new LineColumn(t.getLineLast(),t.getColumnLast())));
+}
 return name;
 }

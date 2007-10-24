@@ -24,6 +24,17 @@
       System.out.println("Cannot create " + sourceUnit.getName() + ".mm");
     }
   }
+  if ("extendedMindmap".equals(System.getProperty("antlr.ast"))) {
+    try {
+      PrintStream out=new PrintStream(new FileOutputStream(sourceUnit.getName() + ".mm"));
+      Visitor visitor=new MindMapPrinter(out,tokenNames,sourceBuffer);
+      AntlrASTProcessor treewalker=new PreOrderTraversal(visitor);
+      treewalker.process(ast);
+    }
+ catch (    FileNotFoundException e) {
+      System.out.println("Cannot create " + sourceUnit.getName() + ".mm");
+    }
+  }
   if ("html".equals(System.getProperty("antlr.ast"))) {
     try {
       PrintStream out=new PrintStream(new FileOutputStream(sourceUnit.getName() + ".html"));
