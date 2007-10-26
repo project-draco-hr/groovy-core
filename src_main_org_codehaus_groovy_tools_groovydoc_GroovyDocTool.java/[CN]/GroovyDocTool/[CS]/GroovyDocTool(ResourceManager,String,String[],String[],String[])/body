@@ -1,4 +1,9 @@
 {
   rootDocBuilder=new GroovyRootDocBuilder(this,sourcepath);
-  templateEngine=new GroovyDocTemplateEngine(this,resourceManager,docTemplates,packageTemplates,classTemplates);
+  if (resourceManager == null) {
+    templateEngine=null;
+  }
+ else {
+    templateEngine=new GroovyDocTemplateEngine(this,resourceManager,docTemplates,packageTemplates,classTemplates);
+  }
 }
