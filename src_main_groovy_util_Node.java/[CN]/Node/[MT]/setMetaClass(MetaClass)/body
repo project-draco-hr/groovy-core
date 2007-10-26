@@ -1,0 +1,14 @@
+{
+  final MetaClass newMetaClass=new DelegatingMetaClass(metaClass){
+    public Object getAttribute(    final Object object,    final String attribute){
+      Node n=(Node)object;
+      return n.get("@" + attribute);
+    }
+    public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
+      Node n=(Node)object;
+      n.attributes.put("@" + attribute,newValue);
+    }
+  }
+;
+  GroovySystem.getMetaClassRegistry().setMetaClass(Node.class,newMetaClass);
+}
