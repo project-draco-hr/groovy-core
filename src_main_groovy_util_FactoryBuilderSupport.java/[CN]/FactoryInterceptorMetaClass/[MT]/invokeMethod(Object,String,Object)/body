@@ -1,0 +1,13 @@
+{
+  try {
+    return delegate.invokeMethod(object,methodName,arguments);
+  }
+ catch (  MissingMethodException mme) {
+    try {
+      return factory.invokeMethod(methodName,arguments);
+    }
+ catch (    MissingMethodException mme2) {
+      throw mme;
+    }
+  }
+}
