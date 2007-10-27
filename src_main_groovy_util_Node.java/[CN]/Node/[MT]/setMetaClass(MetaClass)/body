@@ -6,7 +6,14 @@
     }
     public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
       Node n=(Node)object;
-      n.attributes.put("@" + attribute,newValue);
+      n.attributes().put(attribute,newValue);
+    }
+    public Object getProperty(    Object object,    String property){
+      if (object instanceof Node) {
+        Node n=(Node)object;
+        return n.get(property);
+      }
+      return super.getProperty(object,property);
     }
   }
 ;
