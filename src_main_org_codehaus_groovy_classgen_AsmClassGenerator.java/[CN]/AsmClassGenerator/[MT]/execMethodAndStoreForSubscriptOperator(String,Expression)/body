@@ -1,6 +1,6 @@
 {
   makeCall(expression,new ConstantExpression(method),MethodCallExpression.NO_ARGUMENTS,invokeMethod,false,false,false);
-  boolean handled=false;
+  boolean setResult=true;
   if (expression instanceof BinaryExpression) {
     BinaryExpression be=(BinaryExpression)expression;
     if (be.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
@@ -16,10 +16,15 @@
       args.addExpression(be.getRightExpression());
       args.addExpression(result);
       makeCall(be.getLeftExpression(),new ConstantExpression("putAt"),args,invokeMethod,false,false,false);
-      handled=true;
+      mv.visitInsn(POP);
+      setResult=false;
     }
   }
-  if (!handled) {
+ else   if (expression instanceof ConstantExpression) {
+    setResult=false;
+  }
+  if (setResult) {
+    if (expression instanceof VariableExpression)     mv.visitInsn(DUP);
     leftHandExpression=true;
     expression.visit(this);
     leftHandExpression=false;
