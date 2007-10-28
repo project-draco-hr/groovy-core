@@ -3,6 +3,10 @@
     MissingPropertyExceptionNoStack noStack=(MissingPropertyExceptionNoStack)gre;
     throw new MissingPropertyException(noStack.getProperty(),noStack.getType());
   }
+  if (gre instanceof MissingMethodExceptionNoStack) {
+    MissingMethodExceptionNoStack noStack=(MissingMethodExceptionNoStack)gre;
+    throw new MissingMethodException(noStack.getMethod(),noStack.getType(),noStack.getArguments(),noStack.isStatic());
+  }
   Throwable th=gre;
   if (th.getCause() != null && th.getCause() != gre)   th=th.getCause();
   if (th != gre && (th instanceof GroovyRuntimeException))   unwrap((GroovyRuntimeException)th);

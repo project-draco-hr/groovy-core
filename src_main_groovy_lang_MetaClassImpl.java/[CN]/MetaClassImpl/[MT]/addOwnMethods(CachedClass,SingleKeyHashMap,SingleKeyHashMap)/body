@@ -1,19 +1,8 @@
 {
-  MetaMethod[] cachedMethods=aClass.getMetaMethods();
+  CachedMethod[] cachedMethods=aClass.getMethods();
   for (int i=0; i < cachedMethods.length; i++) {
-    final MetaMethod method=cachedMethods[i];
-    if (method.getName().indexOf('+') >= 0) {
-      continue;
-    }
-    if (method instanceof NewMetaMethod) {
-      if (!newGroovyMethodsSet.contains(method)) {
-        newGroovyMethodsSet.add(method);
-        addMetaMethodToIndex(method,methodIndex,staticMethodIndex);
-      }
-    }
- else {
-      addToAllMethodsIfPublic(method);
-      addMetaMethodToIndex(method,methodIndex,staticMethodIndex);
-    }
+    MetaMethod metaMethod=cachedMethods[i].getReflectionMetaMethod();
+    addToAllMethodsIfPublic(metaMethod);
+    addMetaMethodToIndex(metaMethod,methodIndex,staticMethodIndex);
   }
 }

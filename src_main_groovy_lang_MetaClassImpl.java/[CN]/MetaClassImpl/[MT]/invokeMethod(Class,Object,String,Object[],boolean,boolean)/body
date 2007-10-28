@@ -144,10 +144,10 @@ return MetaClassHelper.doMethodInvoke(object,method,arguments);
 }
  else {
 Object value=null;
-try {
-value=this.getProperty(object,methodName);
-}
- catch (MissingPropertyException mpe) {
+final MetaProperty metaProperty=this.getMetaProperty(theCachedClass,methodName,false,false);
+if (metaProperty != null) value=metaProperty.getProperty(object);
+ else {
+if (object instanceof Map) value=((Map)object).get(methodName);
 }
 if (value instanceof Closure) {
 Closure closure=(Closure)value;
