@@ -1,4 +1,8 @@
 {
-  if (cachedSuperClass == null)   cachedSuperClass=ReflectionCache.getCachedClass(getCachedClass().getSuperclass());
+  if (cachedSuperClass == null) {
+    if (!isArray)     cachedSuperClass=ReflectionCache.getCachedClass(getCachedClass().getSuperclass());
+ else     if (cachedClass.getComponentType().isPrimitive() || cachedClass.getComponentType() == Object.class)     cachedSuperClass=ReflectionCache.OBJECT_CLASS;
+ else     cachedSuperClass=ReflectionCache.OBJECT_ARRAY_CLASS;
+  }
   return cachedSuperClass;
 }

@@ -1,8 +1,9 @@
 {
+  ArrayList mopMethodsList=new ArrayList();
   if (theClass.isInterface()) {
     LinkedList superClasses=new LinkedList();
     superClasses.add(ReflectionCache.OBJECT_CLASS);
-    addMethods(ReflectionCache.OBJECT_CLASS);
+    addMethods(ReflectionCache.OBJECT_CLASS,mopMethodsList);
     Set interfaces=theCachedClass.getInterfaces();
     inheritInterfaceMethods(interfaces);
     SingleKeyHashMap theClassIndex=classMethodIndex.getNotNull(theCachedClass);
@@ -13,7 +14,7 @@
     for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
       CachedClass c=(CachedClass)iter.next();
       classMethodIndex.put(c,theClassIndex);
-      if (c != ReflectionCache.OBJECT_CLASS)       addMethods(c);
+      if (c != ReflectionCache.OBJECT_CLASS)       addMethods(c,null);
     }
   }
  else {
@@ -21,7 +22,7 @@
     addInterfaceMethods();
     for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
       CachedClass c=(CachedClass)iter.next();
-      addMethods(c);
+      addMethods(c,mopMethodsList);
     }
     Set interfaces=theCachedClass.getInterfaces();
     inheritMethods(superClasses);
@@ -30,6 +31,9 @@
     connectMultimethods(superClasses);
     populateInterfaces(interfaces);
     removeMultimethodsOverloadedWithPrivateMethods();
+    MetaMethod mopMethods[]=(MetaMethod[])mopMethodsList.toArray(new MetaMethod[mopMethodsList.size()]);
+    final MetaMethodComparator metaMethodComparator=new MetaMethodComparator();
+    Arrays.sort(mopMethods,metaMethodComparator);
+    replaceWithMOPCalls(mopMethods);
   }
-  replaceWithMOPCalls();
 }

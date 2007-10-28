@@ -1,7 +1,6 @@
 {
-  MetaMethod method=getMetaMethod(METHOD_MISSING,METHOD_MISSING_ARGS);
-  if (method != null) {
-    return method.invoke(instance,new Object[]{methodName,arguments});
+  if (methodMissing != null) {
+    return methodMissing.invoke(instance,new Object[]{methodName,arguments});
   }
  else   if (original != null)   throw original;
  else   throw new MissingMethodException(methodName,theClass,arguments,false);

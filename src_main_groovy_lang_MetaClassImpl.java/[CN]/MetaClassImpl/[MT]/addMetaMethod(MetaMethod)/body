@@ -2,26 +2,6 @@
   if (isInitialized()) {
     throw new RuntimeException("Already initialized, cannot add new method: " + method);
   }
-  if (isGenericGetMethod(method) && genericGetMethod == null) {
-    genericGetMethod=method;
-  }
- else   if (MetaClassHelper.isGenericSetMethod(method) && genericSetMethod == null) {
-    genericSetMethod=method;
-  }
-  if (propertyMissingGet == null && method.getName().equals(PROPERTY_MISSING)) {
-    CachedClass[] parameterTypes=method.getParameterTypes();
-    if (parameterTypes.length == 1) {
-      propertyMissingGet=method;
-    }
-  }
-  if (propertyMissingSet == null && method.getName().equals(PROPERTY_MISSING)) {
-    CachedClass[] parameterTypes=method.getParameterTypes();
-    if (parameterTypes.length == 2) {
-      propertyMissingSet=method;
-    }
-  }
-  if (method.isStatic()) {
-    classStaticMethodIndex.addToClassMethodIndex(method);
-  }
-  classMethodIndex.addToClassMethodIndex(method);
+  final CachedClass declaringClass=method.getDeclaringClass();
+  addMetaMethodToIndex(method,classMethodIndex.getNotNull(declaringClass),classStaticMethodIndex.getNotNull(declaringClass));
 }

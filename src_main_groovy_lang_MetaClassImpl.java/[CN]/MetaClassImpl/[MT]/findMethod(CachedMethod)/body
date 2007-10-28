@@ -8,5 +8,7 @@
       return method;
     }
   }
-  return ReflectionMetaMethod.createReflectionMetaMethod(aMethod);
+synchronized (aMethod.cachedClass) {
+    return aMethod.getReflectionMetaMethod();
+  }
 }

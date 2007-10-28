@@ -1,0 +1,34 @@
+{
+  if (!isGroovyObject)   return;
+class MOPIter extends MethodIndexAction {
+    boolean useThis;
+    public boolean skipClass(    CachedClass clazz){
+      return !useThis && clazz == theCachedClass;
+    }
+    public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
+      final int len=methods.size();
+      final Object[] data=methods.getArray();
+      for (int i=0; i != len; ++i) {
+        MetaMethod method=(MetaMethod)data[i];
+        if (!(method instanceof NewMetaMethod) && useThis ^ (method.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0)         continue;
+        String mopName=method.getMopName();
+        int index=Arrays.binarySearch(mopMethods,mopName,metaMethodComparator2);
+        if (index >= 0) {
+          int from=index;
+          while (from > 0 && mopMethods[from - 1].getName().equals(mopName))           from--;
+          int to=index;
+          while (to < mopMethods.length - 1 && mopMethods[to + 1].getName().equals(mopName))           to++;
+          int matchingMethod=findMatchingMethod(mopMethods,from,to,method);
+          if (matchingMethod != -1) {
+            methods.set(i,mopMethods[matchingMethod]);
+          }
+        }
+      }
+    }
+  }
+  MOPIter iter=new MOPIter();
+  iter.useThis=false;
+  iter.iterate(classMethodIndexForSuper);
+  iter.useThis=true;
+  iter.iterate(classMethodIndex);
+}
