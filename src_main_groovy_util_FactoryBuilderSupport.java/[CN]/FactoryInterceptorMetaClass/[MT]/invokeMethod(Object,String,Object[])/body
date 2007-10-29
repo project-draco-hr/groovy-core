@@ -4,7 +4,12 @@
   }
  catch (  MissingMethodException mme) {
     try {
-      return factory.invokeMethod(methodName,arguments);
+      if (factory.getMetaClass().respondsTo(factory,methodName).isEmpty()) {
+        return factory.invokeMethod(methodName,arguments);
+      }
+ else {
+        return InvokerHelper.invokeMethod(factory,methodName,arguments);
+      }
     }
  catch (    MissingMethodException mme2) {
       throw mme;
