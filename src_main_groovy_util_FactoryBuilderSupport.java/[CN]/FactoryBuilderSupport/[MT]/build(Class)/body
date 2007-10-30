@@ -1,15 +1,6 @@
 {
   if (Script.class.isAssignableFrom(viewClass)) {
-    Script script;
-    try {
-      script=(Script)viewClass.newInstance();
-    }
- catch (    InstantiationException e) {
-      throw new RuntimeException(e);
-    }
-catch (    IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+    Script script=InvokerHelper.createScript(viewClass,this);
     return build(script);
   }
  else {
