@@ -7,14 +7,7 @@
       MetaMethod method=m[i].getReflectionMetaMethod();
       String name=method.getName();
       SingleKeyHashMap.Entry e=methodIndex.getOrPut(name);
-      if (e.value == null) {
-        FastArray list=new FastArray(2);
-        list.add(method);
-        e.value=list;
-      }
- else {
-        addMethodToList((FastArray)e.value,method);
-      }
+      addMethodToList(e,method);
     }
   }
 }

@@ -1,19 +1,29 @@
 {
   MethodIndexAction mia=new MethodIndexAction(){
-    public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
+    public void methodNameAction(    CachedClass clazz,    String methodName,    SingleKeyHashMap.Entry e){
       boolean hasPrivate=false;
-      final int len=methods.size();
-      final Object[] data=methods.getArray();
-      for (int i=0; i != len; ++i) {
-        MetaMethod method=(MetaMethod)data[i];
+      if (e.value instanceof FastArray) {
+        FastArray methods=(FastArray)e.value;
+        final int len=methods.size();
+        final Object[] data=methods.getArray();
+        for (int i=0; i != len; ++i) {
+          MetaMethod method=(MetaMethod)data[i];
+          if (method.isPrivate() && clazz == method.getDeclaringClass()) {
+            hasPrivate=true;
+            break;
+          }
+        }
+      }
+ else {
+        MetaMethod method=(MetaMethod)e.value;
         if (method.isPrivate() && clazz == method.getDeclaringClass()) {
           hasPrivate=true;
-          break;
         }
       }
       if (!hasPrivate)       return;
-      methods.clear();
-      methods.addAll((FastArray)classMethodIndexForSuper.getNotNull(clazz).get(methodName));
+      final Object o=classMethodIndexForSuper.getNotNull(clazz).get(methodName);
+      if (o instanceof FastArray)       e.value=((FastArray)o).copy();
+ else       e.value=o;
     }
   }
 ;

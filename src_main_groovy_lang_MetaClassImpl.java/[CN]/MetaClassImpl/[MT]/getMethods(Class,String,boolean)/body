@@ -7,9 +7,9 @@
  else {
     methodIndex=classMethodIndex.getNullable(aClass);
   }
-  FastArray answer;
+  Object answer;
   if (methodIndex != null) {
-    answer=(FastArray)methodIndex.get(name);
+    answer=methodIndex.get(name);
     if (answer == null)     answer=FastArray.EMPTY_LIST;
   }
  else {
@@ -18,13 +18,19 @@
   if (!isCallToSuper && GroovyCategorySupport.hasCategoryInAnyThread()) {
     List used=GroovyCategorySupport.getCategoryMethods(sender,name);
     if (used != null) {
-      answer=answer.copy();
+      FastArray arr;
+      if (answer instanceof MetaMethod) {
+        arr=new FastArray();
+        arr.add(answer);
+      }
+ else       arr=((FastArray)answer).copy();
       for (Iterator iter=used.iterator(); iter.hasNext(); ) {
         MetaMethod element=(MetaMethod)iter.next();
-        final int found=findMatchingMethod(answer,element);
-        if (found != -1)         answer.set(found,element);
- else         answer.add(element);
+        final int found=findMatchingMethod(arr,element);
+        if (found != -1)         arr.set(found,element);
+ else         arr.add(element);
       }
+      answer=arr;
     }
   }
   return answer;

@@ -1,9 +1,18 @@
 {
-  FastArray methods=getMethods(theClass,aMethod.getName(),false);
-  final int len=methods.size;
-  final Object data[]=methods.getArray();
-  for (int i=0; i != len; ++i) {
-    MetaMethod method=(MetaMethod)data[i];
+  Object methods=getMethods(theClass,aMethod.getName(),false);
+  if (methods instanceof FastArray) {
+    FastArray m=(FastArray)methods;
+    final int len=m.size;
+    final Object data[]=m.getArray();
+    for (int i=0; i != len; ++i) {
+      MetaMethod method=(MetaMethod)data[i];
+      if (method.isMethod(aMethod.cachedMethod)) {
+        return method;
+      }
+    }
+  }
+ else {
+    MetaMethod method=(MetaMethod)methods;
     if (method.isMethod(aMethod.cachedMethod)) {
       return method;
     }

@@ -9,13 +9,6 @@
       newGroovyMethodsSet.add(method);
     }
     SingleKeyHashMap.Entry e=methodIndex.getOrPut(method.getName());
-    if (e.value == null) {
-      final FastArray list=new FastArray(2);
-      e.value=list;
-      list.add(method);
-    }
- else {
-      addMethodToList((FastArray)e.value,method);
-    }
+    addMethodToList(e,method);
   }
 }

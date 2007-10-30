@@ -1,14 +1,26 @@
 {
   Object ret=null;
-  final int len=methods.size();
-  final Object[] data=methods.getArray();
-  for (int i=0; i != len; ++i) {
-    MetaMethod element=(MetaMethod)data[i];
+  if (methodOrList instanceof MetaMethod) {
+    MetaMethod element=(MetaMethod)methodOrList;
     if (!isGetter && element.getParameterTypes().length == 1) {
       ret=addElementToList(ret,element);
     }
     if (isGetter && !(element.getReturnType() == Void.class || element.getReturnType() == Void.TYPE) && element.getParameterTypes().length == 0) {
       ret=addElementToList(ret,element);
+    }
+  }
+ else {
+    FastArray methods=(FastArray)methodOrList;
+    final int len=methods.size();
+    final Object[] data=methods.getArray();
+    for (int i=0; i != len; ++i) {
+      MetaMethod element=(MetaMethod)data[i];
+      if (!isGetter && element.getParameterTypes().length == 1) {
+        ret=addElementToList(ret,element);
+      }
+      if (isGetter && !(element.getReturnType() == Void.class || element.getReturnType() == Void.TYPE) && element.getParameterTypes().length == 0) {
+        ret=addElementToList(ret,element);
+      }
     }
   }
   if (ret == null)   return null;

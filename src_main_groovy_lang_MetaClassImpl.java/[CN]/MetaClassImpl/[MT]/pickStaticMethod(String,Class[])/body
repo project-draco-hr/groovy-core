@@ -1,7 +1,7 @@
 {
   MetaMethod method=null;
-  FastArray methods=getStaticMethods(theClass,methodName);
-  if (!methods.isEmpty()) {
+  Object methods=getStaticMethods(theClass,methodName);
+  if (!(methods instanceof FastArray) || !((FastArray)methods).isEmpty()) {
     method=(MetaMethod)chooseMethod(methodName,methods,arguments,false);
   }
   if (method == null && theClass != Class.class) {

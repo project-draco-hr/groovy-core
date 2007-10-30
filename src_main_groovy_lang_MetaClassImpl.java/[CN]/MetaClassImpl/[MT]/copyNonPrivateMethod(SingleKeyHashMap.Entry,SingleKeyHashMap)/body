@@ -1,16 +1,26 @@
 {
-  FastArray oldList=(FastArray)from.getValue();
-  SingleKeyHashMap.Entry e=to.getOrPutEntry(from);
-  if (e.value == null) {
-    e.value=oldList.copy();
+  Object oldListOrMethod=from.getValue();
+  if (oldListOrMethod instanceof FastArray) {
+    FastArray oldList=(FastArray)oldListOrMethod;
+    SingleKeyHashMap.Entry e=to.getOrPutEntry(from);
+    if (e.value == null) {
+      e.value=oldList.copy();
+    }
+ else {
+      int len1=oldList.size();
+      Object list[]=oldList.getArray();
+      for (int j=0; j != len1; ++j) {
+        MetaMethod method=(MetaMethod)list[j];
+        if (method.isPrivate())         continue;
+        addMethodToList(e,method);
+      }
+    }
   }
  else {
-    int len1=oldList.size();
-    Object list[]=oldList.getArray();
-    for (int j=0; j != len1; ++j) {
-      MetaMethod method=(MetaMethod)list[j];
-      if (method.isPrivate())       continue;
-      addMethodToList((FastArray)e.value,method);
+    MetaMethod method=(MetaMethod)oldListOrMethod;
+    if (!method.isPrivate()) {
+      SingleKeyHashMap.Entry e=to.getOrPutEntry(from);
+      addMethodToList(e,method);
     }
   }
 }

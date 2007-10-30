@@ -1,4 +1,11 @@
 {
+  if (methodOrList instanceof MetaMethod) {
+    if (MetaClassHelper.isValidMethod(methodOrList,arguments,coerce)) {
+      return methodOrList;
+    }
+    return null;
+  }
+  FastArray methods=(FastArray)methodOrList;
   int methodCount=methods.size();
   if (methodCount <= 0) {
     return null;

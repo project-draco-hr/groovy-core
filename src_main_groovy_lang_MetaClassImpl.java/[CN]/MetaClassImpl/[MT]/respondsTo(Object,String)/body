@@ -1,3 +1,5 @@
 {
-  return getMethods(getTheClass(),name,false).toList();
+  final Object o=getMethods(getTheClass(),name,false);
+  if (o instanceof FastArray)   return ((FastArray)o).toList();
+ else   return Collections.singletonList(o);
 }

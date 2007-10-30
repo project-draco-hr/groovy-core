@@ -5,13 +5,33 @@ class MOPIter extends MethodIndexAction {
     public boolean skipClass(    CachedClass clazz){
       return !useThis && clazz == theCachedClass;
     }
-    public void methodNameAction(    CachedClass clazz,    String methodName,    FastArray methods){
-      final int len=methods.size();
-      final Object[] data=methods.getArray();
-      for (int i=0; i != len; ++i) {
-        MetaMethod method=(MetaMethod)data[i];
-        if (method instanceof NewMetaMethod)         continue;
-        if (useThis ^ (method.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0)         continue;
+    public void methodNameAction(    CachedClass clazz,    String methodName,    SingleKeyHashMap.Entry e){
+      if (e.value instanceof FastArray) {
+        FastArray methods=(FastArray)e.value;
+        final int len=methods.size();
+        final Object[] data=methods.getArray();
+        for (int i=0; i != len; ++i) {
+          MetaMethod method=(MetaMethod)data[i];
+          if (method instanceof NewMetaMethod)           continue;
+          if (useThis ^ (method.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0)           continue;
+          String mopName=method.getMopName();
+          int index=Arrays.binarySearch(mopMethods,mopName,CachedClass.CachedMethodComparatorWithString.INSTANCE);
+          if (index >= 0) {
+            int from=index;
+            while (from > 0 && mopMethods[from - 1].getName().equals(mopName))             from--;
+            int to=index;
+            while (to < mopMethods.length - 1 && mopMethods[to + 1].getName().equals(mopName))             to++;
+            int matchingMethod=findMatchingMethod(mopMethods,from,to,method);
+            if (matchingMethod != -1) {
+              methods.set(i,mopMethods[matchingMethod].getReflectionMetaMethod());
+            }
+          }
+        }
+      }
+ else {
+        MetaMethod method=(MetaMethod)e.value;
+        if (method instanceof NewMetaMethod)         return;
+        if (useThis ^ (method.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0)         return;
         String mopName=method.getMopName();
         int index=Arrays.binarySearch(mopMethods,mopName,CachedClass.CachedMethodComparatorWithString.INSTANCE);
         if (index >= 0) {
@@ -21,7 +41,7 @@ class MOPIter extends MethodIndexAction {
           while (to < mopMethods.length - 1 && mopMethods[to + 1].getName().equals(mopName))           to++;
           int matchingMethod=findMatchingMethod(mopMethods,from,to,method);
           if (matchingMethod != -1) {
-            methods.set(i,mopMethods[matchingMethod].getReflectionMetaMethod());
+            e.value=mopMethods[matchingMethod].getReflectionMetaMethod();
           }
         }
       }
