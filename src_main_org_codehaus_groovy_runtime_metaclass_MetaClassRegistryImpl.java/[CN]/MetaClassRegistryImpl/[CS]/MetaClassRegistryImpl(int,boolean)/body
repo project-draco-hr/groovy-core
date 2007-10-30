@@ -1,8 +1,15 @@
 {
   this.useAccessible=useAccessible;
   if (loadDefault == LOAD_DEFAULT) {
-    registerMethods(DefaultGroovyMethods.class,true);
-    registerMethods(DefaultGroovyStaticMethods.class,false);
+    HashMap map=new HashMap();
+    registerMethods(DefaultGroovyMethods.class,true,map);
+    registerMethods(DefaultGroovyStaticMethods.class,false,map);
+    for (Iterator it=map.entrySet().iterator(); it.hasNext(); ) {
+      Map.Entry e=(Map.Entry)it.next();
+      CachedClass cls=(CachedClass)e.getKey();
+      ArrayList list=(ArrayList)e.getValue();
+      cls.setNewMopMethods(list);
+    }
   }
   installMetaClassCreationHandle();
 }

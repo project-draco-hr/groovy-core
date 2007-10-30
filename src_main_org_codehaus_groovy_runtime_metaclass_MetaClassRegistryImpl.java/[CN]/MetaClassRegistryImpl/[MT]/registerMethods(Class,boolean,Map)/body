@@ -1,0 +1,27 @@
+{
+  CachedMethod[] methods=ReflectionCache.getCachedClass(theClass).getMethods();
+  for (int i=0; i < methods.length; i++) {
+    CachedMethod method=methods[i];
+    final int mod=method.getModifiers();
+    if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+      CachedClass[] paramTypes=method.getParameterTypes();
+      if (paramTypes.length > 0) {
+        ArrayList arr=(ArrayList)map.get(paramTypes[0]);
+        if (arr == null) {
+          arr=new ArrayList(4);
+          map.put(paramTypes[0],arr);
+        }
+        if (useInstanceMethods) {
+          final NewInstanceMetaMethod metaMethod=new NewInstanceMetaMethod(method);
+          arr.add(metaMethod);
+          instanceMethods.add(metaMethod);
+        }
+ else {
+          final NewStaticMetaMethod metaMethod=new NewStaticMetaMethod(method);
+          arr.add(metaMethod);
+          staticMethods.add(metaMethod);
+        }
+      }
+    }
+  }
+}
