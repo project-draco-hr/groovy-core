@@ -12,16 +12,5 @@
   if ("**".equals(key)) {
     return depthFirst();
   }
-  List answer=new NodeList();
-  for (Iterator iter=children().iterator(); iter.hasNext(); ) {
-    Object child=iter.next();
-    if (child instanceof Node) {
-      Node childNode=(Node)child;
-      Object childNodeName=childNode.name();
-      if (childNodeName != null && childNodeName.equals(key)) {
-        answer.add(childNode);
-      }
-    }
-  }
-  return answer;
+  return getByName(key);
 }

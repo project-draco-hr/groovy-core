@@ -1,0 +1,21 @@
+{
+  if (this == o)   return true;
+  if (o == null)   return false;
+  if (o instanceof QName) {
+    final QName qName=(QName)o;
+    if (!namespaceURI.equals(qName.namespaceURI) && !namespaceURI.equals("*") && !qName.namespaceURI.equals("*"))     return false;
+    return localPart.equals(qName.localPart) || localPart.equals("*") || qName.localPart.equals("*");
+  }
+ else   if (o instanceof String) {
+    final String string=(String)o;
+    if (string.length() == 0)     return false;
+    int lastColonIndex=string.lastIndexOf(":");
+    if (lastColonIndex < 0 || lastColonIndex == string.length() - 1)     return false;
+    final String stringPrefix=string.substring(0,lastColonIndex);
+    final String stringLocalPart=string.substring(lastColonIndex + 1);
+    if (stringPrefix.equals(prefix) || stringPrefix.equals(namespaceURI) || stringPrefix.equals("*")) {
+      return localPart.equals(stringLocalPart) || stringLocalPart.equals("*");
+    }
+  }
+  return false;
+}
