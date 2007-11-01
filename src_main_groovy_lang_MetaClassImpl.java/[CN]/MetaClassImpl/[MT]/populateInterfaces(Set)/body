@@ -1,14 +1,2 @@
 {
-  SingleKeyHashMap currentIndex=classMethodIndex.getNotNull(theCachedClass);
-  SingleKeyHashMap index=new SingleKeyHashMap();
-  copyNonPrivateMethods(currentIndex,index);
-  for (Iterator iter=interfaces.iterator(); iter.hasNext(); ) {
-    CachedClass iClass=(CachedClass)iter.next();
-    SingleKeyHashMap methodIndex=classMethodIndex.getNullable(iClass);
-    if (methodIndex == null || methodIndex.isEmpty()) {
-      classMethodIndex.put(iClass,index);
-      continue;
-    }
-    copyNonPrivateMethods(currentIndex,methodIndex);
-  }
 }

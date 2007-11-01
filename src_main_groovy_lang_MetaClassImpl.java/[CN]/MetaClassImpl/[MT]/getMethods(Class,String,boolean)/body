@@ -1,20 +1,14 @@
 {
-  SingleKeyHashMap methodIndex;
-  final CachedClass aClass=ReflectionCache.getCachedClass(sender);
-  if (isCallToSuper) {
-    methodIndex=classMethodIndexForSuper.getNullable(aClass);
-  }
- else {
-    methodIndex=classMethodIndex.getNullable(aClass);
-  }
   Object answer;
-  if (methodIndex != null) {
-    answer=methodIndex.get(name);
-    if (answer == null)     answer=FastArray.EMPTY_LIST;
+  final MetaMethodIndex.Entry entry=getMethods(sender,name);
+  if (entry == null)   answer=FastArray.EMPTY_LIST;
+ else   if (isCallToSuper) {
+    answer=entry.methodsForSuper;
   }
  else {
-    answer=FastArray.EMPTY_LIST;
+    answer=entry.methods;
   }
+  if (answer == null)   answer=FastArray.EMPTY_LIST;
   if (!isCallToSuper && GroovyCategorySupport.hasCategoryInAnyThread()) {
     List used=GroovyCategorySupport.getCategoryMethods(sender,name);
     if (used != null) {

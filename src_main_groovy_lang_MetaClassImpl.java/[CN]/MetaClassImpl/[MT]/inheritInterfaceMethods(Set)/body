@@ -1,5 +1,4 @@
 {
-  SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(theCachedClass);
   for (Iterator it=interfaces.iterator(); it.hasNext(); ) {
     CachedClass cls=(CachedClass)it.next();
     MetaMethod methods[]=cls.getNewMetaMethods();
@@ -8,8 +7,8 @@
       if (!newGroovyMethodsSet.contains(method)) {
         newGroovyMethodsSet.add(method);
       }
-      SingleKeyHashMap.Entry e=methodIndex.getOrPut(method.getName());
-      addMethodToList(e,method);
+      MetaMethodIndex.Entry e=getOrPutMethods(method.getName(),mainClassMethodHeader);
+      e.methods=addMethodToList(e.methods,method);
     }
   }
 }

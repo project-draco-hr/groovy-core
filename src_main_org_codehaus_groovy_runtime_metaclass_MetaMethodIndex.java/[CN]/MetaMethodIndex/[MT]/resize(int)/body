@@ -1,0 +1,16 @@
+{
+  Entry[] oldTable=table;
+  int oldLength=table.length;
+  Entry[] newTable=new Entry[newLength];
+  for (int j=0; j < oldLength; j++) {
+    for (Entry e=oldTable[j]; e != null; ) {
+      Entry next=e.nextHashEntry;
+      int index=e.hash & (newLength - 1);
+      e.nextHashEntry=newTable[index];
+      newTable[index]=e;
+      e=next;
+    }
+  }
+  table=newTable;
+  threshold=(6 * newLength) / 8;
+}

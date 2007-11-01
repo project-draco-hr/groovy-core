@@ -1,31 +1,31 @@
 {
   MethodIndexAction mia=new MethodIndexAction(){
-    public void methodNameAction(    CachedClass clazz,    String methodName,    SingleKeyHashMap.Entry e){
+    public void methodNameAction(    Class clazz,    MetaMethodIndex.Entry e){
       boolean hasPrivate=false;
-      if (e.value instanceof FastArray) {
-        FastArray methods=(FastArray)e.value;
+      if (e.methods instanceof FastArray) {
+        FastArray methods=(FastArray)e.methods;
         final int len=methods.size();
         final Object[] data=methods.getArray();
         for (int i=0; i != len; ++i) {
           MetaMethod method=(MetaMethod)data[i];
-          if (method.isPrivate() && clazz == method.getDeclaringClass()) {
+          if (method.isPrivate() && clazz == method.getDeclaringClass().getCachedClass()) {
             hasPrivate=true;
             break;
           }
         }
       }
  else {
-        MetaMethod method=(MetaMethod)e.value;
-        if (method.isPrivate() && clazz == method.getDeclaringClass()) {
+        MetaMethod method=(MetaMethod)e.methods;
+        if (method.isPrivate() && clazz == method.getDeclaringClass().getCachedClass()) {
           hasPrivate=true;
         }
       }
       if (!hasPrivate)       return;
-      final Object o=classMethodIndexForSuper.getNotNull(clazz).get(methodName);
-      if (o instanceof FastArray)       e.value=((FastArray)o).copy();
- else       e.value=o;
+      final Object o=e.methodsForSuper;
+      if (o instanceof FastArray)       e.methods=((FastArray)o).copy();
+ else       e.methods=o;
     }
   }
 ;
-  mia.iterate(classMethodIndex);
+  mia.iterate();
 }

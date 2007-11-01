@@ -1,0 +1,56 @@
+{
+  if (o == null) {
+    return method;
+  }
+  if (o instanceof MetaMethod) {
+    MetaMethod match=(MetaMethod)o;
+    if (!isMatchingMethod(match,method)) {
+      FastArray list=new FastArray(2);
+      list.add(match);
+      list.add(method);
+      return list;
+    }
+ else {
+      if (match.isPrivate() || (match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
+      }
+ else {
+        Class methodC=method.getDeclaringClass().getCachedClass();
+        Class matchC=match.getDeclaringClass().getCachedClass();
+        if (methodC == matchC) {
+          if (method instanceof NewInstanceMetaMethod || method instanceof NewStaticMetaMethod || method instanceof ClosureMetaMethod|| method instanceof ClosureStaticMetaMethod) {
+            return method;
+          }
+        }
+ else         if (!MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+          return method;
+        }
+      }
+    }
+    return o;
+  }
+  if (o instanceof FastArray) {
+    FastArray list=(FastArray)o;
+    int found=findMatchingMethod(list,method);
+    if (found == -1) {
+      list.add(method);
+    }
+ else {
+      MetaMethod match=(MetaMethod)list.get(found);
+      if (match.isPrivate() || (match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
+      }
+ else {
+        Class methodC=method.getDeclaringClass().getCachedClass();
+        Class matchC=match.getDeclaringClass().getCachedClass();
+        if (methodC == matchC) {
+          if (method instanceof NewInstanceMetaMethod || method instanceof NewStaticMetaMethod || method instanceof ClosureMetaMethod|| method instanceof ClosureStaticMetaMethod) {
+            list.set(found,method);
+          }
+        }
+ else         if (!MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+          list.set(found,method);
+        }
+      }
+    }
+  }
+  return o;
+}

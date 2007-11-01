@@ -1,11 +1,10 @@
 {
   superClasses=DefaultGroovyMethods.reverse(superClasses);
-  SingleKeyHashMap last=null;
+  MetaMethodIndex.Header last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     CachedClass c=(CachedClass)iter.next();
-    SingleKeyHashMap methodIndex=classMethodIndex.getNullable(c);
-    if (methodIndex == last)     continue;
-    if (last != null)     copyNonPrivateMethods(last,methodIndex);
+    MetaMethodIndex.Header methodIndex=getHeader(c.getCachedClass());
+    if (last != null)     copyNonPrivateNonNewMetaMethods(last,methodIndex);
     last=methodIndex;
   }
 }

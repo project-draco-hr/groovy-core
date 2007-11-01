@@ -1,0 +1,10 @@
+{
+  Entry[] table=this.table;
+  int length=table.length;
+  for (int j=0; j < length; j++) {
+    for (Entry e=table[j]; e != null; e=e.nextHashEntry) {
+      if (e.methods instanceof FastArray)       e.methodsForSuper=((FastArray)e.methods).copy();
+ else       e.methodsForSuper=e.methods;
+    }
+  }
+}

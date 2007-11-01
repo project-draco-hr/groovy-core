@@ -13,7 +13,7 @@
     }
     classPropertyIndex.put(ReflectionCache.OBJECT_CLASS,cPI);
     applyPropertyDescriptors(propertyDescriptors);
-    applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
+    applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
     makeStaticPropertyIndex();
   }
  else {
@@ -27,8 +27,8 @@
     inheritStaticInterfaceFields(superClasses,interfaces);
     inheritFields(superClasses);
     applyPropertyDescriptors(propertyDescriptors);
-    applyStrayPropertyMethods(superClasses,classMethodIndex,classPropertyIndex);
-    applyStrayPropertyMethods(superClasses,classMethodIndexForSuper,classPropertyIndexForSuper);
+    applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
+    applyStrayPropertyMethods(superClasses,classPropertyIndexForSuper,false);
     copyClassPropertyIndexForSuper(classPropertyIndexForSuper);
     makeStaticPropertyIndex();
   }

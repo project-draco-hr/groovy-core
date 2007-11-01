@@ -1,13 +1,9 @@
 {
-  SingleKeyHashMap last=null;
+  MetaMethodIndex.Header last=null;
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
     CachedClass c=(CachedClass)iter.next();
-    SingleKeyHashMap methodIndex=classMethodIndex.getNotNull(c);
+    MetaMethodIndex.Header methodIndex=getHeader(c.getCachedClass());
     if (last != null) {
-      if (methodIndex.isEmpty()) {
-        classMethodIndex.put(c,last);
-        continue;
-      }
       copyNonPrivateMethods(last,methodIndex);
     }
     last=methodIndex;
