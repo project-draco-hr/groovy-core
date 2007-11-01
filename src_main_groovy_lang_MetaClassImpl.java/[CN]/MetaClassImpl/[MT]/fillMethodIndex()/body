@@ -1,5 +1,5 @@
 {
-  mainClassMethodHeader=getHeader(theClass);
+  mainClassMethodHeader=metaMethodIndex.getHeader(theClass);
   LinkedList superClasses=getSuperClasses();
   addInterfaceMethods();
   for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
@@ -9,7 +9,7 @@
   Set interfaces=theCachedClass.getInterfaces();
   inheritMethods(superClasses);
   inheritInterfaceMethods(interfaces);
-  copyMethodsToSuper();
+  metaMethodIndex.copyMethodsToSuper();
   connectMultimethods(superClasses);
   removeMultimethodsOverloadedWithPrivateMethods();
   replaceWithMOPCalls(theCachedClass.mopMethods);

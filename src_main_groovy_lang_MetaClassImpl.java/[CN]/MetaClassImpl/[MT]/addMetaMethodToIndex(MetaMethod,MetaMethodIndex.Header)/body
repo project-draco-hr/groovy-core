@@ -24,9 +24,9 @@
     }
   }
   String name=method.getName();
-  MetaMethodIndex.Entry e=getOrPutMethods(name,header);
+  MetaMethodIndex.Entry e=metaMethodIndex.getOrPutMethods(name,header);
   if (method.isStatic()) {
-    e.staticMethods=addMethodToList(e.staticMethods,method);
+    e.staticMethods=metaMethodIndex.addMethodToList(e.staticMethods,method);
   }
-  e.methods=addMethodToList(e.methods,method);
+  e.methods=metaMethodIndex.addMethodToList(e.methods,method);
 }
