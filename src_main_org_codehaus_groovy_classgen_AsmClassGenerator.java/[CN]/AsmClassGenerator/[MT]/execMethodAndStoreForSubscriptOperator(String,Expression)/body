@@ -24,7 +24,9 @@
     setResult=false;
   }
   if (setResult) {
-    if (expression instanceof VariableExpression)     mv.visitInsn(DUP);
+    if (expression instanceof VariableExpression || expression instanceof PropertyExpression) {
+      mv.visitInsn(DUP);
+    }
     leftHandExpression=true;
     expression.visit(this);
     leftHandExpression=false;
