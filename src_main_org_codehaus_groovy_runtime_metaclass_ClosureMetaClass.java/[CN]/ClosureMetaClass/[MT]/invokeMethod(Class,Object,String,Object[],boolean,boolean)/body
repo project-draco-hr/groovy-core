@@ -6,7 +6,7 @@
   if (LOG.isLoggable(Level.FINER)) {
     MetaClassHelper.logMethodCall(object,methodName,originalArguments);
   }
-  final Object[] arguments=originalArguments == null ? EMPTY_ARGUMENTS : originalArguments;
+  final Object[] arguments=makeArguments(originalArguments,methodName);
   final Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   unwrap(arguments);
   MetaMethod method;
