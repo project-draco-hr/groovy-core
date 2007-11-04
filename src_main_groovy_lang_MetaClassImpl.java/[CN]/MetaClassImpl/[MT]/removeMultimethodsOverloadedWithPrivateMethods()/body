@@ -1,6 +1,10 @@
 {
   MethodIndexAction mia=new MethodIndexAction(){
+    public boolean skipClass(    Class clazz){
+      return clazz == theClass;
+    }
     public void methodNameAction(    Class clazz,    MetaMethodIndex.Entry e){
+      if (e.methods == null)       return;
       boolean hasPrivate=false;
       if (e.methods instanceof FastArray) {
         FastArray methods=(FastArray)e.methods;

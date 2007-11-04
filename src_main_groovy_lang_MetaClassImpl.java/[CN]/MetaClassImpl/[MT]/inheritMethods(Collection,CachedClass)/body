@@ -1,6 +1,11 @@
 {
+  Iterator iter=superClasses.iterator();
+  for (; iter.hasNext(); ) {
+    CachedClass c=(CachedClass)iter.next();
+    if (c == firstGroovySuper.getCachedSuperClass())     break;
+  }
   MetaMethodIndex.Header last=null;
-  for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
+  for (; iter.hasNext(); ) {
     CachedClass c=(CachedClass)iter.next();
     MetaMethodIndex.Header methodIndex=metaMethodIndex.getHeader(c.getCachedClass());
     if (last != null) {

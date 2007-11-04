@@ -1,22 +1,19 @@
 {
-  Object oldListOrMethod=from.methods;
+  Object oldListOrMethod=e.methodsForSuper;
   if (oldListOrMethod == null)   return;
   if (oldListOrMethod instanceof FastArray) {
     FastArray oldList=(FastArray)oldListOrMethod;
-    Entry e=null;
     int len1=oldList.size();
     Object list[]=oldList.getArray();
     for (int j=0; j != len1; ++j) {
       MetaMethod method=(MetaMethod)list[j];
-      if (method instanceof NewMetaMethod || method.isPrivate())       continue;
-      if (e == null)       e=getOrPutMethods(from.name,to);
+      if (method.isPrivate())       continue;
       e.methods=addMethodToList(e.methods,method);
     }
   }
  else {
     MetaMethod method=(MetaMethod)oldListOrMethod;
-    if (method instanceof NewMetaMethod || method.isPrivate()) {
-      Entry e=getOrPutMethods(from.name,to);
+    if (!method.isPrivate()) {
       e.methods=addMethodToList(e.methods,method);
     }
   }

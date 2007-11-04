@@ -1,16 +1,15 @@
 {
   mainClassMethodHeader=metaMethodIndex.getHeader(theClass);
   LinkedList superClasses=getSuperClasses();
-  addInterfaceMethods();
-  for (Iterator iter=superClasses.iterator(); iter.hasNext(); ) {
-    CachedClass c=(CachedClass)iter.next();
-    addMethods(c);
-  }
+  CachedClass firstGroovySuper=calcFirstGroovySuperClass(superClasses);
   Set interfaces=theCachedClass.getInterfaces();
-  inheritMethods(superClasses);
-  inheritInterfaceMethods(interfaces);
-  metaMethodIndex.copyMethodsToSuper();
-  connectMultimethods(superClasses);
-  removeMultimethodsOverloadedWithPrivateMethods();
-  replaceWithMOPCalls(theCachedClass.mopMethods);
+  addInterfaceMethods(interfaces);
+  populateMethods(superClasses,firstGroovySuper);
+  inheritInterfaceNewMetaMethods(interfaces);
+  if (isGroovyObject) {
+    metaMethodIndex.copyMethodsToSuper();
+    connectMultimethods(superClasses,firstGroovySuper);
+    removeMultimethodsOverloadedWithPrivateMethods();
+    replaceWithMOPCalls(theCachedClass.mopMethods);
+  }
 }
