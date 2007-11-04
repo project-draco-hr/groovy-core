@@ -24,16 +24,16 @@
       VariableExpression vMethods=new VariableExpression("method");
       VariableExpression vArguments=new VariableExpression("arguments");
       VariableScope blockScope=new VariableScope();
-      blockScope.getReferencedLocalVariables().put("method",vMethods);
-      blockScope.getReferencedLocalVariables().put("arguments",vArguments);
+      blockScope.putReferencedLocalVariable(vMethods);
+      blockScope.putReferencedLocalVariable(vArguments);
       node.addSyntheticMethod("invokeMethod",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"method"),new Parameter(ClassHelper.OBJECT_TYPE,"arguments")},ClassNode.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"invokeMethod",new ArgumentListExpression(VariableExpression.THIS_EXPRESSION,vMethods,vArguments)))},blockScope));
       if (!node.isScript()) {
         node.addSyntheticMethod("getProperty",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"property")},ClassNode.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ReturnStatement(new MethodCallExpression(metaClassVar,"getProperty",new ArgumentListExpression(VariableExpression.THIS_EXPRESSION,new VariableExpression("property"))))},new VariableScope()));
         VariableExpression vProp=new VariableExpression("property");
         VariableExpression vValue=new VariableExpression("value");
         blockScope=new VariableScope();
-        blockScope.getReferencedLocalVariables().put("property",vProp);
-        blockScope.getReferencedLocalVariables().put("value",vValue);
+        blockScope.putReferencedLocalVariable(vProp);
+        blockScope.putReferencedLocalVariable(vValue);
         node.addSyntheticMethod("setProperty",ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"property"),new Parameter(ClassHelper.OBJECT_TYPE,"value")},ClassNode.EMPTY_ARRAY,new BlockStatement(new Statement[]{initMetaClassField,new ExpressionStatement(new MethodCallExpression(metaClassVar,"setProperty",new ArgumentListExpression(VariableExpression.THIS_EXPRESSION,vProp,vValue)))},blockScope));
       }
     }

@@ -19,11 +19,10 @@
   }
   for (VariableScope scope=currentScope.getParent(); scope != null; scope=scope.getParent()) {
     if (scope.getClassScope() != null)     break;
-    Map declares=scope.getDeclaredVariables();
-    if (declares.get(var.getName()) != null) {
+    if (scope.getDeclaredVariable(var.getName()) != null) {
       addError(msg.toString(),expr);
       break;
     }
   }
-  currentScope.getDeclaredVariables().put(var.getName(),var);
+  currentScope.putDeclaredVariable(var);
 }

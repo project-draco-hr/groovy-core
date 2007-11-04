@@ -8,19 +8,20 @@
     if (dynamicScope == null && scope.isResolvingDynamic()) {
       dynamicScope=scope;
     }
-    Map declares=scope.getDeclaredVariables();
-    if (declares.get(var.getName()) != null) {
-      var=(Variable)declares.get(var.getName());
+    Variable var1;
+    var1=scope.getDeclaredVariable(var.getName());
+    if (var1 != null) {
+      var=var1;
       break;
     }
-    Map localReferenced=scope.getReferencedLocalVariables();
-    if (localReferenced.get(var.getName()) != null) {
-      var=(Variable)localReferenced.get(var.getName());
+    var1=(Variable)scope.getReferencedLocalVariable(var.getName());
+    if (var1 != null) {
+      var=var1;
       break;
     }
-    Map classReferenced=scope.getReferencedClassVariables();
-    if (classReferenced.get(var.getName()) != null) {
-      var=(Variable)classReferenced.get(var.getName());
+    var1=scope.getReferencedClassVariable(var.getName());
+    if (var1 != null) {
+      var=var1;
       break;
     }
     ClassNode classScope=scope.getClassScope();
@@ -48,18 +49,17 @@
     while (scope != end) {
       Map references=null;
       if (end.isClassScope() || end.isRoot() || (end.isReferencedClassVariable(name) && end.getDeclaredVariable(name) == null)) {
-        references=scope.getReferencedClassVariables();
+        scope.putReferencedClassVariable(var);
       }
  else {
-        references=scope.getReferencedLocalVariables();
         var.setClosureSharedVariable(var.isClosureSharedVariable() || inClosure);
+        scope.putReferencedLocalVariable(var);
       }
-      references.put(var.getName(),var);
       scope=scope.getParent();
     }
     if (end.isResolvingDynamic()) {
       if (end.getDeclaredVariable(var.getName()) == null) {
-        end.getDeclaredVariables().put(var.getName(),var);
+        end.putDeclaredVariable(var);
       }
     }
   }
