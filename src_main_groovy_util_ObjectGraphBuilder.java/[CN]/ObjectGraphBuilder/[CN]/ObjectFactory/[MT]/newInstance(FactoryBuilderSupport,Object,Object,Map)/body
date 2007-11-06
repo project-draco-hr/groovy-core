@@ -3,13 +3,24 @@
   String classname=ogbuilder.classNameResolver.resolveClassname((String)name);
   Class klass=(Class)ogbuilder.resolvedClasses.get(classname);
   if (klass == null) {
-    try {
-      klass=Class.forName(classname);
-      ogbuilder.resolvedClasses.put(classname,klass);
+    klass=loadClass(ogbuilder.classLoader,classname);
+    if (klass == null) {
+      klass=loadClass(ogbuilder.getClass().getClassLoader(),classname);
     }
- catch (    ClassNotFoundException e) {
-      throw new InstantiationException(e.getMessage());
+    if (klass == null) {
+      try {
+        klass=Class.forName(classname);
+      }
+ catch (      ClassNotFoundException e) {
+      }
     }
+    if (klass == null) {
+      klass=loadClass(Thread.currentThread().getContextClassLoader(),classname);
+    }
+    if (klass == null) {
+      throw new RuntimeException(new ClassNotFoundException(classname));
+    }
+    ogbuilder.resolvedClasses.put(classname,klass);
   }
   Map context=ogbuilder.getContext();
   context.put(ObjectGraphBuilder.NODE_NAME,name);
