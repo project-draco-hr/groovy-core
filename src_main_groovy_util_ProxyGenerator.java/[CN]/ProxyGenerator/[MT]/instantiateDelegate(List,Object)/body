@@ -20,6 +20,10 @@
   buffer.append(name).append("(delegate) {\n");
   buffer.append("        this.delegate = delegate\n");
   buffer.append("    }\n");
+  List objectMethods=DefaultGroovyMethods.toList(Object.class.getMethods());
+  objectMethods.addAll(getInheritedMethods(Object.class));
+  List groovyObjectMethods=DefaultGroovyMethods.toList(GroovyObject.class.getMethods());
+  groovyObjectMethods.addAll(getInheritedMethods(GroovyObject.class));
   List interfaceMethods=new ArrayList();
   for (int i=0; i < interfacesToImplement.size(); i++) {
     Class thisInterface=(Class)interfacesToImplement.get(i);
@@ -28,7 +32,18 @@
   }
   for (int i=0; i < interfaceMethods.size(); i++) {
     Method method=(Method)interfaceMethods.get(i);
-    addWrappedCall(buffer,method);
+    if (!containsEquivalentMethod(objectMethods,method) && !containsEquivalentMethod(groovyObjectMethods,method)) {
+      addWrappedCall(buffer,method);
+    }
+  }
+  List additionalMethods=new ArrayList();
+  additionalMethods.addAll(DefaultGroovyMethods.toList(delegate.getClass().getMethods()));
+  additionalMethods.addAll(getInheritedMethods(delegate.getClass()));
+  for (int i=0; i < additionalMethods.size(); i++) {
+    Method method=(Method)additionalMethods.get(i);
+    if (!containsEquivalentMethod(interfaceMethods,method) && !containsEquivalentMethod(objectMethods,method) && !containsEquivalentMethod(groovyObjectMethods,method)) {
+      addWrappedCall(buffer,method);
+    }
   }
   buffer.append("}\n").append("new ").append(name);
   buffer.append("(delegate)");
@@ -41,6 +56,6 @@
     return shell.evaluate(buffer.toString());
   }
  catch (  MultipleCompilationErrorsException err) {
-    throw new GroovyCastException(delegate,Proxy.class);
+    throw new GroovyRuntimeException("Error creating proxy: " + err.getMessage());
   }
 }
