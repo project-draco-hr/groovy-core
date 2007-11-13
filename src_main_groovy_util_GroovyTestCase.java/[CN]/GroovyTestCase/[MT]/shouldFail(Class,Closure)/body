@@ -4,13 +4,7 @@
     code.call();
   }
  catch (  GroovyRuntimeException gre) {
-    th=gre;
-    while (th.getCause() != null && th.getCause() != gre) {
-      th=th.getCause();
-      if (th != gre && (th instanceof GroovyRuntimeException)) {
-        gre=(GroovyRuntimeException)th;
-      }
-    }
+    th=unwrap(gre);
   }
 catch (  Throwable e) {
     th=e;
