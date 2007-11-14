@@ -1,5 +1,5 @@
 {
-  String name=type.getName();
+  String name=type.getName(), saved=name;
   while (true) {
     int len=name.lastIndexOf('.');
     if (len == -1)     break;
@@ -7,5 +7,6 @@
     type.setName(name);
     if (resolve(type))     return true;
   }
+  type.setName(saved);
   return false;
 }
