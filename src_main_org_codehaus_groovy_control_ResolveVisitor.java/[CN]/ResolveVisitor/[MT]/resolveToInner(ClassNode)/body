@@ -1,0 +1,11 @@
+{
+  String name=type.getName();
+  while (true) {
+    int len=name.lastIndexOf('.');
+    if (len == -1)     break;
+    name=name.substring(0,len) + "$" + name.substring(len + 1);
+    type.setName(name);
+    if (resolve(type))     return true;
+  }
+  return false;
+}
