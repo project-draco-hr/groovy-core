@@ -1,0 +1,12 @@
+{
+  GroovyClassLoader classLoader=new GroovyClassLoader();
+  String controlProperty="text";
+  String controlValue="I am a script";
+  String code=controlProperty + " = '" + controlValue+ "'";
+  GroovyCodeSource codeSource=new GroovyCodeSource(code,"testscript","/groovy/shell");
+  Class scriptClass=classLoader.parseClass(codeSource,false);
+  Script script=InvokerHelper.createScript(scriptClass,new Binding(bindingVariables));
+  assertEquals(bindingVariables,script.getBinding().getVariables());
+  script.run();
+  assertEquals(controlValue,script.getProperty(controlProperty));
+}
