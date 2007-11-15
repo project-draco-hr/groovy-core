@@ -1,8 +1,22 @@
 {
   int propertyIndexStart=0, propertyIndexEnd=0;
+  boolean requireProperty=false;
   String result="";
   while (propertyIndexStart < str.length()) {
-    propertyIndexStart=str.indexOf("${",propertyIndexStart);
+{
+      int i1=str.indexOf("${",propertyIndexStart);
+      int i2=str.indexOf("!{",propertyIndexStart);
+      if (i1 == -1) {
+        propertyIndexStart=i2;
+      }
+ else       if (i2 == -1) {
+        propertyIndexStart=i1;
+      }
+ else {
+        propertyIndexStart=Math.min(i1,i2);
+      }
+      requireProperty=propertyIndexStart == i2;
+    }
     if (propertyIndexStart == -1)     break;
     result+=str.substring(propertyIndexEnd,propertyIndexStart);
     propertyIndexEnd=str.indexOf("}",propertyIndexStart);
@@ -10,7 +24,12 @@
     String propertyKey=str.substring(propertyIndexStart + 2,propertyIndexEnd);
     String propertyValue=System.getProperty(propertyKey);
     if (propertyValue == null) {
-      throw new IllegalArgumentException("Variable $" + propertyKey + " in groovy-starter.conf references a non-existent System property! Try passing the property to the VM using -D"+ propertyKey+ "=myValue");
+      if (requireProperty) {
+        throw new IllegalArgumentException("Variable " + propertyKey + " in groovy-starter.conf references a non-existent System property! Try passing the property to the VM using -D"+ propertyKey+ "=myValue in JAVA_OPTS");
+      }
+ else {
+        return null;
+      }
     }
     propertyValue=getSlashyPath(propertyValue);
     result+=propertyValue;

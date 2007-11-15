@@ -1,4 +1,5 @@
 {
+  if (filter == null)   return;
   int starIndex=filter.indexOf(WILDCARD);
   if (starIndex == -1) {
     addFile(new File(filter));
@@ -6,7 +7,7 @@
   }
   String startDir=filter.substring(0,starIndex - 1);
   File root=new File(startDir);
-  filter=filter.replaceAll("\\.","\\\\.");
+  filter=Pattern.quote(filter);
   filter=filter.replaceAll("\\" + WILDCARD,WILD_CARD_REGEX);
   Pattern pattern=Pattern.compile(filter);
   final File[] files=root.listFiles();
