@@ -15,6 +15,15 @@
       }
       return super.getProperty(object,property);
     }
+    public void setProperty(    Object object,    String property,    Object newValue){
+      if (property.startsWith("@")) {
+        String attribute=property.substring(1);
+        Node n=(Node)object;
+        n.attributes().put(attribute,newValue);
+        return;
+      }
+      delegate.setProperty(object,property,newValue);
+    }
   }
 ;
   GroovySystem.getMetaClassRegistry().setMetaClass(Node.class,newMetaClass);
