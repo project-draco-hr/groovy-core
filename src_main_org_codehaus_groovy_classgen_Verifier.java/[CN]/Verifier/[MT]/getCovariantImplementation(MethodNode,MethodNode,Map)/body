@@ -1,0 +1,38 @@
+{
+  if (!oldMethod.getName().equals(overridingMethod.getName()))   return null;
+  if (!equalParameters(overridingMethod,oldMethod,genericsSpec))   return null;
+  ClassNode mr=overridingMethod.getReturnType();
+  ClassNode omr=oldMethod.getReturnType();
+  if (mr.equals(omr))   return null;
+  ClassNode testmr=correctToGenericsSpec(genericsSpec,omr);
+  if (!mr.isDerivedFrom(testmr)) {
+    throw new RuntimeParserException("the return type is incompatible with " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
+  }
+  if ((oldMethod.getModifiers() & ACC_FINAL) != 0) {
+    throw new RuntimeParserException("cannot override final method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
+  }
+  if (oldMethod.isStatic() != overridingMethod.isStatic()) {
+    throw new RuntimeParserException("cannot override method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName()+ " with disparate static modifier",overridingMethod);
+  }
+  MethodNode newMethod=new MethodNode(oldMethod.getName(),overridingMethod.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,oldMethod.getReturnType(),oldMethod.getParameters(),oldMethod.getExceptions(),null);
+  List instructions=new ArrayList(1);
+  instructions.add(new BytecodeInstruction(){
+    public void visit(    MethodVisitor mv){
+      BytecodeHelper helper=new BytecodeHelper(mv);
+      mv.visitVarInsn(ALOAD,0);
+      Parameter[] para=oldMethod.getParameters();
+      Parameter[] goal=overridingMethod.getParameters();
+      for (int i=0; i < para.length; i++) {
+        helper.load(para[i].getType(),i + 1);
+        if (!para[i].getType().equals(goal[i].getType())) {
+          helper.doCast(goal[i].getType());
+        }
+      }
+      mv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(classNode),overridingMethod.getName(),BytecodeHelper.getMethodDescriptor(overridingMethod.getReturnType(),overridingMethod.getParameters()));
+      helper.doReturn(oldMethod.getReturnType());
+    }
+  }
+);
+  newMethod.setCode(new BytecodeSequence(instructions));
+  return newMethod;
+}

@@ -1,13 +1,12 @@
 {
-  ClassNode sn=classNode.getSuperClass();
-  if (sn == null)   return;
-  List declaredMethods=classNode.getMethods();
   List methodsToAdd=new ArrayList();
-  for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
-    MethodNode method=(MethodNode)it.next();
-    if ((method.getModifiers() & ACC_STATIC) != 0)     continue;
-    addCovariantMethodInSuper(sn,method,methodsToAdd);
+  List declaredMethods=new ArrayList(classNode.getMethods());
+  Map genericsSpec=new HashMap();
+  for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
+    MethodNode m=(MethodNode)methodsIterator.next();
+    if (m.isStatic())     methodsIterator.remove();
   }
+  addCovariantMethods(classNode,declaredMethods,methodsToAdd,genericsSpec);
   for (Iterator it=methodsToAdd.iterator(); it.hasNext(); ) {
     MethodNode method=(MethodNode)it.next();
     classNode.addMethod(method);

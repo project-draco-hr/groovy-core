@@ -1,0 +1,22 @@
+{
+  ClassNode sn=classNode.getUnresolvedSuperClass(false);
+  if (sn != null && sn.redirect() != ClassHelper.OBJECT_TYPE) {
+    Map genericsSpec=createGenericsSpec(sn,oldGenericsSpec);
+    for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
+      MethodNode method=(MethodNode)it.next();
+      if (method.isStatic())       continue;
+      storeMissingCovariantMethods(sn,method,methodsToAdd,genericsSpec);
+      addCovariantMethods(sn,declaredMethods,methodsToAdd,genericsSpec);
+    }
+  }
+  ClassNode[] interfaces=classNode.getInterfaces();
+  for (int i=0; i < interfaces.length; i++) {
+    Map genericsSpec=createGenericsSpec(interfaces[i],oldGenericsSpec);
+    for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
+      MethodNode method=(MethodNode)it.next();
+      if (method.isStatic())       continue;
+      storeMissingCovariantMethods(interfaces[i],method,methodsToAdd,genericsSpec);
+      addCovariantMethods(sn,declaredMethods,methodsToAdd,genericsSpec);
+    }
+  }
+}
