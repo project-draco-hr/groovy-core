@@ -1,9 +1,15 @@
 {
   Expression objectExpression=expression.getObjectExpression();
-  if (isThisExpression(objectExpression)) {
+  if (isThisOrSuper(objectExpression)) {
     String name=expression.getPropertyAsString();
     if (name != null) {
-      FieldNode field=classNode.getField(name);
+      FieldNode field=null;
+      if (isSuperExpression(objectExpression)) {
+        field=classNode.getSuperClass().getField(name);
+      }
+ else {
+        field=classNode.getField(name);
+      }
       if (field != null) {
         visitFieldExpression(new FieldExpression(field));
         return;
