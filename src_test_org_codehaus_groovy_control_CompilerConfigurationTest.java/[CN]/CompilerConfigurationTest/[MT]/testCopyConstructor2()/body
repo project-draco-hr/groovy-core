@@ -1,0 +1,49 @@
+{
+  final CompilerConfiguration init=new CompilerConfiguration();
+  init.setWarningLevel(WarningMessage.POSSIBLE_ERRORS);
+  init.setDebug(false);
+  init.setVerbose(true);
+  init.setTolerance(55);
+  init.setMinimumRecompilationInterval(975);
+  init.setScriptBaseClass("");
+  init.setSourceEncoding("Gutenberg");
+  init.setTargetBytecode(CompilerConfiguration.PRE_JDK5);
+  init.setRecompileGroovySource(false);
+  init.setClasspath("");
+  final PrintWriter initOut=new PrintWriter(System.out);
+  init.setOutput(initOut);
+  final File initTDFile=new File("A wandering path");
+  init.setTargetDirectory(initTDFile);
+  assertEquals(WarningMessage.POSSIBLE_ERRORS,init.getWarningLevel());
+  assertEquals(false,init.getDebug());
+  assertEquals(true,init.getVerbose());
+  assertEquals(55,init.getTolerance());
+  assertEquals(975,init.getMinimumRecompilationInterval());
+  assertEquals("",init.getScriptBaseClass());
+  assertEquals("Gutenberg",init.getSourceEncoding());
+  assertEquals(CompilerConfiguration.PRE_JDK5,init.getTargetBytecode());
+  assertEquals(false,init.getRecompileGroovySource());
+{
+    final List listCP=init.getClasspath();
+    assertNotNull(listCP);
+    assertEquals(0,listCP.size());
+  }
+  assertEquals(initOut,init.getOutput());
+  assertEquals(initTDFile,init.getTargetDirectory());
+  final CompilerConfiguration config=new CompilerConfiguration(init);
+  assertEquals(WarningMessage.POSSIBLE_ERRORS,config.getWarningLevel());
+  assertEquals(false,config.getDebug());
+  assertEquals(true,config.getVerbose());
+  assertEquals(55,config.getTolerance());
+  assertEquals(975,config.getMinimumRecompilationInterval());
+  assertEquals("",config.getScriptBaseClass());
+  assertEquals("Gutenberg",config.getSourceEncoding());
+  assertEquals(CompilerConfiguration.PRE_JDK5,config.getTargetBytecode());
+  assertEquals(false,config.getRecompileGroovySource());
+{
+    final List listCP=config.getClasspath();
+    assertEquals(0,listCP.size());
+  }
+  assertEquals(initOut,config.getOutput());
+  assertEquals(initTDFile,config.getTargetDirectory());
+}

@@ -30,26 +30,15 @@
     setSourceEncoding(text);
   }
   text=configuration.getProperty("groovy.target.directory");
-  if (text != null) {
-    setTargetDirectory(text);
-  }
-  setTargetBytecode(getVMVersion());
+  if (text != null)   setTargetDirectory(text);
   text=configuration.getProperty("groovy.target.bytecode");
-  if (text != null) {
-    setTargetBytecode(text);
-  }
+  if (text != null)   setTargetBytecode(text);
   text=configuration.getProperty("groovy.classpath");
-  if (text != null) {
-    setClasspath(text);
-  }
+  if (text != null)   setClasspath(text);
   text=configuration.getProperty("groovy.output.verbose");
-  if (text != null && text.equals("true")) {
-    setVerbose(true);
-  }
+  if (text != null && text.equals("true"))   setVerbose(true);
   text=configuration.getProperty("groovy.output.debug");
-  if (text != null && text.equals("true")) {
-    setDebug(true);
-  }
+  if (text != null && text.equals("true"))   setDebug(true);
   numeric=10;
   try {
     text=configuration.getProperty("groovy.errors.tolerance","10");
@@ -60,19 +49,21 @@
   }
   setTolerance(numeric);
   text=configuration.getProperty("groovy.script.base");
-  setScriptBaseClass(text);
-  text=configuration.getProperty("groovy.jsr");
-  if (text != null) {
-    setUseNewGroovy(text.equalsIgnoreCase("true"));
-  }
+  if (text != null)   setScriptBaseClass(text);
   text=configuration.getProperty("groovy.recompile");
   if (text != null) {
     setRecompileGroovySource(text.equalsIgnoreCase("true"));
   }
   numeric=100;
   try {
-    text=configuration.getProperty("groovy.recompile.minimumIntervall","" + numeric);
-    numeric=Integer.parseInt(text);
+    text=configuration.getProperty("groovy.recompile.minimumIntervall");
+    if (text == null)     text=configuration.getProperty("groovy.recompile.minimumInterval");
+    if (text != null) {
+      numeric=Integer.parseInt(text);
+    }
+ else {
+      numeric=100;
+    }
   }
  catch (  NumberFormatException e) {
     throw new ConfigurationException(e);

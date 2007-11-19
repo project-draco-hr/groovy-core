@@ -1,0 +1,24 @@
+{
+  final CompilerConfiguration config=CompilerConfiguration.DEFAULT;
+  assertEquals(WarningMessage.LIKELY_ERRORS,config.getWarningLevel());
+  assertEquals(Boolean.getBoolean("groovy.output.debug"),config.getDebug());
+  assertEquals(Boolean.getBoolean("groovy.output.verbose"),config.getVerbose());
+  assertEquals(false,config.getDebug());
+  assertEquals(false,config.getVerbose());
+  assertEquals(10,config.getTolerance());
+  assertEquals(100,config.getMinimumRecompilationInterval());
+  assertNull(config.getScriptBaseClass());
+  assertEquals(getSystemEncoding(),config.getSourceEncoding());
+  assertEquals(getVMVersion(),config.getTargetBytecode());
+  assertEquals(false,config.getRecompileGroovySource());
+{
+    final List listCP=config.getClasspath();
+    assertNotNull(listCP);
+    assertEquals(0,listCP.size());
+  }
+  assertNotNull(config.getOutput());
+  assertNull(config.getTargetDirectory());
+  assertEquals(".groovy",config.getDefaultScriptExtension());
+  assertNull(config.getJointCompilationOptions());
+  assertNotNull(config.getPluginFactory());
+}
