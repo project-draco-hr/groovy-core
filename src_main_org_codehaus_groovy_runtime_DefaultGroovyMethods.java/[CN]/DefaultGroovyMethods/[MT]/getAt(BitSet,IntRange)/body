@@ -2,15 +2,15 @@
   int from=DefaultTypeTransformation.intUnbox(range.getFrom());
   int to=DefaultTypeTransformation.intUnbox(range.getTo());
   BitSet result=new BitSet();
+  int numberOfBits=to - from + 1;
+  int adjuster=1;
+  int offset=from;
   if (range.isReverse()) {
-    for (int index=to; index >= from; index--) {
-      result.set(to - index,self.get(index));
-    }
+    adjuster=-1;
+    offset=to;
   }
- else {
-    for (int index=from; index <= to; index++) {
-      result.set(index - from,self.get(index));
-    }
+  for (int i=0; i < numberOfBits; i++) {
+    result.set(i,self.get(offset + (adjuster * i)));
   }
   return result;
 }
