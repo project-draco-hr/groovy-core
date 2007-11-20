@@ -1,5 +1,5 @@
 {
-  List methodsToAdd=new ArrayList();
+  Map methodsToAdd=new HashMap();
   List declaredMethods=new ArrayList(classNode.getMethods());
   Map genericsSpec=new HashMap();
   for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
@@ -7,7 +7,7 @@
     if (m.isStatic())     methodsIterator.remove();
   }
   addCovariantMethods(classNode,declaredMethods,methodsToAdd,genericsSpec);
-  for (Iterator it=methodsToAdd.iterator(); it.hasNext(); ) {
+  for (Iterator it=methodsToAdd.values().iterator(); it.hasNext(); ) {
     MethodNode method=(MethodNode)it.next();
     classNode.addMethod(method);
   }

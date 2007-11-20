@@ -14,7 +14,7 @@
   if (oldMethod.isStatic() != overridingMethod.isStatic()) {
     throw new RuntimeParserException("cannot override method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName()+ " with disparate static modifier",overridingMethod);
   }
-  MethodNode newMethod=new MethodNode(oldMethod.getName(),overridingMethod.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,oldMethod.getReturnType(),oldMethod.getParameters(),oldMethod.getExceptions(),null);
+  MethodNode newMethod=new MethodNode(oldMethod.getName(),overridingMethod.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,oldMethod.getReturnType().getPlainNodeReference(),cleanParameters(oldMethod.getParameters()),oldMethod.getExceptions(),null);
   List instructions=new ArrayList(1);
   instructions.add(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
