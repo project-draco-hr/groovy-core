@@ -1,6 +1,6 @@
 {
   if (methodNode.getName().equals("<clinit>"))   return;
-  if (!methodNode.getDeclaringClass().isInterface())   printModifiers(out,methodNode.getModifiers());
+  if (!clazz.isInterface())   printModifiers(out,methodNode.getModifiers());
   printType(methodNode.getReturnType(),out);
   out.print(" ");
   out.print(methodNode.getName());
@@ -13,5 +13,10 @@
     ClassNode retType=methodNode.getReturnType();
     printReturn(out,retType);
     out.println("}");
+  }
+  Parameter[] params=getDefaultValueReducedParameters(methodNode);
+  if (params != methodNode.getParameters()) {
+    MethodNode m=new MethodNode(methodNode.getName(),methodNode.getModifiers(),methodNode.getReturnType(),params,methodNode.getExceptions(),null);
+    genMethod(clazz,m,out);
   }
 }

@@ -27,13 +27,13 @@
       out.print("class ");
     }
     out.println(classNode.getNameWithoutPackage());
-    ClassNode superClass=classNode.getSuperClass();
+    ClassNode superClass=classNode.getUnresolvedSuperClass(false);
     if (!isInterface) {
       if (superClass.equals(ClassHelper.OBJECT_TYPE)) {
         superClass=ClassHelper.make(GroovyObjectSupport.class);
       }
       out.print("  extends ");
-      printTypeName(superClass,out);
+      printType(superClass,out);
     }
     ClassNode[] interfaces=classNode.getInterfaces();
     if (interfaces != null && interfaces.length > 0) {
@@ -43,9 +43,13 @@
  else {
         out.println("  implements");
       }
-      for (int i=0; i < interfaces.length - 1; ++i)       out.println("    " + interfaces[i].getName() + ",");
+      for (int i=0; i < interfaces.length - 1; ++i) {
+        out.print("    ");
+        printType(interfaces[i],out);
+        out.print(",");
+      }
       out.print("    ");
-      printTypeName(interfaces[interfaces.length - 1],out);
+      printType(interfaces[interfaces.length - 1],out);
     }
     out.println(" {");
     genMethods(classNode,out);

@@ -1,21 +1,10 @@
 {
-  if (java5 && type.isUsingGenerics()) {
-    GenericsType[] types=type.getGenericsTypes();
-    printTypeName(type,out);
-    out.print("<");
-    for (int i=0; i < types.length; i++) {
-      if (i != 0) {
-        out.print(", ");
-      }
-      out.print(types[i]);
-    }
-    out.print(">");
-  }
- else   if (type.isArray()) {
+  if (type.isArray()) {
     printType(type.getComponentType(),out);
     out.print("[]");
   }
  else {
     printTypeName(type,out);
+    if (java5)     writeGenericsBounds(out,type.getGenericsTypes());
   }
 }
