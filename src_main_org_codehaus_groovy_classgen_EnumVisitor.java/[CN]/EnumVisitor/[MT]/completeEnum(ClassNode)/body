@@ -54,6 +54,7 @@
       }
       field.setInitialValueExpression(null);
       block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),assign,new MethodCallExpression(new ClassExpression(enumClass),"$INIT",args))));
+      arrayInit.add(new FieldExpression(field));
     }
     block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(values),assign,new ArrayExpression(enumClass,arrayInit))));
     enumClass.addStaticInitializerStatements(block,true);
