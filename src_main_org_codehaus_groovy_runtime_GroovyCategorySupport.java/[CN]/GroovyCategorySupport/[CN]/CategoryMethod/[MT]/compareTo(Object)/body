@@ -4,14 +4,14 @@
   Class thatClass=thatMethod.metaClass;
   if (thisClass == thatClass)   return 0;
   Class loop=thisClass;
-  while (loop != Object.class) {
+  while (loop != null && loop != Object.class) {
     loop=thisClass.getSuperclass();
     if (loop == thatClass) {
       return -1;
     }
   }
   loop=thatClass;
-  while (loop != Object.class) {
+  while (loop != null && loop != Object.class) {
     loop=thatClass.getSuperclass();
     if (loop == thisClass) {
       return 1;
