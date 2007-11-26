@@ -1,14 +1,9 @@
 {
   if (receiver == null)   return null;
-  if (receiver.getClass().isArray()) {
-    return invokeMethodNSpreadSafeArray(senderClass,receiver,messageName,messageArguments);
+  if (!isSpreadable(receiver))   return invokeMethodN(senderClass,receiver,messageName,messageArguments);
+  List answer=new ArrayList();
+  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
+    answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
   }
-  if (receiver instanceof List) {
-    List answer=new ArrayList();
-    for (Iterator it=((List)receiver).iterator(); it.hasNext(); ) {
-      answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
-    }
-    return answer;
-  }
-  return invokeMethodN(senderClass,receiver,messageName,messageArguments);
+  return answer;
 }

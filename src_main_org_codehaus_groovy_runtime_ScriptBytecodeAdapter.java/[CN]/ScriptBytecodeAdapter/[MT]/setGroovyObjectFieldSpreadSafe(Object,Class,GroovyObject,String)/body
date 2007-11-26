@@ -1,12 +1,10 @@
 {
   if (receiver == null)   return;
-  if (!(receiver instanceof List)) {
+  if (!isSpreadable(receiver)) {
     setGroovyObjectField(messageArgument,senderClass,receiver,messageName);
     return;
   }
-  List list=(List)receiver;
-  List answer=new ArrayList();
-  for (Iterator it=list.iterator(); it.hasNext(); ) {
+  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
     setFieldSafe(messageArgument,senderClass,it.next(),messageName);
   }
 }

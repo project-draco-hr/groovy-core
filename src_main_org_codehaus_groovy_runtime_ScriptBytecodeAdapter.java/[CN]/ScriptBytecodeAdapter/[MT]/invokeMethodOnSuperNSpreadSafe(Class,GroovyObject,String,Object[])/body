@@ -1,8 +1,7 @@
 {
-  if (!(receiver instanceof List))   return invokeMethodOnSuperN(senderClass,receiver,messageName,messageArguments);
-  List list=(List)receiver;
+  if (!isSpreadable(receiver))   return invokeMethodOnSuperN(senderClass,receiver,messageName,messageArguments);
   List answer=new ArrayList();
-  for (Iterator it=list.iterator(); it.hasNext(); ) {
+  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
     answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
   }
   return answer;
