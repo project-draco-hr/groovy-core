@@ -2,6 +2,7 @@
   List fields=classNode.getFields();
   if (fields == null)   return;
   ArrayList enumFields=new ArrayList(fields.size());
+  ArrayList normalFields=new ArrayList(fields.size());
   for (Iterator it=fields.iterator(); it.hasNext(); ) {
     FieldNode fieldNode=(FieldNode)it.next();
     boolean isEnumField=(fieldNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
@@ -10,8 +11,12 @@
       enumFields.add(fieldNode);
     }
  else     if (!isSynthetic) {
-      genField(fieldNode,out);
+      normalFields.add(fieldNode);
     }
   }
   genEnumFields(enumFields,out);
+  for (Iterator iterator=normalFields.iterator(); iterator.hasNext(); ) {
+    FieldNode fieldNode=(FieldNode)iterator.next();
+    genField(fieldNode,out);
+  }
 }

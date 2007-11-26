@@ -33,8 +33,10 @@
       if (superClass.equals(ClassHelper.OBJECT_TYPE)) {
         superClass=ClassHelper.make(GroovyObjectSupport.class);
       }
-      out.print("  extends ");
-      printType(superClass,out);
+      if (!isEnum) {
+        out.print("  extends ");
+        printType(superClass,out);
+      }
     }
     ClassNode[] interfaces=classNode.getInterfaces();
     if (interfaces != null && interfaces.length > 0) {
@@ -53,8 +55,8 @@
       printType(interfaces[interfaces.length - 1],out);
     }
     out.println(" {");
-    genMethods(classNode,out);
-    genFields(classNode,out);
+    genFields(classNode,out,isEnum);
+    genMethods(classNode,out,isEnum);
     genProps(classNode,out);
     out.println("}");
   }

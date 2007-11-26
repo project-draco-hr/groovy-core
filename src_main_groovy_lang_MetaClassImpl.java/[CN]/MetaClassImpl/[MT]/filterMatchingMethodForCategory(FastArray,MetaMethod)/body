@@ -1,0 +1,19 @@
+{
+  int len=list.size();
+  if (len == 0) {
+    list.add(method);
+    return;
+  }
+  Boolean bestMatch=null;
+  Object data[]=list.getArray();
+  for (int j=0; j != len; ++j) {
+    MetaMethod aMethod=(MetaMethod)data[j];
+    Boolean match=getMatchKindForCategory(aMethod,method);
+    if (match == Boolean.TRUE) {
+      list.set(j,method);
+      return;
+    }
+    if (bestMatch == null)     bestMatch=match;
+  }
+  if (bestMatch == Boolean.FALSE)   list.add(method);
+}
