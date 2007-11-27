@@ -46,6 +46,7 @@
         final MetaClass ownerMetaClass=registry.getMetaClass(ownerClass);
         return ownerMetaClass.invokeMethod(owner,methodName,curriedArguments);
       }
+      if (method == null)       invokeMissingMethod(object,methodName,arguments);
     }
  else     if (CLOSURE_CURRY_METHOD.equals(methodName)) {
       return closure.curry(arguments);
