@@ -1,6 +1,11 @@
 {
   categoriesInUse++;
   List stack=(List)LOCAL.get();
-  Map properties=new WeakHashMap(getProperties());
-  stack.add(properties);
+  Map properties=(Map)stack.get(stack.size() - 1);
+  Map newMap=new WeakHashMap(properties.size());
+  for (Iterator iterator=properties.entrySet().iterator(); iterator.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iterator.next();
+    newMap.put(entry.getKey(),copyMapOfList((Map)entry.getValue()));
+  }
+  stack.add(newMap);
 }
