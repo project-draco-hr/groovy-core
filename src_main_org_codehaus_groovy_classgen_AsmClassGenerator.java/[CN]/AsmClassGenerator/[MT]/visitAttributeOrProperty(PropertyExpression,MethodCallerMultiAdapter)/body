@@ -15,6 +15,18 @@
         return;
       }
     }
+    if (isSuperExpression(objectExpression)) {
+      String prefix;
+      if (leftHandExpression) {
+        prefix="set";
+      }
+ else {
+        prefix="get";
+      }
+      String propName=prefix + MetaClassHelper.capitalize(name);
+      visitMethodCallExpression(new MethodCallExpression(objectExpression,propName,MethodCallExpression.NO_ARGUMENTS));
+      return;
+    }
   }
   makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
 }
