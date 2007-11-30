@@ -1,5 +1,12 @@
 {
   if (delegate == closure || delegate == null)   return null;
-  MetaClass delegateMetaClass=lookupObjectMetaClass(delegate);
-  return delegateMetaClass.pickMethod(methodName,argClasses);
+  MetaClass delegateMetaClass;
+  if (delegate instanceof Class) {
+    delegateMetaClass=registry.getMetaClass((Class)delegate);
+    return delegateMetaClass.getStaticMetaMethod(methodName,argClasses);
+  }
+ else {
+    delegateMetaClass=lookupObjectMetaClass(delegate);
+    return delegateMetaClass.pickMethod(methodName,argClasses);
+  }
 }
