@@ -1,7 +1,19 @@
 {
   long ret=0;
-  for (int i=0; i < arguments.length; i++) {
+  if (parameters.length == 0)   return 0;
+  int paramMinus1=parameters.length - 1;
+  for (int i=0; i < paramMinus1; i++) {
     ret+=calculateParameterDistance(arguments[i],parameters[i]);
+  }
+  if (parameters[paramMinus1].isArray() && (arguments.length > parameters.length)) {
+    ret++;
+    Class type=parameters[paramMinus1].getComponentType();
+    for (int i=paramMinus1; i != arguments.length; ++i) {
+      ret+=calculateParameterDistance(arguments[paramMinus1],type);
+    }
+  }
+ else {
+    ret+=calculateParameterDistance(arguments[paramMinus1],parameters[paramMinus1]);
   }
   return ret;
 }
