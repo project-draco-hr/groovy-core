@@ -1,6 +1,11 @@
 {
   if (methods == null) {
-    final Method[] declaredMethods=getCachedClass().getDeclaredMethods();
+    final Method[] declaredMethods=(Method[])AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
+        return getCachedClass().getDeclaredMethods();
+      }
+    }
+);
     ArrayList methods=new ArrayList(declaredMethods.length);
     ArrayList mopMethods=new ArrayList(declaredMethods.length);
     for (int i=0; i != declaredMethods.length; ++i) {
