@@ -1,9 +1,11 @@
 {
-  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
+  for (Iterator iter=getDeclaredMethods(setterName).iterator(); iter.hasNext(); ) {
     MethodNode method=(MethodNode)iter.next();
-    if (getterName.equals(method.getName()) && ClassHelper.VOID_TYPE == method.getReturnType() && method.getParameters().length == 1) {
+    if (setterName.equals(method.getName()) && ClassHelper.VOID_TYPE == method.getReturnType() && method.getParameters().length == 1) {
       return method;
     }
   }
+  ClassNode parent=getSuperClass();
+  if (parent != null)   return parent.getSetterMethod(setterName);
   return null;
 }

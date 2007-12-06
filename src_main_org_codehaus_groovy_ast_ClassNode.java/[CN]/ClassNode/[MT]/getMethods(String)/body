@@ -1,15 +1,6 @@
 {
-  List answer=new ArrayList();
-  ClassNode node=this;
-  do {
-    for (Iterator iter=node.getMethods().iterator(); iter.hasNext(); ) {
-      MethodNode method=(MethodNode)iter.next();
-      if (name.equals(method.getName())) {
-        answer.add(method);
-      }
-    }
-    node=node.getSuperClass();
-  }
- while (node != null);
+  List answer=new ArrayList(getDeclaredMethods(name));
+  ClassNode parent=getSuperClass();
+  if (parent != null)   answer.addAll(parent.getMethods(name));
   return answer;
 }

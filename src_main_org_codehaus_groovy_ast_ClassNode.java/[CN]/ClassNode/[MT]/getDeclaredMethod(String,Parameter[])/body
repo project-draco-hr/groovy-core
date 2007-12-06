@@ -1,7 +1,8 @@
 {
-  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
+  List list=getDeclaredMethods(name);
+  for (Iterator iter=list.iterator(); iter.hasNext(); ) {
     MethodNode method=(MethodNode)iter.next();
-    if (name.equals(method.getName()) && parametersEqual(method.getParameters(),parameters)) {
+    if (parametersEqual(method.getParameters(),parameters)) {
       return method;
     }
   }

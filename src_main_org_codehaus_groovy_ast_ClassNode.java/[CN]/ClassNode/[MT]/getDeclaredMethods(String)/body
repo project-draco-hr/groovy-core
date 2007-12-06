@@ -1,10 +1,5 @@
 {
-  List answer=new ArrayList();
-  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
-    MethodNode method=(MethodNode)iter.next();
-    if (name.equals(method.getName())) {
-      answer.add(method);
-    }
-  }
-  return answer;
+  if (!lazyInitDone)   lazyClassInit();
+  if (redirect != null)   return redirect().getDeclaredMethods(name);
+  return methods.getNotNull(name);
 }

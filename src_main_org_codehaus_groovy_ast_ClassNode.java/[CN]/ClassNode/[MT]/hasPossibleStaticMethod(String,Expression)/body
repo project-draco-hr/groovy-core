@@ -4,12 +4,12 @@
     TupleExpression tuple=(TupleExpression)arguments;
     count=tuple.getExpressions().size();
   }
-  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
+  for (Iterator iter=getDeclaredMethods(name).iterator(); iter.hasNext(); ) {
     MethodNode method=(MethodNode)iter.next();
-    if (name.equals(method.getName()) && method.getParameters().length == count && method.isStatic()) {
+    if (method.getParameters().length == count && method.isStatic()) {
       return true;
     }
-    if (name.equals(method.getName()) && method.isStatic() && method.getParameters().length > 0 && method.getParameters()[method.getParameters().length - 1].getType().getTypeClass().isArray()) {
+    if (method.isStatic() && method.getParameters().length > 0 && method.getParameters()[method.getParameters().length - 1].getType().isArray()) {
       if (count >= method.getParameters().length - 1)       return true;
     }
   }
