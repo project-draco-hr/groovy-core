@@ -8,6 +8,14 @@
   File file=new File(outputPath,fileName + ".java");
   FileOutputStream fos=new FileOutputStream(file);
   PrintWriter out=new PrintWriter(fos);
+  Verifier verifier=new Verifier(){
+    public void addCovariantMethods(    ClassNode cn){
+    }
+    protected void addTimeStamp(    ClassNode node){
+    }
+  }
+;
+  verifier.visitClass(classNode);
   try {
     String packageName=classNode.getPackageName();
     if (packageName != null) {
@@ -29,14 +37,9 @@
     out.println(classNode.getNameWithoutPackage());
     writeGenericsBounds(out,classNode,true);
     ClassNode superClass=classNode.getUnresolvedSuperClass(false);
-    if (!isInterface) {
-      if (superClass.equals(ClassHelper.OBJECT_TYPE)) {
-        superClass=ClassHelper.make(GroovyObjectSupport.class);
-      }
-      if (!isEnum) {
-        out.print("  extends ");
-        printType(superClass,out);
-      }
+    if (!isInterface && !isEnum) {
+      out.print("  extends ");
+      printType(superClass,out);
     }
     ClassNode[] interfaces=classNode.getInterfaces();
     if (interfaces != null && interfaces.length > 0) {

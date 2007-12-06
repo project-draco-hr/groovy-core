@@ -1,19 +1,27 @@
 {
-  long ret=0;
   if (parameters.length == 0)   return 0;
-  int paramMinus1=parameters.length - 1;
-  for (int i=0; i < paramMinus1; i++) {
+  long ret=0;
+  int noVargsLength=parameters.length - 1;
+  for (int i=0; i < noVargsLength; i++) {
     ret+=calculateParameterDistance(arguments[i],parameters[i]);
   }
-  if (parameters[paramMinus1].isArray() && (arguments.length > parameters.length)) {
-    ret++;
-    Class type=parameters[paramMinus1].getComponentType();
-    for (int i=paramMinus1; i != arguments.length; ++i) {
-      ret+=calculateParameterDistance(arguments[paramMinus1],type);
+  if (arguments.length == parameters.length) {
+    Class baseType=parameters[noVargsLength];
+    if (!isAssignableFrom(parameters[noVargsLength],arguments[noVargsLength])) {
+      baseType=baseType.getComponentType();
+      ret+=2l << VARGS_SHIFT;
+    }
+    ret+=calculateParameterDistance(arguments[noVargsLength],baseType);
+  }
+ else   if (arguments.length > parameters.length) {
+    ret+=(2 + arguments.length - parameters.length) << VARGS_SHIFT;
+    Class vargsType=parameters[noVargsLength].getComponentType();
+    for (int i=noVargsLength; i < arguments.length; i++) {
+      ret+=calculateParameterDistance(arguments[i],vargsType);
     }
   }
  else {
-    ret+=calculateParameterDistance(arguments[paramMinus1],parameters[paramMinus1]);
+    ret+=1l << VARGS_SHIFT;
   }
   return ret;
 }

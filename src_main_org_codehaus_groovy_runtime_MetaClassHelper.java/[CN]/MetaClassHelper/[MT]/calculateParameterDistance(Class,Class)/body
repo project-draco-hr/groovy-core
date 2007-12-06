@@ -1,27 +1,13 @@
 {
   if (parameter == argument)   return 0;
   if (parameter.isInterface()) {
-    long ret=PRIMITIVES.length;
-    ret=(ret << 32) | getMaximumInterfaceDistance(argument,parameter);
-    return ret;
+    return getMaximumInterfaceDistance(argument,parameter) << 1;
   }
   long objectDistance=0;
   if (argument != null) {
-    if (parameter.isArray()) {
-      if (argument.isArray()) {
-        return calculateParameterDistance(argument.getComponentType(),parameter.getComponentType());
-      }
- else {
-        parameter=parameter.getComponentType();
-        objectDistance++;
-      }
-    }
- else     if (argument.isArray()) {
-      objectDistance++;
-    }
     long pd=getPrimitiveDistance(parameter,argument);
-    if (pd != -1)     return pd << 33;
-    objectDistance+=PRIMITIVES.length << 1 + 1;
+    if (pd != -1)     return pd << 32;
+    objectDistance+=PRIMITIVES.length + 1;
     Class clazz=ReflectionCache.autoboxType(argument);
     while (clazz != null) {
       if (clazz == parameter)       break;
