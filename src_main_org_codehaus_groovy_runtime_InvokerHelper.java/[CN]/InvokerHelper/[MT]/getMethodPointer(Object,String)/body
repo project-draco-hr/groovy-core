@@ -1,3 +1,6 @@
 {
-  return getInstance().getMethodPointer(object,methodName);
+  if (object == null) {
+    throw new NullPointerException("Cannot access method pointer for '" + methodName + "' on null object");
+  }
+  return new MethodClosure(object,methodName);
 }

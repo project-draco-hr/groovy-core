@@ -1,3 +1,11 @@
 {
-  return getInstance().getProperty(object,property);
+  if (object instanceof GroovyObject) {
+    GroovyObject pogo=(GroovyObject)object;
+    return pogo.getProperty(property);
+  }
+  if (object instanceof Class) {
+    Class c=(Class)object;
+    return metaRegistry.getMetaClass(c).getProperty(object,property);
+  }
+  return metaRegistry.getMetaClass(object.getClass()).getProperty(object,property);
 }

@@ -1,3 +1,9 @@
 {
-  getInstance().setAttribute(object,attribute,newValue);
+  if (object instanceof Class) {
+    metaRegistry.getMetaClass((Class)object).setAttribute(object,attribute,newValue);
+  }
+  if (object instanceof GroovyObject) {
+    ((GroovyObject)object).getMetaClass().setAttribute(object,attribute,newValue);
+  }
+  metaRegistry.getMetaClass(object.getClass()).setAttribute(object,attribute,newValue);
 }
