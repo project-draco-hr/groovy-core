@@ -33,7 +33,8 @@ catch (  NoClassDefFoundError ncdfe) {
   if (lookupScriptFiles) {
 synchronized (this) {
       try {
-        if (getClassCacheEntry(name) != cls)         return getClassCacheEntry(name);
+        final Class classCacheEntry=getClassCacheEntry(name);
+        if (classCacheEntry != cls)         return classCacheEntry;
         URL source=resourceLoader.loadGroovySource(name);
         cls=recompile(source,name,cls);
       }
