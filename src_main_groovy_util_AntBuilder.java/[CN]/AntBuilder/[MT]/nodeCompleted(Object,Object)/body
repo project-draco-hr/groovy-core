@@ -15,10 +15,12 @@
     lastCompletedNode=task;
     if (task instanceof Task) {
       InputStream originalIn=System.in;
-      DemuxInputStream inputStream=new DemuxInputStream(this.project);
-      System.setIn(inputStream);
+      InputStream projectDefaultStream=this.project.getDefaultInputStream();
+      this.project.setDefaultInputStream(originalIn);
+      System.setIn(new DemuxInputStream(this.project));
       ((Task)task).perform();
       System.setIn(originalIn);
+      this.project.setDefaultInputStream(projectDefaultStream);
     }
   }
  else {
