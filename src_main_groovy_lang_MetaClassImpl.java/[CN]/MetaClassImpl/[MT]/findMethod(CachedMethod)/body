@@ -6,18 +6,18 @@
     final Object data[]=m.getArray();
     for (int i=0; i != len; ++i) {
       MetaMethod method=(MetaMethod)data[i];
-      if (method.isMethod(aMethod.cachedMethod)) {
+      if (method.isMethod(aMethod)) {
         return method;
       }
     }
   }
  else {
     MetaMethod method=(MetaMethod)methods;
-    if (method.isMethod(aMethod.cachedMethod)) {
+    if (method.isMethod(aMethod)) {
       return method;
     }
   }
 synchronized (aMethod.cachedClass) {
-    return aMethod.getReflectionMetaMethod();
+    return aMethod;
   }
 }
