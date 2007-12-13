@@ -1,0 +1,20 @@
+{
+  while (true) {
+    int lastIndex=stack.size() - 1;
+    Iterator iter=(Iterator)stack.get(lastIndex);
+    hasNext=iter.hasNext();
+    if (!hasNext) {
+      stack.remove(lastIndex);
+      if (stack.size() > 0)       continue;
+ else       return;
+    }
+    Object next=iter.next();
+    Iterator flattened=flatten(next);
+    if (flattened != null) {
+      stack.add(flattened);
+      continue;
+    }
+    this.lastAcquired=next;
+    break;
+  }
+}

@@ -1,0 +1,20 @@
+{
+synchronized (this) {
+    notify();
+  }
+  while (true) {
+    currentTask=waitForTask();
+    try {
+      if (currentTask == null)       return;
+      try {
+        currentTask.run();
+      }
+ catch (      Throwable t) {
+      }
+    }
+  finally {
+      currentTask=null;
+      putToPool();
+    }
+  }
+}

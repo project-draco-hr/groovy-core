@@ -1,0 +1,10 @@
+{
+  try {
+    return super.getProperty(property);
+  }
+ catch (  MissingPropertyException e) {
+    Thread thread=Thread.currentThread();
+    if (!(thread instanceof WorkerThread))     throw e;
+    return ((WorkerThread)thread).localVars.getProperty(property);
+  }
+}

@@ -1,0 +1,15 @@
+{
+synchronized (lock) {
+    while (getQueueSize() > maxCapacity) {
+      try {
+        lock.wait();
+      }
+ catch (      InterruptedException e) {
+        lock.notify();
+        throw new GroovyRuntimeException(e);
+      }
+    }
+    super.put(object);
+    lock.notify();
+  }
+}

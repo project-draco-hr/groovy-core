@@ -1,0 +1,8 @@
+{
+  Thread t=Thread.currentThread();
+  if (t instanceof WorkerThread) {
+    WorkerThread workerThread=(WorkerThread)t;
+    if (workerThread.localVars.containsKey(property))     return workerThread.localVars;
+  }
+  return super.findVar(property);
+}

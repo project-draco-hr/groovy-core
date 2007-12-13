@@ -1,0 +1,13 @@
+{
+  if (self instanceof Iterator)   return (Iterator)self;
+  if (self instanceof Map)   return ((Map)self).entrySet().iterator();
+  if (self instanceof Enumeration)   return new EnumerationIterator((Enumeration)self);
+  Class aClass=self.getClass();
+  if (aClass.isArray()) {
+    if (aClass.getComponentType().isPrimitive()) {
+      return DefaultTypeTransformation.primitiveArrayToList(self).iterator();
+    }
+    return Arrays.asList((Object[])self).iterator();
+  }
+  return new SingletonIterator(self);
+}

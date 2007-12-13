@@ -1,0 +1,16 @@
+{
+synchronized (tasks) {
+    if (!tasks.isEmpty()) {
+synchronized (availableThreads) {
+        availableThreads.remove(this);
+      }
+      return (Runnable)tasks.removeFirst();
+    }
+    try {
+      tasks.wait(keepAliveTime);
+    }
+ catch (    InterruptedException e) {
+    }
+    return null;
+  }
+}

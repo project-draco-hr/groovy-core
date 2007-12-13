@@ -1,0 +1,17 @@
+{
+  if (next instanceof Iterator)   return (Iterator)next;
+  if (next instanceof Collection)   return ((Collection)next).iterator();
+  if (next instanceof Map) {
+    Map map=(Map)next;
+switch (strategy) {
+case MAPVALUES:
+      return map.values().iterator();
+case MAPKEYS:
+    return map.keySet().iterator();
+default :
+  return map.entrySet().iterator();
+}
+}
+if (next instanceof Enumeration) return new EnumerationIterator((Enumeration)next);
+return null;
+}

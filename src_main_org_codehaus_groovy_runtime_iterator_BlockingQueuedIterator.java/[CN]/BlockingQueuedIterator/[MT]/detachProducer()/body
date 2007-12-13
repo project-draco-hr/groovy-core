@@ -1,0 +1,14 @@
+{
+synchronized (lock) {
+    Thread curThread=Thread.currentThread();
+    if (curThread instanceof WorkerThread && producers.contains(curThread)) {
+      WorkerThread workerThread=(WorkerThread)curThread;
+      producers.remove(curThread);
+      workerThread.threadIndex=-1;
+      lock.notify();
+    }
+ else {
+      throw new GroovyRuntimeException("Internal Error");
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  if (vars != null)   for (Iterator it=vars.entrySet().iterator(); it.hasNext(); ) {
+    Map.Entry e=(Map.Entry)it.next();
+    String key=e.getKey().toString();
+    MetaProperty metaProperty=getMetaClass().getMetaProperty(key);
+    if (metaProperty != null) {
+      metaProperty.setProperty(this,e.getValue());
+    }
+ else     defineLocal(key,e.getValue());
+  }
+}

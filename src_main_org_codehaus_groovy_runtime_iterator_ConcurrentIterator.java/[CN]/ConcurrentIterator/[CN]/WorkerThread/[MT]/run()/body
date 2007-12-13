@@ -1,0 +1,14 @@
+{
+  try {
+    while (true) {
+      if (!inner.hasNext())       break;
+      put(inner.next());
+      while (!inner.isQueueEmpty()) {
+        put(inner.get());
+      }
+    }
+  }
+  finally {
+    detachProducer();
+  }
+}

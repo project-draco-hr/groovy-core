@@ -1,0 +1,21 @@
+{
+  this.transformer=new Transformer(){
+    public Object transform(    Object params,    TransformIterator iter) throws Throwable {
+      boolean res=filter.isValid(params,iter);
+      if (!isQueueEmpty()) {
+        return null;
+      }
+      if (!res)       iter.continueIteration();
+      if (params instanceof Object[]) {
+        Object[] p=(Object[])params;
+        for (int i=0; i != p.length; ++i)         put(p[i]);
+        return null;
+      }
+      return params;
+    }
+    public int getParamCount(){
+      return filter.getParamCount();
+    }
+  }
+;
+}

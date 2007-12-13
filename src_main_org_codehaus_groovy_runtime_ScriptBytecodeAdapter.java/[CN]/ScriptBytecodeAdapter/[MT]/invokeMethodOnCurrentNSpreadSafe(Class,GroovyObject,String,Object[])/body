@@ -1,8 +1,18 @@
 {
   if (!isSpreadable(receiver))   return invokeMethodOnCurrentN(senderClass,receiver,messageName,messageArguments);
-  List answer=new ArrayList();
-  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
-    answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
+  if (receiver instanceof Iterator) {
+    return new TransformIterator((Iterator)receiver,null,new TransformIterator.OneParamTransformer(){
+      public Object transform(      Object object,      TransformIterator iter) throws Throwable {
+        return invokeMethodNSafe(senderClass,object,messageName,messageArguments);
+      }
+    }
+);
   }
-  return answer;
+ else {
+    List answer=new ArrayList();
+    for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
+      answer.add(invokeMethodNSafe(senderClass,it.next(),messageName,messageArguments));
+    }
+    return answer;
+  }
 }

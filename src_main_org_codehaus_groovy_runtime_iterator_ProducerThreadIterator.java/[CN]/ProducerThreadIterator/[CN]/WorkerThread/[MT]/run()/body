@@ -1,0 +1,28 @@
+{
+  try {
+    do {
+      try {
+        callClosure(myClosure,null);
+      }
+ catch (      GroovyRuntimeException g) {
+        GroovyRuntimeException orig=g;
+        while (g.getCause() != null && g.getCause() != g && g.getCause() instanceof GroovyRuntimeException)         g=(GroovyRuntimeException)g.getCause();
+        if (g instanceof BreakIterationException) {
+          break;
+        }
+        if (g instanceof ContinueIterationException) {
+          continue;
+        }
+        put(orig);
+        break;
+      }
+catch (      Throwable t) {
+        put(t);
+      }
+    }
+ while (repeatable);
+  }
+  finally {
+    detachProducer();
+  }
+}

@@ -1,0 +1,11 @@
+{
+  try {
+    super.doCheckNext();
+  }
+ catch (  Throwable t) {
+    hasNext=true;
+    stopped=true;
+    if (!isQueueEmpty())     put(t);
+ else     lastAcquired=t;
+  }
+}

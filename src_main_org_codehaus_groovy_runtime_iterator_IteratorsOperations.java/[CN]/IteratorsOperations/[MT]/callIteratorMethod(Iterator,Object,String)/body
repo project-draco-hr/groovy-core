@@ -1,0 +1,18 @@
+{
+  if (o instanceof Closure) {
+    final Closure closure=(Closure)((Closure)o).clone();
+    closure.setDelegate(self);
+    return new TransformIterator(self,null,new TransformIterator.OneParamTransformer(){
+      public Object transform(      Object object,      TransformIterator iter){
+        return InvokerHelper.invokeMethod(object,methodName,closure.call(object));
+      }
+    }
+);
+  }
+ else   return new TransformIterator(self,null,new TransformIterator.OneParamTransformer(){
+    public Object transform(    Object object,    TransformIterator iter){
+      return InvokerHelper.invokeMethod(object,methodName,o);
+    }
+  }
+);
+}
