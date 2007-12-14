@@ -1,7 +1,14 @@
 {
-  Collection answer;
-  if (left instanceof Set)   answer=new HashSet();
- else   answer=new ArrayList(left.size() + 1);
+  final Collection answer;
+  if (left instanceof SortedSet) {
+    answer=new TreeSet();
+  }
+ else   if (left instanceof Set) {
+    answer=new HashSet();
+  }
+ else {
+    answer=new ArrayList(left.size() + 1);
+  }
   answer.addAll(left);
   answer.add(right);
   return answer;
