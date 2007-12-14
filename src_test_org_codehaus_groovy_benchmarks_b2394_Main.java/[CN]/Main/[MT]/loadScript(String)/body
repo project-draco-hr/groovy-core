@@ -1,0 +1,30 @@
+{
+  Class scriptClass=null;
+  name="src/test/" + getClass().getPackage().getName().replace(".","/") + "/"+ name;
+  InputStream is=null;
+  try {
+    is=new FileInputStream(name);
+  }
+ catch (  FileNotFoundException e) {
+    throw new RuntimeException(e);
+  }
+  if (is == null) {
+    throw new RuntimeException("Script file not found: " + name);
+  }
+  GroovyClassLoader gcl=new GroovyClassLoader(this.getClass().getClassLoader());
+  try {
+    scriptClass=gcl.parseClass(is);
+  }
+ catch (  CompilationFailedException e) {
+    throw new RuntimeException("Script compilation failed: " + e.getMessage());
+  }
+ finally {
+    try {
+      if (is != null)       is.close();
+    }
+ catch (    IOException e1) {
+      e1.printStackTrace();
+    }
+  }
+  return scriptClass;
+}
