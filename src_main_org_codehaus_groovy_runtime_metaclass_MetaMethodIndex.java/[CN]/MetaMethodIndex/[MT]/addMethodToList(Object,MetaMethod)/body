@@ -11,13 +11,13 @@
       return list;
     }
  else {
-      if (match.isPrivate() || (match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
+      if (match.isPrivate() || (!isNonRealMethod(match) && match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
       }
  else {
         Class methodC=method.getDeclaringClass().getCachedClass();
         Class matchC=match.getDeclaringClass().getCachedClass();
         if (methodC == matchC) {
-          if (method instanceof NewInstanceMetaMethod || method instanceof NewStaticMetaMethod || method instanceof ClosureMetaMethod|| method instanceof ClosureStaticMetaMethod) {
+          if (isNonRealMethod(method)) {
             return method;
           }
         }
@@ -37,13 +37,13 @@
  else {
       MetaMethod match=(MetaMethod)list.get(found);
       if (match == method)       return o;
-      if (match.isPrivate() || (match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
+      if (match.isPrivate() || (!isNonRealMethod(match) && match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
       }
  else {
         Class methodC=method.getDeclaringClass().getCachedClass();
         Class matchC=match.getDeclaringClass().getCachedClass();
         if (methodC == matchC) {
-          if (method instanceof NewInstanceMetaMethod || method instanceof NewStaticMetaMethod || method instanceof ClosureMetaMethod|| method instanceof ClosureStaticMetaMethod) {
+          if (isNonRealMethod(method)) {
             list.set(found,method);
           }
         }
