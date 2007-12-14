@@ -1,28 +1,3 @@
 {
-  if (isEmptyElement(node)) {
-    printLineBegin();
-    out.print("<");
-    out.print(getNameOfNode(node));
-    printNameAttributes(node.attributes());
-    out.print("/>");
-    printLineEnd();
-    out.flush();
-    return;
-  }
-  if (printSpecialNode(node)) {
-    out.flush();
-    return;
-  }
-  Object value=node.value();
-  if (value instanceof List) {
-    printName(node,true);
-    printList((List)value);
-    printName(node,false);
-    out.flush();
-    return;
-  }
-  printName(node,true);
-  printSimpleItemWithIndent(value);
-  printName(node,false);
-  out.flush();
+  print(node,new NamespaceContext());
 }
