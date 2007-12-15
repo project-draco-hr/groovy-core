@@ -1,0 +1,13 @@
+{
+  if (argumentArray == null) {
+    return MetaClassHelper.EMPTY_ARRAY;
+  }
+ else   if (parameterTypes.length == 1 && argumentArray.length == 0) {
+    if (isVargsMethod)     return new Object[]{Array.newInstance(parameterTypes[0].getCachedClass().getComponentType(),0)};
+ else     return MetaClassHelper.ARRAY_WITH_NULL;
+  }
+ else   if (isVargsMethod(argumentArray)) {
+    return fitToVargs(argumentArray,parameterTypes);
+  }
+  return argumentArray;
+}

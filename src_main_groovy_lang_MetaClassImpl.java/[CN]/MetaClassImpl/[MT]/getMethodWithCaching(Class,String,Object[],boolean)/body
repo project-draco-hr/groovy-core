@@ -1,0 +1,36 @@
+{
+  if (GroovyCategorySupport.hasCategoryInAnyThread() && !isCallToSuper) {
+    return getMethodWithoutCaching(sender,methodName,MetaClassHelper.convertToTypeArray(arguments),isCallToSuper);
+  }
+ else {
+    final MetaMethodIndex.Entry e=metaMethodIndex.getMethods(sender,methodName);
+    if (e == null)     return null;
+    MetaMethodIndex.CacheEntry cacheEntry;
+    if (!isCallToSuper) {
+      if (e.methods == null)       return null;
+      cacheEntry=e.cachedMethod;
+      if (cacheEntry != null && (sameClasses(cacheEntry.params,arguments,e.methods instanceof MetaMethod))) {
+        return cacheEntry.method;
+      }
+      cacheEntry=new MetaMethodIndex.CacheEntry();
+      final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
+      cacheEntry.params=classes;
+      cacheEntry.method=(MetaMethod)chooseMethod(methodName,e.methods,classes,false);
+      e.cachedMethod=cacheEntry;
+      return cacheEntry.method;
+    }
+ else {
+      if (e.methodsForSuper == null)       return null;
+      cacheEntry=e.cachedMethodForSuper;
+      if (cacheEntry != null && (sameClasses(cacheEntry.params,arguments,e.methodsForSuper instanceof MetaMethod))) {
+        return cacheEntry.method;
+      }
+      cacheEntry=new MetaMethodIndex.CacheEntry();
+      final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
+      cacheEntry.params=classes;
+      cacheEntry.method=(MetaMethod)chooseMethod(methodName,e.methodsForSuper,classes,false);
+      e.cachedMethodForSuper=cacheEntry;
+      return cacheEntry.method;
+    }
+  }
+}

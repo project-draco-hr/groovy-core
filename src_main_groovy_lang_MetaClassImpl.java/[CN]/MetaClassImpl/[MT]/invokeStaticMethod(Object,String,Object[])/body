@@ -12,8 +12,7 @@
     return invokeMethod(object,methodName,arguments);
   }
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
-  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
-  MetaMethod method=retrieveStaticMethod(methodName,argClasses);
+  MetaMethod method=retrieveStaticMethod(methodName,arguments);
   if (method != null) {
     unwrap(arguments);
     return MetaClassHelper.doMethodInvoke(object,method,arguments);
@@ -30,6 +29,7 @@
   Object[] originalArguments=(Object[])arguments.clone();
   unwrap(arguments);
   Class superClass=sender.getSuperclass();
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   while (superClass != Object.class && superClass != null) {
     MetaClass mc=registry.getMetaClass(superClass);
     method=mc.getStaticMetaMethod(methodName,argClasses);

@@ -7,9 +7,8 @@
     MetaClassHelper.logMethodCall(object,methodName,originalArguments);
   }
   final Object[] arguments=originalArguments == null ? EMPTY_ARGUMENTS : originalArguments;
-  final Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  MetaMethod method=getMethodWithCaching(sender,methodName,arguments,isCallToSuper);
   unwrap(arguments);
-  MetaMethod method=getMethodWithCaching(sender,methodName,argClasses,isCallToSuper);
   if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
     Object[] newArguments=((List)arguments[0]).toArray();
     Class[] newArgClasses=MetaClassHelper.convertToTypeArray(newArguments);
@@ -54,6 +53,7 @@
     final Object delegate=closure.getDelegate();
     final boolean isClosureNotOwner=owner != closure;
     final int resolveStrategy=closure.getResolveStrategy();
+    final Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
 switch (resolveStrategy) {
 case Closure.TO_SELF:
       method=closure.getMetaClass().pickMethod(methodName,argClasses);
