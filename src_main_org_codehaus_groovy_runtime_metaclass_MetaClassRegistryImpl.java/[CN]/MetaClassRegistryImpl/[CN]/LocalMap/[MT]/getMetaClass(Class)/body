@@ -1,0 +1,20 @@
+{
+  final Integer regVer=MetaClassRegistryImpl.this.version;
+  final int regv=regVer.intValue();
+  if (version != regv) {
+    clear();
+  }
+ else {
+    final SoftReference ref=(SoftReference)super.get(theClass);
+    MetaClass mc;
+    if (ref != null && (mc=(MetaClass)ref.get()) != null) {
+      return mc;
+    }
+  }
+synchronized (MetaClassRegistryImpl.this) {
+    MetaClass answer=getGlobalMetaClass(theClass);
+    put(theClass,new SoftReference(answer));
+    version=MetaClassRegistryImpl.this.version.intValue();
+    return answer;
+  }
+}

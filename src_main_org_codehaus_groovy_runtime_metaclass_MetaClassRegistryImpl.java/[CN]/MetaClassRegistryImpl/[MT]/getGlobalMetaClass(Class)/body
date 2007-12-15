@@ -1,0 +1,19 @@
+{
+  MetaClass answer=null;
+  if (constantMetaClassCount != 0)   answer=(MetaClass)constantMetaClasses.get(theClass);
+  if (answer != null)   return answer;
+  answer=(MetaClass)weakMetaClasses.get(theClass);
+  if (answer != null)   return answer;
+  answer=(MetaClass)weakMetaClasses.get(theClass);
+  if (answer != null)   return answer;
+  answer=metaClassCreationHandle.create(theClass,this);
+  answer.initialize();
+  if (GroovySystem.isKeepJavaMetaClasses()) {
+    constantMetaClassCount++;
+    constantMetaClasses.put(theClass,answer);
+  }
+ else {
+    weakMetaClasses.put(theClass,answer);
+  }
+  return answer;
+}

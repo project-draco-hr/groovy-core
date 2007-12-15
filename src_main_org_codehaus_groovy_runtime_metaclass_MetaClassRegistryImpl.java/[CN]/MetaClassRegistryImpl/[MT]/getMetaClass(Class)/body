@@ -1,21 +1,3 @@
 {
-  MetaClass answer=null;
-  if (constantMetaClassCount != 0)   answer=(MetaClass)constantMetaClasses.get(theClass);
-  if (answer != null)   return answer;
-  answer=(MetaClass)weakMetaClasses.get(theClass);
-  if (answer != null)   return answer;
-synchronized (theClass) {
-    answer=(MetaClass)weakMetaClasses.get(theClass);
-    if (answer != null)     return answer;
-    answer=getMetaClassFor(theClass);
-    answer.initialize();
-    if (GroovySystem.isKeepJavaMetaClasses()) {
-      constantMetaClassCount++;
-      constantMetaClasses.put(theClass,answer);
-    }
- else {
-      weakMetaClasses.put(theClass,answer);
-    }
-    return answer;
-  }
+  return ((LocalMap)locallyKnown.get()).getMetaClass(theClass);
 }
