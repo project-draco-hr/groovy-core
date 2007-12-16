@@ -1,6 +1,13 @@
 {
-  if (self.size() == 0)   return new HashSet();
-  Set ansSet=new HashSet(self);
-  ansSet.removeAll(operands);
+  final Set ansSet;
+  if (self instanceof SortedSet) {
+    ansSet=new TreeSet(self);
+  }
+ else {
+    ansSet=new HashSet(self);
+  }
+  if (self.size() > 0) {
+    ansSet.removeAll(operands);
+  }
   return ansSet;
 }
