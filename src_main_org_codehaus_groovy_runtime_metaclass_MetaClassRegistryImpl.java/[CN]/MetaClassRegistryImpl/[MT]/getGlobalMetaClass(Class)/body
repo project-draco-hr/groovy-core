@@ -4,16 +4,18 @@
   if (answer != null)   return answer;
   answer=(MetaClass)weakMetaClasses.get(theClass);
   if (answer != null)   return answer;
-  answer=(MetaClass)weakMetaClasses.get(theClass);
-  if (answer != null)   return answer;
-  answer=metaClassCreationHandle.create(theClass,this);
-  answer.initialize();
-  if (GroovySystem.isKeepJavaMetaClasses()) {
-    constantMetaClassCount++;
-    constantMetaClasses.put(theClass,answer);
-  }
+synchronized (theClass) {
+    answer=(MetaClass)weakMetaClasses.get(theClass);
+    if (answer != null)     return answer;
+    answer=metaClassCreationHandle.create(theClass,this);
+    answer.initialize();
+    if (GroovySystem.isKeepJavaMetaClasses()) {
+      constantMetaClassCount++;
+      constantMetaClasses.put(theClass,answer);
+    }
  else {
-    weakMetaClasses.put(theClass,answer);
+      weakMetaClasses.put(theClass,answer);
+    }
   }
   return answer;
 }

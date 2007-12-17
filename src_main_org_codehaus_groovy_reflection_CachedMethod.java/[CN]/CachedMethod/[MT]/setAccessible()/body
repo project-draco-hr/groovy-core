@@ -1,13 +1,6 @@
 {
   if (!alreadySetAccessible) {
-    AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        cachedMethod.setAccessible(true);
-        return null;
-      }
-    }
-);
+    setAccessible0();
   }
-  alreadySetAccessible=true;
   return cachedMethod;
 }

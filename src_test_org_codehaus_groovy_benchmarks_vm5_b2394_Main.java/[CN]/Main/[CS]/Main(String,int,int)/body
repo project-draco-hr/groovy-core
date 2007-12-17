@@ -3,8 +3,14 @@
   CountDownLatch latch=new CountDownLatch(numThreads);
   Class scriptClass=loadScript(scriptName);
   long start=System.currentTimeMillis();
+  ScriptLauncher[] arr=new ScriptLauncher[numThreads];
+  long tids[]=new long[numThreads];
   for (int i=0; i < numThreads; i++) {
-    new ScriptLauncher(scriptClass,numIter,latch).start();
+    arr[i]=new ScriptLauncher(scriptClass,numIter,latch,tids);
+    tids[i]=arr[i].getId();
+  }
+  for (int i=0; i < numThreads; i++) {
+    arr[i].start();
   }
   try {
     latch.await();

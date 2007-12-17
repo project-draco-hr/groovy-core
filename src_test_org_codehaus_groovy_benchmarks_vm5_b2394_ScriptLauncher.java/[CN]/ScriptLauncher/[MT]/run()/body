@@ -1,4 +1,5 @@
 {
+  final long id=Thread.currentThread().getId();
   for (int i=0; i < numIter; i++) {
     Builder builder=new Builder();
     try {
@@ -12,5 +13,7 @@
     script.setBinding(binding);
     script.run();
   }
+  final ThreadInfo threadInfo=tmxBean.getThreadInfo(id);
+  System.out.println(threadInfo.getBlockedCount() + " " + threadInfo.getBlockedTime());
   latch.countDown();
 }
