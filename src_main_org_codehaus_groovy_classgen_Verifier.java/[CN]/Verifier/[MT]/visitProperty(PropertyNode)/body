@@ -5,13 +5,15 @@
   String setterName="set" + capitalize(name);
   Statement getterBlock=node.getGetterBlock();
   if (getterBlock == null) {
-    if (!node.isPrivate() && classNode.getGetterMethod(getterName) == null) {
+    MethodNode getter=classNode.getGetterMethod(getterName);
+    if (!node.isPrivate() && methodNeedsReplacement(getter)) {
       getterBlock=createGetterBlock(node,field);
     }
   }
   Statement setterBlock=node.getSetterBlock();
   if (setterBlock == null) {
-    if (!node.isPrivate() && (node.getModifiers() & ACC_FINAL) == 0 && classNode.getSetterMethod(setterName) == null) {
+    MethodNode setter=classNode.getSetterMethod(setterName);
+    if (!node.isPrivate() && (node.getModifiers() & ACC_FINAL) == 0 && methodNeedsReplacement(setter)) {
       setterBlock=createSetterBlock(node,field);
     }
   }
