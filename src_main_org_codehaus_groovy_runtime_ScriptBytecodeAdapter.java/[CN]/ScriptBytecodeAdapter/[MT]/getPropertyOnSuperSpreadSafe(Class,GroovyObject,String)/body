@@ -1,18 +1,8 @@
 {
   if (!isSpreadable(receiver))   return getPropertyOnSuper(senderClass,receiver,messageName);
-  if (receiver instanceof Iterator) {
-    return new TransformIterator((Iterator)receiver,null,new TransformIterator.OneParamTransformer(){
-      public Object transform(      Object object,      TransformIterator iter) throws Throwable {
-        return getPropertySafe(senderClass,object,messageName);
-      }
-    }
-);
+  List answer=new ArrayList();
+  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
+    answer.add(getPropertySafe(senderClass,it.next(),messageName));
   }
- else {
-    List answer=new ArrayList();
-    for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
-      answer.add(getPropertySafe(senderClass,it.next(),messageName));
-    }
-    return answer;
-  }
+  return answer;
 }

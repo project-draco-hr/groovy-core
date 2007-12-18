@@ -1,20 +1,10 @@
 {
   if (receiver == null)   return null;
   if (!isSpreadable(receiver))   return getField(senderClass,receiver,messageName);
-  if (receiver instanceof Iterator) {
-    return new TransformIterator((Iterator)receiver,null,new TransformIterator.OneParamTransformer(){
-      public Object transform(      Object object,      TransformIterator iter) throws Throwable {
-        return getFieldSafe(senderClass,object,messageName);
-      }
-    }
-);
+  List list=(List)receiver;
+  List answer=new ArrayList();
+  for (Iterator it=list.iterator(); it.hasNext(); ) {
+    answer.add(getFieldSafe(senderClass,it.next(),messageName));
   }
- else {
-    List list=(List)receiver;
-    List answer=new ArrayList();
-    for (Iterator it=list.iterator(); it.hasNext(); ) {
-      answer.add(getFieldSafe(senderClass,it.next(),messageName));
-    }
-    return answer;
-  }
+  return answer;
 }
