@@ -1,3 +1,19 @@
 {
-  System.out.print(InvokerHelper.toString(value));
+  if (self instanceof Writer) {
+    PrintWriter pw=null;
+    try {
+      pw=new PrintWriter((Writer)self);
+      pw.print(InvokerHelper.toString(value));
+    }
+  finally {
+      try {
+        pw.close();
+      }
+ catch (      Exception ex) {
+      }
+    }
+  }
+ else {
+    System.out.print(InvokerHelper.toString(value));
+  }
 }
