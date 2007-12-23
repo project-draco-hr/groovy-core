@@ -6,6 +6,16 @@
     node.visitContents(this);
     return;
   }
+  ClassNode[] classNodes=classNode.getInterfaces();
+  List interfaces=new ArrayList();
+  for (int i=0; i < classNodes.length; i++) {
+    ClassNode classNode=classNodes[i];
+    interfaces.add(classNode.getName());
+  }
+  Set interfaceSet=new HashSet(interfaces);
+  if (interfaceSet.size() != interfaces.size()) {
+    throw new RuntimeParserException("Duplicate interfaces in implements list: " + interfaces,classNode);
+  }
   addDefaultParameterMethods(node);
   addDefaultParameterConstructors(node);
   if (!node.isDerivedFromGroovyObject()) {
