@@ -22,6 +22,9 @@
   String name=identifier(node);
   if (classNode != null) {
     if (classNode.getNameWithoutPackage().equals(name)) {
+      if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+        throw new ASTRuntimeException(methodDef,"Constructor not permitted within an interface.");
+      }
       throw new ASTRuntimeException(methodDef,"Invalid constructor format. Try remove the 'def' expression?");
     }
   }
