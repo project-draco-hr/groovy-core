@@ -1,9 +1,17 @@
 {
+  final Map initial=groupEntriesBy(self,closure);
   final Map answer=new HashMap();
-  for (final Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)iter.next();
-    Object value=callClosureForMapEntry(closure,entry);
-    groupAnswer(answer,entry,value);
+  Iterator iterator=initial.entrySet().iterator();
+  while (iterator.hasNext()) {
+    Map.Entry outer=(Map.Entry)iterator.next();
+    Object key=outer.getKey();
+    List entries=(List)outer.getValue();
+    Map target=new HashMap();
+    for (int i=0; i < entries.size(); i++) {
+      Map.Entry inner=(Map.Entry)entries.get(i);
+      target.put(inner.getKey(),inner.getValue());
+    }
+    answer.put(key,target);
   }
   return answer;
 }
