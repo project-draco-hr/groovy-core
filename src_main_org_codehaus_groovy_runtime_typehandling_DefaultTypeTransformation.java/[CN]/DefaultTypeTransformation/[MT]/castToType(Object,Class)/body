@@ -2,11 +2,13 @@
   if (object == null) {
     return null;
   }
-  if (type == object.getClass())   return object;
+  if (type == Object.class)   return object;
+  final Class aClass=object.getClass();
+  if (type == aClass)   return object;
   if (ReflectionCache.isArray(type)) {
     return asArray(object,type);
   }
-  if (ReflectionCache.isAssignableFrom(type,object.getClass())) {
+  if (ReflectionCache.isAssignableFrom(type,aClass)) {
     return object;
   }
   if (Collection.class.isAssignableFrom(type)) {
@@ -15,7 +17,7 @@
     if (object instanceof Collection && type.isAssignableFrom(HashSet.class) && (type == HashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
       return new HashSet((Collection)object);
     }
-    if (object.getClass().isArray()) {
+    if (aClass.isArray()) {
       if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
         answer=new ArrayList();
       }
@@ -115,7 +117,7 @@
  else     if (type == double.class) {
       Double answer=new Double(doubleUnbox(object));
       if (!(object instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
-        throw new GroovyRuntimeException("Automatic coercion of " + object.getClass().getName() + " value "+ object+ " to double failed.  Value is out of range.");
+        throw new GroovyRuntimeException("Automatic coercion of " + aClass.getName() + " value "+ object+ " to double failed.  Value is out of range.");
       }
       return answer;
     }

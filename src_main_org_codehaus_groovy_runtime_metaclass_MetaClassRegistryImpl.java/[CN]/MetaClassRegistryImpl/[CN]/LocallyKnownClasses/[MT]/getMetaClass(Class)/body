@@ -1,0 +1,23 @@
+{
+  final int regv=MetaClassRegistryImpl.this.version.intValue();
+  if (version != regv) {
+    clear();
+  }
+ else {
+    for (int i=0; i != CACHE_SIZE; i++) {
+      if (cache[i++] == theClass) {
+        return (MetaClass)cache[i];
+      }
+    }
+    final SoftReference ref=(SoftReference)get(theClass);
+    MetaClass mc;
+    if (ref != null && (mc=(MetaClass)ref.get()) != null) {
+      putToCache(theClass,mc);
+      return mc;
+    }
+  }
+  MetaClass answer=getGlobalMetaClass(theClass);
+  put(theClass,answer);
+  version=MetaClassRegistryImpl.this.version.intValue();
+  return answer;
+}

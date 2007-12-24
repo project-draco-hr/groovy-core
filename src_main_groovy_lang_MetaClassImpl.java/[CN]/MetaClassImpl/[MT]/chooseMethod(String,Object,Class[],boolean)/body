@@ -25,22 +25,29 @@
     answer=MetaClassHelper.chooseMostGeneralMethodWith1NullParam(methods);
   }
  else {
-    List matchingMethods=new ArrayList(methods.size());
+    Object matchingMethods=null;
     final int len=methods.size;
     Object data[]=methods.getArray();
     for (int i=0; i != len; ++i) {
       Object method=data[i];
       if (MetaClassHelper.isValidMethod(method,arguments)) {
-        matchingMethods.add(method);
+        if (matchingMethods == null)         matchingMethods=method;
+ else         if (matchingMethods instanceof ArrayList)         ((ArrayList)matchingMethods).add(method);
+ else {
+          ArrayList arr=new ArrayList(4);
+          arr.add(matchingMethods);
+          arr.add(method);
+          matchingMethods=arr;
+        }
       }
     }
-    if (matchingMethods.isEmpty()) {
+    if (matchingMethods == null) {
       return null;
     }
- else     if (matchingMethods.size() == 1) {
-      return matchingMethods.get(0);
+ else     if (!(matchingMethods instanceof ArrayList)) {
+      return matchingMethods;
     }
-    return chooseMostSpecificParams(methodName,matchingMethods,arguments);
+    return chooseMostSpecificParams(methodName,(List)matchingMethods,arguments);
   }
   if (answer != null) {
     return answer;

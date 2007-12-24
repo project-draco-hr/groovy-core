@@ -1,9 +1,10 @@
 {
   argumentArray=correctArguments(argumentArray);
+  final CachedClass[] pt=parameterTypes;
   for (int i=0; i < argumentArray.length; i++) {
     Object argument=argumentArray[i];
     if (argument == null)     continue;
-    CachedClass parameterType=parameterTypes[i];
+    CachedClass parameterType=pt[i];
     if (ReflectionCache.isAssignableFrom(parameterType.getCachedClass(),argument.getClass()))     continue;
     argument=parameterType.coerceGString(argument);
     argument=parameterType.coerceNumber(argument);

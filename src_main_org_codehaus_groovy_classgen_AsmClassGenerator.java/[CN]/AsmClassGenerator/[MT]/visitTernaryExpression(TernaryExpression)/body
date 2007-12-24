@@ -6,7 +6,7 @@
   if (expression instanceof ElvisOperatorExpression) {
     visitAndAutoboxBoolean(expression.getTrueExpression());
     boolPart=new BooleanExpression(new BytecodeExpression(){
-      public void visit(      GroovyCodeVisitor visitor){
+      public void visit(      MethodVisitor mv){
         mv.visitInsn(DUP);
       }
     }
@@ -14,7 +14,7 @@
     truePart=BytecodeExpression.NOP;
     final Expression oldFalse=falsePart;
     falsePart=new BytecodeExpression(){
-      public void visit(      GroovyCodeVisitor visitor){
+      public void visit(      MethodVisitor mv){
         mv.visitInsn(POP);
         visitAndAutoboxBoolean(oldFalse);
       }

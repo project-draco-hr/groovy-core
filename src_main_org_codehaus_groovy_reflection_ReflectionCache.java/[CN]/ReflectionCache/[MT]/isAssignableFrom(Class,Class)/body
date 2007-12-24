@@ -1,4 +1,8 @@
 {
   if (klazz == aClass)   return true;
-  return klazz.isAssignableFrom(aClass);
+  WeakDoubleKeyHashMap.Entry val=assignableMap.getOrPut(klazz,aClass);
+  if (val.value == null) {
+    val.value=Boolean.valueOf(klazz.isAssignableFrom(aClass));
+  }
+  return ((Boolean)val.value).booleanValue();
 }

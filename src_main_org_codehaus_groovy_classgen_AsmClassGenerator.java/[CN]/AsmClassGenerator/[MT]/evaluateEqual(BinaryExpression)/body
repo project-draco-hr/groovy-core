@@ -12,7 +12,7 @@
   if (ClassHelper.isPrimitiveType(type)) {
     visitAndAutoboxBoolean(rightExpression);
   }
- else   if (type != ClassHelper.OBJECT_TYPE) {
+ else   if (!rightExpression.getType().isDerivedFrom(type)) {
     visitCastExpression(new CastExpression(type,rightExpression));
   }
  else {
@@ -20,6 +20,8 @@
   }
   mv.visitInsn(DUP);
   leftHandExpression=true;
+  rightHandType=rightExpression.getType();
   leftExpression.visit(this);
+  rightHandType=null;
   leftHandExpression=false;
 }

@@ -1,33 +1,10 @@
 {
   if (arguments == null)   return true;
   final int size=arguments.length;
-  CachedClass[] paramTypes=getParameterTypes();
-  final int paramMinus1=paramTypes.length - 1;
-  if (size >= paramMinus1 && paramTypes.length > 0 && paramTypes[(paramMinus1)].isArray) {
-    for (int i=0; i < paramMinus1; i++) {
-      if (MetaClassHelper.isAssignableFrom(paramTypes[i].getCachedClass(),arguments[i]))       continue;
-      return false;
-    }
-    Class varg=paramTypes[paramMinus1].getCachedClass();
-    Class clazz=varg.getComponentType();
-    if (size == paramTypes.length && (MetaClassHelper.isAssignableFrom(varg,arguments[paramMinus1]) || MetaClassHelper.isAssignableFrom(clazz,arguments[paramMinus1].getComponentType()))) {
-      return true;
-    }
-    for (int i=paramMinus1; i < size; i++) {
-      if (MetaClassHelper.isAssignableFrom(clazz,arguments[i]))       continue;
-      return false;
-    }
-    return true;
-  }
- else   if (paramTypes.length == size) {
-    for (int i=0; i < size; i++) {
-      if (MetaClassHelper.isAssignableFrom(paramTypes[i].getCachedClass(),arguments[i]))       continue;
-      return false;
-    }
-    return true;
-  }
- else   if (paramTypes.length == 1 && size == 0) {
-    return true;
-  }
+  CachedClass[] pt=getParameterTypes();
+  final int paramMinus1=pt.length - 1;
+  if (size >= paramMinus1 && isVargsMethod)   return isValidVarargsMethod(arguments,size,pt,paramMinus1);
+ else   if (pt.length == size)   return isValidExactMethod(arguments,size,pt);
+ else   if (pt.length == 1 && size == 0)   return true;
   return false;
 }

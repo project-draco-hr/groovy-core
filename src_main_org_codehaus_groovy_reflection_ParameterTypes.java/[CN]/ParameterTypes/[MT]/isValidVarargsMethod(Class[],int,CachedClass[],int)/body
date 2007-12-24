@@ -1,0 +1,16 @@
+{
+  for (int i=0; i < paramMinus1; i++) {
+    if (MetaClassHelper.isAssignableFrom(pt[i].getCachedClass(),arguments[i]))     continue;
+    return false;
+  }
+  Class varg=pt[paramMinus1].getCachedClass();
+  Class clazz=varg.getComponentType();
+  if (size == pt.length && (MetaClassHelper.isAssignableFrom(varg,arguments[paramMinus1]) || MetaClassHelper.isAssignableFrom(clazz,arguments[paramMinus1].getComponentType()))) {
+    return true;
+  }
+  for (int i=paramMinus1; i < size; i++) {
+    if (MetaClassHelper.isAssignableFrom(clazz,arguments[i]))     continue;
+    return false;
+  }
+  return true;
+}

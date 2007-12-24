@@ -4,7 +4,7 @@
     return method.invoke(object,argumentArray);
   }
  catch (  IllegalArgumentException e) {
-    boolean setReason=e.getClass() != IllegalArgumentException.class;
+    boolean setReason=e.getClass() != IllegalArgumentException.class || method instanceof GeneratedMetaMethod;
     throw createExceptionText("failed to invoke method: ",method,object,argumentArray,e,setReason);
   }
 catch (  RuntimeException e) {
