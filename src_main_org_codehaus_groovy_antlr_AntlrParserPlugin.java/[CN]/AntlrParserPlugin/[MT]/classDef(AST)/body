@@ -4,6 +4,7 @@
   int modifiers=Opcodes.ACC_PUBLIC;
   if (isType(MODIFIERS,node)) {
     modifiers=modifiers(node,annotations,modifiers);
+    checkNoInvalidModifier(classDef,"Class",modifiers,Opcodes.ACC_SYNCHRONIZED,"synchronized");
     node=node.getNextSibling();
   }
   String name=identifier(node);

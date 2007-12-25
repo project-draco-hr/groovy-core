@@ -21,7 +21,7 @@
   if (node != null) {
     assertNodeType(ASSIGN,node);
     Expression rightExpression=expression(node.getFirstChild());
-    if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+    if (isAnInterface()) {
       throw new ASTRuntimeException(node,"Cannot specify default value for method parameter '" + name + " = "+ rightExpression.getText()+ "' inside an interface");
     }
     parameter=new Parameter(type,name,rightExpression);

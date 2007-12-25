@@ -4,6 +4,7 @@
   int modifiers=Opcodes.ACC_PUBLIC;
   if (isType(MODIFIERS,node)) {
     modifiers=modifiers(node,annotations,modifiers);
+    checkNoInvalidModifier(classDef,"Interface",modifiers,Opcodes.ACC_SYNCHRONIZED,"synchronized");
     node=node.getNextSibling();
   }
   modifiers|=Opcodes.ACC_ABSTRACT | Opcodes.ACC_INTERFACE;

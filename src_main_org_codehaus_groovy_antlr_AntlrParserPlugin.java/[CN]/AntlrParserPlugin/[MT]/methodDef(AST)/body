@@ -9,9 +9,10 @@
   int modifiers=Opcodes.ACC_PUBLIC;
   if (isType(MODIFIERS,node)) {
     modifiers=modifiers(node,annotations,modifiers);
+    checkNoInvalidModifier(methodDef,"Method",modifiers,Opcodes.ACC_VOLATILE,"volatile");
     node=node.getNextSibling();
   }
-  if (classNode != null && (classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+  if (isAnInterface()) {
     modifiers|=Opcodes.ACC_ABSTRACT;
   }
   ClassNode returnType=null;
@@ -22,7 +23,7 @@
   String name=identifier(node);
   if (classNode != null) {
     if (classNode.getNameWithoutPackage().equals(name)) {
-      if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+      if (isAnInterface()) {
         throw new ASTRuntimeException(methodDef,"Constructor not permitted within an interface.");
       }
       throw new ASTRuntimeException(methodDef,"Invalid constructor format. Try remove the 'def' expression?");
