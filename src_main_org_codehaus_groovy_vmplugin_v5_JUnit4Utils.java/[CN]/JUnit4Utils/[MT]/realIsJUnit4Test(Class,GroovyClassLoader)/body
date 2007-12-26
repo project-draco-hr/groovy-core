@@ -1,0 +1,29 @@
+{
+  boolean isTest=false;
+  try {
+    try {
+      Class runWithAnnotationClass=loader.loadClass("org.junit.runner.RunWith");
+      Annotation annotation=scriptClass.getAnnotation(runWithAnnotationClass);
+      if (annotation != null) {
+        isTest=true;
+      }
+ else {
+        Class testAnnotationClass=loader.loadClass("org.junit.Test");
+        Method[] methods=scriptClass.getMethods();
+        for (int i=0; i < methods.length; i++) {
+          Method method=methods[i];
+          annotation=method.getAnnotation(testAnnotationClass);
+          if (annotation != null) {
+            isTest=true;
+            break;
+          }
+        }
+      }
+    }
+ catch (    ClassNotFoundException e) {
+    }
+  }
+ catch (  Throwable e) {
+  }
+  return isTest ? Boolean.TRUE : Boolean.FALSE;
+}
