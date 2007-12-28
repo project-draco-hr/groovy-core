@@ -1,0 +1,12 @@
+{
+  if (value instanceof Class) {
+    Class superclass=((Class)value).getSuperclass();
+    while (superclass != null) {
+      if (superclass.getName().equals("java.lang.Enum")) {
+        return true;
+      }
+      superclass=superclass.getSuperclass();
+    }
+  }
+  return false;
+}
