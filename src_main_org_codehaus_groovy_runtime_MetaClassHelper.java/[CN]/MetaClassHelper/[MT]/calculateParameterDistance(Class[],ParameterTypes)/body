@@ -1,0 +1,28 @@
+{
+  CachedClass[] parameters=pt.getParameterTypes();
+  if (parameters.length == 0)   return 0;
+  long ret=0;
+  int noVargsLength=parameters.length - 1;
+  for (int i=0; i < noVargsLength; i++) {
+    ret+=calculateParameterDistance(arguments[i],parameters[i]);
+  }
+  if (arguments.length == parameters.length) {
+    CachedClass baseType=parameters[noVargsLength];
+    if (!parameters[noVargsLength].isAssignableFrom(arguments[noVargsLength])) {
+      baseType=ReflectionCache.getCachedClass(baseType.getCachedClass().getComponentType());
+      ret+=2l << VARGS_SHIFT;
+    }
+    ret+=calculateParameterDistance(arguments[noVargsLength],baseType);
+  }
+ else   if (arguments.length > parameters.length) {
+    ret+=(2 + arguments.length - parameters.length) << VARGS_SHIFT;
+    CachedClass vargsType=ReflectionCache.getCachedClass(parameters[noVargsLength].getCachedClass().getComponentType());
+    for (int i=noVargsLength; i < arguments.length; i++) {
+      ret+=calculateParameterDistance(arguments[i],vargsType);
+    }
+  }
+ else {
+    ret+=1l << VARGS_SHIFT;
+  }
+  return ret;
+}

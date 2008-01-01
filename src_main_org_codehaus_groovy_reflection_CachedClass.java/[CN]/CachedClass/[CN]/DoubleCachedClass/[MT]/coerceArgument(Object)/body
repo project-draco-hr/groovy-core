@@ -1,0 +1,10 @@
+{
+  if (argument instanceof Double) {
+    return argument;
+  }
+  Double res=new Double(((Number)argument).doubleValue());
+  if (argument instanceof BigDecimal && res.isInfinite()) {
+    throw new IllegalArgumentException(Double.class + " out of range while converting from BigDecimal");
+  }
+  return res;
+}

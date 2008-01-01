@@ -3,9 +3,10 @@
   LinkedList matches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
-    Class[] paramTypes=MetaClassHelper.getParameterTypes(method).getNativeParameterTypes();
+    final ParameterTypes parameterTypes=MetaClassHelper.getParameterTypes(method);
+    Class[] paramTypes=parameterTypes.getNativeParameterTypes();
     if (!MetaClassHelper.parametersAreCompatible(arguments,paramTypes))     continue;
-    long dist=MetaClassHelper.calculateParameterDistance(arguments,paramTypes);
+    long dist=MetaClassHelper.calculateParameterDistance(arguments,parameterTypes);
     if (dist == 0)     return method;
     if (matches.isEmpty()) {
       matches.add(method);

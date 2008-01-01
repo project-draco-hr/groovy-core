@@ -37,7 +37,7 @@
  else {
     method=CLOSURE_METACLASS.pickMethod(methodName,argClasses);
   }
-  if (method != null)   return MetaClassHelper.doMethodInvoke(object,method,arguments);
+  if (method != null)   return method.doMethodInvoke(object,arguments);
   MissingMethodException last=null;
   Object callObject=object;
   if (method == null) {
@@ -115,7 +115,7 @@ last=mme;
 }
 }
 if (method != null) {
-return MetaClassHelper.doMethodInvoke(callObject,method,arguments);
+return method.doMethodInvoke(callObject,arguments);
 }
  else {
 Object value=null;

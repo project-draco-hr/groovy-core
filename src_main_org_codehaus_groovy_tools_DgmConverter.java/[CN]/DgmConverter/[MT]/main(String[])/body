@@ -32,6 +32,24 @@
     mv.visitInsn(ARETURN);
     mv.visitMaxs(0,0);
     mv.visitEnd();
+    mv=cw.visitMethod(ACC_PUBLIC + ACC_FINAL,"doMethodInvoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+    helper=new BytecodeHelper(mv);
+    mv.visitCode();
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,2);
+    mv.visitMethodInsn(INVOKEVIRTUAL,className,"coerceArgumentsToClasses","([Ljava/lang/Object;)[Ljava/lang/Object;");
+    mv.visitVarInsn(ASTORE,2);
+    mv.visitVarInsn(ALOAD,1);
+    helper.doCast(method.getParameterTypes()[0].getCachedClass());
+    loadParameters(method,2,mv);
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods",method.getName(),methodDescriptor);
+    helper.box(returnType);
+    if (method.getReturnType() == void.class) {
+      mv.visitInsn(ACONST_NULL);
+    }
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(0,0);
+    mv.visitEnd();
     mv=cw.visitMethod(ACC_PUBLIC,"$markerMethod$" + method.getName(),methodDescriptor,null,null);
     mv.visitCode();
     if (returnType == Void.TYPE)     mv.visitInsn(RETURN);

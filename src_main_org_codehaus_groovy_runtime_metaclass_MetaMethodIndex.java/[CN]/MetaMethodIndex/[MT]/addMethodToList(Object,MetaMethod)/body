@@ -14,14 +14,14 @@
       if (match.isPrivate() || (!isNonRealMethod(match) && match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
       }
  else {
-        Class methodC=method.getDeclaringClass().getCachedClass();
-        Class matchC=match.getDeclaringClass().getCachedClass();
+        CachedClass methodC=method.getDeclaringClass();
+        CachedClass matchC=match.getDeclaringClass();
         if (methodC == matchC) {
           if (isNonRealMethod(method)) {
             return method;
           }
         }
- else         if (!MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+ else         if (!methodC.isAssignableFrom(matchC.getCachedClass())) {
           return method;
         }
       }
@@ -40,14 +40,14 @@
       if (match.isPrivate() || (!isNonRealMethod(match) && match.getDeclaringClass().isInterface() && !method.getDeclaringClass().isInterface())) {
       }
  else {
-        Class methodC=method.getDeclaringClass().getCachedClass();
-        Class matchC=match.getDeclaringClass().getCachedClass();
+        CachedClass methodC=method.getDeclaringClass();
+        CachedClass matchC=match.getDeclaringClass();
         if (methodC == matchC) {
           if (isNonRealMethod(method)) {
             list.set(found,method);
           }
         }
- else         if (!MetaClassHelper.isAssignableFrom(methodC,matchC)) {
+ else         if (!methodC.isAssignableFrom(matchC.getCachedClass())) {
           list.set(found,method);
         }
       }

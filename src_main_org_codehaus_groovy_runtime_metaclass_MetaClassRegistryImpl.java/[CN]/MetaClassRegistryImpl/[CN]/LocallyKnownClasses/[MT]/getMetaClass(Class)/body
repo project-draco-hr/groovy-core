@@ -4,20 +4,10 @@
     clear();
   }
  else {
-    for (int i=0; i != CACHE_SIZE; i++) {
-      if (cache[i++] == theClass) {
-        return (MetaClass)cache[i];
-      }
-    }
-    final SoftReference ref=(SoftReference)get(theClass);
-    MetaClass mc;
-    if (ref != null && (mc=(MetaClass)ref.get()) != null) {
-      putToCache(theClass,mc);
-      return mc;
-    }
+    MetaClass mc=checkCache(theClass);
+    if (mc != null)     return mc;
+    mc=checkMap(theClass);
+    if (mc != null)     return mc;
   }
-  MetaClass answer=getGlobalMetaClass(theClass);
-  put(theClass,answer);
-  version=MetaClassRegistryImpl.this.version.intValue();
-  return answer;
+  return getFromGlobal(theClass);
 }

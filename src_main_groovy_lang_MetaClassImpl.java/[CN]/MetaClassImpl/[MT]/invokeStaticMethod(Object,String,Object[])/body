@@ -15,7 +15,7 @@
   MetaMethod method=retrieveStaticMethod(methodName,arguments);
   if (method != null) {
     unwrap(arguments);
-    return MetaClassHelper.doMethodInvoke(object,method,arguments);
+    return method.doMethodInvoke(object,arguments);
   }
   Object prop=null;
   try {
@@ -33,7 +33,7 @@
   while (superClass != Object.class && superClass != null) {
     MetaClass mc=registry.getMetaClass(superClass);
     method=mc.getStaticMetaMethod(methodName,argClasses);
-    if (method != null)     return MetaClassHelper.doMethodInvoke(object,method,arguments);
+    if (method != null)     return method.doMethodInvoke(object,arguments);
     try {
       prop=mc.getProperty(superClass,superClass,methodName,false,false);
     }
