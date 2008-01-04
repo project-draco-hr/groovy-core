@@ -26,6 +26,20 @@
       }
       continue;
     }
+    if (c == '$') {
+      reader.mark(1);
+      c=reader.read();
+      if (c != '{') {
+        sw.write('$');
+        reader.reset();
+      }
+ else {
+        reader.mark(1);
+        sw.write("${");
+        processGSstring(reader,sw);
+      }
+      continue;
+    }
     if (c == '\"') {
       sw.write('\\');
     }
