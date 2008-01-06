@@ -6,6 +6,11 @@
     System.out.print(script);
     System.out.println("\n-- script end --\n");
   }
-  template.script=groovyShell.parse(script);
+  try {
+    template.script=groovyShell.parse(script,"SimpleTemplateScript" + counter++ + ".groovy");
+  }
+ catch (  Exception e) {
+    throw new GroovyRuntimeException("Failed to parse template script (your template may contain an error or be trying to use expressions not currently supported): " + e.getMessage());
+  }
   return template;
 }

@@ -53,7 +53,13 @@
     }
   }
 );
-  final Class groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"C","x"));
+  final Class groovyClass;
+  try {
+    groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"GStringTemplateScript" + counter++ + ".groovy","x"));
+  }
+ catch (  Exception e) {
+    throw new GroovyRuntimeException("Failed to parse template script (your template may contain an error or be trying to use expressions not currently supported): " + e.getMessage());
+  }
   try {
     final GroovyObject object=(GroovyObject)groovyClass.newInstance();
     this.template=(Closure)object.invokeMethod("getTemplate",null);
