@@ -20,5 +20,8 @@
  else   if (c == File.class) {
     return new File(self);
   }
+ else   if (DefaultTypeTransformation.isEnumSubclass(c)) {
+    return InvokerHelper.invokeMethod(c,"valueOf",new Object[]{self});
+  }
   return asType((Object)self,c);
 }
