@@ -1,9 +1,10 @@
 {
   try {
-    closure.call(reader);
+    Object result=closure.call(reader);
     Reader temp=reader;
     reader=null;
     temp.close();
+    return result;
   }
   finally {
     closeReaderWithWarning(reader);

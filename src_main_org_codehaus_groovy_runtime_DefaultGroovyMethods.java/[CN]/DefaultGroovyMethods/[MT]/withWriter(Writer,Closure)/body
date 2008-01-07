@@ -1,6 +1,6 @@
 {
   try {
-    closure.call(writer);
+    Object result=closure.call(writer);
     try {
       writer.flush();
     }
@@ -9,6 +9,7 @@
     Writer temp=writer;
     writer=null;
     temp.close();
+    return result;
   }
   finally {
     closeWriterWithWarning(writer);

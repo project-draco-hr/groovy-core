@@ -1,10 +1,11 @@
 {
   try {
-    closure.call(os);
+    Object result=closure.call(os);
     os.flush();
     OutputStream temp=os;
     os=null;
     temp.close();
+    return result;
   }
   finally {
     closeOutputStreamWithWarning(os);
