@@ -1,9 +1,0 @@
-{
-  final MetaClass metaClass=InvokerHelper.getMetaClass(self);
-  if (DefaultTypeTransformation.isEnumSubclass(self.getClass())) {
-    Object[] values=(Object[])InvokerHelper.invokeStaticMethod(self.getClass(),"values",new Object[0]);
-    int index=Arrays.asList(values).indexOf(self);
-    return values[index > 0 ? index - 1 : values.length - 1];
-  }
-  return metaClass.invokeMissingMethod(self,"previous",new Object[0]);
-}
