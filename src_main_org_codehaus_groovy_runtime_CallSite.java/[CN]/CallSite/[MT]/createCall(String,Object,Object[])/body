@@ -1,0 +1,6 @@
+{
+  if (receiver instanceof Class)   return new ClassCall(name,receiver,args);
+  if (!(receiver instanceof GroovyObject))   return new PojoCall(name,receiver,args);
+  if (receiver instanceof GroovyInterceptable)   return new InterceptingCall(name,receiver,args);
+  return new PogoCall(name,receiver,args);
+}

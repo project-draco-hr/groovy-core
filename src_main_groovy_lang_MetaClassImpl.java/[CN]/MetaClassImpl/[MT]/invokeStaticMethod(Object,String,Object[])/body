@@ -14,7 +14,7 @@
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   MetaMethod method=retrieveStaticMethod(methodName,arguments);
   if (method != null) {
-    unwrap(arguments);
+    MetaClassHelper.unwrap(arguments);
     return method.doMethodInvoke(object,arguments);
   }
   Object prop=null;
@@ -27,7 +27,7 @@
     return invokeStaticClosureProperty(arguments,prop);
   }
   Object[] originalArguments=(Object[])arguments.clone();
-  unwrap(arguments);
+  MetaClassHelper.unwrap(arguments);
   Class superClass=sender.getSuperclass();
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   while (superClass != Object.class && superClass != null) {

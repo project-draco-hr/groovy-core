@@ -3,7 +3,7 @@
   LinkedList matches=new LinkedList();
   for (Iterator iter=matchingMethods.iterator(); iter.hasNext(); ) {
     Object method=iter.next();
-    final ParameterTypes parameterTypes=MetaClassHelper.getParameterTypes(method);
+    final ParameterTypes parameterTypes=(ParameterTypes)method;
     Class[] paramTypes=parameterTypes.getNativeParameterTypes();
     if (!MetaClassHelper.parametersAreCompatible(arguments,paramTypes))     continue;
     long dist=MetaClassHelper.calculateParameterDistance(arguments,parameterTypes);
@@ -33,7 +33,7 @@
   msg+=InvokerHelper.toString(arguments);
   msg+=" due to overlapping prototypes between:";
   for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
-    CachedClass[] types=MetaClassHelper.getParameterTypes(iter.next()).getParameterTypes();
+    CachedClass[] types=((ParameterTypes)iter.next()).getParameterTypes();
     msg+="\n\t" + InvokerHelper.toString(types);
   }
   throw new GroovyRuntimeException(msg);

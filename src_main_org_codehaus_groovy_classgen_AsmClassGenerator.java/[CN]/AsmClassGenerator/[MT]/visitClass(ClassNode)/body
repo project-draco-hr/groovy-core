@@ -42,6 +42,30 @@
       }
       cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
     }
+    if (callSiteCount > 0) {
+      cv.visitField(ACC_STATIC + ACC_SYNTHETIC,"$callSiteArray","Lorg/codehaus/groovy/runtime/CallSiteArray;",null,null);
+      MethodVisitor mv=cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC + ACC_STATIC,"$getCallSite","(I)Lorg/codehaus/groovy/runtime/CallSite;",null,null);
+      mv.visitCode();
+      mv.visitFieldInsn(GETSTATIC,internalClassName,"$callSiteArray","Lorg/codehaus/groovy/runtime/CallSiteArray;");
+      mv.visitVarInsn(ASTORE,1);
+      mv.visitVarInsn(ALOAD,1);
+      Label l0=new Label();
+      mv.visitJumpInsn(IFNONNULL,l0);
+      mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/CallSiteArray");
+      mv.visitInsn(DUP);
+      mv.visitLdcInsn(new Integer(callSiteCount));
+      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/CallSiteArray","<init>","(I)V");
+      mv.visitVarInsn(ASTORE,1);
+      mv.visitVarInsn(ALOAD,1);
+      mv.visitFieldInsn(PUTSTATIC,internalClassName,"$callSiteArray","Lorg/codehaus/groovy/runtime/CallSiteArray;");
+      mv.visitLabel(l0);
+      mv.visitVarInsn(ALOAD,1);
+      mv.visitVarInsn(ILOAD,0);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSiteArray","getCallSite","(I)Lorg/codehaus/groovy/runtime/CallSite;");
+      mv.visitInsn(ARETURN);
+      mv.visitMaxs(0,0);
+      mv.visitEnd();
+    }
     cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {
