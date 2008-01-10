@@ -1,6 +1,6 @@
 {
+  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()Lorg/codehaus/groovy/runtime/CallSiteArray;");
   mv.visitLdcInsn(new Integer(allocateIndex()));
-  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSite","(I)Lorg/codehaus/groovy/runtime/CallSite;");
   mv.visitLdcInsn(message);
   boolean lhs=leftHandExpression;
   leftHandExpression=false;
@@ -38,6 +38,6 @@
       if (argument instanceof CastExpression)       loadWrapper(argument);
     }
   }
-  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSite","call","(Ljava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSiteArray","call","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   leftHandExpression=lhs;
 }
