@@ -1,15 +1,26 @@
 {
   BeanInfo info;
+  final Class stopClass;
   try {
-    info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-      public Object run() throws IntrospectionException {
-        return Introspector.getBeanInfo(theClass);
+    if (isBeanDerivative(theClass)) {
+      info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+        public Object run() throws IntrospectionException {
+          return Introspector.getBeanInfo(theClass,Introspector.IGNORE_ALL_BEANINFO);
+        }
       }
-    }
 );
+    }
+ else {
+      info=(BeanInfo)AccessController.doPrivileged(new PrivilegedExceptionAction(){
+        public Object run() throws IntrospectionException {
+          return Introspector.getBeanInfo(theClass);
+        }
+      }
+);
+    }
   }
  catch (  PrivilegedActionException pae) {
-    throw new GroovyRuntimeException("exception while bean introspection",pae.getException());
+    throw new GroovyRuntimeException("exception during bean introspection",pae.getException());
   }
   PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
   setupProperties(descriptors);
@@ -23,7 +34,7 @@
       addToAllMethodsIfPublic(metaMethod);
       String name=listenerMethod.getName();
       if (listeners.containsKey(name)) {
-        listeners.put(name,AMBIGOUS_LISTENER_METHOD);
+        listeners.put(name,AMBIGUOUS_LISTENER_METHOD);
       }
  else {
         listeners.put(name,metaMethod);
