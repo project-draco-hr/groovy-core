@@ -14,13 +14,19 @@
     }
     lastCompletedNode=task;
     if (task instanceof Task) {
-      InputStream originalIn=System.in;
-      InputStream projectDefaultStream=this.project.getDefaultInputStream();
-      this.project.setDefaultInputStream(originalIn);
-      System.setIn(new DemuxInputStream(this.project));
-      ((Task)task).perform();
-      System.setIn(originalIn);
-      this.project.setDefaultInputStream(projectDefaultStream);
+      InputStream savedIn=System.in;
+      InputStream savedProjectInputStream=project.getDefaultInputStream();
+      if (!(savedIn instanceof DemuxInputStream)) {
+        project.setDefaultInputStream(savedIn);
+        System.setIn(new DemuxInputStream(project));
+      }
+      try {
+        ((Task)task).perform();
+      }
+  finally {
+        project.setDefaultInputStream(savedProjectInputStream);
+        System.setIn(savedIn);
+      }
     }
   }
  else {
