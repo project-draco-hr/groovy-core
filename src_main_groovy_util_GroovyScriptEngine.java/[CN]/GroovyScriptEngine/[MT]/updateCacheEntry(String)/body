@@ -5,28 +5,7 @@ synchronized (scriptName) {
     URLConnection groovyScriptConn=rc.getResourceConnection(scriptName);
     long lastModified=groovyScriptConn.getLastModified();
     entry=(ScriptCacheEntry)scriptCache.get(scriptName);
-    boolean dependencyOutOfDate=false;
-    if (entry != null) {
-      for (Iterator i=entry.dependencies.keySet().iterator(); i.hasNext(); ) {
-        URLConnection urlc=null;
-        URL url=(URL)i.next();
-        try {
-          urlc=url.openConnection();
-          urlc.setDoInput(false);
-          urlc.setDoOutput(false);
-          long dependentLastModified=urlc.getLastModified();
-          if (dependentLastModified > ((Long)entry.dependencies.get(url)).longValue()) {
-            dependencyOutOfDate=true;
-            break;
-          }
-        }
- catch (        IOException ioe) {
-          dependencyOutOfDate=true;
-          break;
-        }
-      }
-    }
-    if (entry == null || entry.lastModified < lastModified || dependencyOutOfDate) {
+    if (entry == null || entry.lastModified < lastModified || dependencyOutOfDate(entry)) {
       ScriptCacheEntry currentCacheEntry=new ScriptCacheEntry();
       currentCacheEntryHolder.set(currentCacheEntry);
       InputStream in=null;
