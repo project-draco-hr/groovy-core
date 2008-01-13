@@ -1,0 +1,17 @@
+{
+  if (GroovyCategorySupport.hasCategoryInAnyThread())   return getMethodWithoutCaching(sender,methodName,params,false);
+  final MetaMethodIndex.Entry e=metaMethodIndex.getMethods(sender,methodName);
+  if (e == null)   return null;
+  MetaMethodIndex.CacheEntry cacheEntry;
+  final Object methods=e.methods;
+  if (methods == null)   return null;
+  cacheEntry=e.cachedMethod;
+  if (cacheEntry != null && (sameClasses(cacheEntry.params,params,methods instanceof MetaMethod))) {
+    return cacheEntry.method;
+  }
+  cacheEntry=new MetaMethodIndex.CacheEntry();
+  cacheEntry.params=params;
+  cacheEntry.method=(MetaMethod)chooseMethod(e.name,methods,params,false);
+  e.cachedMethod=cacheEntry;
+  return cacheEntry.method;
+}

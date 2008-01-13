@@ -53,8 +53,9 @@
       mv.visitJumpInsn(IFNONNULL,l0);
       mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/CallSiteArray");
       mv.visitInsn(DUP);
+      mv.visitFieldInsn(GETSTATIC,internalClassName,"$ownClass","Ljava/lang/Class;");
       mv.visitLdcInsn(new Integer(callSiteCount));
-      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/CallSiteArray","<init>","(I)V");
+      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/CallSiteArray","<init>","(Ljava/lang/Class;I)V");
       mv.visitVarInsn(ASTORE,1);
       mv.visitVarInsn(ALOAD,1);
       mv.visitFieldInsn(PUTSTATIC,internalClassName,"$callSiteArray","Lorg/codehaus/groovy/runtime/CallSiteArray;");

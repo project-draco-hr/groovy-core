@@ -1,5 +1,5 @@
 {
-  makeCall(expression,new ConstantExpression(method),MethodCallExpression.NO_ARGUMENTS,invokeMethod,false,false,false);
+  makeCallSite(expression,method,MethodCallExpression.NO_ARGUMENTS,false,false,false);
   boolean setResult=true;
   if (expression instanceof BinaryExpression) {
     BinaryExpression be=(BinaryExpression)expression;
@@ -15,7 +15,7 @@
       TupleExpression args=new ArgumentListExpression();
       args.addExpression(be.getRightExpression());
       args.addExpression(result);
-      makeCall(be.getLeftExpression(),new ConstantExpression("putAt"),args,invokeMethod,false,false,false);
+      makeCallSite(be.getLeftExpression(),"putAt",args,false,false,false);
       mv.visitInsn(POP);
       setResult=false;
     }

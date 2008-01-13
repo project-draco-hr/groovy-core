@@ -1,30 +1,13 @@
 {
-  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent) && !spreadSafe) {
-    String methodName=null;
-    if (message instanceof CastExpression) {
-      CastExpression msg=(CastExpression)message;
-      if (msg.getType() == ClassHelper.STRING_TYPE) {
-        final Expression methodExpr=msg.getExpression();
-        if (methodExpr instanceof ConstantExpression)         methodName=methodExpr.getText();
-      }
-    }
-    if (methodName == null && message instanceof ConstantExpression) {
-      ConstantExpression constantExpression=(ConstantExpression)message;
-      methodName=constantExpression.getText();
-    }
-    if (methodName != null) {
-      makeCallSite(receiver,methodName,arguments,safe,implicitThis,adapter == invokeMethodOnCurrent);
-      return;
-    }
-  }
+  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()Lorg/codehaus/groovy/runtime/CallSiteArray;");
+  mv.visitLdcInsn(new Integer(allocateIndex()));
+  mv.visitLdcInsn(message);
   boolean lhs=leftHandExpression;
   leftHandExpression=false;
-  sender.visit(this);
   boolean oldVal=this.implicitThis;
   this.implicitThis=implicitThis;
   visitAndAutoboxBoolean(receiver);
   this.implicitThis=oldVal;
-  if (message != null)   message.visit(this);
   boolean containsSpreadExpression=containsSpreadExpression(arguments);
   int numberOfArguments=containsSpreadExpression ? -1 : argumentSize(arguments);
   if (numberOfArguments > MethodCallerMultiAdapter.MAX_ARGS || containsSpreadExpression) {
@@ -55,6 +38,15 @@
       if (argument instanceof CastExpression)       loadWrapper(argument);
     }
   }
-  adapter.call(mv,numberOfArguments,safe,spreadSafe);
+ else {
+    mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
+  }
+  if (callCurrent) {
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSiteArray","callCurrent","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  }
+ else {
+    if (safe)     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSiteArray","callSafe","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+ else     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/CallSiteArray","call","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+  }
   leftHandExpression=lhs;
 }
