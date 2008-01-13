@@ -2,12 +2,15 @@
   this.writer=writer;
   if (encoding != null) {
     this.encoding=encoding;
+    this.encodingKnown=true;
   }
  else   if (writer instanceof OutputStreamWriter) {
     this.encoding=((OutputStreamWriter)writer).getEncoding();
+    this.encodingKnown=true;
   }
  else {
     this.encoding="US-ASCII";
+    this.encodingKnown=false;
   }
   this.encoder=Charset.forName(this.encoding).newEncoder();
 }
