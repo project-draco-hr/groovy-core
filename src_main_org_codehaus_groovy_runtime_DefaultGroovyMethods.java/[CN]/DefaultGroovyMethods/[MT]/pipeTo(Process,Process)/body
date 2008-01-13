@@ -1,0 +1,22 @@
+{
+  new Thread(new Runnable(){
+    public void run(){
+      BufferedReader reader=new BufferedReader(new InputStreamReader(getIn(left)));
+      PrintWriter writer=new PrintWriter(new BufferedOutputStream(getOut(right)));
+      String next;
+      try {
+        while ((next=reader.readLine()) != null) {
+          writer.println(next);
+        }
+      }
+ catch (      IOException e) {
+        throw new GroovyRuntimeException("exception while reading process stream",e);
+      }
+ finally {
+        writer.close();
+      }
+    }
+  }
+).start();
+  return right;
+}
