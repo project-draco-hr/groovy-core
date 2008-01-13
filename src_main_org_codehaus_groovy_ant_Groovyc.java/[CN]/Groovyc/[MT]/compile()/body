@@ -10,28 +10,65 @@
       log.info("    " + filename);
     }
   }
-  try {
-    Path classpath=getClasspath();
-    if (classpath != null) {
-      configuration.setClasspath(classpath.toString());
+  if (fork) {
+    if (compileList.length == 0) {
+      throw new BuildException("No files to compile in fork mode.");
     }
-    configuration.setTargetDirectory(destDir);
+    final String javaHome=System.getProperty("java.home");
+    final String javaClasspath=System.getProperty("java.class.path");
+    final String separator=System.getProperty("file.separator");
+    final String groovyClasspath=getClasspath() != null ? getClasspath().toString() : javaClasspath;
+    final String[] fixedParameters={javaHome + separator + "bin"+ separator+ "java","-classpath",javaClasspath,"-Dprogram.name=groovyc","-Dtools.jar=" + javaHome + separator+ "lib"+ separator+ "tools.jar","org.codehaus.groovy.tools.GroovyStarter","--main","org.codehaus.groovy.tools.FileSystemCompiler","-d",destDir.getPath(),"--classpath",groovyClasspath};
+    int size=fixedParameters.length + compileList.length;
     if (encoding != null) {
-      configuration.setSourceEncoding(encoding);
+      size+=2;
     }
-    CompilationUnit unit=makeCompileUnit();
-    unit.addSources(compileList);
-    unit.compile();
+    final String[] parameters=new String[size];
+    System.arraycopy(fixedParameters,0,parameters,0,fixedParameters.length);
+    int index=fixedParameters.length;
+    if (encoding != null) {
+      parameters[index++]="--encoding";
+      parameters[index++]=encoding;
+    }
+    for (int i=0; i < compileList.length; ++i) {
+      parameters[i + index]=compileList[i].getPath();
+    }
+    try {
+      if (Runtime.getRuntime().exec(parameters).waitFor() != 0) {
+        throw new BuildException("Forked groovyc failed to return 0.");
+      }
+    }
+ catch (    final IOException ioe) {
+      throw new BuildException("Forked compile failed with " + ioe.getMessage());
+    }
+catch (    final InterruptedException ie) {
+      throw new BuildException("Forked compile was interruptes with " + ie.getMessage());
+    }
   }
- catch (  Exception e) {
-    StringWriter writer=new StringWriter();
-    new ErrorReporter(e,false).write(new PrintWriter(writer));
-    String message=writer.toString();
-    if (failOnError) {
-      throw new BuildException(message,e,getLocation());
-    }
  else {
-      log(message,Project.MSG_ERR);
+    try {
+      Path classpath=getClasspath();
+      if (classpath != null) {
+        configuration.setClasspath(classpath.toString());
+      }
+      configuration.setTargetDirectory(destDir);
+      if (encoding != null) {
+        configuration.setSourceEncoding(encoding);
+      }
+      CompilationUnit unit=makeCompileUnit();
+      unit.addSources(compileList);
+      unit.compile();
+    }
+ catch (    Exception e) {
+      StringWriter writer=new StringWriter();
+      new ErrorReporter(e,false).write(new PrintWriter(writer));
+      String message=writer.toString();
+      if (failOnError) {
+        throw new BuildException(message,e,getLocation());
+      }
+ else {
+        log(message,Project.MSG_ERR);
+      }
     }
   }
 }
