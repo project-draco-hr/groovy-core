@@ -1,0 +1,9 @@
+{
+  final CachedClass[] paramClasses=metaMethod.getParameterTypes();
+  if (paramClasses.length != args.length)   return false;
+  for (int i=0; i < paramClasses.length; i++) {
+    CachedClass paramClass=paramClasses[i];
+    if (args[i] != null && !paramClass.isDirectlyAssignable(args[i]))     return true;
+  }
+  return false;
+}
