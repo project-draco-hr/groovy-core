@@ -1,0 +1,17 @@
+{
+  if (exp == null)   return null;
+  if (!currentClass.isInterface() && exp.getClass() == ConstantExpression.class) {
+    ConstantExpression constantExpression=(ConstantExpression)exp;
+    final Object n=constantExpression.getValue();
+    if (n instanceof Number || n instanceof Character) {
+      FieldNode field=(FieldNode)const2Var.get(n);
+      if (field == null) {
+        field=new FieldNode("$const$" + const2Var.size(),Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC| Opcodes.ACC_FINAL,constantExpression.getType(),currentClass,constantExpression);
+        field.setSynthetic(true);
+        const2Var.put(n,field);
+      }
+      constantExpression.setConstantName(field.getName());
+    }
+  }
+  return exp.transformExpression(this);
+}
