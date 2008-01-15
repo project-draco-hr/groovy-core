@@ -1,0 +1,16 @@
+{
+  Class[] params=MetaClassHelper.convertToTypeArray(args);
+  CachedConstructor constructor=(CachedConstructor)chooseMethod("<init>",constructors,params);
+  if (constructor != null) {
+    return ConstructorSite.createConstructorSite(this,constructor,params,args);
+  }
+ else {
+    if (args.length == 1 && args[0] instanceof Map) {
+      constructor=(CachedConstructor)chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY);
+      if (constructor != null) {
+        return new ConstructorSite.NoParamSite(this,constructor,params);
+      }
+    }
+  }
+  return new MetaClassConstructorSite(this);
+}

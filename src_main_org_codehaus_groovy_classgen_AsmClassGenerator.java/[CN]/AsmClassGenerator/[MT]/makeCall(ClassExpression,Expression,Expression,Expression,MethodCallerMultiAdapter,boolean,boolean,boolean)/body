@@ -1,5 +1,5 @@
 {
-  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent) && !spreadSafe) {
+  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod) && !spreadSafe) {
     String methodName=null;
     if (message instanceof CastExpression) {
       CastExpression msg=(CastExpression)message;
@@ -13,7 +13,7 @@
       methodName=constantExpression.getText();
     }
     if (methodName != null) {
-      makeCallSite(receiver,methodName,arguments,safe,implicitThis,adapter == invokeMethodOnCurrent);
+      makeCallSite(receiver,methodName,arguments,safe,implicitThis,adapter == invokeMethodOnCurrent,adapter == invokeStaticMethod);
       return;
     }
   }

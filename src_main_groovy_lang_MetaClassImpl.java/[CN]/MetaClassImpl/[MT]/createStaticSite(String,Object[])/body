@@ -1,0 +1,6 @@
+{
+  Class[] params=MetaClassHelper.convertToTypeArray(args);
+  MetaMethod metaMethod=retrieveStaticMethod(name,args);
+  if (metaMethod != null)   return StaticMetaMethodSite.createStaticMetaMethodSite(this,metaMethod,name,params,args);
+ else   return new StaticMetaClassSite(name,this);
+}

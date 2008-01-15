@@ -5,50 +5,12 @@
     mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(objectType),"TYPE","Ljava/lang/Class;");
   }
  else {
-    String staticFieldName;
-    if (type.equals(classNode)) {
-      staticFieldName="class$0";
-      if (compileStack.getCurrentClassIndex() != -1) {
-        mv.visitVarInsn(ALOAD,compileStack.getCurrentClassIndex());
-        return;
-      }
-    }
- else     if (type.equals(ClassHelper.METACLASS_TYPE)) {
-      staticFieldName=getStaticFieldName(type);
-      if (compileStack.getCurrentMetaClassIndex() != -1) {
-        mv.visitVarInsn(ALOAD,compileStack.getCurrentMetaClassIndex());
-        return;
-      }
-    }
- else {
-      staticFieldName=getStaticFieldName(type);
-    }
-    syntheticStaticFields.add(staticFieldName);
+    String staticFieldName=getStaticFieldName(type);
+    referencedClasses.add(new ClassRef(type));
     String internalClassName=this.internalClassName;
     if (classNode.isInterface()) {
       internalClassName=BytecodeHelper.getClassInternalName(interfaceClassLoadingClass);
     }
-    mv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
-    Label l0=new Label();
-    mv.visitJumpInsn(IFNONNULL,l0);
-    mv.visitLdcInsn(BytecodeHelper.getClassLoadingTypeDescription(type));
-    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"class$","(Ljava/lang/String;)Ljava/lang/Class;");
-    mv.visitInsn(DUP);
-    mv.visitFieldInsn(PUTSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
-    Label l1=new Label();
-    mv.visitJumpInsn(GOTO,l1);
-    mv.visitLabel(l0);
-    mv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
-    mv.visitLabel(l1);
-    if (type.equals(classNode)) {
-      mv.visitInsn(DUP);
-      int index=compileStack.defineTemporaryVariable("class$0",ClassHelper.CLASS_Type,true);
-      compileStack.setCurrentClassIndex(index);
-    }
- else     if (type.equals(ClassHelper.METACLASS_TYPE)) {
-      mv.visitInsn(DUP);
-      int index=compileStack.defineTemporaryVariable("meta$class$0",ClassHelper.CLASS_Type,true);
-      compileStack.setCurrentMetaClassIndex(index);
-    }
+    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"get$" + staticFieldName,"()Ljava/lang/Class;");
   }
 }

@@ -1,9 +1,0 @@
-{
-  MetaClass metaClass=InvokerHelper.getMetaClass(receiver.getClass());
-  if (metaClass.getClass() == MetaClassImpl.class) {
-    Class[] params=MetaClassHelper.convertToTypeArray(args);
-    MetaMethod metaMethod=((MetaClassImpl)metaClass).getMethodWithCachingInternal(metaClass.getTheClass(),name,params);
-    if (metaMethod != null)     return createPojoViaMetaMethodSite(metaClass,metaMethod,name,params,args);
-  }
-  return new PojoViaMetaClassSite(name,metaClass.getTheClass());
-}

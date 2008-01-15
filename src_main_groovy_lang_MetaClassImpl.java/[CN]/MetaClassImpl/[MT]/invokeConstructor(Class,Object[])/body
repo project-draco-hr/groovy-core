@@ -3,20 +3,16 @@
   if (arguments == null)   arguments=EMPTY_ARGUMENTS;
   Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
   MetaClassHelper.unwrap(arguments);
-  CachedConstructor constructor=(CachedConstructor)chooseMethod("<init>",constructors,argClasses,false);
+  CachedConstructor constructor=(CachedConstructor)chooseMethod("<init>",constructors,argClasses);
   if (constructor != null) {
-    return doConstructorInvoke(at,constructor,arguments,true);
-  }
-  constructor=(CachedConstructor)chooseMethod("<init>",constructors,argClasses,true);
-  if (constructor != null) {
-    return doConstructorInvoke(at,constructor,arguments,true);
+    return constructor.doConstructorInvoke(arguments);
   }
   if (arguments.length == 1) {
     Object firstArgument=arguments[0];
     if (firstArgument instanceof Map) {
-      constructor=(CachedConstructor)chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY,false);
+      constructor=(CachedConstructor)chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY);
       if (constructor != null) {
-        Object bean=doConstructorInvoke(at,constructor,MetaClassHelper.EMPTY_ARRAY,true);
+        Object bean=constructor.doConstructorInvoke(MetaClassHelper.EMPTY_ARRAY);
         setProperties(bean,((Map)firstArgument));
         return bean;
       }

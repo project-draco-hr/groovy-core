@@ -1,0 +1,6 @@
+{
+  Class[] params=MetaClassHelper.convertToTypeArray(args);
+  MetaMethod metaMethod=getMethodWithCachingInternal(getTheClass(),name,params);
+  if (metaMethod != null)   return PojoMetaMethodSite.createPojoMetaMethodSite(this,metaMethod,name,params,args);
+ else   return new PojoMetaClassSite(name,this);
+}

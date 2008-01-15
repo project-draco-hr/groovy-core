@@ -1,19 +1,36 @@
 {
-  for (Iterator iter=syntheticStaticFields.iterator(); iter.hasNext(); ) {
-    String staticFieldName=(String)iter.next();
+  for (Iterator iter=referencedClasses.iterator(); iter.hasNext(); ) {
+    ClassRef ref=(ClassRef)iter.next();
+    String staticFieldName=getStaticFieldName(ref.type);
     FieldNode fn=classNode.getField(staticFieldName);
     if (fn != null) {
       boolean type=fn.getType() == ClassHelper.CLASS_Type;
       boolean modifiers=fn.getModifiers() == ACC_STATIC + ACC_SYNTHETIC;
-      if (type && modifiers)       continue;
-      String text="";
-      if (!type)       text=" with wrong type: " + fn.getType() + " (java.lang.Class needed)";
-      if (!modifiers)       text=" with wrong modifiers: " + fn.getModifiers() + " ("+ (ACC_STATIC + ACC_SYNTHETIC)+ " needed)";
-      throwException("tried to set a static syntethic field " + staticFieldName + " in "+ classNode.getName()+ " for class resolving, but found alreeady a node of that"+ " name "+ text);
+      if (!type || !modifiers) {
+        String text="";
+        if (!type)         text=" with wrong type: " + fn.getType() + " (java.lang.Class needed)";
+        if (!modifiers)         text=" with wrong modifiers: " + fn.getModifiers() + " ("+ (ACC_STATIC + ACC_SYNTHETIC)+ " needed)";
+        throwException("tried to set a static syntethic field " + staticFieldName + " in "+ classNode.getName()+ " for class resolving, but found alreeady a node of that"+ " name "+ text);
+      }
     }
  else {
-      cv.visitField(ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null,null);
+      cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,staticFieldName,"Ljava/lang/Class;",null,null);
     }
+    mv=cv.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,"get$" + staticFieldName,"()Ljava/lang/Class;",null,null);
+    mv.visitCode();
+    mv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+    mv.visitInsn(DUP);
+    Label l0=new Label();
+    mv.visitJumpInsn(IFNONNULL,l0);
+    mv.visitInsn(POP);
+    mv.visitLdcInsn(BytecodeHelper.getClassLoadingTypeDescription(ref.type));
+    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"class$","(Ljava/lang/String;)Ljava/lang/Class;");
+    mv.visitInsn(DUP);
+    mv.visitFieldInsn(PUTSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+    mv.visitLabel(l0);
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(0,0);
+    mv.visitEnd();
   }
   mv=cv.visitMethod(ACC_STATIC + ACC_SYNTHETIC,"class$","(Ljava/lang/String;)Ljava/lang/Class;",null,null);
   Label l0=new Label();

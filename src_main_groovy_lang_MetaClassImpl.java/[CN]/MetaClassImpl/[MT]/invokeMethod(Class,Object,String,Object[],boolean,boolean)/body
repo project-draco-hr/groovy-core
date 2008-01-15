@@ -9,21 +9,7 @@
   final Object[] arguments=originalArguments == null ? EMPTY_ARGUMENTS : originalArguments;
   MetaMethod method=getMethodWithCaching(sender,methodName,arguments,isCallToSuper);
   MetaClassHelper.unwrap(arguments);
-  if (method == null && arguments.length == 1 && arguments[0] instanceof List) {
-    Object[] newArguments=((List)arguments[0]).toArray();
-    method=getMethodWithCaching(sender,methodName,newArguments,isCallToSuper);
-    if (method != null) {
-      method=new TransformMetaMethod(method){
-        public Object invoke(        Object object,        Object[] arguments){
-          Object firstArgument=arguments[0];
-          List list=(List)firstArgument;
-          arguments=list.toArray();
-          return super.invoke(object,arguments);
-        }
-      }
-;
-    }
-  }
+  if (method == null)   method=tryListParamMetaMethod(sender,methodName,isCallToSuper,arguments);
   final boolean isClosure=object instanceof Closure;
   if (isClosure) {
     final Closure closure=(Closure)object;
@@ -143,17 +129,6 @@ if (method != null) {
 return method.doMethodInvoke(object,arguments);
 }
  else {
-Object value=null;
-final MetaProperty metaProperty=this.getMetaProperty(theCachedClass,methodName,false,false);
-if (metaProperty != null) value=metaProperty.getProperty(object);
- else {
-if (object instanceof Map) value=((Map)object).get(methodName);
-}
-if (value instanceof Closure) {
-Closure closure=(Closure)value;
-MetaClass delegateMetaClass=closure.getMetaClass();
-return delegateMetaClass.invokeMethod(closure.getClass(),closure,CLOSURE_DO_CALL_METHOD,originalArguments,false,fromInsideClass);
-}
-return invokeMissingMethod(object,methodName,originalArguments);
+return invokePropertyOrMissing(object,methodName,originalArguments,fromInsideClass);
 }
 }

@@ -17,10 +17,6 @@
       mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }
     compileStack.init(node.getVariableScope(),parameters,mv,classNode);
-    (new ClassExpression(classNode)).visit(this);
-    mv.visitInsn(POP);
-    (new ClassExpression(ClassHelper.METACLASS_TYPE)).visit(this);
-    mv.visitInsn(POP);
     super.visitConstructorOrMethod(node,isConstructor);
     if (!outputReturn || node.isVoidMethod()) {
       mv.visitInsn(RETURN);
