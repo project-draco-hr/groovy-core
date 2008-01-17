@@ -6,8 +6,8 @@
       MethodNode method=(MethodNode)it.next();
       if (method.isStatic())       continue;
       storeMissingCovariantMethods(sn,method,methodsToAdd,genericsSpec);
-      addCovariantMethods(sn,declaredMethods,methodsToAdd,genericsSpec);
     }
+    addCovariantMethods(sn.redirect(),declaredMethods,methodsToAdd,genericsSpec);
   }
   ClassNode[] interfaces=classNode.getInterfaces();
   for (int i=0; i < interfaces.length; i++) {
@@ -16,7 +16,7 @@
       MethodNode method=(MethodNode)it.next();
       if (method.isStatic())       continue;
       storeMissingCovariantMethods(interfaces[i],method,methodsToAdd,genericsSpec);
-      addCovariantMethods(sn,declaredMethods,methodsToAdd,genericsSpec);
     }
+    addCovariantMethods(interfaces[i],declaredMethods,methodsToAdd,genericsSpec);
   }
 }
