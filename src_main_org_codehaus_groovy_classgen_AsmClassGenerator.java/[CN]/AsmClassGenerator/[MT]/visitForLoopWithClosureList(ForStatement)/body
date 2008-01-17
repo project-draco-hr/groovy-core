@@ -10,7 +10,8 @@
   }
   Label continueLabel=compileStack.getContinueLabel();
   Label breakLabel=compileStack.getBreakLabel();
-  mv.visitLabel(continueLabel);
+  Label cond=new Label();
+  mv.visitLabel(cond);
 {
     Expression condExpr=(Expression)expressions.get(condIndex);
     if (condExpr == EmptyExpression.INSTANCE) {
@@ -26,10 +27,11 @@
   }
   mv.visitJumpInsn(IFEQ,breakLabel);
   loop.getLoopBlock().visit(this);
+  mv.visitLabel(continueLabel);
   for (int i=condIndex + 1; i < size; i++) {
     visitExpressionOrStatement(expressions.get(i));
   }
-  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitJumpInsn(GOTO,cond);
   mv.visitLabel(breakLabel);
   compileStack.pop();
   compileStack.pop();
