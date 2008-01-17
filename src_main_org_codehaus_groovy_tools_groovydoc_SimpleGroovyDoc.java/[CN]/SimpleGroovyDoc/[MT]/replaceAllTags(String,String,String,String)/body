@@ -1,0 +1,20 @@
+{
+  Matcher matcher=Pattern.compile(regex).matcher(self);
+  if (matcher.find()) {
+    matcher.reset();
+    StringBuffer sb=new StringBuffer();
+    while (matcher.find()) {
+      if (matcher.group(1).equals("see")) {
+        matcher.appendReplacement(sb,s1 + getDocUrl(matcher.group(2)) + s2);
+      }
+ else {
+        matcher.appendReplacement(sb,s1 + "$2" + s2);
+      }
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
+  }
+ else {
+    return self;
+  }
+}
