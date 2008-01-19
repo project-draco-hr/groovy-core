@@ -4,7 +4,7 @@
   String[] tokenNames=parser.getTokenNames();
   parser.compilationUnit();
   AST ast=parser.getAST();
-  Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer);
+  Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer,links);
   AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
   traverser.process(ast);
   return ((SimpleGroovyClassDocAssembler)visitor).getGroovyClassDocs();

@@ -1,6 +1,7 @@
 {
   this.sourceBuffer=sourceBuffer;
   this.packagePath=packagePath;
+  this.links=links;
   stack=new Stack();
   classDocs=new HashMap();
   String className=file;
@@ -8,7 +9,7 @@
     int idx=file.lastIndexOf(".");
     className=file.substring(0,idx);
   }
-  currentClassDoc=new SimpleGroovyClassDoc(className);
+  currentClassDoc=new SimpleGroovyClassDoc(className,links);
   currentClassDoc.setFullPathName(packagePath + FS + className);
   classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
   previousJavaDocCommentPattern=Pattern.compile("(?s)/\\*\\*(.*?)\\*/");
