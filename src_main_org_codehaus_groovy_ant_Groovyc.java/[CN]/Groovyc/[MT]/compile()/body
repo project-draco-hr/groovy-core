@@ -1,110 +1,94 @@
 {
-  if (compileList.length == 0) {
-    log.info("No sources to compile");
-    return;
-  }
-  log.info("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ " to "+ destDir);
-  if (listFiles) {
-    for (int i=0; i < compileList.length; i++) {
-      String filename=compileList[i].getAbsolutePath();
-      log.info("    " + filename);
-    }
-  }
-  if (fork) {
-    if (compileList.length == 0) {
-      throw new BuildException("No files to compile in fork mode.");
-    }
-    final String separator=System.getProperty("file.separator");
-    final String javaHome=System.getProperty("java.home");
-    String javaClasspath=System.getProperty("java.class.path");
-    if (!javaClasspath.contains("groovy-all-")) {
-      final String[] jarRoots={"commons-cli-","asm-","antlr-"};
-      final String[] pathelements=javaClasspath.split(":");
-      String groovyPath=null;
-      for (int i=0; i < pathelements.length; ++i) {
-        if (pathelements[i].contains("groovy-")) {
-          groovyPath=pathelements[i].substring(0,pathelements[i].lastIndexOf("/"));
-        }
+  if (compileList.length > 0) {
+    log("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ (destDir != null ? " to " + destDir : ""));
+    if (listFiles) {
+      for (int i=0; i < compileList.length; ++i) {
+        String filename=compileList[i].getAbsolutePath();
+        log(filename);
       }
-      final File groovyDirectory=new File(groovyPath);
-      for (int i=0; i < jarRoots.length; ++i) {
-        if (!javaClasspath.contains(jarRoots[i])) {
-          final int i_f=i;
-          final String[] possibles=groovyDirectory.list(new FilenameFilter(){
-            public boolean accept(            final File f,            final String s){
-              return s.contains(jarRoots[i_f]);
-            }
+    }
+    if (fork) {
+      final String separator=System.getProperty("file.separator");
+      final Path classpath=getClasspath() != null ? getClasspath() : new Path(getProject());
+      if (includeAntRuntime) {
+        classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
+      }
+      if (includeJavaRuntime) {
+        classpath.addJavaRuntime();
+      }
+      final ArrayList commandLineList=new ArrayList();
+      commandLineList.add(System.getProperty("java.home") + separator + "bin"+ separator+ "java");
+      commandLineList.add("-classpath");
+      commandLineList.add(classpath.toString());
+      if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
+        commandLineList.add("-Xms" + memoryInitialSize);
+      }
+      if ((memoryMaximumSize != null) && !memoryMaximumSize.equals("")) {
+        commandLineList.add("-Xmx" + memoryMaximumSize);
+      }
+      commandLineList.add("org.codehaus.groovy.ant.Groovyc");
+      commandLineList.add("--classpath");
+      commandLineList.add(classpath.toString());
+      if (jointCompilation) {
+        commandLineList.add("-j");
+        for (Iterator i=javac.getRuntimeConfigurableWrapper().getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
+          final Map.Entry e=(Map.Entry)i.next();
+          final String key=e.getKey().toString();
+          if (key.indexOf("debug") != -1) {
+            commandLineList.add("-Fg");
           }
-);
-          for (int j=0; j < possibles.length; ++j) {
-            javaClasspath+=System.getProperty("path.separator") + groovyPath + System.getProperty("file.separator")+ possibles[j];
+ else           if (key.indexOf("classpath") != -1) {
+          }
+ else {
+            commandLineList.add("-J" + e.getKey() + "="+ e.getValue());
           }
         }
       }
-      javaClasspath+=System.getProperty("path.separator") + groovyPath + System.getProperty("file.separator")+ "junit-3.8.2.jar";
+      commandLineList.add(destDir.getPath());
+      commandLineList.add(src.toString());
+      final String[] commandLine=new String[commandLineList.size()];
+      for (int i=0; i < commandLine.length; ++i) {
+        commandLine[i]=(String)commandLineList.get(i);
+      }
+      final Execute executor=new Execute();
+      executor.setAntRun(getProject());
+      executor.setWorkingDirectory(getProject().getBaseDir());
+      executor.setCommandline(commandLine);
+      try {
+        executor.execute();
+      }
+ catch (      final IOException ioe) {
+        throw new BuildException("Error running forked groovyc.",ioe);
+      }
+      final int returnCode=executor.getExitValue();
+      if (returnCode != 0) {
+        throw new BuildException("Forked groovyc returned error code: " + returnCode);
+      }
     }
-    final String groovyClasspath=getClasspath() != null ? getClasspath().toString() : javaClasspath;
-    final String[] fixedCommandItems={javaHome + separator + "bin"+ separator+ "java","-classpath",javaClasspath,"org.codehaus.groovy.tools.FileSystemCompiler","-d",destDir.getPath(),"--classpath",groovyClasspath};
-    int size=fixedCommandItems.length + compileList.length;
-    if (encoding != null) {
-      size+=2;
-    }
-    Map javaOptions=null;
-    if (jointCompilation) {
-      size+=1;
-      javaOptions=javac.getRuntimeConfigurableWrapper().getAttributeMap();
-      size+=javaOptions.size();
-    }
-    final String[] commandLine=new String[size];
-    System.arraycopy(fixedCommandItems,0,commandLine,0,fixedCommandItems.length);
-    int index=fixedCommandItems.length;
-    if (encoding != null) {
-      commandLine[index++]="--encoding";
-      commandLine[index++]=encoding;
-    }
-    if (jointCompilation) {
-      commandLine[index++]="-j";
-      for (Iterator i=javaOptions.entrySet().iterator(); i.hasNext(); ) {
-        final Map.Entry e=(Map.Entry)i.next();
-        if (e.getKey().toString().contains("debug")) {
-          commandLine[index++]="-Fg";
+ else {
+      try {
+        Path classpath=getClasspath();
+        if (classpath != null) {
+          configuration.setClasspath(classpath.toString());
+        }
+        configuration.setTargetDirectory(destDir);
+        if (encoding != null) {
+          configuration.setSourceEncoding(encoding);
+        }
+        CompilationUnit unit=makeCompileUnit();
+        unit.addSources(compileList);
+        unit.compile();
+      }
+ catch (      Exception e) {
+        StringWriter writer=new StringWriter();
+        new ErrorReporter(e,false).write(new PrintWriter(writer));
+        String message=writer.toString();
+        if (failOnError) {
+          throw new BuildException(message,e,getLocation());
         }
  else {
-          commandLine[index++]="-J" + e.getKey() + "="+ e.getValue();
+          log(message,Project.MSG_ERR);
         }
-      }
-    }
-    for (int i=0; i < compileList.length; ++i) {
-      commandLine[i + index]=compileList[i].getPath();
-    }
-    for (int i=0; i < commandLine.length; ++i) {
-      System.err.println(commandLine[i]);
-    }
-    Execute.runCommand(this,commandLine);
-  }
- else {
-    try {
-      Path classpath=getClasspath();
-      if (classpath != null) {
-        configuration.setClasspath(classpath.toString());
-      }
-      configuration.setTargetDirectory(destDir);
-      if (encoding != null) {
-        configuration.setSourceEncoding(encoding);
-      }
-      CompilationUnit unit=makeCompileUnit();
-      unit.addSources(compileList);
-      unit.compile();
-    }
- catch (    Exception e) {
-      StringWriter writer=new StringWriter();
-      new ErrorReporter(e,false).write(new PrintWriter(writer));
-      String message=writer.toString();
-      if (failOnError) {
-        throw new BuildException(message,e,getLocation());
-      }
- else {
-        log(message,Project.MSG_ERR);
       }
     }
   }
