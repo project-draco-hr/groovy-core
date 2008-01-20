@@ -1,0 +1,16 @@
+{
+  MethodVisitor mv;
+  mv=cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC + ACC_STATIC,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;",null,null);
+  mv.visitCode();
+  mv.visitFieldInsn(GETSTATIC,internalClassName,"$callSiteArray","Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
+  mv.visitInsn(DUP);
+  Label l0=new Label();
+  mv.visitJumpInsn(IFNONNULL,l0);
+  mv.visitInsn(POP);
+  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
+  mv.visitLabel(l0);
+  mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/CallSiteArray","array","[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  mv.visitInsn(ARETURN);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+}

@@ -1,8 +1,13 @@
 {
-  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
-  mv.visitLdcInsn(new Integer(allocateIndex()));
+  if (methodNode == null || !methodNode.getName().equals("<clinit>")) {
+    mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
+  }
+ else {
+    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  }
+  mv.visitLdcInsn(new Integer(allocateIndex(message)));
+  mv.visitInsn(AALOAD);
   boolean constructor=message.equals(CONSTRUCTOR);
-  if (!constructor)   mv.visitLdcInsn(message);
   boolean lhs=leftHandExpression;
   leftHandExpression=false;
   boolean oldVal=this.implicitThis;
@@ -43,18 +48,18 @@
     mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
   }
   if (callStatic) {
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","call","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   }
  else   if (constructor) {
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","callConstructor","(ILjava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   }
  else {
     if (callCurrent) {
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","callCurrent","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     }
  else {
-      if (safe)       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","callSafe","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
- else       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","call","(ILjava/lang/String;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+      if (safe)       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+ else       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     }
   }
   leftHandExpression=lhs;

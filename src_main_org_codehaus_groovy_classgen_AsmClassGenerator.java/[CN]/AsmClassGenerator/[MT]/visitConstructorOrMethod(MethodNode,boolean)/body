@@ -17,6 +17,10 @@
       mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
     }
     compileStack.init(node.getVariableScope(),parameters,mv,classNode);
+    if (methodNode == null || !methodNode.getName().equals("<clinit>")) {
+      mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+      callSiteArrayVarIndex=compileStack.defineTemporaryVariable("$local$callSiteArray",ClassHelper.make(CallSite[].class),true);
+    }
     super.visitConstructorOrMethod(node,isConstructor);
     if (!outputReturn || node.isVoidMethod()) {
       mv.visitInsn(RETURN);

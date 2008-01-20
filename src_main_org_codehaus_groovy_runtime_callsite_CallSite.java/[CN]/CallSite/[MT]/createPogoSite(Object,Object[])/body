@@ -1,0 +1,8 @@
+{
+  if (receiver instanceof GroovyInterceptable)   return new PogoInterceptableSite(this);
+  MetaClass metaClass=((GroovyObject)receiver).getMetaClass();
+  if (metaClass instanceof MetaClassImpl) {
+    return ((MetaClassImpl)metaClass).createPogoCallSite(this,args);
+  }
+  return new PogoMetaClassSite(this,metaClass);
+}

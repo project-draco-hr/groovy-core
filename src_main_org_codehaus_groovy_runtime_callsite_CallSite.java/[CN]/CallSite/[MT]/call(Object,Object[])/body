@@ -1,0 +1,9 @@
+{
+  try {
+    if (receiver == null)     receiver=NullObject.getNullObject();
+    return getCallSite(receiver,args).invoke(receiver,args);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw ScriptBytecodeAdapter.unwrap(gre);
+  }
+}
