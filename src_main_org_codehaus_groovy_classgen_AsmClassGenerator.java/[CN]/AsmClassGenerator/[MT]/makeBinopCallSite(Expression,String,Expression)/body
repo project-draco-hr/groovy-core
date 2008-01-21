@@ -1,0 +1,19 @@
+{
+  if (methodNode == null || !methodNode.getName().equals("<clinit>")) {
+    mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
+  }
+ else {
+    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  }
+  mv.visitLdcInsn(new Integer(allocateIndex(message)));
+  mv.visitInsn(AALOAD);
+  boolean lhs=leftHandExpression;
+  leftHandExpression=false;
+  boolean oldVal=this.implicitThis;
+  this.implicitThis=false;
+  visitAndAutoboxBoolean(receiver);
+  this.implicitThis=oldVal;
+  visitAndAutoboxBoolean(arguments);
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+  leftHandExpression=lhs;
+}
