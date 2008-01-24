@@ -1,6 +1,9 @@
 {
   AST node=whileNode.getFirstChild();
   assertNodeType(EXPR,node);
+  if (isType(VARIABLE_DEF,node.getFirstChild())) {
+    throw new ASTRuntimeException(whileNode,"While loop condition contains a declaration; this is currently unsupported.");
+  }
   BooleanExpression booleanExpression=booleanExpression(node);
   node=node.getNextSibling();
   Statement block=statement(node);
