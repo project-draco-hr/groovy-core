@@ -6,7 +6,13 @@
   }
   BooleanExpression booleanExpression=booleanExpression(node);
   node=node.getNextSibling();
-  Statement block=statement(node);
+  Statement block;
+  if (isType(SEMI,node)) {
+    block=EmptyStatement.INSTANCE;
+  }
+ else {
+    block=statement(node);
+  }
   WhileStatement whileStatement=new WhileStatement(booleanExpression,block);
   configureAST(whileStatement,whileNode);
   return whileStatement;

@@ -25,7 +25,14 @@
     collectionExpression=expression(collectionNode);
     forParameter=new Parameter(type,variable);
   }
-  Statement block=statement(inNode.getNextSibling());
+  final AST node=inNode.getNextSibling();
+  Statement block;
+  if (isType(SEMI,node)) {
+    block=EmptyStatement.INSTANCE;
+  }
+ else {
+    block=statement(node);
+  }
   ForStatement forStatement=new ForStatement(forParameter,collectionExpression,block);
   configureAST(forStatement,forNode);
   return forStatement;
