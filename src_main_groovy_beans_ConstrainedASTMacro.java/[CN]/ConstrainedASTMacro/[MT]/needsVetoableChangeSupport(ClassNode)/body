@@ -1,0 +1,15 @@
+{
+  while (declaringClass != null) {
+    for (    FieldNode field : (Collection<FieldNode>)declaringClass.getFields()) {
+      if (field.getType() == null) {
+        continue;
+      }
+      if (VetoableChangeSupport.class.getName().equals(field.getType().getName())) {
+        vcsField=field;
+        return false;
+      }
+    }
+    declaringClass=declaringClass.getSuperClass();
+  }
+  return true;
+}

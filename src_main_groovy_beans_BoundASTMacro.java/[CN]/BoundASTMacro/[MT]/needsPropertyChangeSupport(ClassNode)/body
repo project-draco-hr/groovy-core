@@ -1,0 +1,15 @@
+{
+  while (declaringClass != null) {
+    for (    FieldNode field : (Collection<FieldNode>)declaringClass.getFields()) {
+      if (field.getType() == null) {
+        continue;
+      }
+      if (PropertyChangeSupport.class.getName().equals(field.getType().getName())) {
+        pcsField=field;
+        return false;
+      }
+    }
+    declaringClass=declaringClass.getSuperClass();
+  }
+  return true;
+}

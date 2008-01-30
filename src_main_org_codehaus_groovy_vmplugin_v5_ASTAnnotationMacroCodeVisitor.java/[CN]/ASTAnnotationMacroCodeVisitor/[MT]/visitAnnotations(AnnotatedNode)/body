@@ -1,0 +1,9 @@
+{
+  super.visitAnnotations(node);
+  for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations().values()) {
+    String name=annotation.getClassNode().getName();
+    if (annotationsMap.containsKey(name)) {
+      targetNodes.add(new ASTNode[]{annotation,node});
+    }
+  }
+}

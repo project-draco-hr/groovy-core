@@ -1,0 +1,16 @@
+{
+  super.visitAnnotations(node);
+  for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations().values()) {
+    Class annotationType=annotation.getClassNode().getTypeClass();
+    GroovyASTMacro macroAnnotation=(GroovyASTMacro)annotationType.getAnnotation(GroovyASTMacro.class);
+    try {
+      stageVisitors.get(macroAnnotation.phase()).addAnnotation(annotationType.getName(),(ASTAnnotationMacro)macroAnnotation.macroClass().newInstance());
+    }
+ catch (    InstantiationException e) {
+      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Macro Processor " + macroAnnotation.macroClass().getName(),source));
+    }
+catch (    IllegalAccessException e) {
+      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Macro Processor " + macroAnnotation.macroClass().getName(),source));
+    }
+  }
+}
