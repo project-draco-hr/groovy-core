@@ -1,5 +1,5 @@
 {
-  if (methodNode == null || !methodNode.getName().equals("<clinit>")) {
+  if (isClinit()) {
     mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
   }
  else {
@@ -13,7 +13,23 @@
   this.implicitThis=false;
   visitAndAutoboxBoolean(receiver);
   this.implicitThis=oldVal;
-  visitAndAutoboxBoolean(arguments);
-  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+  if (isClinit()) {
+    visitAndAutoboxBoolean(arguments);
+    mv.visitInsn(DUP2_X1);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+    mv.visitInsn(DUP_X2);
+    mv.visitInsn(POP);
+  }
+ else {
+    mv.visitVarInsn(ASTORE,receiverVarIndex);
+    mv.visitVarInsn(ALOAD,receiverVarIndex);
+    visitAndAutoboxBoolean(arguments);
+    mv.visitVarInsn(ASTORE,argsVarIndex);
+    mv.visitVarInsn(ALOAD,argsVarIndex);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+    mv.visitVarInsn(ALOAD,receiverVarIndex);
+    mv.visitVarInsn(ALOAD,argsVarIndex);
+  }
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invokeBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
   leftHandExpression=lhs;
 }

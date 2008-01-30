@@ -1,9 +1,4 @@
 {
-  try {
-    if (receiver == null)     return null;
-    return getCallSite(receiver,args).invoke(receiver,args);
-  }
- catch (  GroovyRuntimeException gre) {
-    throw ScriptBytecodeAdapter.unwrap(gre);
-  }
+  if (receiver == null)   return null;
+  return acceptCall(receiver,args).invoke(receiver,args);
 }

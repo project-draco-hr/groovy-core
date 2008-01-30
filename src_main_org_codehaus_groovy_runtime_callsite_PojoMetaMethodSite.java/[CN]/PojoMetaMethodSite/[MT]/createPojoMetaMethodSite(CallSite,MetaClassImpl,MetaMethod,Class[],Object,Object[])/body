@@ -2,11 +2,5 @@
   if (metaMethod instanceof CallSiteAwareMetaMethod) {
     return ((CallSiteAwareMetaMethod)metaMethod).createPojoCallSite(site,metaClass,metaMethod,params,receiver,args);
   }
-  if (metaMethod.correctArguments(args) == args) {
-    if (noWrappers(args)) {
-      if (noCoerce(metaMethod,args))       return new PojoMetaMethodSiteNoUnwrap(site,metaClass,metaMethod,params);
- else       return new PojoMetaMethodSiteNoUnwrapNoCoerce(site,metaClass,metaMethod,params);
-    }
-  }
-  return new PojoMetaMethodSite(site,metaClass,metaMethod,params);
+  return createNonAwareCallSite(site,metaClass,metaMethod,params,args);
 }

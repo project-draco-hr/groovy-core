@@ -1,0 +1,24 @@
+{
+  MyClassLoader loader;
+  if (staticMetaMethodLoader == null || (loader=(MyClassLoader)staticMetaMethodLoader.get()) == null) {
+    ClassWriter cw=new ClassWriter(true);
+    final String name=getDeclaringClass().getCachedClass().getName().replace(".","_") + "$" + getName();
+    byte[] bytes=genStaticMetaMethodSite(cw,name);
+    loader=new MyClassLoader(owner.getClassLoader(),name,bytes);
+    staticMetaMethodLoader=new WeakReference(loader);
+  }
+  final Constructor constructor;
+  try {
+    constructor=loader.cls.getConstructor(new Class[]{CallSite.class,MetaClassImpl.class,MetaMethod.class,Class[].class});
+    return (StaticMetaMethodSite)constructor.newInstance(new Object[]{site,metaClass,metaMethod,params});
+  }
+ catch (  NoSuchMethodException e) {
+  }
+catch (  IllegalAccessException e) {
+  }
+catch (  InvocationTargetException e) {
+  }
+catch (  InstantiationException e) {
+  }
+  return null;
+}

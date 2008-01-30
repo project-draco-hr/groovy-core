@@ -1,3 +1,10 @@
 {
-  return accept(receiver,new Object[]{args});
+  try {
+    final Object[] args={arg};
+    return acceptCall(receiver,args);
+  }
+ catch (  NullPointerException e) {
+    if (receiver == null)     return acceptBinop(NullObject.getNullObject(),arg);
+    throw e;
+  }
 }

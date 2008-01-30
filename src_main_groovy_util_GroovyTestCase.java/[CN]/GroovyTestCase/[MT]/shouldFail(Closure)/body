@@ -4,7 +4,11 @@
   try {
     code.call();
   }
- catch (  Throwable e) {
+ catch (  GroovyRuntimeException gre) {
+    failed=true;
+    result=ScriptBytecodeAdapter.unwrap(gre).getMessage();
+  }
+catch (  Throwable e) {
     failed=true;
     result=e.getMessage();
   }

@@ -1,7 +1,10 @@
 {
+  CallSite site;
   MetaClass metaClass=InvokerHelper.getMetaClass(receiver);
   if (metaClass instanceof MetaClassImpl) {
-    return ((MetaClassImpl)metaClass).createStaticSite(this,args);
+    site=((MetaClassImpl)metaClass).createStaticSite(this,args);
   }
-  return new StaticMetaClassSite(this,metaClass);
+ else   site=new StaticMetaClassSite(this,metaClass);
+  array.array[index]=site;
+  return site;
 }

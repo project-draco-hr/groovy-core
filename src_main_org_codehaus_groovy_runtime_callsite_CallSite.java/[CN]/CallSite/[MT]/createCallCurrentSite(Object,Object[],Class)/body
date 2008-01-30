@@ -1,8 +1,13 @@
 {
-  if (receiver instanceof GroovyInterceptable)   return new PogoInterceptableSite(this);
-  MetaClass metaClass=((GroovyObject)receiver).getMetaClass();
-  if (metaClass instanceof MetaClassImpl) {
-    return ((MetaClassImpl)metaClass).createPogoCallCurrentSite(this,sender,args);
+  CallSite site;
+  if (receiver instanceof GroovyInterceptable)   site=new PogoInterceptableSite(this);
+ else {
+    MetaClass metaClass=((GroovyObject)receiver).getMetaClass();
+    if (metaClass instanceof MetaClassImpl) {
+      site=((MetaClassImpl)metaClass).createPogoCallCurrentSite(this,sender,args);
+    }
+ else     site=new PogoMetaClassSite(this,metaClass);
   }
-  return new PogoMetaClassSite(this,metaClass);
+  array.array[index]=site;
+  return site;
 }
