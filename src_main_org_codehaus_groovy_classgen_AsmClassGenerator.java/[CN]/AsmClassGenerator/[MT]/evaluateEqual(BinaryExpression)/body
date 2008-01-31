@@ -4,9 +4,15 @@
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
       final Expression right=expression.getRightExpression();
-      right.visit(this);
+      visitAndAutoboxBoolean(right);
       final int rhsVar=compileStack.defineTemporaryVariable("$rhs",right.getType(),true);
-      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),new VariableExpression("$rhs")})));
+      Expression rhsExpr=new BytecodeExpression(){
+        public void visit(        MethodVisitor mv){
+          mv.visitVarInsn(ALOAD,rhsVar);
+        }
+      }
+;
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),rhsExpr})));
       mv.visitInsn(POP);
       mv.visitVarInsn(ALOAD,rhsVar);
       compileStack.removeVar(rhsVar);
