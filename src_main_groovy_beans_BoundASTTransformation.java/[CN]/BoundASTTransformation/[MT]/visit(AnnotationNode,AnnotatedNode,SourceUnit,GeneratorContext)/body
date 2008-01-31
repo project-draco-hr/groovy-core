@@ -1,0 +1,26 @@
+{
+  if (ConstrainedASTTransformation.hasConstrainedAnnotation(parent)) {
+    return;
+  }
+  ClassNode declaringClass=parent.getDeclaringClass();
+  FieldNode field=((FieldNode)parent);
+  String fieldName=field.getName();
+  for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
+    if (propertyNode.getName().equals(fieldName)) {
+      if (needsPropertyChangeSupport(declaringClass)) {
+        addPropertyChangeSupport(declaringClass);
+      }
+      String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
+      if (declaringClass.getMethods(setterName).isEmpty()) {
+        Expression fieldExpression=new FieldExpression(field);
+        Statement setterBlock=createBoundStatement(field,fieldExpression);
+        createSetterMethod(declaringClass,field,setterName,setterBlock);
+      }
+ else {
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bound cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
+      }
+      return;
+    }
+  }
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bound must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+}

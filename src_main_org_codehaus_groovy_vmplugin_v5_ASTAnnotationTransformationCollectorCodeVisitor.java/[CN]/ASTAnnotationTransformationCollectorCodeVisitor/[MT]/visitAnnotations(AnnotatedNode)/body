@@ -1,0 +1,19 @@
+{
+  super.visitAnnotations(node);
+  for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations().values()) {
+    Class annotationType=annotation.getClassNode().getTypeClass();
+    GroovyASTTransformation transformationAnnotation=(GroovyASTTransformation)annotationType.getAnnotation(GroovyASTTransformation.class);
+    if (transformationAnnotation == null) {
+      continue;
+    }
+    try {
+      stageVisitors.get(transformationAnnotation.phase()).addAnnotation(annotationType.getName(),(ASTAnnotationTransformation)transformationAnnotation.transformationClass().newInstance());
+    }
+ catch (    InstantiationException e) {
+      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
+    }
+catch (    IllegalAccessException e) {
+      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
+    }
+  }
+}
