@@ -3,7 +3,13 @@
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),expression.getRightExpression()})));
+      final Expression right=expression.getRightExpression();
+      right.visit(this);
+      final int rhsVar=compileStack.defineTemporaryVariable("$rhs",right.getType(),true);
+      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),new VariableExpression("$rhs")})));
+      mv.visitInsn(POP);
+      mv.visitVarInsn(ALOAD,rhsVar);
+      compileStack.removeVar(rhsVar);
       return;
     }
   }
