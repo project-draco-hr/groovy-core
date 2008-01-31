@@ -1,0 +1,18 @@
+{
+  List properties=classNode.getProperties();
+  List propertiesToAdd=new ArrayList();
+  for (Iterator p=properties.iterator(); p.hasNext(); ) {
+    PropertyNode pn=(PropertyNode)p.next();
+    final boolean isHasManyProperty=pn.getName().equals(RELATES_TO_MANY) || pn.getName().equals(HAS_MANY);
+    if (isHasManyProperty) {
+      Expression e=pn.getInitialExpression();
+      propertiesToAdd.addAll(createPropertiesForHasManyExpression(e,classNode));
+    }
+    final boolean isBelongsTo=pn.getName().equals(BELONGS_TO);
+    if (isBelongsTo) {
+      Expression e=pn.getInitialExpression();
+      propertiesToAdd.addAll(createPropertiesForBelongsToExpression(e,classNode));
+    }
+  }
+  injectAssociationProperties(classNode,propertiesToAdd);
+}
