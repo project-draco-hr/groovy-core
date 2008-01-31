@@ -1,19 +1,32 @@
 {
   super.visitAnnotations(node);
   for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations().values()) {
-    Class annotationType=annotation.getClassNode().getTypeClass();
-    GroovyASTTransformation transformationAnnotation=(GroovyASTTransformation)annotationType.getAnnotation(GroovyASTTransformation.class);
+    Class<? extends GroovyASTTransformation> annotationType=annotation.getClassNode().getTypeClass();
+    GroovyASTTransformation transformationAnnotation=annotationType.getAnnotation(GroovyASTTransformation.class);
     if (transformationAnnotation == null) {
       continue;
     }
-    try {
-      stageVisitors.get(transformationAnnotation.phase()).addAnnotation(annotationType.getName(),(ASTAnnotationTransformation)transformationAnnotation.transformationClass().newInstance());
+    ASTAnnotationTransformationCodeVisitor stage=stageVisitors.get(transformationAnnotation.phase());
+    String annotationTypeName=annotationType.getName();
+    if (stage == null) {
+      try {
+        String phaseName=Phases.getDescription(transformationAnnotation.phase());
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@" + annotationTypeName + " cannot be handled in phase "+ phaseName,node.getLineNumber(),node.getColumnNumber()),source));
+      }
+ catch (      ArrayIndexOutOfBoundsException aiobe) {
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@" + annotationTypeName + " specifies a phase that does not exist: "+ transformationAnnotation.phase(),node.getLineNumber(),node.getColumnNumber()),source));
+      }
     }
- catch (    InstantiationException e) {
-      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
-    }
-catch (    IllegalAccessException e) {
-      source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
+ else     if (!stage.hasAnnotation(annotationTypeName)) {
+      try {
+        stage.addAnnotation(annotationTypeName,transformationAnnotation.transformationClass().newInstance());
+      }
+ catch (      InstantiationException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
+      }
+catch (      IllegalAccessException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClass().getName(),source));
+      }
     }
   }
 }
