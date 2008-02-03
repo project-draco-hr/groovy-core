@@ -1,5 +1,5 @@
 {
-  MethodVisitor mv=cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC + ACC_STATIC,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;",null,null);
+  MethodVisitor mv=cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC + ACC_STATIC,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;",null,null);
   mv.visitCode();
   mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/callsite/CallSiteArray");
   mv.visitInsn(DUP);
@@ -14,8 +14,6 @@
     mv.visitInsn(AASTORE);
   }
   mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/callsite/CallSiteArray","<init>","(Ljava/lang/Class;[Ljava/lang/String;)V");
-  mv.visitInsn(DUP);
-  mv.visitFieldInsn(PUTSTATIC,internalClassName,"$callSiteArray","Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
   mv.visitInsn(ARETURN);
   mv.visitMaxs(0,0);
   mv.visitEnd();
