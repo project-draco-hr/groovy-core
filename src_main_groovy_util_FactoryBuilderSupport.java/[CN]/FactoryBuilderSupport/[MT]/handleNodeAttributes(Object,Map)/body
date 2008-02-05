@@ -3,9 +3,17 @@
     return;
   }
   for (Iterator iter=proxyBuilder.attributeDelegates.iterator(); iter.hasNext(); ) {
-    ((Closure)iter.next()).call(new Object[]{this,node,attributes});
+    Closure attrDelegate=(Closure)iter.next();
+    FactoryBuilderSupport builder=this;
+    if (attrDelegate.getOwner() instanceof FactoryBuilderSupport) {
+      builder=(FactoryBuilderSupport)attrDelegate.getOwner();
+    }
+ else     if (attrDelegate.getDelegate() instanceof FactoryBuilderSupport) {
+      builder=(FactoryBuilderSupport)attrDelegate.getDelegate();
+    }
+    attrDelegate.call(new Object[]{builder,node,attributes});
   }
-  if (proxyBuilder.getCurrentFactory().onHandleNodeAttributes(this,node,attributes)) {
+  if (proxyBuilder.getCurrentFactory().onHandleNodeAttributes(proxyBuilder.getChildBuilder(),node,attributes)) {
     proxyBuilder.setNodeAttributes(node,attributes);
   }
 }

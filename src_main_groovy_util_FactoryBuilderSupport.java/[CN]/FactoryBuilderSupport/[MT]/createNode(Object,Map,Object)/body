@@ -1,5 +1,5 @@
 {
-  Object node=null;
+  Object node;
   Factory factory=proxyBuilder.resolveFactory(name,attributes,value);
   if (factory == null) {
     LOG.log(Level.WARNING,"Could not find match for name '" + name + "'");
@@ -9,7 +9,7 @@
   proxyBuilder.getContext().put(CURRENT_NAME,String.valueOf(name));
   proxyBuilder.preInstantiate(name,attributes,value);
   try {
-    node=factory.newInstance(this,name,value,attributes);
+    node=factory.newInstance(proxyBuilder.getChildBuilder(),name,value,attributes);
     if (node == null) {
       LOG.log(Level.WARNING,"Factory for name '" + name + "' returned null");
       return null;
