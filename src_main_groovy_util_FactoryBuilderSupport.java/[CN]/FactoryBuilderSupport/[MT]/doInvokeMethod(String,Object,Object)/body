@@ -85,10 +85,15 @@ if (current != null) {
 proxyBuilder.setParent(current,node);
 }
 if (closure != null) {
-if (proxyBuilder.getCurrentFactory().isLeaf()) {
+Factory parentFactory=proxyBuilder.getCurrentFactory();
+if (parentFactory.isLeaf()) {
 throw new RuntimeException("'" + name + "' doesn't support nesting.");
 }
-Object parentFactory=proxyBuilder.getCurrentFactory();
+boolean processContent=true;
+if (parentFactory.isHandlesNodeChildren()) {
+processContent=parentFactory.onNodeChildren(this,current,closure);
+}
+if (processContent) {
 String parentName=proxyBuilder.getCurrentName();
 Map parentContext=proxyBuilder.getContext();
 proxyBuilder.newContext();
@@ -103,6 +108,7 @@ proxyBuilder.getContext().put(CURRENT_BUILDER,parentContext.get(CHILD_BUILDER));
 proxyBuilder.setClosureDelegate(closure,node);
 closure.call();
 proxyBuilder.popContext();
+}
 }
 proxyBuilder.nodeCompleted(current,node);
 node=proxyBuilder.postNodeCompletion(current,node);
