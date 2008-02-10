@@ -1,0 +1,16 @@
+{
+  String sortByClaus="";
+  String parentClaus="";
+  if (parent != null) {
+    parentClaus=parent.getSqlOrderBy();
+  }
+  if (reversed) {
+    if (parentClaus.length() > 0)     parentClaus+=" DESC";
+  }
+  if (sort != null) {
+    sortByClaus+=getSqlOrderByVisitor().getOrderBy();
+  }
+  if (parentClaus.length() == 0)   return sortByClaus;
+  if (sortByClaus.length() == 0)   return parentClaus;
+  return parentClaus + ", " + sortByClaus;
+}

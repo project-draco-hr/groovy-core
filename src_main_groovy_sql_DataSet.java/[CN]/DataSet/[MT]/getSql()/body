@@ -1,15 +1,13 @@
 {
   if (sql == null) {
     sql="select * from " + table;
-    if (where != null) {
-      String clause="";
-      if (parent != null && parent.where != null) {
-        clause+=parent.getSqlVisitor().getWhere() + " and ";
-      }
-      clause+=getSqlVisitor().getWhere();
-      if (clause.length() > 0) {
-        sql+=" where " + clause;
-      }
+    String whereClaus=getSqlWhere();
+    if (whereClaus.length() > 0) {
+      sql+=" where " + whereClaus;
+    }
+    String orerByClaus=getSqlOrderBy();
+    if (orerByClaus.length() > 0) {
+      sql+=" order by " + orerByClaus;
     }
   }
   return sql;

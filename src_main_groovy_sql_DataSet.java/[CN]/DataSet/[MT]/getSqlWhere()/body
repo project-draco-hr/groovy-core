@@ -1,0 +1,13 @@
+{
+  String whereClaus="";
+  String parentClaus="";
+  if (parent != null) {
+    parentClaus=parent.getSqlWhere();
+  }
+  if (where != null) {
+    whereClaus+=getSqlWhereVisitor().getWhere();
+  }
+  if (parentClaus.length() == 0)   return whereClaus;
+  if (whereClaus.length() == 0)   return parentClaus;
+  return parentClaus + " and " + whereClaus;
+}
