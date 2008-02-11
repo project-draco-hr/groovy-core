@@ -1,6 +1,6 @@
 {
   try {
-    return receiver.getClass() == metaClass.getTheClass() && MetaClassHelper.sameClass(params,arg) ? this : createCallSite(receiver,new Object[]{arg});
+    return receiver.getClass() == metaClass.getTheClass() && ((MetaClassImpl)metaClass).getTheCachedClass().getMetaClassForClass() == metaClass && MetaClassHelper.sameClass(params,arg) ? this : createCallSite(receiver,new Object[]{arg});
   }
  catch (  NullPointerException e) {
     if (receiver == null)     return acceptBinop(NullObject.getNullObject(),arg);
