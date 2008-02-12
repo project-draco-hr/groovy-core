@@ -4,16 +4,6 @@
   this.attributes=attributes;
   this.value=value;
   if (parent != null) {
-    Object parentValue=parent.value();
-    List parentList;
-    if (parentValue instanceof List) {
-      parentList=(List)parentValue;
-    }
- else {
-      parentList=new NodeList();
-      parentList.add(parentValue);
-      parent.setValue(parentList);
-    }
-    parentList.add(this);
+    getParentList(parent).add(this);
   }
 }
