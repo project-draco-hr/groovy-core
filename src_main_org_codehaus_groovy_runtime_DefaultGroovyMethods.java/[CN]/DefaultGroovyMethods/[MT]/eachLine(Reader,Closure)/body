@@ -1,5 +1,6 @@
 {
   BufferedReader br;
+  int count=0;
   if (self instanceof BufferedReader)   br=(BufferedReader)self;
  else   br=new BufferedReader(self);
   try {
@@ -9,7 +10,8 @@
         break;
       }
  else {
-        closure.call(line);
+        count++;
+        callClosureForLine(closure,line,count);
       }
     }
     Reader temp=self;
