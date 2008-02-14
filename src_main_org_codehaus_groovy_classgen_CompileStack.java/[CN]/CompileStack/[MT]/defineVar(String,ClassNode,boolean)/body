@@ -1,11 +1,12 @@
 {
+  int prevCurrent=currentVariableIndex;
   makeNextVariableID(type);
   int index=currentVariableIndex;
   if (methodParameterUsedInClosure) {
     index=localVariableOffset++;
     type=ClassHelper.getWrapper(type);
   }
-  Variable answer=new Variable(index,type,name);
+  Variable answer=new Variable(index,type,name,prevCurrent);
   usedVariables.add(answer);
   answer.setHolder(methodParameterUsedInClosure);
   return answer;

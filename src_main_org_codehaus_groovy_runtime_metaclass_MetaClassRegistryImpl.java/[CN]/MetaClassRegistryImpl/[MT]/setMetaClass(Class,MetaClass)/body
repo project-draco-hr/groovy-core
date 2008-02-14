@@ -2,5 +2,7 @@
   version=new Integer(version.intValue() + 1);
   constantMetaClassCount++;
   constantMetaClasses.put(theClass,theMetaClass);
-  ReflectionCache.getCachedClass(theClass).setStaticMetaClassField(theMetaClass);
+  final CachedClass aClass=ReflectionCache.getCachedClass(theClass);
+  aClass.setStaticMetaClassField(theMetaClass);
+  aClass.setMetaClassForClass(theMetaClass,true);
 }

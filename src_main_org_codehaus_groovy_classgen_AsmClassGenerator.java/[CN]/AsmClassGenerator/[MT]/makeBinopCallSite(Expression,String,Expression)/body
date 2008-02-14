@@ -1,11 +1,12 @@
 {
-  if (isClinit()) {
+  if (isNotClinit()) {
     mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
   }
  else {
     mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
   }
-  mv.visitLdcInsn(new Integer(allocateIndex(message)));
+  final int index=allocateIndex(message);
+  mv.visitLdcInsn(new Integer(index));
   mv.visitInsn(AALOAD);
   boolean lhs=leftHandExpression;
   leftHandExpression=false;
@@ -13,23 +14,16 @@
   this.implicitThis=false;
   visitAndAutoboxBoolean(receiver);
   this.implicitThis=oldVal;
-  if (isClinit()) {
-    visitAndAutoboxBoolean(arguments);
-    mv.visitInsn(DUP2_X1);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitInsn(DUP_X2);
-    mv.visitInsn(POP);
-  }
- else {
-    mv.visitVarInsn(ASTORE,receiverVarIndex);
-    mv.visitVarInsn(ALOAD,receiverVarIndex);
-    visitAndAutoboxBoolean(arguments);
-    mv.visitVarInsn(ASTORE,argsVarIndex);
-    mv.visitVarInsn(ALOAD,argsVarIndex);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,receiverVarIndex);
-    mv.visitVarInsn(ALOAD,argsVarIndex);
-  }
+  int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
+  mv.visitVarInsn(ALOAD,recIdx);
+  visitAndAutoboxBoolean(arguments);
+  int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
+  mv.visitVarInsn(ALOAD,argsIdx);
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  mv.visitVarInsn(ALOAD,recIdx);
+  mv.visitVarInsn(ALOAD,argsIdx);
   mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invokeBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+  compileStack.removeVar(argsIdx);
+  compileStack.removeVar(recIdx);
   leftHandExpression=lhs;
 }

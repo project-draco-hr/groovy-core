@@ -3,7 +3,7 @@
   if (!ignoreAutoboxing && ClassHelper.isPrimitiveType(type)) {
     type=ClassHelper.getWrapper(type);
   }
-  if (forceCast || (type != null && !type.equals(expType))) {
+  if (forceCast || (type != null && !expType.isDerivedFrom(type) && !expType.implementsInterface(type.getName()))) {
     doConvertAndCast(type,coerce);
   }
 }

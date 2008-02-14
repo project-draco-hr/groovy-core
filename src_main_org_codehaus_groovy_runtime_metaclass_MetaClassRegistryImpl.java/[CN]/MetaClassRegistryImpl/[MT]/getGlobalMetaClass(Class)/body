@@ -12,8 +12,14 @@ synchronized (theClass) {
     if (GroovySystem.isKeepJavaMetaClasses()) {
       constantMetaClassCount++;
       constantMetaClasses.put(theClass,answer);
+      final CachedClass aClass=ReflectionCache.getCachedClass(theClass);
+      aClass.setStaticMetaClassField(answer);
+      aClass.setMetaClassForClass(answer,true);
     }
  else {
+      final CachedClass aClass=ReflectionCache.getCachedClass(theClass);
+      aClass.setStaticMetaClassField(answer);
+      aClass.setMetaClassForClass(answer,false);
       weakMetaClasses.put(theClass,answer);
     }
   }

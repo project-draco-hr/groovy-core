@@ -1,4 +1,4 @@
 {
-  if (receiver.getClass() == metaClass.getTheClass() && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,args))   return this;
+  if (!GroovyCategorySupport.hasCategoryInAnyThread() && receiver.getClass() == metaClass.getTheClass() && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,args))   return this;
  else   return createCallSite(receiver,args);
 }

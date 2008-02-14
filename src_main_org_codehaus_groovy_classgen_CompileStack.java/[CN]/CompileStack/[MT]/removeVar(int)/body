@@ -1,10 +1,7 @@
 {
-  for (Iterator iter=temporaryVariables.iterator(); iter.hasNext(); ) {
-    Variable element=(Variable)iter.next();
-    if (element.getIndex() == tempIndex) {
-      iter.remove();
-      return;
-    }
-  }
-  throw new GroovyBugError("CompileStack#removeVar: tried to remove a temporary variable with a non existent index");
+  final Variable head=(Variable)temporaryVariables.peek();
+  if (head.getIndex() != tempIndex)   throw new GroovyBugError("CompileStack#removeVar: tried to remove a temporary variable in wrong order");
+  temporaryVariables.removeFirst();
+  currentVariableIndex=head.getPrevIndex();
+  nextVariableIndex=tempIndex;
 }

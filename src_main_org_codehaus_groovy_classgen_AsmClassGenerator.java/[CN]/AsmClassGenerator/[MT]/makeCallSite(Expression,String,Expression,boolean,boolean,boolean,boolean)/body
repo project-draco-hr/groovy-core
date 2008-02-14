@@ -1,5 +1,5 @@
 {
-  if (isClinit()) {
+  if (isNotClinit()) {
     mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
   }
  else {
@@ -48,11 +48,16 @@
     mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
   }
   if (callStatic) {
-    mv.visitInsn(DUP2_X1);
+    int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
+    int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
+    mv.visitVarInsn(ALOAD,recIdx);
+    mv.visitVarInsn(ALOAD,argsIdx);
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptStatic","(Ljava/lang/Object;[Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitInsn(DUP_X2);
-    mv.visitInsn(POP);
+    mv.visitVarInsn(ALOAD,recIdx);
+    mv.visitVarInsn(ALOAD,argsIdx);
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    compileStack.removeVar(recIdx);
+    compileStack.removeVar(argsIdx);
   }
  else   if (constructor) {
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
@@ -64,11 +69,16 @@
  else {
       if (safe)       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
  else {
-        mv.visitInsn(DUP2_X1);
+        int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
+        int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
+        mv.visitVarInsn(ALOAD,recIdx);
+        mv.visitVarInsn(ALOAD,argsIdx);
         mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptCall","(Ljava/lang/Object;[Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-        mv.visitInsn(DUP_X2);
-        mv.visitInsn(POP);
+        mv.visitVarInsn(ALOAD,recIdx);
+        mv.visitVarInsn(ALOAD,argsIdx);
         mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+        compileStack.removeVar(recIdx);
+        compileStack.removeVar(argsIdx);
       }
     }
   }
