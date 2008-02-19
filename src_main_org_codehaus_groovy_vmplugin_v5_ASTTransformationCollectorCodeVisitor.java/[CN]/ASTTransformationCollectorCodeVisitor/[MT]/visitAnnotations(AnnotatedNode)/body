@@ -1,0 +1,41 @@
+{
+  super.visitAnnotations(node);
+  for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations().values()) {
+    Class<? extends GroovyASTTransformation> annotationType=annotation.getClassNode().getTypeClass();
+    GroovyASTTransformation transformationAnnotation=annotationType.getAnnotation(GroovyASTTransformation.class);
+    if (transformationAnnotation == null) {
+      continue;
+    }
+    ASTTransformationCodeVisitor stage=stageVisitors.get(transformationAnnotation.phase());
+    String annotationTypeName=annotationType.getName();
+    if (stage == null) {
+      badStageError(node,transformationAnnotation,annotationTypeName);
+    }
+ else     if (!stage.hasAnnotation(annotationTypeName)) {
+      try {
+        Object o=Class.forName(transformationAnnotation.transformationClassName()).newInstance();
+        if (o instanceof ASTSingleNodeTransformation) {
+          stage.addAnnotation(annotationTypeName,(ASTSingleNodeTransformation)o);
+        }
+ else         if (o instanceof CompilationUnit.PrimaryClassNodeOperation) {
+          compilationUnit.addPhaseOperation((CompilationUnit.PrimaryClassNodeOperation)o,transformationAnnotation.phase());
+        }
+ else         if (o instanceof CompilationUnit.SourceUnitOperation) {
+          compilationUnit.addPhaseOperation((CompilationUnit.SourceUnitOperation)o,transformationAnnotation.phase());
+        }
+ else         if (o instanceof CompilationUnit.GroovyClassOperation) {
+          compilationUnit.addPhaseOperation((CompilationUnit.GroovyClassOperation)o);
+        }
+      }
+ catch (      InstantiationException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClassName(),source));
+      }
+catch (      IllegalAccessException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformationAnnotation.transformationClassName(),source));
+      }
+catch (      ClassNotFoundException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could find class for Transformation Processor " + transformationAnnotation.transformationClassName(),source));
+      }
+    }
+  }
+}

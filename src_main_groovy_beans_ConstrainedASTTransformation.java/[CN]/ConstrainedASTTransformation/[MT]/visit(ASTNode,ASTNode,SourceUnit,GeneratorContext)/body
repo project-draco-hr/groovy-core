@@ -1,0 +1,39 @@
+{
+  if (!(_node instanceof AnnotationNode) || !(_parent instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  }
+  AnnotationNode node=(AnnotationNode)_node;
+  AnnotatedNode parent=(AnnotatedNode)_parent;
+  boolean bound=BoundASTTransformation.hasBoundAnnotation(parent);
+  ClassNode declaringClass=parent.getDeclaringClass();
+  FieldNode field=((FieldNode)parent);
+  String fieldName=field.getName();
+  for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
+    if (propertyNode.getName().equals(fieldName)) {
+      if (bound && needsPropertyChangeSupport(declaringClass)) {
+        addPropertyChangeSupport(declaringClass);
+      }
+      if (needsVetoableChangeSupport(declaringClass)) {
+        addVetoableChangeSupport(declaringClass);
+      }
+      String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
+      if (declaringClass.getMethods(setterName).isEmpty()) {
+        Expression fieldExpression=new FieldExpression(field);
+        BlockStatement setterBlock=new BlockStatement();
+        setterBlock.addStatement(createConstrainedStatement(field,fieldExpression));
+        if (bound) {
+          setterBlock.addStatement(createBoundStatement(field,fieldExpression));
+        }
+ else {
+          setterBlock.addStatement(createSetStatement(fieldExpression));
+        }
+        createSetterMethod(declaringClass,field,setterName,setterBlock);
+      }
+ else {
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Constrained cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
+      }
+      return;
+    }
+  }
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Constrained must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+}
