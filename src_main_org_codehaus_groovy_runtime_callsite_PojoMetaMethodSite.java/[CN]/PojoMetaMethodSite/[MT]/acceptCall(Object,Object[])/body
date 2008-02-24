@@ -1,4 +1,3 @@
 {
-  if (!GroovyCategorySupport.hasCategoryInAnyThread() && receiver != null && receiver.getClass() == metaClass.getTheClass() && ((MetaClassImpl)metaClass).getTheCachedClass().getMetaClassForClass() == metaClass && MetaClassHelper.sameClasses(params,args))   return this;
- else   return createCallSite(receiver,args);
+  return checkAcceptCall(receiver,args) ? this : createCallSite(receiver,args);
 }
