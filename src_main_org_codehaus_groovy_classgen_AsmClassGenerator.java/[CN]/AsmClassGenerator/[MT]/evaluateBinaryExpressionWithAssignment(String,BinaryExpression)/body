@@ -21,8 +21,7 @@
 ;
       final BinaryExpression leftExpr=new BinaryExpression(objectExpression,Token.newSymbol(Types.LEFT_SQUARE_BRACKET,-1,-1),indexExpression);
       leftExpr.setSourcePosition(leftExpression);
-      MethodCallExpression methodCall=new MethodCallExpression(leftExpr,method,new ArgumentListExpression(expression.getRightExpression()));
-      methodCall.visit(this);
+      makeBinopCallSite(leftExpr,method,expression.getRightExpression());
       final int resultVar=compileStack.defineTemporaryVariable("$result",true);
       Expression resultExpression=new BytecodeExpression(){
         public void visit(        MethodVisitor mv){

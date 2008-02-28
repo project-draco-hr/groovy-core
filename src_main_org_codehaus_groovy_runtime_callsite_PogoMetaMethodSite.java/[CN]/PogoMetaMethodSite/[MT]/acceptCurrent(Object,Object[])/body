@@ -1,4 +1,4 @@
 {
-  if (!GroovyCategorySupport.hasCategoryInAnyThread() && receiver != null && receiver.getClass() == metaClass.getTheClass() && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,args))   return this;
+  if (checkCallCurrent(receiver,args))   return this;
  else   return createCallCurrentSite(receiver,args,array.owner);
 }

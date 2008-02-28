@@ -1,0 +1,11 @@
+{
+  try {
+    final int count=invokeCounter.incrementAndGet();
+    if (count > 20) {
+      invokeCounter=null;
+      CompileThread.addMethod(this);
+    }
+  }
+ catch (  NullPointerException e) {
+  }
+}

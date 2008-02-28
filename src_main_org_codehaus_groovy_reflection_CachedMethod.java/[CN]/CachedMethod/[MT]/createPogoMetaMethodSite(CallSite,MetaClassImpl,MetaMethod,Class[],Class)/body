@@ -1,15 +1,7 @@
 {
-  MyClassLoader loader;
-  if (pogoMetaMethodLoader == null || (loader=(MyClassLoader)pogoMetaMethodLoader.get()) == null) {
-    ClassWriter cw=new ClassWriter(true);
-    final String name=getDeclaringClass().getCachedClass().getName().replace('.','_') + "$" + getName();
-    byte[] bytes=genPogoMetaMethodSite(cw,name);
-    loader=new MyClassLoader(owner.getClassLoader(),name,bytes);
-    pogoMetaMethodLoader=new WeakReference(loader);
-  }
   final Constructor constructor;
   try {
-    constructor=loader.cls.getConstructor(new Class[]{CallSite.class,MetaClassImpl.class,MetaMethod.class,Class[].class});
+    constructor=pogoCallSiteClassLoader.cls.getConstructor(new Class[]{CallSite.class,MetaClassImpl.class,MetaMethod.class,Class[].class});
     return (PogoMetaMethodSite)constructor.newInstance(new Object[]{site,metaClass,metaMethod,params});
   }
  catch (  NoSuchMethodException e) {

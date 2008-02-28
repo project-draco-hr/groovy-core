@@ -8,22 +8,35 @@
   final int index=allocateIndex(message);
   mv.visitLdcInsn(new Integer(index));
   mv.visitInsn(AALOAD);
-  boolean lhs=leftHandExpression;
-  leftHandExpression=false;
-  boolean oldVal=this.implicitThis;
-  this.implicitThis=false;
-  visitAndAutoboxBoolean(receiver);
-  this.implicitThis=oldVal;
-  int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
-  mv.visitVarInsn(ALOAD,recIdx);
-  visitAndAutoboxBoolean(arguments);
-  int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
-  mv.visitVarInsn(ALOAD,argsIdx);
-  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-  mv.visitVarInsn(ALOAD,recIdx);
-  mv.visitVarInsn(ALOAD,argsIdx);
-  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invokeBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-  compileStack.removeVar(argsIdx);
-  compileStack.removeVar(recIdx);
-  leftHandExpression=lhs;
+  if (!message.equals("plus") && !message.equals("div") && !message.equals("minus")&& !message.equals("multiply")) {
+    boolean lhs=leftHandExpression;
+    leftHandExpression=false;
+    boolean oldVal=this.implicitThis;
+    this.implicitThis=false;
+    visitAndAutoboxBoolean(receiver);
+    this.implicitThis=oldVal;
+    int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
+    mv.visitVarInsn(ALOAD,recIdx);
+    visitAndAutoboxBoolean(arguments);
+    int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
+    mv.visitVarInsn(ALOAD,argsIdx);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+    mv.visitVarInsn(ALOAD,recIdx);
+    mv.visitVarInsn(ALOAD,argsIdx);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invokeBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+    compileStack.removeVar(argsIdx);
+    compileStack.removeVar(recIdx);
+    leftHandExpression=lhs;
+  }
+ else {
+    boolean lhs=leftHandExpression;
+    leftHandExpression=false;
+    boolean oldVal=this.implicitThis;
+    this.implicitThis=false;
+    visitAndAutoboxBoolean(receiver);
+    this.implicitThis=oldVal;
+    visitAndAutoboxBoolean(arguments);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite",message,"(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+    leftHandExpression=lhs;
+  }
 }

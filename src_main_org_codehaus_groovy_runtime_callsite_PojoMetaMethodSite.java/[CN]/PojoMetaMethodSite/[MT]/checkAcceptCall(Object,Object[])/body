@@ -1,6 +1,6 @@
 {
   try {
-    return !GroovyCategorySupport.hasCategoryInAnyThread() && receiver.getClass() == metaClass.getTheClass() && ((MetaClassImpl)metaClass).getTheCachedClass().getMetaClassForClass() == metaClass && MetaClassHelper.sameClasses(params,args);
+    return receiver.getClass() == metaClass.getTheClass() && checkMetaClass() && MetaClassHelper.sameClasses(params,args);
   }
  catch (  NullPointerException e) {
     if (receiver == null)     return checkAcceptCall(NullObject.getNullObject(),args);
