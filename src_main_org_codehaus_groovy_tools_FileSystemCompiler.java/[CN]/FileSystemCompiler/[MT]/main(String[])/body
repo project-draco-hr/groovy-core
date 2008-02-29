@@ -45,21 +45,57 @@
       configuration.setJointCompilationOptions(compilerOptions);
     }
     String[] filenames=cli.getArgs();
+    List fileList=new ArrayList(filenames.length);
+    int errors=0;
+    for (int i=0; i < filenames.length; i++) {
+      if (filenames[i].startsWith("@")) {
+        try {
+          BufferedReader br=new BufferedReader(new FileReader(filenames[i].substring(1)));
+          String file;
+          while ((file=br.readLine()) != null) {
+            fileList.add(file);
+          }
+        }
+ catch (        IOException ioe) {
+          System.err.println("error: file not readable: " + filenames[i].substring(1));
+          errors++;
+        }
+      }
+ else {
+        fileList.add(filenames);
+      }
+    }
+    filenames=(String[])fileList.toArray(new String[fileList.size()]);
     if (filenames.length == 0) {
       displayHelp(options);
       return;
     }
-    int errors=checkFiles(filenames);
+    errors+=checkFiles(filenames);
     if (errors == 0) {
+      File tmpDir=null;
       if (jointCompilation) {
-        File tmpDir=createTempDir();
+        tmpDir=createTempDir();
         configuration.getJointCompilationOptions().put("stubDir",tmpDir);
       }
       FileSystemCompiler compiler=new FileSystemCompiler(configuration);
       compiler.compile(filenames);
+      if (tmpDir != null)       deleteRecursive(tmpDir);
     }
   }
  catch (  Throwable e) {
-    new ErrorReporter(e,displayStackTraceOnError).write(System.err);
+    RuntimeException re=new RuntimeException();
+    if (re.getStackTrace().length > 1) {
+      if (e instanceof RuntimeException) {
+        re=(RuntimeException)e;
+      }
+ else {
+        re.initCause(e);
+      }
+      throw re;
+    }
+ else {
+      new ErrorReporter(e,displayStackTraceOnError).write(System.err);
+      System.exit(1);
+    }
   }
 }

@@ -21,7 +21,10 @@
     }
     cu.getConfiguration().getOutput();
   }
- catch (  Exception e) {
+ catch (  InvocationTargetException ite) {
+    cu.getErrorCollector().addFatalError(new ExceptionMessage((Exception)ite.getCause(),true,cu));
+  }
+catch (  Exception e) {
     cu.getErrorCollector().addFatalError(new ExceptionMessage(e,true,cu));
   }
   if (javacReturnValue != 0) {
