@@ -1,35 +1,17 @@
 {
-  if (!isValidAnnotationClass(node)) {
-    node.setValid(false);
-    return node;
-  }
   this.annotation=node;
-  if (!node.getClassNode().isResolved()) {
-    addError("Current type was not yet resolved. Cannot introspect it.");
-    node.setValid(false);
+  this.annotationClass=node.getClassNode();
+  if (!isValidAnnotationClass(node.getClassNode())) {
+    addError("class " + node.getClassNode().getName() + " is no annotation");
     return node;
   }
-  this.annotationClass=node.getClassNode().getTypeClass();
-  extractAnnotationMeta(this.annotationClass);
-  if (this.errorCollector.hasErrors()) {
-    this.annotation.setValid(false);
-    return this.annotation;
-  }
-  Map attributes=this.annotation.getMembers();
+  Map attributes=node.getMembers();
   for (Iterator it=attributes.entrySet().iterator(); it.hasNext(); ) {
     Map.Entry entry=(Map.Entry)it.next();
     String attrName=(String)entry.getKey();
     Expression attrExpr=(Expression)entry.getValue();
-    Class attrType=getAttributeType(attrName);
-    if (attrType == null) {
-      addError("Unknown attribute '" + attrName + "'",attrExpr);
-      break;
-    }
+    ClassNode attrType=getAttributeType(node,attrName);
     visitExpression(attrName,attrExpr,attrType);
   }
-  if (!this.requiredAttrTypes.isEmpty()) {
-    addError("Required attributes " + this.requiredAttrTypes.keySet() + " not found",this.annotation);
-  }
-  this.annotation.setValid(!this.errorCollector.hasErrors());
   return this.annotation;
 }

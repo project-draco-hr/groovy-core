@@ -10,7 +10,10 @@
     visitParameterAnnotations(parameters[i],i,mv);
   }
   helper=new BytecodeHelper(mv);
-  if (!node.isAbstract()) {
+  if (classNode.isAnnotationDefinition()) {
+    visitAnnotationDefault(node,mv);
+  }
+ else   if (!node.isAbstract()) {
     Statement code=node.getCode();
     final Label tryStart=new Label();
     mv.visitLabel(tryStart);

@@ -1,0 +1,29 @@
+{
+  if (attrType.isArray()) {
+    if (attrExp instanceof ListExpression) {
+      visitListExpression(attrName,(ListExpression)attrExp,attrType.getComponentType());
+    }
+ else {
+      addError("Annotation list attributes must use Groovy notation [el1, el2]",attrExp);
+    }
+  }
+  if (ClassHelper.isPrimitiveType(attrType)) {
+    visitConstantExpression(attrName,getConstantExpression(attrExp),ClassHelper.getWrapper(attrType));
+  }
+ else   if (ClassHelper.STRING_TYPE == attrType) {
+    visitConstantExpression(attrName,getConstantExpression(attrExp),ClassHelper.STRING_TYPE);
+  }
+ else   if (ClassHelper.CLASS_Type == attrType) {
+  }
+ else   if (attrType.isDerivedFrom(ClassHelper.Enum_Type)) {
+    if (attrExp instanceof PropertyExpression) {
+      visitEnumExpression(attrName,(PropertyExpression)attrExp,attrType);
+    }
+ else {
+      addError("Value not defined for annotation attribute " + attrName,attrExp);
+    }
+  }
+ else   if (isValidAnnotationClass(attrType)) {
+    visitAnnotationExpression(attrName,(AnnotationConstantExpression)attrExp,attrType);
+  }
+}
