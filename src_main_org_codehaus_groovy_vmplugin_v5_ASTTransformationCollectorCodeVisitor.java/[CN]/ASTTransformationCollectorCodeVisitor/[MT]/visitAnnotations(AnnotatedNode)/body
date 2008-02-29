@@ -1,23 +1,22 @@
 {
   super.visitAnnotations(node);
   for (  AnnotationNode annotation : (Collection<AnnotationNode>)node.getAnnotations()) {
-    ClassNode cn=annotation.getClassNode();
-    if (!cn.isResolved())     continue;
-    Class<? extends GroovyASTTransformation> annotationType=cn.getTypeClass();
+    ClassNode annotationClassNode=annotation.getClassNode();
+    if (!annotationClassNode.isResolved())     continue;
+    Class<? extends GroovyASTTransformation> annotationType=annotationClassNode.getTypeClass();
     GroovyASTTransformation transformationAnnotation=annotationType.getAnnotation(GroovyASTTransformation.class);
     if (transformationAnnotation == null) {
       continue;
     }
     ASTTransformationCodeVisitor stage=stageVisitors.get(transformationAnnotation.phase());
-    String annotationTypeName=annotationType.getName();
     if (stage == null) {
-      badStageError(node,transformationAnnotation,annotationTypeName);
+      badStageError(node,transformationAnnotation,annotationClassNode);
     }
- else     if (!stage.hasAnnotation(annotationTypeName)) {
+ else     if (!stage.hasAnnotation(annotationClassNode)) {
       try {
         Object o=Class.forName(transformationAnnotation.transformationClassName()).newInstance();
         if (o instanceof ASTSingleNodeTransformation) {
-          stage.addAnnotation(annotationTypeName,(ASTSingleNodeTransformation)o);
+          stage.addAnnotation(annotationClassNode,(ASTSingleNodeTransformation)o);
         }
  else         if (o instanceof CompilationUnit.PrimaryClassNodeOperation) {
           compilationUnit.addPhaseOperation((CompilationUnit.PrimaryClassNodeOperation)o,transformationAnnotation.phase());
