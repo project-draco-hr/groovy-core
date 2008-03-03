@@ -72,18 +72,25 @@
       commandLineList.add("-e");
     }
     File tempFile=null;
-    try {
-      tempFile=File.createTempFile("groovyc-files-",".txt");
-      tempFile.deleteOnExit();
-      PrintWriter pw=new PrintWriter(new FileWriter(tempFile));
-      for (int i=0; i < compileList.length; i++) {
-        pw.println(compileList[i].getPath());
+    if (fork) {
+      try {
+        tempFile=File.createTempFile("groovyc-files-",".txt");
+        tempFile.deleteOnExit();
+        PrintWriter pw=new PrintWriter(new FileWriter(tempFile));
+        for (int i=0; i < compileList.length; i++) {
+          pw.println(compileList[i].getPath());
+        }
+        pw.close();
+        commandLineList.add("@" + tempFile.getPath());
       }
-      pw.close();
-      commandLineList.add("@" + tempFile.getPath());
+ catch (      IOException e) {
+        log("Error createing file list",e,Project.MSG_ERR);
+      }
     }
- catch (    IOException e) {
-      log("Error createing file list",e,Project.MSG_ERR);
+ else {
+      for (int i=0; i < compileList.length; i++) {
+        commandLineList.add(compileList[i].getPath());
+      }
     }
     final String[] commandLine=new String[commandLineList.size()];
     for (int i=0; i < commandLine.length; ++i) {
