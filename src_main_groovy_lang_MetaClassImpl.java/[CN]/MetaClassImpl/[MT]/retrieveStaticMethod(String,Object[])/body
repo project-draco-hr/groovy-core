@@ -2,19 +2,15 @@
   final MetaMethodIndex.Entry e=metaMethodIndex.getMethods(theClass,methodName);
   MetaMethodIndex.CacheEntry cacheEntry;
   if (e != null) {
-synchronized (e) {
-      cacheEntry=e.cachedStaticMethod;
-    }
-    if (cacheEntry != null && (MetaClassHelper.sameClasses(cacheEntry.params,arguments,e.staticMethods instanceof MetaMethod))) {
+    cacheEntry=e.cachedStaticMethod;
+    if (cacheEntry != null && MetaClassHelper.sameClasses(cacheEntry.params,arguments,e.staticMethods instanceof MetaMethod)) {
       return cacheEntry.method;
     }
     cacheEntry=new MetaMethodIndex.CacheEntry();
     final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
     cacheEntry.params=classes;
     cacheEntry.method=pickStaticMethod(methodName,classes);
-synchronized (e) {
-      e.cachedStaticMethod=cacheEntry;
-    }
+    e.cachedStaticMethod=cacheEntry;
     return cacheEntry.method;
   }
  else   return pickStaticMethod(methodName,MetaClassHelper.convertToTypeArray(arguments));

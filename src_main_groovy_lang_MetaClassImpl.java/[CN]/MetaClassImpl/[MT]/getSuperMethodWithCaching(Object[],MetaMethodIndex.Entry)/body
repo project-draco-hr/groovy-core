@@ -1,18 +1,15 @@
 {
   MetaMethodIndex.CacheEntry cacheEntry;
   if (e.methodsForSuper == null)   return null;
-synchronized (e) {
-    cacheEntry=e.cachedMethodForSuper;
-  }
-  if (cacheEntry != null && (MetaClassHelper.sameClasses(cacheEntry.params,arguments,e.methodsForSuper instanceof MetaMethod))) {
-    return cacheEntry.method;
+  cacheEntry=e.cachedMethodForSuper;
+  if (cacheEntry != null && MetaClassHelper.sameClasses(cacheEntry.params,arguments,e.methodsForSuper instanceof MetaMethod)) {
+    MetaMethod method=cacheEntry.method;
+    if (method != null)     return method;
   }
   cacheEntry=new MetaMethodIndex.CacheEntry();
   final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
   cacheEntry.params=classes;
   cacheEntry.method=(MetaMethod)chooseMethod(e.name,e.methodsForSuper,classes);
-synchronized (e) {
-    e.cachedMethodForSuper=cacheEntry;
-  }
+  e.cachedMethodForSuper=cacheEntry;
   return cacheEntry.method;
 }
