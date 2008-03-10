@@ -1,6 +1,6 @@
 {
   this.annotation=node;
-  this.annotationClass=node.getClassNode();
+  this.reportClass=node.getClassNode();
   if (!isValidAnnotationClass(node.getClassNode())) {
     addError("class " + node.getClassNode().getName() + " is no annotation");
     return node;
@@ -13,5 +13,6 @@
     ClassNode attrType=getAttributeType(node,attrName);
     visitExpression(attrName,attrExpr,attrType);
   }
+  VMPluginFactory.getPlugin().configureAnnotation(node);
   return this.annotation;
 }

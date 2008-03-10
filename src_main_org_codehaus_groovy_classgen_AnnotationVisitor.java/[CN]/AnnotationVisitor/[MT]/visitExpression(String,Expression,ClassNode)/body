@@ -7,23 +7,34 @@
       addError("Annotation list attributes must use Groovy notation [el1, el2]",attrExp);
     }
   }
-  if (ClassHelper.isPrimitiveType(attrType)) {
+ else   if (ClassHelper.isPrimitiveType(attrType)) {
     visitConstantExpression(attrName,getConstantExpression(attrExp),ClassHelper.getWrapper(attrType));
   }
- else   if (ClassHelper.STRING_TYPE == attrType) {
+ else   if (ClassHelper.STRING_TYPE.equals(attrType)) {
     visitConstantExpression(attrName,getConstantExpression(attrExp),ClassHelper.STRING_TYPE);
   }
- else   if (ClassHelper.CLASS_Type == attrType) {
+ else   if (ClassHelper.CLASS_Type.equals(attrType)) {
+    if (!(attrExp instanceof ClassExpression)) {
+      addError("Only classes can be used for attribute '" + attrName + "'",attrExp);
+    }
   }
  else   if (attrType.isDerivedFrom(ClassHelper.Enum_Type)) {
     if (attrExp instanceof PropertyExpression) {
       visitEnumExpression(attrName,(PropertyExpression)attrExp,attrType);
     }
  else {
-      addError("Value not defined for annotation attribute " + attrName,attrExp);
+      addError("Expected enum value for attribute " + attrName,attrExp);
     }
   }
  else   if (isValidAnnotationClass(attrType)) {
-    visitAnnotationExpression(attrName,(AnnotationConstantExpression)attrExp,attrType);
+    if (attrExp instanceof AnnotationConstantExpression) {
+      visitAnnotationExpression(attrName,(AnnotationConstantExpression)attrExp,attrType);
+    }
+ else {
+      addError("Expected annotation of type '" + attrType.getName() + "' for attribute "+ attrName,attrExp);
+    }
+  }
+ else {
+    addError("Unexpected type " + attrType.getName(),attrExp);
   }
 }
