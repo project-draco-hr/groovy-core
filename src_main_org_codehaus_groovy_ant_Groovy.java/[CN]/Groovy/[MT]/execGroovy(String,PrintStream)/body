@@ -41,7 +41,10 @@
     }
     script.run();
   }
- catch (  final CompilationFailedException e) {
+ catch (  final MissingMethodException e) {
+    groovy.run(txt,scriptName,cmdline.getCommandline());
+  }
+catch (  final CompilationFailedException e) {
     StringWriter writer=new StringWriter();
     new ErrorReporter(e,false).write(new PrintWriter(writer));
     String message=writer.toString();
