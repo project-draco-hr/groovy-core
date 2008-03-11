@@ -8,7 +8,7 @@
   final int index=allocateIndex(message);
   mv.visitLdcInsn(new Integer(index));
   mv.visitInsn(AALOAD);
-  if (!message.equals("plus") && !message.equals("div") && !message.equals("minus")&& !message.equals("multiply")) {
+  if (!message.equals("plus") && !message.equals("div") && !message.equals("minus")&& !message.equals("multiply")&& !message.equals("getAt")) {
     boolean lhs=leftHandExpression;
     leftHandExpression=false;
     boolean oldVal=this.implicitThis;
@@ -36,7 +36,7 @@
     visitAndAutoboxBoolean(receiver);
     this.implicitThis=oldVal;
     visitAndAutoboxBoolean(arguments);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite",message,"(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
     leftHandExpression=lhs;
   }
 }

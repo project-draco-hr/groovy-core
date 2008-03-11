@@ -1,0 +1,21 @@
+{
+  if (!(args[0] instanceof Integer))   return PojoMetaMethodSite.createNonAwareCallSite(site,metaClass,metaMethod,params,args);
+ else   return new PojoMetaMethodSite(site,metaClass,metaMethod,params){
+    public Object invoke(    Object receiver,    Object[] args){
+      final boolean[] objects=(boolean[])receiver;
+      return objects[normaliseIndex(((Integer)args[0]).intValue(),objects.length)];
+    }
+    public Object callBinop(    Object receiver,    Object arg){
+      if ((receiver instanceof boolean[] && arg instanceof Integer) && checkMetaClass()) {
+        final boolean[] objects=(boolean[])receiver;
+        return objects[normaliseIndex(((Integer)arg).intValue(),objects.length)];
+      }
+ else       return super.callBinop(receiver,arg);
+    }
+    public Object invokeBinop(    Object receiver,    Object arg){
+      final boolean[] objects=(boolean[])receiver;
+      return objects[normaliseIndex(((Integer)arg).intValue(),objects.length)];
+    }
+  }
+;
+}

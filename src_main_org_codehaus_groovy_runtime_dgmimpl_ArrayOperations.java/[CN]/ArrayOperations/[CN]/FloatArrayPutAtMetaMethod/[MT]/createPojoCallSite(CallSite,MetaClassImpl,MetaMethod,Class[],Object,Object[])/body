@@ -1,0 +1,14 @@
+{
+  if (!(args[0] instanceof Integer) || !(args[1] instanceof Float))   return PojoMetaMethodSite.createNonAwareCallSite(site,metaClass,metaMethod,params,args);
+ else   return new PojoMetaMethodSite(site,metaClass,metaMethod,params){
+    public Object call(    Object receiver,    Object[] args){
+      if ((receiver instanceof float[] && args[0] instanceof Integer && args[1] instanceof Float) && checkMetaClass()) {
+        final float[] objects=(float[])receiver;
+        objects[normaliseIndex(((Integer)args[0]).intValue(),objects.length)]=((Float)args[1]).floatValue();
+        return null;
+      }
+ else       return super.call(receiver,args);
+    }
+  }
+;
+}

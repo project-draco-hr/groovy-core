@@ -1,0 +1,14 @@
+{
+  if (!(args[0] instanceof Integer) || !(args[1] instanceof Byte))   return PojoMetaMethodSite.createNonAwareCallSite(site,metaClass,metaMethod,params,args);
+ else   return new PojoMetaMethodSite(site,metaClass,metaMethod,params){
+    public Object call(    Object receiver,    Object[] args){
+      if ((receiver instanceof byte[] && args[0] instanceof Integer && args[1] instanceof Byte) && checkMetaClass()) {
+        final byte[] objects=(byte[])receiver;
+        objects[normaliseIndex(((Integer)args[0]).intValue(),objects.length)]=((Byte)args[1]).byteValue();
+        return null;
+      }
+ else       return super.call(receiver,args);
+    }
+  }
+;
+}
