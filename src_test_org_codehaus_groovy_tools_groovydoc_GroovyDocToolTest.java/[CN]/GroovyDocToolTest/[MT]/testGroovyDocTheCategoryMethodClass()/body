@@ -1,17 +1,17 @@
 {
-  xmlTool.add("groovy" + FS + "util"+ FS+ "CliBuilder.groovy");
-  xmlTool.add("groovy" + FS + "lang"+ FS+ "GroovyLogTestCase.groovy");
-  xmlTool.add("groovy" + FS + "mock"+ FS+ "interceptor"+ FS+ "StrictExpectation.groovy");
-  xmlTool.add("groovy" + FS + "ui"+ FS+ "Console.groovy");
-  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "GroovyCategorySupport.java");
-  xmlTool.add("org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "ConvertedMap.java");
+  xmlTool.add("groovy/util/CliBuilder.groovy");
+  xmlTool.add("groovy/lang/GroovyLogTestCase.groovy");
+  xmlTool.add("groovy/mock/interceptor/StrictExpectation.groovy");
+  xmlTool.add("groovy/ui/Console.groovy");
+  xmlTool.add("org/codehaus/groovy/runtime/GroovyCategorySupport.java");
+  xmlTool.add("org/codehaus/groovy/runtime/ConvertedMap.java");
   MockOutputTool output=new MockOutputTool();
   xmlTool.renderToOutput(output,MOCK_DIR);
-  String categoryMethodDocument=output.getText(MOCK_DIR + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "CategoryMethod.html");
+  String categoryMethodDocument=output.getText(MOCK_DIR + "/org/codehaus/groovy/runtime/CategoryMethod.html");
   assertTrue(categoryMethodDocument.indexOf("<method returns=\"boolean\" name=\"hasCategoryInAnyThread\">") > 0);
-  String packageDocument=output.getText(MOCK_DIR + FS + "org"+ FS+ "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "packageDocStructuredData.xml");
+  String packageDocument=output.getText(MOCK_DIR + "/org/codehaus/groovy/runtime/packageDocStructuredData.xml");
   assertTrue(packageDocument.indexOf("<class name=\"CategoryMethod\" />") > 0);
-  String rootDocument=output.getText(MOCK_DIR + FS + "rootDocStructuredData.xml");
-  assertTrue(rootDocument.indexOf("<package name=\"org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime\" />") > 0);
-  assertTrue(rootDocument.indexOf("<class path=\"org" + FS + "codehaus"+ FS+ "groovy"+ FS+ "runtime"+ FS+ "CategoryMethod\" name=\"CategoryMethod\" />") > 0);
+  String rootDocument=output.getText(MOCK_DIR + "/rootDocStructuredData.xml");
+  assertTrue(rootDocument.indexOf("<package name=\"org/codehaus/groovy/runtime\" />") > 0);
+  assertTrue(rootDocument.indexOf("<class path=\"org/codehaus/groovy/runtime/CategoryMethod\" name=\"CategoryMethod\" />") > 0);
 }
