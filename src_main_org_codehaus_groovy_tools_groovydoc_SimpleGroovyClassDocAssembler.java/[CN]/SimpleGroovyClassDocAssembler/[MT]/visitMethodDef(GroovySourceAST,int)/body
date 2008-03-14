@@ -4,16 +4,7 @@
     currentMethodDoc=new SimpleGroovyMethodDoc(methodName,links);
     String commentText=getJavaDocCommentsBeforeNode(t);
     currentMethodDoc.setRawCommentText(commentText);
-    GroovySourceAST modifiers=t.childOfType(GroovyTokenTypes.MODIFIERS);
-    if (modifiers != null) {
-      AST currentModifier=modifiers.getFirstChild();
-      while (currentModifier != null) {
-        if (currentModifier.getType() == GroovyTokenTypes.LITERAL_static) {
-          currentMethodDoc.setStatic(true);
-        }
-        currentModifier=currentModifier.getNextSibling();
-      }
-    }
+    processModifiers(t,currentMethodDoc);
     String returnTypeName=getTypeNodeAsText(t.childOfType(GroovyTokenTypes.TYPE),"def");
     SimpleGroovyType returnType=new SimpleGroovyType(returnTypeName);
     currentMethodDoc.setReturnType(returnType);
