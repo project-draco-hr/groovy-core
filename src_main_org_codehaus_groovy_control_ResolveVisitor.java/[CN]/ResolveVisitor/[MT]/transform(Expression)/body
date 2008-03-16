@@ -1,31 +1,34 @@
 {
   if (exp == null)   return null;
+  Expression ret=null;
   if (exp instanceof VariableExpression) {
-    return transformVariableExpression((VariableExpression)exp);
+    ret=transformVariableExpression((VariableExpression)exp);
   }
  else   if (exp.getClass() == PropertyExpression.class) {
-    return transformPropertyExpression((PropertyExpression)exp);
+    ret=transformPropertyExpression((PropertyExpression)exp);
   }
  else   if (exp instanceof DeclarationExpression) {
-    return transformDeclarationExpression((DeclarationExpression)exp);
+    ret=transformDeclarationExpression((DeclarationExpression)exp);
   }
  else   if (exp instanceof BinaryExpression) {
-    return transformBinaryExpression((BinaryExpression)exp);
+    ret=transformBinaryExpression((BinaryExpression)exp);
   }
  else   if (exp instanceof MethodCallExpression) {
-    return transformMethodCallExpression((MethodCallExpression)exp);
+    ret=transformMethodCallExpression((MethodCallExpression)exp);
   }
  else   if (exp instanceof ClosureExpression) {
-    return transformClosureExpression((ClosureExpression)exp);
+    ret=transformClosureExpression((ClosureExpression)exp);
   }
  else   if (exp instanceof ConstructorCallExpression) {
-    return transformConstructorCallExpression((ConstructorCallExpression)exp);
+    ret=transformConstructorCallExpression((ConstructorCallExpression)exp);
   }
  else   if (exp instanceof AnnotationConstantExpression) {
-    return transformAnnotationConstantExpression((AnnotationConstantExpression)exp);
+    ret=transformAnnotationConstantExpression((AnnotationConstantExpression)exp);
   }
  else {
     resolveOrFail(exp.getType(),exp);
-    return exp.transformExpression(this);
+    ret=exp.transformExpression(this);
   }
+  if (ret != null && ret != exp)   ret.setSourcePosition(exp);
+  return ret;
 }
