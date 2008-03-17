@@ -1,7 +1,7 @@
 {
   antElementHandler.onEndElement(null,null,antXmlContext);
   lastCompletedNode=node;
-  if (parent != null) {
+  if (parent != null && !(parent instanceof Target)) {
     log.finest("parent is not null: no perform on nodeCompleted");
     return;
   }
@@ -14,6 +14,7 @@
     }
     lastCompletedNode=task;
     if (task instanceof Task) {
+      final String taskName=((Task)task).getTaskName();
       InputStream savedIn=System.in;
       InputStream savedProjectInputStream=project.getDefaultInputStream();
       if (!(savedIn instanceof DemuxInputStream)) {
@@ -27,7 +28,13 @@
         project.setDefaultInputStream(savedProjectInputStream);
         System.setIn(savedIn);
       }
+      if ("import".equals(taskName)) {
+        antXmlContext.setCurrentTarget(collectorTarget);
+      }
     }
+  }
+ else   if (node instanceof Target) {
+    antXmlContext.setCurrentTarget(collectorTarget);
   }
  else {
     final RuntimeConfigurable r=(RuntimeConfigurable)node;

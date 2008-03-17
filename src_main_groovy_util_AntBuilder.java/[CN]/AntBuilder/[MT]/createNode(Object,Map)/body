@@ -1,4 +1,5 @@
 {
+  final Attributes attrs=buildAttributes(attributes);
   String tagName=name.toString();
   String ns="";
   if (name instanceof QName) {
@@ -6,8 +7,14 @@
     tagName=q.getLocalPart();
     ns=q.getNamespaceURI();
   }
+  if ("import".equals(name)) {
+    antXmlContext.setCurrentTarget(implicitTarget);
+  }
+ else   if ("target".equals(name)) {
+    return onStartTarget(attrs,tagName,ns);
+  }
   try {
-    antElementHandler.onStartElement(ns,tagName,tagName,buildAttributes(attributes),antXmlContext);
+    antElementHandler.onStartElement(ns,tagName,tagName,attrs,antXmlContext);
   }
  catch (  final SAXParseException e) {
     log.log(Level.SEVERE,"Caught: " + e,e);
