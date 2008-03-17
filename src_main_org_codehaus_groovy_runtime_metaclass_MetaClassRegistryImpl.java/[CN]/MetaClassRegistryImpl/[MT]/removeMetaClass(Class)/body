@@ -1,14 +1,15 @@
 {
   version=new Integer(version.intValue() + 1);
-  Object answer=null;
-  if (constantMetaClassCount != 0)   answer=constantMetaClasses.remove(theClass);
-  if (answer == null) {
-    weakMetaClasses.remove(theClass);
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  info.lock();
+  try {
+    info.setStrongMetaClass(null);
+    info.setWeakMetaClass(null);
+    final CachedClass aClass=info.getCachedClass(theClass);
+    aClass.setStaticMetaClassField(null);
+    aClass.setMetaClassForClass(null,true);
   }
- else {
-    constantMetaClassCount--;
+  finally {
+    info.unlock();
   }
-  final CachedClass aClass=ReflectionCache.getCachedClass(theClass);
-  aClass.setStaticMetaClassField(null);
-  aClass.setMetaClassForClass(null,true);
 }

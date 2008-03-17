@@ -1,0 +1,43 @@
+{
+  SoftRef.expungeStaleEntries();
+  lock();
+  try {
+    final Object data=this.data;
+    if (data == null) {
+      final ClassInfo res=new ClassInfo(klazz,this);
+      this.data=res;
+      return res;
+    }
+    if (data instanceof ClassInfo) {
+      ClassInfo classInfo=(ClassInfo)data;
+      final Class cls=classInfo.getCls();
+      if (cls == klazz)       return classInfo;
+      if (cls == null) {
+        final ClassInfo res=new ClassInfo(klazz,this);
+        this.data=res;
+        return res;
+      }
+      ClassInfo[] d=new ClassInfo[2];
+      final ClassInfo res=new ClassInfo(klazz,this);
+      d[0]=res;
+      d[1]=classInfo;
+      this.data=d;
+      return res;
+    }
+    ClassInfo d[]=(ClassInfo[])data;
+    for (    ClassInfo classInfo : d) {
+      final Class cls=classInfo.getCls();
+      if (cls == klazz) {
+        return classInfo;
+      }
+    }
+    final ClassInfo[] resArr=new ClassInfo[d.length + 1];
+    final ClassInfo res=new ClassInfo(klazz,this);
+    resArr[0]=res;
+    System.arraycopy(d,0,resArr,1,d.length);
+    return res;
+  }
+  finally {
+    unlock();
+  }
+}

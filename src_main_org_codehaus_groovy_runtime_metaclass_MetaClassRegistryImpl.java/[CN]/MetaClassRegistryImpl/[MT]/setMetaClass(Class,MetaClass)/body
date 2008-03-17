@@ -1,8 +1,15 @@
 {
   version=new Integer(version.intValue() + 1);
-  constantMetaClassCount++;
-  constantMetaClasses.put(theClass,theMetaClass);
-  final CachedClass aClass=ReflectionCache.getCachedClass(theClass);
-  aClass.setStaticMetaClassField(theMetaClass);
-  aClass.setMetaClassForClass(theMetaClass,true);
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  info.lock();
+  try {
+    info.setStrongMetaClass(theMetaClass);
+    info.setWeakMetaClass(null);
+    final CachedClass aClass=info.getCachedClass(theClass);
+    aClass.setStaticMetaClassField(theMetaClass);
+    aClass.setMetaClassForClass(theMetaClass,true);
+  }
+  finally {
+    info.unlock();
+  }
 }

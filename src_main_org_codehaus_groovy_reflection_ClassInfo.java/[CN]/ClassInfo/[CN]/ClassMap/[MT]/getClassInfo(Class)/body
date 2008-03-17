@@ -1,0 +1,20 @@
+{
+  final String name=cls.getName();
+  MultiClassInfoRecord infoRecord=putIfAbsent(name,DUMMY);
+  if (infoRecord == null || infoRecord == DUMMY) {
+    SoftRef.expungeStaleEntries();
+    MultiClassInfoRecord newRecord=new MultiClassInfoRecord();
+    infoRecord=putIfAbsent(name,newRecord);
+    if (infoRecord == DUMMY) {
+      lock.lock();
+      try {
+        put(name,newRecord);
+        infoRecord=newRecord;
+      }
+  finally {
+        lock.unlock();
+      }
+    }
+  }
+  return infoRecord.get(cls);
+}

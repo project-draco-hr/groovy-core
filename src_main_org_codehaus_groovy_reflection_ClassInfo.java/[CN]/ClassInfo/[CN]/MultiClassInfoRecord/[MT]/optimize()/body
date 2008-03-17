@@ -1,0 +1,23 @@
+{
+  lock();
+  try {
+    if (data == null)     return;
+    if (data instanceof ClassInfo) {
+      ClassInfo classInfo=(ClassInfo)data;
+      if (classInfo.getCls() == null)       data=null;
+      return;
+    }
+    ClassInfo d[]=(ClassInfo[])data;
+    ArrayList<ClassInfo> list=new ArrayList<ClassInfo>(d.length);
+    for (    ClassInfo classInfo : d) {
+      final Class cls=classInfo.getCls();
+      if (cls != null)       list.add(classInfo);
+    }
+    if (list.size() == 0)     this.data=null;
+ else     if (list.size() == 1)     this.data=list.get(0);
+ else     this.data=list.toArray(new ClassInfo[list.size()]);
+  }
+  finally {
+    unlock();
+  }
+}
