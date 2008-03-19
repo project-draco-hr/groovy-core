@@ -4,4 +4,12 @@
   project.init();
   ProjectHelper.getProjectHelper().parse(project,antFile);
   project.executeTarget("clean");
+  String altJavaHome=System.getProperty("java.home");
+  if (altJavaHome.contains("jre")) {
+    altJavaHome=altJavaHome.substring(0,altJavaHome.lastIndexOf("jre"));
+  }
+ else {
+    altJavaHome=altJavaHome + "/jre";
+  }
+  project.setProperty("alt.java.home",altJavaHome);
 }

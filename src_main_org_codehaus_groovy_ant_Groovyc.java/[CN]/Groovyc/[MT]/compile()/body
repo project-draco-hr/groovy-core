@@ -39,13 +39,20 @@
     String separator=System.getProperty("file.separator");
     ArrayList commandLineList=new ArrayList();
     if (fork) {
+      String javaHome;
+      if (forkJDK != null) {
+        javaHome=forkJDK.getPath();
+      }
+ else {
+        javaHome=System.getProperty("java.home");
+      }
       if (includeAntRuntime) {
         classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
       }
       if (includeJavaRuntime) {
         classpath.addJavaRuntime();
       }
-      commandLineList.add(System.getProperty("java.home") + separator + "bin"+ separator+ "java");
+      commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
       commandLineList.add("-classpath");
       commandLineList.add(classpath.toString());
       if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
