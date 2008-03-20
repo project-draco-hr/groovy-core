@@ -1,5 +1,10 @@
 {
-  ensureNotPresent("GroovycTest1");
-  project.executeTarget("GroovycTest1_ForkGroovy_NoClasspath_WithJavaHome");
-  ensureResultOK("GroovycTest1");
+  if (project.getProperty("alt.java.home") != null) {
+    ensureNotPresent("GroovycTest1");
+    project.executeTarget("GroovycTest1_ForkGroovy_NoClasspath_WithJavaHome");
+    ensureResultOK("GroovycTest1");
+  }
+ else {
+    System.out.println("Forked Java tests skiped, not a sun JDK layout");
+  }
 }

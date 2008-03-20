@@ -9,7 +9,14 @@
     altJavaHome=altJavaHome.substring(0,altJavaHome.lastIndexOf("jre"));
   }
  else {
-    altJavaHome=altJavaHome + "/jre";
+    altJavaHome=altJavaHome + File.separator + "jre";
   }
-  project.setProperty("alt.java.home",altJavaHome);
+  try {
+    File altFile=new File(altJavaHome);
+    if (altFile.exists()) {
+      project.setProperty("alt.java.home",altJavaHome);
+    }
+  }
+ catch (  Exception e) {
+  }
 }

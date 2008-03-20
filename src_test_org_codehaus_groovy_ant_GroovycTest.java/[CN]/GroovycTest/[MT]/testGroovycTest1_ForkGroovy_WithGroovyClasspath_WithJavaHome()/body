@@ -1,5 +1,7 @@
 {
-  ensureNotPresent("GroovycTest1");
-  project.executeTarget("GroovycTest1_ForkGroovy_WithGroovyClasspath_WithJavaHome");
-  ensureResultOK("GroovycTest1");
+  if (project.getProperty("alt.java.home") != null) {
+    ensureNotPresent("GroovycTest1");
+    project.executeTarget("GroovycTest1_ForkGroovy_WithGroovyClasspath_WithJavaHome");
+    ensureResultOK("GroovycTest1");
+  }
 }
