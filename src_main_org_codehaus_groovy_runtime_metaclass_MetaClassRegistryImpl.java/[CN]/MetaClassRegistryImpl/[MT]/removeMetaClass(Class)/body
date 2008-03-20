@@ -1,13 +1,12 @@
 {
-  version=new Integer(version.intValue() + 1);
+  version.incrementAndGet();
   final ClassInfo info=ClassInfo.getClassInfo(theClass);
   info.lock();
   try {
     info.setStrongMetaClass(null);
-    info.setWeakMetaClass(null);
     final CachedClass aClass=info.getCachedClass(theClass);
     aClass.setStaticMetaClassField(null);
-    aClass.setMetaClassForClass(null,true);
+    aClass.setMetaClassForClass(null);
   }
   finally {
     info.unlock();

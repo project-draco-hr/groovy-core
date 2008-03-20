@@ -1,14 +1,10 @@
 {
   final ClassInfo info=ClassInfo.getClassInfo(theClass);
-  MetaClass answer=info.getStrongMetaClass();
-  if (answer != null)   return answer;
-  answer=info.getWeakMetaClass();
+  MetaClass answer=info.getMetaClassForClass();
   if (answer != null)   return answer;
   info.lock();
   try {
-    answer=info.getStrongMetaClass();
-    if (answer != null)     return answer;
-    answer=info.getWeakMetaClass();
+    answer=info.getMetaClassForClass();
     if (answer != null)     return answer;
     answer=metaClassCreationHandle.create(theClass,this);
     answer.initialize();
@@ -20,7 +16,7 @@
     }
     final CachedClass aClass=info.getCachedClass(theClass);
     aClass.setStaticMetaClassField(answer);
-    aClass.setMetaClassForClass(answer,true);
+    aClass.setMetaClassForClass(answer);
     return answer;
   }
   finally {
