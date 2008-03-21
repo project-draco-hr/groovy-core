@@ -1,10 +1,19 @@
 {
   if (attrType.isArray()) {
     if (attrExp instanceof ListExpression) {
+      ListExpression le=(ListExpression)attrExp;
       visitListExpression(attrName,(ListExpression)attrExp,attrType.getComponentType());
     }
- else {
+ else     if (attrExp instanceof ClosureExpression) {
       addError("Annotation list attributes must use Groovy notation [el1, el2]",attrExp);
+    }
+ else {
+      ListExpression listExp=new ListExpression();
+      listExp.addExpression(attrExp);
+      if (annotation != null) {
+        annotation.setMember(attrName,listExp);
+      }
+      visitExpression(attrName,listExp,attrType);
     }
   }
  else   if (ClassHelper.isPrimitiveType(attrType)) {
