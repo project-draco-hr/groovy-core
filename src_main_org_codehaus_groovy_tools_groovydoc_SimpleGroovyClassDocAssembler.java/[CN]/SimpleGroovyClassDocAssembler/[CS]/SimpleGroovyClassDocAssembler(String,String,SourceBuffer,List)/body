@@ -9,7 +9,9 @@
     int idx=file.lastIndexOf(".");
     className=file.substring(0,idx);
   }
-  currentClassDoc=new SimpleGroovyClassDoc(className,links);
+  importedClassesAndPackages=new ArrayList();
+  importedClassesAndPackages.add(packagePath + "/*");
+  currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
   currentClassDoc.setFullPathName(packagePath + FS + className);
   classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
   previousJavaDocCommentPattern=Pattern.compile("(?s)/\\*\\*(.*?)\\*/");

@@ -1,11 +1,21 @@
 {
+  Map visibleClasses=rootDoc.getVisibleClasses(importedClassesAndPackages);
+  Iterator methodItr=methods.iterator();
+  while (methodItr.hasNext()) {
+    GroovyMethodDoc method=(GroovyMethodDoc)methodItr.next();
+    GroovyType returnType=method.returnType();
+    String typeName=returnType.typeName();
+    if (visibleClasses.containsKey(typeName)) {
+      method.setReturnType((GroovyType)visibleClasses.get(typeName));
+    }
+  }
   if (superClassName != null) {
     superClass=rootDoc.classNamed(superClassName);
     if (superClass == null) {
-      superClass=new SimpleGroovyClassDoc(superClassName);
+      superClass=new SimpleGroovyClassDoc(null,superClassName);
     }
   }
  else {
-    superClass=new SimpleGroovyClassDoc("Object");
+    superClass=new SimpleGroovyClassDoc(null,"Object");
   }
 }

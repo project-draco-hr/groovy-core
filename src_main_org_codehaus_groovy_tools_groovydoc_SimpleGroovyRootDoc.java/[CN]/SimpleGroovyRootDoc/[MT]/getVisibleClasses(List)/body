@@ -1,0 +1,12 @@
+{
+  Map visibleClasses=new HashMap();
+  Iterator itr=classDocs.keySet().iterator();
+  while (itr.hasNext()) {
+    String fullClassName=(String)itr.next();
+    if (importedClassesAndPackages.contains(fullClassName)) {
+      GroovyClassDoc classDoc=(GroovyClassDoc)classDocs.get(fullClassName);
+      visibleClasses.put(classDoc.name(),classDoc);
+    }
+  }
+  return visibleClasses;
+}

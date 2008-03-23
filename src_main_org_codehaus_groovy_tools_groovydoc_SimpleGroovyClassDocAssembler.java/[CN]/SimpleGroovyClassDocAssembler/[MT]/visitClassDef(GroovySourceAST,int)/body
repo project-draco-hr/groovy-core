@@ -3,7 +3,7 @@
     String className=t.childOfType(GroovyTokenTypes.IDENT).getText();
     currentClassDoc=(SimpleGroovyClassDoc)classDocs.get(packagePath + FS + className);
     if (currentClassDoc == null) {
-      currentClassDoc=new SimpleGroovyClassDoc(className);
+      currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,importedClassesAndPackages);
     }
     String commentText=getJavaDocCommentsBeforeNode(t);
     currentClassDoc.setRawCommentText(commentText);
