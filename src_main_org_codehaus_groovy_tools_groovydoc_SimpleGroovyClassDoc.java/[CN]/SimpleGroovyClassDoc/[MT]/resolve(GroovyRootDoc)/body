@@ -8,6 +8,14 @@
     if (visibleClasses.containsKey(typeName)) {
       method.setReturnType((GroovyType)visibleClasses.get(typeName));
     }
+    Iterator paramItr=Arrays.asList(method.parameters()).iterator();
+    while (paramItr.hasNext()) {
+      SimpleGroovyParameter param=(SimpleGroovyParameter)paramItr.next();
+      String paramTypeName=param.typeName();
+      if (visibleClasses.containsKey(paramTypeName)) {
+        param.setType((GroovyType)visibleClasses.get(paramTypeName));
+      }
+    }
   }
   if (superClassName != null) {
     superClass=rootDoc.classNamed(superClassName);
