@@ -2,7 +2,9 @@
   Class type=annotation.annotationType();
   if (type == Retention.class) {
     Retention r=(Retention)annotation;
-    setRetentionPolicy(r.value(),node);
+    RetentionPolicy value=r.value();
+    setRetentionPolicy(value,node);
+    node.setMember("value",new PropertyExpression(new ClassExpression(ClassHelper.makeWithoutCaching(RetentionPolicy.class,false)),value.toString()));
   }
  else   if (type == Target.class) {
     Target t=(Target)annotation;
