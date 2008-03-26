@@ -1,17 +1,17 @@
 {
-  if (parameter.getCachedClass() == argument)   return 0;
+  if (parameter.getTheClass() == argument)   return 0;
   if (parameter.isInterface()) {
-    return getMaximumInterfaceDistance(argument,parameter.getCachedClass()) << 1;
+    return getMaximumInterfaceDistance(argument,parameter.getTheClass()) << 1;
   }
   long objectDistance=0;
   if (argument != null) {
-    long pd=getPrimitiveDistance(parameter.getCachedClass(),argument);
+    long pd=getPrimitiveDistance(parameter.getTheClass(),argument);
     if (pd != -1)     return pd << 32;
     objectDistance+=PRIMITIVES.length + 1;
     Class clazz=ReflectionCache.autoboxType(argument);
     while (clazz != null) {
-      if (clazz == parameter.getCachedClass())       break;
-      if (clazz == GString.class && parameter.getCachedClass() == String.class) {
+      if (clazz == parameter.getTheClass())       break;
+      if (clazz == GString.class && parameter.getTheClass() == String.class) {
         objectDistance+=2;
         break;
       }
@@ -21,7 +21,7 @@
   }
  else {
     objectDistance--;
-    Class clazz=parameter.getCachedClass();
+    Class clazz=parameter.getTheClass();
     if (clazz.isPrimitive()) {
       objectDistance+=2;
     }

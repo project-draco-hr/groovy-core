@@ -4,7 +4,7 @@
       final CachedMethod method=(CachedMethod)queue.take();
       if (method != null) {
         ClassWriter cw=new ClassWriter(true);
-        final Class acls=method.getDeclaringClass().getCachedClass();
+        final Class acls=method.getDeclaringClass().getTheClass();
         final String name=acls.getName().replace('.','_') + "$" + method.getName();
         byte[] bytes=method.genPogoMetaMethodSite(cw,name);
         MyClassLoader loader=new MyClassLoader(acls.getClassLoader(),name,bytes);

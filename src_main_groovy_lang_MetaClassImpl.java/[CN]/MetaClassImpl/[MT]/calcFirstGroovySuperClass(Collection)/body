@@ -4,19 +4,19 @@
   Iterator iter=superClasses.iterator();
   for (; iter.hasNext(); ) {
     CachedClass c=(CachedClass)iter.next();
-    if (GroovyObject.class.isAssignableFrom(c.getCachedClass())) {
+    if (GroovyObject.class.isAssignableFrom(c.getTheClass())) {
       firstGroovy=c;
       break;
     }
   }
   if (firstGroovy == null)   firstGroovy=theCachedClass;
  else {
-    if (firstGroovy.getCachedClass() == GroovyObjectSupport.class && iter.hasNext()) {
+    if (firstGroovy.getTheClass() == GroovyObjectSupport.class && iter.hasNext()) {
       firstGroovy=(CachedClass)iter.next();
-      if (firstGroovy.getCachedClass() == Closure.class && iter.hasNext()) {
+      if (firstGroovy.getTheClass() == Closure.class && iter.hasNext()) {
         firstGroovy=(CachedClass)iter.next();
       }
     }
   }
-  return GroovyObject.class.isAssignableFrom(firstGroovy.getCachedClass()) ? firstGroovy.getCachedSuperClass() : firstGroovy;
+  return GroovyObject.class.isAssignableFrom(firstGroovy.getTheClass()) ? firstGroovy.getCachedSuperClass() : firstGroovy;
 }

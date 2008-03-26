@@ -1,0 +1,16 @@
+{
+  cachedClass=klazz;
+  this.classInfo=classInfo;
+  isArray=klazz.isArray();
+  isPrimitive=klazz.isPrimitive();
+  modifiers=klazz.getModifiers();
+  isInterface=klazz.isInterface();
+  isNumber=Number.class.isAssignableFrom(klazz);
+  for (Iterator it=getInterfaces().iterator(); it.hasNext(); ) {
+    CachedClass inf=(CachedClass)it.next();
+    ReflectionCache.isAssignableFrom(klazz,inf.cachedClass);
+  }
+  for (CachedClass cur=this; cur != null; cur=cur.getCachedSuperClass()) {
+    ReflectionCache.setAssignableFrom(cur.cachedClass,klazz);
+  }
+}

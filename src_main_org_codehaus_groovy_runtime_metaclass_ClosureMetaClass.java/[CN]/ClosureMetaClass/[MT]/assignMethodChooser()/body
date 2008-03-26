@@ -13,7 +13,7 @@
 ;
     }
  else {
-      if (length == 1 && c[0].getCachedClass() == Object.class) {
+      if (length == 1 && c[0].getTheClass() == Object.class) {
         chooser=new MethodChooser(){
           public Object chooseMethod(          Class[] arguments,          boolean coerce){
             if (arguments.length < 2)             return doCall;
@@ -25,12 +25,12 @@
  else {
         boolean allObject=true;
         for (int i=0; i < c.length - 1; i++) {
-          if (c[i].getCachedClass() != Object.class) {
+          if (c[i].getTheClass() != Object.class) {
             allObject=false;
             break;
           }
         }
-        if (allObject && c[c.length - 1].getCachedClass() == Object.class) {
+        if (allObject && c[c.length - 1].getTheClass() == Object.class) {
           chooser=new MethodChooser(){
             public Object chooseMethod(            Class[] arguments,            boolean coerce){
               if (arguments.length == c.length)               return doCall;
@@ -40,7 +40,7 @@
 ;
         }
  else {
-          if (allObject && c[c.length - 1].getCachedClass() == Object[].class) {
+          if (allObject && c[c.length - 1].getTheClass() == Object[].class) {
             final int minimumLength=c.length - 2;
             chooser=new MethodChooser(){
               public Object chooseMethod(              Class[] arguments,              boolean coerce){
@@ -74,7 +74,7 @@
         m0=m;
       }
  else {
-        if (c.length == 1 && c[0].getCachedClass() == Object.class) {
+        if (c.length == 1 && c[0].getTheClass() == Object.class) {
           m1=m;
         }
       }

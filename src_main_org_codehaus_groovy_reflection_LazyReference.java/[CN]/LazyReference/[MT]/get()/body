@@ -1,0 +1,17 @@
+{
+  T t=value;
+  if (t == null) {
+    lock.lock();
+    try {
+      t=value;
+      if (t != null)       return t;
+      t=initValue();
+      value=t;
+      return t;
+    }
+  finally {
+      lock.unlock();
+    }
+  }
+  return t;
+}

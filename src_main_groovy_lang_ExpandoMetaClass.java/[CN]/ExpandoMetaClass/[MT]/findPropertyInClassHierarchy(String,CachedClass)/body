@@ -1,7 +1,7 @@
 {
   MetaBeanProperty property=null;
   final CachedClass superClass=theClass.getCachedSuperClass();
-  MetaClass metaClass=this.registry.getMetaClass(superClass.getCachedClass());
+  MetaClass metaClass=this.registry.getMetaClass(superClass.getTheClass());
   if (metaClass instanceof MutableMetaClass) {
     property=getMetaPropertyFromMutableMetaClass(propertyName,metaClass);
     if (property == null) {
@@ -9,7 +9,7 @@
         property=findPropertyInClassHierarchy(propertyName,superClass);
       }
       if (property == null) {
-        final Class[] interfaces=theClass.getCachedClass().getInterfaces();
+        final Class[] interfaces=theClass.getTheClass().getInterfaces();
         property=searchInterfacesForMetaProperty(propertyName,interfaces);
       }
     }

@@ -2,7 +2,7 @@
   MyClassLoader loader;
   if (staticMetaMethodLoader == null || (loader=(MyClassLoader)staticMetaMethodLoader.get()) == null) {
     ClassWriter cw=new ClassWriter(true);
-    final String name=getDeclaringClass().getCachedClass().getName().replace('.','_') + "$" + getName();
+    final String name=getDeclaringClass().getTheClass().getName().replace('.','_') + "$" + getName();
     byte[] bytes=genStaticMetaMethodSite(cw,name);
     loader=new MyClassLoader(owner.getClassLoader(),name,bytes);
     staticMetaMethodLoader=new WeakReference(loader);

@@ -42,7 +42,7 @@
     method=(MetaMethod)listeners.get(name);
     ambiguousListener=method == AMBIGUOUS_LISTENER_METHOD;
     if (method != null && !ambiguousListener && newValue instanceof Closure) {
-      Object proxy=Proxy.newProxyInstance(theClass.getClassLoader(),new Class[]{method.getParameterTypes()[0].getCachedClass()},new ConvertedClosure((Closure)newValue,name));
+      Object proxy=Proxy.newProxyInstance(theClass.getClassLoader(),new Class[]{method.getParameterTypes()[0].getTheClass()},new ConvertedClosure((Closure)newValue,name));
       arguments=new Object[]{proxy};
       newValue=proxy;
     }
@@ -64,11 +64,11 @@
   }
   if (method != null) {
     if (arguments.length == 1) {
-      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[0].getCachedClass());
+      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[0].getTheClass());
       arguments[0]=newValue;
     }
  else {
-      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[1].getCachedClass());
+      newValue=DefaultTypeTransformation.castToType(newValue,method.getParameterTypes()[1].getTheClass());
       arguments[1]=newValue;
     }
     method.doMethodInvoke(object,arguments);

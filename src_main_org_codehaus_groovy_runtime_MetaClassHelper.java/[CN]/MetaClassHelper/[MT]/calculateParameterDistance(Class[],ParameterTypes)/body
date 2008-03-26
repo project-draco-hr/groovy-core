@@ -9,14 +9,14 @@
   if (arguments.length == parameters.length) {
     CachedClass baseType=parameters[noVargsLength];
     if (!parameters[noVargsLength].isAssignableFrom(arguments[noVargsLength])) {
-      baseType=ReflectionCache.getCachedClass(baseType.getCachedClass().getComponentType());
+      baseType=ReflectionCache.getCachedClass(baseType.getTheClass().getComponentType());
       ret+=2l << VARGS_SHIFT;
     }
     ret+=calculateParameterDistance(arguments[noVargsLength],baseType);
   }
  else   if (arguments.length > parameters.length) {
     ret+=(2 + arguments.length - parameters.length) << VARGS_SHIFT;
-    CachedClass vargsType=ReflectionCache.getCachedClass(parameters[noVargsLength].getCachedClass().getComponentType());
+    CachedClass vargsType=ReflectionCache.getCachedClass(parameters[noVargsLength].getTheClass().getComponentType());
     for (int i=noVargsLength; i < arguments.length; i++) {
       ret+=calculateParameterDistance(arguments[i],vargsType);
     }
