@@ -1,6 +1,14 @@
 {
   if (methodMissing != null) {
-    return methodMissing.invoke(instance,new Object[]{methodName,arguments});
+    try {
+      return methodMissing.invoke(instance,new Object[]{methodName,arguments});
+    }
+ catch (    InvokerInvocationException iie) {
+      if (methodMissing instanceof ClosureMetaMethod && iie.getCause() instanceof MissingMethodException) {
+        throw (MissingMethodException)iie.getCause();
+      }
+      throw iie;
+    }
   }
  else   if (original != null)   throw original;
  else   throw new MissingMethodExceptionNoStack(methodName,theClass,arguments,false);

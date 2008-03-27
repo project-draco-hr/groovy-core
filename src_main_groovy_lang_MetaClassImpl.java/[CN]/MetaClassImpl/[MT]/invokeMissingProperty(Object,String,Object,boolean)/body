@@ -10,7 +10,9 @@
     }
   }
  catch (  InvokerInvocationException iie) {
-    if (iie.getCause() instanceof MissingPropertyException) {
+    boolean shouldHandle=isGetter && propertyMissingGet instanceof ClosureMetaMethod;
+    if (!shouldHandle)     shouldHandle=!isGetter && propertyMissingSet instanceof ClosureMetaMethod;
+    if (shouldHandle && iie.getCause() instanceof MissingPropertyException) {
       throw (MissingPropertyException)iie.getCause();
     }
     throw iie;
