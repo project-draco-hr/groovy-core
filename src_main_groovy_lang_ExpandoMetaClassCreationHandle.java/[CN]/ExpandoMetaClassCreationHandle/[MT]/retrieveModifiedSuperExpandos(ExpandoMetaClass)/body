@@ -1,15 +1,14 @@
 {
-  Set modifiedSupers=new HashSet();
-  List superClasses=child.getSuperClasses();
-  for (Iterator i=superClasses.iterator(); i.hasNext(); ) {
-    Class c=(Class)i.next();
-    Class[] interfaces=c.getInterfaces();
+  Set<MetaClass> modifiedSupers=new HashSet<MetaClass>();
+  for (  CachedClass c : child.getSuperClasses()) {
+    Set<CachedClass> interfaces=c.getInterfaces();
     populateSupersFromInterfaces(modifiedSupers,interfaces);
-    if (modifiedExpandos.containsKey(c)) {
-      modifiedSupers.add(modifiedExpandos.get(c));
+    final ClassInfo info=c.classInfo;
+    if (info.isModifiedExpando()) {
+      modifiedSupers.add(info.getMetaClassForClass());
     }
   }
-  Class[] interfaces=child.getJavaClass().getInterfaces();
+  Set<CachedClass> interfaces=child.getTheCachedClass().getDeclaredInterfaces();
   populateSupersFromInterfaces(modifiedSupers,interfaces);
   return modifiedSupers;
 }

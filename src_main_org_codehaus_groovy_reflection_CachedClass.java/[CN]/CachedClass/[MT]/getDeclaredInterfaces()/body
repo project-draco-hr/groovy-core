@@ -1,0 +1,10 @@
+{
+  if (ownInterfaces == null) {
+    ownInterfaces=new HashSet<CachedClass>(0);
+    Class[] classes=getTheClass().getInterfaces();
+    for (int i=0; i < classes.length; i++) {
+      ownInterfaces.add(ReflectionCache.getCachedClass(classes[i]));
+    }
+  }
+  return ownInterfaces;
+}

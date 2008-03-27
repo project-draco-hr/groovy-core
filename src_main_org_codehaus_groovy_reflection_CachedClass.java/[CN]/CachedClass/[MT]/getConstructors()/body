@@ -1,13 +1,3 @@
 {
-  if (constructors == null) {
-    final Constructor[] declaredConstructors=(Constructor[])AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        return getTheClass().getDeclaredConstructors();
-      }
-    }
-);
-    constructors=new CachedConstructor[declaredConstructors.length];
-    for (int i=0; i != constructors.length; ++i)     constructors[i]=new CachedConstructor(this,declaredConstructors[i]);
-  }
-  return constructors;
+  return constructors.get();
 }

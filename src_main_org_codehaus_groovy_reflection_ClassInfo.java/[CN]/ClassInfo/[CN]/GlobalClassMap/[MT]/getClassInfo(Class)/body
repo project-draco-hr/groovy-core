@@ -1,0 +1,12 @@
+{
+  final String name=cls.getName();
+  GlobalMultiClassInfoRecord infoRecord=get(name);
+  if (infoRecord == null) {
+    GlobalMultiClassInfoRecord newRecord=new GlobalMultiClassInfoRecord();
+    infoRecord=putIfAbsent(name,newRecord);
+    if (infoRecord == null) {
+      infoRecord=newRecord;
+    }
+  }
+  return infoRecord.get(cls);
+}

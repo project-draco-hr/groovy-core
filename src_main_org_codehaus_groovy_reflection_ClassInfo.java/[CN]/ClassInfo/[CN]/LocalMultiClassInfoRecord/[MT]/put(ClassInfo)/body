@@ -1,0 +1,16 @@
+{
+  if (data == null) {
+    data=ci;
+    return ci;
+  }
+  if (data instanceof ClassInfo) {
+    data=new ClassInfo[]{ci,(ClassInfo)data};
+    return ci;
+  }
+  ClassInfo d[]=(ClassInfo[])data;
+  final ClassInfo[] resArr=new ClassInfo[d.length + 1];
+  resArr[0]=ci;
+  System.arraycopy(d,0,resArr,1,d.length);
+  this.data=resArr;
+  return ci;
+}

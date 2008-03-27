@@ -1,13 +1,3 @@
 {
-  if (fields == null) {
-    final Field[] declaredFields=(Field[])AccessController.doPrivileged(new PrivilegedAction(){
-      public Object run(){
-        return getTheClass().getDeclaredFields();
-      }
-    }
-);
-    fields=new CachedField[declaredFields.length];
-    for (int i=0; i != fields.length; ++i)     fields[i]=new CachedField(this,declaredFields[i]);
-  }
-  return fields;
+  return fields.get();
 }

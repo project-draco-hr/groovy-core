@@ -1,3 +1,22 @@
 {
-  return locallyKnown.getMetaClass(theClass);
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  MetaClass answer=info.getMetaClassForClass();
+  if (answer != null)   return answer;
+  info.lock();
+  try {
+    answer=info.getMetaClassForClass();
+    if (answer != null)     return answer;
+    answer=metaClassCreationHandle.create(theClass,this);
+    answer.initialize();
+    if (GroovySystem.isKeepJavaMetaClasses()) {
+      info.setStrongMetaClass(answer);
+    }
+ else {
+      info.setWeakMetaClass(answer);
+    }
+    return answer;
+  }
+  finally {
+    info.unlock();
+  }
 }

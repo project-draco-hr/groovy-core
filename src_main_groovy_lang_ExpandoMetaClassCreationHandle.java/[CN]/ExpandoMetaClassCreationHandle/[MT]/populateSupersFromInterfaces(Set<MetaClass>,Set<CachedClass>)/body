@@ -1,0 +1,10 @@
+{
+  for (  CachedClass anInterface : interfaces) {
+    final ClassInfo info=anInterface.classInfo;
+    if (info.isModifiedExpando()) {
+      modifiedSupers.add(info.getMetaClassForClass());
+    }
+    final Set<CachedClass> superInterfaces=anInterface.getDeclaredInterfaces();
+    if (superInterfaces.size() > 0)     populateSupersFromInterfaces(modifiedSupers,superInterfaces);
+  }
+}
