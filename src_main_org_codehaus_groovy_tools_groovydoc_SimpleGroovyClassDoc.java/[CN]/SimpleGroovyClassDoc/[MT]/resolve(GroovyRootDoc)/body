@@ -1,5 +1,17 @@
 {
   Map visibleClasses=rootDoc.getVisibleClasses(importedClassesAndPackages);
+  Iterator constructorItr=constructors.iterator();
+  while (constructorItr.hasNext()) {
+    GroovyConstructorDoc constructor=(GroovyConstructorDoc)constructorItr.next();
+    Iterator paramItr=Arrays.asList(constructor.parameters()).iterator();
+    while (paramItr.hasNext()) {
+      SimpleGroovyParameter param=(SimpleGroovyParameter)paramItr.next();
+      String paramTypeName=param.typeName();
+      if (visibleClasses.containsKey(paramTypeName)) {
+        param.setType((GroovyType)visibleClasses.get(paramTypeName));
+      }
+    }
+  }
   Iterator methodItr=methods.iterator();
   while (methodItr.hasNext()) {
     GroovyMethodDoc method=(GroovyMethodDoc)methodItr.next();
