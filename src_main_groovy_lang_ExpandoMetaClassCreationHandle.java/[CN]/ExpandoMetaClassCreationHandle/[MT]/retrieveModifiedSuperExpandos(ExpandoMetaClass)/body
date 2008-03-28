@@ -4,8 +4,9 @@
     Set<CachedClass> interfaces=c.getInterfaces();
     populateSupersFromInterfaces(modifiedSupers,interfaces);
     final ClassInfo info=c.classInfo;
-    if (info.isModifiedExpando()) {
-      modifiedSupers.add(info.getMetaClassForClass());
+    final ExpandoMetaClass expando=info.getModifiedExpando();
+    if (expando != null) {
+      modifiedSupers.add(expando);
     }
   }
   Set<CachedClass> interfaces=child.getTheCachedClass().getDeclaredInterfaces();
