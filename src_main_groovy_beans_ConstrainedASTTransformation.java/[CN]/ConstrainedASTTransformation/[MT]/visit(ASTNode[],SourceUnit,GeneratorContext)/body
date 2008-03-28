@@ -1,9 +1,9 @@
 {
-  if (!(_node instanceof AnnotationNode) || !(_parent instanceof AnnotatedNode)) {
+  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
     throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
   }
-  AnnotationNode node=(AnnotationNode)_node;
-  AnnotatedNode parent=(AnnotatedNode)_parent;
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
   boolean bound=BoundASTTransformation.hasBoundAnnotation(parent);
   ClassNode declaringClass=parent.getDeclaringClass();
   FieldNode field=((FieldNode)parent);
