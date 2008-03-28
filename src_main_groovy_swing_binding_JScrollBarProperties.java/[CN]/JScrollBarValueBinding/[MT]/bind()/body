@@ -1,0 +1,19 @@
+{
+  if (!bound) {
+    boundSlider=(JScrollBar)((PropertyBinding)sourceBinding).getBean();
+    try {
+      boundSlider.addPropertyChangeListener("model",this);
+      boundSlider.getModel().addChangeListener(this);
+      bound=true;
+    }
+ catch (    RuntimeException re) {
+      try {
+        boundSlider.removePropertyChangeListener("model",this);
+        boundSlider.getModel().removeChangeListener(this);
+      }
+ catch (      Exception e) {
+      }
+      throw re;
+    }
+  }
+}
