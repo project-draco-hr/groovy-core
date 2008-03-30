@@ -1,0 +1,14 @@
+{
+  SoftReference<T> resRef=value;
+  T res;
+  if (resRef != null && (res=resRef.get()) != null)   return res;
+  lock();
+  try {
+    res=initValue();
+    value=new SoftReference<T>(res);
+    return res;
+  }
+  finally {
+    unlock();
+  }
+}

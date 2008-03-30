@@ -1,0 +1,26 @@
+{
+  lock();
+  try {
+    int c=count;
+    if (c++ > threshold) {
+      rehash();
+    }
+    ClassInfo[] tab=table;
+    int index=hash & (tab.length - 1);
+    ClassInfo first=tab[index];
+    ClassInfo e=first;
+    while (e != null) {
+      if (e.hash == hash && e.get() == key) {
+        return e;
+      }
+      e=e.next;
+    }
+    e=new ClassInfo(key,hash,first);
+    tab[index]=e;
+    count=c;
+    return e;
+  }
+  finally {
+    unlock();
+  }
+}

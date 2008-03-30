@@ -1,0 +1,42 @@
+{
+  ClassInfo[] oldTable=table;
+  int oldCapacity=oldTable.length;
+  if (oldCapacity >= MAXIMUM_CAPACITY)   return;
+  int newCount=0;
+  for (int i=0; i < oldCapacity; i++) {
+    ClassInfo first=null;
+    for (ClassInfo e=oldTable[i]; e != null; ) {
+      if (e.get() != null) {
+        if (first == null)         first=e;
+        ClassInfo ee=e.next;
+        while (ee != null && ee.get() == null)         ee=ee.next;
+        e.next=ee;
+        e=ee;
+        newCount++;
+      }
+ else {
+        e=e.next;
+      }
+    }
+    oldTable[i]=first;
+  }
+  if (newCount + 1 < threshold) {
+    count=newCount;
+    return;
+  }
+  ClassInfo[] newTable=new ClassInfo[oldCapacity << 1];
+  int sizeMask=newTable.length - 1;
+  newCount=0;
+  for (int i=0; i < oldCapacity; i++) {
+    for (ClassInfo e=oldTable[i]; e != null; e=e.next) {
+      int idx=e.hash & sizeMask;
+      final ClassInfo next=newTable[idx];
+      if (next == null && e.next == null)       newTable[idx]=e;
+ else       newTable[idx]=new ClassInfo(e,next);
+      newCount++;
+    }
+  }
+  threshold=(int)(newTable.length * 0.75f);
+  table=newTable;
+  count=newCount;
+}

@@ -2,14 +2,14 @@
   SoftReference<CachedClass> ccr;
   CachedClass cc;
   if ((ccr=cachedClassRef) != null && (cc=ccr.get()) != null)   return cc;
-  lock();
+  lock.lock();
   try {
     if ((ccr=cachedClassRef) != null && (cc=ccr.get()) != null)     return cc;
     cc=createCachedClass(klazz,this);
-    cachedClassRef=new SoftReference<CachedClass>(cc);
+    cachedClassRef=new SoftReference(cc);
     return cc;
   }
   finally {
-    unlock();
+    lock.unlock();
   }
 }
