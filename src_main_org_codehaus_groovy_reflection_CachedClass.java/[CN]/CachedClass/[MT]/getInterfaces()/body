@@ -1,14 +1,3 @@
 {
-  if (interfaces == null) {
-    interfaces=new HashSet<CachedClass>(0);
-    if (getTheClass().isInterface())     interfaces.add(this);
-    Class[] classes=getTheClass().getInterfaces();
-    for (int i=0; i < classes.length; i++) {
-      final CachedClass aClass=ReflectionCache.getCachedClass(classes[i]);
-      if (!interfaces.contains(aClass))       interfaces.addAll(aClass.getInterfaces());
-    }
-    final CachedClass superClass=getCachedSuperClass();
-    if (superClass != null)     interfaces.addAll(superClass.getInterfaces());
-  }
-  return interfaces;
+  return interfaces.get();
 }
