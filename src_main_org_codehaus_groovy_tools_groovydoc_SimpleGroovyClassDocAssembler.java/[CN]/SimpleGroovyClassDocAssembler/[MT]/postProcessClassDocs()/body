@@ -2,10 +2,12 @@
   Iterator classDocIterator=classDocs.values().iterator();
   while (classDocIterator.hasNext()) {
     SimpleGroovyClassDoc classDoc=(SimpleGroovyClassDoc)classDocIterator.next();
-    GroovyConstructorDoc[] constructors=classDoc.constructors();
-    if (constructors != null && constructors.length == 0) {
-      GroovyConstructorDoc constructorDoc=new SimpleGroovyConstructorDoc(classDoc.name());
-      classDoc.add(constructorDoc);
+    if (classDoc.isClass()) {
+      GroovyConstructorDoc[] constructors=classDoc.constructors();
+      if (constructors != null && constructors.length == 0) {
+        GroovyConstructorDoc constructorDoc=new SimpleGroovyConstructorDoc(classDoc.name());
+        classDoc.add(constructorDoc);
+      }
     }
   }
 }
