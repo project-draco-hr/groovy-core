@@ -25,7 +25,7 @@
   String _staticMetaClassFieldName="$staticMetaClass";
   while (node.getField(_staticMetaClassFieldName) != null)   _staticMetaClassFieldName=_staticMetaClassFieldName + "$";
   final String staticMetaClassFieldName=_staticMetaClassFieldName;
-  FieldNode staticMetaClassField=node.addField(staticMetaClassFieldName,ACC_PUBLIC | ACC_STATIC,ClassHelper.make(SoftReference.class),null);
+  FieldNode staticMetaClassField=node.addField(staticMetaClassFieldName,ACC_PUBLIC | ACC_STATIC,ClassHelper.make(SoftReference.class,false),null);
   staticMetaClassField.setSynthetic(true);
   List getStaticMetaClassCode=new LinkedList();
   getStaticMetaClassCode.add(new BytecodeInstruction(){
