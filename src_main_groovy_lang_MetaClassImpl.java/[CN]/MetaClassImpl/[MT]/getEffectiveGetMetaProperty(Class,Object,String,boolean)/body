@@ -1,0 +1,119 @@
+{
+  boolean isStatic=theClass != Class.class && object instanceof Class;
+  if (isStatic && object != theClass) {
+    return new MetaProperty(name,Object.class){
+      final MetaClass mc=registry.getMetaClass((Class)object);
+      public Object getProperty(      Object object){
+        return mc.getProperty(sender,object,name,useSuper,false);
+      }
+      public void setProperty(      Object object,      Object newValue){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+  checkInitalised();
+  if (!isStatic && this.isMap) {
+    return new MetaProperty(name,Object.class){
+      public Object getProperty(      Object object){
+        return ((Map)object).get(name);
+      }
+      public void setProperty(      Object object,      Object newValue){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+  MetaMethod method=null;
+  MetaProperty mp=getMetaProperty(sender,name,useSuper,isStatic);
+  if (mp != null) {
+    if (mp instanceof MetaBeanProperty) {
+      MetaBeanProperty mbp=(MetaBeanProperty)mp;
+      method=mbp.getGetter();
+      mp=mbp.getField();
+    }
+  }
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+    String getterName="get" + MetaClassHelper.capitalize(name);
+    MetaMethod categoryMethod=getCategoryMethodGetter(sender,getterName,false);
+    if (categoryMethod != null)     method=categoryMethod;
+  }
+  if (method != null)   return new GetBeanMethodMetaProperty(name,method);
+  if (mp != null) {
+    return mp;
+  }
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+    method=getCategoryMethodGetter(sender,"get",true);
+    if (method != null)     return new GetMethodMetaProperty(name,method);
+  }
+  if (genericGetMethod != null && !(!genericGetMethod.isStatic() && isStatic)) {
+    method=genericGetMethod;
+    if (method != null)     return new GetMethodMetaProperty(name,method);
+  }
+  if (theClass != Class.class && object instanceof Class) {
+    return new MetaProperty(name,Object.class){
+      public Object getProperty(      Object object){
+        MetaClass mc=registry.getMetaClass(Class.class);
+        return mc.getProperty(Class.class,object,name,useSuper,false);
+      }
+      public void setProperty(      Object object,      Object newValue){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+ else   if (object instanceof Collection) {
+    return new MetaProperty(name,Object.class){
+      public Object getProperty(      Object object){
+        return DefaultGroovyMethods.getAt((Collection)object,name);
+      }
+      public void setProperty(      Object object,      Object newValue){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+ else   if (object instanceof Object[]) {
+    return new MetaProperty(name,Object.class){
+      public Object getProperty(      Object object){
+        return DefaultGroovyMethods.getAt(Arrays.asList((Object[])object),name);
+      }
+      public void setProperty(      Object object,      Object newValue){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+ else {
+    MetaMethod addListenerMethod=(MetaMethod)listeners.get(name);
+    if (addListenerMethod != null) {
+      return new MetaProperty(name,Object.class){
+        public Object getProperty(        Object object){
+          return null;
+        }
+        public void setProperty(        Object object,        Object newValue){
+          throw new UnsupportedOperationException();
+        }
+      }
+;
+    }
+  }
+  if (isStatic || object instanceof Class)   return new MetaProperty(name,Object.class){
+    public Object getProperty(    Object object){
+      return invokeStaticMissingProperty(object,name,null,true);
+    }
+    public void setProperty(    Object object,    Object newValue){
+      throw new UnsupportedOperationException();
+    }
+  }
+;
+ else   return new MetaProperty(name,Object.class){
+    public Object getProperty(    Object object){
+      return invokeMissingProperty(object,name,null,true);
+    }
+    public void setProperty(    Object object,    Object newValue){
+      throw new UnsupportedOperationException();
+    }
+  }
+;
+}

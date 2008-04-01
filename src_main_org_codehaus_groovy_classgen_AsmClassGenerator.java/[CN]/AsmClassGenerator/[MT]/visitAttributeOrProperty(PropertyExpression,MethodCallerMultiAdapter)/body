@@ -28,5 +28,11 @@
       return;
     }
   }
-  makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
+  final String methodName=expression.getPropertyAsString();
+  if (adapter == getProperty && !expression.isSpreadSafe() && methodName != null) {
+    makeGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+  }
+ else {
+    makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
+  }
 }

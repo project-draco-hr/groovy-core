@@ -1,0 +1,14 @@
+{
+  CachedClass clazz=theCachedClass;
+  SingleKeyHashMap propertyMap;
+  if (useStatic) {
+    propertyMap=staticPropertyIndex;
+  }
+ else {
+    propertyMap=classPropertyIndex.getNullable(clazz);
+  }
+  if (propertyMap == null) {
+    return null;
+  }
+  return (MetaProperty)propertyMap.get(name);
+}
