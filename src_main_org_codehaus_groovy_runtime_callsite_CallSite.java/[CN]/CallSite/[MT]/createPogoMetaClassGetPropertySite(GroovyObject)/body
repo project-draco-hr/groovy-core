@@ -7,7 +7,7 @@
         return null;
       }
       public Object callGetProperty(      Object receiver){
-        if (((GroovyObject)receiver).getMetaClass() != metaClass)         return super.callGetProperty(receiver);
+        if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)         return super.callGetProperty(receiver);
         return metaClass.getProperty(receiver,name);
       }
     }
@@ -21,7 +21,7 @@
           return null;
         }
         public Object callGetProperty(        Object receiver){
-          if (((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
+          if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
           if (GroovyCategorySupport.hasCategoryInAnyThread())           return metaClass.getProperty(receiver,name);
           return effective.getProperty(receiver);
         }
@@ -34,7 +34,7 @@
           return null;
         }
         public Object callGetProperty(        Object receiver){
-          if (((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
+          if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
           return metaClass.getProperty(receiver,name);
         }
       }
