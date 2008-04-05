@@ -1,15 +1,5 @@
 {
-  CallSite site=new CallSite(this){
-    MetaClass metaClass=InvokerHelper.getMetaClass(aClass);
-    public Object invoke(    Object receiver,    Object[] args){
-      return null;
-    }
-    public Object callGetProperty(    Object receiver){
-      if (receiver.getClass() != aClass)       return super.callGetProperty(receiver);
-      return metaClass.getProperty(receiver,name);
-    }
-  }
-;
+  CallSite site=new MetaClassGetPropertySite(this,aClass);
   array.array[index]=site;
   return site;
 }

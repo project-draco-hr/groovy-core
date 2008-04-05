@@ -2,43 +2,16 @@
   final MetaClass metaClass=receiver.getMetaClass();
   CallSite site;
   if (metaClass.getClass() != MetaClassImpl.class) {
-    site=new CallSite(this){
-      public Object invoke(      Object receiver,      Object[] args){
-        return null;
-      }
-      public Object callGetProperty(      Object receiver){
-        if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)         return super.callGetProperty(receiver);
-        return metaClass.getProperty(receiver,name);
-      }
-    }
-;
+    site=new PogoMetaClassGetPropertySite(this,metaClass);
   }
  else {
     final MetaProperty effective=((MetaClassImpl)metaClass).getEffectiveGetMetaProperty(metaClass.getClass(),receiver,name,false);
     if (effective != null) {
-      site=new CallSite(this){
-        public Object invoke(        Object receiver,        Object[] args){
-          return null;
-        }
-        public Object callGetProperty(        Object receiver){
-          if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
-          if (GroovyCategorySupport.hasCategoryInAnyThread())           return metaClass.getProperty(receiver,name);
-          return effective.getProperty(receiver);
-        }
-      }
-;
+      if (effective instanceof CachedField)       site=new GetEffectiveFieldSite(this,metaClass,(CachedField)effective);
+ else       site=new GetEffectivePropertySite(this,metaClass,effective);
     }
  else {
-      site=new CallSite(this){
-        public Object invoke(        Object receiver,        Object[] args){
-          return null;
-        }
-        public Object callGetProperty(        Object receiver){
-          if (!(receiver instanceof GroovyObject) || ((GroovyObject)receiver).getMetaClass() != metaClass)           return super.callGetProperty(receiver);
-          return metaClass.getProperty(receiver,name);
-        }
-      }
-;
+      site=new PogoMetaClassGetPropertySite(this,metaClass);
     }
   }
   array.array[index]=site;

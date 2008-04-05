@@ -1,14 +1,5 @@
 {
-  CallSite site=new CallSite(this){
-    public Object invoke(    Object receiver,    Object[] args){
-      return null;
-    }
-    public Object callGetProperty(    Object receiver){
-      if (receiver.getClass() != aClass)       return super.callGetProperty(receiver);
-      return ((GroovyObject)receiver).getProperty(name);
-    }
-  }
-;
+  CallSite site=new PogoGetPropertySite(this,aClass);
   array.array[index]=site;
   return site;
 }
