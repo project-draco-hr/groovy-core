@@ -1,9 +1,0 @@
-{
-  try {
-    String phaseName=Phases.getDescription(transformationAnnotation.phase());
-    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@" + annotationClassNode.getName() + " cannot be handled in phase "+ phaseName,node.getLineNumber(),node.getColumnNumber()),source));
-  }
- catch (  ArrayIndexOutOfBoundsException aiobe) {
-    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@" + annotationClassNode.getName() + " specifies a phase that does not exist: "+ transformationAnnotation.phase(),node.getLineNumber(),node.getColumnNumber()),source));
-  }
-}

@@ -1,0 +1,16 @@
+{
+  compilationUnit.addPhaseOperation(new ASTTransformationCollectorCodeVisitor().getOperation(),Phases.SEMANTIC_ANALYSIS);
+  for (  CompilePhase phase : CompilePhase.values()) {
+    ASTTransformationVisitor visitor=new ASTTransformationVisitor(phase);
+switch (phase) {
+case INITIALIZATION:
+case PARSING:
+case CONVERSION:
+      break;
+default :
+    compilationUnit.addPhaseOperation(visitor.getSourceOperation(),phase.getPhaseNumber());
+  compilationUnit.addPhaseOperation(visitor.getPrimaryClassOperation(),phase.getPhaseNumber());
+break;
+}
+}
+}
