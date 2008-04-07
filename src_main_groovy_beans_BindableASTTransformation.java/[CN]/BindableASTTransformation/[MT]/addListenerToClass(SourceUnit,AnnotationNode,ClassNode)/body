@@ -4,7 +4,9 @@
   }
   for (  PropertyNode propertyNode : (Collection<PropertyNode>)classNode.getProperties()) {
     FieldNode field=propertyNode.getField();
-    if (hasBindableAnnotation(field))     continue;
+    if (hasBindableAnnotation(field) || VetoableASTTransformation.hasVetoableAnnotation(field)) {
+      continue;
+    }
     createListenerSetter(source,node,classNode,propertyNode);
   }
 }

@@ -4,7 +4,7 @@
   }
   AnnotationNode node=(AnnotationNode)nodes[0];
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
-  boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent);
+  boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent) || BindableASTTransformation.hasBindableAnnotation(parent.getDeclaringClass());
   ClassNode declaringClass=parent.getDeclaringClass();
   FieldNode field=((FieldNode)parent);
   String fieldName=field.getName();

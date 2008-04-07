@@ -4,11 +4,14 @@
   }
   AnnotationNode node=(AnnotationNode)nodes[0];
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
-  if (VetoableASTTransformation.hasConstrainedAnnotation(parent)) {
+  if (VetoableASTTransformation.hasVetoableAnnotation(parent)) {
     return;
   }
   ClassNode declaringClass=parent.getDeclaringClass();
   if (parent instanceof FieldNode) {
+    if (VetoableASTTransformation.hasVetoableAnnotation(parent.getDeclaringClass())) {
+      return;
+    }
     addListenerToProperty(source,node,declaringClass,(FieldNode)parent);
   }
  else   if (parent instanceof ClassNode) {
