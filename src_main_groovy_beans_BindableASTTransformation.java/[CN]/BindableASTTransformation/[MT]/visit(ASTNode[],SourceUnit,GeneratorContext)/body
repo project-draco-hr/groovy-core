@@ -4,7 +4,7 @@
   }
   AnnotationNode node=(AnnotationNode)nodes[0];
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
-  if (ConstrainedASTTransformation.hasConstrainedAnnotation(parent)) {
+  if (VetoableASTTransformation.hasConstrainedAnnotation(parent)) {
     return;
   }
   ClassNode declaringClass=parent.getDeclaringClass();
@@ -18,14 +18,14 @@
       String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
       if (declaringClass.getMethods(setterName).isEmpty()) {
         Expression fieldExpression=new FieldExpression(field);
-        Statement setterBlock=createBoundStatement(field,fieldExpression);
+        Statement setterBlock=createBindableStatement(field,fieldExpression);
         createSetterMethod(declaringClass,field,setterName,setterBlock);
       }
  else {
-        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bound cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
       }
       return;
     }
   }
-  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bound must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
 }
