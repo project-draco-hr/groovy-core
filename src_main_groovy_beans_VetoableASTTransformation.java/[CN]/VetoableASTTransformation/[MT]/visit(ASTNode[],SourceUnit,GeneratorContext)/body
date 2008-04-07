@@ -20,14 +20,14 @@
       if (declaringClass.getMethods(setterName).isEmpty()) {
         Expression fieldExpression=new FieldExpression(field);
         BlockStatement setterBlock=new BlockStatement();
-        setterBlock.addStatement(createConstrainedStatement(field,fieldExpression));
+        setterBlock.addStatement(createConstrainedStatement(propertyNode,fieldExpression));
         if (bindable) {
-          setterBlock.addStatement(createBindableStatement(field,fieldExpression));
+          setterBlock.addStatement(createBindableStatement(propertyNode,fieldExpression));
         }
  else {
           setterBlock.addStatement(createSetStatement(fieldExpression));
         }
-        createSetterMethod(declaringClass,field,setterName,setterBlock);
+        createSetterMethod(declaringClass,propertyNode,setterName,setterBlock);
       }
  else {
         source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));

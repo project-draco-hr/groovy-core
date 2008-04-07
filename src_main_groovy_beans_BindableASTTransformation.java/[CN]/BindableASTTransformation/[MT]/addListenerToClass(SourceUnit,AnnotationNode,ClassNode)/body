@@ -1,0 +1,10 @@
+{
+  if (needsPropertyChangeSupport(classNode)) {
+    addPropertyChangeSupport(classNode);
+  }
+  for (  PropertyNode propertyNode : (Collection<PropertyNode>)classNode.getProperties()) {
+    FieldNode field=propertyNode.getField();
+    if (hasBindableAnnotation(field))     continue;
+    createListenerSetter(source,node,classNode,propertyNode);
+  }
+}
