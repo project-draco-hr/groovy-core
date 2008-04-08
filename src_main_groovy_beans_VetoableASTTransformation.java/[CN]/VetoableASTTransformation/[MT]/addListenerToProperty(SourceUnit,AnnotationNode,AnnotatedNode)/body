@@ -1,0 +1,13 @@
+{
+  ClassNode declaringClass=parent.getDeclaringClass();
+  FieldNode field=((FieldNode)parent);
+  String fieldName=field.getName();
+  for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
+    boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent) || BindableASTTransformation.hasBindableAnnotation(parent.getDeclaringClass());
+    if (propertyNode.getName().equals(fieldName)) {
+      createListenerSetter(source,node,bindable,declaringClass,propertyNode);
+      return;
+    }
+  }
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+}

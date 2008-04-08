@@ -3,37 +3,10 @@
     throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
   }
   AnnotationNode node=(AnnotationNode)nodes[0];
-  AnnotatedNode parent=(AnnotatedNode)nodes[1];
-  boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent) || BindableASTTransformation.hasBindableAnnotation(parent.getDeclaringClass());
-  ClassNode declaringClass=parent.getDeclaringClass();
-  FieldNode field=((FieldNode)parent);
-  String fieldName=field.getName();
-  for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
-    if (propertyNode.getName().equals(fieldName)) {
-      if (bindable && needsPropertyChangeSupport(declaringClass)) {
-        addPropertyChangeSupport(declaringClass);
-      }
-      if (needsVetoableChangeSupport(declaringClass)) {
-        addVetoableChangeSupport(declaringClass);
-      }
-      String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
-      if (declaringClass.getMethods(setterName).isEmpty()) {
-        Expression fieldExpression=new FieldExpression(field);
-        BlockStatement setterBlock=new BlockStatement();
-        setterBlock.addStatement(createConstrainedStatement(propertyNode,fieldExpression));
-        if (bindable) {
-          setterBlock.addStatement(createBindableStatement(propertyNode,fieldExpression));
-        }
- else {
-          setterBlock.addStatement(createSetStatement(fieldExpression));
-        }
-        createSetterMethod(declaringClass,propertyNode,setterName,setterBlock);
-      }
- else {
-        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
-      }
-      return;
-    }
+  if (nodes[1] instanceof ClassNode) {
+    addListenerToClass(source,node,(ClassNode)nodes[1]);
   }
-  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+ else {
+    addListenerToProperty(source,node,(AnnotatedNode)nodes[1]);
+  }
 }
