@@ -1,0 +1,22 @@
+{
+  final MetaClass metaClass=classInfo.getStrongMetaClass();
+  if (metaClass != null) {
+    if (metaClass.getClass() == MetaClassImpl.class) {
+      classInfo.setStrongMetaClass(null);
+      updateSetNewMopMethods(arr);
+      classInfo.setStrongMetaClass(new MetaClassImpl(metaClass.getTheClass()));
+      return;
+    }
+    if (metaClass.getClass() == ExpandoMetaClass.class) {
+      classInfo.setStrongMetaClass(null);
+      updateSetNewMopMethods(arr);
+      ExpandoMetaClass newEmc=new ExpandoMetaClass(metaClass.getTheClass());
+      newEmc.initialize();
+      classInfo.setStrongMetaClass(newEmc);
+      return;
+    }
+    throw new GroovyRuntimeException("Can't add methods to class " + getTheClass().getName() + ". Strong custom meta class already set.");
+  }
+  classInfo.setWeakMetaClass(null);
+  updateSetNewMopMethods(arr);
+}

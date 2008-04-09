@@ -1,16 +1,9 @@
 {
-  final Class aClass=receiver.getClass();
   if (receiver instanceof GroovyObject) {
-    try {
-      final Method method=aClass.getMethod("getProperty",String.class);
-      if (method != null && method.isSynthetic())       return createPogoMetaClassGetPropertySite((GroovyObject)receiver);
-    }
- catch (    NoSuchMethodException e) {
-    }
-    return createPogoGetPropertySite(aClass);
+    return createGroovyObjectGetPropertySite(receiver);
   }
   if (receiver instanceof Class) {
     return createClassMetaClassGetPropertySite((Class)receiver);
   }
-  return createMetaClassGetPropertySite(aClass);
+  return createPojoMetaClassGetPropertySite(receiver);
 }

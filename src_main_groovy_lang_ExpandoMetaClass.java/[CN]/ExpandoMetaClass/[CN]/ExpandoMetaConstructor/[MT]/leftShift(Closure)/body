@@ -4,7 +4,7 @@
     if (paramTypes == null)     paramTypes=ZERO_ARGUMENTS;
     Constructor ctor=retrieveConstructor(paramTypes);
     if (ctor != null)     throw new GroovyRuntimeException("Cannot add new constructor for arguments [" + DefaultGroovyMethods.inspect(paramTypes) + "]. It already exists!");
-    registerInstanceMethod(GROOVY_CONSTRUCTOR,c);
+    registerInstanceMethod(new ClosureMetaMethod(GROOVY_CONSTRUCTOR,theClass,c));
   }
   return this;
 }

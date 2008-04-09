@@ -33,6 +33,11 @@
     makeGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
   }
  else {
-    makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
+    if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && methodName != null) {
+      makeGroovyObjectGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+    }
+ else {
+      makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
+    }
   }
 }

@@ -1,14 +1,14 @@
 {
   final MetaClass metaClass=receiver.getMetaClass();
   CallSite site;
-  if (metaClass.getClass() != MetaClassImpl.class) {
+  if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInAnyThread()) {
     site=new PogoMetaClassGetPropertySite(this,metaClass);
   }
  else {
     final MetaProperty effective=((MetaClassImpl)metaClass).getEffectiveGetMetaProperty(metaClass.getClass(),receiver,name,false);
     if (effective != null) {
-      if (effective instanceof CachedField)       site=new GetEffectiveFieldSite(this,metaClass,(CachedField)effective);
- else       site=new GetEffectivePropertySite(this,metaClass,effective);
+      if (effective instanceof CachedField)       site=new GetEffectivePogoFieldSite(this,metaClass,(CachedField)effective);
+ else       site=new GetEffectivePogoPropertySite(this,metaClass,effective);
     }
  else {
       site=new PogoMetaClassGetPropertySite(this,metaClass);

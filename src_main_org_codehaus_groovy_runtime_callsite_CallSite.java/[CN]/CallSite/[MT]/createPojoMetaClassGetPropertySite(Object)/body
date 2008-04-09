@@ -1,0 +1,20 @@
+{
+  final Class aClass=receiver.getClass();
+  final MetaClass metaClass=InvokerHelper.getMetaClass(aClass);
+  CallSite site;
+  if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInAnyThread()) {
+    site=new PojoMetaClassGetPropertySite(this,metaClass);
+  }
+ else {
+    final MetaProperty effective=((MetaClassImpl)metaClass).getEffectiveGetMetaProperty(aClass,receiver,name,false);
+    if (effective != null) {
+      if (effective instanceof CachedField)       site=new GetEffectivePojoFieldSite(this,metaClass,(CachedField)effective);
+ else       site=new GetEffectivePojoPropertySite(this,metaClass,effective);
+    }
+ else {
+      site=new PojoMetaClassGetPropertySite(this,metaClass);
+    }
+  }
+  array.array[index]=site;
+  return site;
+}

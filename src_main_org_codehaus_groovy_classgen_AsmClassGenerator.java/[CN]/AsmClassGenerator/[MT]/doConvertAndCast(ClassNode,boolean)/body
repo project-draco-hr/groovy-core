@@ -1,6 +1,6 @@
 {
   if (type == ClassHelper.OBJECT_TYPE)   return;
-  if (rightHandType == null || !rightHandType.isDerivedFrom(type)) {
+  if (rightHandType == null || !rightHandType.isDerivedFrom(type) || !rightHandType.implementsInterface(type.getName())) {
     if (isValidTypeForCast(type)) {
       visitClassExpression(new ClassExpression(type));
       if (coerce) {
