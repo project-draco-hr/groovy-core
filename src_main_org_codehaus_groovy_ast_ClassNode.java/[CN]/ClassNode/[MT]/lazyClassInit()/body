@@ -18,7 +18,7 @@ synchronized (lazyInitLock) {
       addConstructor(ctor.getModifiers(),createParameters(ctor.getParameterTypes()),ClassHelper.make(ctor.getExceptionTypes()),null);
     }
     Class sc=clazz.getSuperclass();
-    if (sc != null)     superClass=ClassHelper.make(sc);
+    if (sc != null)     superClass=getPrimaryClassNode(sc);
     buildInterfaceTypes(clazz);
     VMPluginFactory.getPlugin().setAnnotationMetaData(this);
     lazyInitDone=true;
