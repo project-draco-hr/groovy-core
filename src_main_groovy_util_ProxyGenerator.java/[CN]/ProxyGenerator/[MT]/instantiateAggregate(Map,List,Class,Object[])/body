@@ -80,7 +80,7 @@
   Binding binding=new Binding();
   binding.setVariable("map",map);
   binding.setVariable("constructorArgs",constructorArgs);
-  ClassLoader cl=baseClass.getClassLoader();
+  ClassLoader cl=override != null ? override : baseClass.getClassLoader();
   if (clazz == null && interfacesToImplement.size() > 0) {
     Class c=(Class)interfacesToImplement.get(0);
     cl=c.getClassLoader();
