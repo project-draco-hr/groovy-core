@@ -1,6 +1,7 @@
 {
   BufferedReader br;
   int count=0;
+  Object result=null;
   if (self instanceof BufferedReader)   br=(BufferedReader)self;
  else   br=new BufferedReader(self);
   try {
@@ -11,12 +12,13 @@
       }
  else {
         count++;
-        callClosureForLine(closure,line,count);
+        result=callClosureForLine(closure,line,count);
       }
     }
     Reader temp=self;
     self=null;
     temp.close();
+    return result;
   }
   finally {
     closeReaderWithWarning(self);
