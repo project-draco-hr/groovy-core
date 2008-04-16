@@ -10,6 +10,7 @@
   final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
   cacheEntry.params=classes;
   cacheEntry.method=(MetaMethod)chooseMethod(e.name,e.methodsForSuper,classes);
+  if (cacheEntry.method.isAbstract())   cacheEntry.method=null;
   e.cachedMethodForSuper=cacheEntry;
   return cacheEntry.method;
 }
