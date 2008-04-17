@@ -24,10 +24,23 @@
     }
   }
   if (!hadClasspath) {
+    StringBuffer resultPath=new StringBuffer(DefaultGroovyMethods.join(config.getClasspath(),File.pathSeparator));
+    ClassLoader cl=parentClassLoader;
+    while (cl != null) {
+      if (cl instanceof URLClassLoader) {
+        for (        URL u : ((URLClassLoader)cl).getURLs()) {
+          try {
+            resultPath.append(File.pathSeparator);
+            resultPath.append(new File(u.toURI()).getPath());
+          }
+ catch (          URISyntaxException e) {
+          }
+        }
+      }
+      cl=cl.getParent();
+    }
     paras.add("-classpath");
-    List classpath=config.getClasspath();
-    String resultPath=DefaultGroovyMethods.join(classpath,File.pathSeparator);
-    paras.add(resultPath);
+    paras.add(resultPath.toString());
   }
   paras.addAll(files);
   return (String[])paras.toArray(new String[paras.size()]);
