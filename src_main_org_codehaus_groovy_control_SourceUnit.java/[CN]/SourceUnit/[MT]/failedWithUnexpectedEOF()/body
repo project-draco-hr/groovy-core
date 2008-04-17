@@ -13,6 +13,10 @@
         char badChar=((NoViableAltForCharException)cause).foundChar;
         return badChar == CharScanner.EOF_CHAR;
       }
+ else       if (cause instanceof MismatchedCharException) {
+        char badChar=(char)((MismatchedCharException)cause).foundChar;
+        return badChar == CharScanner.EOF_CHAR;
+      }
  else       if (cause instanceof MismatchedTokenException) {
         return isEofToken(((MismatchedTokenException)cause).token);
       }
