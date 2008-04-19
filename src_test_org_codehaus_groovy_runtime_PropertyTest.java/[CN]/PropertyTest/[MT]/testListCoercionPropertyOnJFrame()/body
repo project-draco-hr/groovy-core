@@ -1,4 +1,5 @@
 {
+  if (isHeadless())   return;
   try {
     JFrame bean=new JFrame();
     List list=new ArrayList();
@@ -7,11 +8,7 @@
     InvokerHelper.setProperty(bean,"location",list);
     assertEquals("Should have set a point",new Point(10,20),bean.getLocation());
   }
- catch (  HeadlessException e) {
-  }
-catch (  UnsatisfiedLinkError e) {
-  }
-catch (  MissingMethodException e) {
+ catch (  MissingMethodException e) {
     System.out.println("Failed with cause: " + e);
     e.printStackTrace();
     fail("Should not have throw: " + e);
