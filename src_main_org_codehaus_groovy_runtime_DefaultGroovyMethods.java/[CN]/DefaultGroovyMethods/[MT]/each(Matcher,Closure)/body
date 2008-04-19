@@ -1,11 +1,17 @@
 {
+  self.reset();
   while (self.find()) {
     int count=self.groupCount();
     List groups=new ArrayList();
     for (int i=0; i <= count; i++) {
       groups.add(self.group(i));
     }
-    closure.call(groups.toArray());
+    if (groups.size() == 1 || closure.getMaximumNumberOfParameters() < groups.size()) {
+      closure.call((Object)groups.toArray());
+    }
+ else {
+      closure.call(groups.toArray());
+    }
   }
   return self;
 }
