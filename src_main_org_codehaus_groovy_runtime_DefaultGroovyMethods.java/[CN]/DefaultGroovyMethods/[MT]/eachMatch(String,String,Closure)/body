@@ -1,17 +1,6 @@
 {
   Pattern p=Pattern.compile(regex);
   Matcher m=p.matcher(self);
-  while (m.find()) {
-    int count=m.groupCount();
-    List groups=new ArrayList();
-    for (int i=0; i <= count; i++) {
-      groups.add(m.group(i));
-    }
-    if (groups.size() == 1 || closure.getMaximumNumberOfParameters() < groups.size()) {
-      closure.call((Object)groups.toArray());
-    }
- else {
-      closure.call(groups.toArray());
-    }
-  }
+  each(m,closure);
+  return self;
 }

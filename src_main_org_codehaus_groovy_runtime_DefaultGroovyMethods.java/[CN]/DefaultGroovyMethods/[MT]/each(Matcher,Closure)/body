@@ -1,12 +1,16 @@
 {
   self.reset();
   while (self.find()) {
+    int closureParams=closure.getMaximumNumberOfParameters();
     int count=self.groupCount();
+    if (closureParams != 1 && closureParams != count + 1) {
+      throw new GroovyRuntimeException("Matcher matched " + count + " groups. Expecting to call a "+ (count + 1)+ "-arg closure. Instead found a "+ closureParams+ "-arg closure.");
+    }
     List groups=new ArrayList();
     for (int i=0; i <= count; i++) {
       groups.add(self.group(i));
     }
-    if (groups.size() == 1 || closure.getMaximumNumberOfParameters() < groups.size()) {
+    if (count > 0 && closureParams == 1) {
       closure.call((Object)groups.toArray());
     }
  else {
