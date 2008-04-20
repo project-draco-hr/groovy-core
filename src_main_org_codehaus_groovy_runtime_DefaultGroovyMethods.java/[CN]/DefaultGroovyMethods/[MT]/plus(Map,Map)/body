@@ -1,13 +1,5 @@
 {
-  Map map;
-  if (left instanceof TreeMap)   map=new TreeMap(left);
- else   if (left instanceof LinkedHashMap)   map=new LinkedHashMap(left);
- else   if (left instanceof Properties) {
-    map=new Properties();
-    map.putAll(left);
-  }
- else   if (left instanceof Hashtable)   map=new Hashtable(left);
- else   map=new HashMap(left);
+  Map map=cloneSimilarMap(left);
   map.putAll(right);
   return map;
 }
