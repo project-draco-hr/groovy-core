@@ -1,16 +1,9 @@
 {
-  Collection answer;
-  if (left instanceof SortedSet) {
-    answer=new TreeSet();
+  if (collection instanceof Set) {
+    return createSimilarSet((Set)collection);
   }
- else   if (left instanceof Set) {
-    answer=new HashSet();
+  if (collection instanceof List) {
+    return createSimilarList((List)collection,newCapacity);
   }
- else   if (left instanceof LinkedList) {
-    answer=new LinkedList();
-  }
- else {
-    answer=new ArrayList(newCapacity);
-  }
-  return answer;
+  return new ArrayList(newCapacity);
 }
