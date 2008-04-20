@@ -1,11 +1,11 @@
 {
-  if (left.isEmpty())   return new ArrayList();
+  if (left.isEmpty())   return createSimilarCollection(left,0);
   if (left.size() < right.size()) {
     Collection swaptemp=left;
     left=right;
     right=swaptemp;
   }
-  List result=new ArrayList();
+  Collection result=createSimilarCollection(left,left.size());
   Collection pickFrom=new TreeSet(new NumberAwareComparator());
   pickFrom.addAll(left);
   for (Iterator iter=right.iterator(); iter.hasNext(); ) {
