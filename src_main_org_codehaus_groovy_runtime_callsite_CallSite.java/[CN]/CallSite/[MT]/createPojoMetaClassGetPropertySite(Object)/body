@@ -2,7 +2,7 @@
   final Class aClass=receiver.getClass();
   final MetaClass metaClass=InvokerHelper.getMetaClass(aClass);
   CallSite site;
-  if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInCurrentThread()) {
     site=new PojoMetaClassGetPropertySite(this,metaClass);
   }
  else {

@@ -1,8 +1,9 @@
 {
-  List possibleGenericMethods=GroovyCategorySupport.getCategoryMethods(sender,name);
+  List possibleGenericMethods=GroovyCategorySupport.getCategoryMethods(name);
   if (possibleGenericMethods != null) {
     for (Iterator iter=possibleGenericMethods.iterator(); iter.hasNext(); ) {
       MetaMethod mmethod=(MetaMethod)iter.next();
+      if (!mmethod.getDeclaringClass().getTheClass().isAssignableFrom(sender))       continue;
       CachedClass[] paramTypes=mmethod.getParameterTypes();
       if (useLongVersion) {
         if (paramTypes.length == 2 && paramTypes[0].getTheClass() == String.class) {

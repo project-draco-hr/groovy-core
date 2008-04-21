@@ -29,7 +29,7 @@
       field=mp;
     }
   }
-  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
     String getterName="set" + MetaClassHelper.capitalize(name);
     MetaMethod categoryMethod=getCategoryMethodSetter(sender,getterName,false);
     if (categoryMethod != null) {
@@ -54,7 +54,7 @@
     field.setProperty(object,newValue);
     return;
   }
-  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
     method=getCategoryMethodSetter(sender,"set",true);
     if (method != null)     arguments=new Object[]{name,newValue};
   }

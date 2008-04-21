@@ -18,7 +18,7 @@
       mp=mbp.getField();
     }
   }
-  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
     String getterName="get" + MetaClassHelper.capitalize(name);
     MetaMethod categoryMethod=getCategoryMethodGetter(sender,getterName,false);
     if (categoryMethod != null)     method=categoryMethod;
@@ -31,7 +31,7 @@
       mp=null;
     }
   }
-  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInAnyThread()) {
+  if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
     method=getCategoryMethodGetter(sender,"get",true);
     if (method != null)     arguments=new Object[]{name};
   }
