@@ -1,14 +1,23 @@
 {
+  if (col.getClass() == clazz) {
+    return col;
+  }
   if (clazz == List.class) {
     return asList(col);
   }
- else   if (clazz == Set.class) {
+  if (clazz == Set.class) {
     if (col instanceof Set)     return col;
     return new HashSet(col);
   }
- else   if (clazz == SortedSet.class) {
+  if (clazz == SortedSet.class) {
     if (col instanceof SortedSet)     return col;
     return new TreeSet(col);
+  }
+  Object[] args={col};
+  try {
+    return InvokerHelper.invokeConstructorOf(clazz,args);
+  }
+ catch (  Exception e) {
   }
   return asType((Object)col,clazz);
 }
