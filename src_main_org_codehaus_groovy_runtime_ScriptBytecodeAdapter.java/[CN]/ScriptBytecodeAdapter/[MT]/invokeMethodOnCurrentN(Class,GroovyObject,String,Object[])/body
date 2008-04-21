@@ -10,7 +10,10 @@
     }
   }
  catch (  MissingMethodException e) {
-    if (!intercepting && receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
+    if (e instanceof MissingMethodExecutionFailed) {
+      throw e.getCause();
+    }
+ else     if (!intercepting && receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
       result=receiver.invokeMethod(messageName,messageArguments);
     }
  else {
