@@ -1,16 +1,27 @@
 {
-  compilationUnit.addPhaseOperation(new ASTTransformationCollectorCodeVisitor().getOperation(),Phases.SEMANTIC_ANALYSIS);
+  compilationUnit.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      ASTTransformationCollectorCodeVisitor collector=new ASTTransformationCollectorCodeVisitor(source);
+      collector.visitClass(classNode);
+    }
+  }
+,Phases.SEMANTIC_ANALYSIS);
   for (  CompilePhase phase : CompilePhase.values()) {
-    ASTTransformationVisitor visitor=new ASTTransformationVisitor(phase);
+    final ASTTransformationVisitor visitor=new ASTTransformationVisitor(phase);
 switch (phase) {
 case INITIALIZATION:
 case PARSING:
 case CONVERSION:
       break;
 default :
-    compilationUnit.addPhaseOperation(visitor.getSourceOperation(),phase.getPhaseNumber());
-  compilationUnit.addPhaseOperation(visitor.getPrimaryClassOperation(),phase.getPhaseNumber());
-break;
+    compilationUnit.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
+      public void call(      SourceUnit source,      GeneratorContext context,      ClassNode classNode) throws CompilationFailedException {
+        visitor.source=source;
+        visitor.visitClass(classNode);
+      }
+    }
+,phase.getPhaseNumber());
+  break;
 }
 }
 }

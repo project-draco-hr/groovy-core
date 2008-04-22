@@ -10,14 +10,11 @@
     for (    String transformClass : transformClassAnnotation.value()) {
       try {
         Object o=source.getClassLoader().loadClass(transformClass,false,true,false).newInstance();
-        if (o instanceof ASTSingleNodeTransformation) {
-          classNode.addSingleNodeTransform((ASTSingleNodeTransformation)o,annotation);
+        if (o instanceof ASTTransformation) {
+          classNode.addTransform((ASTTransformation)o,annotation);
         }
- else         if (o instanceof CompilationUnit.PrimaryClassNodeOperation) {
-          classNode.addClassTransform((CompilationUnit.PrimaryClassNodeOperation)o);
-        }
- else         if (o instanceof CompilationUnit.SourceUnitOperation) {
-          classNode.getModule().addSourceUnitOperation((CompilationUnit.SourceUnitOperation)o);
+ else {
+          source.getErrorCollector().addError(new SimpleMessage("Not an ASTTransformatnion: " + transformClass + " declared by "+ annotation.getClassNode().getName(),source));
         }
       }
  catch (      InstantiationException e) {

@@ -1,11 +1,11 @@
 {
-  Map<ASTSingleNodeTransformation,ASTNode> baseTransforms=classNode.getSingleNodeTransforms(phase);
+  Map<ASTTransformation,ASTNode> baseTransforms=classNode.getTransforms(phase);
   if (!baseTransforms.isEmpty()) {
-    transforms=new HashMap<ASTNode,List<ASTSingleNodeTransformation>>();
-    for (    Map.Entry<ASTSingleNodeTransformation,ASTNode> entry : baseTransforms.entrySet()) {
-      List<ASTSingleNodeTransformation> list=transforms.get(entry.getValue());
+    transforms=new HashMap<ASTNode,List<ASTTransformation>>();
+    for (    Map.Entry<ASTTransformation,ASTNode> entry : baseTransforms.entrySet()) {
+      List<ASTTransformation> list=transforms.get(entry.getValue());
       if (list == null) {
-        list=new ArrayList<ASTSingleNodeTransformation>();
+        list=new ArrayList<ASTTransformation>();
         transforms.put(entry.getValue(),list);
       }
       list.add(entry.getKey());
@@ -13,8 +13,8 @@
     targetNodes=new LinkedList<ASTNode[]>();
     super.visitClass(classNode);
     for (    ASTNode[] node : targetNodes) {
-      for (      ASTSingleNodeTransformation snt : transforms.get(node[0])) {
-        snt.visit(node,source,context);
+      for (      ASTTransformation snt : transforms.get(node[0])) {
+        snt.visit(node,source);
       }
     }
   }

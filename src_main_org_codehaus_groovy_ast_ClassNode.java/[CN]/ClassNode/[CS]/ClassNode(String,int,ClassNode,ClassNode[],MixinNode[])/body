@@ -16,12 +16,8 @@
   this.methods=new MapOfLists();
   this.methodsList=new ArrayList();
   if ((modifiers & ACC_INTERFACE) == 0)   addField("$ownClass",ACC_STATIC | ACC_PUBLIC | ACC_FINAL| ACC_SYNTHETIC,ClassHelper.CLASS_Type,new ClassExpression(this)).setSynthetic(true);
-  singleNodeTransformInstances=new EnumMap<CompilePhase,Map<ASTSingleNodeTransformation,ASTNode>>(CompilePhase.class);
+  transformInstances=new EnumMap<CompilePhase,Map<ASTTransformation,ASTNode>>(CompilePhase.class);
   for (  CompilePhase phase : CompilePhase.values()) {
-    singleNodeTransformInstances.put(phase,new HashMap<ASTSingleNodeTransformation,ASTNode>());
-  }
-  classTransforms=new EnumMap<CompilePhase,List<CompilationUnit.PrimaryClassNodeOperation>>(CompilePhase.class);
-  for (  CompilePhase phase : CompilePhase.values()) {
-    classTransforms.put(phase,new ArrayList<CompilationUnit.PrimaryClassNodeOperation>());
+    transformInstances.put(phase,new HashMap<ASTTransformation,ASTNode>());
   }
 }
