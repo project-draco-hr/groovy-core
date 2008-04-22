@@ -28,7 +28,7 @@
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
-    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new ConstantExpression(new Integer(0)))));
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new ConstantExpression(Integer.valueOf(0)))));
     code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"next",MethodCallExpression.NO_ARGUMENTS))));
     code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),ge,new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS))),ifStatement,EmptyStatement.INSTANCE));
     code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
@@ -42,9 +42,9 @@
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
-    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS),"minus",new ConstantExpression(new Integer(1))))));
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS),"minus",new ConstantExpression(Integer.valueOf(1))))));
     code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"previous",MethodCallExpression.NO_ARGUMENTS))));
-    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),lt,new ConstantExpression(new Integer(0)))),ifStatement,EmptyStatement.INSTANCE));
+    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),lt,new ConstantExpression(Integer.valueOf(0)))),ifStatement,EmptyStatement.INSTANCE));
     code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
     nextMethod.setCode(code);
     enumClass.addMethod(nextMethod);
@@ -88,7 +88,7 @@
       tempMax=field;
       ArgumentListExpression args=new ArgumentListExpression();
       args.addExpression(new ConstantExpression(field.getName()));
-      args.addExpression(new ConstantExpression(new Integer(value)));
+      args.addExpression(new ConstantExpression(Integer.valueOf(value)));
       if (field.getInitialExpression() != null) {
         ListExpression oldArgs=(ListExpression)field.getInitialExpression();
         for (Iterator oldArgsIterator=oldArgs.getExpressions().iterator(); oldArgsIterator.hasNext(); ) {
