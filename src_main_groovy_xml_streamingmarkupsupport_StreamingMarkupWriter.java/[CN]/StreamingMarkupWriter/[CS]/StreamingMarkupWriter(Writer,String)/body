@@ -5,7 +5,11 @@
     this.encodingKnown=true;
   }
  else   if (writer instanceof OutputStreamWriter) {
-    this.encoding=((OutputStreamWriter)writer).getEncoding();
+    this.encoding=getNormalizedEncoding(((OutputStreamWriter)writer).getEncoding());
+    this.encodingKnown=true;
+  }
+ else   if (writer instanceof EncodingAwareBufferedWriter) {
+    this.encoding=getNormalizedEncoding(((EncodingAwareBufferedWriter)writer).getEncoding());
     this.encodingKnown=true;
   }
  else {
