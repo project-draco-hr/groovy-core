@@ -5,7 +5,8 @@
  else {
     mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
   }
-  mv.visitLdcInsn(Integer.valueOf(allocateIndex(message)));
+  final int index=allocateIndex(message);
+  mv.visitLdcInsn(index);
   mv.visitInsn(AALOAD);
   boolean constructor=message.equals(CONSTRUCTOR);
   boolean lhs=leftHandExpression;
@@ -30,34 +31,31 @@
       ae.addExpression(arguments);
     }
     if (containsSpreadExpression) {
+      numberOfArguments=-1;
       despreadList(ae.getExpressions(),true);
     }
  else {
-      ae.visit(this);
+      numberOfArguments=ae.getExpressions().size();
+      for (int i=0; i < numberOfArguments; i++) {
+        Expression argument=ae.getExpression(i);
+        visitAndAutoboxBoolean(argument);
+        if (argument instanceof CastExpression)         loadWrapper(argument);
+      }
     }
   }
- else   if (numberOfArguments > 0) {
-    TupleExpression te=(TupleExpression)arguments;
-    for (int i=0; i < numberOfArguments; i++) {
-      Expression argument=te.getExpression(i);
-      visitAndAutoboxBoolean(argument);
-      if (argument instanceof CastExpression)       loadWrapper(argument);
-    }
+  if (numberOfArguments == -1) {
   }
  else {
-    mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
+    if (numberOfArguments == 0) {
+      mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
+    }
+ else {
+      final String createArraySignature=getCreateArraySignature(numberOfArguments);
+      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray",createArraySignature);
+    }
   }
   if (callStatic) {
-    int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
-    int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
-    mv.visitVarInsn(ALOAD,recIdx);
-    mv.visitVarInsn(ALOAD,argsIdx);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptStatic","(Ljava/lang/Object;[Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,recIdx);
-    mv.visitVarInsn(ALOAD,argsIdx);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-    compileStack.removeVar(recIdx);
-    compileStack.removeVar(argsIdx);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callStatic","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
   }
  else   if (constructor) {
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
@@ -67,7 +65,9 @@
       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     }
  else {
-      if (safe)       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+      if (safe) {
+        mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+      }
  else {
         mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
       }

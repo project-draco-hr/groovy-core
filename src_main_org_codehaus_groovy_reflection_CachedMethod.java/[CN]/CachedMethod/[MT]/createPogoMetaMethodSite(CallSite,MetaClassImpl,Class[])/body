@@ -1,0 +1,17 @@
+{
+  if (pogoCallSiteConstructor != null) {
+    final Constructor constructor=pogoCallSiteConstructor.get();
+    if (constructor != null) {
+      try {
+        return (PogoMetaMethodSite)constructor.newInstance(site,metaClass,this,params);
+      }
+ catch (      IllegalAccessException e) {
+      }
+catch (      InvocationTargetException e) {
+      }
+catch (      InstantiationException e) {
+      }
+    }
+  }
+  return new PogoMetaMethodSite.PogoCachedMethodSiteNoUnwrapNoCoerce(site,metaClass,this,params);
+}

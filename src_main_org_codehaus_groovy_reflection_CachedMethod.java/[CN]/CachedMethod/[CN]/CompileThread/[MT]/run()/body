@@ -4,11 +4,22 @@
       final CachedMethod method=(CachedMethod)queue.take();
       if (method != null) {
         ClassWriter cw=new ClassWriter(true);
-        final Class acls=method.getDeclaringClass().getTheClass();
-        final String name=acls.getName().replace('.','_') + "$" + method.getName();
+        final CachedClass declClass=method.getDeclaringClass();
+        final Class acls=declClass.getTheClass();
+        String name;
+        if (declClass.getName().startsWith("java."))         name=acls.getName().replace('.','_') + "$" + method.getName();
+ else         name=declClass.getName() + "$" + method.getName();
         byte[] bytes=method.genPogoMetaMethodSite(cw,name);
-        MyClassLoader loader=new MyClassLoader(acls.getClassLoader(),name,bytes);
-        method.pogoCallSiteClassLoader=loader;
+        final Class pogoSiteClass=new MyClassLoader(acls.getClassLoader(),name,bytes).cls;
+        if (pogoSiteClass != null) {
+          try {
+            final Constructor constructor=pogoSiteClass.getConstructor(CallSite.class,MetaClassImpl.class,MetaMethod.class,Class[].class);
+            method.pogoCallSiteConstructor=new SoftReference<Constructor>(constructor);
+          }
+ catch (          NoSuchMethodException e) {
+            method.pogoCallSiteConstructor=null;
+          }
+        }
       }
     }
   }

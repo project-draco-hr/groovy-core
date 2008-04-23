@@ -11,7 +11,7 @@
   }
  catch (  MissingMethodException e) {
     if (e instanceof MissingMethodExecutionFailed) {
-      throw e.getCause();
+      throw (MissingMethodException)e.getCause();
     }
  else     if (!intercepting && receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
       result=receiver.invokeMethod(messageName,messageArguments);

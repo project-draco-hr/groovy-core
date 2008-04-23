@@ -3,10 +3,14 @@
     return metaClass.invokeMethod(receiver,name,args);
   }
  catch (  MissingMethodException e) {
-    GroovyObject groovy=(GroovyObject)receiver;
-    if (e.getMethod().equals(name) && receiver.getClass() == e.getType()) {
-      return groovy.invokeMethod(name,InvokerHelper.asUnwrappedArray(args));
+    if (e instanceof MissingMethodExecutionFailed) {
+      throw (MissingMethodException)e.getCause();
     }
-    throw e;
+ else     if (receiver.getClass() == e.getType() && e.getMethod().equals(name)) {
+      return ((GroovyObject)receiver).invokeMethod(name,args);
+    }
+ else {
+      throw e;
+    }
   }
 }
