@@ -1,12 +1,18 @@
 {
   ClassNode base=configureTypeVariableReference(tv);
+  ClassNode redirect=base.redirect();
+  base.setRedirect(null);
   Type[] tBounds=tv.getBounds();
-  if (tBounds.length == 0)   return new GenericsType(base);
-  ClassNode[] cBounds=new ClassNode[tBounds.length];
-  for (int i=0; i < tBounds.length; i++) {
-    cBounds[i]=configureType(tBounds[i]);
+  GenericsType gt;
+  if (tBounds.length == 0) {
+    gt=new GenericsType(base);
   }
-  GenericsType gt=new GenericsType(base,cBounds,null);
-  gt.setPlaceholder(true);
+ else {
+    ClassNode[] cBounds=configureTypes(tBounds);
+    gt=new GenericsType(base,cBounds,null);
+    gt.setName(base.getName());
+    gt.setPlaceholder(true);
+  }
+  base.setRedirect(redirect);
   return gt;
 }

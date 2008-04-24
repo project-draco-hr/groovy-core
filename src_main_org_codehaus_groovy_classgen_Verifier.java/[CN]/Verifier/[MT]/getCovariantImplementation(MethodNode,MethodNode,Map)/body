@@ -1,9 +1,12 @@
 {
   if (!oldMethod.getName().equals(overridingMethod.getName()))   return null;
-  if (!equalParameters(overridingMethod,oldMethod,genericsSpec))   return null;
+  boolean normalEqualParamerters=equalParametersNormal(overridingMethod,oldMethod);
+  boolean genericEqualParamerters=equalParametersWithGenerics(overridingMethod,oldMethod,genericsSpec);
+  if (!normalEqualParamerters && !genericEqualParamerters)   return null;
   ClassNode mr=overridingMethod.getReturnType();
   ClassNode omr=oldMethod.getReturnType();
-  if (mr.equals(omr))   return null;
+  boolean equalReturnType=mr.equals(omr);
+  if (equalReturnType && normalEqualParamerters)   return null;
   ClassNode testmr=correctToGenericsSpec(genericsSpec,omr);
   if (!mr.isDerivedFrom(testmr)) {
     throw new RuntimeParserException("the return type is incompatible with " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
