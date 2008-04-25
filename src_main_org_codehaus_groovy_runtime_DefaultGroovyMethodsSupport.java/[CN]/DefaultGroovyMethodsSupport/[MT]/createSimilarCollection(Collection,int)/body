@@ -1,12 +1,14 @@
 {
-  if (collection instanceof Set) {
-    return createSimilarSet((Set)collection);
+  if (orig instanceof Set) {
+    return createSimilarSet((Set)orig);
   }
-  if (collection instanceof List) {
-    return createSimilarList((List)collection,newCapacity);
+  if (orig instanceof List) {
+    return createSimilarList((List)orig,newCapacity);
   }
-  if (collection instanceof Queue) {
-    return new LinkedList(collection);
+  Collection answer=createCollectionFromClass(orig);
+  if (answer != null)   return answer;
+  if (orig instanceof Queue) {
+    return new LinkedList();
   }
   return new ArrayList(newCapacity);
 }

@@ -1,13 +1,11 @@
 {
-  final Set ansSet;
-  if (self instanceof SortedSet) {
-    ansSet=new TreeSet();
+  Set answer=(Set)createCollectionFromClass(orig);
+  if (answer != null)   return answer;
+  if (orig instanceof SortedSet) {
+    return new TreeSet();
   }
- else   if (self instanceof LinkedHashSet) {
-    ansSet=new LinkedHashSet();
+  if (orig instanceof LinkedHashSet) {
+    return new LinkedHashSet();
   }
- else {
-    ansSet=new HashSet();
-  }
-  return ansSet;
+  return new HashSet();
 }

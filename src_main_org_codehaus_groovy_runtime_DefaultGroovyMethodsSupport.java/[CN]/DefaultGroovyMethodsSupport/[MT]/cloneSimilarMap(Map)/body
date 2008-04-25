@@ -1,12 +1,15 @@
 {
-  Map map;
-  if (left instanceof TreeMap)   map=new TreeMap(left);
- else   if (left instanceof LinkedHashMap)   map=new LinkedHashMap(left);
- else   if (left instanceof Properties) {
-    map=new Properties();
-    map.putAll(left);
+  Map answer=(Map)cloneObject(orig);
+  if (answer != null)   return answer;
+  answer=cloneMapFromClass(orig);
+  if (answer != null)   return answer;
+  if (orig instanceof TreeMap)   return new TreeMap(orig);
+  if (orig instanceof LinkedHashMap)   return new LinkedHashMap(orig);
+  if (orig instanceof Properties) {
+    Map map=new Properties();
+    map.putAll(orig);
+    return map;
   }
- else   if (left instanceof Hashtable)   map=new Hashtable(left);
- else   map=new HashMap(left);
-  return map;
+  if (orig instanceof Hashtable)   return new Hashtable(orig);
+  return new HashMap(orig);
 }
