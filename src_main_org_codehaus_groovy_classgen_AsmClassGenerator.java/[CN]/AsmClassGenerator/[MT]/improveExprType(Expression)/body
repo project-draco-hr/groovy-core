@@ -1,0 +1,72 @@
+{
+  if (expr instanceof BinaryExpression) {
+    if (ClassHelper.isNumberType(expr.getType()))     return;
+    final BinaryExpression bin=(BinaryExpression)expr;
+    String message="";
+switch (bin.getOperation().getType()) {
+case Types.BITWISE_AND:
+      message="and";
+    break;
+case Types.BITWISE_OR:
+  message="or";
+break;
+case Types.BITWISE_XOR:
+message="xor";
+break;
+case Types.PLUS:
+message="plus";
+break;
+case Types.MINUS:
+message="minus";
+break;
+case Types.MULTIPLY:
+message="multiply";
+break;
+case Types.DIVIDE:
+message="div";
+break;
+case Types.INTDIV:
+message="intdiv";
+break;
+case Types.MOD:
+message="mod";
+break;
+case Types.LEFT_SHIFT:
+message="leftShift";
+break;
+case Types.RIGHT_SHIFT:
+message="rightShift";
+break;
+case Types.RIGHT_SHIFT_UNSIGNED:
+message="rightShiftUnsigned";
+break;
+}
+if (!names.contains(message)) return;
+improveExprType(bin.getLeftExpression());
+improveExprType(bin.getRightExpression());
+ClassNode type1=getLHSType(bin.getLeftExpression());
+ClassNode type2=getLHSType(bin.getRightExpression());
+if (ClassHelper.isNumberType(type1) && ClassHelper.isNumberType(type2)) {
+ClassNode prim1=ClassHelper.getUnwrapper(type1);
+ClassNode prim2=ClassHelper.getUnwrapper(type2);
+if (message.equals("div") && prim1 == ClassHelper.int_TYPE && prim2 == ClassHelper.int_TYPE) {
+return;
+}
+ClassNode retType;
+if (prim1 == ClassHelper.double_TYPE || prim2 == ClassHelper.double_TYPE) {
+retType=ClassHelper.double_TYPE;
+}
+ else if (prim1 == ClassHelper.float_TYPE || prim2 == ClassHelper.float_TYPE) {
+retType=ClassHelper.double_TYPE;
+}
+ else if (prim1 == ClassHelper.long_TYPE || prim2 == ClassHelper.long_TYPE) {
+retType=ClassHelper.long_TYPE;
+}
+ else retType=ClassHelper.int_TYPE;
+if (retType == ClassHelper.double_TYPE && !basic.contains(message)) {
+return;
+}
+bin.setType(retType);
+}
+}
+}

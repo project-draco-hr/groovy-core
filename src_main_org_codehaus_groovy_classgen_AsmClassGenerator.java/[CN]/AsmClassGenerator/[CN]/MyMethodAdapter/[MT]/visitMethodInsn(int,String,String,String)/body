@@ -1,0 +1,16 @@
+{
+  if (boxing(opcode,owner,name)) {
+    dropBoxing();
+    boxingDesc=desc;
+  }
+ else {
+    if (unboxing(opcode,owner,name)) {
+      if (boxingDesc != null)       boxingDesc=null;
+ else       super.visitMethodInsn(opcode,owner,name,desc);
+    }
+ else {
+      dropBoxing();
+      super.visitMethodInsn(opcode,owner,name,desc);
+    }
+  }
+}
