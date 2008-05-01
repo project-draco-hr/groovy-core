@@ -1,13 +1,23 @@
 {
   testStaticInnerClasses&=type.hasPackageName();
   if (testStaticInnerClasses) {
-    String name=type.getName();
-    String replacedPointType=name;
-    int lastPoint=replacedPointType.lastIndexOf('.');
-    replacedPointType=new StringBuffer().append(replacedPointType.substring(0,lastPoint)).append("$").append(replacedPointType.substring(lastPoint + 1)).toString();
-    type.setName(replacedPointType);
-    if (resolve(type,false,true,true))     return true;
-    type.setName(name);
+    if (type instanceof ConstructedClassWithPackage) {
+      ConstructedClassWithPackage tmp=(ConstructedClassWithPackage)type;
+      String name=((ConstructedClassWithPackage)type).className;
+      tmp.className=replaceLastPoint(name);
+      if (resolve(tmp,false,true,true)) {
+        type.setRedirect(tmp.redirect());
+        return true;
+      }
+      tmp.className=name;
+    }
+ else {
+      String name=type.getName();
+      String replacedPointType=replaceLastPoint(name);
+      type.setName(replacedPointType);
+      if (resolve(type,false,true,true))       return true;
+      type.setName(name);
+    }
   }
   return false;
 }

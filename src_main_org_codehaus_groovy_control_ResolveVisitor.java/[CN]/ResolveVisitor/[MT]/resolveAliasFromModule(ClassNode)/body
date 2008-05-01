@@ -1,4 +1,5 @@
 {
+  if (type instanceof ConstructedClassWithPackage)   return false;
   ModuleNode module=currentClass.getModule();
   if (module == null)   return false;
   String name=type.getName();
@@ -13,10 +14,12 @@
         return true;
       }
  else {
-        String newName=aliasedNode.getName() + name.substring(pname.length());
-        type.setName(newName);
-        if (resolve(type,true,true,true))         return true;
-        type.setName(name);
+        String className=aliasedNode.getNameWithoutPackage() + '$' + name.substring(pname.length() + 1).replace('.','$');
+        ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(aliasedNode.getPackageName() + ".",className);
+        if (resolve(tmp,true,true,false)) {
+          type.setRedirect(tmp.redirect());
+          return true;
+        }
       }
     }
     index=pname.lastIndexOf('.');
