@@ -1,0 +1,14 @@
+{
+  final Object n=constantExpression.getValue();
+  if (!(n instanceof Number || n instanceof Character))   return;
+  FieldNode field=(FieldNode)const2Var.get(n);
+  if (field != null)   return;
+  final String name="$const$" + const2Var.size();
+  field=currentClass.getField(name);
+  if (field == null) {
+    field=new FieldNode(name,Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC| Opcodes.ACC_FINAL,constantExpression.getType(),currentClass,constantExpression);
+    field.setSynthetic(true);
+    missingFields.add(field);
+  }
+  const2Var.put(n,field);
+}
