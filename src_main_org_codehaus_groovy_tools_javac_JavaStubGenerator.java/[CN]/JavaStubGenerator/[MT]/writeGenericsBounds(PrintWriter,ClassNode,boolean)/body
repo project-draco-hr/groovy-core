@@ -1,4 +1,6 @@
 {
   if (!skipName)   printTypeName(type,out);
-  if (java5 && !type.isGenericsPlaceHolder())   writeGenericsBounds(out,type.getGenericsTypes());
+  if (java5 && !type.isGenericsPlaceHolder() && !ClassHelper.isCachedType(type)) {
+    writeGenericsBounds(out,type.getGenericsTypes());
+  }
 }
