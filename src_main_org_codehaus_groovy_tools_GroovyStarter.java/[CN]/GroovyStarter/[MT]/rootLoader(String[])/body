@@ -11,6 +11,7 @@
       }
       lc.addClassPath(args[argsOffset + 1]);
       argsOffset+=2;
+      hadCP=true;
     }
  else     if (args[argsOffset].equals("--main")) {
       if (hadMain)       break;
@@ -19,6 +20,7 @@
       }
       lc.setMainClass(args[argsOffset + 1]);
       argsOffset+=2;
+      hadMain=true;
     }
  else     if (args[argsOffset].equals("--conf")) {
       if (hadConf)       break;
@@ -27,11 +29,14 @@
       }
       conf=args[argsOffset + 1];
       argsOffset+=2;
+      hadConf=true;
     }
  else {
       break;
     }
   }
+  String confOverride=System.getProperty("groovy.starter.conf.override",null);
+  if (confOverride != null)   conf=confOverride;
   if (lc.getMainClass() == null && conf == null) {
     exit("no configuration file or main class specified");
   }
