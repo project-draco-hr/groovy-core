@@ -3,7 +3,7 @@
   for (Expression it=pe; it != null; it=((PropertyExpression)it).getObjectExpression()) {
     if (it instanceof VariableExpression) {
       VariableExpression ve=(VariableExpression)it;
-      if (ve == VariableExpression.SUPER_EXPRESSION || ve == VariableExpression.THIS_EXPRESSION) {
+      if (ve.isSuperExpression() || ve.isThisExpression()) {
         return null;
       }
       name=ve.getName() + "." + name;

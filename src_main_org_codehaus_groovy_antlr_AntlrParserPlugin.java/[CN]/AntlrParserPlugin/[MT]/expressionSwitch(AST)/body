@@ -34,6 +34,8 @@ case LITERAL_int:
 case LITERAL_long:
 case LITERAL_short:
 case LITERAL_void:
+case LITERAL_this:
+case LITERAL_super:
 return variableExpression(node);
 case LIST_CONSTRUCTOR:
 return listExpression(node);
@@ -56,15 +58,13 @@ return asExpression(node);
 case TYPECAST:
 return castExpression(node);
 case LITERAL_true:
-return ConstantExpression.TRUE;
+return literalExpression(node,Boolean.TRUE);
 case LITERAL_false:
-return ConstantExpression.FALSE;
+return literalExpression(node,Boolean.FALSE);
 case LITERAL_null:
-return ConstantExpression.NULL;
+return literalExpression(node,null);
 case STRING_LITERAL:
-ConstantExpression constantExpression=new ConstantExpression(node.getText());
-configureAST(constantExpression,node);
-return constantExpression;
+return literalExpression(node,node.getText());
 case STRING_CONSTRUCTOR:
 return gstring(node);
 case NUM_DOUBLE:
@@ -75,10 +75,6 @@ case NUM_BIG_INT:
 case NUM_INT:
 case NUM_LONG:
 return integerExpression(node);
-case LITERAL_this:
-return VariableExpression.THIS_EXPRESSION;
-case LITERAL_super:
-return VariableExpression.SUPER_EXPRESSION;
 case LNOT:
 NotExpression notExpression=new NotExpression(expression(node.getFirstChild()));
 configureAST(notExpression,node);
