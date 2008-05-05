@@ -1,6 +1,7 @@
 {
+  GroovyClassLoader cuLoader=compilationUnit.getClassLoader();
+  LinkedHashMap<String,URL> globalTransformNames=new LinkedHashMap<String,URL>();
   try {
-    GroovyClassLoader cuLoader=compilationUnit.getClassLoader();
     Enumeration<URL> globalServices=cuLoader.getResources("META-INF/services/org.codehaus.groovy.transform.ASTTransformation");
     while (globalServices.hasMoreElements()) {
       URL service=globalServices.nextElement();
@@ -14,30 +15,15 @@
         continue;
       }
       while (className != null) {
-        try {
-          if (!className.startsWith("#") && className.length() > 0) {
-            Class gTransClass=cuLoader.loadClass(className);
-            GroovyASTTransformation transformAnnotation=(GroovyASTTransformation)gTransClass.getAnnotation(GroovyASTTransformation.class);
-            if (transformAnnotation == null) {
-              compilationUnit.getErrorCollector().addError(new SimpleMessage("Transform Class " + className + " is specified as a global transform in "+ service.toExternalForm()+ " but it is not annotated by "+ GroovyASTTransformation.class.getName(),null));
-              continue;
-            }
-            if (ASTTransformation.class.isAssignableFrom(gTransClass)) {
-              final ASTTransformation instance=(ASTTransformation)gTransClass.newInstance();
-              compilationUnit.addPhaseOperation(new CompilationUnit.SourceUnitOperation(){
-                public void call(                SourceUnit source) throws CompilationFailedException {
-                  instance.visit(new ASTNode[]{source.getAST()},source);
-                }
-              }
-,transformAnnotation.phase().getPhaseNumber());
-            }
- else {
-              compilationUnit.getErrorCollector().addError(new SimpleMessage("Transform Class " + className + " specified at "+ service.toExternalForm()+ " is not an ASTTransformation.",null));
+        if (!className.startsWith("#") && className.length() > 0) {
+          if (globalTransformNames.containsKey(className)) {
+            if (!service.equals(globalTransformNames.get(className))) {
+              compilationUnit.getErrorCollector().addWarning(WarningMessage.POSSIBLE_ERRORS,"The global transform for class " + className + " is defined in both "+ globalTransformNames.get(className).toExternalForm()+ " and "+ service.toExternalForm()+ " - the former definition will be used and the latter ignored.",null,null);
             }
           }
-        }
- catch (        Exception e) {
-          compilationUnit.getErrorCollector().addError(new SimpleMessage("Could not instantiate global transform class " + className + " specified at "+ service.toExternalForm()+ "  because of exception "+ e.toString(),null));
+ else {
+            globalTransformNames.put(className,service);
+          }
         }
         try {
           className=svcIn.readLine();
@@ -51,5 +37,30 @@
   }
  catch (  IOException e) {
     compilationUnit.getErrorCollector().addError(new SimpleMessage("IO Exception attempting to load global transforms:" + e.getMessage(),null));
+  }
+  for (  Map.Entry<String,URL> entry : globalTransformNames.entrySet()) {
+    try {
+      Class gTransClass=cuLoader.loadClass(entry.getKey());
+      GroovyASTTransformation transformAnnotation=(GroovyASTTransformation)gTransClass.getAnnotation(GroovyASTTransformation.class);
+      if (transformAnnotation == null) {
+        compilationUnit.getErrorCollector().addError(new SimpleMessage("Transform Class " + entry.getKey() + " is specified as a global transform in "+ entry.getValue().toExternalForm()+ " but it is not annotated by "+ GroovyASTTransformation.class.getName(),null));
+        continue;
+      }
+      if (ASTTransformation.class.isAssignableFrom(gTransClass)) {
+        final ASTTransformation instance=(ASTTransformation)gTransClass.newInstance();
+        compilationUnit.addPhaseOperation(new CompilationUnit.SourceUnitOperation(){
+          public void call(          SourceUnit source) throws CompilationFailedException {
+            instance.visit(new ASTNode[]{source.getAST()},source);
+          }
+        }
+,transformAnnotation.phase().getPhaseNumber());
+      }
+ else {
+        compilationUnit.getErrorCollector().addError(new SimpleMessage("Transform Class " + entry.getKey() + " specified at "+ entry.getValue().toExternalForm()+ " is not an ASTTransformation.",null));
+      }
+    }
+ catch (    Exception e) {
+      compilationUnit.getErrorCollector().addError(new SimpleMessage("Could not instantiate global transform class " + entry.getKey() + " specified at "+ entry.getValue().toExternalForm()+ "  because of exception "+ e.toString(),null));
+    }
   }
 }
