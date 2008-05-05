@@ -13,6 +13,7 @@
       for (Iterator i=javac.getRuntimeConfigurableWrapper().getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
         final Map.Entry e=(Map.Entry)i.next();
         final String key=e.getKey().toString();
+        final String value=e.getValue().toString();
         if (key.indexOf("debug") != -1) {
           String level="";
           if (javac.getDebugLevel() != null) {
@@ -22,14 +23,14 @@
         }
  else         if (key.indexOf("debugLevel") != -1) {
         }
- else         if (key.indexOf("nowarn") != -1) {
-          jointOptions.add("-Fnowarn" + e.getValue());
+ else         if (((key.indexOf("nowarn") != -1) || (key.indexOf("verbose") != -1) || (key.indexOf("deprecation") != -1)) && ("on".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase("value"))) {
+          jointOptions.add("-F" + key);
         }
  else         if (key.indexOf("classpath") != -1) {
           classpath.add(javac.getClasspath());
         }
  else         if ((key.indexOf("depend") != -1) || (key.indexOf("extdirs") != -1) || (key.indexOf("encoding") != -1)|| (key.indexOf("source") != -1)|| (key.indexOf("target") != -1)|| (key.indexOf("verbose") != -1)|| (key.indexOf("depend") != -1)) {
-          jointOptions.add("-J" + key + "="+ e.getValue());
+          jointOptions.add("-J" + key + "="+ value);
         }
  else {
           log("The option " + key + " cannot be set on the contained <javac> element. The option will be ignored",Project.MSG_WARN);
