@@ -8,35 +8,13 @@
   final int index=allocateIndex(message);
   mv.visitLdcInsn(Integer.valueOf(index));
   mv.visitInsn(AALOAD);
-  if (!message.equals("plus") && !message.equals("div") && !message.equals("minus")&& !message.equals("multiply")&& !message.equals("getAt")) {
-    boolean lhs=leftHandExpression;
-    leftHandExpression=false;
-    boolean oldVal=this.implicitThis;
-    this.implicitThis=false;
-    visitAndAutoboxBoolean(receiver);
-    this.implicitThis=oldVal;
-    int recIdx=compileStack.defineTemporaryVariable("$local$receiver",true);
-    mv.visitVarInsn(ALOAD,recIdx);
-    visitAndAutoboxBoolean(arguments);
-    int argsIdx=compileStack.defineTemporaryVariable("$local$args",true);
-    mv.visitVarInsn(ALOAD,argsIdx);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","acceptBinop","(Ljava/lang/Object;Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,recIdx);
-    mv.visitVarInsn(ALOAD,argsIdx);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invokeBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-    compileStack.removeVar(argsIdx);
-    compileStack.removeVar(recIdx);
-    leftHandExpression=lhs;
-  }
- else {
-    boolean lhs=leftHandExpression;
-    leftHandExpression=false;
-    boolean oldVal=this.implicitThis;
-    this.implicitThis=false;
-    visitAndAutoboxBoolean(receiver);
-    this.implicitThis=oldVal;
-    visitAndAutoboxBoolean(arguments);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-    leftHandExpression=lhs;
-  }
+  boolean lhs=leftHandExpression;
+  leftHandExpression=false;
+  boolean oldVal=this.implicitThis;
+  this.implicitThis=false;
+  visitAndAutoboxBoolean(receiver);
+  this.implicitThis=oldVal;
+  visitAndAutoboxBoolean(arguments);
+  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$cs$" + index,"(Lorg/codehaus/groovy/runtime/callsite/CallSite;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+  leftHandExpression=lhs;
 }

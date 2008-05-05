@@ -2,7 +2,10 @@
   final Object n=constantExpression.getValue();
   if (!(n instanceof Number || n instanceof Character))   return;
   FieldNode field=(FieldNode)const2Var.get(n);
-  if (field != null)   return;
+  if (field != null) {
+    constantExpression.setConstantName(field.getName());
+    return;
+  }
   final String name="$const$" + const2Var.size();
   field=currentClass.getField(name);
   if (field == null) {
@@ -10,5 +13,6 @@
     field.setSynthetic(true);
     missingFields.add(field);
   }
+  constantExpression.setConstantName(field.getName());
   const2Var.put(n,field);
 }
