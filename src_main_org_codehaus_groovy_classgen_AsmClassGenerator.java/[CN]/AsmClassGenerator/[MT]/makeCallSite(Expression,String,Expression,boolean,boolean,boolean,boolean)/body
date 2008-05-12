@@ -46,30 +46,28 @@
   if (numberOfArguments == -1) {
   }
  else {
-    if (numberOfArguments == 0) {
-      mv.visitFieldInsn(GETSTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","NOPARAM","[Ljava/lang/Object;");
-    }
- else {
+    if (numberOfArguments > 4) {
       final String createArraySignature=getCreateArraySignature(numberOfArguments);
       mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray",createArraySignature);
     }
   }
+  final String desc=getDescForParamNum(numberOfArguments);
   if (callStatic) {
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callStatic","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callStatic",desc);
   }
  else   if (constructor) {
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor",desc);
   }
  else {
     if (callCurrent) {
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent",desc);
     }
  else {
       if (safe) {
-        mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe",desc);
       }
  else {
-        mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call",desc);
       }
     }
   }

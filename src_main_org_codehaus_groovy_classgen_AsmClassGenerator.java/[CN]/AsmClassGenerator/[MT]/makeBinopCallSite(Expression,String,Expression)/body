@@ -1,13 +1,5 @@
 {
-  if (isNotClinit()) {
-    mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
-  }
- else {
-    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-  }
-  final int index=allocateIndex(message);
-  mv.visitLdcInsn(Integer.valueOf(index));
-  mv.visitInsn(AALOAD);
+  prepareCallSite(message);
   boolean lhs=leftHandExpression;
   leftHandExpression=false;
   boolean oldVal=this.implicitThis;
@@ -15,6 +7,6 @@
   visitAndAutoboxBoolean(receiver);
   this.implicitThis=oldVal;
   visitAndAutoboxBoolean(arguments);
-  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$cs$" + index,"(Lorg/codehaus/groovy/runtime/callsite/CallSite;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
   leftHandExpression=lhs;
 }

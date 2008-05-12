@@ -3,38 +3,21 @@
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      prepareCallSite("putAt");
+      prepareCallSite(method);
+      prepareCallSite("getAt");
       visitAndAutoboxBoolean(leftBinExpr.getLeftExpression());
-      final int objVar=compileStack.defineTemporaryVariable("$object",true);
-      Expression objectExpression=new BytecodeExpression(){
-        public void visit(        MethodVisitor mv){
-          mv.visitVarInsn(ALOAD,objVar);
-        }
-      }
-;
       visitAndAutoboxBoolean(leftBinExpr.getRightExpression());
-      final int indexVar=compileStack.defineTemporaryVariable("$index",true);
-      Expression indexExpression=new BytecodeExpression(){
-        public void visit(        MethodVisitor mv){
-          mv.visitVarInsn(ALOAD,indexVar);
-        }
-      }
-;
-      final BinaryExpression leftExpr=new BinaryExpression(objectExpression,Token.newSymbol(Types.LEFT_SQUARE_BRACKET,-1,-1),indexExpression);
-      leftExpr.setSourcePosition(leftExpression);
-      makeBinopCallSite(leftExpr,method,expression.getRightExpression());
+      mv.visitInsn(DUP2_X2);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      visitAndAutoboxBoolean(expression.getRightExpression());
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       final int resultVar=compileStack.defineTemporaryVariable("$result",true);
-      Expression resultExpression=new BytecodeExpression(){
-        public void visit(        MethodVisitor mv){
-          mv.visitVarInsn(ALOAD,resultVar);
-        }
-      }
-;
-      visitMethodCallExpression(new MethodCallExpression(objectExpression,"putAt",new ArgumentListExpression(new Expression[]{indexExpression,resultExpression})));
+      mv.visitVarInsn(ALOAD,resultVar);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       mv.visitInsn(POP);
       mv.visitVarInsn(ALOAD,resultVar);
       compileStack.removeVar(resultVar);
-      compileStack.removeVar(indexVar);
-      compileStack.removeVar(objVar);
       return;
     }
   }

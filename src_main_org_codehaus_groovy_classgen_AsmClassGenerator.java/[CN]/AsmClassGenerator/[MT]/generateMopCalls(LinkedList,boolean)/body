@@ -4,7 +4,7 @@
     String name=getMopMethodName(method,useThis);
     Parameter[] parameters=method.getParameters();
     String methodDescriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameters());
-    mv=cv.visitMethod(Opcodes.ACC_PUBLIC & Opcodes.ACC_SYNTHETIC,name,methodDescriptor,null,null);
+    mv=cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,name,methodDescriptor,null,null);
     mv.visitVarInsn(ALOAD,0);
     BytecodeHelper helper=new BytecodeHelper(mv);
     int newRegister=1;

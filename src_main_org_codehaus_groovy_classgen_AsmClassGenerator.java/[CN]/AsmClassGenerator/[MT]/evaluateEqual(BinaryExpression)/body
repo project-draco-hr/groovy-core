@@ -3,19 +3,16 @@
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-      final Expression right=expression.getRightExpression();
-      visitAndAutoboxBoolean(right);
-      final int rhsVar=compileStack.defineTemporaryVariable("$rhs",right.getType(),true);
-      Expression rhsExpr=new BytecodeExpression(){
-        public void visit(        MethodVisitor mv){
-          mv.visitVarInsn(ALOAD,rhsVar);
-        }
-      }
-;
-      visitMethodCallExpression(new MethodCallExpression(leftBinExpr.getLeftExpression(),"putAt",new ArgumentListExpression(new Expression[]{leftBinExpr.getRightExpression(),rhsExpr})));
+      prepareCallSite("putAt");
+      visitAndAutoboxBoolean(leftBinExpr.getLeftExpression());
+      visitAndAutoboxBoolean(leftBinExpr.getRightExpression());
+      visitAndAutoboxBoolean(expression.getRightExpression());
+      final int resultVar=compileStack.defineTemporaryVariable("$result",true);
+      mv.visitVarInsn(ALOAD,resultVar);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       mv.visitInsn(POP);
-      mv.visitVarInsn(ALOAD,rhsVar);
-      compileStack.removeVar(rhsVar);
+      mv.visitVarInsn(ALOAD,resultVar);
+      compileStack.removeVar(resultVar);
       return;
     }
   }
