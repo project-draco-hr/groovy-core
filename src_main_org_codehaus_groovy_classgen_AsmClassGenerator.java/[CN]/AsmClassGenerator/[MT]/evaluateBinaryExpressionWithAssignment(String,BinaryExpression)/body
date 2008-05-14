@@ -9,9 +9,9 @@
       visitAndAutoboxBoolean(leftBinExpr.getLeftExpression());
       visitAndAutoboxBoolean(leftBinExpr.getRightExpression());
       mv.visitInsn(DUP2_X2);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       visitAndAutoboxBoolean(expression.getRightExpression());
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callBinop","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       final int resultVar=compileStack.defineTemporaryVariable("$result",true);
       mv.visitVarInsn(ALOAD,resultVar);
       mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
