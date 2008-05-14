@@ -1,5 +1,6 @@
 {
   Object oldValue=null;
+  boolean newKey=!delegate.containsKey(key);
   if (test != null) {
     oldValue=delegate.put(key,value);
     Object result=null;
@@ -10,15 +11,21 @@
       result=test.call(value);
     }
     if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
-      if (oldValue != value) {
-        pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+      if (newKey) {
+        pcs.firePropertyChange(new PropertyAddedEvent(this,String.valueOf(key),value));
+      }
+ else       if (oldValue != value) {
+        pcs.firePropertyChange(new PropertyUpdatedEvent(this,String.valueOf(key),oldValue,value));
       }
     }
   }
  else {
     oldValue=delegate.put(key,value);
-    if (oldValue != value) {
-      pcs.firePropertyChange(String.valueOf(key),oldValue,value);
+    if (newKey) {
+      pcs.firePropertyChange(new PropertyAddedEvent(this,String.valueOf(key),value));
+    }
+ else     if (oldValue != value) {
+      pcs.firePropertyChange(new PropertyUpdatedEvent(this,String.valueOf(key),oldValue,value));
     }
   }
   return oldValue;

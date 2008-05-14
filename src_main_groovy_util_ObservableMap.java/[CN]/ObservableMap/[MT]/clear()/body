@@ -1,3 +1,10 @@
 {
+  Map values=new HashMap();
+  if (!delegate.isEmpty()) {
+    values.putAll(delegate);
+  }
   delegate.clear();
+  if (values != null) {
+    pcs.firePropertyChange(new PropertyClearedEvent(this,values));
+  }
 }
