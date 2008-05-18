@@ -23,9 +23,6 @@
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","checkCall","(Ljava/lang/Object;[Ljava/lang/Object;)Z");
     Label l0=new Label();
     mv.visitJumpInsn(IFEQ,l0);
-    mv.visitVarInsn(ALOAD,0);
-    mv.visitVarInsn(ALOAD,1);
-    mv.visitVarInsn(ALOAD,2);
     BytecodeHelper helper=new BytecodeHelper(mv);
     Class callClass=getDeclaringClass().getTheClass();
     boolean useInterface=callClass.isInterface();
@@ -50,15 +47,9 @@
     mv.visitVarInsn(ALOAD,0);
     mv.visitVarInsn(ALOAD,1);
     mv.visitVarInsn(ALOAD,2);
-    mv.visitVarInsn(ALOAD,0);
-    mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","array","Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
-    mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/CallSiteArray","owner","Ljava/lang/Class;");
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","createCallCurrentSite","(Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/Class;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,1);
-    mv.visitVarInsn(ALOAD,2);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCallCurrent","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     mv.visitInsn(ARETURN);
-    mv.visitMaxs(4,3);
+    mv.visitMaxs(0,0);
     mv.visitEnd();
   }
   if (getParamsCount() <= 4) {
@@ -99,15 +90,7 @@
     mv.visitVarInsn(ALOAD,1);
     for (int i=0; i != pc; ++i)     mv.visitVarInsn(ALOAD,i + 2);
     mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray","(" + pdesc + ")[Ljava/lang/Object;");
-    mv.visitVarInsn(ASTORE,pc + 2);
-    mv.visitVarInsn(ALOAD,pc + 2);
-    mv.visitVarInsn(ALOAD,0);
-    mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","array","Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
-    mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/CallSiteArray","owner","Ljava/lang/Class;");
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","createCallCurrentSite","(Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/Class;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,1);
-    mv.visitVarInsn(ALOAD,pc + 2);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCallCurrent","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     mv.visitInsn(ARETURN);
     mv.visitMaxs(0,0);
     mv.visitEnd();
@@ -121,9 +104,6 @@
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","checkCall","(Ljava/lang/Object;[Ljava/lang/Object;)Z");
     Label l0=new Label();
     mv.visitJumpInsn(IFEQ,l0);
-    mv.visitVarInsn(ALOAD,0);
-    mv.visitVarInsn(ALOAD,1);
-    mv.visitVarInsn(ALOAD,2);
     BytecodeHelper helper=new BytecodeHelper(mv);
     Class callClass=getDeclaringClass().getTheClass();
     boolean useInterface=callClass.isInterface();
@@ -148,12 +128,9 @@
     mv.visitVarInsn(ALOAD,0);
     mv.visitVarInsn(ALOAD,1);
     mv.visitVarInsn(ALOAD,2);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/PogoMetaMethodSite","createCallSite","(Ljava/lang/Object;[Ljava/lang/Object;)Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    mv.visitVarInsn(ALOAD,1);
-    mv.visitVarInsn(ALOAD,2);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCall","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     mv.visitInsn(ARETURN);
-    mv.visitMaxs(4,3);
+    mv.visitMaxs(0,0);
     mv.visitEnd();
   }
   cw.visitEnd();

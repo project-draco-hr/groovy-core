@@ -14,9 +14,9 @@
   this.implicitThis=implicitThis;
   visitAndAutoboxBoolean(receiver);
   this.implicitThis=oldVal;
-  if (!safe)   mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callGetProperty","(Ljava/lang/Object;)Ljava/lang/Object;");
+  if (!safe)   mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callGetProperty","(Ljava/lang/Object;)Ljava/lang/Object;");
  else {
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","callGetPropertySafe","(Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callGetPropertySafe","(Ljava/lang/Object;)Ljava/lang/Object;");
   }
   leftHandExpression=lhs;
 }

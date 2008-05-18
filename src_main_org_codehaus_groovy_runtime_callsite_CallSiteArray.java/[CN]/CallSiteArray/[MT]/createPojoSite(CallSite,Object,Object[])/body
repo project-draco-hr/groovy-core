@@ -1,0 +1,7 @@
+{
+  MetaClass metaClass=InvokerHelper.getMetaClass(receiver.getClass());
+  if (callSite.getUsage().get() == 0 && metaClass instanceof MetaClassImpl) {
+    return ((MetaClassImpl)metaClass).createPojoCallSite(callSite,receiver,args);
+  }
+  return new PojoMetaClassSite(callSite,metaClass);
+}

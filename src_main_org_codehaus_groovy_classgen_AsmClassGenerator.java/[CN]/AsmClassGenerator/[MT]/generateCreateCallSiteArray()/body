@@ -5,11 +5,11 @@
   mv.visitInsn(DUP);
   mv.visitFieldInsn(GETSTATIC,internalClassName,"$ownClass","Ljava/lang/Class;");
   final int size=callSites.size();
-  mv.visitLdcInsn(Integer.valueOf(size));
+  mv.visitLdcInsn(size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/String");
   for (int i=0; i < size; i++) {
     mv.visitInsn(DUP);
-    mv.visitLdcInsn(Integer.valueOf(i));
+    mv.visitLdcInsn(i);
     mv.visitLdcInsn(callSites.get(i));
     mv.visitInsn(AASTORE);
   }

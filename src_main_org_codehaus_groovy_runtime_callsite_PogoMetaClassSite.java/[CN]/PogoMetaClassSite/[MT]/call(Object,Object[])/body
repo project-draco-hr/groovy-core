@@ -1,4 +1,19 @@
 {
-  if (checkCall(receiver))   return invoke(receiver,args);
- else   return defaultCall(receiver,args);
+  if (checkCall(receiver)) {
+    try {
+      return metaClass.invokeMethod(receiver,name,args);
+    }
+ catch (    MissingMethodException e) {
+      if (e instanceof MissingMethodExecutionFailed) {
+        throw (MissingMethodException)e.getCause();
+      }
+ else       if (receiver.getClass() == e.getType() && e.getMethod().equals(name)) {
+        return ((GroovyObject)receiver).invokeMethod(name,args);
+      }
+ else {
+        throw e;
+      }
+    }
+  }
+ else   return CallSiteArray.defaultCall(this,receiver,args);
 }

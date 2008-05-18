@@ -9,7 +9,7 @@
       visitAndAutoboxBoolean(expression.getRightExpression());
       final int resultVar=compileStack.defineTemporaryVariable("$result",true);
       mv.visitVarInsn(ALOAD,resultVar);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
       mv.visitInsn(POP);
       mv.visitVarInsn(ALOAD,resultVar);
       compileStack.removeVar(resultVar);

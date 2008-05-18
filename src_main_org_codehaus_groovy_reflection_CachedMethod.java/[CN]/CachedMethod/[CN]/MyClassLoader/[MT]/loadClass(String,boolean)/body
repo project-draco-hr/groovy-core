@@ -1,4 +1,12 @@
 {
-  if (name.startsWith("org.codehaus.groovy.runtime") || name.startsWith("groovy.lang"))   return getClass().getClassLoader().loadClass(name);
-  return super.loadClass(name,resolve);
+  if (knownClasses.contains(name))   return getClass().getClassLoader().loadClass(name);
+ else {
+    final Class aClass=null;
+    try {
+      return super.loadClass(name,resolve);
+    }
+ catch (    ClassNotFoundException e) {
+      return getClass().getClassLoader().loadClass(name);
+    }
+  }
 }
