@@ -2,5 +2,9 @@
   List annotionMap=node.getAnnotations();
   if (annotionMap.isEmpty())   return;
   visitNode(node);
-  super.visitAnnotations(node);
+  Iterator it=annotionMap.iterator();
+  while (it.hasNext()) {
+    AnnotationNode an=(AnnotationNode)it.next();
+    visitNode(an);
+  }
 }
