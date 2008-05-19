@@ -1,5 +1,6 @@
 {
   GenericsType gt;
+  AST rootNode=typeArgument.getFirstChild();
   if (isType(WILDCARD_TYPE,rootNode)) {
     ClassNode base=ClassHelper.makeWithoutCaching("?");
     if (rootNode.getNextSibling() != null) {
@@ -22,6 +23,6 @@
     ClassNode argument=makeTypeWithArguments(rootNode);
     gt=new GenericsType(argument);
   }
-  configureAST(gt,rootNode);
+  configureAST(gt,typeArgument);
   return gt;
 }
