@@ -1,0 +1,16 @@
+{
+  CachedClass[] parameters=method.getParameterTypes();
+  int size=parameters.length;
+  for (int i=0; i < size; i++) {
+    mv.visitVarInsn(Opcodes.ALOAD,argumentIndex);
+    helper.pushConstant(i);
+    mv.visitInsn(Opcodes.AALOAD);
+    Class type=parameters[i].getTheClass();
+    if (type.isPrimitive()) {
+      helper.unbox(type);
+    }
+ else {
+      helper.doCast(type);
+    }
+  }
+}

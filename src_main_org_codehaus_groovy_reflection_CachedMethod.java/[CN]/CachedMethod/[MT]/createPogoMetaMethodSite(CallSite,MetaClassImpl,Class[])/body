@@ -1,16 +1,18 @@
 {
-  if (!hasPogoCallSiteConstructor())   compileMethod();
-  if (pogoCallSiteConstructor != null) {
+  if (!hasPogoCallSiteConstructor()) {
+    Constructor constr=null;
+    if (CallSiteGenerator.isCompilable(this)) {
+      constr=CallSiteGenerator.compilePogoMethod(this);
+      if (constr != null)       pogoCallSiteConstructor=new SoftReference<Constructor>(constr);
+    }
+  }
+  if (hasPogoCallSiteConstructor()) {
     final Constructor constructor=pogoCallSiteConstructor.get();
     if (constructor != null) {
       try {
-        return (PogoMetaMethodSite)constructor.newInstance(site,metaClass,this,params);
+        return (CallSite)constructor.newInstance(site,metaClass,this,params);
       }
- catch (      IllegalAccessException e) {
-      }
-catch (      InvocationTargetException e) {
-      }
-catch (      InstantiationException e) {
+ catch (      Throwable e) {
       }
     }
   }

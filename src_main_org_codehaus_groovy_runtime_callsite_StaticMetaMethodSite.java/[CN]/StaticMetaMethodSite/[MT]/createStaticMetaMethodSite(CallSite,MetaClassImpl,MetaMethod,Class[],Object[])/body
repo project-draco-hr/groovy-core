@@ -2,9 +2,8 @@
   if (metaMethod.correctArguments(args) == args) {
     if (noWrappers(args)) {
       if (noCoerce(metaMethod,args))       return new StaticMetaMethodSiteNoUnwrap(site,metaClass,metaMethod,params);
- else {
-        return new StaticMetaMethodSiteNoUnwrapNoCoerce(site,metaClass,metaMethod,params);
-      }
+ else       if (metaMethod.getClass() == CachedMethod.class)       return ((CachedMethod)metaMethod).createStaticMetaMethodSite(site,metaClass,params);
+ else       return new StaticMetaMethodSiteNoUnwrapNoCoerce(site,metaClass,metaMethod,params);
     }
   }
   return new StaticMetaMethodSite(site,metaClass,metaMethod,params);

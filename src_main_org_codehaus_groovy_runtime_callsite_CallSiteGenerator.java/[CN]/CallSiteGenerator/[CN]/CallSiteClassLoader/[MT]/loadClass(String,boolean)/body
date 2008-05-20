@@ -1,0 +1,15 @@
+{
+  if (sunVM != null) {
+    final Class aClass=SunClassLoader.knownClasses.get(name);
+    if (aClass != null)     return aClass;
+  }
+  if (knownClasses.contains(name))   return getClass().getClassLoader().loadClass(name);
+ else {
+    try {
+      return super.loadClass(name,resolve);
+    }
+ catch (    ClassNotFoundException e) {
+      return getClass().getClassLoader().loadClass(name);
+    }
+  }
+}

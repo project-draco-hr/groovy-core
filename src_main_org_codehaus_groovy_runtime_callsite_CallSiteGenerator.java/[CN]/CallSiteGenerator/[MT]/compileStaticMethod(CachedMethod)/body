@@ -1,0 +1,21 @@
+{
+  ClassWriter cw=new ClassWriter(true);
+  final CachedClass declClass=cachedMethod.getDeclaringClass();
+  final Class acls=declClass.getTheClass();
+  final String name=createCallSiteClassName(cachedMethod,declClass,acls);
+  final byte[] bytes=genStaticMetaMethodSite(cachedMethod,cw,name);
+  final Class staticSiteClass=AccessController.doPrivileged(new PrivilegedAction<Class>(){
+    public Class run(){
+      return new CallSiteClassLoader(acls,name,bytes).cls;
+    }
+  }
+);
+  if (staticSiteClass != null) {
+    try {
+      return staticSiteClass.getConstructor(CallSite.class,MetaClassImpl.class,MetaMethod.class,Class[].class);
+    }
+ catch (    NoSuchMethodException e) {
+    }
+  }
+  return null;
+}
