@@ -53,21 +53,21 @@
   }
   final String desc=getDescForParamNum(numberOfArguments);
   if (callStatic) {
-    mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callStatic",desc);
+    mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callStatic","(Ljava/lang/Class;" + desc);
   }
  else   if (constructor) {
-    mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor",desc);
+    mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callConstructor","(Ljava/lang/Object;" + desc);
   }
  else {
     if (callCurrent) {
-      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent",desc);
+      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callCurrent","(Lgroovy/lang/GroovyObject;" + desc);
     }
  else {
       if (safe) {
-        mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe",desc);
+        mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","callSafe","(Ljava/lang/Object;" + desc);
       }
  else {
-        mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call",desc);
+        mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;" + desc);
       }
     }
   }
