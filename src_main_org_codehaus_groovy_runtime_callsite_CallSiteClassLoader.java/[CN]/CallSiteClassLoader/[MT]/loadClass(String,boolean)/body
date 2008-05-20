@@ -1,0 +1,17 @@
+{
+  final Class cls=findLoadedClass(name);
+  if (cls != null)   return cls;
+  if (GroovySunClassLoader.sunVM != null) {
+    final Class aClass=GroovySunClassLoader.sunVM.doesKnow(name);
+    if (aClass != null)     return aClass;
+  }
+  if (knownClasses.contains(name))   return getClass().getClassLoader().loadClass(name);
+ else {
+    try {
+      return super.loadClass(name,resolve);
+    }
+ catch (    ClassNotFoundException e) {
+      return getClass().getClassLoader().loadClass(name);
+    }
+  }
+}
