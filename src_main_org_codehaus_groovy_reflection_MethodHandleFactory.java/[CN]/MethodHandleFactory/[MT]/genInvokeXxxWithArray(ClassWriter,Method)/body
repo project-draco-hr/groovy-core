@@ -1,0 +1,27 @@
+{
+  MethodVisitor mv;
+  mv=cw.visitMethod(Opcodes.ACC_PUBLIC,"invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,EXCEPTIONS);
+  mv.visitCode();
+  BytecodeHelper helper=new BytecodeHelper(mv);
+  Class callClass=method.getDeclaringClass();
+  boolean useInterface=callClass.isInterface();
+  String type=BytecodeHelper.getClassInternalName(callClass.getName());
+  String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
+  if (Modifier.isStatic(method.getModifiers())) {
+    genLoadParameters(2,mv,helper,method);
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC,type,method.getName(),descriptor);
+  }
+ else {
+    mv.visitVarInsn(Opcodes.ALOAD,1);
+    helper.doCast(callClass);
+    genLoadParameters(2,mv,helper,method);
+    mv.visitMethodInsn((useInterface) ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,type,method.getName(),descriptor);
+  }
+  helper.box(method.getReturnType());
+  if (method.getReturnType() == void.class) {
+    mv.visitInsn(Opcodes.ACONST_NULL);
+  }
+  mv.visitInsn(Opcodes.ARETURN);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+}

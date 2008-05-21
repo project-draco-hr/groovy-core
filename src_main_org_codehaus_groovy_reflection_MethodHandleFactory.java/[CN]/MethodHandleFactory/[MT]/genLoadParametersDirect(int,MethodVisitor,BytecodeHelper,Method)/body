@@ -1,0 +1,14 @@
+{
+  Class<?>[] parameters=method.getParameterTypes();
+  int size=parameters.length;
+  for (int i=0; i < size; i++) {
+    mv.visitVarInsn(Opcodes.ALOAD,argumentIndex + i);
+    Class type=parameters[i];
+    if (type.isPrimitive()) {
+      helper.unbox(type);
+    }
+ else {
+      helper.doCast(type);
+    }
+  }
+}

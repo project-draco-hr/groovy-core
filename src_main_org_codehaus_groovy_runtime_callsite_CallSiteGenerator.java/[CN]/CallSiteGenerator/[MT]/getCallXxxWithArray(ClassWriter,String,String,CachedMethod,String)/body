@@ -14,13 +14,13 @@
   String type=BytecodeHelper.getClassInternalName(callClass.getName());
   String descriptor=BytecodeHelper.getMethodDescriptor(cachedMethod.getReturnType(),cachedMethod.getNativeParameterTypes());
   if (cachedMethod.isStatic()) {
-    genLoadParameters(2,mv,helper,cachedMethod);
+    MethodHandleFactory.genLoadParameters(2,mv,helper,cachedMethod.setAccessible());
     mv.visitMethodInsn(Opcodes.INVOKESTATIC,type,cachedMethod.getName(),descriptor);
   }
  else {
     mv.visitVarInsn(Opcodes.ALOAD,1);
     helper.doCast(callClass);
-    genLoadParameters(2,mv,helper,cachedMethod);
+    MethodHandleFactory.genLoadParameters(2,mv,helper,cachedMethod.setAccessible());
     mv.visitMethodInsn((useInterface) ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,type,cachedMethod.getName(),descriptor);
   }
   helper.box(cachedMethod.getReturnType());
