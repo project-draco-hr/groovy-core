@@ -1,0 +1,8 @@
+{
+  final Expression value=annotation.getMember("value");
+  if (value == null || !(value instanceof ClassExpression)) {
+    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.lang.Category must define 'value' which is class to apply this category",annotation.getLineNumber(),annotation.getColumnNumber()),source));
+  }
+  ClassNode targetClass=((ClassExpression)value).getType();
+  return targetClass;
+}
