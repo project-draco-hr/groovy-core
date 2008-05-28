@@ -3,10 +3,15 @@
   List valueList=new ArrayList();
   stringList.addAll(Arrays.asList(getStrings()));
   valueList.addAll(Arrays.asList(getValues()));
+  List thatStrings=Arrays.asList(that.getStrings());
   if (stringList.size() > valueList.size()) {
-    valueList.add("");
+    thatStrings=new ArrayList(thatStrings);
+    String s=(String)stringList.get(stringList.size() - 1);
+    s+=thatStrings.get(0);
+    thatStrings.remove(0);
+    stringList.set(stringList.size() - 1,s);
   }
-  stringList.addAll(Arrays.asList(that.getStrings()));
+  stringList.addAll(thatStrings);
   valueList.addAll(Arrays.asList(that.getValues()));
   final String[] newStrings=new String[stringList.size()];
   stringList.toArray(newStrings);
