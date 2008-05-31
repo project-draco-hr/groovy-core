@@ -1,9 +1,10 @@
 {
   out.incrementIndent();
   for (Iterator iter=list.iterator(); iter.hasNext(); ) {
+    NamespaceContext context=new NamespaceContext(ctx);
     Object value=iter.next();
     if (value instanceof Node) {
-      print((Node)value,ctx);
+      print((Node)value,context);
       continue;
     }
     printSimpleItem(value);
