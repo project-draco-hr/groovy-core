@@ -3,9 +3,6 @@
   MetaClass mc=metaClassRegistry.getMetaClass(c);
   if (mc instanceof ExpandoMetaClass || mc instanceof DelegatingMetaClass && ((DelegatingMetaClass)mc).getAdaptee() instanceof ExpandoMetaClass)   return mc;
  else {
-    MetaClass emc=ExpandoMetaClassCreationHandle.instance.create(c,metaClassRegistry);
-    emc.initialize();
-    metaClassRegistry.setMetaClass(c,emc);
-    return emc;
+    return new HandleMetaClass(mc);
   }
 }

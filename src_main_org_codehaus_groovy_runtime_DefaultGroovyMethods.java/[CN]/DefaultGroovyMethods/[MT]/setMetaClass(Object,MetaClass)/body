@@ -1,0 +1,6 @@
+{
+  if (metaClass instanceof HandleMetaClass)   metaClass=((HandleMetaClass)metaClass).getAdaptee();
+  if (obj instanceof GroovyObject)   ((GroovyObject)obj).setMetaClass(metaClass);
+ else   if (obj instanceof Class)   ((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).setMetaClass((Class)obj,metaClass);
+ else   ((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).setMetaClass(obj,metaClass);
+}

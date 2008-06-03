@@ -1,0 +1,17 @@
+{
+  if (object instanceof GroovyObject) {
+    MetaClass mc=((GroovyObject)object).getMetaClass();
+    if (mc == GroovySystem.getMetaClassRegistry().getMetaClass(object.getClass()))     return null;
+ else     return mc;
+  }
+ else {
+    ClassInfo info=ClassInfo.getClassInfo(object.getClass());
+    info.lock();
+    try {
+      return info.getPerInstanceMetaClass(object);
+    }
+  finally {
+      info.unlock();
+    }
+  }
+}

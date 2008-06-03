@@ -1,0 +1,24 @@
+{
+  MetaClass emc=hasPerInstanceMetaClass(object);
+  if (emc == null) {
+    final ExpandoMetaClass metaClass=new ExpandoMetaClass(object.getClass(),false,true).define(closure);
+    metaClass.initialize();
+    setMetaClass(object,metaClass);
+    return metaClass;
+  }
+ else {
+    if (emc instanceof ExpandoMetaClass) {
+      ((ExpandoMetaClass)emc).define(closure);
+      return emc;
+    }
+ else {
+      if (emc instanceof DelegatingMetaClass && ((DelegatingMetaClass)emc).getAdaptee() instanceof ExpandoMetaClass) {
+        ((ExpandoMetaClass)((DelegatingMetaClass)emc).getAdaptee()).define(closure);
+        return emc;
+      }
+ else {
+        throw new RuntimeException("Can't add methods to non-ExpandoMetaClass " + emc);
+      }
+    }
+  }
+}

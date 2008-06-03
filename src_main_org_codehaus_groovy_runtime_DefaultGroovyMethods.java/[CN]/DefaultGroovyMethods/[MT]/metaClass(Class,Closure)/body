@@ -1,0 +1,25 @@
+{
+  MetaClassRegistry metaClassRegistry=GroovySystem.getMetaClassRegistry();
+  MetaClass mc=metaClassRegistry.getMetaClass(klazz);
+  if (mc instanceof ExpandoMetaClass) {
+    ((ExpandoMetaClass)mc).define(closure);
+    return mc;
+  }
+ else {
+    if (mc instanceof DelegatingMetaClass && ((DelegatingMetaClass)mc).getAdaptee() instanceof ExpandoMetaClass) {
+      ((ExpandoMetaClass)((DelegatingMetaClass)mc).getAdaptee()).define(closure);
+      return mc;
+    }
+ else {
+      if (mc.getClass() == MetaClassImpl.class) {
+        mc=new ExpandoMetaClass(klazz,false,true).define(closure);
+        mc.initialize();
+        metaClassRegistry.setMetaClass(klazz,mc);
+        return mc;
+      }
+ else {
+        throw new GroovyRuntimeException("Can't add methods to custom meta class " + mc);
+      }
+    }
+  }
+}

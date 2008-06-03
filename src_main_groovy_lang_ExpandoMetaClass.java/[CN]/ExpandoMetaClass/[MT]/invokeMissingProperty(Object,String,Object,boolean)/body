@@ -1,7 +1,7 @@
 {
   Class theClass=instance instanceof Class ? (Class)instance : instance.getClass();
   CachedClass superClass=theCachedClass;
-  while (superClass != ReflectionCache.OBJECT_CLASS) {
+  while (superClass != null && superClass != ReflectionCache.OBJECT_CLASS) {
     final MetaBeanProperty property=findPropertyInClassHierarchy(propertyName,superClass);
     if (property != null) {
       addMetaBeanProperty(property);

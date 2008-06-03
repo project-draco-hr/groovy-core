@@ -10,7 +10,12 @@
         CachedClass[] paramTypes=method.getParameterTypes();
         if (paramTypes.length == 0)         continue;
         if (paramTypes[0].isAssignableFrom(self)) {
-          final NewInstanceMetaMethod metaMethod=new NewInstanceMetaMethod(method);
+          final NewInstanceMetaMethod metaMethod=new NewInstanceMetaMethod(method){
+            public CachedClass getDeclaringClass(){
+              return ReflectionCache.getCachedClass(self);
+            }
+          }
+;
           arr.add(metaMethod);
         }
       }

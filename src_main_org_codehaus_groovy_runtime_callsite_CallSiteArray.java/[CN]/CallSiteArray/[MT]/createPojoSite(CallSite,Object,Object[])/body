@@ -1,7 +1,17 @@
 {
-  MetaClass metaClass=InvokerHelper.getMetaClass(receiver.getClass());
+  final Class klazz=receiver.getClass();
+  MetaClass metaClass=InvokerHelper.getMetaClass(klazz);
   if (callSite.getUsage().get() == 0 && metaClass instanceof MetaClassImpl) {
-    return ((MetaClassImpl)metaClass).createPojoCallSite(callSite,receiver,args);
+    final MetaClassImpl mci=(MetaClassImpl)metaClass;
+    final ClassInfo info=mci.getTheCachedClass().classInfo;
+    if (info.hasPerInstanceMetaClasses()) {
+      return new PerInstancePojoMetaClassSite(callSite,info);
+    }
+ else {
+      return mci.createPojoCallSite(callSite,receiver,args);
+    }
   }
-  return new PojoMetaClassSite(callSite,metaClass);
+  ClassInfo info=ClassInfo.getClassInfo(klazz);
+  if (info.hasPerInstanceMetaClasses())   return new PerInstancePojoMetaClassSite(callSite,info);
+ else   return new PojoMetaClassSite(callSite,metaClass);
 }

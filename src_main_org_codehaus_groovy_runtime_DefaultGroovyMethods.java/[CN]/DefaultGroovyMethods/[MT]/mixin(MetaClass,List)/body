@@ -1,0 +1,21 @@
+{
+  final Class selfClass=self.getTheClass();
+  ArrayList arr=findCategoryMethods(selfClass,categoryClasses);
+  if (arr.isEmpty())   return;
+  if (self instanceof HandleMetaClass) {
+    self=(MetaClass)((HandleMetaClass)self).replaceDelegate();
+  }
+  if (!(self instanceof ExpandoMetaClass)) {
+    if (self instanceof DelegatingMetaClass && ((DelegatingMetaClass)self).getAdaptee() instanceof ExpandoMetaClass) {
+      self=((DelegatingMetaClass)self).getAdaptee();
+    }
+ else {
+      throw new GroovyRuntimeException("Can't mixin methods to meta class: " + self);
+    }
+  }
+  ExpandoMetaClass mc=(ExpandoMetaClass)self;
+  for (  Object res : arr) {
+    final MetaMethod metaMethod=(MetaMethod)res;
+    mc.registerInstanceMethod(metaMethod);
+  }
+}

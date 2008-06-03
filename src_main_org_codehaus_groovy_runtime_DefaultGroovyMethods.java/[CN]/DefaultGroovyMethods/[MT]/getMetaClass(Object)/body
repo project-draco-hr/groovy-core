@@ -1,6 +1,4 @@
 {
-  if (obj instanceof GroovyObject) {
-    return ((GroovyObject)obj).getMetaClass();
-  }
-  return GroovySystem.getMetaClassRegistry().getMetaClass(obj.getClass());
+  MetaClass mc=InvokerHelper.getMetaClass(obj);
+  return new HandleMetaClass(mc,obj);
 }
