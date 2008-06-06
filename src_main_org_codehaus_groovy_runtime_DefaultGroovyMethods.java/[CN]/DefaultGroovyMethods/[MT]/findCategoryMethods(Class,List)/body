@@ -9,14 +9,22 @@
       if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
         CachedClass[] paramTypes=method.getParameterTypes();
         if (paramTypes.length == 0)         continue;
+        NewInstanceMetaMethod metaMethod;
         if (paramTypes[0].isAssignableFrom(self)) {
-          final NewInstanceMetaMethod metaMethod=new NewInstanceMetaMethod(method){
+          if (paramTypes[0].getTheClass() == self)           metaMethod=new NewInstanceMetaMethod(method);
+ else           metaMethod=new NewInstanceMetaMethod(method){
             public CachedClass getDeclaringClass(){
               return ReflectionCache.getCachedClass(self);
             }
           }
 ;
           arr.add(metaMethod);
+        }
+ else {
+          if (self.isAssignableFrom(paramTypes[0].getTheClass())) {
+            metaMethod=new NewInstanceMetaMethod(method);
+            arr.add(metaMethod);
+          }
         }
       }
     }

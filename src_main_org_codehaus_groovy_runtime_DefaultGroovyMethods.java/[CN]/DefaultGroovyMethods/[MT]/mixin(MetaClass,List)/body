@@ -16,6 +16,9 @@
   ExpandoMetaClass mc=(ExpandoMetaClass)self;
   for (  Object res : arr) {
     final MetaMethod metaMethod=(MetaMethod)res;
-    mc.registerInstanceMethod(metaMethod);
+    if (metaMethod.getDeclaringClass().isAssignableFrom(selfClass))     mc.registerInstanceMethod(metaMethod);
+ else {
+      mc.registerSubclassInstanceMethod(metaMethod);
+    }
   }
 }

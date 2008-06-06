@@ -1,0 +1,22 @@
+{
+  MetaMethod method=null;
+  Class superClass;
+  if (metaClass.getTheClass().isArray() && !metaClass.getTheClass().getComponentType().isPrimitive() && metaClass.getTheClass().getComponentType() != Object.class) {
+    superClass=Object[].class;
+  }
+ else {
+    superClass=metaClass.getTheClass().getSuperclass();
+  }
+  if (superClass != null) {
+    MetaClass superMetaClass=GroovySystem.getMetaClassRegistry().getMetaClass(superClass);
+    method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,superMetaClass);
+  }
+  method=findSubClassMethod(instanceKlazz,methodName,arguments,metaClass,method);
+  MetaMethod infMethod=searchInterfacesForMetaMethod(instanceKlazz,methodName,arguments,metaClass);
+  if (infMethod != null) {
+    if (method == null)     method=infMethod;
+ else     method=mostSpecific(method,infMethod,instanceKlazz);
+  }
+  method=findOwnMethod(instanceKlazz,methodName,arguments,metaClass,method);
+  return method;
+}
