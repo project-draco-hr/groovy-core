@@ -1,3 +1,17 @@
 {
-  return myMetaClass.invokeMethod(this,name,args);
+  final Object[] argsArr=args instanceof Object[] ? (Object[])args : new Object[]{args};
+  MetaMethod metaMethod=myMetaClass.getMetaMethod(name,argsArr);
+  if (metaMethod != null)   return metaMethod.invoke(this,argsArr);
+  if (argsArr.length == 2 && argsArr[0] instanceof Class && argsArr[1] instanceof Closure) {
+    if (argsArr[0] == theClass)     registerInstanceMethod(name,(Closure)argsArr[1]);
+ else {
+      registerSubclassInstanceMethod(new ClosureMetaMethod(name,(Class)argsArr[0],(Closure)argsArr[1]));
+    }
+    return null;
+  }
+  if (argsArr.length == 1 && argsArr[0] instanceof Closure) {
+    registerInstanceMethod(name,(Closure)argsArr[0]);
+    return null;
+  }
+  throw new MissingMethodException(name,getClass(),argsArr);
 }

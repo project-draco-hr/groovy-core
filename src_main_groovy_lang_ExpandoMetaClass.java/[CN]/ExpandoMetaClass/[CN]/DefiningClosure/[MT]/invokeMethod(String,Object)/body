@@ -12,7 +12,12 @@
         c.call(null);
         return null;
       }
-      ExpandoMetaClass.this.setProperty(name,((Object[])obj)[0]);
+      Object args[]=(Object[])obj;
+      if (args.length == 1 && args[0] instanceof Closure) {
+        registerInstanceMethod(name,(Closure)args[0]);
+      }
+ else       if (args.length == 2 && args[0] instanceof Class && args[1] instanceof Closure)       registerSubclassInstanceMethod(new ClosureMetaMethod(name,(Class)args[0],(Closure)args[1]));
+ else       ExpandoMetaClass.this.setProperty(name,((Object[])obj)[0]);
       return null;
     }
     throw mme;

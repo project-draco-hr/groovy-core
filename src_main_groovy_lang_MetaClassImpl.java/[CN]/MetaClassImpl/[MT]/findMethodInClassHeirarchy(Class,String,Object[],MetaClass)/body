@@ -11,6 +11,12 @@
     MetaClass superMetaClass=GroovySystem.getMetaClassRegistry().getMetaClass(superClass);
     method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,superMetaClass);
   }
+ else {
+    if (metaClass.getTheClass().isInterface()) {
+      MetaClass superMetaClass=GroovySystem.getMetaClassRegistry().getMetaClass(Object.class);
+      method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,superMetaClass);
+    }
+  }
   method=findSubClassMethod(instanceKlazz,methodName,arguments,metaClass,method);
   MetaMethod infMethod=searchInterfacesForMetaMethod(instanceKlazz,methodName,arguments,metaClass);
   if (infMethod != null) {

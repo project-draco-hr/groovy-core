@@ -1,12 +1,14 @@
 {
   if (!isCallToSuper) {
-    MetaMethod method=findMethodInClassHeirarchy(instance.getClass(),methodName,arguments,this);
+    Class instanceKlazz=instance.getClass();
+    if (theClass != instanceKlazz && theClass.isAssignableFrom(instanceKlazz))     instanceKlazz=theClass;
+    MetaMethod method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,this);
     if (method != null) {
       onSuperMethodFoundInHierarchy(method);
       return method.invoke(instance,arguments);
     }
     final Object[] invokeMethodArgs={methodName,arguments};
-    method=findMethodInClassHeirarchy(instance.getClass(),ExpandoMetaClass.INVOKE_METHOD_METHOD,invokeMethodArgs,this);
+    method=findMethodInClassHeirarchy(instanceKlazz,ExpandoMetaClass.INVOKE_METHOD_METHOD,invokeMethodArgs,this);
     if (method != null && method instanceof ClosureMetaMethod) {
       onInvokeMethodFoundInHierarchy(method);
       return method.invoke(instance,invokeMethodArgs);
