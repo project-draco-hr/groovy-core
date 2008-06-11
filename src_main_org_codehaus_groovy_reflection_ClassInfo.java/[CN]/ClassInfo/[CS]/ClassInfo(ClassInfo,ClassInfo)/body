@@ -8,7 +8,10 @@
   artifactClassLoader=new LazyClassLoaderRef(this,src);
   weakMetaClass=src.weakMetaClass;
   strongMetaClass=src.strongMetaClass;
-  modifiedExpando=src.modifiedExpando;
+  if (strongMetaClass instanceof ExpandoMetaClass) {
+    modifiedExpandos.remove(src);
+    modifiedExpandos.add(this);
+  }
   dgmMetaMethods=src.dgmMetaMethods;
   newMetaMethods=src.newMetaMethods;
   perInstanceMetaClassMap=src.perInstanceMetaClassMap;

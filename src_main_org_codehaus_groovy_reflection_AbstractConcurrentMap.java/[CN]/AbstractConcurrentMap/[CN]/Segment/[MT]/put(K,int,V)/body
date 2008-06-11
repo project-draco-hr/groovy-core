@@ -1,0 +1,25 @@
+{
+  lock();
+  try {
+    int c=count;
+    if (c++ > threshold) {
+      rehash();
+    }
+    Entry<K,V>[] tab=table;
+    int index=hash & (tab.length - 1);
+    Entry<K,V> first=tab[index];
+    Entry<K,V> e=first;
+    while (e != null) {
+      if (e.isEqual(key,hash)) {
+        e.setValue(value);
+        return;
+      }
+      e=e.getNext();
+    }
+    tab[index]=createEntry(key,hash,value,first);
+    count=c;
+  }
+  finally {
+    unlock();
+  }
+}

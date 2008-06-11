@@ -12,8 +12,9 @@
     }
  else {
       if (mc.getClass() == MetaClassImpl.class) {
-        mc=new ExpandoMetaClass(klazz,false,true).define(closure);
+        mc=new ExpandoMetaClass(klazz,false,true);
         mc.initialize();
+        ((ExpandoMetaClass)mc).define(closure);
         metaClassRegistry.setMetaClass(klazz,mc);
         return mc;
       }

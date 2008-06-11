@@ -1,0 +1,21 @@
+{
+  Entry e=entry;
+  int i=e.hash & (table.length - 1);
+  Entry prev=(Entry)table[i];
+  Entry p=prev;
+  while (p != null) {
+    Entry next=(Entry)p.next;
+    if (p == e) {
+      if (prev == e)       table[i]=next;
+ else       prev.next=next;
+      e.next=null;
+      e.value=null;
+      size--;
+      break;
+    }
+    prev=p;
+    p=next;
+  }
+  entry.key1=null;
+  entry.key2=null;
+}

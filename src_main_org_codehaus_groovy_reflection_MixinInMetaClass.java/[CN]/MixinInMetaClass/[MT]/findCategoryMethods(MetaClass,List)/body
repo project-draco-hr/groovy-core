@@ -1,0 +1,24 @@
+{
+  ArrayList arr=new ArrayList(4);
+  for (Iterator it=categoryClasses.iterator(); it.hasNext(); ) {
+    Class categoryClass=(Class)it.next();
+    CachedMethod[] methods=ReflectionCache.getCachedClass(categoryClass).getMethods();
+    MixinInMetaClass mixin=null;
+    for (int i=0; i < methods.length; i++) {
+      CachedMethod method=methods[i];
+      final int mod=method.getModifiers();
+      if (Modifier.isPublic(mod) && !method.getCachedMethod().isSynthetic()) {
+        if (Modifier.isStatic(mod)) {
+          staticMethod(self,arr,method);
+        }
+ else {
+          if (self.pickMethod(method.getName(),method.getNativeParameterTypes()) == null) {
+            if (mixin == null)             mixin=new MixinInMetaClass(ReflectionCache.getCachedClass(self.getTheClass()),ReflectionCache.getCachedClass(categoryClass));
+            arr.add(new MixinInstanceMetaMethod(method,mixin));
+          }
+        }
+      }
+    }
+  }
+  return arr;
+}
