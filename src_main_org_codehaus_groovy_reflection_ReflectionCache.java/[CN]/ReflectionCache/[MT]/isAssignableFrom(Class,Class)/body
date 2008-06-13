@@ -1,8 +1,8 @@
 {
   if (klazz == aClass)   return true;
-  SoftDoubleKeyHashMap.Entry val=assignableMap.getOrPut(klazz,aClass);
-  if (val.value == null) {
-    val.value=Boolean.valueOf(klazz.isAssignableFrom(aClass));
+  SoftDoubleKeyMap.Entry val=(SoftDoubleKeyMap.Entry)assignableMap.getOrPut(klazz,aClass,null);
+  if (val.getValue() == null) {
+    val.setValue(Boolean.valueOf(klazz.isAssignableFrom(aClass)));
   }
-  return ((Boolean)val.value).booleanValue();
+  return ((Boolean)val.getValue()).booleanValue();
 }
