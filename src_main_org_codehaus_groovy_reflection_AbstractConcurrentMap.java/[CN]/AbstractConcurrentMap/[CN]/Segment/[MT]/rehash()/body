@@ -1,39 +1,30 @@
 {
-  Entry<K,V>[] oldTable=table;
+  Object[] oldTable=table;
   int oldCapacity=oldTable.length;
   if (oldCapacity >= MAXIMUM_CAPACITY)   return;
+  Object[] newTable=new Object[oldCapacity << 1];
+  int sizeMask=newTable.length - 1;
   int newCount=0;
   for (int i=0; i < oldCapacity; i++) {
-    Entry<K,V> first=null;
-    for (Entry<K,V> e=oldTable[i]; e != null; ) {
-      if (e.isValid()) {
-        if (first == null)         first=e;
-        Entry<K,V> ee=e.getNext();
-        while (ee != null && !ee.isValid())         ee=ee.getNext();
-        e.setNext(ee);
-        e=ee;
-        newCount++;
+    Object o=oldTable[i];
+    if (o != null) {
+      if (o instanceof Entry) {
+        Entry e=(Entry)o;
+        if (e.isValid()) {
+          newCount++;
+          rehash(newTable,sizeMask,e);
+        }
       }
  else {
-        e=e.getNext();
+        Entry arr[]=(Entry[])o;
+        for (int j=0; j < arr.length; j++) {
+          Entry e=arr[j];
+          if (e != null && e.isValid()) {
+            newCount++;
+            rehash(newTable,sizeMask,e);
+          }
+        }
       }
-    }
-    oldTable[i]=first;
-  }
-  if (newCount + 1 < threshold) {
-    count=newCount;
-    return;
-  }
-  Entry<K,V>[] newTable=new Entry[oldCapacity << 1];
-  int sizeMask=newTable.length - 1;
-  newCount=0;
-  for (int i=0; i < oldCapacity; i++) {
-    for (Entry<K,V> e=oldTable[i]; e != null; e=e.getNext()) {
-      int idx=e.getHash() & sizeMask;
-      final Entry<K,V> next=newTable[idx];
-      if (next == null && e.getNext() == null)       newTable[idx]=e;
- else       newTable[idx]=createEntry(e,next);
-      newCount++;
     }
   }
   threshold=(int)(newTable.length * 0.75f);
