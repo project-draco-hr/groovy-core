@@ -2,7 +2,10 @@
   Variable v=ve.getAccessedVariable();
   if (v != null && v instanceof DynamicVariable) {
     Expression result=findStaticFieldImportFromModule(v.getName());
-    if (result != null)     return result;
+    if (result != null) {
+      result.setSourcePosition(ve);
+      return result;
+    }
     if (!inPropertyExpression || inSpecialConstructorCall)     addStaticVariableError(ve);
   }
   return ve;
