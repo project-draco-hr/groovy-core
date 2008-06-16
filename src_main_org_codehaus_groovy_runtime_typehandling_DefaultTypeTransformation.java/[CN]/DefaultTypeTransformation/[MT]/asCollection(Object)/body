@@ -10,10 +10,7 @@
     return map.entrySet();
   }
  else   if (value.getClass().isArray()) {
-    if (value.getClass().getComponentType().isPrimitive()) {
-      return primitiveArrayToList(value);
-    }
-    return Arrays.asList((Object[])value);
+    return arrayAsCollection(value);
   }
  else   if (value instanceof MethodClosure) {
     MethodClosure method=(MethodClosure)value;
