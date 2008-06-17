@@ -1,0 +1,27 @@
+{
+  for (  Object element : elements) {
+    if (element instanceof Collection) {
+      flatten((Collection)element,addTo,flattenUsing);
+    }
+ else     if (element.getClass().isArray()) {
+      flatten(DefaultTypeTransformation.arrayAsCollection(element),addTo,flattenUsing);
+    }
+ else {
+      Object flattened=flattenUsing.call(new Object[]{element});
+      boolean returnedSelf=flattened == element;
+      if (!returnedSelf && flattened instanceof Collection) {
+        List list=toList((Collection)flattened);
+        if (list.size() == 1 && list.get(0) == element) {
+          returnedSelf=true;
+        }
+      }
+      if (flattened instanceof Collection && !returnedSelf) {
+        flatten((Collection)flattened,addTo,flattenUsing);
+      }
+ else {
+        addTo.add(element);
+      }
+    }
+  }
+  return addTo;
+}
