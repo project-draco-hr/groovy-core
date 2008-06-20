@@ -1,9 +1,23 @@
 {
   int count=0;
   for (int i=0; i < segments.length; i++) {
-    final Object[] table=segments[i].table;
-    for (int j=0; j < table.length; j++) {
-      count+=countFull(table[j]);
+    segments[i].lock();
+    try {
+      for (int j=0; j < segments[i].table.length; j++) {
+        Object o=segments[i].table[j];
+        if (o != null) {
+          if (o instanceof Entry) {
+            count++;
+          }
+ else {
+            Object arr[]=(Object[])o;
+            count+=arr.length;
+          }
+        }
+      }
+    }
+  finally {
+      segments[i].unlock();
     }
   }
   return count;

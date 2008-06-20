@@ -1,16 +1,2 @@
 {
-  int sshift=0;
-  int ssize=1;
-  while (ssize < 16) {
-    ++sshift;
-    ssize<<=1;
-  }
-  segmentShift=32 - sshift;
-  segmentMask=ssize - 1;
-  this.segments=new Segment[ssize];
-  int c=512 / ssize;
-  if (c * ssize < 512)   ++c;
-  int cap=1;
-  while (cap < c)   cap<<=1;
-  for (int i=0; i < this.segments.length; ++i)   this.segments[i]=new Segment(cap);
 }

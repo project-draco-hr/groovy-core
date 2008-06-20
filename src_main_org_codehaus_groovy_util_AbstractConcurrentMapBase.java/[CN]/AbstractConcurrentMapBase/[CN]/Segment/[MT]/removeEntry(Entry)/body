@@ -1,39 +1,39 @@
 {
   lock();
+  int newCount=count;
   try {
     Object[] tab=table;
-    int hash=entry.getHash();
-    final int index=hash & (tab.length - 1);
+    int index=e.getHash() & (tab.length - 1);
     Object o=tab[index];
     if (o != null) {
       if (o instanceof Entry) {
-        Entry e=(Entry)o;
-        if (e == entry) {
+        if (o == e) {
           tab[index]=null;
+          newCount--;
         }
       }
  else {
         Object arr[]=(Object[])o;
-        for (int i=0; i != arr.length; ++i) {
-          Entry e=(Entry)arr[i];
-          if (e == entry) {
-            if (arr.length == 2) {
-              if (i == 0) {
-                tab[index]=arr[1];
+        Object res=null;
+        for (int i=0; i < arr.length; i++) {
+          Entry info=(Entry)arr[i];
+          if (info != null) {
+            if (info != e) {
+              if (info.isValid()) {
+                res=put(info,res);
               }
  else {
-                tab[index]=arr[0];
+                newCount--;
               }
             }
  else {
-              Object newArr[]=new Object[arr.length - 1];
-              System.arraycopy(arr,0,newArr,0,i);
-              System.arraycopy(arr,i + 1,newArr,i,arr.length - i - 1);
+              newCount--;
             }
-            break;
           }
         }
+        tab[index]=res;
       }
+      count=newCount;
     }
   }
   finally {
