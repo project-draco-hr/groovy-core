@@ -1,0 +1,17 @@
+{
+  Statement statement=node.getCode();
+  if (!node.isVoidMethod()) {
+    if (statement != null)     node.setCode(addReturnsIfNeeded(statement,node.getVariableScope()));
+  }
+ else   if (!node.isAbstract()) {
+    BlockStatement newBlock=new BlockStatement();
+    if (statement instanceof BlockStatement) {
+      newBlock.addStatements(filterStatements(((BlockStatement)statement).getStatements()));
+    }
+ else {
+      newBlock.addStatement(filterStatement(statement));
+    }
+    newBlock.addStatement(ReturnStatement.RETURN_NULL_OR_VOID);
+    node.setCode(newBlock);
+  }
+}
