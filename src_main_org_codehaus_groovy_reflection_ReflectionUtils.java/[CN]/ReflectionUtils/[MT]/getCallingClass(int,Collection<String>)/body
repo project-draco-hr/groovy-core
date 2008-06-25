@@ -1,0 +1,17 @@
+{
+  int depth=0;
+  try {
+    Class c;
+    do {
+      do {
+        c=sun.reflect.Reflection.getCallerClass(depth++);
+      }
+ while ((c != null) && (c.isSynthetic() || (c.getPackage() != null && (ignoredPackages.contains(c.getPackage().getName()) || extraIgnoredPackages.contains(c.getPackage().getName())))));
+    }
+ while (c != null && matchLevel-- > 0);
+    return c;
+  }
+ catch (  Exception e) {
+    return null;
+  }
+}
