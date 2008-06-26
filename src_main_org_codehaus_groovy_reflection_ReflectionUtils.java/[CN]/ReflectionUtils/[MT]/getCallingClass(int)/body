@@ -1,10 +1,13 @@
 {
+  if (magicMethod == null) {
+    return null;
+  }
   int depth=0;
   try {
     Class c;
     do {
       do {
-        c=sun.reflect.Reflection.getCallerClass(depth++);
+        c=(Class)magicMethod.invoke(null,depth++);
       }
  while ((c != null) && (c.isSynthetic() || (c.getPackage() != null && ignoredPackages.contains(c.getPackage().getName()))));
     }
