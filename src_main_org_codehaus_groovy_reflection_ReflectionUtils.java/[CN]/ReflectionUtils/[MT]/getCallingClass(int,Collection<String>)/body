@@ -16,12 +16,12 @@
           sc=null;
         }
       }
- while (((c != null) && (c.isSynthetic() || (c.getPackage() != null && (ignoredPackages.contains(c.getPackage().getName()) || extraIgnoredPackages.contains(c.getPackage().getName()))))) || ((sc != null) && (sc.getPackage() != null) && "org.codehaus.groovy.runtime.callsite".equals(sc.getPackage().getName())));
+ while (classShouldBeIgnored(c,extraIgnoredPackages) || superClassShouldBeIgnored(sc));
     }
  while (c != null && matchLevel-- > 0);
     return c;
   }
- catch (  Exception e) {
+ catch (  Throwable t) {
     return null;
   }
 }
