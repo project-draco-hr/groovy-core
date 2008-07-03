@@ -1,0 +1,21 @@
+{
+  if (globalListener != null) {
+    try {
+      InvokerHelper.invokeMethod(currentObject,"removePropertyChangeListener",globalListener);
+    }
+ catch (    Exception e) {
+    }
+    globalListener=null;
+  }
+  if (localListener != null) {
+    try {
+      InvokerHelper.invokeMethod(currentObject,"removePropertyChangeListener",new Object[]{propertyName,localListener});
+    }
+ catch (    Exception e) {
+    }
+    localListener=null;
+  }
+  if (syntheticFullBinding != null) {
+    syntheticFullBinding.unbind();
+  }
+}

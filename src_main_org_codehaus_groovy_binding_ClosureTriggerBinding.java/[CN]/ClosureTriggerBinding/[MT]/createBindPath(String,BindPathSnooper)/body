@@ -1,0 +1,11 @@
+{
+  BindPath bp=new BindPath();
+  bp.propertyName=propertyName;
+  bp.updateLocalSyntheticProperties(syntheticBindings);
+  List<BindPath> childPaths=new ArrayList<BindPath>();
+  for (  Map.Entry<String,BindPathSnooper> entry : snooper.fields.entrySet()) {
+    childPaths.add(createBindPath(entry.getKey(),entry.getValue()));
+  }
+  bp.children=childPaths.toArray(new BindPath[childPaths.size()]);
+  return bp;
+}
