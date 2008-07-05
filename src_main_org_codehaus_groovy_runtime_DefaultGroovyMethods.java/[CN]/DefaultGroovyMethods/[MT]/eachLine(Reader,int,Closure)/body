@@ -1,0 +1,27 @@
+{
+  BufferedReader br;
+  int count=firstLine;
+  Object result=null;
+  if (self instanceof BufferedReader)   br=(BufferedReader)self;
+ else   br=new BufferedReader(self);
+  try {
+    while (true) {
+      String line=br.readLine();
+      if (line == null) {
+        break;
+      }
+ else {
+        result=callClosureForLine(closure,line,count);
+        count++;
+      }
+    }
+    Reader temp=self;
+    self=null;
+    temp.close();
+    return result;
+  }
+  finally {
+    closeReaderWithWarning(self);
+    closeReaderWithWarning(br);
+  }
+}
