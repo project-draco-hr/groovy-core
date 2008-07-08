@@ -27,9 +27,10 @@
         ClosureMetaMethod closureMethod=(ClosureMetaMethod)metaMethodFromSuper;
         Closure cloned=(Closure)closureMethod.getClosure().clone();
         String name=metaMethodFromSuper.getName();
-        ClosureMetaMethod localMethod=new ClosureMetaMethod(name,getJavaClass(),cloned);
+        final Class declaringClass=metaMethodFromSuper.getDeclaringClass().getTheClass();
+        ClosureMetaMethod localMethod=new ClosureMetaMethod(name,declaringClass,cloned);
         addMetaMethod(localMethod);
-        MethodKey key=new DefaultCachedMethodKey(getJavaClass(),name,localMethod.getParameterTypes(),false);
+        MethodKey key=new DefaultCachedMethodKey(declaringClass,name,localMethod.getParameterTypes(),false);
         checkIfGroovyObjectMethod(localMethod,name);
         expandoMethods.put(key,localMethod);
       }
