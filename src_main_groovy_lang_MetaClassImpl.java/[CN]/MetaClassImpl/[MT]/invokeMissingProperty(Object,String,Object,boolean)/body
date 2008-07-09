@@ -16,7 +16,7 @@
     superClass=superClass.getCachedSuperClass();
   }
   if (isGetter) {
-    final Object[] getPropertyArgs={propertyName};
+    final Class[] getPropertyArgs={String.class};
     final MetaMethod method=findMethodInClassHeirarchy(instance.getClass(),ExpandoMetaClass.GET_PROPERTY_METHOD,getPropertyArgs,this);
     if (method != null && method instanceof ClosureMetaMethod) {
       onGetPropertyFoundInHierarchy(method);
@@ -24,7 +24,7 @@
     }
   }
  else {
-    final Object[] setPropertyArgs={propertyName,optionalValue};
+    final Class[] setPropertyArgs={String.class,Object.class};
     final MetaMethod method=findMethodInClassHeirarchy(instance.getClass(),ExpandoMetaClass.SET_PROPERTY_METHOD,setPropertyArgs,this);
     if (method != null && method instanceof ClosureMetaMethod) {
       onSetPropertyFoundInHierarchy(method);

@@ -4,7 +4,10 @@
     return go.getMetaClass();
   }
   Class ownerClass=object.getClass();
-  if (ownerClass == Class.class)   ownerClass=(Class)object;
-  MetaClass metaClass=registry.getMetaClass(ownerClass);
+  if (ownerClass == Class.class) {
+    ownerClass=(Class)object;
+    return registry.getMetaClass(ownerClass);
+  }
+  MetaClass metaClass=InvokerHelper.getMetaClass(object);
   return metaClass;
 }

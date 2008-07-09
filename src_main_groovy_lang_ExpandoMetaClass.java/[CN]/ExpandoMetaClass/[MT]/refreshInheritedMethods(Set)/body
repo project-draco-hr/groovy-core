@@ -5,8 +5,11 @@
       List metaMethods=superExpando.getExpandoMethods();
       for (Iterator j=metaMethods.iterator(); j.hasNext(); ) {
         MetaMethod metaMethod=(MetaMethod)j.next();
-        if (metaMethod.isStatic())         continue;
-        addSuperMethodIfNotOverriden(metaMethod);
+        if (metaMethod.isStatic()) {
+          if (superExpando.getTheClass() != getTheClass())           continue;
+          registerStaticMethod(metaMethod.getName(),(Closure)((ClosureStaticMetaMethod)metaMethod).getClosure().clone());
+        }
+ else         addSuperMethodIfNotOverriden(metaMethod);
       }
       Collection metaProperties=superExpando.getExpandoProperties();
       for (Iterator j=metaProperties.iterator(); j.hasNext(); ) {

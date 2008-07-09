@@ -7,6 +7,24 @@
   }
  else {
     delegateMetaClass=lookupObjectMetaClass(delegate);
-    return delegateMetaClass.pickMethod(methodName,argClasses);
+    MetaMethod method=delegateMetaClass.pickMethod(methodName,argClasses);
+    if (method != null) {
+      return method;
+    }
+    if (delegateMetaClass instanceof ExpandoMetaClass) {
+      method=((ExpandoMetaClass)delegateMetaClass).findMixinMethod(methodName,argClasses);
+      if (method != null) {
+        onMixinMethodFound(method);
+        return method;
+      }
+    }
+    if (delegateMetaClass instanceof MetaClassImpl) {
+      method=((MetaClassImpl)delegateMetaClass).findMethodInClassHeirarchy(getTheClass(),methodName,argClasses,this);
+      if (method != null) {
+        onSuperMethodFoundInHierarchy(method);
+        return method;
+      }
+    }
+    return method;
   }
 }

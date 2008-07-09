@@ -1,8 +1,10 @@
 {
   final DefiningClosure definer=new DefiningClosure();
+  Object delegate=closure.getDelegate();
   closure.setDelegate(definer);
   closure.setResolveStrategy(Closure.DELEGATE_FIRST);
   closure.call(null);
+  closure.setDelegate(delegate);
   definer.definition=false;
   return this;
 }

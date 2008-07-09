@@ -12,7 +12,7 @@
     }
  else {
       if (mc.getClass() == MetaClassImpl.class) {
-        mc=new ExpandoMetaClass(klazz,false,true);
+        mc=ExpandoMetaClassCreationHandle.instance.create(klazz,GroovySystem.getMetaClassRegistry());
         mc.initialize();
         ((ExpandoMetaClass)mc).define(closure);
         metaClassRegistry.setMetaClass(klazz,mc);

@@ -1,7 +1,7 @@
 {
   MetaClass emc=hasPerInstanceMetaClass(object);
   if (emc == null) {
-    final ExpandoMetaClass metaClass=new ExpandoMetaClass(object.getClass(),false,true);
+    final ExpandoMetaClass metaClass=(ExpandoMetaClass)ExpandoMetaClassCreationHandle.instance.create(object.getClass(),GroovySystem.getMetaClassRegistry());
     metaClass.initialize();
     metaClass.define(closure);
     setMetaClass(object,metaClass);
