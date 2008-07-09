@@ -1,3 +1,14 @@
 {
-  return DefaultTypeTransformation.castToType(obj,type);
+  try {
+    return DefaultTypeTransformation.castToType(obj,type);
+  }
+ catch (  GroovyCastException e) {
+    MetaClass mc=InvokerHelper.getMetaClass(obj);
+    if (mc instanceof ExpandoMetaClass) {
+      ExpandoMetaClass emc=(ExpandoMetaClass)mc;
+      Object mixedIn=emc.castToMixedType(obj,type);
+      if (mixedIn != null)       return mixedIn;
+    }
+    throw e;
+  }
 }

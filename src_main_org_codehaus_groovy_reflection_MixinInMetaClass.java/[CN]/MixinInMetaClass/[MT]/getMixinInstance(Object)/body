@@ -1,8 +1,8 @@
 {
   Object mixinInstance=get(object);
   if (mixinInstance == null) {
-    if (constructor.getParameterTypes().length == 0)     mixinInstance=constructor.invoke(MetaClassHelper.EMPTY_ARRAY);
- else     mixinInstance=constructor.invoke(new Object[]{new WeakReference(object)});
+    mixinInstance=constructor.invoke(MetaClassHelper.EMPTY_ARRAY);
+    new MyDelegatingMetaClass(mixinInstance,object);
     put(object,mixinInstance);
   }
   return mixinInstance;
