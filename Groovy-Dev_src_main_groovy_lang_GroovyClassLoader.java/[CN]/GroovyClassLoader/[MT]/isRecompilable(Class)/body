@@ -1,0 +1,9 @@
+{
+  if (cls == null)   return true;
+  if (recompile == null && !config.getRecompileGroovySource())   return false;
+  if (recompile != null && !recompile.booleanValue())   return false;
+  if (!GroovyObject.class.isAssignableFrom(cls))   return false;
+  long timestamp=getTimeStamp(cls);
+  if (timestamp == Long.MAX_VALUE)   return false;
+  return true;
+}

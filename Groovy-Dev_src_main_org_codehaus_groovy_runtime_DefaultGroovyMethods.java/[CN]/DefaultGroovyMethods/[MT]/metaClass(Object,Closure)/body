@@ -1,0 +1,25 @@
+{
+  MetaClass emc=hasPerInstanceMetaClass(object);
+  if (emc == null) {
+    final ExpandoMetaClass metaClass=(ExpandoMetaClass)ExpandoMetaClassCreationHandle.instance.create(object.getClass(),GroovySystem.getMetaClassRegistry());
+    metaClass.initialize();
+    metaClass.define(closure);
+    setMetaClass(object,metaClass);
+    return metaClass;
+  }
+ else {
+    if (emc instanceof ExpandoMetaClass) {
+      ((ExpandoMetaClass)emc).define(closure);
+      return emc;
+    }
+ else {
+      if (emc instanceof DelegatingMetaClass && ((DelegatingMetaClass)emc).getAdaptee() instanceof ExpandoMetaClass) {
+        ((ExpandoMetaClass)((DelegatingMetaClass)emc).getAdaptee()).define(closure);
+        return emc;
+      }
+ else {
+        throw new RuntimeException("Can't add methods to non-ExpandoMetaClass " + emc);
+      }
+    }
+  }
+}

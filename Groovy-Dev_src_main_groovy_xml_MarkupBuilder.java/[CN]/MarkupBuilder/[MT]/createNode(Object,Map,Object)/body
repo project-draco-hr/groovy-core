@@ -1,0 +1,23 @@
+{
+  toState(1,name);
+  for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=(Map.Entry)iter.next();
+    Object attributeValue=entry.getValue();
+    boolean skipNull=attributeValue == null && omitNullAttributes;
+    boolean skipEmpty=attributeValue != null && omitEmptyAttributes && attributeValue.toString().length() == 0;
+    if (!skipNull && !skipEmpty) {
+      out.print(" ");
+      print(entry.getKey().toString());
+      out.print(this.useDoubleQuotes ? "=\"" : "='");
+      print(attributeValue == null ? "" : escapeAttributeValue(attributeValue.toString()));
+      out.print(this.useDoubleQuotes ? "\"" : "'");
+    }
+  }
+  if (value != null) {
+    yield(value.toString());
+  }
+ else {
+    nodeIsEmpty=true;
+  }
+  return name;
+}

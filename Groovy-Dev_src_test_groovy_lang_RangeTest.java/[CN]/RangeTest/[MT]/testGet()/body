@@ -1,0 +1,12 @@
+{
+  Range r=createRange(10,20);
+  for (int i=0; i < 10; i++) {
+    Integer value=(Integer)r.get(i);
+    assertEquals("Item at index: " + i,i + 10,value.intValue());
+  }
+  r=createRange(new BigDecimal("3.2"),new BigDecimal("9.9"));
+  for (int i=0; i < r.size(); i++) {
+    BigDecimal value=(BigDecimal)r.get(i);
+    assertEquals("Item at index: " + i,new BigDecimal("3.2").add(new BigDecimal("" + i)),value);
+  }
+}

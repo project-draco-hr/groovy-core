@@ -1,0 +1,31 @@
+{
+  final MetaClass newMetaClass=new DelegatingMetaClass(metaClass){
+    public Object getAttribute(    final Object object,    final String attribute){
+      NodeList nl=(NodeList)object;
+      Iterator it=nl.iterator();
+      List result=new ArrayList();
+      while (it.hasNext()) {
+        Node node=(Node)it.next();
+        result.add(node.attributes().get(attribute));
+      }
+      return result;
+    }
+    public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
+      NodeList nl=(NodeList)object;
+      Iterator it=nl.iterator();
+      while (it.hasNext()) {
+        Node node=(Node)it.next();
+        node.attributes().put(attribute,newValue);
+      }
+    }
+    public Object getProperty(    Object object,    String property){
+      if (object instanceof NodeList) {
+        NodeList nl=(NodeList)object;
+        return nl.getAt(property);
+      }
+      return super.getProperty(object,property);
+    }
+  }
+;
+  GroovySystem.getMetaClassRegistry().setMetaClass(NodeList.class,newMetaClass);
+}

@@ -1,0 +1,38 @@
+{
+  final int from=range.getFromInt();
+  final int to=range.getToInt();
+  if (range.isReverse()) {
+    throw new GroovyRuntimeException("Reverse ranges not supported, range supplied is [" + to + ".."+ from+ "]");
+  }
+ else   if (from < 0 || to < 0) {
+    throw new GroovyRuntimeException("Negative range indexes not supported, range supplied is [" + from + ".."+ to+ "]");
+  }
+ else {
+    return new Iterator(){
+      final Iterator iter=iterator();
+      Object next;
+      int count=0;
+      public boolean hasNext(){
+        if (count <= to) {
+          while (iter.hasNext()) {
+            if (count++ >= from) {
+              this.next=iter.next();
+              return true;
+            }
+ else {
+              iter.next();
+            }
+          }
+        }
+        return false;
+      }
+      public Object next(){
+        return next;
+      }
+      public void remove(){
+        throw new UnsupportedOperationException();
+      }
+    }
+;
+  }
+}

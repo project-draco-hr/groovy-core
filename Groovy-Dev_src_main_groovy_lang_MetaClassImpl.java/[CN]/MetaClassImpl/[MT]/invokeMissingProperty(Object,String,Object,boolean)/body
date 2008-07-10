@@ -1,0 +1,61 @@
+{
+  Class theClass=instance instanceof Class ? (Class)instance : instance.getClass();
+  CachedClass superClass=theCachedClass;
+  while (superClass != null && superClass != ReflectionCache.OBJECT_CLASS) {
+    final MetaBeanProperty property=findPropertyInClassHierarchy(propertyName,superClass);
+    if (property != null) {
+      onSuperPropertyFoundInHierarchy(property);
+      if (!isGetter) {
+        property.setProperty(instance,optionalValue);
+        return null;
+      }
+ else {
+        return property.getProperty(instance);
+      }
+    }
+    superClass=superClass.getCachedSuperClass();
+  }
+  if (isGetter) {
+    final Class[] getPropertyArgs={String.class};
+    final MetaMethod method=findMethodInClassHeirarchy(instance.getClass(),ExpandoMetaClass.GET_PROPERTY_METHOD,getPropertyArgs,this);
+    if (method != null && method instanceof ClosureMetaMethod) {
+      onGetPropertyFoundInHierarchy(method);
+      return method.invoke(instance,getPropertyArgs);
+    }
+  }
+ else {
+    final Class[] setPropertyArgs={String.class,Object.class};
+    final MetaMethod method=findMethodInClassHeirarchy(instance.getClass(),ExpandoMetaClass.SET_PROPERTY_METHOD,setPropertyArgs,this);
+    if (method != null && method instanceof ClosureMetaMethod) {
+      onSetPropertyFoundInHierarchy(method);
+      return method.invoke(instance,setPropertyArgs);
+    }
+  }
+  try {
+    if (!(instance instanceof Class)) {
+      if (isGetter && propertyMissingGet != null) {
+        return propertyMissingGet.invoke(instance,new Object[]{propertyName});
+      }
+ else {
+        if (propertyMissingSet != null)         return propertyMissingSet.invoke(instance,new Object[]{propertyName,optionalValue});
+      }
+    }
+  }
+ catch (  InvokerInvocationException iie) {
+    boolean shouldHandle=isGetter && propertyMissingGet instanceof ClosureMetaMethod;
+    if (!shouldHandle)     shouldHandle=!isGetter && propertyMissingSet instanceof ClosureMetaMethod;
+    if (shouldHandle && iie.getCause() instanceof MissingPropertyException) {
+      throw (MissingPropertyException)iie.getCause();
+    }
+    throw iie;
+  }
+  if (instance instanceof Class && theClass != Class.class) {
+    final MetaProperty metaProperty=InvokerHelper.getMetaClass(Class.class).hasProperty(instance,propertyName);
+    if (metaProperty != null)     if (isGetter)     return metaProperty.getProperty(instance);
+ else {
+      metaProperty.setProperty(instance,optionalValue);
+      return null;
+    }
+  }
+  throw new MissingPropertyExceptionNoStack(propertyName,theClass);
+}

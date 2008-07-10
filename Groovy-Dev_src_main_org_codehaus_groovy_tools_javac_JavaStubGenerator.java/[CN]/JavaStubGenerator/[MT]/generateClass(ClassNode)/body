@@ -1,0 +1,82 @@
+{
+  if (requireSuperResolved && !classNode.getSuperClass().isResolved()) {
+    return;
+  }
+  String fileName=classNode.getName().replace('.','/');
+  mkdirs(outputPath,fileName);
+  toCompile.add(fileName);
+  File file=new File(outputPath,fileName + ".java");
+  FileOutputStream fos=new FileOutputStream(file);
+  PrintWriter out=new PrintWriter(fos);
+  Verifier verifier=new Verifier(){
+    public void addCovariantMethods(    ClassNode cn){
+    }
+    protected void addTimeStamp(    ClassNode node){
+    }
+    protected void addInitialization(    ClassNode node){
+    }
+    public void visitProperty(    PropertyNode node){
+    }
+  }
+;
+  verifier.visitClass(classNode);
+  try {
+    String packageName=classNode.getPackageName();
+    if (packageName != null) {
+      out.println("package " + packageName + ";\n");
+    }
+    genImports(classNode,out);
+    boolean isInterface=classNode.isInterface();
+    boolean isEnum=(classNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
+    printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
+    if (isInterface) {
+      out.print("interface ");
+    }
+ else     if (isEnum) {
+      out.print("enum ");
+    }
+ else {
+      out.print("class ");
+    }
+    out.println(classNode.getNameWithoutPackage());
+    writeGenericsBounds(out,classNode,true);
+    ClassNode superClass=classNode.getUnresolvedSuperClass(false);
+    if (!isInterface && !isEnum) {
+      out.print("  extends ");
+      printType(superClass,out);
+    }
+    ClassNode[] interfaces=classNode.getInterfaces();
+    if (interfaces != null && interfaces.length > 0) {
+      if (isInterface) {
+        out.println("  extends");
+      }
+ else {
+        out.println("  implements");
+      }
+      for (int i=0; i < interfaces.length - 1; ++i) {
+        out.print("    ");
+        printType(interfaces[i],out);
+        out.print(",");
+      }
+      out.print("    ");
+      printType(interfaces[interfaces.length - 1],out);
+    }
+    out.println(" {");
+    genFields(classNode,out,isEnum);
+    genMethods(classNode,out,isEnum);
+    genProps(classNode,out);
+    out.println("}");
+  }
+  finally {
+    try {
+      out.close();
+    }
+ catch (    Exception e) {
+    }
+    try {
+      fos.close();
+    }
+ catch (    IOException e) {
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  manager.declareBean("abc",new Integer(4),Integer.class);
+  Object answer=manager.eval("groovy","Test1.groovy",0,0,"abc + 1");
+  assertEquals("Incorrect return",new Integer(5),answer);
+  manager.undeclareBean("abc");
+  answer=manager.eval("groovy","Test1.groovy",0,0,"abc");
+  assertNull("Undeclared beans should yield null",answer);
+}

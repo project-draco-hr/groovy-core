@@ -1,0 +1,21 @@
+{
+  if (bound) {
+    if (boundToProperty) {
+      try {
+        InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{boundProperty,this});
+      }
+ catch (      MissingMethodException mme) {
+      }
+    }
+ else {
+      try {
+        InvokerHelper.invokeMethodSafe(boundBean,"removePropertyChangeListener",new Object[]{this});
+      }
+ catch (      MissingMethodException mme2) {
+      }
+    }
+    boundBean=null;
+    boundProperty=null;
+    bound=false;
+  }
+}

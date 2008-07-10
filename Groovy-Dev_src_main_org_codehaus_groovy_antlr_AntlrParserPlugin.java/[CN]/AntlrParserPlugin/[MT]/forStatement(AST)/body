@@ -1,0 +1,39 @@
+{
+  AST inNode=forNode.getFirstChild();
+  Expression collectionExpression;
+  Parameter forParameter;
+  if (isType(CLOSURE_LIST,inNode)) {
+    ClosureListExpression clist=closureListExpression(inNode);
+    int size=clist.getExpressions().size();
+    if (size != 3) {
+      throw new ASTRuntimeException(inNode,"3 expressions are required for the classic for loop, you gave " + size);
+    }
+    collectionExpression=clist;
+    forParameter=ForStatement.FOR_LOOP_DUMMY;
+  }
+ else {
+    AST variableNode=inNode.getFirstChild();
+    AST collectionNode=variableNode.getNextSibling();
+    ClassNode type=ClassHelper.OBJECT_TYPE;
+    if (isType(VARIABLE_DEF,variableNode)) {
+      AST typeNode=variableNode.getFirstChild();
+      assertNodeType(TYPE,typeNode);
+      type=type(typeNode);
+      variableNode=typeNode.getNextSibling();
+    }
+    String variable=identifier(variableNode);
+    collectionExpression=expression(collectionNode);
+    forParameter=new Parameter(type,variable);
+  }
+  final AST node=inNode.getNextSibling();
+  Statement block;
+  if (isType(SEMI,node)) {
+    block=EmptyStatement.INSTANCE;
+  }
+ else {
+    block=statement(node);
+  }
+  ForStatement forStatement=new ForStatement(forParameter,collectionExpression,block);
+  configureAST(forStatement,forNode);
+  return forStatement;
+}

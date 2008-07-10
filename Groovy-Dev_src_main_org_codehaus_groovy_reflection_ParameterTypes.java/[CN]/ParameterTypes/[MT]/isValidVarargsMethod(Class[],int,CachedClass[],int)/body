@@ -1,0 +1,16 @@
+{
+  for (int i=0; i < paramMinus1; i++) {
+    if (pt[i].isAssignableFrom(arguments[i]))     continue;
+    return false;
+  }
+  CachedClass varg=pt[paramMinus1];
+  Class clazz=varg.getTheClass().getComponentType();
+  if (size == pt.length && (varg.isAssignableFrom(arguments[paramMinus1]) || testComponentAssignable(clazz,arguments[paramMinus1]))) {
+    return true;
+  }
+  for (int i=paramMinus1; i < size; i++) {
+    if (MetaClassHelper.isAssignableFrom(clazz,arguments[i]))     continue;
+    return false;
+  }
+  return true;
+}

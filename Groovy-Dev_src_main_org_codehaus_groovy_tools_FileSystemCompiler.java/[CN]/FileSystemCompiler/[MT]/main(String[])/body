@@ -1,0 +1,101 @@
+{
+  boolean displayStackTraceOnError=false;
+  boolean jointCompilation;
+  try {
+    Options options=new Options();
+    options.addOption(OptionBuilder.withLongOpt("classpath").hasArg().withArgName("path").withDescription("Specify where to find the class files.").create());
+    options.addOption(OptionBuilder.withLongOpt("sourcepath").hasArg().withArgName("path").withDescription("Specify where to find the source files.").create());
+    options.addOption(OptionBuilder.withLongOpt("temp").hasArg().withArgName("temp").withDescription("").create());
+    options.addOption(OptionBuilder.withLongOpt("encoding").hasArg().withArgName("encoding").withDescription("Specify the encoding of the user class files.").create());
+    options.addOption(OptionBuilder.hasArg().withDescription("Specify where to place generated class files.").create('d'));
+    options.addOption(OptionBuilder.withLongOpt("help").withDescription("Print a synopsis of standard options.").create('h'));
+    options.addOption(OptionBuilder.withLongOpt("version").withDescription("Print the version.").create('v'));
+    options.addOption(OptionBuilder.withLongOpt("exception").withDescription("Print stack trace on error.").create('e'));
+    options.addOption(OptionBuilder.withLongOpt("jointCompilation").withDescription("Attach javac compiler to compile .java files.").create('j'));
+    options.addOption(OptionBuilder.withArgName("property=value").withValueSeparator().hasArgs(2).withDescription("").create("J"));
+    options.addOption(OptionBuilder.withArgName("flag").hasArg().withDescription("").create("F"));
+    PosixParser cliParser=new PosixParser();
+    CommandLine cli=cliParser.parse(options,args);
+    if (cli.hasOption('h')) {
+      displayHelp(options);
+      return;
+    }
+    if (cli.hasOption('v')) {
+      displayVersion();
+      return;
+    }
+    CompilerConfiguration configuration=new CompilerConfiguration();
+    if (cli.hasOption("classpath")) {
+      configuration.setClasspath(cli.getOptionValue("classpath"));
+    }
+    if (cli.hasOption('d')) {
+      configuration.setTargetDirectory(cli.getOptionValue('d'));
+    }
+    if (cli.hasOption("encoding")) {
+      configuration.setSourceEncoding(cli.getOptionValue("encoding"));
+    }
+    displayStackTraceOnError=cli.hasOption('e');
+    jointCompilation=cli.hasOption('j');
+    if (jointCompilation) {
+      Map compilerOptions=new HashMap();
+      String[] opts=cli.getOptionValues("J");
+      compilerOptions.put("namedValues",opts);
+      opts=cli.getOptionValues("F");
+      compilerOptions.put("flags",opts);
+      configuration.setJointCompilationOptions(compilerOptions);
+    }
+    String[] filenames=cli.getArgs();
+    List fileList=new ArrayList(filenames.length);
+    int errors=0;
+    for (int i=0; i < filenames.length; i++) {
+      if (filenames[i].startsWith("@")) {
+        try {
+          BufferedReader br=new BufferedReader(new FileReader(filenames[i].substring(1)));
+          String file;
+          while ((file=br.readLine()) != null) {
+            fileList.add(file);
+          }
+        }
+ catch (        IOException ioe) {
+          System.err.println("error: file not readable: " + filenames[i].substring(1));
+          errors++;
+        }
+      }
+ else {
+        fileList.addAll(Arrays.asList(filenames));
+      }
+    }
+    filenames=(String[])fileList.toArray(new String[fileList.size()]);
+    if (filenames.length == 0) {
+      displayHelp(options);
+      return;
+    }
+    errors+=checkFiles(filenames);
+    if (errors == 0) {
+      File tmpDir=null;
+      if (jointCompilation) {
+        tmpDir=createTempDir();
+        configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+      }
+      FileSystemCompiler compiler=new FileSystemCompiler(configuration);
+      compiler.compile(filenames);
+      if (tmpDir != null)       deleteRecursive(tmpDir);
+    }
+  }
+ catch (  Throwable e) {
+    RuntimeException re=new RuntimeException();
+    if (re.getStackTrace().length > 1) {
+      if (e instanceof RuntimeException) {
+        re=(RuntimeException)e;
+      }
+ else {
+        re.initCause(e);
+      }
+      throw re;
+    }
+ else {
+      new ErrorReporter(e,displayStackTraceOnError).write(System.err);
+      System.exit(1);
+    }
+  }
+}

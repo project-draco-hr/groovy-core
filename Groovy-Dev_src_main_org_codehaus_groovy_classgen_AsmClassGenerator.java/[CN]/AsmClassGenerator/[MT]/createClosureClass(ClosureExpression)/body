@@ -1,0 +1,71 @@
+{
+  ClassNode outerClass=getOutermostClass();
+  String name=outerClass.getName() + "$" + context.getNextClosureInnerName(outerClass,classNode,methodNode);
+  boolean staticMethodOrInStaticClass=isStaticMethod() || classNode.isStaticClass();
+  Parameter[] parameters=expression.getParameters();
+  if (parameters == null) {
+    parameters=Parameter.EMPTY_ARRAY;
+  }
+ else   if (parameters.length == 0) {
+    parameters=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE,"it",ConstantExpression.NULL)};
+  }
+  Parameter[] localVariableParams=getClosureSharedVariables(expression);
+  removeInitialValues(localVariableParams);
+  InnerClassNode answer=new InnerClassNode(outerClass,name,0,ClassHelper.CLOSURE_TYPE);
+  answer.setEnclosingMethod(this.methodNode);
+  answer.setSynthetic(true);
+  if (staticMethodOrInStaticClass) {
+    answer.setStaticClass(true);
+  }
+  if (isInScriptBody()) {
+    answer.setScriptBody(true);
+  }
+  MethodNode method=answer.addMethod("doCall",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,expression.getCode());
+  method.setSourcePosition(expression);
+  VariableScope varScope=expression.getVariableScope();
+  if (varScope == null) {
+    throw new RuntimeException("Must have a VariableScope by now! for expression: " + expression + " class: "+ name);
+  }
+ else {
+    method.setVariableScope(varScope.copy());
+  }
+  if (parameters.length > 1 || (parameters.length == 1 && parameters[0].getType() != null && parameters[0].getType() != ClassHelper.OBJECT_TYPE)) {
+    MethodNode call=answer.addMethod("call",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,new ReturnStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"doCall",new ArgumentListExpression(parameters))));
+    call.setSourcePosition(expression);
+  }
+  BlockStatement block=new BlockStatement();
+  block.setSourcePosition(expression);
+  VariableExpression outer=new VariableExpression("_outerInstance");
+  outer.setSourcePosition(expression);
+  block.getVariableScope().putReferencedLocalVariable(outer);
+  VariableExpression thisObject=new VariableExpression("_thisObject");
+  thisObject.setSourcePosition(expression);
+  block.getVariableScope().putReferencedLocalVariable(thisObject);
+  TupleExpression conArgs=new TupleExpression(outer,thisObject);
+  block.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,conArgs)));
+  for (int i=0; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    String paramName=param.getName();
+    Expression initialValue=null;
+    ClassNode type=param.getType();
+    FieldNode paramField=null;
+    if (true) {
+      initialValue=new VariableExpression(paramName);
+      ClassNode realType=type;
+      type=ClassHelper.makeReference();
+      param.setType(ClassHelper.makeReference());
+      paramField=answer.addField(paramName,ACC_PRIVATE,type,initialValue);
+      paramField.setHolder(true);
+      String methodName=Verifier.capitalize(paramName);
+      Expression fieldExp=new FieldExpression(paramField);
+      answer.addMethod("get" + methodName,ACC_PUBLIC,realType,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new ReturnStatement(fieldExp));
+    }
+  }
+  Parameter[] params=new Parameter[2 + localVariableParams.length];
+  params[0]=new Parameter(ClassHelper.OBJECT_TYPE,"_outerInstance");
+  params[1]=new Parameter(ClassHelper.OBJECT_TYPE,"_thisObject");
+  System.arraycopy(localVariableParams,0,params,2,localVariableParams.length);
+  ASTNode sn=answer.addConstructor(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,block);
+  sn.setSourcePosition(expression);
+  return answer;
+}

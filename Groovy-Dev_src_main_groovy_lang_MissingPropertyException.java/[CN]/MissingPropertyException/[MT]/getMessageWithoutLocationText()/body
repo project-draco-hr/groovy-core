@@ -1,0 +1,10 @@
+{
+  final Throwable cause=getCause();
+  if (cause == null) {
+    if (super.getMessageWithoutLocationText() != null) {
+      return super.getMessageWithoutLocationText();
+    }
+    return "No such property: " + property + " for class: "+ type.getName();
+  }
+  return "No such property: " + property + " for class: "+ type.getName()+ ". Reason: "+ cause;
+}

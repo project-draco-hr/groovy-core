@@ -1,0 +1,23 @@
+{
+  GroovySourceAST modifiers=t.childOfType(GroovyTokenTypes.MODIFIERS);
+  if (modifiers != null) {
+    AST currentModifier=modifiers.getFirstChild();
+    boolean seenNonPublicVisibilityModifier=false;
+    while (currentModifier != null) {
+      int type=currentModifier.getType();
+switch (type) {
+case GroovyTokenTypes.LITERAL_protected:
+case GroovyTokenTypes.LITERAL_private:
+        seenNonPublicVisibilityModifier=true;
+      break;
+case GroovyTokenTypes.LITERAL_static:
+    programElementDoc.setStatic(true);
+  break;
+}
+currentModifier=currentModifier.getNextSibling();
+}
+if (!seenNonPublicVisibilityModifier) {
+programElementDoc.setPublic(true);
+}
+}
+}

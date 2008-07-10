@@ -1,0 +1,19 @@
+{
+  AST node=ternaryNode.getFirstChild();
+  Expression base=expression(node);
+  node=node.getNextSibling();
+  Expression left=expression(node);
+  node=node.getNextSibling();
+  Expression ret;
+  if (node == null) {
+    ret=new ElvisOperatorExpression(base,left);
+  }
+ else {
+    Expression right=expression(node);
+    BooleanExpression booleanExpression=new BooleanExpression(base);
+    booleanExpression.setSourcePosition(base);
+    ret=new TernaryExpression(booleanExpression,left,right);
+  }
+  configureAST(ret,ternaryNode);
+  return ret;
+}

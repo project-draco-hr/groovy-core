@@ -1,0 +1,17 @@
+{
+  Document doc=self.getOwnerDocument();
+  Element newChild;
+  if (name instanceof QName) {
+    QName qn=(QName)name;
+    newChild=doc.createElementNS(qn.getNamespaceURI(),qn.getQualifiedName());
+  }
+ else {
+    newChild=doc.createElement(name.toString());
+  }
+  if (value != null) {
+    Text text=doc.createTextNode(value);
+    newChild.appendChild(text);
+  }
+  self.appendChild(newChild);
+  return newChild;
+}

@@ -1,0 +1,25 @@
+{
+  ModuleNode module=currentClass.getModule();
+  if (module == null || !(method instanceof ConstantExpression))   return null;
+  Map aliases=module.getStaticImportAliases();
+  ConstantExpression ce=(ConstantExpression)method;
+  Object value=ce.getValue();
+  if (!(value instanceof String))   return null;
+  final String name=(String)value;
+  if (aliases.containsKey(name)) {
+    ClassNode node=(ClassNode)aliases.get(name);
+    Map fields=module.getStaticImportFields();
+    String fieldName=(String)fields.get(name);
+    Expression expression=findStaticMethod(node,fieldName,args);
+    if (expression != null)     return expression;
+  }
+  Map importPackages=module.getStaticImportClasses();
+  Iterator it=importPackages.keySet().iterator();
+  while (it.hasNext()) {
+    String className=(String)it.next();
+    ClassNode starImportType=(ClassNode)importPackages.get(className);
+    Expression expression=findStaticMethod(starImportType,name,args);
+    if (expression != null)     return expression;
+  }
+  return null;
+}

@@ -1,0 +1,22 @@
+{
+  String label=statement.getLabel();
+  boolean hasNamedLabel=label != null;
+  if (!hasNamedLabel && !inLoop && !inSwitch) {
+    addError("the break statement is only allowed inside loops or switches",statement);
+  }
+ else   if (hasNamedLabel && !inLoop) {
+    addError("the break statement with named label is only allowed inside loops",statement);
+  }
+  if (label != null) {
+    boolean found=false;
+    for (Iterator iter=visitedLabels.iterator(); iter.hasNext(); ) {
+      String element=(String)iter.next();
+      if (element.equals(label)) {
+        found=true;
+        break;
+      }
+    }
+    if (!found)     breakLabels.add(statement);
+  }
+  super.visitBreakStatement(statement);
+}

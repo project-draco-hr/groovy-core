@@ -1,0 +1,26 @@
+{
+  String name="";
+  for (Expression it=pe; it != null; it=((PropertyExpression)it).getObjectExpression()) {
+    if (it instanceof VariableExpression) {
+      VariableExpression ve=(VariableExpression)it;
+      if (ve.isSuperExpression() || ve.isThisExpression()) {
+        return null;
+      }
+      name=ve.getName() + "." + name;
+      break;
+    }
+ else     if (!(it.getClass() == PropertyExpression.class)) {
+      return null;
+    }
+ else {
+      PropertyExpression current=(PropertyExpression)it;
+      String propertyPart=current.getPropertyAsString();
+      if (propertyPart == null || propertyPart.equals("class")) {
+        return null;
+      }
+      name=propertyPart + "." + name;
+    }
+  }
+  if (name.length() > 0)   return name.substring(0,name.length() - 1);
+  return null;
+}

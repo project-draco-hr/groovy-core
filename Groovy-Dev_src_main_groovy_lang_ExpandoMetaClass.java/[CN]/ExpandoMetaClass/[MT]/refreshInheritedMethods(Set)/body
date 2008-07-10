@@ -1,0 +1,22 @@
+{
+  for (Iterator i=modifiedSuperExpandos.iterator(); i.hasNext(); ) {
+    ExpandoMetaClass superExpando=(ExpandoMetaClass)i.next();
+    if (superExpando != this) {
+      List metaMethods=superExpando.getExpandoMethods();
+      for (Iterator j=metaMethods.iterator(); j.hasNext(); ) {
+        MetaMethod metaMethod=(MetaMethod)j.next();
+        if (metaMethod.isStatic()) {
+          if (superExpando.getTheClass() != getTheClass())           continue;
+          registerStaticMethod(metaMethod.getName(),(Closure)((ClosureStaticMetaMethod)metaMethod).getClosure().clone());
+        }
+ else         addSuperMethodIfNotOverriden(metaMethod);
+      }
+      Collection metaProperties=superExpando.getExpandoProperties();
+      for (Iterator j=metaProperties.iterator(); j.hasNext(); ) {
+        MetaBeanProperty property=(MetaBeanProperty)j.next();
+        expandoProperties.put(property.getName(),property);
+        addMetaBeanProperty(property);
+      }
+    }
+  }
+}

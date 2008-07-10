@@ -1,0 +1,6 @@
+{
+  if (ReflectionCache.getCachedClass(type).isPrimitive && type != void.class) {
+    String returnString="(" + getTypeDescription(type) + ")Ljava/lang/Object;";
+    mv.visitMethodInsn(INVOKESTATIC,getClassInternalName(DefaultTypeTransformation.class.getName()),"box",returnString);
+  }
+}

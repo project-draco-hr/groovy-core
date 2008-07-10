@@ -1,0 +1,11 @@
+{
+  version.incrementAndGet();
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  info.lock();
+  try {
+    info.setStrongMetaClass(theMetaClass);
+  }
+  finally {
+    info.unlock();
+  }
+}

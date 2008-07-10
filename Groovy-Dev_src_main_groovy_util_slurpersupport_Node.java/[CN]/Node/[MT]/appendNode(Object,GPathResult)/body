@@ -1,0 +1,15 @@
+{
+  if (newValue instanceof Closure) {
+    this.children.add(new ReplacementNode(){
+      public void build(      final GroovyObject builder,      final Map namespaceMap,      final Map namespaceTagHints){
+        final Closure c=(Closure)((Closure)newValue).clone();
+        c.setDelegate(builder);
+        c.call(new Object[]{result});
+      }
+    }
+);
+  }
+ else {
+    this.children.add(newValue);
+  }
+}

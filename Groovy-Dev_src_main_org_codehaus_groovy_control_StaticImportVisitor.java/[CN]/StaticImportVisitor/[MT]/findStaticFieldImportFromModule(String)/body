@@ -1,0 +1,22 @@
+{
+  ModuleNode module=currentClass.getModule();
+  if (module == null)   return null;
+  Map aliases=module.getStaticImportAliases();
+  stillResolving=false;
+  if (aliases.containsKey(name)) {
+    ClassNode node=(ClassNode)aliases.get(name);
+    Map fields=module.getStaticImportFields();
+    String fieldName=(String)fields.get(name);
+    Expression expression=findStaticField(node,fieldName);
+    if (expression != null)     return expression;
+  }
+  Map importedClasses=module.getStaticImportClasses();
+  Iterator it=importedClasses.keySet().iterator();
+  while (it.hasNext()) {
+    String className=(String)it.next();
+    ClassNode node=(ClassNode)importedClasses.get(className);
+    Expression expression=findStaticField(node,name);
+    if (expression != null)     return expression;
+  }
+  return null;
+}

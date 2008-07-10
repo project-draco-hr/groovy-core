@@ -1,0 +1,33 @@
+{
+  if (genericsType.isResolved())   return;
+  currentClass.setUsingGenerics(true);
+  ClassNode type=genericsType.getType();
+  String name=type.getName();
+  ClassNode[] bounds=genericsType.getUpperBounds();
+  if (!genericParameterNames.containsKey(name)) {
+    if (bounds != null) {
+      for (int j=0; j < bounds.length; j++) {
+        ClassNode upperBound=bounds[j];
+        resolveOrFail(upperBound,genericsType);
+        type.setRedirect(upperBound);
+        resolveGenericsTypes(upperBound.getGenericsTypes());
+      }
+    }
+ else     if (genericsType.isWildcard()) {
+      type.setRedirect(ClassHelper.OBJECT_TYPE);
+    }
+ else {
+      resolveOrFail(type,genericsType);
+    }
+  }
+ else {
+    GenericsType gt=(GenericsType)genericParameterNames.get(name);
+    type.setRedirect(gt.getType());
+    genericsType.setPlaceholder(true);
+  }
+  if (genericsType.getLowerBound() != null) {
+    resolveOrFail(genericsType.getLowerBound(),genericsType);
+  }
+  resolveGenericsTypes(type.getGenericsTypes());
+  genericsType.setResolved(true);
+}

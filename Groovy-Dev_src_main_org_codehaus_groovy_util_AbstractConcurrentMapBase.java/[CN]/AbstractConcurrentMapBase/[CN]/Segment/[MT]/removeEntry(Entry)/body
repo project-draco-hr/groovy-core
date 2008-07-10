@@ -1,0 +1,42 @@
+{
+  lock();
+  int newCount=count;
+  try {
+    Object[] tab=table;
+    int index=e.getHash() & (tab.length - 1);
+    Object o=tab[index];
+    if (o != null) {
+      if (o instanceof Entry) {
+        if (o == e) {
+          tab[index]=null;
+          newCount--;
+        }
+      }
+ else {
+        Object arr[]=(Object[])o;
+        Object res=null;
+        for (int i=0; i < arr.length; i++) {
+          Entry info=(Entry)arr[i];
+          if (info != null) {
+            if (info != e) {
+              if (info.isValid()) {
+                res=put(info,res);
+              }
+ else {
+                newCount--;
+              }
+            }
+ else {
+              newCount--;
+            }
+          }
+        }
+        tab[index]=res;
+      }
+      count=newCount;
+    }
+  }
+  finally {
+    unlock();
+  }
+}

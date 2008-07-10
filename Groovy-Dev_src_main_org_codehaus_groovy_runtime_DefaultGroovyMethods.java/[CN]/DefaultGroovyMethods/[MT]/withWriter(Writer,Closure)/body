@@ -1,0 +1,17 @@
+{
+  try {
+    Object result=closure.call(writer);
+    try {
+      writer.flush();
+    }
+ catch (    IOException e) {
+    }
+    Writer temp=writer;
+    writer=null;
+    temp.close();
+    return result;
+  }
+  finally {
+    closeWriterWithWarning(writer);
+  }
+}

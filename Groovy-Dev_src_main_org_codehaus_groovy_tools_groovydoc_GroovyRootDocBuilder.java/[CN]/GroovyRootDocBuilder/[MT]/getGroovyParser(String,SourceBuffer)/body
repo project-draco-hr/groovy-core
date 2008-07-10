@@ -1,0 +1,9 @@
+{
+  GroovyRecognizer parser=null;
+  UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(new StringReader(input),sourceBuffer);
+  GroovyLexer lexer=new GroovyLexer(unicodeReader);
+  unicodeReader.setLexer(lexer);
+  parser=GroovyRecognizer.make(lexer);
+  parser.setSourceBuffer(sourceBuffer);
+  return parser;
+}

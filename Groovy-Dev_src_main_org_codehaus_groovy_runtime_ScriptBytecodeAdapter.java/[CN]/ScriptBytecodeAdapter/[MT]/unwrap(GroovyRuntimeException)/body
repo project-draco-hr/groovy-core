@@ -1,0 +1,14 @@
+{
+  if (gre instanceof MissingPropertyExceptionNoStack) {
+    MissingPropertyExceptionNoStack noStack=(MissingPropertyExceptionNoStack)gre;
+    return new MissingPropertyException(noStack.getProperty(),noStack.getType());
+  }
+  if (gre instanceof MissingMethodExceptionNoStack) {
+    MissingMethodExceptionNoStack noStack=(MissingMethodExceptionNoStack)gre;
+    return new MissingMethodException(noStack.getMethod(),noStack.getType(),noStack.getArguments(),noStack.isStatic());
+  }
+  Throwable th=gre;
+  if (th.getCause() != null && th.getCause() != gre)   th=th.getCause();
+  if (th != gre && (th instanceof GroovyRuntimeException))   return unwrap((GroovyRuntimeException)th);
+  return th;
+}

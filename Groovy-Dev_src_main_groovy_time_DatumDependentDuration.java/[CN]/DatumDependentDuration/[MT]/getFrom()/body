@@ -1,0 +1,20 @@
+{
+  return new From(){
+    public Date getNow(){
+      final Calendar cal=Calendar.getInstance();
+      cal.add(Calendar.YEAR,DatumDependentDuration.this.getYears());
+      cal.add(Calendar.MONTH,DatumDependentDuration.this.getMonths());
+      cal.add(Calendar.DAY_OF_YEAR,DatumDependentDuration.this.getDays());
+      cal.add(Calendar.HOUR_OF_DAY,DatumDependentDuration.this.getHours());
+      cal.add(Calendar.MINUTE,DatumDependentDuration.this.getMinutes());
+      cal.add(Calendar.SECOND,DatumDependentDuration.this.getSeconds());
+      cal.add(Calendar.MILLISECOND,DatumDependentDuration.this.getMillis());
+      cal.set(Calendar.HOUR_OF_DAY,0);
+      cal.set(Calendar.MINUTE,0);
+      cal.set(Calendar.SECOND,0);
+      cal.set(Calendar.MILLISECOND,0);
+      return new java.sql.Date(cal.getTimeInMillis());
+    }
+  }
+;
+}

@@ -1,0 +1,14 @@
+{
+  for (Iterator iter=getProperties().iterator(); iter.hasNext(); ) {
+    PropertyNode pn=(PropertyNode)iter.next();
+    if (pn.getName().equals(name)) {
+      if (pn.getInitialExpression() == null && initialValueExpression != null)       pn.getField().setInitialValueExpression(initialValueExpression);
+      if (pn.getGetterBlock() == null && getterBlock != null)       pn.setGetterBlock(getterBlock);
+      if (pn.getSetterBlock() == null && setterBlock != null)       pn.setSetterBlock(setterBlock);
+      return pn;
+    }
+  }
+  PropertyNode node=new PropertyNode(name,modifiers,type,redirect(),initialValueExpression,getterBlock,setterBlock);
+  addProperty(node);
+  return node;
+}

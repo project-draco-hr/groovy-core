@@ -1,0 +1,17 @@
+{
+  if (writingString) {
+    templateExpressions.append("\"\"\"; ");
+  }
+  templateExpressions.append((char)pendingC);
+  while (true) {
+    int c=reader.read();
+    if (c == -1)     break;
+    if (c == '%') {
+      c=reader.read();
+      if (c == '>')       break;
+      templateExpressions.append('%');
+    }
+    templateExpressions.append((char)c);
+  }
+  templateExpressions.append(";\n ");
+}

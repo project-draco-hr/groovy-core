@@ -1,0 +1,10 @@
+{
+  final Iterator iter=iterator();
+  while (iter.hasNext()) {
+    final Object node=iter.next();
+    if (DefaultTypeTransformation.castToBoolean(closure.call(new Object[]{node}))) {
+      return (GPathResult)node;
+    }
+  }
+  return new NoChildren(this,this.name,namespaceTagHints);
+}

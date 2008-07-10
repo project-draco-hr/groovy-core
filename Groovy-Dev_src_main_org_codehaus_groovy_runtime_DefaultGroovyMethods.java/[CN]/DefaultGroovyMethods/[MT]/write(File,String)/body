@@ -1,0 +1,14 @@
+{
+  BufferedWriter writer=null;
+  try {
+    writer=newWriter(file);
+    writer.write(text);
+    writer.flush();
+    Writer temp=writer;
+    writer=null;
+    temp.close();
+  }
+  finally {
+    closeWriterWithWarning(writer);
+  }
+}

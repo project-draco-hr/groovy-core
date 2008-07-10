@@ -1,0 +1,14 @@
+{
+  BufferedWriter writer=null;
+  try {
+    writer=newWriter(file,true);
+    InvokerHelper.write(writer,text);
+    writer.flush();
+    Writer temp=writer;
+    writer=null;
+    temp.close();
+  }
+  finally {
+    closeWriterWithWarning(writer);
+  }
+}

@@ -1,0 +1,10 @@
+{
+  CompileUnit compileUnit=currentClass.getCompileUnit();
+  if (compileUnit == null)   return false;
+  ClassNode cuClass=compileUnit.getClass(type.getName());
+  if (cuClass != null) {
+    if (type != cuClass)     type.setRedirect(cuClass);
+    return true;
+  }
+  return false;
+}

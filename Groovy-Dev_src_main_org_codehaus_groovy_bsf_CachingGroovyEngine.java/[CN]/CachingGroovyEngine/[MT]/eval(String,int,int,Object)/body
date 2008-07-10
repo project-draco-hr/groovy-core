@@ -1,0 +1,17 @@
+{
+  try {
+    Class scriptClass=(Class)evalScripts.get(script);
+    if (scriptClass == null) {
+      scriptClass=loader.parseClass(new ByteArrayInputStream(script.toString().getBytes()),source);
+      evalScripts.put(script,scriptClass);
+    }
+ else {
+      LOG.fine("eval() - Using cached script...");
+    }
+    Script s=InvokerHelper.createScript(scriptClass,context);
+    return s.run();
+  }
+ catch (  Exception e) {
+    throw new BSFException(BSFException.REASON_EXECUTION_ERROR,"exception from Groovy: " + e,e);
+  }
+}

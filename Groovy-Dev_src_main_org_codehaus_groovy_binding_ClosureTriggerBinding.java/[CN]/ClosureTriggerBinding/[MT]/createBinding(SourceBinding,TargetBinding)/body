@@ -1,0 +1,67 @@
+{
+  if (source != this) {
+    throw new RuntimeException("Source binding must the Trigger Binding as well");
+  }
+  final BindPathSnooper delegate=new BindPathSnooper();
+  try {
+    final Class closureClass=closure.getClass();
+    Closure closureLocalCopy=java.security.AccessController.doPrivileged(new PrivilegedAction<Closure>(){
+      public Closure run(){
+        Constructor constructor=closureClass.getConstructors()[0];
+        int paramCount=constructor.getParameterTypes().length;
+        Object[] args=new Object[paramCount];
+        args[0]=delegate;
+        for (int i=1; i < paramCount; i++) {
+          args[i]=new Reference(new BindPathSnooper());
+        }
+        try {
+          boolean acc=constructor.isAccessible();
+          constructor.setAccessible(true);
+          Closure localCopy=(Closure)constructor.newInstance(args);
+          if (!acc) {
+            constructor.setAccessible(false);
+          }
+          localCopy.setResolveStrategy(Closure.DELEGATE_ONLY);
+          for (          Field f : closureClass.getDeclaredFields()) {
+            acc=f.isAccessible();
+            f.setAccessible(true);
+            if (f.getType() == Reference.class) {
+              delegate.fields.put(f.getName(),(BindPathSnooper)((Reference)f.get(localCopy)).get());
+            }
+            if (!acc) {
+              f.setAccessible(false);
+            }
+          }
+          return localCopy;
+        }
+ catch (        Exception e) {
+          throw new RuntimeException("Error snooping closure",e);
+        }
+      }
+    }
+);
+    try {
+      closureLocalCopy.call();
+    }
+ catch (    DeadEndException e) {
+      throw e;
+    }
+catch (    Exception e) {
+    }
+  }
+ catch (  Exception e) {
+    e.printStackTrace(System.out);
+    throw new RuntimeException("A closure expression binding could not be created because of " + e.getClass().getName() + ":\n\t"+ e.getMessage());
+  }
+  List<BindPath> rootPaths=new ArrayList<BindPath>();
+  for (  Map.Entry<String,BindPathSnooper> entry : delegate.fields.entrySet()) {
+    BindPath bp=createBindPath(entry.getKey(),entry.getValue());
+    bp.currentObject=closure;
+    rootPaths.add(bp);
+  }
+  PropertyPathFullBinding fb=new PropertyPathFullBinding();
+  fb.setSourceBinding(new ClosureSourceBinding(closure));
+  fb.setTargetBinding(target);
+  fb.bindPaths=rootPaths.toArray(new BindPath[rootPaths.size()]);
+  return fb;
+}

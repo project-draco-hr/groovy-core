@@ -1,0 +1,12 @@
+{
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  MetaClass answer=info.getMetaClassForClass();
+  if (answer != null)   return answer;
+  info.lock();
+  try {
+    return getMetaClassUnderLock(theClass,info);
+  }
+  finally {
+    info.unlock();
+  }
+}

@@ -1,0 +1,56 @@
+{
+  if (methodOrList instanceof MetaMethod) {
+    if (((ParameterTypes)methodOrList).isValidMethod(arguments)) {
+      return methodOrList;
+    }
+    return null;
+  }
+  FastArray methods=(FastArray)methodOrList;
+  int methodCount=methods.size();
+  if (methodCount <= 0) {
+    return null;
+  }
+ else   if (methodCount == 1) {
+    Object method=methods.get(0);
+    if (((ParameterTypes)method).isValidMethod(arguments)) {
+      return method;
+    }
+    return null;
+  }
+  Object answer;
+  if (arguments == null || arguments.length == 0) {
+    answer=MetaClassHelper.chooseEmptyMethodParams(methods);
+  }
+ else   if (arguments.length == 1 && arguments[0] == null) {
+    answer=MetaClassHelper.chooseMostGeneralMethodWith1NullParam(methods);
+  }
+ else {
+    Object matchingMethods=null;
+    final int len=methods.size;
+    Object data[]=methods.getArray();
+    for (int i=0; i != len; ++i) {
+      Object method=data[i];
+      if (((ParameterTypes)method).isValidMethod(arguments)) {
+        if (matchingMethods == null)         matchingMethods=method;
+ else         if (matchingMethods instanceof ArrayList)         ((ArrayList)matchingMethods).add(method);
+ else {
+          ArrayList arr=new ArrayList(4);
+          arr.add(matchingMethods);
+          arr.add(method);
+          matchingMethods=arr;
+        }
+      }
+    }
+    if (matchingMethods == null) {
+      return null;
+    }
+ else     if (!(matchingMethods instanceof ArrayList)) {
+      return matchingMethods;
+    }
+    return chooseMostSpecificParams(methodName,(List)matchingMethods,arguments);
+  }
+  if (answer != null) {
+    return answer;
+  }
+  throw new MethodSelectionException(methodName,methods,arguments);
+}

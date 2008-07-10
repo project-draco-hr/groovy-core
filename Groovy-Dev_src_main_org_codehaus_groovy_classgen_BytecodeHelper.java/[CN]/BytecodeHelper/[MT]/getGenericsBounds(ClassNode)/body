@@ -1,0 +1,13 @@
+{
+  GenericsType[] genericsTypes=type.getGenericsTypes();
+  if (genericsTypes == null)   return null;
+  StringBuffer ret=new StringBuffer(100);
+  if (type.isGenericsPlaceHolder()) {
+    addSubTypes(ret,type.getGenericsTypes(),"","");
+  }
+ else {
+    GenericsType gt=new GenericsType(type);
+    writeGenericsBounds(ret,gt,false);
+  }
+  return ret.toString();
+}

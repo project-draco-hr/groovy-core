@@ -1,0 +1,17 @@
+{
+  try {
+    Class scriptClass=(Class)execScripts.get(script);
+    if (scriptClass == null) {
+      scriptClass=loader.parseClass(new ByteArrayInputStream(script.toString().getBytes()),source);
+      execScripts.put(script,scriptClass);
+    }
+ else {
+      LOG.fine("exec() - Using cached version of class...");
+    }
+    InvokerHelper.invokeMethod(scriptClass,"main",EMPTY_ARGS);
+  }
+ catch (  Exception e) {
+    LOG.log(Level.WARNING,"BSF trace",e);
+    throw new BSFException(BSFException.REASON_EXECUTION_ERROR,"exception from Groovy: " + e,e);
+  }
+}

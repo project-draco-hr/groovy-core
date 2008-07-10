@@ -1,0 +1,18 @@
+{
+  List methods=new ArrayList(node.getMethods());
+  addDefaultParameters(methods,new DefaultArgsAction(){
+    public void call(    ArgumentListExpression arguments,    Parameter[] newParams,    MethodNode method){
+      MethodCallExpression expression=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,method.getName(),arguments);
+      expression.setImplicitThis(true);
+      Statement code=null;
+      if (method.isVoidMethod()) {
+        code=new ExpressionStatement(expression);
+      }
+ else {
+        code=new ReturnStatement(expression);
+      }
+      node.addMethod(method.getName(),method.getModifiers(),method.getReturnType(),newParams,method.getExceptions(),code);
+    }
+  }
+);
+}

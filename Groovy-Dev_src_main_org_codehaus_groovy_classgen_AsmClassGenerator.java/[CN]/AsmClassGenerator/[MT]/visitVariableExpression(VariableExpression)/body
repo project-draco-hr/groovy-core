@@ -1,0 +1,31 @@
+{
+  String variableName=expression.getName();
+  ClassNode classNode=this.classNode;
+  if (isInClosure())   classNode=getOutermostClass();
+  if (variableName.equals("this")) {
+    if (isStaticMethod() || (!implicitThis && isStaticContext())) {
+      visitClassExpression(new ClassExpression(classNode));
+    }
+ else {
+      loadThis();
+    }
+    return;
+  }
+  if (variableName.equals("super")) {
+    if (isStaticMethod()) {
+      visitClassExpression(new ClassExpression(classNode.getSuperClass()));
+    }
+ else {
+      loadThis();
+    }
+    return;
+  }
+  Variable variable=compileStack.getVariable(variableName,false);
+  VariableScope scope=compileStack.getScope();
+  if (variable == null) {
+    processClassVariable(variableName);
+  }
+ else {
+    processStackVariable(variable);
+  }
+}

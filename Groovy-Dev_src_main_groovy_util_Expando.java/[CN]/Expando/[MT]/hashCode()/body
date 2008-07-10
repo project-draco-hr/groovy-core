@@ -1,0 +1,12 @@
+{
+  Object method=getProperties().get("hashCode");
+  if (method != null && method instanceof Closure) {
+    Closure closure=(Closure)method;
+    closure.setDelegate(this);
+    Integer ret=(Integer)closure.call();
+    return ret.intValue();
+  }
+ else {
+    return super.hashCode();
+  }
+}

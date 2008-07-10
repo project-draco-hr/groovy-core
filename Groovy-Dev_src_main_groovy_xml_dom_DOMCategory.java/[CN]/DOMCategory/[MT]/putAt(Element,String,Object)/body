@@ -1,0 +1,11 @@
+{
+  if (property.startsWith("@")) {
+    String attributeName=property.substring(1);
+    Document doc=self.getOwnerDocument();
+    Attr newAttr=doc.createAttribute(attributeName);
+    newAttr.setValue(value.toString());
+    self.setAttributeNode(newAttr);
+    return;
+  }
+  InvokerHelper.setProperty(self,property,value);
+}

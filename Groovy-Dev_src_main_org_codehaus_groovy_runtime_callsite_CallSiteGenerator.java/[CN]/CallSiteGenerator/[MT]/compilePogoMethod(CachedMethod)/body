@@ -1,0 +1,8 @@
+{
+  ClassWriter cw=new ClassWriter(true);
+  final CachedClass declClass=cachedMethod.getDeclaringClass();
+  final CallSiteClassLoader callSiteLoader=declClass.getCallSiteLoader();
+  final String name=callSiteLoader.createClassName(cachedMethod.setAccessible());
+  final byte[] bytes=genPogoMetaMethodSite(cachedMethod,cw,name);
+  return callSiteLoader.defineClassAndGetConstructor(name,bytes);
+}

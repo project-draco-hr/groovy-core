@@ -1,0 +1,33 @@
+{
+  performOperationOnMetaClass(new Callable(){
+    public void call(){
+      String methodName;
+      if (name.equals(METHOD_MISSING))       methodName=STATIC_METHOD_MISSING;
+ else       if (name.equals(PROPERTY_MISSING))       methodName=STATIC_PROPERTY_MISSING;
+ else       methodName=name;
+      ClosureStaticMetaMethod metaMethod=new ClosureStaticMetaMethod(methodName,theClass,callable);
+      if (methodName.equals(INVOKE_METHOD_METHOD) && callable.getParameterTypes().length == 2) {
+        invokeStaticMethodMethod=metaMethod;
+      }
+ else {
+        if (methodName.equals(METHOD_MISSING)) {
+          methodName=STATIC_METHOD_MISSING;
+        }
+        MethodKey key=new DefaultCachedMethodKey(theClass,methodName,metaMethod.getParameterTypes(),false);
+        addMetaMethod(metaMethod);
+        dropStaticMethodCache(methodName);
+        if (isGetter(methodName,metaMethod.getParameterTypes())) {
+          String propertyName=getPropertyForGetter(methodName);
+          registerBeanPropertyForMethod(metaMethod,propertyName,true,true);
+        }
+ else         if (isSetter(methodName,metaMethod.getParameterTypes())) {
+          String propertyName=getPropertyForSetter(methodName);
+          registerBeanPropertyForMethod(metaMethod,propertyName,false,true);
+        }
+        performRegistryCallbacks();
+        expandoMethods.put(key,metaMethod);
+      }
+    }
+  }
+);
+}

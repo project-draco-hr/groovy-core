@@ -1,0 +1,41 @@
+{
+  try {
+    String line=null;
+    script.setProperty("out",writer);
+    script.setProperty("socket",socket);
+    script.setProperty("init",Boolean.TRUE);
+    while ((line=reader.readLine()) != null) {
+      script.setProperty("line",line);
+      Object o=script.run();
+      script.setProperty("init",Boolean.FALSE);
+      if (o != null) {
+        if ("success".equals(o)) {
+          break;
+        }
+ else {
+          if (autoOutputFlag) {
+            writer.println(o);
+          }
+        }
+      }
+      writer.flush();
+    }
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+  }
+ finally {
+    try {
+      writer.flush();
+      writer.close();
+    }
+  finally {
+      try {
+        socket.close();
+      }
+ catch (      IOException e3) {
+        e3.printStackTrace();
+      }
+    }
+  }
+}

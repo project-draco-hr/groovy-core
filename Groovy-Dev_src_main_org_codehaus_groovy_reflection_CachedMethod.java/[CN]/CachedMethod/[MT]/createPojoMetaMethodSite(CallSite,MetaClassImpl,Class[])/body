@@ -1,0 +1,20 @@
+{
+  if (!hasPojoCallSiteConstructor()) {
+    Constructor constr=null;
+    if (CallSiteGenerator.isCompilable(this)) {
+      constr=CallSiteGenerator.compilePojoMethod(this);
+      if (constr != null)       pojoCallSiteConstructor=new SoftReference<Constructor>(constr);
+    }
+  }
+  if (hasPogoCallSiteConstructor()) {
+    final Constructor constructor=pojoCallSiteConstructor.get();
+    if (constructor != null) {
+      try {
+        return (CallSite)constructor.newInstance(site,metaClass,this,params);
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+  return new PojoMetaMethodSite.PojoCachedMethodSiteNoUnwrapNoCoerce(site,metaClass,this,params);
+}

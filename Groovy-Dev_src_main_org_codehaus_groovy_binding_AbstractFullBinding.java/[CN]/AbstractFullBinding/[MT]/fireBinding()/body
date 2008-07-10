@@ -1,0 +1,16 @@
+{
+  if ((sourceBinding == null) || (targetBinding == null)) {
+    return;
+  }
+  Object result=sourceBinding.getSourceValue();
+  if (getValidator() != null) {
+    Object validation=getValidator().call();
+    if ((validation == null) || ((validation instanceof Boolean) && !((Boolean)validation).booleanValue())) {
+      return;
+    }
+  }
+  if (getConverter() != null) {
+    result=getConverter().call(result);
+  }
+  targetBinding.updateTargetValue(result);
+}

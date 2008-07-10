@@ -1,0 +1,17 @@
+{
+  try {
+    FactorySupport.createFactory(new PrivilegedExceptionAction(){
+      public Object run() throws Exception {
+        throw PRIVILEGED_ACTION_EXCEPTION;
+      }
+    }
+);
+    fail("Exception was not caught");
+  }
+ catch (  RuntimeException re) {
+    assertSame(PRIVILEGED_ACTION_EXCEPTION,re.getCause());
+  }
+catch (  Throwable t) {
+    fail("Exception was not wrapped as runtime");
+  }
+}

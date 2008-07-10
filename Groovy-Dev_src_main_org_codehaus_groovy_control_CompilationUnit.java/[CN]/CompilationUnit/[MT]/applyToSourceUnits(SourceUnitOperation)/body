@@ -1,0 +1,25 @@
+{
+  Iterator keys=names.iterator();
+  while (keys.hasNext()) {
+    String name=(String)keys.next();
+    SourceUnit source=(SourceUnit)sources.get(name);
+    if ((source.phase < phase) || (source.phase == phase && !source.phaseComplete)) {
+      try {
+        body.call(source);
+      }
+ catch (      CompilationFailedException e) {
+        throw e;
+      }
+catch (      Exception e) {
+        GroovyBugError gbe=new GroovyBugError(e);
+        changeBugText(gbe,source);
+        throw gbe;
+      }
+catch (      GroovyBugError e) {
+        changeBugText(e,source);
+        throw e;
+      }
+    }
+  }
+  getErrorCollector().failIfErrors();
+}

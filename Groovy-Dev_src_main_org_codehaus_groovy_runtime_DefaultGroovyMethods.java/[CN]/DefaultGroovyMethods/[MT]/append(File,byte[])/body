@@ -1,0 +1,14 @@
+{
+  BufferedOutputStream stream=null;
+  try {
+    stream=newOutputStream(file);
+    stream.write(bytes,0,bytes.length);
+    stream.flush();
+    OutputStream temp=stream;
+    stream=null;
+    temp.close();
+  }
+  finally {
+    closeOutputStreamWithWarning(stream);
+  }
+}

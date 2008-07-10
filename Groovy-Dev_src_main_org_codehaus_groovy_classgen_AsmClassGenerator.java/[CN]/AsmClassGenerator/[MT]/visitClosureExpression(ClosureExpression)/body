@@ -1,0 +1,42 @@
+{
+  ClassNode innerClass=createClosureClass(expression);
+  addInnerClass(innerClass);
+  innerClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
+  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
+  passingClosureParams=true;
+  List constructors=innerClass.getDeclaredConstructors();
+  ConstructorNode node=(ConstructorNode)constructors.get(0);
+  Parameter[] localVariableParams=node.getParameters();
+  mv.visitTypeInsn(NEW,innerClassinternalName);
+  mv.visitInsn(DUP);
+  if (isStaticMethod() && !classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
+    visitClassExpression(new ClassExpression(classNode));
+    visitClassExpression(new ClassExpression(getOutermostClass()));
+  }
+ else {
+    mv.visitVarInsn(ALOAD,0);
+    loadThis();
+  }
+  for (int i=2; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    String name=param.getName();
+    if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {
+      visitFieldExpression(new FieldExpression(classNode.getField(name)));
+    }
+ else {
+      Variable v=compileStack.getVariable(name,classNode.getSuperClass() != ClassHelper.CLOSURE_TYPE);
+      if (v == null) {
+        FieldNode field=classNode.getField(name);
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
+        param.setClosureSharedVariable(false);
+        v=compileStack.defineVariable(param,true);
+        param.setClosureSharedVariable(true);
+        v.setHolder(true);
+      }
+      mv.visitVarInsn(ALOAD,v.getIndex());
+    }
+  }
+  passingClosureParams=false;
+  mv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
+}

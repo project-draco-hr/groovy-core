@@ -1,0 +1,37 @@
+{
+  if ("delegate".equals(property)) {
+    return getDelegate();
+  }
+ else   if ("owner".equals(property)) {
+    return getOwner();
+  }
+ else   if ("maximumNumberOfParameters".equals(property)) {
+    return Integer.valueOf(getMaximumNumberOfParameters());
+  }
+ else   if ("parameterTypes".equals(property)) {
+    return getParameterTypes();
+  }
+ else   if ("metaClass".equals(property)) {
+    return getMetaClass();
+  }
+ else   if ("class".equals(property)) {
+    return getClass();
+  }
+ else   if ("directive".equals(property)) {
+    return Integer.valueOf(getDirective());
+  }
+ else {
+switch (resolveStrategy) {
+case DELEGATE_FIRST:
+      return getPropertyDelegateFirst(property);
+case DELEGATE_ONLY:
+    return InvokerHelper.getProperty(this.delegate,property);
+case OWNER_ONLY:
+  return InvokerHelper.getProperty(this.owner,property);
+case TO_SELF:
+return super.getProperty(property);
+default :
+return getPropertyOwnerFirst(property);
+}
+}
+}

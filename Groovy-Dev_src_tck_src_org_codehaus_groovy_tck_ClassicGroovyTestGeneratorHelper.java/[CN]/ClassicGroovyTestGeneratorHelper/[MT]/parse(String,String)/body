@@ -1,0 +1,16 @@
+{
+  System.out.println("-------------------------------");
+  System.out.println("  " + testName);
+  System.out.println("-------------------------------");
+  try {
+    Reader reader=new BufferedReader(new StringReader(theSrcText));
+    GroovyRecognizer recognizer=GroovyRecognizer.make(reader);
+    recognizer.compilationUnit();
+    System.out.println(decorateWithLineNumbers(theSrcText));
+  }
+ catch (  RecognitionException parseException) {
+    System.out.println(decorateWithLineNumbersAndErrorMessage(theSrcText,parseException));
+    throw parseException;
+  }
+  System.out.println("-------------------------------");
+}

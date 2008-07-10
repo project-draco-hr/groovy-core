@@ -1,0 +1,11 @@
+{
+  if (object instanceof Class) {
+    return metaRegistry.getMetaClass((Class)object).getAttribute(object,attribute);
+  }
+ else   if (object instanceof GroovyObject) {
+    return ((GroovyObject)object).getMetaClass().getAttribute(object,attribute);
+  }
+ else {
+    return metaRegistry.getMetaClass(object.getClass()).getAttribute(object,attribute);
+  }
+}

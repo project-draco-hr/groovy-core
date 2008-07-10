@@ -1,0 +1,15 @@
+{
+  if (nameValue == null)   throw new IllegalArgumentException("argument should not be null");
+  String name, value;
+  int i=nameValue.indexOf("=");
+  if (i == -1) {
+    name=nameValue;
+    value=Boolean.TRUE.toString();
+  }
+ else {
+    name=nameValue.substring(0,i);
+    value=nameValue.substring(i + 1,nameValue.length());
+  }
+  name=name.trim();
+  System.setProperty(name,value);
+}

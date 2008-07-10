@@ -1,0 +1,22 @@
+{
+  try {
+    Options options=new Options();
+    PosixParser cliParser=new PosixParser();
+    CommandLine cli=cliParser.parse(options,args);
+    String[] filenames=cli.getArgs();
+    if (filenames.length == 0) {
+      System.err.println("Needs at least one filename");
+    }
+    List filenameList=Arrays.asList(filenames);
+    Iterator i=filenameList.iterator();
+    while (i.hasNext()) {
+      String filename=(String)i.next();
+      File f=new File(filename);
+      String text=DefaultGroovyMethods.getText(f);
+      System.out.println(convert(filename,text,true,true));
+    }
+  }
+ catch (  Throwable t) {
+    t.printStackTrace();
+  }
+}

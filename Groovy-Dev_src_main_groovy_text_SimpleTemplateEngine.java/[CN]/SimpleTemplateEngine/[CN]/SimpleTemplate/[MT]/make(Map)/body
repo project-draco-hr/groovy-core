@@ -1,0 +1,29 @@
+{
+  return new Writable(){
+    /** 
+ * Write the template document with the set binding applied to the writer.
+ * @see groovy.lang.Writable#writeTo(java.io.Writer)
+ */
+    public Writer writeTo(    Writer writer){
+      Binding binding;
+      if (map == null)       binding=new Binding();
+ else       binding=new Binding(map);
+      Script scriptObject=InvokerHelper.createScript(script.getClass(),binding);
+      PrintWriter pw=new PrintWriter(writer);
+      scriptObject.setProperty("out",pw);
+      scriptObject.run();
+      pw.flush();
+      return writer;
+    }
+    /** 
+ * Convert the template and binding into a result String.
+ * @see java.lang.Object#toString()
+ */
+    public String toString(){
+      StringWriter sw=new StringWriter();
+      writeTo(sw);
+      return sw.toString();
+    }
+  }
+;
+}

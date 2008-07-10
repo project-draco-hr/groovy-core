@@ -1,0 +1,10 @@
+{
+  ClassNode componentType=type;
+  String prefix="";
+  for (; componentType.isArray(); componentType=componentType.getComponentType()) {
+    prefix+="$";
+  }
+  if (prefix.length() != 0)   prefix="array" + prefix;
+  String name=prefix + "$class$" + makeFieldClassName(componentType);
+  return name;
+}

@@ -1,0 +1,73 @@
+{
+  onLineNumber(statement,"visitTryCatchFinally");
+  visitStatement(statement);
+  CatchStatement catchStatement=statement.getCatchStatement(0);
+  Statement tryStatement=statement.getTryStatement();
+  final Statement finallyStatement=statement.getFinallyStatement();
+  int anyExceptionIndex=compileStack.defineTemporaryVariable("exception",false);
+  if (!finallyStatement.isEmpty()) {
+    compileStack.pushFinallyBlock(new Runnable(){
+      public void run(){
+        compileStack.pushFinallyBlockVisit(this);
+        finallyStatement.visit(AsmClassGenerator.this);
+        compileStack.popFinallyBlockVisit(this);
+      }
+    }
+);
+  }
+  final Label tryStart=new Label();
+  mv.visitLabel(tryStart);
+  tryStatement.visit(this);
+  final Label finallyStart=new Label();
+  mv.visitJumpInsn(GOTO,finallyStart);
+  final Label greEnd=new Label();
+  mv.visitLabel(greEnd);
+  final Label catchStartGre=new Label();
+  mv.visitLabel(catchStartGre);
+  mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;");
+  mv.visitInsn(ATHROW);
+  exceptionBlocks.add(new Runnable(){
+    public void run(){
+      mv.visitTryCatchBlock(tryStart,greEnd,catchStartGre,GRE);
+    }
+  }
+);
+  final Label tryEnd=new Label();
+  mv.visitLabel(tryEnd);
+  for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
+    catchStatement=(CatchStatement)it.next();
+    ClassNode exceptionType=catchStatement.getExceptionType();
+    final Label catchStart=new Label();
+    mv.visitLabel(catchStart);
+    compileStack.defineVariable(catchStatement.getVariable(),true);
+    catchStatement.visit(this);
+    mv.visitJumpInsn(GOTO,finallyStart);
+    final String exceptionTypeInternalName=BytecodeHelper.getClassInternalName(exceptionType);
+    exceptionBlocks.add(new Runnable(){
+      public void run(){
+        mv.visitTryCatchBlock(tryStart,tryEnd,catchStart,exceptionTypeInternalName);
+      }
+    }
+);
+  }
+  final Label endOfAllCatches=new Label();
+  mv.visitLabel(endOfAllCatches);
+  if (!finallyStatement.isEmpty())   compileStack.popFinallyBlock();
+  mv.visitLabel(finallyStart);
+  finallyStatement.visit(this);
+  Label afterFinally=new Label();
+  mv.visitJumpInsn(GOTO,afterFinally);
+  final Label catchAny=new Label();
+  mv.visitLabel(catchAny);
+  mv.visitVarInsn(ASTORE,anyExceptionIndex);
+  finallyStatement.visit(this);
+  mv.visitVarInsn(ALOAD,anyExceptionIndex);
+  mv.visitInsn(ATHROW);
+  mv.visitLabel(afterFinally);
+  exceptionBlocks.add(new Runnable(){
+    public void run(){
+      mv.visitTryCatchBlock(tryStart,endOfAllCatches,catchAny,null);
+    }
+  }
+);
+}

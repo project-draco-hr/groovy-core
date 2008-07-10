@@ -1,0 +1,14 @@
+{
+  List list=new ArrayList();
+  AST child=this.getFirstChild();
+  while (child != null) {
+    list.add(child);
+    child=child.getNextSibling();
+  }
+  try {
+    return (GroovySourceAST)list.get(position);
+  }
+ catch (  IndexOutOfBoundsException e) {
+    return null;
+  }
+}

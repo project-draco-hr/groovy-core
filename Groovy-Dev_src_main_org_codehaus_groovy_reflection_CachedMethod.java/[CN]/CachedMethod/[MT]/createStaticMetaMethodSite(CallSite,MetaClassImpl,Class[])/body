@@ -1,0 +1,20 @@
+{
+  if (!hasStaticCallSiteConstructor()) {
+    Constructor constr=null;
+    if (CallSiteGenerator.isCompilable(this)) {
+      constr=CallSiteGenerator.compileStaticMethod(this);
+      if (constr != null)       staticCallSiteConstructor=new SoftReference<Constructor>(constr);
+    }
+  }
+  if (hasStaticCallSiteConstructor()) {
+    final Constructor constructor=staticCallSiteConstructor.get();
+    if (constructor != null) {
+      try {
+        return (CallSite)constructor.newInstance(site,metaClass,this,params);
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+  return new StaticMetaMethodSite.StaticMetaMethodSiteNoUnwrapNoCoerce(site,metaClass,this,params);
+}

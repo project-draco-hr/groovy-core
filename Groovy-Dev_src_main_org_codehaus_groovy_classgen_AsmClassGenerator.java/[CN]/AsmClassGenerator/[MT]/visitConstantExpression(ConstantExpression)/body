@@ -1,0 +1,10 @@
+{
+  final String constantName=expression.getConstantName();
+  if ((methodNode != null && methodNode.getName().equals("<clinit>")) || constantName == null) {
+    Object value=expression.getValue();
+    helper.loadConstant(value);
+  }
+ else {
+    mv.visitFieldInsn(GETSTATIC,internalClassName,constantName,BytecodeHelper.getTypeDescription(expression.getType()));
+  }
+}

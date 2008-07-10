@@ -1,0 +1,43 @@
+{
+  Expression objectExpression=expression.getObjectExpression();
+  if (isThisOrSuper(objectExpression)) {
+    String name=expression.getPropertyAsString();
+    if (name != null) {
+      FieldNode field=null;
+      if (isSuperExpression(objectExpression)) {
+        field=classNode.getSuperClass().getField(name);
+      }
+ else {
+        field=classNode.getField(name);
+      }
+      if (field != null) {
+        visitFieldExpression(new FieldExpression(field));
+        return;
+      }
+    }
+    if (isSuperExpression(objectExpression)) {
+      String prefix;
+      if (leftHandExpression) {
+        prefix="set";
+      }
+ else {
+        prefix="get";
+      }
+      String propName=prefix + MetaClassHelper.capitalize(name);
+      visitMethodCallExpression(new MethodCallExpression(objectExpression,propName,MethodCallExpression.NO_ARGUMENTS));
+      return;
+    }
+  }
+  final String methodName=expression.getPropertyAsString();
+  if (adapter == getProperty && !expression.isSpreadSafe() && methodName != null) {
+    makeGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+  }
+ else {
+    if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && methodName != null) {
+      makeGroovyObjectGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+    }
+ else {
+      makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
+    }
+  }
+}

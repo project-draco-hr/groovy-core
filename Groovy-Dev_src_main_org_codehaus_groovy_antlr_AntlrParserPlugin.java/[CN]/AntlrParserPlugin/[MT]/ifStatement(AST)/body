@@ -1,0 +1,15 @@
+{
+  AST node=ifNode.getFirstChild();
+  assertNodeType(EXPR,node);
+  BooleanExpression booleanExpression=booleanExpression(node);
+  node=node.getNextSibling();
+  Statement ifBlock=statement(node);
+  Statement elseBlock=EmptyStatement.INSTANCE;
+  node=node.getNextSibling();
+  if (node != null) {
+    elseBlock=statement(node);
+  }
+  IfStatement ifStatement=new IfStatement(booleanExpression,ifBlock,elseBlock);
+  configureAST(ifStatement,ifNode);
+  return ifStatement;
+}

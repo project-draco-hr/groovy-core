@@ -1,0 +1,17 @@
+{
+  boolean failed=false;
+  String result=null;
+  try {
+    code.call();
+  }
+ catch (  GroovyRuntimeException gre) {
+    failed=true;
+    result=ScriptBytecodeAdapter.unwrap(gre).getMessage();
+  }
+catch (  Throwable e) {
+    failed=true;
+    result=e.getMessage();
+  }
+  assertTrue("Closure " + code + " should have failed",failed);
+  return result;
+}

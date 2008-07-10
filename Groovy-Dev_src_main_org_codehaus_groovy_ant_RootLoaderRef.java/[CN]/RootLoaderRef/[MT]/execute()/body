@@ -1,0 +1,8 @@
+{
+  if (taskClasspath == null || taskClasspath.size() == 0) {
+    throw new BuildException("no classpath given");
+  }
+  Project project=getProject();
+  AntClassLoader loader=new AntClassLoader(makeRoot(),true);
+  project.addReference(name,loader);
+}

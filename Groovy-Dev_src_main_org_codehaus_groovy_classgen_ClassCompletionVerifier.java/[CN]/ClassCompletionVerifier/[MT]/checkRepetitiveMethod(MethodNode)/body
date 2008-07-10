@@ -1,0 +1,13 @@
+{
+  if (isConstructor(node))   return;
+  List methods=currentClass.getMethods(node.getName());
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode element=(MethodNode)iter.next();
+    if (element == node)     continue;
+    if (!element.getDeclaringClass().equals(node.getDeclaringClass()))     continue;
+    Parameter[] p1=node.getParameters();
+    Parameter[] p2=element.getParameters();
+    if (p1.length != p2.length)     continue;
+    addErrorIfParamsAndReturnTypeEqual(p2,p1,node,element);
+  }
+}

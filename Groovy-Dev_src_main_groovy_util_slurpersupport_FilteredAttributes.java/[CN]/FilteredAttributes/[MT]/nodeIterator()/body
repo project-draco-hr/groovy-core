@@ -1,0 +1,14 @@
+{
+  return new NodeIterator(this.parent.iterator()){
+    protected Object getNextNode(    final Iterator iter){
+      while (iter.hasNext()) {
+        final Object node=iter.next();
+        if (DefaultTypeTransformation.castToBoolean(FilteredAttributes.this.closure.call(new Object[]{node}))) {
+          return node;
+        }
+      }
+      return null;
+    }
+  }
+;
+}

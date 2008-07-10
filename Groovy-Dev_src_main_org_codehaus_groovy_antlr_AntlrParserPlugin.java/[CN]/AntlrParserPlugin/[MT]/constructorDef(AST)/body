@@ -1,0 +1,26 @@
+{
+  List annotations=new ArrayList();
+  AST node=constructorDef.getFirstChild();
+  int modifiers=Opcodes.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    node=node.getNextSibling();
+  }
+  assertNodeType(PARAMETERS,node);
+  Parameter[] parameters=parameters(node);
+  if (parameters == null)   parameters=Parameter.EMPTY_ARRAY;
+  node=node.getNextSibling();
+  ClassNode[] exceptions=ClassNode.EMPTY_ARRAY;
+  if (isType(LITERAL_throws,node)) {
+    AST throwsNode=node.getFirstChild();
+    List exceptionList=new ArrayList();
+    throwsList(throwsNode,exceptionList);
+    exceptions=(ClassNode[])exceptionList.toArray(exceptions);
+    node=node.getNextSibling();
+  }
+  assertNodeType(SLIST,node);
+  Statement code=statementList(node);
+  ConstructorNode constructorNode=classNode.addConstructor(modifiers,parameters,exceptions,code);
+  constructorNode.addAnnotations(annotations);
+  configureAST(constructorNode,constructorDef);
+}

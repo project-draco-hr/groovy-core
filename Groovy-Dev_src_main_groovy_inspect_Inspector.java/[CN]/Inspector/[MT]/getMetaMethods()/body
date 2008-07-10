@@ -1,0 +1,11 @@
+{
+  MetaClass metaClass=InvokerHelper.getMetaClass(objectUnderInspection);
+  List metaMethods=metaClass.getMetaMethods();
+  Object[] result=new Object[metaMethods.size()];
+  int i=0;
+  for (Iterator iter=metaMethods.iterator(); iter.hasNext(); i++) {
+    MetaMethod metaMethod=(MetaMethod)iter.next();
+    result[i]=methodInfo(metaMethod);
+  }
+  return result;
+}

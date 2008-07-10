@@ -1,0 +1,14 @@
+{
+  if (orig instanceof Set) {
+    return createSimilarSet((Set)orig);
+  }
+  if (orig instanceof List) {
+    return createSimilarList((List)orig,newCapacity);
+  }
+  Collection answer=createCollectionFromClass(orig);
+  if (answer != null)   return answer;
+  if (orig instanceof Queue) {
+    return new LinkedList();
+  }
+  return new ArrayList(newCapacity);
+}

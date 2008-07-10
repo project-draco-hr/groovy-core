@@ -1,0 +1,9 @@
+{
+  if (type == ClassHelper.OBJECT_TYPE)   return;
+  if (ClassHelper.isPrimitiveType(type) && type != ClassHelper.VOID_TYPE) {
+    unbox(type);
+  }
+ else {
+    mv.visitTypeInsn(CHECKCAST,type.isArray() ? getTypeDescription(type) : getClassInternalName(type));
+  }
+}

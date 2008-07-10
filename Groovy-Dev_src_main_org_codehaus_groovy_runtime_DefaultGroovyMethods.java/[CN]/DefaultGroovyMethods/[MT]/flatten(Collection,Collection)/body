@@ -1,0 +1,14 @@
+{
+  for (  Object element : elements) {
+    if (element instanceof Collection) {
+      flatten((Collection)element,addTo);
+    }
+ else     if (element.getClass().isArray()) {
+      flatten(DefaultTypeTransformation.arrayAsCollection(element),addTo);
+    }
+ else {
+      addTo.add(element);
+    }
+  }
+  return addTo;
+}

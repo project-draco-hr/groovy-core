@@ -1,0 +1,29 @@
+{
+  if (isGenericGetMethod(method) && genericGetMethod == null) {
+    genericGetMethod=method;
+  }
+ else   if (MetaClassHelper.isGenericSetMethod(method) && genericSetMethod == null) {
+    genericSetMethod=method;
+  }
+  if (propertyMissingGet == null && method.getName().equals(PROPERTY_MISSING)) {
+    CachedClass[] parameterTypes=method.getParameterTypes();
+    if (parameterTypes.length == 1) {
+      propertyMissingGet=method;
+    }
+  }
+  if (propertyMissingSet == null && method.getName().equals(PROPERTY_MISSING)) {
+    CachedClass[] parameterTypes=method.getParameterTypes();
+    if (parameterTypes.length == 2) {
+      propertyMissingSet=method;
+    }
+  }
+  if (method.getName().equals(METHOD_MISSING)) {
+    CachedClass[] parameterTypes=method.getParameterTypes();
+    if (parameterTypes.length == 2 && parameterTypes[0].getTheClass() == String.class && parameterTypes[1].getTheClass() == Object.class) {
+      methodMissing=method;
+    }
+  }
+  if (theCachedClass.isNumber) {
+    NumberMathModificationInfo.instance.checkIfStdMethod(method);
+  }
+}

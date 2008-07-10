@@ -1,0 +1,19 @@
+{
+  if (self instanceof Set)   return self;
+  List answer=new ArrayList();
+  for (Iterator it=self.iterator(); it.hasNext(); ) {
+    Object o=it.next();
+    boolean duplicated=false;
+    for (Iterator it2=answer.iterator(); it2.hasNext(); ) {
+      Object o2=it2.next();
+      if (comparator.compare(o,o2) == 0) {
+        duplicated=true;
+        break;
+      }
+    }
+    if (!duplicated)     answer.add(o);
+  }
+  self.clear();
+  self.addAll(answer);
+  return self;
+}

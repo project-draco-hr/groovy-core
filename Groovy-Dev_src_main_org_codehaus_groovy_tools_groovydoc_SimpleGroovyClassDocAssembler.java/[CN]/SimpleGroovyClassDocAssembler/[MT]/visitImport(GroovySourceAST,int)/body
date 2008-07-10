@@ -1,0 +1,10 @@
+{
+  if (visit == OPENING_VISIT) {
+    GroovySourceAST child=t.childOfType(GroovyTokenTypes.DOT);
+    if (child == null) {
+      child=t.childOfType(GroovyTokenTypes.IDENT);
+    }
+    String importTextWithSlashesInsteadOfDots=recurseDownImportBranch(child);
+    importedClassesAndPackages.add(importTextWithSlashesInsteadOfDots);
+  }
+}

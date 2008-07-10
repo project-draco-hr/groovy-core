@@ -1,0 +1,20 @@
+{
+  ObjectGraphBuilder ogbuilder=(ObjectGraphBuilder)builder;
+  if (parent != null) {
+    Map context=ogbuilder.getContext();
+    Map parentContext=ogbuilder.getParentContext();
+    String parentName=null;
+    String childName=(String)context.get(NODE_NAME);
+    Class parentClass=null;
+    Class childClass=(Class)context.get(NODE_CLASS);
+    if (parentContext != null) {
+      parentName=(String)parentContext.get(NODE_NAME);
+      parentClass=(Class)parentContext.get(NODE_CLASS);
+    }
+    String propertyName=ogbuilder.relationNameResolver.resolveParentRelationName(parentName,parent,childName,child);
+    MetaProperty metaProperty=InvokerHelper.getMetaClass(child).hasProperty(child,propertyName);
+    if (metaProperty != null) {
+      metaProperty.setProperty(child,parent);
+    }
+  }
+}

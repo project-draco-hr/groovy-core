@@ -1,0 +1,18 @@
+{
+  if (object == null) {
+    object=NullObject.getNullObject();
+  }
+  if (object instanceof Class) {
+    Class theClass=(Class)object;
+    MetaClass metaClass=metaRegistry.getMetaClass(theClass);
+    return metaClass.invokeStaticMethod(object,methodName,asArray(arguments));
+  }
+ else {
+    if (!(object instanceof GroovyObject)) {
+      return invokePojoMethod(object,methodName,arguments);
+    }
+ else {
+      return invokePogoMethod(object,methodName,arguments);
+    }
+  }
+}

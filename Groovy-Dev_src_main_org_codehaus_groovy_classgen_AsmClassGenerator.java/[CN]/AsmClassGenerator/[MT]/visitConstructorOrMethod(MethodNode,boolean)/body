@@ -1,0 +1,59 @@
+{
+  Parameter[] parameters=node.getParameters();
+  String methodType=BytecodeHelper.getMethodDescriptor(node.getReturnType(),parameters);
+  String signature=BytecodeHelper.getGenericsMethodSignature(node);
+  int modifiers=node.getModifiers();
+  if (isVargs(node.getParameters()))   modifiers|=Opcodes.ACC_VARARGS;
+  mv=cv.visitMethod(modifiers,node.getName(),methodType,signature,buildExceptions(node.getExceptions()));
+  mv=new MyMethodAdapter();
+  visitAnnotations(node,mv);
+  for (int i=0; i < parameters.length; i++) {
+    visitParameterAnnotations(parameters[i],i,mv);
+  }
+  helper=new BytecodeHelper(mv);
+  if (classNode.isAnnotationDefinition()) {
+    visitAnnotationDefault(node,mv);
+  }
+ else   if (!node.isAbstract()) {
+    Statement code=node.getCode();
+    final Label tryStart=new Label();
+    mv.visitLabel(tryStart);
+    if (isConstructor && (code == null || !((ConstructorNode)node).firstStatementIsSpecialConstructorCall())) {
+      mv.visitVarInsn(ALOAD,0);
+      mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
+    }
+    compileStack.init(node.getVariableScope(),parameters,mv,classNode);
+    if (isNotClinit()) {
+      mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+      callSiteArrayVarIndex=compileStack.defineTemporaryVariable("$local$callSiteArray",ClassHelper.make(CallSite[].class),true);
+    }
+    super.visitConstructorOrMethod(node,isConstructor);
+    if (!outputReturn || node.isVoidMethod()) {
+      mv.visitInsn(RETURN);
+    }
+    compileStack.clear();
+    final Label finallyStart=new Label();
+    mv.visitJumpInsn(GOTO,finallyStart);
+    final Label tryEnd=new Label();
+    mv.visitLabel(tryEnd);
+    final Label catchStart=new Label();
+    mv.visitLabel(catchStart);
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;");
+    mv.visitInsn(ATHROW);
+    mv.visitLabel(finallyStart);
+    mv.visitInsn(NOP);
+    exceptionBlocks.add(new Runnable(){
+      public void run(){
+        mv.visitTryCatchBlock(tryStart,tryEnd,catchStart,GRE);
+      }
+    }
+);
+    for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
+      Runnable runnable=(Runnable)iter.next();
+      runnable.run();
+    }
+    exceptionBlocks.clear();
+    mv.visitMaxs(0,0);
+  }
+  mv.visitEnd();
+}

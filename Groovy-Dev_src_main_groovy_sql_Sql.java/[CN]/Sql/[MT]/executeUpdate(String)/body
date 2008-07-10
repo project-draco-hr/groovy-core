@@ -1,0 +1,18 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    log.fine(sql);
+    statement=createConnection(connection);
+    configure(statement);
+    this.updateCount=statement.executeUpdate(sql);
+    return this.updateCount;
+  }
+ catch (  SQLException e) {
+    log.log(Level.FINE,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}

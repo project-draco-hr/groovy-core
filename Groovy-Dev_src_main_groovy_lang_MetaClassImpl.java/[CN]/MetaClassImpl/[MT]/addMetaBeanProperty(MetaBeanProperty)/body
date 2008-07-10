@@ -1,0 +1,21 @@
+{
+  MetaProperty staticProperty=establishStaticMetaProperty(mp);
+  if (staticProperty != null) {
+    staticPropertyIndex.put(mp.getName(),mp);
+  }
+ else {
+    SingleKeyHashMap propertyMap=classPropertyIndex.getNotNull(theCachedClass);
+    CachedField field;
+    MetaProperty old=(MetaProperty)propertyMap.get(mp.getName());
+    if (old != null) {
+      if (old instanceof MetaBeanProperty) {
+        field=((MetaBeanProperty)old).getField();
+      }
+ else {
+        field=(CachedField)old;
+      }
+      mp.setField(field);
+    }
+    propertyMap.put(mp.getName(),mp);
+  }
+}

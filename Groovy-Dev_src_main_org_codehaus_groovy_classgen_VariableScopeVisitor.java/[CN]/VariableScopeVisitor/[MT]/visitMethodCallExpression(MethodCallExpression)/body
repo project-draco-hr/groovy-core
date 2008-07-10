@@ -1,0 +1,14 @@
+{
+  if (call.isImplicitThis() && call.getMethod() instanceof ConstantExpression) {
+    Object value=((ConstantExpression)call.getMethod()).getText();
+    if (!(value instanceof String)) {
+      throw new GroovyBugError("tried to make a method call with a non-String constant method name.");
+    }
+    String methodName=(String)value;
+    Variable v=checkVariableNameForDeclaration(methodName,call);
+    if (v != null && !(v instanceof DynamicVariable)) {
+      checkVariableContextAccess(v,call);
+    }
+  }
+  super.visitMethodCallExpression(call);
+}

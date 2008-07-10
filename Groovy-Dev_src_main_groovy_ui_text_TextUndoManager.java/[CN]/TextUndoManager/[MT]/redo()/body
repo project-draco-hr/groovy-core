@@ -1,0 +1,10 @@
+{
+  compoundEdit.end();
+  if (firstModified == 0) {
+    firstModified=((StructuredEdit)editToBeRedone()).editedTime();
+  }
+  boolean undoable=canUndo();
+  boolean changed=hasChanged();
+  super.redo();
+  firePropertyChangeEvent(UndoManager.UndoName,undoable,canUndo());
+}

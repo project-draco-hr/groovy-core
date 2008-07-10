@@ -1,0 +1,12 @@
+{
+  MultiLineRun mlr=getMultiLineRun(offset);
+  if (mlr != null) {
+    offset=mlr.end();
+  }
+ else {
+    offset=styledDocument.getParagraphElement(offset).getEndOffset();
+    mlr=getMultiLineRun(offset);
+    offset=mlr == null ? offset : mlr.end();
+  }
+  return offset;
+}

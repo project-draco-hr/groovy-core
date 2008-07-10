@@ -1,0 +1,24 @@
+{
+  try {
+    GroovyRecognizer parser=GroovyRecognizer.make(l);
+    parser.setSourceBuffer(sourceBuffer);
+    parser.setFilename(f);
+    if (whitespaceIncluded) {
+      GroovyLexer lexer=parser.getLexer();
+      lexer.setWhitespaceIncluded(true);
+      while (true) {
+        Token t=lexer.nextToken();
+        System.out.println(t);
+        if (t == null || t.getType() == Token.EOF_TYPE)         break;
+      }
+      return;
+    }
+    parser.compilationUnit();
+    System.out.println("parseFile " + f + " => "+ parser.getAST());
+    doTreeAction(f,parser.getAST(),parser.getTokenNames());
+  }
+ catch (  Exception e) {
+    System.err.println("parser exception: " + e);
+    e.printStackTrace();
+  }
+}

@@ -1,0 +1,32 @@
+{
+  if (isType(TYPE,node)) {
+    node=node.getFirstChild();
+  }
+  ClassNode answer=null;
+  if (isType(DOT,node) || isType(OPTIONAL_DOT,node)) {
+    answer=ClassHelper.make(qualifiedName(node));
+  }
+ else   if (isPrimitiveTypeLiteral(node)) {
+    answer=ClassHelper.make(node.getText());
+  }
+ else   if (isType(INDEX_OP,node) || isType(ARRAY_DECLARATOR,node)) {
+    AST child=node.getFirstChild();
+    answer=buildName(child).makeArray();
+    configureAST(answer,node);
+    return answer;
+  }
+ else {
+    String identifier=node.getText();
+    answer=ClassHelper.make(identifier);
+  }
+  AST nextSibling=node.getNextSibling();
+  if (isType(INDEX_OP,nextSibling) || isType(ARRAY_DECLARATOR,node)) {
+    answer=answer.makeArray();
+    configureAST(answer,node);
+    return answer;
+  }
+ else {
+    configureAST(answer,node);
+    return answer;
+  }
+}

@@ -1,0 +1,11 @@
+{
+  if (isNotClinit()) {
+    mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
+  }
+ else {
+    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  }
+  final int index=allocateIndex(message);
+  mv.visitLdcInsn(index);
+  mv.visitInsn(AALOAD);
+}

@@ -1,0 +1,11 @@
+{
+  MetaClass metaClass=InvokerHelper.getMetaClass(self);
+  List mps=metaClass.getProperties();
+  List props=new ArrayList(mps.size());
+  for (Iterator itr=mps.iterator(); itr.hasNext(); ) {
+    MetaProperty mp=(MetaProperty)itr.next();
+    PropertyValue pv=new PropertyValue(self,mp);
+    props.add(pv);
+  }
+  return props;
+}

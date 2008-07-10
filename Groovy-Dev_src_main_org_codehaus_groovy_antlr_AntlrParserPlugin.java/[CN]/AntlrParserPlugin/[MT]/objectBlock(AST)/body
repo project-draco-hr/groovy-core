@@ -1,0 +1,34 @@
+{
+  for (AST node=objectBlock.getFirstChild(); node != null; node=node.getNextSibling()) {
+    int type=node.getType();
+switch (type) {
+case OBJBLOCK:
+      objectBlock(node);
+    break;
+case ANNOTATION_FIELD_DEF:
+case METHOD_DEF:
+  methodDef(node);
+break;
+case CTOR_IDENT:
+constructorDef(node);
+break;
+case VARIABLE_DEF:
+fieldDef(node);
+break;
+case STATIC_INIT:
+staticInit(node);
+break;
+case INSTANCE_INIT:
+objectInit(node);
+break;
+case ENUM_DEF:
+enumDef(node);
+break;
+case ENUM_CONSTANT_DEF:
+enumConstantDef(node);
+break;
+default :
+unknownAST(node);
+}
+}
+}

@@ -1,0 +1,15 @@
+{
+  FieldNode field=expression.getField();
+  boolean holder=field.isHolder() && !isInClosureConstructor();
+  ClassNode type=field.getType();
+  String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : helper.getClassInternalName(field.getOwner());
+  if (holder) {
+    mv.visitFieldInsn(GETSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    mv.visitInsn(SWAP);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
+  }
+ else {
+    helper.doCast(type);
+    mv.visitFieldInsn(PUTSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+  }
+}

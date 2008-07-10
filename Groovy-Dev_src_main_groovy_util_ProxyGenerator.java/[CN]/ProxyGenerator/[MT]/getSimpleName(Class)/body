@@ -1,0 +1,14 @@
+{
+  if (c.isArray()) {
+    int dimension=0;
+    Class componentClass=c;
+    while (componentClass.isArray()) {
+      componentClass=componentClass.getComponentType();
+      dimension++;
+    }
+    return componentClass.getName().replaceAll("\\$","\\.") + DefaultGroovyMethods.multiply("[]",Integer.valueOf(dimension));
+  }
+ else {
+    return c.getName().replaceAll("\\$","\\.");
+  }
+}

@@ -1,0 +1,13 @@
+{
+  if (statement instanceof ExpressionStatement) {
+    ExpressionStatement expStmt=(ExpressionStatement)statement;
+    Expression expression=expStmt.getExpression();
+    if (expression instanceof ClosureExpression) {
+      ClosureExpression closureExp=(ClosureExpression)expression;
+      if (!closureExp.isParameterSpecified()) {
+        return closureExp.getCode();
+      }
+    }
+  }
+  return statement;
+}

@@ -1,0 +1,17 @@
+{
+  Connection connection=createConnection();
+  CallableStatement statement=connection.prepareCall(sql);
+  try {
+    log.fine(sql);
+    setParameters(params,statement);
+    configure(statement);
+    return statement.executeUpdate();
+  }
+ catch (  SQLException e) {
+    log.log(Level.FINE,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}

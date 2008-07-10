@@ -1,0 +1,34 @@
+{
+  Script script=null;
+  if (scriptClass == null) {
+    script=new Script(){
+      public Object run(){
+        return null;
+      }
+    }
+;
+  }
+ else {
+    try {
+      final GroovyObject object=(GroovyObject)scriptClass.newInstance();
+      if (object instanceof Script) {
+        script=(Script)object;
+      }
+ else {
+        script=new Script(){
+          public Object run(){
+            object.invokeMethod("main",EMPTY_MAIN_ARGS);
+            return null;
+          }
+        }
+;
+        setProperties(object,context.getVariables());
+      }
+    }
+ catch (    Exception e) {
+      throw new GroovyRuntimeException("Failed to create Script instance for class: " + scriptClass + ". Reason: "+ e,e);
+    }
+  }
+  script.setBinding(context);
+  return script;
+}

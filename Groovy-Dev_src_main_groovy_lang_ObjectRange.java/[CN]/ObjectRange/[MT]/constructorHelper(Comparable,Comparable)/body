@@ -1,0 +1,37 @@
+{
+  if (from instanceof Short) {
+    from=Integer.valueOf(((Short)from).intValue());
+  }
+  if (to instanceof Short) {
+    to=Integer.valueOf(((Short)to).intValue());
+  }
+  if (from instanceof Float) {
+    from=new Double(((Float)from).doubleValue());
+  }
+  if (to instanceof Float) {
+    to=new Double(((Float)to).doubleValue());
+  }
+  if (from.getClass() == to.getClass()) {
+    this.from=from;
+    this.to=to;
+  }
+ else {
+    this.from=normaliseStringType(from);
+    this.to=normaliseStringType(to);
+  }
+  if (from instanceof String || to instanceof String) {
+    String start=from.toString();
+    String end=to.toString();
+    if (start.length() > end.length()) {
+      throw new IllegalArgumentException("Incompatible Strings for Range: starting String is longer than ending string");
+    }
+    int length=Math.min(start.length(),end.length());
+    int i;
+    for (i=0; i < length; i++) {
+      if (start.charAt(i) != end.charAt(i))       break;
+    }
+    if (i < length - 1) {
+      throw new IllegalArgumentException("Incompatible Strings for Range: String#next() will not reach the expected value");
+    }
+  }
+}

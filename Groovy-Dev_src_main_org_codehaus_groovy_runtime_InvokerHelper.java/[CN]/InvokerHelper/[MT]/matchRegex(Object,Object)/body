@@ -1,0 +1,13 @@
+{
+  Pattern pattern;
+  if (right instanceof Pattern) {
+    pattern=(Pattern)right;
+  }
+ else {
+    pattern=Pattern.compile(toString(right));
+  }
+  String stringToCompare=toString(left);
+  Matcher matcher=pattern.matcher(stringToCompare);
+  RegexSupport.setLastMatcher(matcher);
+  return matcher.matches();
+}

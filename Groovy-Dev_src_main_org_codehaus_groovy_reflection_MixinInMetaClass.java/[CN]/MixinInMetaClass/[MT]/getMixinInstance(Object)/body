@@ -1,0 +1,9 @@
+{
+  Object mixinInstance=get(object);
+  if (mixinInstance == null) {
+    mixinInstance=constructor.invoke(MetaClassHelper.EMPTY_ARRAY);
+    new MyDelegatingMetaClass(mixinInstance,object);
+    put(object,mixinInstance);
+  }
+  return mixinInstance;
+}

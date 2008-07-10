@@ -1,0 +1,23 @@
+{
+  List annotions=node.getAnnotations();
+  if (annotions.isEmpty())   return;
+  Iterator it=annotions.iterator();
+  while (it.hasNext()) {
+    AnnotationNode an=(AnnotationNode)it.next();
+    if (an.isBuiltIn())     continue;
+    ClassNode type=an.getClassNode();
+    resolveOrFail(type,",  unable to find class for annotation",an);
+    for (Iterator iter=an.getMembers().entrySet().iterator(); iter.hasNext(); ) {
+      Map.Entry member=(Map.Entry)iter.next();
+      Expression memberValue=(Expression)member.getValue();
+      Expression newValue=transform(memberValue);
+      member.setValue(newValue);
+      if (newValue instanceof PropertyExpression) {
+        PropertyExpression pe=(PropertyExpression)newValue;
+        if (!(pe.getObjectExpression() instanceof ClassExpression)) {
+          addError("unable to find class for enum",pe.getObjectExpression());
+        }
+      }
+    }
+  }
+}

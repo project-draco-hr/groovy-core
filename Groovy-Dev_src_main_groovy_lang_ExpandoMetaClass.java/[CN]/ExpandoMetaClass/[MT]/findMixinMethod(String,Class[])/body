@@ -1,0 +1,16 @@
+{
+  for (  MixinInMetaClass mixin : mixinClasses) {
+    final CachedClass mixinClass=mixin.getMixinClass();
+    MetaClass metaClass=mixinClass.classInfo.getMetaClassForClass();
+    if (metaClass == null) {
+      metaClass=GroovySystem.getMetaClassRegistry().getMetaClass(mixinClass.getTheClass());
+    }
+    final MetaMethod metaMethod=metaClass.pickMethod(methodName,arguments);
+    if (metaMethod != null) {
+      MetaMethod method=new MixinInstanceMetaMethod(metaMethod,mixin);
+      registerInstanceMethod(method);
+      return method;
+    }
+  }
+  return null;
+}

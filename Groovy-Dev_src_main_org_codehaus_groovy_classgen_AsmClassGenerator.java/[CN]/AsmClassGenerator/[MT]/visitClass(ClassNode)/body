@@ -1,0 +1,53 @@
+{
+  try {
+    callSites.clear();
+    referencedClasses.clear();
+    this.classNode=classNode;
+    this.outermostClass=null;
+    this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
+    this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
+    cv.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visitSource(sourceFile,null);
+    visitAnnotations(classNode,cv);
+    if (classNode.isInterface()) {
+      ClassNode owner=classNode;
+      if (owner instanceof InnerClassNode) {
+        owner=owner.getOuterClass();
+      }
+      String outerClassName=owner.getName();
+      String name=outerClassName + "$" + context.getNextInnerClassIdx();
+      interfaceClassLoadingClass=new InnerClassNode(owner,name,4128,ClassHelper.OBJECT_TYPE);
+      super.visitClass(classNode);
+      createInterfaceSyntheticStaticFields();
+    }
+ else {
+      super.visitClass(classNode);
+      if (!classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
+        createMopMethods();
+      }
+      createSyntheticStaticFields();
+    }
+    for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
+      ClassNode innerClass=(ClassNode)iter.next();
+      String innerClassName=innerClass.getName();
+      String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
+{
+        int index=innerClassName.lastIndexOf('$');
+        if (index >= 0)         innerClassName=innerClassName.substring(index + 1);
+      }
+      String outerClassName=internalClassName;
+      MethodNode enclosingMethod=innerClass.getEnclosingMethod();
+      if (enclosingMethod != null) {
+        outerClassName=null;
+        innerClassName=null;
+      }
+      cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
+    }
+    generateCallSiteArray();
+    cv.visitEnd();
+  }
+ catch (  GroovyRuntimeException e) {
+    e.setModule(classNode.getModule());
+    throw e;
+  }
+}

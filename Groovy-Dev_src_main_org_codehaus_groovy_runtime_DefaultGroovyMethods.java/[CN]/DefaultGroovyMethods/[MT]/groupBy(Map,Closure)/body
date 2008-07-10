@@ -1,0 +1,16 @@
+{
+  final Map initial=groupEntriesBy(self,closure);
+  final Map answer=new HashMap();
+  for (  Object o : initial.entrySet()) {
+    Map.Entry outer=(Map.Entry)o;
+    Object key=outer.getKey();
+    List entries=(List)outer.getValue();
+    Map target=new HashMap();
+    for (int i=0; i < entries.size(); i++) {
+      Map.Entry inner=(Map.Entry)entries.get(i);
+      target.put(inner.getKey(),inner.getValue());
+    }
+    answer.put(key,target);
+  }
+  return answer;
+}

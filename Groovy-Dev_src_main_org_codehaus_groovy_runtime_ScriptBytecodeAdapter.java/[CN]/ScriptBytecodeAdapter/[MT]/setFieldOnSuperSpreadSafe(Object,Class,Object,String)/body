@@ -1,0 +1,9 @@
+{
+  if (!isSpreadable(receiver)) {
+    setFieldOnSuper(messageArgument,senderClass,receiver,messageName);
+    return;
+  }
+  for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
+    setFieldOnSuper(messageArgument,senderClass,it.next(),messageName);
+  }
+}

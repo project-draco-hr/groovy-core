@@ -1,0 +1,19 @@
+{
+  ArrayList spreadIndexes=new ArrayList();
+  ArrayList spreadExpressions=new ArrayList();
+  ArrayList normalArguments=new ArrayList();
+  for (int i=0; i < expressions.size(); i++) {
+    Object expr=expressions.get(i);
+    if (!(expr instanceof SpreadExpression)) {
+      normalArguments.add(expr);
+    }
+ else {
+      spreadIndexes.add(new ConstantExpression(Integer.valueOf(i - spreadExpressions.size())));
+      spreadExpressions.add(((SpreadExpression)expr).getExpression());
+    }
+  }
+  visitTupleExpression(new ArgumentListExpression(normalArguments),wrap);
+  (new TupleExpression(spreadExpressions)).visit(this);
+  (new ArrayExpression(ClassHelper.int_TYPE,spreadIndexes,null)).visit(this);
+  despreadList.call(mv);
+}

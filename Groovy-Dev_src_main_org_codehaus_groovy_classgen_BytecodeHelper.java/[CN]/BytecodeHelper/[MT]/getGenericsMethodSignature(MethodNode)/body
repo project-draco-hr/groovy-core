@@ -1,0 +1,26 @@
+{
+  GenericsType[] generics=node.getGenericsTypes();
+  Parameter[] param=node.getParameters();
+  ClassNode returnType=node.getReturnType();
+  if (generics == null && !hasGenerics(param) && returnType.getGenericsTypes() == null)   return null;
+  StringBuffer ret=new StringBuffer(100);
+  getGenericsTypeSpec(ret,generics);
+  GenericsType[] paramTypes=new GenericsType[param.length];
+  for (int i=0; i < param.length; i++) {
+    ClassNode pType=param[i].getType();
+    if (pType.getGenericsTypes() == null || !pType.isGenericsPlaceHolder()) {
+      paramTypes[i]=new GenericsType(pType);
+    }
+ else {
+      paramTypes[i]=pType.getGenericsTypes()[0];
+    }
+  }
+  addSubTypes(ret,paramTypes,"(",")");
+  if (returnType.isGenericsPlaceHolder()) {
+    addSubTypes(ret,returnType.getGenericsTypes(),"","");
+  }
+ else {
+    writeGenericsBounds(ret,new GenericsType(returnType),false);
+  }
+  return ret.toString();
+}

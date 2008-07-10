@@ -1,0 +1,13 @@
+{
+  try {
+    return usage.get() == 0 && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,arg1,arg2);
+  }
+ catch (  NullPointerException e) {
+    if (receiver == null)     return false;
+    throw e;
+  }
+catch (  ClassCastException e) {
+    if (!(receiver instanceof GroovyObject))     return false;
+    throw e;
+  }
+}

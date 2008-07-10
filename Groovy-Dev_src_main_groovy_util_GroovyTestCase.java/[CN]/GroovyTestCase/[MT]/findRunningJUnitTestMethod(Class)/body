@@ -1,0 +1,18 @@
+{
+  final Class[] args=new Class[]{};
+  final Throwable t=new Exception();
+  for (int i=t.getStackTrace().length - 1; i >= 0; --i) {
+    final StackTraceElement element=t.getStackTrace()[i];
+    if (element.getClassName().equals(caller.getName())) {
+      try {
+        final Method m=caller.getMethod(element.getMethodName(),args);
+        if (isPublicTestMethod(m)) {
+          return m;
+        }
+      }
+ catch (      final Exception e) {
+      }
+    }
+  }
+  throw new RuntimeException("No JUnit test case method found in call stack");
+}

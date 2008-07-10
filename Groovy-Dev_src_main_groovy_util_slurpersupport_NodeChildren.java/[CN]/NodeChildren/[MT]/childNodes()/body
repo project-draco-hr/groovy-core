@@ -1,0 +1,42 @@
+{
+  return new Iterator(){
+    private final Iterator iter=parent.childNodes();
+    private Iterator childIter=nextChildIter();
+    public boolean hasNext(){
+      return childIter != null;
+    }
+    public Object next(){
+      while (childIter != null) {
+        try {
+          if (childIter.hasNext()) {
+            return childIter.next();
+          }
+        }
+  finally {
+          if (!childIter.hasNext()) {
+            childIter=nextChildIter();
+          }
+        }
+      }
+      return null;
+    }
+    public void remove(){
+      throw new UnsupportedOperationException();
+    }
+    private Iterator nextChildIter(){
+      while (iter.hasNext()) {
+        final Node node=(Node)iter.next();
+        if (name.equals(node.name()) || name.equals("*")) {
+          final Iterator result=node.childNodes();
+          if (result.hasNext()) {
+            if ("*".equals(namespacePrefix) || ("".equals(namespacePrefix) && "".equals(node.namespaceURI())) || node.namespaceURI().equals(namespaceMap.get(namespacePrefix))) {
+              return result;
+            }
+          }
+        }
+      }
+      return null;
+    }
+  }
+;
+}

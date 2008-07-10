@@ -1,0 +1,17 @@
+{
+  int line=statement.getLineNumber();
+  int col=statement.getColumnNumber();
+  this.currentASTNode=statement;
+  if (line >= 0) {
+    lineNumber=line;
+    columnNumber=col;
+  }
+  if (line >= 0 && mv != null) {
+    Label l=new Label();
+    mv.visitLabel(l);
+    mv.visitLineNumber(line,l);
+    if (ASM_DEBUG) {
+      helper.mark(message + "[" + statement.getLineNumber()+ ":"+ statement.getColumnNumber()+ "]");
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  AST exprNode=node.getFirstChild();
+  LinkedList list=new LinkedList();
+  while (exprNode != null) {
+    if (isType(EXPR,exprNode)) {
+      Expression expr=expression(exprNode);
+      configureAST(expr,exprNode);
+      list.add(expr);
+    }
+ else {
+      assertNodeType(EMPTY_STAT,exprNode);
+      list.add(EmptyExpression.INSTANCE);
+    }
+    exprNode=exprNode.getNextSibling();
+  }
+  ClosureListExpression cle=new ClosureListExpression(list);
+  configureAST(cle,node);
+  return cle;
+}

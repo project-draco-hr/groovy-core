@@ -1,0 +1,25 @@
+{
+  removeListeners();
+  if (newObject != null) {
+    TriggerBinding syntheticTrigger=getSyntheticTriggerBinding(newObject);
+    MetaClass mc=InvokerHelper.getMetaClass(newObject);
+    if (syntheticTrigger != null) {
+      PropertyBinding psb=new PropertyBinding(newObject,propertyName);
+      PropertyChangeProxyTargetBinding proxytb=new PropertyChangeProxyTargetBinding(newObject,propertyName,listener);
+      syntheticFullBinding=syntheticTrigger.createBinding(psb,proxytb);
+      syntheticFullBinding.bind();
+      updateSet.add(newObject);
+    }
+ else     if (!mc.respondsTo(newObject,"addPropertyChangeListener",NAME_PARAMS).isEmpty()) {
+      InvokerHelper.invokeMethod(newObject,"addPropertyChangeListener",new Object[]{propertyName,listener});
+      localListener=listener;
+      updateSet.add(newObject);
+    }
+ else     if (!mc.respondsTo(newObject,"addPropertyChangeListener",GLOBAL_PARAMS).isEmpty()) {
+      InvokerHelper.invokeMethod(newObject,"addPropertyChangeListener",listener);
+      globalListener=listener;
+      updateSet.add(newObject);
+    }
+  }
+  currentObject=newObject;
+}

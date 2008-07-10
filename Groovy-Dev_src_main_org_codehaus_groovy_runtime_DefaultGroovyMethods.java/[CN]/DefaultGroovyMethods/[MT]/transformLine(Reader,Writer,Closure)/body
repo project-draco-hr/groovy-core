@@ -1,0 +1,27 @@
+{
+  BufferedReader br=new BufferedReader(reader);
+  BufferedWriter bw=new BufferedWriter(writer);
+  String line;
+  try {
+    while ((line=br.readLine()) != null) {
+      Object o=closure.call(line);
+      if (o != null) {
+        bw.write(o.toString());
+        bw.newLine();
+      }
+    }
+    bw.flush();
+    Writer temp2=writer;
+    writer=null;
+    temp2.close();
+    Reader temp1=reader;
+    reader=null;
+    temp1.close();
+  }
+  finally {
+    closeReaderWithWarning(br);
+    closeReaderWithWarning(reader);
+    closeWriterWithWarning(bw);
+    closeWriterWithWarning(writer);
+  }
+}

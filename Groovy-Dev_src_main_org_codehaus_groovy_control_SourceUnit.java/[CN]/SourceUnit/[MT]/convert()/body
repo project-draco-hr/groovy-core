@@ -1,0 +1,24 @@
+{
+  if (this.phase == Phases.PARSING && this.phaseComplete) {
+    gotoPhase(Phases.CONVERSION);
+  }
+  if (this.phase != Phases.CONVERSION) {
+    throw new GroovyBugError("SourceUnit not ready for convert()");
+  }
+  try {
+    this.ast=parserPlugin.buildAST(this,this.classLoader,this.cst);
+    this.ast.setDescription(this.name);
+  }
+ catch (  SyntaxException e) {
+    getErrorCollector().addError(new SyntaxErrorMessage(e,this));
+  }
+  String property=(String)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return System.getProperty("groovy.ast");
+    }
+  }
+);
+  if ("xml".equals(property)) {
+    saveAsXML(name,ast);
+  }
+}

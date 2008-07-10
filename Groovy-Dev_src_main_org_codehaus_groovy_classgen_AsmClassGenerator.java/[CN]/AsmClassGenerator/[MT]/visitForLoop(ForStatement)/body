@@ -1,0 +1,27 @@
+{
+  onLineNumber(loop,"visitForLoop");
+  visitStatement(loop);
+  Parameter loopVar=loop.getVariable();
+  if (loopVar == ForStatement.FOR_LOOP_DUMMY) {
+    visitForLoopWithClosureList(loop);
+    return;
+  }
+  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
+  Variable variable=compileStack.defineVariable(loop.getVariable(),false);
+  MethodCallExpression iterator=new MethodCallExpression(loop.getCollectionExpression(),"iterator",new ArgumentListExpression());
+  iterator.visit(this);
+  final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.make(java.util.Iterator.class),true);
+  Label continueLabel=compileStack.getContinueLabel();
+  Label breakLabel=compileStack.getBreakLabel();
+  mv.visitLabel(continueLabel);
+  mv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorHasNextMethod.call(mv);
+  mv.visitJumpInsn(IFEQ,breakLabel);
+  mv.visitVarInsn(ALOAD,iteratorIdx);
+  iteratorNextMethod.call(mv);
+  helper.storeVar(variable);
+  loop.getLoopBlock().visit(this);
+  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitLabel(breakLabel);
+  compileStack.pop();
+}

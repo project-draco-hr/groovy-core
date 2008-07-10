@@ -1,0 +1,29 @@
+{
+  if (property.startsWith("@")) {
+    if (newValue instanceof String || newValue instanceof GString) {
+      final Iterator iter=iterator();
+      while (iter.hasNext()) {
+        final NodeChild child=(NodeChild)iter.next();
+        child.attributes().put(property.substring(1),newValue);
+      }
+    }
+  }
+ else {
+    final GPathResult result=new NodeChildren(this,property,this.namespaceTagHints);
+    if (newValue instanceof Map) {
+      final Iterator iter=((Map)newValue).entrySet().iterator();
+      while (iter.hasNext()) {
+        final Map.Entry entry=(Map.Entry)iter.next();
+        result.setProperty("@" + entry.getKey(),entry.getValue());
+      }
+    }
+ else {
+      if (newValue instanceof Closure) {
+        result.replaceNode((Closure)newValue);
+      }
+ else {
+        result.replaceBody(newValue);
+      }
+    }
+  }
+}

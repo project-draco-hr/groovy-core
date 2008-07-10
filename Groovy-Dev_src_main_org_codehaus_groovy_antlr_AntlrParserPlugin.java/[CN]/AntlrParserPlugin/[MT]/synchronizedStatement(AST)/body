@@ -1,0 +1,8 @@
+{
+  AST node=syncNode.getFirstChild();
+  Expression expression=expression(node);
+  Statement code=statement(node.getNextSibling());
+  SynchronizedStatement synchronizedStatement=new SynchronizedStatement(expression,code);
+  configureAST(synchronizedStatement,syncNode);
+  return synchronizedStatement;
+}

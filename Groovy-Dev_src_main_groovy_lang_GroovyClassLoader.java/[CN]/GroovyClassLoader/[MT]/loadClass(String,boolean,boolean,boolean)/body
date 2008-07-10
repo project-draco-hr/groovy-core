@@ -1,0 +1,59 @@
+{
+  Class cls=getClassCacheEntry(name);
+  boolean recompile=isRecompilable(cls);
+  if (!recompile)   return cls;
+  SecurityManager sm=System.getSecurityManager();
+  if (sm != null) {
+    String className=name.replace('/','.');
+    int i=className.lastIndexOf('.');
+    if (i != -1) {
+      sm.checkPackageAccess(className.substring(0,i));
+    }
+  }
+  ClassNotFoundException last=null;
+  try {
+    Class parentClassLoaderClass=super.loadClass(name,resolve);
+    if (cls != parentClassLoaderClass)     return parentClassLoaderClass;
+  }
+ catch (  ClassNotFoundException cnfe) {
+    last=cnfe;
+  }
+catch (  NoClassDefFoundError ncdfe) {
+    if (ncdfe.getMessage().indexOf("wrong name") > 0) {
+      last=new ClassNotFoundException(name);
+    }
+ else {
+      throw ncdfe;
+    }
+  }
+  if (cls != null) {
+    preferClassOverScript|=!recompile;
+    if (preferClassOverScript)     return cls;
+  }
+  if (lookupScriptFiles) {
+synchronized (this) {
+      try {
+        final Class classCacheEntry=getClassCacheEntry(name);
+        if (classCacheEntry != cls)         return classCacheEntry;
+        URL source=resourceLoader.loadGroovySource(name);
+        cls=recompile(source,name,cls);
+      }
+ catch (      IOException ioe) {
+        last=new ClassNotFoundException("IOException while opening groovy source: " + name,ioe);
+      }
+ finally {
+        if (cls == null) {
+          removeClassCacheEntry(name);
+        }
+ else {
+          setClassCacheEntry(cls);
+        }
+      }
+    }
+  }
+  if (cls == null) {
+    if (last == null)     throw new AssertionError(true);
+    throw last;
+  }
+  return cls;
+}

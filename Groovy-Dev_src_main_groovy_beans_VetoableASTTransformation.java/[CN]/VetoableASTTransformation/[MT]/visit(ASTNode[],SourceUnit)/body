@@ -1,0 +1,12 @@
+{
+  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  }
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (nodes[1] instanceof ClassNode) {
+    addListenerToClass(source,node,(ClassNode)nodes[1]);
+  }
+ else {
+    addListenerToProperty(source,node,(AnnotatedNode)nodes[1]);
+  }
+}

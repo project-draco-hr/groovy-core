@@ -1,0 +1,13 @@
+{
+  if (stateStack.size() == 0) {
+    throw new GroovyBugError("Tried to do a pop on the compile stack without push.");
+  }
+  StateStackElement element=(StateStackElement)stateStack.removeLast();
+  scope=element.scope;
+  continueLabel=element.continueLabel;
+  breakLabel=element.breakLabel;
+  currentVariableIndex=element.lastVariableIndex;
+  stackVariables=element.stackVariables;
+  nextVariableIndex=element.nextVariableIndex;
+  finallyBlocks=element.finallyBlocks;
+}

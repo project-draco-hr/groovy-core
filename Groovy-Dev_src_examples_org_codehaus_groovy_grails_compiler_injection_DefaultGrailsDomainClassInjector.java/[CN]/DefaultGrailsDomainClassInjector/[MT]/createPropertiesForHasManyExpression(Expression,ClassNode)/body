@@ -1,0 +1,14 @@
+{
+  List properties=new ArrayList();
+  if (e instanceof MapExpression) {
+    MapExpression me=(MapExpression)e;
+    List mapEntries=me.getMapEntryExpressions();
+    for (Iterator j=mapEntries.iterator(); j.hasNext(); ) {
+      MapEntryExpression mee=(MapEntryExpression)j.next();
+      Expression keyExpression=mee.getKeyExpression();
+      String key=keyExpression.getText();
+      addAssociationForKey(key,properties,classNode);
+    }
+  }
+  return properties;
+}

@@ -1,0 +1,37 @@
+{
+  String name=getPackageName();
+  if (name == null) {
+    name="";
+  }
+  if (getDescription() == null) {
+    throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
+  }
+  name+=extractClassFromFileDescription();
+  String baseClassName=null;
+  if (unit != null)   baseClassName=unit.getConfig().getScriptBaseClass();
+  ClassNode baseClass=null;
+  if (baseClassName != null) {
+    baseClass=ClassHelper.make(baseClassName);
+  }
+  if (baseClass == null) {
+    baseClass=ClassHelper.SCRIPT_TYPE;
+  }
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
+  classNode.setScript(true);
+  classNode.setScriptBody(true);
+  classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE.makeArray(),"args")},ClassNode.EMPTY_ARRAY,new ExpressionStatement(new MethodCallExpression(new ClassExpression(ClassHelper.make(InvokerHelper.class)),"runScript",new ArgumentListExpression(new ClassExpression(classNode),new VariableExpression("args"))))));
+  classNode.addMethod(new MethodNode("run",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,statementBlock));
+  classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
+  Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new VariableExpression("context"))));
+  classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ClassHelper.make(Binding.class),"context")},ClassNode.EMPTY_ARRAY,stmt);
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode node=(MethodNode)iter.next();
+    int modifiers=node.getModifiers();
+    if ((modifiers & ACC_ABSTRACT) != 0) {
+      throw new RuntimeException("Cannot use abstract methods in a script, they are only available inside classes. Method: " + node.getName());
+    }
+    node.setModifiers(modifiers);
+    classNode.addMethod(node);
+  }
+  return classNode;
+}

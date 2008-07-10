@@ -1,0 +1,14 @@
+{
+  if (ClassHelper.isPrimitiveType(type) && type != ClassHelper.VOID_TYPE) {
+    ClassNode wrapper=ClassHelper.getWrapper(type);
+    String internName=getClassInternalName(wrapper);
+    if (type == ClassHelper.boolean_TYPE) {
+      mv.visitTypeInsn(CHECKCAST,internName);
+      mv.visitMethodInsn(INVOKEVIRTUAL,internName,type.getName() + "Value","()" + getTypeDescription(type));
+    }
+ else {
+      mv.visitTypeInsn(CHECKCAST,"java/lang/Number");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Number",type.getName() + "Value","()" + getTypeDescription(type));
+    }
+  }
+}

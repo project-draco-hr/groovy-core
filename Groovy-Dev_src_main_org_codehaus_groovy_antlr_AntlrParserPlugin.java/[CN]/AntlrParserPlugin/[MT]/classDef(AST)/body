@@ -1,0 +1,37 @@
+{
+  List annotations=new ArrayList();
+  AST node=classDef.getFirstChild();
+  int modifiers=Opcodes.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    checkNoInvalidModifier(classDef,"Class",modifiers,Opcodes.ACC_SYNCHRONIZED,"synchronized");
+    node=node.getNextSibling();
+  }
+  String name=identifier(node);
+  node=node.getNextSibling();
+  GenericsType[] genericsType=null;
+  if (isType(TYPE_PARAMETERS,node)) {
+    genericsType=makeGenericsType(node);
+    node=node.getNextSibling();
+  }
+  ClassNode superClass=null;
+  if (isType(EXTENDS_CLAUSE,node)) {
+    superClass=makeTypeWithArguments(node);
+    node=node.getNextSibling();
+  }
+  ClassNode[] interfaces=ClassNode.EMPTY_ARRAY;
+  if (isType(IMPLEMENTS_CLAUSE,node)) {
+    interfaces=interfaces(node);
+    node=node.getNextSibling();
+  }
+  MixinNode[] mixins={};
+  addNewClassName(name);
+  classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,mixins);
+  classNode.addAnnotations(annotations);
+  classNode.setGenericsTypes(genericsType);
+  configureAST(classNode,classDef);
+  assertNodeType(OBJBLOCK,node);
+  objectBlock(node);
+  output.addClass(classNode);
+  classNode=null;
+}

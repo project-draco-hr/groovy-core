@@ -1,0 +1,29 @@
+{
+  FieldNode field=expression.getField();
+  boolean isStatic=field.isStatic();
+  int tempIdx=compileStack.defineTemporaryVariable(field,leftHandExpression && first);
+  if (steps > 1 || !isStatic) {
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitFieldInsn(GETFIELD,internalClassName,"owner",BytecodeHelper.getTypeDescription(outerClassNode));
+  }
+  if (steps == 1) {
+    int opcode=(leftHandExpression) ? ((isStatic) ? PUTSTATIC : PUTFIELD) : ((isStatic) ? GETSTATIC : GETFIELD);
+    String ownerName=BytecodeHelper.getClassInternalName(outerClassNode);
+    if (leftHandExpression) {
+      mv.visitVarInsn(ALOAD,tempIdx);
+      boolean holder=field.isHolder() && !isInClosureConstructor();
+      if (!holder) {
+        doConvertAndCast(field.getType());
+      }
+    }
+    mv.visitFieldInsn(opcode,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
+    if (!leftHandExpression) {
+      if (ClassHelper.isPrimitiveType(field.getType())) {
+        helper.box(field.getType());
+      }
+    }
+  }
+ else {
+    visitOuterFieldExpression(expression,outerClassNode.getOuterClass(),steps - 1,false);
+  }
+}

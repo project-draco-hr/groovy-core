@@ -1,0 +1,14 @@
+{
+  StringBuffer buffer=new StringBuffer(self);
+  if (buffer.length() == 0)   throw new IllegalArgumentException("the string is empty");
+  char last=buffer.charAt(buffer.length() - 1);
+  if (last == Character.MIN_VALUE) {
+    buffer.deleteCharAt(buffer.length() - 1);
+  }
+ else {
+    char next=last;
+    next--;
+    buffer.setCharAt(buffer.length() - 1,next);
+  }
+  return buffer.toString();
+}

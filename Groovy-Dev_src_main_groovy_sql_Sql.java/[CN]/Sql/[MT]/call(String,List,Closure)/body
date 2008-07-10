@@ -1,0 +1,39 @@
+{
+  Connection connection=createConnection();
+  CallableStatement statement=connection.prepareCall(sql);
+  try {
+    log.fine(sql);
+    setParameters(params,statement);
+    statement.execute();
+    List results=new ArrayList();
+    int indx=0;
+    int inouts=0;
+    for (Iterator iter=params.iterator(); iter.hasNext(); ) {
+      Object value=iter.next();
+      if (value instanceof OutParameter) {
+        if (value instanceof ResultSetOutParameter) {
+          results.add(CallResultSet.getImpl(statement,indx));
+        }
+ else {
+          Object o=statement.getObject(indx + 1);
+          if (o instanceof ResultSet) {
+            results.add(new GroovyResultSetProxy((ResultSet)o).getImpl());
+          }
+ else {
+            results.add(o);
+          }
+        }
+        inouts++;
+      }
+      indx++;
+    }
+    closure.call(results.toArray(new Object[inouts]));
+  }
+ catch (  SQLException e) {
+    log.log(Level.WARNING,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}

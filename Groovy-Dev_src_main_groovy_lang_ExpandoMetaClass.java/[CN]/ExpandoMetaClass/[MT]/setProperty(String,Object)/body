@@ -1,0 +1,12 @@
+{
+  if (newValue instanceof Closure) {
+    if (property.equals(CONSTRUCTOR)) {
+      property=GROOVY_CONSTRUCTOR;
+    }
+    Closure callable=(Closure)newValue;
+    registerInstanceMethod(new ClosureMetaMethod(property,theClass,callable));
+  }
+ else {
+    registerBeanProperty(property,newValue);
+  }
+}

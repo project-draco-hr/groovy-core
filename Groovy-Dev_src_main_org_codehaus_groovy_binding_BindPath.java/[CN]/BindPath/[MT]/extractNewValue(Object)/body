@@ -1,0 +1,18 @@
+{
+  Object newValue;
+  try {
+    newValue=InvokerHelper.getProperty(newObject,propertyName);
+  }
+ catch (  MissingPropertyException mpe) {
+    try {
+      newValue=InvokerHelper.getAttribute(newObject,propertyName);
+      if (newValue instanceof Reference) {
+        newValue=((Reference)newValue).get();
+      }
+    }
+ catch (    Exception e) {
+      newValue=null;
+    }
+  }
+  return newValue;
+}

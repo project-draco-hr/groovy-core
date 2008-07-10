@@ -1,0 +1,19 @@
+{
+  expungeStaleEntries();
+  Entry[] tab=table;
+  int index=hash & (tab.length - 1);
+  Entry first=tab[index];
+  for (Entry e=first; e != null; e=e.next) {
+    if (e.hash == hash && eq(key,e.getKey())) {
+      Object oldValue=e.getValue();
+      e.setValue(null);
+      count--;
+      Entry head=e.next;
+      for (Entry p=first; p != e; p=p.next)       head=new Entry(p.hash,p.getKey(),p.getValue(),head,queue);
+      tab[index]=head;
+      recordModification(head);
+      return oldValue;
+    }
+  }
+  return null;
+}

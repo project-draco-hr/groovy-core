@@ -1,0 +1,25 @@
+{
+  System.out.println("Running " + scriptName);
+  CountDownLatch latch=new CountDownLatch(numThreads);
+  Class scriptClass=loadScript(scriptName);
+  long start=System.currentTimeMillis();
+  ScriptLauncher[] arr=new ScriptLauncher[numThreads];
+  long tids[]=new long[numThreads];
+  for (int i=0; i < numThreads; i++) {
+    arr[i]=new ScriptLauncher(scriptClass,numIter,latch,tids);
+    tids[i]=arr[i].getId();
+  }
+  for (int i=0; i < numThreads; i++) {
+    arr[i].start();
+  }
+  try {
+    latch.await();
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+  }
+  double duration=(double)(System.currentTimeMillis() - start) / 1000.0;
+  double numberOfOperations=numIter * numThreads;
+  System.out.println("Test completed: " + numberOfOperations + " scriptExecutions in "+ duration+ " seconds");
+  System.out.println("\t\t\t" + (numberOfOperations / duration) + " scriptExecutions/second with\t"+ numThreads+ " threads");
+}

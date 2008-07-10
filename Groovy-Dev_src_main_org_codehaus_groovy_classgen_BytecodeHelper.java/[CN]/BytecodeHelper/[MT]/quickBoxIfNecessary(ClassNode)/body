@@ -1,0 +1,21 @@
+{
+  String descr=getTypeDescription(type);
+  if (type == ClassHelper.boolean_TYPE) {
+    boxBoolean();
+  }
+ else   if (ClassHelper.isPrimitiveType(type) && type != ClassHelper.VOID_TYPE) {
+    ClassNode wrapper=ClassHelper.getWrapper(type);
+    String internName=getClassInternalName(wrapper);
+    mv.visitTypeInsn(NEW,internName);
+    mv.visitInsn(DUP);
+    if (type == ClassHelper.double_TYPE || type == ClassHelper.long_TYPE) {
+      mv.visitInsn(DUP2_X2);
+      mv.visitInsn(POP2);
+    }
+ else {
+      mv.visitInsn(DUP2_X1);
+      mv.visitInsn(POP2);
+    }
+    mv.visitMethodInsn(INVOKESPECIAL,internName,"<init>","(" + descr + ")V");
+  }
+}

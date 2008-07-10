@@ -1,0 +1,18 @@
+{
+  Expression oldValue=(Expression)members.get(name);
+  if (oldValue == null) {
+    members.put(name,value);
+  }
+ else {
+    List list=null;
+    if (oldValue instanceof List) {
+      list=(List)oldValue;
+    }
+ else {
+      list=new ArrayList();
+      list.add(oldValue);
+      members.put(name,list);
+    }
+    list.add(value);
+  }
+}

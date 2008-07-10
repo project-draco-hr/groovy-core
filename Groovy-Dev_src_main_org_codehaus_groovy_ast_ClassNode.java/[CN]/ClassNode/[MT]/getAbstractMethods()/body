@@ -1,0 +1,30 @@
+{
+  HashSet abstractNodes=new HashSet();
+  ClassNode parent=this.redirect();
+  do {
+    abstractNodes.add(parent);
+    ClassNode[] interfaces=parent.getInterfaces();
+    List interfaceList=new ArrayList(Arrays.asList(interfaces));
+    while (!interfaceList.isEmpty()) {
+      final ClassNode interfaceNode=(ClassNode)interfaceList.get(0);
+      interfaceList.remove(0);
+      abstractNodes.add(interfaceNode.redirect());
+      interfaceList.addAll(Arrays.asList(interfaceNode.getInterfaces()));
+    }
+    parent=parent.getSuperClass().redirect();
+  }
+ while (parent != null && ((parent.getModifiers() & Opcodes.ACC_ABSTRACT) != 0));
+  List result=new ArrayList();
+  for (Iterator methIt=getAllDeclaredMethods().iterator(); methIt.hasNext(); ) {
+    MethodNode method=(MethodNode)methIt.next();
+    if (abstractNodes.contains(method.getDeclaringClass().redirect()) && (method.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
+      result.add(method);
+    }
+  }
+  if (result.isEmpty()) {
+    return null;
+  }
+ else {
+    return result;
+  }
+}

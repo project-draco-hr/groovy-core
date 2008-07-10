@@ -1,0 +1,9 @@
+{
+  ConcurrentWeakMap res=propName2Map.get(name);
+  if (res == null) {
+    res=new ConcurrentWeakMap();
+    ConcurrentWeakMap ores=propName2Map.putIfAbsent(name,res);
+    if (ores != null)     return ores;
+  }
+  return res;
+}

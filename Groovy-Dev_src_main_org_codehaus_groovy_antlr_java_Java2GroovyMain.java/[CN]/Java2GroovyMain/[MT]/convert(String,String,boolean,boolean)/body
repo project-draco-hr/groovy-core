@@ -1,0 +1,29 @@
+{
+  JavaRecognizer parser=getJavaParser(input);
+  String[] tokenNames=parser.getTokenNames();
+  parser.compilationUnit();
+  AST ast=parser.getAST();
+  if ("mindmap".equals(System.getProperty("antlr.ast"))) {
+    try {
+      PrintStream out=new PrintStream(new FileOutputStream(filename + ".mm"));
+      Visitor visitor=new MindMapPrinter(out,tokenNames);
+      AntlrASTProcessor treewalker=new PreOrderTraversal(visitor);
+      treewalker.process(ast);
+    }
+ catch (    FileNotFoundException e) {
+      System.out.println("Cannot create " + filename + ".mm");
+    }
+  }
+  modifyJavaASTintoGroovyAST(tokenNames,ast);
+  String[] groovyTokenNames=getGroovyTokenNames(input);
+  groovifyFatJavaLikeGroovyAST(ast,groovyTokenNames);
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  Visitor visitor=new SourcePrinter(new PrintStream(baos),groovyTokenNames,withNewLines);
+  AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
+  traverser.process(ast);
+  String header="";
+  if (withHeader) {
+    header="/*\n" + "  Automatically Converted from Java Source \n" + "  \n"+ "  by java2groovy v0.0.1   Copyright Jeremy Rayner 2007\n"+ "  \n"+ "  !! NOT FIT FOR ANY PURPOSE !! \n"+ "  'java2groovy' cannot be used to convert one working program into another"+ "  */\n\n";
+  }
+  return header + new String(baos.toByteArray());
+}

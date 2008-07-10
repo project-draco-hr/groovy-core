@@ -1,0 +1,20 @@
+{
+  if (!bound) {
+    bound=true;
+    boundBean=bean;
+    boundProperty=propertyName;
+    try {
+      InvokerHelper.invokeMethodSafe(boundBean,"addPropertyChangeListener",new Object[]{boundProperty,this});
+      boundToProperty=true;
+    }
+ catch (    MissingMethodException mme) {
+      try {
+        boundToProperty=false;
+        InvokerHelper.invokeMethodSafe(boundBean,"addPropertyChangeListener",new Object[]{this});
+      }
+ catch (      MissingMethodException mme2) {
+        throw new RuntimeException("Properties in beans of type " + bean.getClass().getName() + " are not observable in any capacity (no PropertyChangeListener support).");
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  if (messages == null || messages.size() == 0)   return;
+  Iterator iterator=messages.iterator();
+  while (iterator.hasNext()) {
+    Message message=(Message)iterator.next();
+    message.write(writer,janitor);
+    if (configuration.getDebug() && (message instanceof SyntaxErrorMessage)) {
+      SyntaxErrorMessage sem=(SyntaxErrorMessage)message;
+      sem.getCause().printStackTrace(writer);
+    }
+  }
+  writer.println();
+  writer.print(messages.size());
+  writer.print(" " + txt);
+  if (messages.size() > 1)   writer.print("s");
+  writer.println();
+}

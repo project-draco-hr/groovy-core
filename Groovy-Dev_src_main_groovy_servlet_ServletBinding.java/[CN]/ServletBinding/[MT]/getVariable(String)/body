@@ -1,0 +1,28 @@
+{
+  if (name == null) {
+    throw new IllegalArgumentException("No variable with null key name.");
+  }
+  if (name.length() == 0) {
+    throw new IllegalArgumentException("No variable with blank key name. [length=0]");
+  }
+  try {
+    if ("out".equals(name)) {
+      return response.getWriter();
+    }
+    if ("sout".equals(name)) {
+      return response.getOutputStream();
+    }
+    if ("html".equals(name)) {
+      if (html == null) {
+        html=new MarkupBuilder(response.getWriter());
+      }
+      return html;
+    }
+  }
+ catch (  IOException e) {
+    String message="Failed to get writer or output stream from response.";
+    context.log(message,e);
+    throw new RuntimeException(message,e);
+  }
+  return binding.getVariable(name);
+}

@@ -1,0 +1,35 @@
+{
+  if (classToTransformTo == classToTransformFrom)   return true;
+  if (classToTransformFrom == null)   return true;
+  if (classToTransformTo == Object.class)   return true;
+  classToTransformTo=ReflectionCache.autoboxType(classToTransformTo);
+  classToTransformFrom=ReflectionCache.autoboxType(classToTransformFrom);
+  if (classToTransformTo == classToTransformFrom)   return true;
+  if (classToTransformTo == Integer.class) {
+    if (classToTransformFrom == Integer.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == Double.class) {
+    if (classToTransformFrom == Double.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == Float.class || classToTransformFrom == BigDecimal.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == BigDecimal.class) {
+    if (classToTransformFrom == Double.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == Float.class || classToTransformFrom == BigDecimal.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == BigInteger.class) {
+    if (classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class || classToTransformFrom == BigInteger.class)     return true;
+  }
+ else   if (classToTransformTo == Long.class) {
+    if (classToTransformFrom == Long.class || classToTransformFrom == Integer.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == Float.class) {
+    if (classToTransformFrom == Float.class || classToTransformFrom == Integer.class || classToTransformFrom == Long.class || classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == Short.class) {
+    if (classToTransformFrom == Short.class || classToTransformFrom == Byte.class)     return true;
+  }
+ else   if (classToTransformTo == String.class) {
+    if (classToTransformFrom == String.class || GString.class.isAssignableFrom(classToTransformFrom)) {
+      return true;
+    }
+  }
+  return ReflectionCache.isAssignableFrom(classToTransformTo,classToTransformFrom);
+}

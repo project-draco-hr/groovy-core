@@ -1,0 +1,338 @@
+{
+  if (general == specific) {
+    return true;
+  }
+switch (general) {
+case ANY:
+    return true;
+case NOT_EOF:
+  return specific >= UNKNOWN && specific <= SYNTH_VARIABLE_DECLARATION;
+case GENERAL_END_OF_STATEMENT:
+switch (specific) {
+case EOF:
+case NEWLINE:
+case SEMICOLON:
+  return true;
+}
+break;
+case ANY_END_OF_STATEMENT:
+switch (specific) {
+case EOF:
+case NEWLINE:
+case SEMICOLON:
+case RIGHT_CURLY_BRACE:
+return true;
+}
+break;
+case ASSIGNMENT_OPERATOR:
+return specific == EQUAL || (specific >= PLUS_EQUAL && specific <= POWER_EQUAL) || (specific >= LOGICAL_OR_EQUAL && specific <= LOGICAL_AND_EQUAL) || (specific >= LEFT_SHIFT_EQUAL && specific <= RIGHT_SHIFT_UNSIGNED_EQUAL) || (specific >= BITWISE_OR_EQUAL && specific <= BITWISE_XOR_EQUAL);
+case COMPARISON_OPERATOR:
+return specific >= COMPARE_NOT_EQUAL && specific <= COMPARE_TO;
+case MATH_OPERATOR:
+return (specific >= PLUS && specific <= RIGHT_SHIFT_UNSIGNED) || (specific >= NOT && specific <= LOGICAL_AND) || (specific >= BITWISE_OR && specific <= BITWISE_XOR);
+case LOGICAL_OPERATOR:
+return specific >= NOT && specific <= LOGICAL_AND;
+case BITWISE_OPERATOR:
+return (specific >= BITWISE_OR && specific <= BITWISE_XOR) || specific == BITWISE_NEGATION;
+case RANGE_OPERATOR:
+return specific == DOT_DOT || specific == DOT_DOT_DOT;
+case REGEX_COMPARISON_OPERATOR:
+return specific == FIND_REGEX || specific == MATCH_REGEX;
+case DEREFERENCE_OPERATOR:
+return specific == DOT || specific == NAVIGATE;
+case PREFIX_OPERATOR:
+switch (specific) {
+case MINUS:
+case PLUS_PLUS:
+case MINUS_MINUS:
+return true;
+}
+case PURE_PREFIX_OPERATOR:
+switch (specific) {
+case REGEX_PATTERN:
+case NOT:
+case PREFIX_PLUS:
+case PREFIX_PLUS_PLUS:
+case PREFIX_MINUS:
+case PREFIX_MINUS_MINUS:
+case SYNTH_CAST:
+return true;
+}
+break;
+case POSTFIX_OPERATOR:
+switch (specific) {
+case PLUS_PLUS:
+case POSTFIX_PLUS_PLUS:
+case MINUS_MINUS:
+case POSTFIX_MINUS_MINUS:
+return true;
+}
+break;
+case INFIX_OPERATOR:
+switch (specific) {
+case DOT:
+case NAVIGATE:
+case LOGICAL_OR:
+case LOGICAL_AND:
+case BITWISE_OR:
+case BITWISE_AND:
+case BITWISE_XOR:
+case LEFT_SHIFT:
+case RIGHT_SHIFT:
+case RIGHT_SHIFT_UNSIGNED:
+case FIND_REGEX:
+case MATCH_REGEX:
+case DOT_DOT:
+case DOT_DOT_DOT:
+case KEYWORD_INSTANCEOF:
+return true;
+}
+return (specific >= COMPARE_NOT_EQUAL && specific <= COMPARE_TO) || (specific >= PLUS && specific <= MOD_EQUAL) || specific == EQUAL || (specific >= PLUS_EQUAL && specific <= POWER_EQUAL) || (specific >= LOGICAL_OR_EQUAL && specific <= LOGICAL_AND_EQUAL) || (specific >= LEFT_SHIFT_EQUAL && specific <= RIGHT_SHIFT_UNSIGNED_EQUAL) || (specific >= BITWISE_OR_EQUAL && specific <= BITWISE_XOR_EQUAL);
+case PREFIX_OR_INFIX_OPERATOR:
+switch (specific) {
+case POWER:
+case PLUS:
+case MINUS:
+case PREFIX_PLUS:
+case PREFIX_MINUS:
+return true;
+}
+break;
+case KEYWORD:
+return specific >= KEYWORD_PRIVATE && specific <= KEYWORD_GOTO;
+case SYMBOL:
+return specific >= NEWLINE && specific <= PIPE;
+case LITERAL:
+return specific >= STRING && specific <= DECIMAL_NUMBER;
+case NUMBER:
+return specific == INTEGER_NUMBER || specific == DECIMAL_NUMBER;
+case SIGN:
+switch (specific) {
+case PLUS:
+case MINUS:
+return true;
+}
+break;
+case NAMED_VALUE:
+return specific >= KEYWORD_TRUE && specific <= KEYWORD_NULL;
+case TRUTH_VALUE:
+return specific == KEYWORD_TRUE || specific == KEYWORD_FALSE;
+case TYPE_NAME:
+if (specific == IDENTIFIER) {
+return true;
+}
+case PRIMITIVE_TYPE:
+return specific >= KEYWORD_VOID && specific <= KEYWORD_CHAR;
+case CREATABLE_TYPE_NAME:
+if (specific == IDENTIFIER) {
+return true;
+}
+case CREATABLE_PRIMITIVE_TYPE:
+return specific >= KEYWORD_BOOLEAN && specific <= KEYWORD_CHAR;
+case LOOP:
+switch (specific) {
+case KEYWORD_DO:
+case KEYWORD_WHILE:
+case KEYWORD_FOR:
+return true;
+}
+break;
+case RESERVED_KEYWORD:
+return specific >= KEYWORD_CONST && specific <= KEYWORD_GOTO;
+case KEYWORD_IDENTIFIER:
+switch (specific) {
+case KEYWORD_CLASS:
+case KEYWORD_INTERFACE:
+case KEYWORD_MIXIN:
+case KEYWORD_DEF:
+case KEYWORD_DEFMACRO:
+case KEYWORD_IN:
+case KEYWORD_PROPERTY:
+return true;
+}
+break;
+case SYNTHETIC:
+return specific >= SYNTH_COMPILATION_UNIT && specific <= SYNTH_VARIABLE_DECLARATION;
+case TYPE_DECLARATION:
+return specific >= KEYWORD_CLASS && specific <= KEYWORD_MIXIN;
+case DECLARATION_MODIFIER:
+return specific >= KEYWORD_PRIVATE && specific <= KEYWORD_STATIC;
+case MATCHED_CONTAINER:
+switch (specific) {
+case LEFT_CURLY_BRACE:
+case RIGHT_CURLY_BRACE:
+case LEFT_SQUARE_BRACKET:
+case RIGHT_SQUARE_BRACKET:
+case LEFT_PARENTHESIS:
+case RIGHT_PARENTHESIS:
+return true;
+}
+break;
+case LEFT_OF_MATCHED_CONTAINER:
+switch (specific) {
+case LEFT_CURLY_BRACE:
+case LEFT_SQUARE_BRACKET:
+case LEFT_PARENTHESIS:
+return true;
+}
+break;
+case RIGHT_OF_MATCHED_CONTAINER:
+switch (specific) {
+case RIGHT_CURLY_BRACE:
+case RIGHT_SQUARE_BRACKET:
+case RIGHT_PARENTHESIS:
+return true;
+}
+break;
+case PARAMETER_TERMINATORS:
+return specific == RIGHT_PARENTHESIS || specific == COMMA;
+case ARRAY_ITEM_TERMINATORS:
+return specific == RIGHT_SQUARE_BRACKET || specific == COMMA;
+case TYPE_LIST_TERMINATORS:
+switch (specific) {
+case KEYWORD_IMPLEMENTS:
+case KEYWORD_THROWS:
+case LEFT_CURLY_BRACE:
+case COMMA:
+return true;
+}
+break;
+case OPTIONAL_DATATYPE_FOLLOWERS:
+switch (specific) {
+case IDENTIFIER:
+case LEFT_SQUARE_BRACKET:
+case DOT:
+return true;
+}
+break;
+case SWITCH_BLOCK_TERMINATORS:
+if (specific == RIGHT_CURLY_BRACE) {
+return true;
+}
+case SWITCH_ENTRIES:
+return specific == KEYWORD_CASE || specific == KEYWORD_DEFAULT;
+case METHOD_CALL_STARTERS:
+if (specific >= STRING && specific <= DECIMAL_NUMBER) {
+return true;
+}
+switch (specific) {
+case LEFT_PARENTHESIS:
+case GSTRING_START:
+case SYNTH_GSTRING:
+case KEYWORD_NEW:
+return true;
+}
+break;
+case UNSAFE_OVER_NEWLINES:
+if (ofType(specific,SYMBOL)) {
+switch (specific) {
+case LEFT_CURLY_BRACE:
+case LEFT_PARENTHESIS:
+case LEFT_SQUARE_BRACKET:
+case PLUS:
+case PLUS_PLUS:
+case MINUS:
+case MINUS_MINUS:
+case REGEX_PATTERN:
+case NOT:
+return true;
+}
+return false;
+}
+switch (specific) {
+case KEYWORD_INSTANCEOF:
+case GSTRING_EXPRESSION_START:
+case GSTRING_EXPRESSION_END:
+case GSTRING_END:
+return false;
+}
+return true;
+case PRECLUDES_CAST_OPERATOR:
+switch (specific) {
+case PLUS:
+case MINUS:
+case PREFIX_MINUS:
+case PREFIX_MINUS_MINUS:
+case PREFIX_PLUS:
+case PREFIX_PLUS_PLUS:
+case LEFT_PARENTHESIS:
+return false;
+}
+return !ofType(specific,COMPLEX_EXPRESSION);
+case OPERATOR_EXPRESSION:
+return specific >= DOT && specific <= RIGHT_SHIFT_UNSIGNED;
+case SYNTH_EXPRESSION:
+switch (specific) {
+case SYNTH_CAST:
+case SYNTH_CLOSURE:
+case SYNTH_TERNARY:
+return true;
+}
+break;
+case KEYWORD_EXPRESSION:
+switch (specific) {
+case KEYWORD_NEW:
+case KEYWORD_THIS:
+case KEYWORD_SUPER:
+case KEYWORD_INSTANCEOF:
+case KEYWORD_TRUE:
+case KEYWORD_FALSE:
+case KEYWORD_NULL:
+return true;
+}
+break;
+case LITERAL_EXPRESSION:
+return specific >= STRING && specific <= DECIMAL_NUMBER;
+case ARRAY_EXPRESSION:
+return specific == LEFT_SQUARE_BRACKET;
+case EXPRESSION:
+if (specific >= DOT && specific <= RIGHT_SHIFT_UNSIGNED) {
+return true;
+}
+if (specific >= STRING && specific <= DECIMAL_NUMBER) {
+return true;
+}
+switch (specific) {
+case SYNTH_CAST:
+case SYNTH_CLOSURE:
+case SYNTH_TERNARY:
+case SYNTH_GSTRING:
+case KEYWORD_NEW:
+case KEYWORD_THIS:
+case KEYWORD_SUPER:
+case KEYWORD_INSTANCEOF:
+case KEYWORD_TRUE:
+case KEYWORD_FALSE:
+case KEYWORD_NULL:
+case LEFT_SQUARE_BRACKET:
+return true;
+}
+break;
+case COMPLEX_EXPRESSION:
+switch (specific) {
+case KEYWORD_NEW:
+case SYNTH_METHOD_CALL:
+case SYNTH_GSTRING:
+case SYNTH_LIST:
+case SYNTH_MAP:
+case SYNTH_CLOSURE:
+case SYNTH_TERNARY:
+case SYNTH_VARIABLE_DECLARATION:
+return true;
+}
+case SIMPLE_EXPRESSION:
+if (specific >= STRING && specific <= DECIMAL_NUMBER) {
+return true;
+}
+switch (specific) {
+case KEYWORD_SUPER:
+case KEYWORD_THIS:
+case KEYWORD_TRUE:
+case KEYWORD_FALSE:
+case KEYWORD_NULL:
+return true;
+}
+break;
+}
+return false;
+}

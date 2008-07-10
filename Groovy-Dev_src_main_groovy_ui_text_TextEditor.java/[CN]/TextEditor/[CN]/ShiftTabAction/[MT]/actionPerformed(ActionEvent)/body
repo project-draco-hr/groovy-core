@@ -1,0 +1,18 @@
+{
+  try {
+    if (multiLineTab && TextEditor.this.getSelectedText() != null) {
+      Document doc=TextEditor.this.getDocument();
+      int end=Utilities.getRowEnd(TextEditor.this,getSelectionEnd());
+      TextEditor.this.setSelectionEnd(end);
+      Element el=Utilities.getParagraphElement(TextEditor.this,getSelectionStart());
+      int start=el.getStartOffset();
+      TextEditor.this.setSelectionStart(start);
+      String text=tabsAsSpaces ? TAB_BACK_PATTERN.matcher(getSelectedText()).replaceAll("") : getSelectedText().replaceAll("^\t","");
+      TextEditor.this.replaceSelection(text);
+      TextEditor.this.select(start,start + text.length());
+    }
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+  }
+}

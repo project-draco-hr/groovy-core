@@ -1,0 +1,12 @@
+{
+  String name=method.getName();
+  if (method.getDeclaringClass() == GroovyObject.class) {
+    if (name.equals("getMetaClass")) {
+      return getMetaClass();
+    }
+ else     if (name.equals("setMetaClass")) {
+      return setMetaClass((MetaClass)args[0]);
+    }
+  }
+  return InvokerHelper.invokeMethod(extension,method.getName(),args);
+}

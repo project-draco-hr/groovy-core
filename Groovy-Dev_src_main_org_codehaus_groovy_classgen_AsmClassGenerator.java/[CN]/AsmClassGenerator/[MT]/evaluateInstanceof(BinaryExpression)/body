@@ -1,0 +1,14 @@
+{
+  visitAndAutoboxBoolean(expression.getLeftExpression());
+  Expression rightExp=expression.getRightExpression();
+  ClassNode classType=ClassHelper.DYNAMIC_TYPE;
+  if (rightExp instanceof ClassExpression) {
+    ClassExpression classExp=(ClassExpression)rightExp;
+    classType=classExp.getType();
+  }
+ else {
+    throw new RuntimeException("Right hand side of the instanceof keyword must be a class name, not: " + rightExp);
+  }
+  String classInternalName=BytecodeHelper.getClassInternalName(classType);
+  mv.visitTypeInsn(INSTANCEOF,classInternalName);
+}

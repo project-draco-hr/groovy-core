@@ -1,0 +1,8 @@
+{
+  for (  CachedConstructor constr : mixinClass.getConstructors()) {
+    if (!Modifier.isPublic(constr.getModifiers()))     continue;
+    CachedClass[] classes=constr.getParameterTypes();
+    if (classes.length == 0)     return constr;
+  }
+  throw new GroovyRuntimeException("No default constructor for class " + mixinClass.getName() + "! Can't be mixed in.");
+}

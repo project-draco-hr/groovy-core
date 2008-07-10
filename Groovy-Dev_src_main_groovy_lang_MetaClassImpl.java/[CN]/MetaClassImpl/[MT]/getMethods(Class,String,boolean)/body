@@ -1,0 +1,30 @@
+{
+  Object answer;
+  final MetaMethodIndex.Entry entry=metaMethodIndex.getMethods(sender,name);
+  if (entry == null)   answer=FastArray.EMPTY_LIST;
+ else   if (isCallToSuper) {
+    answer=entry.methodsForSuper;
+  }
+ else {
+    answer=entry.methods;
+  }
+  if (answer == null)   answer=FastArray.EMPTY_LIST;
+  if (!isCallToSuper) {
+    List used=GroovyCategorySupport.getCategoryMethods(name);
+    if (used != null) {
+      FastArray arr;
+      if (answer instanceof MetaMethod) {
+        arr=new FastArray();
+        arr.add(answer);
+      }
+ else       arr=((FastArray)answer).copy();
+      for (Iterator iter=used.iterator(); iter.hasNext(); ) {
+        MetaMethod element=(MetaMethod)iter.next();
+        if (!element.getDeclaringClass().getTheClass().isAssignableFrom(sender))         continue;
+        filterMatchingMethodForCategory(arr,element);
+      }
+      answer=arr;
+    }
+  }
+  return answer;
+}

@@ -1,0 +1,13 @@
+{
+  visitBooleanExpression(new BooleanExpression(expression.getLeftExpression()));
+  Label l0=new Label();
+  mv.visitJumpInsn(IFEQ,l0);
+  visitBooleanExpression(new BooleanExpression(expression.getRightExpression()));
+  mv.visitJumpInsn(IFEQ,l0);
+  visitConstantExpression(ConstantExpression.TRUE);
+  Label l1=new Label();
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
+  visitConstantExpression(ConstantExpression.FALSE);
+  mv.visitLabel(l1);
+}

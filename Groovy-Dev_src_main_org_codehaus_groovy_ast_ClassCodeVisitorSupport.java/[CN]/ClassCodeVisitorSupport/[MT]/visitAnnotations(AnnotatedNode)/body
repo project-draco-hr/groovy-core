@@ -1,0 +1,14 @@
+{
+  List annotions=node.getAnnotations();
+  if (annotions.isEmpty())   return;
+  Iterator it=annotions.iterator();
+  while (it.hasNext()) {
+    AnnotationNode an=(AnnotationNode)it.next();
+    if (an.isBuiltIn())     continue;
+    for (Iterator iter=an.getMembers().entrySet().iterator(); iter.hasNext(); ) {
+      Map.Entry member=(Map.Entry)iter.next();
+      Expression memberValue=(Expression)member.getValue();
+      memberValue.visit(this);
+    }
+  }
+}

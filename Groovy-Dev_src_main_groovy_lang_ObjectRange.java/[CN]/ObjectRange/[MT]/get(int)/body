@@ -1,0 +1,22 @@
+{
+  if (index < 0) {
+    throw new IndexOutOfBoundsException("Index: " + index + " should not be negative");
+  }
+  if (index >= size()) {
+    throw new IndexOutOfBoundsException("Index: " + index + " is too big for range: "+ this);
+  }
+  Object value;
+  if (reverse) {
+    value=to;
+    for (int i=0; i < index; i++) {
+      value=decrement(value);
+    }
+  }
+ else {
+    value=from;
+    for (int i=0; i < index; i++) {
+      value=increment(value);
+    }
+  }
+  return value;
+}

@@ -1,0 +1,13 @@
+{
+  Exception exception=null;
+  Message message=getError(index);
+  if (message != null) {
+    if (message instanceof ExceptionMessage) {
+      exception=((ExceptionMessage)message).getCause();
+    }
+ else     if (message instanceof SyntaxErrorMessage) {
+      exception=((SyntaxErrorMessage)message).getCause();
+    }
+  }
+  return exception;
+}

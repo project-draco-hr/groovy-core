@@ -1,0 +1,40 @@
+{
+  return new Iterator(){
+    private final List list=new LinkedList();
+    private final Stack stack=new Stack();
+    private Iterator iter=iterator();
+    private GPathResult next=getNextByDepth();
+    public boolean hasNext(){
+      return this.next != null;
+    }
+    public Object next(){
+      try {
+        return this.next;
+      }
+  finally {
+        this.next=getNextByDepth();
+      }
+    }
+    public void remove(){
+      throw new UnsupportedOperationException();
+    }
+    private GPathResult getNextByDepth(){
+      while (this.iter.hasNext()) {
+        final GPathResult node=(GPathResult)this.iter.next();
+        this.list.add(node);
+        this.stack.push(this.iter);
+        this.iter=node.children().iterator();
+      }
+      if (this.list.isEmpty()) {
+        return null;
+      }
+ else {
+        GPathResult result=(GPathResult)this.list.get(0);
+        this.list.remove(0);
+        this.iter=(Iterator)this.stack.pop();
+        return result;
+      }
+    }
+  }
+;
+}

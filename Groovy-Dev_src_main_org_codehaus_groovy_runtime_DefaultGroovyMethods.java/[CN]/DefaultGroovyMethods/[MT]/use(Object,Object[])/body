@@ -1,0 +1,13 @@
+{
+  if (array.length < 2)   throw new IllegalArgumentException("Expecting at least 2 arguments, a category class and a Closure");
+  Closure closure;
+  try {
+    closure=(Closure)array[array.length - 1];
+  }
+ catch (  ClassCastException e) {
+    throw new IllegalArgumentException("Expecting a Closure to be the last argument");
+  }
+  List list=new ArrayList(array.length - 1);
+  for (int i=0; i < array.length - 1; ++i)   list.add(array[i]);
+  return GroovyCategorySupport.use(list,closure);
+}

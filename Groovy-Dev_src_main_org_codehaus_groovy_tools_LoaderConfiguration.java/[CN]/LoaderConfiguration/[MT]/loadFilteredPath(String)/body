@@ -1,0 +1,19 @@
+{
+  if (filter == null)   return;
+  int starIndex=filter.indexOf(WILDCARD);
+  if (starIndex == -1) {
+    addFile(new File(filter));
+    return;
+  }
+  boolean recursive=filter.indexOf(ALL_WILDCARD) != -1;
+  String startDir=filter.substring(0,starIndex - 1);
+  File root=new File(startDir);
+  filter=RegexUtils.quote(filter);
+  filter=filter.replaceAll("\\" + WILDCARD + "\\"+ WILDCARD,MATCH_ALL);
+  filter=filter.replaceAll("\\" + WILDCARD,MATCH_FILE_NAME);
+  Pattern pattern=Pattern.compile(filter);
+  final File[] files=root.listFiles();
+  if (files != null) {
+    findMatchingFiles(files,pattern,recursive);
+  }
+}

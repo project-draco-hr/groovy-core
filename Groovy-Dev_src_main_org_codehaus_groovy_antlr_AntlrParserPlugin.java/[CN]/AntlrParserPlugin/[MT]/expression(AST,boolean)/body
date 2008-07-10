@@ -1,0 +1,11 @@
+{
+  Expression expression=expressionSwitch(node);
+  if (convertToConstant && expression instanceof VariableExpression) {
+    VariableExpression ve=(VariableExpression)expression;
+    if (!ve.isThisExpression() && !ve.isSuperExpression()) {
+      expression=new ConstantExpression(ve.getName());
+    }
+  }
+  configureAST(expression,node);
+  return expression;
+}

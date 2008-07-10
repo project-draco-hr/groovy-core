@@ -1,0 +1,36 @@
+{
+  validate();
+  FileSet fileset;
+  GenStubsAdapter genstubs=createGeneratestubs();
+  genstubs.classpath=classpath;
+  genstubs.src=src;
+  if (genstubs.destdir == null) {
+    genstubs.destdir=createTempDir();
+  }
+  fileset=genstubs.getFileSet();
+  if (!fileset.hasPatterns()) {
+    genstubs.createInclude().setName("**/*.java");
+    genstubs.createInclude().setName("**/*.groovy");
+  }
+  JavacAdapter javac=createJavac();
+  javac.setSrcdir(src);
+  javac.setDestdir(destdir);
+  javac.setClasspath(classpath);
+  fileset=javac.getFileSet();
+  if (!fileset.hasPatterns()) {
+    javac.createInclude().setName("**/*.java");
+  }
+  javac.createSrc().createPathElement().setLocation(genstubs.destdir);
+  GroovycAdapter groovyc=createGroovyc();
+  groovyc.classpath=classpath;
+  groovyc.src=src;
+  groovyc.destdir=destdir;
+  groovyc.force=true;
+  fileset=groovyc.getFileSet();
+  if (!fileset.hasPatterns()) {
+    groovyc.createInclude().setName("**/*.groovy");
+  }
+  genstubs.execute();
+  javac.execute();
+  groovyc.execute();
+}

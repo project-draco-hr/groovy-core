@@ -1,0 +1,16 @@
+{
+  if (tag.equals("scriptlet")) {
+    out.print(text);
+    out.print("\n");
+    return;
+  }
+  if (tag.equals("expression")) {
+    printLineBegin();
+    out.print("${");
+    out.print(text);
+    out.print("}");
+    printLineEnd();
+    return;
+  }
+  throw new RuntimeException("Unsupported 'gsp:' tag named \"" + tag + "\".");
+}

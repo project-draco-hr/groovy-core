@@ -1,0 +1,17 @@
+{
+  FieldNode field=null;
+  if (expression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)expression;
+    field=classNode.getField(varExp.getName());
+  }
+ else   if (expression instanceof FieldExpression) {
+    FieldExpression fieldExp=(FieldExpression)expression;
+    field=classNode.getField(fieldExp.getFieldName());
+  }
+ else   if (expression.getClass() == PropertyExpression.class) {
+    PropertyExpression fieldExp=(PropertyExpression)expression;
+    String possibleField=fieldExp.getPropertyAsString();
+    if (possibleField != null)     field=classNode.getField(possibleField);
+  }
+  return field != null && !field.isStatic();
+}

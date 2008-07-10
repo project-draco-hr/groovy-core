@@ -1,0 +1,16 @@
+{
+  for (int i=0; i < propertyDescriptors.length; i++) {
+    PropertyDescriptor pd=propertyDescriptors[i];
+    if (pd.getPropertyType() == null)     continue;
+    Method method=pd.getReadMethod();
+    MetaMethod getter;
+    if (method != null)     getter=findMethod(CachedMethod.find(method));
+ else     getter=null;
+    MetaMethod setter;
+    method=pd.getWriteMethod();
+    if (method != null)     setter=findMethod(CachedMethod.find(method));
+ else     setter=null;
+    MetaBeanProperty mp=new MetaBeanProperty(pd.getName(),pd.getPropertyType(),getter,setter);
+    addMetaBeanProperty(mp);
+  }
+}

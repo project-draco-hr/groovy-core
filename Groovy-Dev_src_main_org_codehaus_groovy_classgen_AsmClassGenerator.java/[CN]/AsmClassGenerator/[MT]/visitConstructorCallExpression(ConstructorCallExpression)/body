@@ -1,0 +1,17 @@
+{
+  onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
+  if (call.isSpecialCall()) {
+    visitSpecialConstructorCall(call);
+    return;
+  }
+  Expression arguments=call.getArguments();
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)arguments;
+    int size=tupleExpression.getExpressions().size();
+    if (size == 0) {
+      arguments=MethodCallExpression.NO_ARGUMENTS;
+    }
+  }
+  Expression receiverClass=new ClassExpression(call.getType());
+  makeCallSite(receiverClass,CONSTRUCTOR,arguments,false,false,false,false);
+}

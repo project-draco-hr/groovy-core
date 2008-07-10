@@ -1,0 +1,16 @@
+{
+  for (Iterator iter=self.iterator(); iter.hasNext(); ) {
+    final Object o=iter.next();
+    if (o instanceof Collection) {
+      Collection c=(Collection)o;
+      collection.add(collectAll(c,createSimilarCollection(collection,c.size()),closure));
+    }
+ else {
+      collection.add(closure.call(o));
+    }
+    if (closure.getDirective() == Closure.DONE) {
+      break;
+    }
+  }
+  return collection;
+}

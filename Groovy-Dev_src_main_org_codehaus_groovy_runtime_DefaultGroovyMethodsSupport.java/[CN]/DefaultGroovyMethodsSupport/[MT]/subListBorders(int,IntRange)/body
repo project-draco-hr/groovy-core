@@ -1,0 +1,12 @@
+{
+  int from=normaliseIndex(DefaultTypeTransformation.intUnbox(range.getFrom()),size);
+  int to=normaliseIndex(DefaultTypeTransformation.intUnbox(range.getTo()),size);
+  boolean reverse=range.isReverse();
+  if (from > to) {
+    int tmp=to;
+    to=from;
+    from=tmp;
+    reverse=!reverse;
+  }
+  return new RangeInfo(from,to + 1,reverse);
+}

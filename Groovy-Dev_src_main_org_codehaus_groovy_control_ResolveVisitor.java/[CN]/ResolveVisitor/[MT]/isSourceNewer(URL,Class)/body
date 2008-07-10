@@ -1,0 +1,19 @@
+{
+  try {
+    long lastMod;
+    if (source.getProtocol().equals("file")) {
+      String path=source.getPath().replace('/',File.separatorChar).replace('|',':');
+      File file=new File(path);
+      lastMod=file.lastModified();
+    }
+ else {
+      URLConnection conn=source.openConnection();
+      lastMod=conn.getLastModified();
+      conn.getInputStream().close();
+    }
+    return lastMod > getTimeStamp(cls);
+  }
+ catch (  IOException e) {
+    return false;
+  }
+}

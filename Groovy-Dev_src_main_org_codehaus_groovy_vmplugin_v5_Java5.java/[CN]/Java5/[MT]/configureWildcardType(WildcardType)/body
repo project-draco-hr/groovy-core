@@ -1,0 +1,12 @@
+{
+  ClassNode base=ClassHelper.makeWithoutCaching("?");
+  ClassNode[] lowers=configureTypes(wildcardType.getLowerBounds());
+  ClassNode lower=null;
+  if (lower != null)   lower=lowers[0];
+  ClassNode[] upper=configureTypes(wildcardType.getUpperBounds());
+  GenericsType t=new GenericsType(base,upper,lower);
+  t.setWildcard(true);
+  ClassNode ref=ClassHelper.makeWithoutCaching(Object.class,false);
+  ref.setGenericsTypes(new GenericsType[]{t});
+  return ref;
+}

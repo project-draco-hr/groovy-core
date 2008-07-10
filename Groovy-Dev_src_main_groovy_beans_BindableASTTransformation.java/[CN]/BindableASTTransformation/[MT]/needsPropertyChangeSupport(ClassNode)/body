@@ -1,0 +1,15 @@
+{
+  while (declaringClass != null) {
+    for (    FieldNode field : (Collection<FieldNode>)declaringClass.getFields()) {
+      if (field.getType() == null) {
+        continue;
+      }
+      if (pcsClassNode.equals(field.getType())) {
+        pcsField=field;
+        return false;
+      }
+    }
+    declaringClass=declaringClass.getSuperClass();
+  }
+  return true;
+}

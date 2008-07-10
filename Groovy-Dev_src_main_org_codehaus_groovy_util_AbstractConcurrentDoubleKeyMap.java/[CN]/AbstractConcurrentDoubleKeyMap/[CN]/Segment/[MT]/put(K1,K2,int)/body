@@ -1,0 +1,50 @@
+{
+  lock();
+  try {
+    int c=count;
+    if (c++ > threshold) {
+      rehash();
+    }
+    Object[] tab=table;
+    final int index=hash & (tab.length - 1);
+    final Object o=tab[index];
+    if (o != null) {
+      if (o instanceof Entry) {
+        final Entry<K1,K2,V> e=(Entry<K1,K2,V>)o;
+        if (e.isEqual(key1,key2,hash)) {
+          return e;
+        }
+        final Object[] arr=new Object[2];
+        final Entry<K1,K2,V> res=createEntry(key1,key2,hash);
+        arr[0]=res;
+        arr[1]=e;
+        tab[index]=arr;
+        count=c;
+        return res;
+      }
+ else {
+        Object arr[]=(Object[])o;
+        for (int i=0; i != arr.length; ++i) {
+          Entry<K1,K2,V> e=(Entry<K1,K2,V>)arr[i];
+          if (e != null && e.isEqual(key1,key2,hash)) {
+            return e;
+          }
+        }
+        final Object[] newArr=new Object[arr.length + 1];
+        final Entry<K1,K2,V> res=createEntry(key1,key2,hash);
+        arr[0]=res;
+        System.arraycopy(arr,0,newArr,1,arr.length);
+        tab[index]=arr;
+        count=c;
+        return res;
+      }
+    }
+    final Entry<K1,K2,V> res=createEntry(key1,key2,hash);
+    tab[index]=res;
+    count=c;
+    return res;
+  }
+  finally {
+    unlock();
+  }
+}

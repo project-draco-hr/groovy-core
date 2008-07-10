@@ -1,0 +1,10 @@
+{
+  ClassNode superCN=cn.getSuperClass();
+  if (superCN == null)   return;
+  if (!Modifier.isFinal(superCN.getModifiers()))   return;
+  StringBuffer msg=new StringBuffer();
+  msg.append("You are not allowed to overwrite the final ");
+  msg.append(getDescription(superCN));
+  msg.append(".");
+  addError(msg.toString(),cn);
+}

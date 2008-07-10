@@ -1,0 +1,14 @@
+{
+  ClassNode oldClass=currentClass;
+  currentClass=node;
+  checkImplementsAndExtends(node);
+  if (source != null && !source.getErrorCollector().hasErrors()) {
+    checkClassForIncorrectModifiers(node);
+    checkClassForOverwritingFinal(node);
+    checkMethodsForIncorrectModifiers(node);
+    checkMethodsForOverwritingFinal(node);
+    checkNoAbstractMethodsNonabstractClass(node);
+  }
+  super.visitClass(node);
+  currentClass=oldClass;
+}

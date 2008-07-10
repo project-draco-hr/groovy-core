@@ -1,0 +1,15 @@
+{
+  Expression objectExpression=expression.getObjectExpression();
+  MethodCallerMultiAdapter adapter;
+  if (leftHandExpression) {
+    adapter=setField;
+    if (isGroovyObject(objectExpression))     adapter=setGroovyObjectField;
+    if (usesSuper(expression))     adapter=setFieldOnSuper;
+  }
+ else {
+    adapter=getField;
+    if (isGroovyObject(objectExpression))     adapter=getGroovyObjectField;
+    if (usesSuper(expression))     adapter=getFieldOnSuper;
+  }
+  visitAttributeOrProperty(expression,adapter);
+}

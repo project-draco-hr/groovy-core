@@ -1,0 +1,34 @@
+{
+  List expressions=new LinkedList();
+  Statement statement=EmptyStatement.INSTANCE;
+  Statement defaultStatement=EmptyStatement.INSTANCE;
+  AST nextSibling=node;
+  do {
+    Expression expression=expression(nextSibling.getFirstChild());
+    expressions.add(expression);
+    nextSibling=nextSibling.getNextSibling();
+  }
+ while (isType(LITERAL_case,nextSibling));
+  if (nextSibling != null) {
+    if (isType(LITERAL_default,nextSibling)) {
+      defaultStatement=statement(nextSibling.getNextSibling());
+      statement=EmptyStatement.INSTANCE;
+    }
+ else {
+      statement=statement(nextSibling);
+    }
+  }
+  for (Iterator iterator=expressions.iterator(); iterator.hasNext(); ) {
+    Expression expr=(Expression)iterator.next();
+    Statement stmt;
+    if (iterator.hasNext()) {
+      stmt=new CaseStatement(expr,EmptyStatement.INSTANCE);
+    }
+ else {
+      stmt=new CaseStatement(expr,statement);
+    }
+    configureAST(stmt,node);
+    cases.add(stmt);
+  }
+  return defaultStatement;
+}

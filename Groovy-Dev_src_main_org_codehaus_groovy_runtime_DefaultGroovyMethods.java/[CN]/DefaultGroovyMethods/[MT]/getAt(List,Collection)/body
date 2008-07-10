@@ -1,0 +1,17 @@
+{
+  List answer=new ArrayList(indices.size());
+  for (Iterator iter=indices.iterator(); iter.hasNext(); ) {
+    Object value=iter.next();
+    if (value instanceof Range) {
+      answer.addAll(getAt(self,(Range)value));
+    }
+ else     if (value instanceof List) {
+      answer.addAll(getAt(self,(List)value));
+    }
+ else {
+      int idx=DefaultTypeTransformation.intUnbox(value);
+      answer.add(getAt(self,idx));
+    }
+  }
+  return answer;
+}

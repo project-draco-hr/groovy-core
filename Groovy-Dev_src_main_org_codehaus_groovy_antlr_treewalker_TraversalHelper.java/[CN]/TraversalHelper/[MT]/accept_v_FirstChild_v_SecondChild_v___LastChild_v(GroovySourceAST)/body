@@ -1,0 +1,14 @@
+{
+  openingVisit(t);
+  GroovySourceAST child=(GroovySourceAST)t.getFirstChild();
+  if (child != null) {
+    accept(child);
+    GroovySourceAST sibling=(GroovySourceAST)child.getNextSibling();
+    while (sibling != null) {
+      subsequentVisit(t);
+      accept(sibling);
+      sibling=(GroovySourceAST)sibling.getNextSibling();
+    }
+  }
+  closingVisit(t);
+}

@@ -1,0 +1,19 @@
+{
+  MetaClassRegistry registry=GroovySystem.getMetaClassRegistry();
+  if (!modified) {
+    modified=true;
+    if (inRegistry) {
+      MetaClass currMetaClass=registry.getMetaClass(theClass);
+      if (!(currMetaClass instanceof ExpandoMetaClass) && currMetaClass instanceof AdaptingMetaClass) {
+        ((AdaptingMetaClass)currMetaClass).setAdaptee(this);
+      }
+ else {
+        registry.setMetaClass(theClass,this);
+      }
+    }
+  }
+  if (registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle) {
+    ExpandoMetaClassCreationHandle creationHandler=(ExpandoMetaClassCreationHandle)registry.getMetaClassCreationHandler();
+    if (!creationHandler.hasModifiedMetaClass(this))     creationHandler.registerModifiedMetaClass(this);
+  }
+}

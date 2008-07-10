@@ -1,0 +1,9 @@
+{
+  try {
+    getMetaClass().setProperty(this,property,newValue);
+  }
+ catch (  MissingPropertyException e) {
+    if (delegate instanceof GroovyObject)     ((GroovyObject)delegate).setProperty(property,newValue);
+ else     throw e;
+  }
+}

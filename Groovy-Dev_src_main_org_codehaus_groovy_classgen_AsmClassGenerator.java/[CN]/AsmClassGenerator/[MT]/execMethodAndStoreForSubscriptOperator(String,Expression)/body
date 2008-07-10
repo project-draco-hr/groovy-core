@@ -1,0 +1,35 @@
+{
+  makeCallSite(expression,method,MethodCallExpression.NO_ARGUMENTS,false,false,false,false);
+  boolean setResult=true;
+  if (expression instanceof BinaryExpression) {
+    BinaryExpression be=(BinaryExpression)expression;
+    if (be.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      mv.visitInsn(DUP);
+      final int resultIdx=compileStack.defineTemporaryVariable("postfix_" + method,true);
+      BytecodeExpression result=new BytecodeExpression(){
+        public void visit(        MethodVisitor mv){
+          mv.visitVarInsn(ALOAD,resultIdx);
+        }
+      }
+;
+      TupleExpression args=new ArgumentListExpression();
+      args.addExpression(be.getRightExpression());
+      args.addExpression(result);
+      makeCallSite(be.getLeftExpression(),"putAt",args,false,false,false,false);
+      mv.visitInsn(POP);
+      setResult=false;
+      compileStack.removeVar(resultIdx);
+    }
+  }
+ else   if (expression instanceof ConstantExpression) {
+    setResult=false;
+  }
+  if (setResult) {
+    if (expression instanceof VariableExpression || expression instanceof FieldExpression || expression instanceof PropertyExpression) {
+      mv.visitInsn(DUP);
+    }
+    leftHandExpression=true;
+    expression.visit(this);
+    leftHandExpression=false;
+  }
+}

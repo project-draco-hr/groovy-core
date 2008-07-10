@@ -1,0 +1,22 @@
+{
+  CachedClass cachedClass=ReflectionCache.getCachedClass(categoryClass);
+  CachedMethod[] methods=cachedClass.getMethods();
+  for (int i=0; i < methods.length; i++) {
+    CachedMethod cachedMethod=methods[i];
+    if (cachedMethod.isStatic() && cachedMethod.isPublic()) {
+      CachedClass[] paramTypes=cachedMethod.getParameterTypes();
+      if (paramTypes.length > 0) {
+        CachedClass metaClass=paramTypes[0];
+        CategoryMethod mmethod=new CategoryMethod(cachedMethod,metaClass.getTheClass());
+        final String name=cachedMethod.getName();
+        CategoryMethodList list=get(name);
+        if (list == null || list.level != level) {
+          list=new CategoryMethodList(name,level,list);
+          put(name,list);
+        }
+        list.add(mmethod);
+        Collections.sort(list);
+      }
+    }
+  }
+}

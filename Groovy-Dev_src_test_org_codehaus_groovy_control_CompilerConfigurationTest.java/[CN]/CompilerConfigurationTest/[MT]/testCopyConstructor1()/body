@@ -1,0 +1,62 @@
+{
+  final CompilerConfiguration init=new CompilerConfiguration();
+  init.setWarningLevel(WarningMessage.POSSIBLE_ERRORS);
+  init.setDebug(true);
+  init.setVerbose(false);
+  init.setTolerance(720);
+  init.setMinimumRecompilationInterval(234);
+  init.setScriptBaseClass("blarg.foo.WhatSit");
+  init.setSourceEncoding("LEAD-123");
+  init.setTargetBytecode(CompilerConfiguration.POST_JDK5);
+  init.setRecompileGroovySource(true);
+  init.setClasspath("File1" + File.pathSeparator + "Somewhere");
+  final PrintWriter initOut=new PrintWriter(System.out);
+  init.setOutput(initOut);
+  final File initTDFile=new File("A wandering path");
+  init.setTargetDirectory(initTDFile);
+  init.setDefaultScriptExtension(".jpp");
+  final Map initJoint=new HashMap();
+  initJoint.put("somekey","somevalue");
+  init.setJointCompilationOptions(initJoint);
+  final ParserPluginFactory initPPF=ParserPluginFactory.newInstance(true);
+  init.setPluginFactory(initPPF);
+  assertEquals(WarningMessage.POSSIBLE_ERRORS,init.getWarningLevel());
+  assertEquals(true,init.getDebug());
+  assertEquals(false,init.getVerbose());
+  assertEquals(720,init.getTolerance());
+  assertEquals(234,init.getMinimumRecompilationInterval());
+  assertEquals("blarg.foo.WhatSit",init.getScriptBaseClass());
+  assertEquals("LEAD-123",init.getSourceEncoding());
+  assertEquals(CompilerConfiguration.POST_JDK5,init.getTargetBytecode());
+  assertEquals(true,init.getRecompileGroovySource());
+{
+    final List listCP=init.getClasspath();
+    assertEquals("File1",listCP.get(0));
+    assertEquals("Somewhere",listCP.get(1));
+  }
+  assertEquals(initOut,init.getOutput());
+  assertEquals(initTDFile,init.getTargetDirectory());
+  assertEquals(".jpp",init.getDefaultScriptExtension());
+  assertEquals(initJoint,init.getJointCompilationOptions());
+  assertEquals(initPPF,init.getPluginFactory());
+  final CompilerConfiguration config=new CompilerConfiguration(init);
+  assertEquals(WarningMessage.POSSIBLE_ERRORS,config.getWarningLevel());
+  assertEquals(true,config.getDebug());
+  assertEquals(false,config.getVerbose());
+  assertEquals(720,config.getTolerance());
+  assertEquals(234,config.getMinimumRecompilationInterval());
+  assertEquals("blarg.foo.WhatSit",config.getScriptBaseClass());
+  assertEquals("LEAD-123",config.getSourceEncoding());
+  assertEquals(CompilerConfiguration.POST_JDK5,config.getTargetBytecode());
+  assertEquals(true,config.getRecompileGroovySource());
+{
+    final List listCP=config.getClasspath();
+    assertEquals("File1",listCP.get(0));
+    assertEquals("Somewhere",listCP.get(1));
+  }
+  assertEquals(initOut,config.getOutput());
+  assertEquals(initTDFile,config.getTargetDirectory());
+  assertEquals(".jpp",config.getDefaultScriptExtension());
+  assertEquals(initJoint,config.getJointCompilationOptions());
+  assertEquals(initPPF,config.getPluginFactory());
+}

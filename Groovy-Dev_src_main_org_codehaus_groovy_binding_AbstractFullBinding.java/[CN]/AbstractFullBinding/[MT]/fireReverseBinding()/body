@@ -1,0 +1,10 @@
+{
+  if (!(sourceBinding instanceof TargetBinding) || !(targetBinding instanceof SourceBinding)) {
+    throw new RuntimeException("Binding Instance is not reversable");
+  }
+  Object result=((SourceBinding)targetBinding).getSourceValue();
+  if (getReverseConverter() != null) {
+    result=getReverseConverter().call(result);
+  }
+  ((TargetBinding)sourceBinding).updateTargetValue(result);
+}

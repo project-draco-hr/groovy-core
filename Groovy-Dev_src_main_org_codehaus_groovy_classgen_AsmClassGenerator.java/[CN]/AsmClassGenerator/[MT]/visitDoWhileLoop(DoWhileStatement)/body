@@ -1,0 +1,13 @@
+{
+  onLineNumber(loop,"visitDoWhileLoop");
+  visitStatement(loop);
+  compileStack.pushLoop(loop.getStatementLabel());
+  Label breakLabel=compileStack.getBreakLabel();
+  Label continueLabel=compileStack.getContinueLabel();
+  mv.visitLabel(continueLabel);
+  loop.getLoopBlock().visit(this);
+  loop.getBooleanExpression().visit(this);
+  mv.visitJumpInsn(IFEQ,continueLabel);
+  mv.visitLabel(breakLabel);
+  compileStack.pop();
+}

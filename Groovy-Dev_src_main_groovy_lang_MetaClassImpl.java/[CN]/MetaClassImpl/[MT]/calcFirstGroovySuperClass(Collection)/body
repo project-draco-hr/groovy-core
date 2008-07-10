@@ -1,0 +1,22 @@
+{
+  if (theCachedClass.isInterface)   return ReflectionCache.OBJECT_CLASS;
+  CachedClass firstGroovy=null;
+  Iterator iter=superClasses.iterator();
+  for (; iter.hasNext(); ) {
+    CachedClass c=(CachedClass)iter.next();
+    if (GroovyObject.class.isAssignableFrom(c.getTheClass())) {
+      firstGroovy=c;
+      break;
+    }
+  }
+  if (firstGroovy == null)   firstGroovy=theCachedClass;
+ else {
+    if (firstGroovy.getTheClass() == GroovyObjectSupport.class && iter.hasNext()) {
+      firstGroovy=(CachedClass)iter.next();
+      if (firstGroovy.getTheClass() == Closure.class && iter.hasNext()) {
+        firstGroovy=(CachedClass)iter.next();
+      }
+    }
+  }
+  return GroovyObject.class.isAssignableFrom(firstGroovy.getTheClass()) ? firstGroovy.getCachedSuperClass() : firstGroovy;
+}

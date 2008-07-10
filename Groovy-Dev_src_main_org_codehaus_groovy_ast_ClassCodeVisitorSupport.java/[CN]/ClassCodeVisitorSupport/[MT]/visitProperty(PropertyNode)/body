@@ -1,0 +1,9 @@
+{
+  visitAnnotations(node);
+  Statement statement=node.getGetterBlock();
+  visitClassCodeContainer(statement);
+  statement=node.getSetterBlock();
+  visitClassCodeContainer(statement);
+  Expression init=node.getInitialExpression();
+  if (init != null)   init.visit(this);
+}

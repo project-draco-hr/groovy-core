@@ -1,0 +1,13 @@
+{
+  if (setter != null && getter == null)   return setter.getModifiers();
+  if (getter != null && setter == null)   return getter.getModifiers();
+  int modifiers=getter.getModifiers() | setter.getModifiers();
+  int visibility=0;
+  if (Modifier.isPublic(modifiers))   visibility=Modifier.PUBLIC;
+  if (Modifier.isProtected(modifiers))   visibility=Modifier.PROTECTED;
+  if (Modifier.isPrivate(modifiers))   visibility=Modifier.PRIVATE;
+  int states=getter.getModifiers() & setter.getModifiers();
+  states&=~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
+  states|=visibility;
+  return states;
+}

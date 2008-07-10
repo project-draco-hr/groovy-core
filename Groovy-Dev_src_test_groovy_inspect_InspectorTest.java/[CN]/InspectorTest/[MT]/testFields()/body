@@ -1,0 +1,9 @@
+{
+  Inspector insp=new Inspector(this);
+  Object[] fields=insp.getPublicFields();
+  assertEquals(5,fields.length);
+  String[] names={"someField","SOME_CONST","ANYTHING","NULL","NOT_NULL"};
+  assertNameEquals(names,fields);
+  String[] details={"JAVA","public","InspectorTest","String","someField","\"only for testing\""};
+  assertContains(fields,details);
+}

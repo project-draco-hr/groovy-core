@@ -1,0 +1,22 @@
+{
+  SingleKeyHashMap propertyMap=classPropertyIndex.getNotNull(theCachedClass);
+  for (ComplexKeyHashMap.EntryIterator iter=propertyMap.getEntrySetIterator(); iter.hasNext(); ) {
+    SingleKeyHashMap.Entry entry=((SingleKeyHashMap.Entry)iter.next());
+    MetaProperty mp=(MetaProperty)entry.getValue();
+    if (mp instanceof CachedField) {
+      CachedField mfp=(CachedField)mp;
+      if (!mfp.isStatic())       continue;
+    }
+ else     if (mp instanceof MetaBeanProperty) {
+      MetaProperty result=establishStaticMetaProperty(mp);
+      if (result == null)       continue;
+ else {
+        mp=result;
+      }
+    }
+ else {
+      continue;
+    }
+    staticPropertyIndex.put(entry.getKey(),mp);
+  }
+}

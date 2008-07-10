@@ -1,0 +1,14 @@
+{
+  final Iterator methodIterator=methods.iterator();
+  while (methodIterator.hasNext()) {
+    final MetaMethod method=(MetaMethod)methodIterator.next();
+    final String name=method.getName();
+    methodSet.add(name);
+    List methodList=(List)methodMap.get(name);
+    if (methodList == null) {
+      methodList=new LinkedList();
+      methodMap.put(name,methodList);
+    }
+    methodList.add(method);
+  }
+}

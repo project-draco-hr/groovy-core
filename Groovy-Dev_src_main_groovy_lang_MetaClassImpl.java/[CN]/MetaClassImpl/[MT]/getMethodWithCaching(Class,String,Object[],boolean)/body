@@ -1,0 +1,10 @@
+{
+  if (!isCallToSuper && GroovyCategorySupport.hasCategoryInCurrentThread()) {
+    return getMethodWithoutCaching(sender,methodName,MetaClassHelper.convertToTypeArray(arguments),isCallToSuper);
+  }
+ else {
+    final MetaMethodIndex.Entry e=metaMethodIndex.getMethods(sender,methodName);
+    if (e == null)     return null;
+    return isCallToSuper ? getSuperMethodWithCaching(arguments,e) : getNormalMethodWithCaching(arguments,e);
+  }
+}

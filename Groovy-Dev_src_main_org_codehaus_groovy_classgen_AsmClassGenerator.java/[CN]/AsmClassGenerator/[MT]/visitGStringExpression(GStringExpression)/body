@@ -1,0 +1,24 @@
+{
+  mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/GStringImpl");
+  mv.visitInsn(DUP);
+  int size=expression.getValues().size();
+  helper.pushConstant(size);
+  mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  for (int i=0; i < size; i++) {
+    mv.visitInsn(DUP);
+    helper.pushConstant(i);
+    visitAndAutoboxBoolean(expression.getValue(i));
+    mv.visitInsn(AASTORE);
+  }
+  List strings=expression.getStrings();
+  size=strings.size();
+  helper.pushConstant(size);
+  mv.visitTypeInsn(ANEWARRAY,"java/lang/String");
+  for (int i=0; i < size; i++) {
+    mv.visitInsn(DUP);
+    helper.pushConstant(i);
+    mv.visitLdcInsn(((ConstantExpression)strings.get(i)).getValue());
+    mv.visitInsn(AASTORE);
+  }
+  mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/GStringImpl","<init>","([Ljava/lang/Object;[Ljava/lang/String;)V");
+}

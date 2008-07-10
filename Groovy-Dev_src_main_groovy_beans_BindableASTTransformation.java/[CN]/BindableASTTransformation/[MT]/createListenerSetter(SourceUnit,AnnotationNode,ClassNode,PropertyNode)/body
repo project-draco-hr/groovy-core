@@ -1,0 +1,11 @@
+{
+  String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
+  if (classNode.getMethods(setterName).isEmpty()) {
+    Expression fieldExpression=new FieldExpression(propertyNode.getField());
+    Statement setterBlock=createBindableStatement(propertyNode,fieldExpression);
+    createSetterMethod(classNode,propertyNode,setterName,setterBlock);
+  }
+ else {
+    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot handle user generated setters.",node.getLineNumber(),node.getColumnNumber()),source));
+  }
+}

@@ -1,0 +1,33 @@
+{
+  int left;
+  int right=0;
+  boolean emptyRange=false;
+  if (splice.size() == 2) {
+    left=DefaultTypeTransformation.intUnbox(splice.get(0));
+    right=DefaultTypeTransformation.intUnbox(splice.get(1));
+  }
+ else   if (splice instanceof IntRange) {
+    IntRange range=(IntRange)splice;
+    left=range.getFromInt();
+    right=range.getToInt();
+  }
+ else   if (splice instanceof EmptyRange) {
+    RangeInfo info=subListBorders(self.size(),(EmptyRange)splice);
+    left=info.from;
+    emptyRange=true;
+  }
+ else {
+    throw new IllegalArgumentException("You must specify a list of 2 indexes to create a sub-list");
+  }
+  int size=self.size();
+  left=normaliseIndex(left,size);
+  right=normaliseIndex(right,size);
+  List sublist;
+  if (!emptyRange) {
+    sublist=self.subList(left,right + 1);
+  }
+ else {
+    sublist=self.subList(left,left);
+  }
+  return sublist;
+}

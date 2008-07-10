@@ -1,0 +1,18 @@
+{
+  List args=null;
+  if (arguments instanceof TupleExpression) {
+    TupleExpression tupleExpression=(TupleExpression)arguments;
+    args=tupleExpression.getExpressions();
+  }
+ else   if (arguments instanceof ListExpression) {
+    ListExpression le=(ListExpression)arguments;
+    args=le.getExpressions();
+  }
+ else {
+    return arguments instanceof SpreadExpression;
+  }
+  for (Iterator iter=args.iterator(); iter.hasNext(); ) {
+    if (iter.next() instanceof SpreadExpression)     return true;
+  }
+  return false;
+}

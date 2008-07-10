@@ -1,0 +1,13 @@
+{
+  for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
+    CachedClass iclass=(CachedClass)interfaceIter.next();
+    SingleKeyHashMap iPropertyIndex=classPropertyIndex.getNotNull(iclass);
+    addFields(iclass,iPropertyIndex);
+    for (Iterator classIter=superClasses.iterator(); classIter.hasNext(); ) {
+      CachedClass sclass=(CachedClass)classIter.next();
+      if (!iclass.getTheClass().isAssignableFrom(sclass.getTheClass()))       continue;
+      SingleKeyHashMap sPropertyIndex=classPropertyIndex.getNotNull(sclass);
+      copyNonPrivateFields(iPropertyIndex,sPropertyIndex);
+    }
+  }
+}

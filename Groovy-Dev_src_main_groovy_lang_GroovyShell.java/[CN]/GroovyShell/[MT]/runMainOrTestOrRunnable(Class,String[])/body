@@ -1,0 +1,24 @@
+{
+  if (scriptClass == null) {
+    return null;
+  }
+  try {
+    scriptClass.getMethod("main",new Class[]{String[].class});
+    return InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
+  }
+ catch (  NoSuchMethodException e) {
+    if (Runnable.class.isAssignableFrom(scriptClass)) {
+      return runRunnable(scriptClass,args);
+    }
+    if (isJUnit3Test(scriptClass)) {
+      return runJUnit3Test(scriptClass);
+    }
+    if (isJUnit4Test(scriptClass)) {
+      return runJUnit4Test(scriptClass);
+    }
+    if (isTestNgTest(scriptClass)) {
+      return runTestNgTest(scriptClass);
+    }
+    throw new GroovyRuntimeException("This script or class could not be run.\n" + "It should either: \n" + "- have a main method, \n"+ "- be a JUnit test, TestNG test or extend GroovyTestCase, \n"+ "- or implement the Runnable interface.");
+  }
+}

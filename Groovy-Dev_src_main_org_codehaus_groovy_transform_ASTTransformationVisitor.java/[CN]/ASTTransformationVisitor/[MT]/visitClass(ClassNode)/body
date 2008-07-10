@@ -1,0 +1,35 @@
+{
+  Map<Class<? extends ASTTransformation>,Set<ASTNode>> baseTransforms=classNode.getTransforms(phase);
+  if (!baseTransforms.isEmpty()) {
+    transformInstances=new HashMap<Class<? extends ASTTransformation>,ASTTransformation>();
+    for (    Class<? extends ASTTransformation> transformClass : baseTransforms.keySet()) {
+      try {
+        transformInstances.put(transformClass,transformClass.newInstance());
+      }
+ catch (      InstantiationException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformClass,source));
+      }
+catch (      IllegalAccessException e) {
+        source.getErrorCollector().addError(new SimpleMessage("Could not instantiate Transformation Processor " + transformClass,source));
+      }
+    }
+    transforms=new HashMap<ASTNode,List<ASTTransformation>>();
+    for (    Map.Entry<Class<? extends ASTTransformation>,Set<ASTNode>> entry : baseTransforms.entrySet()) {
+      for (      ASTNode node : entry.getValue()) {
+        List<ASTTransformation> list=transforms.get(node);
+        if (list == null) {
+          list=new ArrayList<ASTTransformation>();
+          transforms.put(node,list);
+        }
+        list.add(transformInstances.get(entry.getKey()));
+      }
+    }
+    targetNodes=new LinkedList<ASTNode[]>();
+    super.visitClass(classNode);
+    for (    ASTNode[] node : targetNodes) {
+      for (      ASTTransformation snt : transforms.get(node[0])) {
+        snt.visit(node,source);
+      }
+    }
+  }
+}

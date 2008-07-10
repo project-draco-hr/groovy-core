@@ -1,0 +1,8 @@
+{
+  MetaClass mc;
+  if (staticMetaClass == null || (mc=(MetaClass)staticMetaClass.get()) == null) {
+    mc=InvokerHelper.getMetaClass(obj);
+    staticMetaClass=new SoftReference(mc);
+  }
+  return mc;
+}

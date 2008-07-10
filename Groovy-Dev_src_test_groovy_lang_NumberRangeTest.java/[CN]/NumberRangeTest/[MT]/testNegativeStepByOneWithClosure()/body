@@ -1,0 +1,11 @@
+{
+  final List callLog=new ArrayList();
+  final Closure closure=new RecordingClosure(callLog);
+  final Range range=createRange(1,5);
+  range.step(-1,closure);
+  assertEquals("wrong number of calls to closure",5,callLog.size());
+  final Iterator iter=callLog.iterator();
+  for (int i=5; i >= 1; i--) {
+    assertEquals("wrong argument passed to closure",createValue(i),iter.next());
+  }
+}

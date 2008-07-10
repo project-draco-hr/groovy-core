@@ -1,0 +1,19 @@
+{
+  for (Iterator<Map.Entry<String,CategoryMethodList>> it=entrySet().iterator(); it.hasNext(); ) {
+    final Map.Entry<String,CategoryMethodList> e=it.next();
+    final CategoryMethodList list=e.getValue();
+    if (list.level == level) {
+      final CategoryMethodList prev=list.previous;
+      if (prev == null) {
+        it.remove();
+        list.usage.addAndGet(-list.size());
+      }
+ else {
+        e.setValue(prev);
+        list.usage.addAndGet(prev.size() - list.size());
+      }
+    }
+  }
+  level--;
+  categoriesInUse.getAndDecrement();
+}

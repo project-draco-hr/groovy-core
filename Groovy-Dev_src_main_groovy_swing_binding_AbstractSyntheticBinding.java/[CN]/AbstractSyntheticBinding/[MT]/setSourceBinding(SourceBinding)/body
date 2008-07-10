@@ -1,0 +1,13 @@
+{
+  if (!(source instanceof PropertyBinding)) {
+    throw new IllegalArgumentException("Only PropertySourceBindings are accepted");
+  }
+  if (!propertyName.equals(((PropertyBinding)source).getPropertyName())) {
+    throw new IllegalArgumentException("PropertyName must be '" + propertyName + "'");
+  }
+  Object bean=((PropertyBinding)source).getBean();
+  if ((bean == null) || !klass.isAssignableFrom(bean.getClass())) {
+    throw new IllegalArgumentException("SourceBean must be a " + klass.getName());
+  }
+  super.setSourceBinding(source);
+}

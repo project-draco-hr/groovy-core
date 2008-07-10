@@ -1,0 +1,18 @@
+{
+  if (log.isLoggable(Level.FINE)) {
+    log.fine("Setting value at " + row + ","+ col+ " to "+ value+ " (an instance of "+ value.getClass()+ ")");
+  }
+  if (data[0][col] instanceof Integer && !(value instanceof Integer)) {
+    try {
+      data[row][col]=Integer.valueOf(value.toString());
+      fireTableCellUpdated(row,col);
+    }
+ catch (    NumberFormatException e) {
+      log.log(Level.SEVERE,"The \"" + getColumnName(col) + "\" column accepts only integer values.");
+    }
+  }
+ else {
+    data[row][col]=value;
+    fireTableCellUpdated(row,col);
+  }
+}

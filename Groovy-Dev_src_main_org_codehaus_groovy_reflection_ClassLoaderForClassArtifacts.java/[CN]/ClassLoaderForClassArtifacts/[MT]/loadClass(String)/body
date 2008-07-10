@@ -1,0 +1,9 @@
+{
+  Class cls=findLoadedClass(name);
+  if (cls != null)   return cls;
+  if (GroovySunClassLoader.sunVM != null) {
+    cls=GroovySunClassLoader.sunVM.doesKnow(name);
+    if (cls != null)     return cls;
+  }
+  return super.loadClass(name);
+}

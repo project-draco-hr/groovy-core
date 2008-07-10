@@ -1,0 +1,17 @@
+{
+  if (binding == null) {
+    throw new IllegalArgumentException("Binding must not be null.");
+  }
+  if (config == null) {
+    throw new IllegalArgumentException("Compiler configuration must not be null.");
+  }
+  final ClassLoader parentLoader=(parent != null) ? parent : GroovyShell.class.getClassLoader();
+  this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyClassLoader(parentLoader,config);
+    }
+  }
+);
+  this.context=binding;
+  this.config=config;
+}

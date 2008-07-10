@@ -1,0 +1,35 @@
+{
+  if (stateStack.size() > 1) {
+    int size=stateStack.size() - 1;
+    throw new GroovyBugError("the compile stack contains " + size + " more push instruction"+ (size == 1 ? "" : "s")+ " than pops.");
+  }
+  clear=true;
+  if (true) {
+    if (thisEndLabel == null)     setEndLabels();
+    if (!scope.isInStaticContext()) {
+      mv.visitLocalVariable("this",className,null,thisStartLabel,thisEndLabel,0);
+    }
+    for (Iterator iterator=usedVariables.iterator(); iterator.hasNext(); ) {
+      Variable v=(Variable)iterator.next();
+      String type=BytecodeHelper.getTypeDescription(v.getType());
+      Label start=v.getStartLabel();
+      Label end=v.getEndLabel();
+      mv.visitLocalVariable(v.getName(),type,null,start,end,v.getIndex());
+    }
+  }
+  pop();
+  stackVariables.clear();
+  usedVariables.clear();
+  scope=null;
+  mv=null;
+  resetVariableIndex(false);
+  superBlockNamedLabels.clear();
+  currentBlockNamedLabels.clear();
+  namedLoopBreakLabel.clear();
+  namedLoopContinueLabel.clear();
+  continueLabel=null;
+  breakLabel=null;
+  helper=null;
+  thisStartLabel=null;
+  thisEndLabel=null;
+}

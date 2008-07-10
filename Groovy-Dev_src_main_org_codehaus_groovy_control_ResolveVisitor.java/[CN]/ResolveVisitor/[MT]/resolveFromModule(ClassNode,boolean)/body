@@ -1,0 +1,40 @@
+{
+  String name=type.getName();
+  ModuleNode module=currentClass.getModule();
+  if (module == null)   return false;
+  boolean newNameUsed=false;
+  if (!type.hasPackageName() && module.hasPackageName() && !(type instanceof ConstructedClassWithPackage)) {
+    type.setName(module.getPackageName() + name);
+    newNameUsed=true;
+  }
+  List moduleClasses=module.getClasses();
+  for (Iterator iter=moduleClasses.iterator(); iter.hasNext(); ) {
+    ClassNode mClass=(ClassNode)iter.next();
+    if (mClass.getName().equals(type.getName())) {
+      if (mClass != type)       type.setRedirect(mClass);
+      return true;
+    }
+  }
+  if (newNameUsed)   type.setName(name);
+  if (testModuleImports) {
+    if (resolveAliasFromModule(type))     return true;
+    if (module.hasPackageName()) {
+      ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(module.getPackageName(),name);
+      if (resolve(tmp,false,false,false)) {
+        type.setRedirect(tmp.redirect());
+        return true;
+      }
+    }
+    List packages=module.getImportPackages();
+    for (Iterator iter=packages.iterator(); iter.hasNext(); ) {
+      String packagePrefix=(String)iter.next();
+      ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(packagePrefix,name);
+      if (resolve(tmp,false,false,true)) {
+        ambiguousClass(type,tmp,name);
+        type.setRedirect(tmp.redirect());
+        return true;
+      }
+    }
+  }
+  return false;
+}

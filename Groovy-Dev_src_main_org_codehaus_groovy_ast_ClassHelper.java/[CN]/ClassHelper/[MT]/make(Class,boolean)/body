@@ -1,0 +1,10 @@
+{
+  for (int i=0; i < classes.length; i++) {
+    if (c == classes[i])     return types[i];
+  }
+  if (c.isArray()) {
+    ClassNode cn=make(c.getComponentType(),includeGenerics);
+    return cn.makeArray();
+  }
+  return makeWithoutCaching(c,includeGenerics);
+}

@@ -1,0 +1,28 @@
+{
+  MethodVisitor mv=cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC + ACC_STATIC,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;",null,null);
+  mv.visitCode();
+  mv.visitFieldInsn(GETSTATIC,internalClassName,"$callSiteArray","Ljava/lang/ref/SoftReference;");
+  Label l0=new Label();
+  mv.visitJumpInsn(IFNULL,l0);
+  mv.visitFieldInsn(GETSTATIC,internalClassName,"$callSiteArray","Ljava/lang/ref/SoftReference;");
+  mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/ref/SoftReference","get","()Ljava/lang/Object;");
+  mv.visitTypeInsn(CHECKCAST,"org/codehaus/groovy/runtime/callsite/CallSiteArray");
+  mv.visitInsn(DUP);
+  mv.visitVarInsn(ASTORE,0);
+  Label l1=new Label();
+  mv.visitJumpInsn(IFNONNULL,l1);
+  mv.visitLabel(l0);
+  mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;");
+  mv.visitVarInsn(ASTORE,0);
+  mv.visitTypeInsn(NEW,"java/lang/ref/SoftReference");
+  mv.visitInsn(DUP);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitMethodInsn(INVOKESPECIAL,"java/lang/ref/SoftReference","<init>","(Ljava/lang/Object;)V");
+  mv.visitFieldInsn(PUTSTATIC,internalClassName,"$callSiteArray","Ljava/lang/ref/SoftReference;");
+  mv.visitLabel(l1);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitFieldInsn(GETFIELD,"org/codehaus/groovy/runtime/callsite/CallSiteArray","array","[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
+  mv.visitInsn(ARETURN);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+}

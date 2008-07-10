@@ -1,0 +1,10 @@
+{
+  DymmyClass dymmyClass=new DymmyClass();
+  MetaClass metaClass=InvokerHelper.getMetaClass(dymmyClass);
+  int[] ints=new int[]{0,1,2,3};
+  metaClass.setProperty(dymmyClass,"ints",ints);
+  assertEquals(ints,metaClass.getProperty(dymmyClass,"ints"));
+  Integer[] integers=new Integer[]{new Integer(0),new Integer(1),new Integer(2),new Integer(3)};
+  metaClass.setProperty(dymmyClass,"integers",integers);
+  assertEquals(integers,metaClass.getProperty(dymmyClass,"integers"));
+}

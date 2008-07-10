@@ -1,0 +1,19 @@
+{
+  Binding context=shell.getContext();
+  Map variables=context.getVariables();
+  Set set=variables.keySet();
+  if (set.isEmpty()) {
+    out.println(MESSAGES.getMessage("command.binding.binding_empty"));
+  }
+ else {
+    out.println(MESSAGES.getMessage("command.binding.available_variables"));
+    Iterator iter=set.iterator();
+    while (iter.hasNext()) {
+      Object key=iter.next();
+      out.print("    ");
+      out.print(key);
+      out.print(" = ");
+      out.println(variables.get(key));
+    }
+  }
+}

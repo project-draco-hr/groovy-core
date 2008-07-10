@@ -1,0 +1,11 @@
+{
+  Inspector insp=new Inspector(new Object());
+  Object[] methods=insp.getMethods();
+  assertEquals(10,methods.length);
+  String[] names={"hashCode","getClass","wait","wait","wait","equals","notify","notifyAll","toString","java.lang.Object"};
+  assertNameEquals(names,methods);
+  String[] details={"JAVA","public final","Object","void","wait","long, int","InterruptedException"};
+  assertContains(methods,details);
+  String[] ctorDetails={"JAVA","public","Object","Object","java.lang.Object","",""};
+  assertContains(methods,ctorDetails);
+}

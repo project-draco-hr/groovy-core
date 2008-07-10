@@ -1,0 +1,32 @@
+{
+  MethodNode method=null;
+  List declaredMethods=getDeclaredMethods("<clinit>");
+  if (declaredMethods.isEmpty()) {
+    method=addMethod("<clinit>",ACC_STATIC,ClassHelper.VOID_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
+    method.setSynthetic(true);
+  }
+ else {
+    method=(MethodNode)declaredMethods.get(0);
+  }
+  BlockStatement block=null;
+  Statement statement=method.getCode();
+  if (statement == null) {
+    block=new BlockStatement();
+  }
+ else   if (statement instanceof BlockStatement) {
+    block=(BlockStatement)statement;
+  }
+ else {
+    block=new BlockStatement();
+    block.addStatement(statement);
+  }
+  if (!fieldInit) {
+    block.addStatements(staticStatements);
+  }
+ else {
+    List blockStatements=block.getStatements();
+    staticStatements.addAll(blockStatements);
+    blockStatements.clear();
+    blockStatements.addAll(staticStatements);
+  }
+}

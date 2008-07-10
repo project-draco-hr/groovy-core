@@ -1,0 +1,18 @@
+{
+  String line;
+  String lineCountName="count";
+  s.setProperty(lineCountName,BigInteger.ZERO);
+  String autoSplitName="split";
+  s.setProperty("out",pw);
+  while ((line=reader.readLine()) != null) {
+    s.setProperty("line",line);
+    s.setProperty(lineCountName,((BigInteger)s.getProperty(lineCountName)).add(BigInteger.ONE));
+    if (autoSplit) {
+      s.setProperty(autoSplitName,line.split(splitPattern));
+    }
+    Object o=s.run();
+    if (autoOutput && o != null) {
+      pw.println(o);
+    }
+  }
+}

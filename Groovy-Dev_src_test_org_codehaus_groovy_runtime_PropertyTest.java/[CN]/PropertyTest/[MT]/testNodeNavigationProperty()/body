@@ -1,0 +1,15 @@
+{
+  Node z=new Node(null,"z");
+  Node y=new Node(null,"y");
+  List children=new ArrayList();
+  children.add(y);
+  children.add(z);
+  Node x=new Node(null,"x",children);
+  children=new ArrayList();
+  children.add(x);
+  Node b=new Node(null,"b",children);
+  List value=(List)InvokerHelper.getProperty(b,"x");
+  assertArrayEquals(new Object[]{x},value.toArray());
+  value=(List)InvokerHelper.getProperty(value,"z");
+  assertArrayEquals(new Object[]{z},value.toArray());
+}

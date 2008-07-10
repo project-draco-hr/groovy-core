@@ -1,0 +1,29 @@
+{
+  super.paintComponent(g);
+  if (empty) {
+    return;
+  }
+  Graphics2D g2=(Graphics2D)g.create();
+  Image image=getImage("face",getFaceStyle());
+  int iw=image.getWidth(null);
+  int ih=image.getHeight(null);
+  g2.translate(getWidth() / 2,getHeight() / 2);
+  if (iw != getWidth()) {
+    float forcedScale=(float)getWidth() / (float)iw;
+    g2.scale(forcedScale,forcedScale);
+  }
+  float scale=getScale();
+  if (scale != 1) {
+    g2.scale((double)scale,(double)scale);
+  }
+  int rotation=getRotation();
+  if (rotation != 0) {
+    g2.rotate(Math.toRadians(rotation));
+  }
+  drawImage(g2,"face",getFaceStyle());
+  drawImage(g2,"hair",getHairStyle());
+  drawImage(g2,"eyes",getEyeStyle());
+  drawImage(g2,"nose",getNoseStyle());
+  drawImage(g2,"mouth",getMouthStyle());
+  g2.dispose();
+}

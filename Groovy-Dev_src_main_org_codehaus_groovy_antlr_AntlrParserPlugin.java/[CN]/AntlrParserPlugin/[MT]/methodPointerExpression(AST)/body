@@ -1,0 +1,16 @@
+{
+  AST exprNode=node.getFirstChild();
+  Expression objectExpression=expression(exprNode);
+  AST mNode=exprNode.getNextSibling();
+  Expression methodName;
+  if (isType(DYNAMIC_MEMBER,mNode)) {
+    methodName=expression(mNode);
+  }
+ else {
+    methodName=new ConstantExpression(identifier(mNode));
+  }
+  configureAST(methodName,mNode);
+  MethodPointerExpression methodPointerExpression=new MethodPointerExpression(objectExpression,methodName);
+  configureAST(methodPointerExpression,node);
+  return methodPointerExpression;
+}

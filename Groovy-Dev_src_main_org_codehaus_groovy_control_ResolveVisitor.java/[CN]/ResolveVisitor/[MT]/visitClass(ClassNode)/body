@@ -1,0 +1,40 @@
+{
+  ClassNode oldNode=currentClass;
+  currentClass=node;
+  resolveGenericsHeader(node.getGenericsTypes());
+  ModuleNode module=node.getModule();
+  if (!module.hasImportsResolved()) {
+    List l=module.getImports();
+    for (Iterator iter=l.iterator(); iter.hasNext(); ) {
+      ImportNode element=(ImportNode)iter.next();
+      ClassNode type=element.getType();
+      if (resolve(type,false,false,true))       continue;
+      addError("unable to resolve class " + type.getName(),type);
+    }
+    Map importPackages=module.getStaticImportClasses();
+    for (Iterator iter=importPackages.values().iterator(); iter.hasNext(); ) {
+      ClassNode type=(ClassNode)iter.next();
+      if (resolve(type,false,false,true))       continue;
+      addError("unable to resolve class " + type.getName(),type);
+    }
+    for (Iterator iter=module.getStaticImportAliases().values().iterator(); iter.hasNext(); ) {
+      ClassNode type=(ClassNode)iter.next();
+      if (resolve(type,true,true,true))       continue;
+      addError("unable to resolve class " + type.getName(),type);
+    }
+    for (Iterator iter=module.getStaticImportClasses().values().iterator(); iter.hasNext(); ) {
+      ClassNode type=(ClassNode)iter.next();
+      if (resolve(type,true,true,true))       continue;
+      addError("unable to resolve class " + type.getName(),type);
+    }
+    module.setImportsResolved(true);
+  }
+  ClassNode sn=node.getUnresolvedSuperClass();
+  if (sn != null)   resolveOrFail(sn,node,true);
+  ClassNode[] interfaces=node.getInterfaces();
+  for (int i=0; i < interfaces.length; i++) {
+    resolveOrFail(interfaces[i],node,true);
+  }
+  super.visitClass(node);
+  currentClass=oldNode;
+}

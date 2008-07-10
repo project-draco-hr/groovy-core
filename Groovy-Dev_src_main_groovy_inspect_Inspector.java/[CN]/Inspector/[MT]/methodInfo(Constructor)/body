@@ -1,0 +1,24 @@
+{
+  String[] result=new String[MEMBER_EXCEPTIONS_IDX + 1];
+  int mod=ctor.getModifiers();
+  result[MEMBER_ORIGIN_IDX]=JAVA;
+  result[MEMBER_MODIFIER_IDX]=Modifier.toString(mod);
+  result[MEMBER_DECLARER_IDX]=shortName(ctor.getDeclaringClass());
+  result[MEMBER_TYPE_IDX]=shortName(ctor.getDeclaringClass());
+  result[MEMBER_NAME_IDX]=ctor.getName();
+  Class[] params=ctor.getParameterTypes();
+  StringBuffer sb=new StringBuffer();
+  for (int j=0; j < params.length; j++) {
+    sb.append(shortName(params[j]));
+    if (j < (params.length - 1))     sb.append(", ");
+  }
+  result[MEMBER_PARAMS_IDX]=sb.toString();
+  sb.setLength(0);
+  Class[] exceptions=ctor.getExceptionTypes();
+  for (int k=0; k < exceptions.length; k++) {
+    sb.append(shortName(exceptions[k]));
+    if (k < (exceptions.length - 1))     sb.append(", ");
+  }
+  result[MEMBER_EXCEPTIONS_IDX]=sb.toString();
+  return withoutNulls(result);
+}

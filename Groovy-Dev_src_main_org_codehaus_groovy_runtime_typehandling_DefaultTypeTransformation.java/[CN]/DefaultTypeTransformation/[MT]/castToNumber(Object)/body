@@ -1,0 +1,16 @@
+{
+  if (object instanceof Number)   return (Number)object;
+  if (object instanceof Character) {
+    return Integer.valueOf(((Character)object).charValue());
+  }
+  if (object instanceof String) {
+    String c=(String)object;
+    if (c.length() == 1) {
+      return Integer.valueOf(c.charAt(0));
+    }
+ else {
+      throw new GroovyCastException(c,Integer.class);
+    }
+  }
+  throw new GroovyCastException(object,Number.class);
+}

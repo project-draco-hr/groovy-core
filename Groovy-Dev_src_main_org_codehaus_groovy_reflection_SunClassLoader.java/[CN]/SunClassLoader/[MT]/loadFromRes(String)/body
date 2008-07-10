@@ -1,0 +1,8 @@
+{
+  final InputStream asStream=SunClassLoader.class.getClassLoader().getResourceAsStream(resName(name));
+  ClassReader reader=new ClassReader(asStream);
+  final ClassWriter cw=new ClassWriter(true);
+  reader.accept(cw,true);
+  asStream.close();
+  define(cw.toByteArray(),name);
+}

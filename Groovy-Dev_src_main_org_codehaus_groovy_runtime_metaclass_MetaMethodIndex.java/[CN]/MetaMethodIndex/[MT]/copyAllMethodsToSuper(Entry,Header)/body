@@ -1,0 +1,19 @@
+{
+  Object oldListOrMethod=from.methods;
+  if (oldListOrMethod instanceof FastArray) {
+    FastArray oldList=(FastArray)oldListOrMethod;
+    Entry e=null;
+    int len1=oldList.size();
+    Object list[]=oldList.getArray();
+    for (int j=0; j != len1; ++j) {
+      MetaMethod method=(MetaMethod)list[j];
+      if (e == null)       e=getOrPutMethods(from.name,to);
+      e.methodsForSuper=addMethodToList(e.methodsForSuper,method);
+    }
+  }
+ else {
+    MetaMethod method=(MetaMethod)oldListOrMethod;
+    Entry e=getOrPutMethods(from.name,to);
+    e.methodsForSuper=addMethodToList(e.methodsForSuper,method);
+  }
+}

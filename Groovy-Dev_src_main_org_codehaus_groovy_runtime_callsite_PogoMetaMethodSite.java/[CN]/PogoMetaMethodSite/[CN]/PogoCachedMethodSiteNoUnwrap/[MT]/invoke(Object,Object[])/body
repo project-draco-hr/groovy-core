@@ -1,0 +1,20 @@
+{
+  args=metaMethod.coerceArgumentsToClasses(args);
+  try {
+    try {
+      return reflect.invoke(receiver,args);
+    }
+ catch (    IllegalArgumentException e) {
+      throw new InvokerInvocationException(e);
+    }
+catch (    IllegalAccessException e) {
+      throw new InvokerInvocationException(e);
+    }
+catch (    InvocationTargetException e) {
+      throw new InvokerInvocationException(e);
+    }
+  }
+ catch (  Exception e) {
+    throw metaMethod.processDoMethodInvokeException(e,receiver,args);
+  }
+}

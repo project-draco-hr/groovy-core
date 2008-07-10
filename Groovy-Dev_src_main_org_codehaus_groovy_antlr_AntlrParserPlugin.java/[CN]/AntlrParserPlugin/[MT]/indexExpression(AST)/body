@@ -1,0 +1,9 @@
+{
+  AST leftNode=indexNode.getFirstChild();
+  Expression leftExpression=expression(leftNode);
+  AST rightNode=leftNode.getNextSibling();
+  Expression rightExpression=expression(rightNode);
+  BinaryExpression binaryExpression=new BinaryExpression(leftExpression,makeToken(Types.LEFT_SQUARE_BRACKET,indexNode),rightExpression);
+  configureAST(binaryExpression,indexNode);
+  return binaryExpression;
+}

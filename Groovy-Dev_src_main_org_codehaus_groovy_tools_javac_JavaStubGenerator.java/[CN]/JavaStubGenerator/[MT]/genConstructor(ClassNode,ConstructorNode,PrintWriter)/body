@@ -1,0 +1,14 @@
+{
+  out.print("public ");
+  out.print(clazz.getNameWithoutPackage());
+  printParams(constructorNode,out);
+  ConstructorCallExpression constrCall=getConstructorCallExpression(constructorNode);
+  if (constrCall == null || !constrCall.isSpecialCall()) {
+    out.println(" {}");
+  }
+ else {
+    out.println(" {");
+    genSpecialConstructorArgs(out,constructorNode,constrCall);
+    out.println("}");
+  }
+}

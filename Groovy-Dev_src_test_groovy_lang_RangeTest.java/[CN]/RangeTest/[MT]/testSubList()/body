@@ -1,0 +1,17 @@
+{
+  Range r=createRange(10,20);
+  List s=r.subList(2,4);
+  Range sr=(Range)s;
+  assertEquals("from",12,sr.getFrom());
+  assertEquals("to",13,sr.getTo());
+  assertEquals("size",2,sr.size());
+  r=createRange(new BigDecimal("0.5"),new BigDecimal("8.5"));
+  assertEquals("size",9,r.size());
+  s=r.subList(2,5);
+  sr=(Range)s;
+  assertEquals("from",new BigDecimal("2.5"),sr.getFrom());
+  assertEquals("to",new BigDecimal("4.5"),sr.getTo());
+  assertTrue("contains 4.5",sr.contains(new BigDecimal("4.5")));
+  assertFalse("contains 5.5",sr.contains(new BigDecimal("5.5")));
+  assertEquals("size",3,sr.size());
+}

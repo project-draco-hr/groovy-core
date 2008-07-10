@@ -1,0 +1,12 @@
+{
+  if (visit == OPENING_VISIT) {
+    if (!insideAnonymousInnerClass()) {
+      currentConstructorDoc=new SimpleGroovyConstructorDoc(currentClassDoc.name());
+      String commentText=getJavaDocCommentsBeforeNode(t);
+      currentConstructorDoc.setRawCommentText(commentText);
+      processModifiers(t,currentConstructorDoc);
+      addParametersTo(currentConstructorDoc,t,visit);
+      currentClassDoc.add(currentConstructorDoc);
+    }
+  }
+}

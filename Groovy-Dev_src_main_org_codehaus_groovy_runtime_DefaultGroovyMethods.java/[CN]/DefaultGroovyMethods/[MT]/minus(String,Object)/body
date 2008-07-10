@@ -1,0 +1,13 @@
+{
+  if (target instanceof Pattern) {
+    return ((Pattern)target).matcher(self).replaceFirst("");
+  }
+  String text=toString(target);
+  int index=self.indexOf(text);
+  if (index == -1)   return self;
+  int end=index + text.length();
+  if (self.length() > end) {
+    return self.substring(0,index) + self.substring(end);
+  }
+  return self.substring(0,index);
+}

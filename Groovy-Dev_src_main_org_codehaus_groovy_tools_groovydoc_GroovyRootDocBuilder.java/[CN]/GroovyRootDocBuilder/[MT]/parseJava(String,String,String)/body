@@ -1,0 +1,17 @@
+{
+  SourceBuffer sourceBuffer=new SourceBuffer();
+  JavaRecognizer parser=getJavaParser(src,sourceBuffer);
+  String[] tokenNames=parser.getTokenNames();
+  parser.compilationUnit();
+  AST ast=parser.getAST();
+  Visitor java2groovyConverter=new Java2GroovyConverter(tokenNames);
+  AntlrASTProcessor java2groovyTraverser=new PreOrderTraversal(java2groovyConverter);
+  java2groovyTraverser.process(ast);
+  Visitor groovifier=new Groovifier(tokenNames);
+  AntlrASTProcessor groovifierTraverser=new PreOrderTraversal(groovifier);
+  groovifierTraverser.process(ast);
+  Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer,links);
+  AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
+  traverser.process(ast);
+  return ((SimpleGroovyClassDocAssembler)visitor).getGroovyClassDocs();
+}

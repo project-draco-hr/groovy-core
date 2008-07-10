@@ -1,0 +1,18 @@
+{
+  String name=v.getName();
+  Variable answer=defineVar(name,v.getType(),false);
+  if (v.isClosureSharedVariable())   answer.setHolder(true);
+  stackVariables.put(name,answer);
+  Label startLabel=new Label();
+  answer.setStartLabel(startLabel);
+  if (answer.isHolder()) {
+    if (!initFromStack)     mv.visitInsn(ACONST_NULL);
+    createReference(answer);
+  }
+ else {
+    if (!initFromStack)     mv.visitInsn(ACONST_NULL);
+    mv.visitVarInsn(ASTORE,currentVariableIndex);
+  }
+  mv.visitLabel(startLabel);
+  return answer;
+}

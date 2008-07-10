@@ -1,0 +1,19 @@
+{
+  if (value == null) {
+    return Collections.EMPTY_LIST;
+  }
+  if (value instanceof List) {
+    return (List)value;
+  }
+  if (value.getClass().isArray()) {
+    return Arrays.asList((Object[])value);
+  }
+  if (value instanceof Enumeration) {
+    List answer=new ArrayList();
+    for (Enumeration e=(Enumeration)value; e.hasMoreElements(); ) {
+      answer.add(e.nextElement());
+    }
+    return answer;
+  }
+  return Collections.singletonList(value);
+}

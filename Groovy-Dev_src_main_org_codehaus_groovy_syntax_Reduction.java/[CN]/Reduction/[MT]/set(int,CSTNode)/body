@@ -1,0 +1,16 @@
+{
+  if (elements == null) {
+    throw new GroovyBugError("attempt to set() on a EMPTY Reduction");
+  }
+  if (index == 0 && !(element instanceof Token)) {
+    throw new GroovyBugError("attempt to set() a non-Token as root of a Reduction");
+  }
+  int count=elements.size();
+  if (index >= count) {
+    for (int i=count; i <= index; i++) {
+      elements.add(null);
+    }
+  }
+  elements.set(index,element);
+  return element;
+}

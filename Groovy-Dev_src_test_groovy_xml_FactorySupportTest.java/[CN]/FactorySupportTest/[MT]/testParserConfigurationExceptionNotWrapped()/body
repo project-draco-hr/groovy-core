@@ -1,0 +1,14 @@
+{
+  try {
+    FactorySupport.createFactory(new PrivilegedExceptionAction(){
+      public Object run() throws Exception {
+        throw PARSER_CONFIGURATION_EXCEPTION;
+      }
+    }
+);
+    fail("Exception was not caught");
+  }
+ catch (  Throwable t) {
+    assertSame(PARSER_CONFIGURATION_EXCEPTION,t);
+  }
+}

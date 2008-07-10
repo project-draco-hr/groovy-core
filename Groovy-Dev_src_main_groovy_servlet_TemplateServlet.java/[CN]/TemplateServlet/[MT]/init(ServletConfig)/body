@@ -1,0 +1,12 @@
+{
+  super.init(config);
+  this.engine=initTemplateEngine(config);
+  if (engine == null) {
+    throw new ServletException("Template engine not instantiated.");
+  }
+  String value=config.getInitParameter("generated.by");
+  if (value != null) {
+    this.generateBy=Boolean.valueOf(value).booleanValue();
+  }
+  log("Servlet " + getClass().getName() + " initialized on "+ engine.getClass());
+}

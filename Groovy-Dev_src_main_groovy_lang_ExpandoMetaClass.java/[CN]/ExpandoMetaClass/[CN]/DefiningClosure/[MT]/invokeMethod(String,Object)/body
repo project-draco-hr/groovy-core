@@ -1,0 +1,25 @@
+{
+  try {
+    return getMetaClass().invokeMethod(this,name,obj);
+  }
+ catch (  MissingMethodException mme) {
+    if (obj instanceof Object[]) {
+      if (STATIC_QUALIFIER.equals(name)) {
+        final StaticDefiningClosure staticDef=new StaticDefiningClosure();
+        Closure c=(Closure)((Object[])obj)[0];
+        c.setDelegate(staticDef);
+        c.setResolveStrategy(Closure.DELEGATE_ONLY);
+        c.call(null);
+        return null;
+      }
+      Object args[]=(Object[])obj;
+      if (args.length == 1 && args[0] instanceof Closure) {
+        registerInstanceMethod(name,(Closure)args[0]);
+      }
+ else       if (args.length == 2 && args[0] instanceof Class && args[1] instanceof Closure)       registerSubclassInstanceMethod(new ClosureMetaMethod(name,(Class)args[0],(Closure)args[1]));
+ else       ExpandoMetaClass.this.setProperty(name,((Object[])obj)[0]);
+      return null;
+    }
+    throw mme;
+  }
+}

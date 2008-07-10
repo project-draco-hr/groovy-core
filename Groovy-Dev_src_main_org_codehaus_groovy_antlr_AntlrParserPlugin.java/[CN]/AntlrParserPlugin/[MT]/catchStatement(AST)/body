@@ -1,0 +1,12 @@
+{
+  AST node=catchNode.getFirstChild();
+  Parameter parameter=parameter(node);
+  ClassNode exceptionType=parameter.getType();
+  String variable=parameter.getName();
+  node=node.getNextSibling();
+  Statement code=statement(node);
+  Parameter catchParameter=new Parameter(exceptionType,variable);
+  CatchStatement answer=new CatchStatement(catchParameter,code);
+  configureAST(answer,catchNode);
+  return answer;
+}

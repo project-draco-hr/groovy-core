@@ -1,0 +1,16 @@
+{
+  Object factory;
+  try {
+    factory=AccessController.doPrivileged(action);
+  }
+ catch (  PrivilegedActionException pae) {
+    Exception e=pae.getException();
+    if (e instanceof ParserConfigurationException) {
+      throw (ParserConfigurationException)e;
+    }
+ else {
+      throw new RuntimeException(e);
+    }
+  }
+  return factory;
+}

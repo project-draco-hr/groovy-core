@@ -1,0 +1,41 @@
+{
+  if (leftExpression instanceof VariableExpression) {
+    VariableExpression varExp=(VariableExpression)leftExpression;
+    ClassNode type=varExp.getType();
+    if (isValidTypeForCast(type)) {
+      return type;
+    }
+    String variableName=varExp.getName();
+    Variable variable=compileStack.getVariable(variableName,false);
+    if (variable != null) {
+      if (variable.isHolder()) {
+        return type;
+      }
+      if (variable.isProperty())       return variable.getType();
+      type=variable.getType();
+      if (isValidTypeForCast(type)) {
+        return type;
+      }
+    }
+ else {
+      FieldNode field=classNode.getField(variableName);
+      if (field == null) {
+        field=classNode.getOuterField(variableName);
+      }
+      if (field != null) {
+        type=field.getType();
+        if (!field.isHolder() && isValidTypeForCast(type)) {
+          return type;
+        }
+      }
+    }
+  }
+ else   if (leftExpression instanceof FieldExpression) {
+    FieldExpression fieldExp=(FieldExpression)leftExpression;
+    ClassNode type=fieldExp.getType();
+    if (isValidTypeForCast(type)) {
+      return type;
+    }
+  }
+  return leftExpression.getType();
+}

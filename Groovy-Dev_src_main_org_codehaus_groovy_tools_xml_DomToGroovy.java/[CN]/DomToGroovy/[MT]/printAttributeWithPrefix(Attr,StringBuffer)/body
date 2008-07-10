@@ -1,0 +1,15 @@
+{
+  String prefix=attribute.getPrefix();
+  if (prefix != null && prefix.length() > 0 && !prefix.equals("xmlns")) {
+    if (buffer.length() > 0) {
+      buffer.append(", ");
+    }
+    buffer.append(qt);
+    buffer.append(prefix);
+    buffer.append(".");
+    buffer.append(getLocalName(attribute));
+    buffer.append(qt + ":" + qt);
+    buffer.append(escapeQuote(getAttributeValue(attribute)));
+    buffer.append(qt);
+  }
+}

@@ -1,0 +1,35 @@
+{
+  MethodIndexAction mia=new MethodIndexAction(){
+    public boolean skipClass(    Class clazz){
+      return clazz == theClass;
+    }
+    public void methodNameAction(    Class clazz,    MetaMethodIndex.Entry e){
+      if (e.methods == null)       return;
+      boolean hasPrivate=false;
+      if (e.methods instanceof FastArray) {
+        FastArray methods=(FastArray)e.methods;
+        final int len=methods.size();
+        final Object[] data=methods.getArray();
+        for (int i=0; i != len; ++i) {
+          MetaMethod method=(MetaMethod)data[i];
+          if (method.isPrivate() && clazz == method.getDeclaringClass().getTheClass()) {
+            hasPrivate=true;
+            break;
+          }
+        }
+      }
+ else {
+        MetaMethod method=(MetaMethod)e.methods;
+        if (method.isPrivate() && clazz == method.getDeclaringClass().getTheClass()) {
+          hasPrivate=true;
+        }
+      }
+      if (!hasPrivate)       return;
+      final Object o=e.methodsForSuper;
+      if (o instanceof FastArray)       e.methods=((FastArray)o).copy();
+ else       e.methods=o;
+    }
+  }
+;
+  mia.iterate();
+}

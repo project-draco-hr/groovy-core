@@ -1,0 +1,164 @@
+{
+  if (compileList.length > 0) {
+    log("Compiling " + compileList.length + " source file"+ (compileList.length == 1 ? "" : "s")+ (destDir != null ? " to " + destDir : ""));
+    if (listFiles) {
+      for (int i=0; i < compileList.length; ++i) {
+        String filename=compileList[i].getAbsolutePath();
+        log(filename);
+      }
+    }
+    Path classpath=getClasspath() != null ? getClasspath() : new Path(getProject());
+    List jointOptions=new ArrayList();
+    if (jointCompilation) {
+      for (Iterator i=javac.getRuntimeConfigurableWrapper().getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
+        final Map.Entry e=(Map.Entry)i.next();
+        final String key=e.getKey().toString();
+        final String value=e.getValue().toString();
+        if (key.indexOf("debug") != -1) {
+          String level="";
+          if (javac.getDebugLevel() != null) {
+            level=":" + javac.getDebugLevel();
+          }
+          jointOptions.add("-Fg" + level);
+        }
+ else         if (key.indexOf("debugLevel") != -1) {
+        }
+ else         if (((key.indexOf("nowarn") != -1) || (key.indexOf("verbose") != -1) || (key.indexOf("deprecation") != -1)) && ("on".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase("value"))) {
+          jointOptions.add("-F" + key);
+        }
+ else         if (key.indexOf("classpath") != -1) {
+          classpath.add(javac.getClasspath());
+        }
+ else         if ((key.indexOf("depend") != -1) || (key.indexOf("extdirs") != -1) || (key.indexOf("encoding") != -1)|| (key.indexOf("source") != -1)|| (key.indexOf("target") != -1)|| (key.indexOf("verbose") != -1)|| (key.indexOf("depend") != -1)) {
+          jointOptions.add("-J" + key + "="+ value);
+        }
+ else {
+          log("The option " + key + " cannot be set on the contained <javac> element. The option will be ignored",Project.MSG_WARN);
+        }
+      }
+    }
+    String separator=System.getProperty("file.separator");
+    ArrayList commandLineList=new ArrayList();
+    if (fork) {
+      String javaHome;
+      if (forkJDK != null) {
+        javaHome=forkJDK.getPath();
+      }
+ else {
+        javaHome=System.getProperty("java.home");
+      }
+      if (includeAntRuntime) {
+        classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
+      }
+      if (includeJavaRuntime) {
+        classpath.addJavaRuntime();
+      }
+      commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+      commandLineList.add("-classpath");
+      commandLineList.add(classpath.toString());
+      if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
+        commandLineList.add("-Xms" + memoryInitialSize);
+      }
+      if ((memoryMaximumSize != null) && !memoryMaximumSize.equals("")) {
+        commandLineList.add("-Xmx" + memoryMaximumSize);
+      }
+      commandLineList.add("org.codehaus.groovy.tools.FileSystemCompiler");
+    }
+    commandLineList.add("--classpath");
+    commandLineList.add(classpath.toString());
+    if (jointCompilation) {
+      commandLineList.add("-j");
+      commandLineList.addAll(jointOptions);
+    }
+    commandLineList.add("-d");
+    commandLineList.add(destDir.getPath());
+    if (encoding != null) {
+      commandLineList.add("--encoding");
+      commandLineList.add(encoding);
+    }
+    if (stacktrace) {
+      commandLineList.add("-e");
+    }
+    File tempFile=null;
+    int count=0;
+    if (fork) {
+      for (int i=0; i < compileList.length; i++) {
+        count+=compileList[i].getPath().length();
+      }
+      for (Iterator iter=commandLineList.iterator(); iter.hasNext(); ) {
+        count+=iter.next().toString().length();
+      }
+      count+=compileList.length;
+      count+=commandLineList.size();
+    }
+    if (fork && (count > 32767)) {
+      try {
+        tempFile=File.createTempFile("groovyc-files-",".txt");
+        tempFile.deleteOnExit();
+        PrintWriter pw=new PrintWriter(new FileWriter(tempFile));
+        for (int i=0; i < compileList.length; i++) {
+          pw.println(compileList[i].getPath());
+        }
+        pw.close();
+        commandLineList.add("@" + tempFile.getPath());
+      }
+ catch (      IOException e) {
+        log("Error createing file list",e,Project.MSG_ERR);
+      }
+    }
+ else {
+      for (int i=0; i < compileList.length; i++) {
+        commandLineList.add(compileList[i].getPath());
+      }
+    }
+    final String[] commandLine=new String[commandLineList.size()];
+    for (int i=0; i < commandLine.length; ++i) {
+      commandLine[i]=(String)commandLineList.get(i);
+    }
+    if (fork) {
+      final Execute executor=new Execute();
+      executor.setAntRun(getProject());
+      executor.setWorkingDirectory(getProject().getBaseDir());
+      executor.setCommandline(commandLine);
+      try {
+        executor.execute();
+      }
+ catch (      final IOException ioe) {
+        throw new BuildException("Error running forked groovyc.",ioe);
+      }
+      final int returnCode=executor.getExitValue();
+      if (returnCode != 0) {
+        if (failOnError) {
+          throw new BuildException("Forked groovyc returned error code: " + returnCode);
+        }
+ else {
+          log("Forked groovyc returned error code: " + returnCode,Project.MSG_ERR);
+        }
+      }
+    }
+ else {
+      try {
+        FileSystemCompiler.main(commandLine);
+      }
+ catch (      RuntimeException re) {
+        Throwable t=re;
+        if ((re.getClass() == RuntimeException.class) && (re.getCause() != null)) {
+          t=re.getCause();
+        }
+        StringWriter writer=new StringWriter();
+        new ErrorReporter(t,false).write(new PrintWriter(writer));
+        String message=writer.toString();
+        if (failOnError) {
+          log(message,Project.MSG_INFO);
+          throw new BuildException("Compilation Failed",t,getLocation());
+        }
+ else {
+          log(message,Project.MSG_ERR);
+        }
+      }
+    }
+    if (tempFile != null) {
+      FileSystemCompiler.deleteRecursive(tempFile);
+    }
+  }
+}

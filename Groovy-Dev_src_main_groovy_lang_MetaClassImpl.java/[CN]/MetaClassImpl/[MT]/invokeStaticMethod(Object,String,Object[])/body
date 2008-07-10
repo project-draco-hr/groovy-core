@@ -1,0 +1,45 @@
+{
+  checkInitalised();
+  final Class sender=object instanceof Class ? (Class)object : object.getClass();
+  if (sender != theClass) {
+    MetaClass mc=registry.getMetaClass(sender);
+    return mc.invokeStaticMethod(sender,methodName,arguments);
+  }
+  if (sender == Class.class) {
+    return invokeMethod(object,methodName,arguments);
+  }
+  if (arguments == null)   arguments=EMPTY_ARGUMENTS;
+  MetaMethod method=retrieveStaticMethod(methodName,arguments);
+  if (method != null) {
+    MetaClassHelper.unwrap(arguments);
+    return method.doMethodInvoke(object,arguments);
+  }
+  Object prop=null;
+  try {
+    prop=getProperty(theClass,theClass,methodName,false,false);
+  }
+ catch (  MissingPropertyException mpe) {
+  }
+  if (prop instanceof Closure) {
+    return invokeStaticClosureProperty(arguments,prop);
+  }
+  Object[] originalArguments=(Object[])arguments.clone();
+  MetaClassHelper.unwrap(arguments);
+  Class superClass=sender.getSuperclass();
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  while (superClass != Object.class && superClass != null) {
+    MetaClass mc=registry.getMetaClass(superClass);
+    method=mc.getStaticMetaMethod(methodName,argClasses);
+    if (method != null)     return method.doMethodInvoke(object,arguments);
+    try {
+      prop=mc.getProperty(superClass,superClass,methodName,false,false);
+    }
+ catch (    MissingPropertyException mpe) {
+    }
+    if (prop instanceof Closure) {
+      return invokeStaticClosureProperty(originalArguments,prop);
+    }
+    superClass=superClass.getSuperclass();
+  }
+  return invokeStaticMissingMethod(sender,methodName,arguments);
+}

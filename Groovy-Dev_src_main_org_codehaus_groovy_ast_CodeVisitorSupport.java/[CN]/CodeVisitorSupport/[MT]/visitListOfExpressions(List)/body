@@ -1,0 +1,13 @@
+{
+  if (list == null)   return;
+  for (Iterator iter=list.iterator(); iter.hasNext(); ) {
+    Expression expression=(Expression)iter.next();
+    if (expression instanceof SpreadExpression) {
+      Expression spread=((SpreadExpression)expression).getExpression();
+      spread.visit(this);
+    }
+ else {
+      expression.visit(this);
+    }
+  }
+}

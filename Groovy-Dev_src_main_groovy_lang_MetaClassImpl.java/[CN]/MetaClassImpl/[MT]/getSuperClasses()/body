@@ -1,0 +1,15 @@
+{
+  LinkedList<CachedClass> superClasses=new LinkedList<CachedClass>();
+  if (theClass.isInterface()) {
+    superClasses.addFirst(ReflectionCache.OBJECT_CLASS);
+  }
+ else {
+    for (CachedClass c=theCachedClass; c != null; c=c.getCachedSuperClass()) {
+      superClasses.addFirst(c);
+    }
+    if (theCachedClass.isArray && theClass != Object[].class && !theClass.getComponentType().isPrimitive()) {
+      superClasses.addFirst(ReflectionCache.OBJECT_ARRAY_CLASS);
+    }
+  }
+  return superClasses;
+}

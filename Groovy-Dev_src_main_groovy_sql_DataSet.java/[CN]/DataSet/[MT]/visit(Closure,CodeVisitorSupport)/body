@@ -1,0 +1,18 @@
+{
+  if (closure != null) {
+    ClassNode classNode=closure.getMetaClass().getClassNode();
+    if (classNode == null) {
+      throw new GroovyRuntimeException("Could not find the ClassNode for MetaClass: " + closure.getMetaClass());
+    }
+    List methods=classNode.getDeclaredMethods("doCall");
+    if (!methods.isEmpty()) {
+      MethodNode method=(MethodNode)methods.get(0);
+      if (method != null) {
+        Statement statement=method.getCode();
+        if (statement != null) {
+          statement.visit(visitor);
+        }
+      }
+    }
+  }
+}

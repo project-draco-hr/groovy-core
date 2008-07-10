@@ -1,0 +1,16 @@
+{
+  if (newInstanceResolver instanceof NewInstanceResolver) {
+    this.newInstanceResolver=(NewInstanceResolver)newInstanceResolver;
+  }
+ else   if (newInstanceResolver instanceof Closure) {
+    this.newInstanceResolver=new NewInstanceResolver(){
+      public Object newInstance(      Class klass,      Map attributes) throws InstantiationException, IllegalAccessException {
+        return ((Closure)newInstanceResolver).call(new Object[]{klass,attributes});
+      }
+    }
+;
+  }
+ else {
+    this.newInstanceResolver=new DefaultNewInstanceResolver();
+  }
+}

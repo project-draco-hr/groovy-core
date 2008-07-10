@@ -1,0 +1,38 @@
+{
+  if (actual == preferred) {
+    return true;
+  }
+switch (preferred) {
+case SYNTH_PARAMETER_DECLARATION:
+case IDENTIFIER:
+switch (actual) {
+case IDENTIFIER:
+case KEYWORD_DEF:
+case KEYWORD_DEFMACRO:
+case KEYWORD_CLASS:
+case KEYWORD_INTERFACE:
+case KEYWORD_MIXIN:
+      return true;
+  }
+break;
+case SYNTH_CLASS:
+case SYNTH_INTERFACE:
+case SYNTH_MIXIN:
+case SYNTH_METHOD:
+case SYNTH_PROPERTY:
+return actual == IDENTIFIER;
+case SYNTH_LIST:
+case SYNTH_MAP:
+return actual == LEFT_SQUARE_BRACKET;
+case SYNTH_CAST:
+return actual == LEFT_PARENTHESIS;
+case SYNTH_BLOCK:
+case SYNTH_CLOSURE:
+return actual == LEFT_CURLY_BRACE;
+case SYNTH_LABEL:
+return actual == COLON;
+case SYNTH_VARIABLE_DECLARATION:
+return actual == IDENTIFIER;
+}
+return false;
+}

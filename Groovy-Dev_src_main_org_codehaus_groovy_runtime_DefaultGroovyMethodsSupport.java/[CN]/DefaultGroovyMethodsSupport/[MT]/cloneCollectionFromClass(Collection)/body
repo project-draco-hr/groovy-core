@@ -1,0 +1,17 @@
+{
+  try {
+    final Constructor constructor=orig.getClass().getConstructor(Collection.class);
+    return (Collection)constructor.newInstance(orig);
+  }
+ catch (  Exception e) {
+  }
+  try {
+    final Constructor constructor=orig.getClass().getConstructor();
+    final Collection result=(Collection)constructor.newInstance();
+    result.addAll(orig);
+    return result;
+  }
+ catch (  Exception e) {
+  }
+  return null;
+}

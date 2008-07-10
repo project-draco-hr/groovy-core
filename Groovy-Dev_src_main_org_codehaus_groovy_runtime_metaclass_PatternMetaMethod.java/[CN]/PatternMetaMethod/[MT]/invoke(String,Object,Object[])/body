@@ -1,0 +1,13 @@
+{
+  final Matcher matcher=pattern.matcher(name);
+  if (!matcher.matches())   throw new GroovyRuntimeException(name + " doesn't match pattern " + pattern.toString());
+  if (hasMatcherArg) {
+    Object newArgs[]=new Object[args.length + 1];
+    newArgs[0]=matcher;
+    System.arraycopy(args,0,newArgs,1,args.length);
+    args=newArgs;
+  }
+  Closure cloned=(Closure)callable.clone();
+  cloned.setDelegate(object);
+  return cloned.call(args);
+}

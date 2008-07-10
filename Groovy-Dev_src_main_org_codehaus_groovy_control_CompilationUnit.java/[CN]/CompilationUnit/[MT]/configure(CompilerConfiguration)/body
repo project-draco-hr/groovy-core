@@ -1,0 +1,8 @@
+{
+  super.configure(configuration);
+  this.debug=configuration.getDebug();
+  if (!this.configured && this.classLoader instanceof GroovyClassLoader) {
+    appendCompilerConfigurationClasspathToClassLoader(configuration,(GroovyClassLoader)this.classLoader);
+  }
+  this.configured=true;
+}

@@ -1,0 +1,35 @@
+{
+  if (theCachedClass.isInterface) {
+    LinkedList superClasses=new LinkedList();
+    superClasses.add(ReflectionCache.OBJECT_CLASS);
+    Set interfaces=theCachedClass.getInterfaces();
+    classPropertyIndexForSuper=classPropertyIndex;
+    final SingleKeyHashMap cPI=classPropertyIndex.getNotNull(theCachedClass);
+    for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
+      CachedClass iclass=(CachedClass)interfaceIter.next();
+      SingleKeyHashMap iPropertyIndex=cPI;
+      addFields(iclass,iPropertyIndex);
+      classPropertyIndex.put(iclass,iPropertyIndex);
+    }
+    classPropertyIndex.put(ReflectionCache.OBJECT_CLASS,cPI);
+    applyPropertyDescriptors(propertyDescriptors);
+    applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
+    makeStaticPropertyIndex();
+  }
+ else {
+    LinkedList superClasses=getSuperClasses();
+    Set interfaces=theCachedClass.getInterfaces();
+    if (theCachedClass.isArray) {
+      SingleKeyHashMap map=new SingleKeyHashMap();
+      map.put("length",arrayLengthProperty);
+      classPropertyIndex.put(theCachedClass,map);
+    }
+    inheritStaticInterfaceFields(superClasses,interfaces);
+    inheritFields(superClasses);
+    applyPropertyDescriptors(propertyDescriptors);
+    applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
+    applyStrayPropertyMethods(superClasses,classPropertyIndexForSuper,false);
+    copyClassPropertyIndexForSuper(classPropertyIndexForSuper);
+    makeStaticPropertyIndex();
+  }
+}

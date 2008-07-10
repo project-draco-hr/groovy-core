@@ -1,0 +1,20 @@
+{
+  if (signature == null) {
+    CachedClass[] parameters=getParameterTypes();
+    final String name=getName();
+    StringBuffer buf=new StringBuffer(name.length() + parameters.length * 10);
+    buf.append(getReturnType().getName());
+    buf.append(' ');
+    buf.append(name);
+    buf.append('(');
+    for (int i=0; i < parameters.length; i++) {
+      if (i > 0) {
+        buf.append(", ");
+      }
+      buf.append(parameters[i].getName());
+    }
+    buf.append(')');
+    signature=buf.toString();
+  }
+  return signature;
+}

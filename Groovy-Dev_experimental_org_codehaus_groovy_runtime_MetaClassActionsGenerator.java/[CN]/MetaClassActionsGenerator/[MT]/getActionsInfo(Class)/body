@@ -1,0 +1,12 @@
+{
+  ActionsInfo classInfo=(ActionsInfo)actionsInfoMap.get(claz);
+  if (classInfo == null) {
+    final Class superClass=claz.getSuperclass();
+    if (superClass != null) {
+      getActionsInfo(superClass);
+    }
+    classInfo=new ActionsInfo(claz);
+    actionsInfoMap.put(claz,classInfo);
+  }
+  return classInfo;
+}

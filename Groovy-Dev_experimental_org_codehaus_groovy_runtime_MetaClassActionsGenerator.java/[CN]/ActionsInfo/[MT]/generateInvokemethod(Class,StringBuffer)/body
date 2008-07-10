@@ -1,0 +1,25 @@
+{
+  code.append("public Object doInvokeMethod(final Object target, final String name, final Object[] args) ");
+  code.append("throws Exception {\n");
+  if (this.generators.size() != 0) {
+    final List generatorSubset=new LinkedList();
+    MethodGenerator firstGenerator=(MethodGenerator)this.generators.get(0);
+    int currentArgsLength=firstGenerator.getNumberOfParameters();
+    char firstChar=firstGenerator.getName().charAt(0);
+    final Iterator iter=this.generators.iterator();
+    while (iter.hasNext()) {
+      final MethodGenerator generator=(MethodGenerator)iter.next();
+      if (currentArgsLength == generator.getNumberOfParameters()) {
+        generatorSubset.add(generator);
+      }
+ else {
+        generateCalls(claz,code,currentArgsLength,generatorSubset);
+        currentArgsLength=generator.getNumberOfParameters();
+      }
+    }
+    generateCalls(claz,code,currentArgsLength,generatorSubset);
+    code.setLength(code.length() - 6);
+  }
+  code.append("\nreturn groovy.lang.MetaClass.NO_METHOD_FOUND;");
+  code.append("\n}\n");
+}

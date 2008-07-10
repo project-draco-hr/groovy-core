@@ -1,0 +1,17 @@
+{
+  List list=new ArrayList();
+  Collection names=listAttributeNames();
+  for (Iterator iterator=names.iterator(); iterator.hasNext(); ) {
+    String name=(String)iterator.next();
+    try {
+      Object val=this.getProperty(name);
+      if (val != null) {
+        list.add(name + " : " + val.toString());
+      }
+    }
+ catch (    Exception e) {
+      throwException("Could not list attribute values. Reason: ",e);
+    }
+  }
+  return list;
+}

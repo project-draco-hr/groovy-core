@@ -1,0 +1,14 @@
+{
+  AST boundsRoot=rn.getNextSibling();
+  if (boundsRoot == null)   return null;
+  assertNodeType(boundType,boundsRoot);
+  LinkedList bounds=new LinkedList();
+  for (AST boundsNode=boundsRoot.getFirstChild(); boundsNode != null; boundsNode=boundsNode.getNextSibling()) {
+    ClassNode bound=null;
+    bound=makeTypeWithArguments(boundsNode);
+    configureAST(bound,boundsNode);
+    bounds.add(bound);
+  }
+  if (bounds.size() == 0)   return null;
+  return (ClassNode[])bounds.toArray(new ClassNode[bounds.size()]);
+}

@@ -1,0 +1,6 @@
+{
+  if (type.isPrimitive() && type != Void.TYPE) {
+    String returnString="(Ljava/lang/Object;)" + getTypeDescription(type);
+    mv.visitMethodInsn(INVOKESTATIC,getClassInternalName(DefaultTypeTransformation.class.getName()),type.getName() + "Unbox",returnString);
+  }
+}

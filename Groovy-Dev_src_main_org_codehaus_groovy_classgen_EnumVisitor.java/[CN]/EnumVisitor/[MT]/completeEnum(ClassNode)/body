@@ -1,0 +1,113 @@
+{
+  ClassNode enumArray=enumClass.makeArray();
+  List methods=enumClass.getMethods();
+  boolean hasNext=false;
+  boolean hasPrevious=false;
+  for (int i=0; i < methods.size(); i++) {
+    MethodNode m=(MethodNode)methods.get(i);
+    if (m.getName().equals("next") && m.getParameters().length == 0)     hasNext=true;
+    if (m.getName().equals("previous") && m.getParameters().length == 0)     hasPrevious=true;
+    if (hasNext && hasPrevious)     break;
+  }
+  FieldNode minValue=new FieldNode("MIN_VALUE",PUBLIC_FS,enumClass,enumClass,null);
+  FieldNode maxValue=new FieldNode("MAX_VALUE",PUBLIC_FS,enumClass,enumClass,null);
+  FieldNode values=new FieldNode("$VALUES",PRIVATE_FS,enumArray,enumClass,null);
+  values.setSynthetic(true);
+{
+    MethodNode valuesMethod=new MethodNode("values",PUBLIC_FS,enumArray,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    valuesMethod.setSynthetic(true);
+    BlockStatement code=new BlockStatement();
+    code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"clone",MethodCallExpression.NO_ARGUMENTS)));
+    valuesMethod.setCode(code);
+    enumClass.addMethod(valuesMethod);
+  }
+  if (!hasNext) {
+    Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
+    Token ge=Token.newSymbol(Types.COMPARE_GREATER_THAN_EQUAL,-1,-1);
+    MethodNode nextMethod=new MethodNode("next",Opcodes.ACC_PUBLIC,enumClass,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    nextMethod.setSynthetic(true);
+    BlockStatement code=new BlockStatement();
+    BlockStatement ifStatement=new BlockStatement();
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new ConstantExpression(Integer.valueOf(0)))));
+    code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"next",MethodCallExpression.NO_ARGUMENTS))));
+    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),ge,new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS))),ifStatement,EmptyStatement.INSTANCE));
+    code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
+    nextMethod.setCode(code);
+    enumClass.addMethod(nextMethod);
+  }
+  if (!hasPrevious) {
+    Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
+    Token lt=Token.newSymbol(Types.COMPARE_LESS_THAN,-1,-1);
+    MethodNode nextMethod=new MethodNode("previous",Opcodes.ACC_PUBLIC,enumClass,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    nextMethod.setSynthetic(true);
+    BlockStatement code=new BlockStatement();
+    BlockStatement ifStatement=new BlockStatement();
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS),"minus",new ConstantExpression(Integer.valueOf(1))))));
+    code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"previous",MethodCallExpression.NO_ARGUMENTS))));
+    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),lt,new ConstantExpression(Integer.valueOf(0)))),ifStatement,EmptyStatement.INSTANCE));
+    code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
+    nextMethod.setCode(code);
+    enumClass.addMethod(nextMethod);
+  }
+{
+    Parameter stringParameter=new Parameter(ClassHelper.STRING_TYPE,"name");
+    MethodNode valueOfMethod=new MethodNode("valueOf",PS,enumClass,new Parameter[]{stringParameter},ClassNode.EMPTY_ARRAY,null);
+    ArgumentListExpression callArguments=new ArgumentListExpression();
+    callArguments.addExpression(new ClassExpression(enumClass));
+    callArguments.addExpression(new VariableExpression("name"));
+    BlockStatement code=new BlockStatement();
+    code.addStatement(new ReturnStatement(new MethodCallExpression(new ClassExpression(ClassHelper.Enum_Type),"valueOf",callArguments)));
+    valueOfMethod.setCode(code);
+    valueOfMethod.setSynthetic(true);
+    enumClass.addMethod(valueOfMethod);
+  }
+  addConstructor(enumClass);
+{
+    Parameter[] parameter=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE.makeArray(),"para")};
+    MethodNode initMethod=new MethodNode("$INIT",PRIVATE_FS,enumClass,parameter,ClassNode.EMPTY_ARRAY,null);
+    initMethod.setSynthetic(true);
+    ConstructorCallExpression cce=new ConstructorCallExpression(ClassNode.THIS,new ArgumentListExpression(new SpreadExpression(new VariableExpression("para"))));
+    BlockStatement code=new BlockStatement();
+    code.addStatement(new ReturnStatement(cce));
+    initMethod.setCode(code);
+    enumClass.addMethod(initMethod);
+  }
+{
+    List fields=enumClass.getFields();
+    List arrayInit=new ArrayList();
+    int value=-1;
+    Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
+    List block=new ArrayList();
+    FieldNode tempMin=null;
+    FieldNode tempMax=null;
+    for (Iterator iterator=fields.iterator(); iterator.hasNext(); ) {
+      FieldNode field=(FieldNode)iterator.next();
+      if ((field.getModifiers() & Opcodes.ACC_ENUM) == 0)       continue;
+      value++;
+      if (tempMin == null)       tempMin=field;
+      tempMax=field;
+      ArgumentListExpression args=new ArgumentListExpression();
+      args.addExpression(new ConstantExpression(field.getName()));
+      args.addExpression(new ConstantExpression(Integer.valueOf(value)));
+      if (field.getInitialExpression() != null) {
+        ListExpression oldArgs=(ListExpression)field.getInitialExpression();
+        for (Iterator oldArgsIterator=oldArgs.getExpressions().iterator(); oldArgsIterator.hasNext(); ) {
+          Expression exp=(Expression)oldArgsIterator.next();
+          args.addExpression(exp);
+        }
+      }
+      field.setInitialValueExpression(null);
+      block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),assign,new MethodCallExpression(new ClassExpression(enumClass),"$INIT",args))));
+      arrayInit.add(new FieldExpression(field));
+    }
+    if (tempMin != null) {
+      block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(minValue),assign,new FieldExpression(tempMin))));
+      block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(maxValue),assign,new FieldExpression(tempMax))));
+      enumClass.addField(minValue);
+      enumClass.addField(maxValue);
+    }
+    block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(values),assign,new ArrayExpression(enumClass,arrayInit))));
+    enumClass.addStaticInitializerStatements(block,true);
+    enumClass.addField(values);
+  }
+}

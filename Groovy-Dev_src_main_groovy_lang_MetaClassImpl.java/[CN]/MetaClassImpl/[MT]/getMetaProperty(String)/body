@@ -1,0 +1,13 @@
+{
+  SingleKeyHashMap propertyMap=classPropertyIndex.getNotNull(theCachedClass);
+  if (propertyMap.containsKey(name)) {
+    return (MetaProperty)propertyMap.get(name);
+  }
+ else   if (staticPropertyIndex.containsKey(name)) {
+    return (MetaProperty)staticPropertyIndex.get(name);
+  }
+ else {
+    propertyMap=classPropertyIndexForSuper.getNotNull(theCachedClass);
+    return (MetaProperty)propertyMap.get(name);
+  }
+}

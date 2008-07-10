@@ -1,0 +1,13 @@
+{
+  Expression left=expression.getLeftExpression();
+  Expression right=expression.getRightExpression();
+  boolean leaf=(right instanceof ConstantExpression);
+  if (!leaf)   buffer.append("(");
+  left.visit(this);
+  buffer.append(" ");
+  Token token=expression.getOperation();
+  buffer.append(tokenAsSql(token));
+  buffer.append(" ");
+  right.visit(this);
+  if (!leaf)   buffer.append(")");
+}

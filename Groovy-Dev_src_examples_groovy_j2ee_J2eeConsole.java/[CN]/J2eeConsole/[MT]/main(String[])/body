@@ -1,0 +1,33 @@
+{
+  if (args.length <= 0) {
+    System.out.println("Usage: home [configuaration] [localcopy]");
+    return;
+  }
+  String home=args[0];
+  Properties p=new Properties();
+  System.setProperty("openejb.home",home);
+  p.put(Context.INITIAL_CONTEXT_FACTORY,"org.openejb.client.LocalInitialContextFactory");
+  p.put("openejb.loader","embed");
+  p.put("openejb.home",home);
+  if (args.length > 1) {
+    String conf=args[1];
+    System.setProperty("openejb.configuration",conf);
+    p.put("openejb.configuration",conf);
+  }
+  if (args.length > 2) {
+    String copy=args[2];
+    System.setProperty("openejb.localcopy",copy);
+    p.put("openejb.localcopy",copy);
+  }
+  try {
+    InitialContext ctx=new InitialContext(p);
+    GroovyShell shell=new GroovyShell();
+    shell.setVariable("context",ctx);
+    GroovyObject console=(GroovyObject)InvokerHelper.invokeConstructorOf("groovy.ui.Console",null);
+    console.setProperty("shell",shell);
+    console.invokeMethod("run",null);
+  }
+ catch (  Exception e) {
+    System.out.println("Caught: " + e);
+  }
+}

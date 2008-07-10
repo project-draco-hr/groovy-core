@@ -1,0 +1,11 @@
+{
+  Object method=getProperties().get("toString");
+  if (method != null && method instanceof Closure) {
+    Closure closure=(Closure)method;
+    closure.setDelegate(this);
+    return closure.call().toString();
+  }
+ else {
+    return expandoProperties.toString();
+  }
+}

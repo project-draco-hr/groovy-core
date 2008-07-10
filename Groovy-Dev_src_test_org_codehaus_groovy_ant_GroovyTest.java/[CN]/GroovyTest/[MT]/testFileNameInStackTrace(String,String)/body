@@ -1,0 +1,16 @@
+{
+  try {
+    project.executeTarget(target);
+    fail();
+  }
+ catch (  final BuildException e) {
+    assertEquals(BuildException.class,e.getClass());
+    final Throwable cause=e.getCause();
+    assertTrue(cause instanceof GroovyRuntimeException);
+    final StringWriter sw=new StringWriter();
+    cause.printStackTrace(new PrintWriter(sw));
+    final String stackTrace=sw.toString();
+    final Pattern pattern=Pattern.compile(fileNamePattern);
+    assertTrue("Does >" + stackTrace + "< contain >"+ fileNamePattern+ "<?",pattern.matcher(stackTrace).find());
+  }
+}

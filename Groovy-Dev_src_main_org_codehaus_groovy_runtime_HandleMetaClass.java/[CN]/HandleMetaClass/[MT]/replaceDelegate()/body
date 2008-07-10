@@ -1,0 +1,18 @@
+{
+  if (object == null) {
+    if (!(delegate instanceof ExpandoMetaClass)) {
+      delegate=ExpandoMetaClassCreationHandle.instance.create(delegate.getTheClass(),GroovySystem.getMetaClassRegistry());
+      delegate.initialize();
+      DefaultGroovyMethods.setMetaClass(delegate.getTheClass(),delegate);
+    }
+  }
+ else {
+    if (object != NONE) {
+      delegate=ExpandoMetaClassCreationHandle.instance.create(object.getClass(),GroovySystem.getMetaClassRegistry());
+      delegate.initialize();
+      DefaultGroovyMethods.setMetaClass(object,delegate);
+      object=NONE;
+    }
+  }
+  return (GroovyObject)delegate;
+}

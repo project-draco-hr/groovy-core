@@ -1,0 +1,8 @@
+{
+  MetaClassRegistry metaClassRegistry=GroovySystem.getMetaClassRegistry();
+  MetaClass mc=metaClassRegistry.getMetaClass(c);
+  if (mc instanceof ExpandoMetaClass || mc instanceof DelegatingMetaClass && ((DelegatingMetaClass)mc).getAdaptee() instanceof ExpandoMetaClass)   return mc;
+ else {
+    return new HandleMetaClass(mc);
+  }
+}

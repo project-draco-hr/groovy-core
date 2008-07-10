@@ -1,0 +1,7 @@
+{
+  ErrorCollector errorCollector=new ErrorCollector(this.source.getConfiguration());
+  AnnotationVisitor visitor=new AnnotationVisitor(this.source,errorCollector);
+  AnnotationNode solvedAnnotation=visitor.visit(node);
+  this.source.getErrorCollector().addCollectorContents(errorCollector);
+  return solvedAnnotation;
+}

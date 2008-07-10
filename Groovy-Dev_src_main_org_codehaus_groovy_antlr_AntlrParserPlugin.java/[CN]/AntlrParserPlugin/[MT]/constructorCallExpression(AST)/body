@@ -1,0 +1,28 @@
+{
+  AST constructorCallNode=node;
+  ClassNode type=makeTypeWithArguments(constructorCallNode);
+  if (isType(CTOR_CALL,node) || isType(LITERAL_new,node)) {
+    node=node.getFirstChild();
+  }
+  AST elist=node.getNextSibling();
+  if (elist == null && isType(ELIST,node)) {
+    elist=node;
+    if ("(".equals(type.getName())) {
+      type=classNode;
+    }
+  }
+  if (isType(ARRAY_DECLARATOR,elist)) {
+    AST expressionNode=elist.getFirstChild();
+    if (expressionNode == null) {
+      throw new ASTRuntimeException(elist,"No expression for the array constructor call");
+    }
+    List size=arraySizeExpression(expressionNode);
+    ArrayExpression arrayExpression=new ArrayExpression(type,null,size);
+    configureAST(arrayExpression,constructorCallNode);
+    return arrayExpression;
+  }
+  Expression arguments=arguments(elist);
+  ConstructorCallExpression expression=new ConstructorCallExpression(type,arguments);
+  configureAST(expression,constructorCallNode);
+  return expression;
+}

@@ -1,0 +1,39 @@
+{
+  if (!isCallToSuper) {
+    Class instanceKlazz=instance.getClass();
+    if (theClass != instanceKlazz && theClass.isAssignableFrom(instanceKlazz))     instanceKlazz=theClass;
+    Class[] argClasses=MetaClassHelper.castArgumentsToClassArray(arguments);
+    MetaMethod method=findMixinMethod(methodName,argClasses);
+    if (method != null) {
+      onMixinMethodFound(method);
+      return method.invoke(instance,arguments);
+    }
+    method=findMethodInClassHeirarchy(instanceKlazz,methodName,argClasses,this);
+    if (method != null) {
+      onSuperMethodFoundInHierarchy(method);
+      return method.invoke(instance,arguments);
+    }
+    DynamicMetaMethod dynMethod=findDynamicMethod(methodName,arguments);
+    if (dynMethod != null)     return dynMethod.invoke(methodName,instance,arguments);
+    final Class[] invokeMethodArgs={String.class,Object[].class};
+    method=findMethodInClassHeirarchy(instanceKlazz,ExpandoMetaClass.INVOKE_METHOD_METHOD,invokeMethodArgs,this);
+    if (method != null && method instanceof ClosureMetaMethod) {
+      onInvokeMethodFoundInHierarchy(method);
+      return method.invoke(instance,invokeMethodArgs);
+    }
+  }
+  if (methodMissing != null) {
+    try {
+      return methodMissing.invoke(instance,new Object[]{methodName,arguments});
+    }
+ catch (    InvokerInvocationException iie) {
+      if (methodMissing instanceof ClosureMetaMethod && iie.getCause() instanceof MissingMethodException) {
+        MissingMethodException mme=(MissingMethodException)iie.getCause();
+        throw new MissingMethodExecutionFailed(mme.getMethod(),mme.getClass(),mme.getArguments(),mme.isStatic(),mme);
+      }
+      throw iie;
+    }
+  }
+ else   if (original != null)   throw original;
+ else   throw new MissingMethodExceptionNoStack(methodName,theClass,arguments,false);
+}

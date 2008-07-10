@@ -1,0 +1,35 @@
+{
+  URLConnection groovyScriptConn=null;
+  ResourceException se=null;
+  for (int i=0; i < roots.length; i++) {
+    URL scriptURL=null;
+    try {
+      scriptURL=new URL(roots[i],resourceName);
+      groovyScriptConn=scriptURL.openConnection();
+      groovyScriptConn.getInputStream();
+      break;
+    }
+ catch (    MalformedURLException e) {
+      String message="Malformed URL: " + roots[i] + ", "+ resourceName;
+      if (se == null) {
+        se=new ResourceException(message);
+      }
+ else {
+        se=new ResourceException(message,se);
+      }
+    }
+catch (    IOException e1) {
+      String message="Cannot open URL: " + scriptURL;
+      if (se == null) {
+        se=new ResourceException(message);
+      }
+ else {
+        se=new ResourceException(message,se);
+      }
+    }
+  }
+  if (groovyScriptConn == null) {
+    throw se;
+  }
+  return groovyScriptConn;
+}

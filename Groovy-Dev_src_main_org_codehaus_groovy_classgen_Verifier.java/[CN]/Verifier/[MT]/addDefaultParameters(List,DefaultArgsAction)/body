@@ -1,0 +1,49 @@
+{
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode method=(MethodNode)iter.next();
+    if (method.hasDefaultValue()) {
+      Parameter[] parameters=method.getParameters();
+      int counter=0;
+      List paramValues=new ArrayList();
+      int size=parameters.length;
+      for (int i=size - 1; i >= 0; i--) {
+        Parameter parameter=parameters[i];
+        if (parameter != null && parameter.hasInitialExpression()) {
+          paramValues.add(Integer.valueOf(i));
+          paramValues.add(parameter.getInitialExpression());
+          counter++;
+        }
+      }
+      for (int j=1; j <= counter; j++) {
+        Parameter[] newParams=new Parameter[parameters.length - j];
+        ArgumentListExpression arguments=new ArgumentListExpression();
+        int index=0;
+        int k=1;
+        for (int i=0; i < parameters.length; i++) {
+          if (k > counter - j && parameters[i] != null && parameters[i].hasInitialExpression()) {
+            arguments.addExpression(parameters[i].getInitialExpression());
+            k++;
+          }
+ else           if (parameters[i] != null && parameters[i].hasInitialExpression()) {
+            newParams[index++]=parameters[i];
+            arguments.addExpression(new VariableExpression(parameters[i].getName()));
+            k++;
+          }
+ else {
+            newParams[index++]=parameters[i];
+            arguments.addExpression(new VariableExpression(parameters[i].getName()));
+          }
+        }
+        if (parameters.length > 0 && parameters[parameters.length - 1].getType().isArray()) {
+          Expression exp=arguments.getExpression(parameters.length - 1);
+          SpreadExpression se=new SpreadExpression(exp);
+          arguments.getExpressions().set(parameters.length - 1,se);
+        }
+        action.call(arguments,newParams,method);
+      }
+      for (int i=0; i < parameters.length; i++) {
+        parameters[i].setInitialExpression(null);
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  Statement firstStatement=constructorNode.getFirstStatement();
+  ConstructorCallExpression first=getFirstIfSpecialConstructorCall(firstStatement);
+  if (first != null && first.isThisCall())   return;
+  List statements=new ArrayList();
+  List staticStatements=new ArrayList();
+  for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
+    addFieldInitialization(statements,staticStatements,(FieldNode)iter.next());
+  }
+  statements.addAll(node.getObjectInitializerStatements());
+  if (!statements.isEmpty()) {
+    Statement code=constructorNode.getCode();
+    BlockStatement block=new BlockStatement();
+    List otherStatements=block.getStatements();
+    if (code instanceof BlockStatement) {
+      block=(BlockStatement)code;
+      otherStatements=block.getStatements();
+    }
+ else     if (code != null) {
+      otherStatements.add(code);
+    }
+    if (!otherStatements.isEmpty()) {
+      if (first != null) {
+        otherStatements.remove(0);
+        statements.add(0,firstStatement);
+      }
+      statements.addAll(otherStatements);
+    }
+    constructorNode.setCode(new BlockStatement(statements,block.getVariableScope()));
+  }
+  if (!staticStatements.isEmpty()) {
+    node.addStaticInitializerStatements(staticStatements,true);
+  }
+}

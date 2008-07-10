@@ -1,0 +1,12 @@
+{
+  if (templateEngine != null) {
+    GroovyDocWriter writer=new GroovyDocWriter(this,output,templateEngine);
+    GroovyRootDoc rootDoc=rootDocBuilder.getRootDoc();
+    writer.writeRoot(rootDoc,destdir);
+    writer.writePackages(rootDoc,destdir);
+    writer.writeClasses(rootDoc,destdir);
+  }
+ else {
+    throw new UnsupportedOperationException("No template engine was found");
+  }
+}

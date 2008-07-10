@@ -1,0 +1,19 @@
+{
+  List expressions=new ArrayList();
+  AST elist=listNode.getFirstChild();
+  assertNodeType(ELIST,elist);
+  for (AST node=elist.getFirstChild(); node != null; node=node.getNextSibling()) {
+switch (node.getType()) {
+case LABELED_ARG:
+      assertNodeType(COMMA,node);
+    break;
+case SPREAD_MAP_ARG:
+  assertNodeType(SPREAD_ARG,node);
+break;
+}
+expressions.add(expression(node));
+}
+ListExpression listExpression=new ListExpression(expressions);
+configureAST(listExpression,listNode);
+return listExpression;
+}

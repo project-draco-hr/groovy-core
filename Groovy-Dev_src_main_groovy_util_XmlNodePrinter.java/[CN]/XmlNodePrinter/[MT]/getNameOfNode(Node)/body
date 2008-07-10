@@ -1,0 +1,14 @@
+{
+  if (node == null) {
+    throw new IllegalArgumentException("Node must not be null!");
+  }
+  Object name=node.name();
+  if (name instanceof QName) {
+    QName qname=(QName)name;
+    if (!namespaceAware) {
+      return qname.getLocalPart();
+    }
+    return qname.getQualifiedName();
+  }
+  return name.toString();
+}

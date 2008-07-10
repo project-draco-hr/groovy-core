@@ -1,0 +1,37 @@
+{
+  char[] cbuf=new char[charBufferSize];
+  try {
+    input.mark(charBufferSize);
+  }
+ catch (  IOException e) {
+    LOG.warning("Caught exception setting mark on supporting reader: " + e);
+    return readLineFromReaderWithoutMark(input);
+  }
+  int count=input.read(cbuf);
+  if (count == EOF)   return null;
+  StringBuffer line=new StringBuffer(expectedLineLength);
+  int ls=lineSeparatorIndex(cbuf,count);
+  while (ls == -1) {
+    line.append(cbuf,0,count);
+    count=input.read(cbuf);
+    if (count == EOF) {
+      return line.toString();
+    }
+    ls=lineSeparatorIndex(cbuf,count);
+  }
+  line.append(cbuf,0,ls);
+  int skipLS=1;
+  if (ls + 1 < count) {
+    if (cbuf[ls] == '\r' && cbuf[ls + 1] == '\n') {
+      skipLS++;
+    }
+  }
+ else {
+    if (cbuf[ls] == '\r' && input.read() == '\n') {
+      skipLS++;
+    }
+  }
+  input.reset();
+  input.skip(line.length() + skipLS);
+  return line.toString();
+}

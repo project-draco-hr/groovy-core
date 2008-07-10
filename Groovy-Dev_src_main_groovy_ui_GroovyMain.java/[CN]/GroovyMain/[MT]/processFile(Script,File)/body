@@ -1,0 +1,39 @@
+{
+  if (!file.exists())   throw new FileNotFoundException(file.getName());
+  if (!editFiles) {
+    BufferedReader reader=new BufferedReader(new FileReader(file));
+    try {
+      PrintWriter writer=new PrintWriter(System.out);
+      processReader(s,reader,writer);
+      writer.flush();
+    }
+  finally {
+      reader.close();
+    }
+  }
+ else {
+    File backup;
+    if (backupExtension == null) {
+      backup=File.createTempFile("groovy_",".tmp");
+      backup.deleteOnExit();
+    }
+ else {
+      backup=new File(file.getPath() + backupExtension);
+    }
+    backup.delete();
+    if (!file.renameTo(backup))     throw new IOException("unable to rename " + file + " to "+ backup);
+    BufferedReader reader=new BufferedReader(new FileReader(backup));
+    try {
+      PrintWriter writer=new PrintWriter(new FileWriter(file));
+      try {
+        processReader(s,reader,writer);
+      }
+  finally {
+        writer.close();
+      }
+    }
+  finally {
+      reader.close();
+    }
+  }
+}

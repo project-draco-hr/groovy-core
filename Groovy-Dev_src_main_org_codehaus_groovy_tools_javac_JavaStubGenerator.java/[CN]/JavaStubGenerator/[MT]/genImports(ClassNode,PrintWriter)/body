@@ -1,0 +1,21 @@
+{
+  Set imports=new HashSet();
+  imports.addAll(Arrays.asList(ResolveVisitor.DEFAULT_IMPORTS));
+  ModuleNode moduleNode=classNode.getModule();
+  for (Iterator it=moduleNode.getImportPackages().iterator(); it.hasNext(); ) {
+    imports.add(it.next());
+  }
+  for (Iterator it=moduleNode.getImports().iterator(); it.hasNext(); ) {
+    ImportNode imp=(ImportNode)it.next();
+    String name=imp.getType().getName();
+    int lastDot=name.lastIndexOf('.');
+    if (lastDot != -1)     imports.add(name.substring(0,lastDot + 1));
+  }
+  for (Iterator it=imports.iterator(); it.hasNext(); ) {
+    String imp=(String)it.next();
+    out.print("import ");
+    out.print(imp);
+    out.println("*;");
+  }
+  out.println();
+}

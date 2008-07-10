@@ -1,0 +1,29 @@
+{
+  Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof BinaryExpression) {
+    BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
+    if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      prepareCallSite("putAt");
+      prepareCallSite(method);
+      prepareCallSite("getAt");
+      visitAndAutoboxBoolean(leftBinExpr.getLeftExpression());
+      visitAndAutoboxBoolean(leftBinExpr.getRightExpression());
+      mv.visitInsn(DUP2_X2);
+      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      visitAndAutoboxBoolean(expression.getRightExpression());
+      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      final int resultVar=compileStack.defineTemporaryVariable("$result",true);
+      mv.visitVarInsn(ALOAD,resultVar);
+      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+      mv.visitInsn(POP);
+      mv.visitVarInsn(ALOAD,resultVar);
+      compileStack.removeVar(resultVar);
+      return;
+    }
+  }
+  evaluateBinaryExpression(method,expression);
+  mv.visitInsn(DUP);
+  leftHandExpression=true;
+  evaluateExpression(leftExpression);
+  leftHandExpression=false;
+}

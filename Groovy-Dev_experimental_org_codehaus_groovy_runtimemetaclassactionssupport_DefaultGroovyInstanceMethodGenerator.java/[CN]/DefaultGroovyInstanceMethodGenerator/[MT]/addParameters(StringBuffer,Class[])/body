@@ -1,0 +1,13 @@
+{
+  final Class[] newParameterTypes=new Class[parameterTypes.length - 1];
+  System.arraycopy(parameterTypes,1,newParameterTypes,0,newParameterTypes.length);
+  code.append('(');
+  getFullName(parameterTypes[0],code);
+  if (newParameterTypes.length == 0) {
+    code.append(")target");
+  }
+ else {
+    code.append(")target, ");
+  }
+  return super.addParameters(code,newParameterTypes);
+}

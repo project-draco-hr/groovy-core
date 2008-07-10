@@ -1,0 +1,13 @@
+{
+  T res=value;
+  if (res != null)   return res;
+  lock();
+  try {
+    res=initValue();
+    value=res;
+    return res;
+  }
+  finally {
+    unlock();
+  }
+}

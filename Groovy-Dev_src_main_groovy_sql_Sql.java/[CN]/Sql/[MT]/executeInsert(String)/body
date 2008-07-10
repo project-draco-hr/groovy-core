@@ -1,0 +1,29 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    log.fine(sql);
+    statement=createConnection(connection);
+    configure(statement);
+    boolean hasResultSet=statement.execute(sql,Statement.RETURN_GENERATED_KEYS);
+    List autoKeys=new ArrayList();
+    ResultSet keys=statement.getGeneratedKeys();
+    int count=keys.getMetaData().getColumnCount();
+    while (keys.next()) {
+      List rowKeys=new ArrayList(count);
+      for (int i=1; i <= count; i++) {
+        rowKeys.add(keys.getObject(i));
+      }
+      autoKeys.add(rowKeys);
+    }
+    this.updateCount=statement.getUpdateCount();
+    return autoKeys;
+  }
+ catch (  SQLException e) {
+    log.log(Level.FINE,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}

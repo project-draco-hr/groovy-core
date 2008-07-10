@@ -1,0 +1,15 @@
+{
+  Set<MetaClass> modifiedSupers=new HashSet<MetaClass>();
+  for (  CachedClass c : child.getSuperClasses()) {
+    Set<CachedClass> interfaces=c.getInterfaces();
+    populateSupersFromInterfaces(modifiedSupers,interfaces);
+    final ClassInfo info=c.classInfo;
+    final ExpandoMetaClass expando=info.getModifiedExpando();
+    if (expando != null) {
+      modifiedSupers.add(expando);
+    }
+  }
+  Set<CachedClass> interfaces=child.getTheCachedClass().getDeclaredInterfaces();
+  populateSupersFromInterfaces(modifiedSupers,interfaces);
+  return modifiedSupers;
+}
