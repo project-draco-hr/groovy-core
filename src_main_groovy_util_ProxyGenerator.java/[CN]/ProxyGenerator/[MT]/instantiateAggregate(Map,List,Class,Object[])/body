@@ -42,8 +42,7 @@
   buffer.append("        this.closureMap = map\n");
   buffer.append("    }\n");
   List selectedMethods=new ArrayList();
-  List publicAndProtectedMethods=DefaultGroovyMethods.toList(baseClass.getMethods());
-  publicAndProtectedMethods.addAll(getInheritedMethods(baseClass));
+  List publicAndProtectedMethods=getInheritedMethods(baseClass,new ArrayList());
   for (int i=0; i < publicAndProtectedMethods.size(); i++) {
     Method method=(Method)publicAndProtectedMethods.get(i);
     if (method.getName().indexOf('$') != -1)     continue;
@@ -52,11 +51,10 @@
       addOverridingMapCall(buffer,method);
     }
   }
-  List interfaceMethods=new ArrayList();
+  ArrayList interfaceMethods=new ArrayList();
   for (int i=0; i < interfacesToImplement.size(); i++) {
     Class thisInterface=(Class)interfacesToImplement.get(i);
-    interfaceMethods.addAll(DefaultGroovyMethods.toList(thisInterface.getMethods()));
-    interfaceMethods.addAll(getInheritedMethods(thisInterface));
+    getInheritedMethods(thisInterface,interfaceMethods);
   }
   for (int i=0; i < interfaceMethods.size(); i++) {
     Method method=(Method)interfaceMethods.get(i);
