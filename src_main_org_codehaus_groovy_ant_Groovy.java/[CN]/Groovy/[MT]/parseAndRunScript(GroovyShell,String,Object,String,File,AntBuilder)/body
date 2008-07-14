@@ -1,0 +1,40 @@
+{
+  try {
+    final Script script;
+    if (scriptFile != null) {
+      script=shell.parse(scriptFile);
+    }
+ else {
+      script=shell.parse(txt,scriptName);
+    }
+    script.setProperty("ant",builder);
+    script.setProperty("project",getProject());
+    script.setProperty("properties",new AntProjectPropertiesDelegate(project));
+    script.setProperty("target",getOwningTarget());
+    script.setProperty("task",this);
+    script.setProperty("args",cmdline.getCommandline());
+    if (mavenPom != null) {
+      script.setProperty("pom",mavenPom);
+    }
+    script.run();
+  }
+ catch (  final MissingMethodException mme) {
+    if (scriptFile != null) {
+      try {
+        shell.run(scriptFile,cmdline.getCommandline());
+      }
+ catch (      IOException e) {
+        processError(e);
+      }
+    }
+ else {
+      shell.run(txt,scriptName,cmdline.getCommandline());
+    }
+  }
+catch (  final CompilationFailedException e) {
+    processError(e);
+  }
+catch (  IOException e) {
+    processError(e);
+  }
+}

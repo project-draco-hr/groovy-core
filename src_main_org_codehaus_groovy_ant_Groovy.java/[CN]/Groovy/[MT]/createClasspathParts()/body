@@ -1,0 +1,43 @@
+{
+  Path path;
+  if (classpath != null) {
+    path=super.createClasspath();
+    path.setPath(classpath.toString());
+  }
+  if (includeAntRuntime) {
+    path=super.createClasspath();
+    path.setPath(System.getProperty("java.class.path"));
+  }
+  String groovyHome=null;
+  final String[] strings=getSysProperties().getVariables();
+  for (int i=0; i < strings.length; i++) {
+    String string=strings[i];
+    if (string.startsWith("-Dgroovy.home=")) {
+      groovyHome=string.substring("-Dgroovy.home=".length());
+    }
+  }
+  if (groovyHome == null) {
+    groovyHome=System.getProperty("groovy.home");
+  }
+  if (groovyHome == null) {
+    groovyHome=System.getenv("GROOVY_HOME");
+  }
+  if (groovyHome == null) {
+    throw new IllegalStateException("Neither ${groovy.home} nor GROOVY_HOME defined.");
+  }
+  File jarDir=new File(groovyHome,"embeddable");
+  if (!jarDir.exists()) {
+    throw new IllegalStateException("GROOVY_HOME incorrectly defined. No embeddable directory found in: " + groovyHome);
+  }
+  final File[] files=jarDir.listFiles();
+  for (int i=0; i < files.length; i++) {
+    File file=files[i];
+    try {
+      log.debug("Adding jar to classpath: " + file.getCanonicalPath());
+    }
+ catch (    IOException e) {
+    }
+    path=super.createClasspath();
+    path.setLocation(file);
+  }
+}

@@ -1,0 +1,6 @@
+{
+  StringWriter writer=new StringWriter();
+  new ErrorReporter(e,false).write(new PrintWriter(writer));
+  String message=writer.toString();
+  throw new BuildException("Script Failed: " + message,e,getLocation());
+}

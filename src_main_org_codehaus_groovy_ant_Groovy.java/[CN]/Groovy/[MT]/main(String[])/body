@@ -1,0 +1,11 @@
+{
+  final GroovyShell shell=new GroovyShell(new Binding());
+  final Groovy groovy=new Groovy();
+  for (int i=1; i < args.length; i++) {
+    final Commandline.Argument argument=groovy.createArg();
+    argument.setValue(args[i]);
+  }
+  final AntBuilder builder=new AntBuilder();
+  groovy.setProject(builder.getProject());
+  groovy.parseAndRunScript(shell,null,null,null,new File(args[0]),builder);
+}
