@@ -1,4 +1,39 @@
 {
-  for (  MixinInMetaClass mixin : mixinClasses)   if (mixin.getMixinClass().getTheClass() == key)   return mixin.getMixinInstance(object);
+  if (key.isAssignableFrom(object.getClass())) {
+    return new GroovyObjectSupport(){
+{
+        final MetaClass ownMetaClass=InvokerHelper.getMetaClass(object.getClass());
+        setMetaClass(new OwnedMetaClass(ownMetaClass){
+          protected Object getOwner(){
+            return object;
+          }
+          protected MetaClass getOwnerMetaClass(          Object owner){
+            return getAdaptee();
+          }
+        }
+);
+      }
+    }
+;
+  }
+  for (  final MixinInMetaClass mixin : mixinClasses) {
+    if (key.isAssignableFrom(mixin.getMixinClass().getTheClass())) {
+      return new GroovyObjectSupport(){
+{
+          final Object mixedInInstance=mixin.getMixinInstance(object);
+          setMetaClass(new OwnedMetaClass(InvokerHelper.getMetaClass(mixedInInstance)){
+            protected Object getOwner(){
+              return mixedInInstance;
+            }
+            protected MetaClass getOwnerMetaClass(            Object owner){
+              return ((MixedInMetaClass)getAdaptee()).getAdaptee();
+            }
+          }
+);
+        }
+      }
+;
+    }
+  }
   throw new RuntimeException("Class " + key + " isn't mixed in "+ object.getClass());
 }

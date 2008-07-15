@@ -24,10 +24,10 @@
     final Parameter[] NOPARAMS=new Parameter[0];
     MethodNode clinit=annotatedClass.getDeclaredMethod("<clinit>",NOPARAMS);
     if (clinit == null) {
-      clinit=annotatedClass.addMethod("<clinit>",Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,ClassHelper.VOID_TYPE,NOPARAMS,null,new BlockStatement());
+      clinit=annotatedClass.addMethod("<clinit>",Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC,ClassHelper.VOID_TYPE,NOPARAMS,null,new BlockStatement());
       clinit.setSynthetic(true);
     }
     final BlockStatement code=(BlockStatement)clinit.getCode();
-    code.addStatement(new ExpressionStatement(new MethodCallExpression(new ClassExpression(annotatedClass),"mixin",useClasses)));
+    code.addStatement(new ExpressionStatement(new MethodCallExpression(new PropertyExpression(new ClassExpression(annotatedClass),"metaClass"),"mixin",useClasses)));
   }
 }

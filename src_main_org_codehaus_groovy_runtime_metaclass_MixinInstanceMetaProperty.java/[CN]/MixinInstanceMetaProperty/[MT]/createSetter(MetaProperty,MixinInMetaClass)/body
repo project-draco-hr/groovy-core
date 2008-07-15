@@ -1,0 +1,25 @@
+{
+  return new MetaMethod(){
+    final String name=getSetterName(property.getName());
+{
+      setParametersTypes(new CachedClass[]{ReflectionCache.getCachedClass(property.getType())});
+    }
+    public int getModifiers(){
+      return Modifier.PUBLIC;
+    }
+    public String getName(){
+      return name;
+    }
+    public Class getReturnType(){
+      return property.getType();
+    }
+    public CachedClass getDeclaringClass(){
+      return mixinInMetaClass.getInstanceClass();
+    }
+    public Object invoke(    Object object,    Object[] arguments){
+      property.setProperty(mixinInMetaClass.getMixinInstance(object),arguments[0]);
+      return null;
+    }
+  }
+;
+}
