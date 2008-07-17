@@ -1,15 +1,15 @@
 {
-  String key=metaMethod.getName();
-  final Object methodOrList=expandoSubclassMethods.get(key);
+  final String name=metaMethod.getName();
+  Object methodOrList=expandoSubclassMethods.get(name);
   if (methodOrList == null) {
-    expandoSubclassMethods.put(key,metaMethod);
+    expandoSubclassMethods.put(name,metaMethod);
   }
  else {
     if (methodOrList instanceof MetaMethod) {
       FastArray arr=new FastArray(2);
       arr.add(methodOrList);
       arr.add(metaMethod);
-      expandoSubclassMethods.put(key,arr);
+      expandoSubclassMethods.put(name,arr);
     }
  else {
       ((FastArray)methodOrList).add(metaMethod);

@@ -1,10 +1,12 @@
 {
   if (c != null) {
-    Class[] paramTypes=c.getParameterTypes();
-    if (paramTypes == null)     paramTypes=ZERO_ARGUMENTS;
-    Constructor ctor=retrieveConstructor(paramTypes);
-    if (ctor != null)     throw new GroovyRuntimeException("Cannot add new constructor for arguments [" + DefaultGroovyMethods.inspect(paramTypes) + "]. It already exists!");
-    registerInstanceMethod(new ClosureMetaMethod(GROOVY_CONSTRUCTOR,theClass,c));
+    final List<ClosureMetaMethod> list=ClosureMetaMethod.createMethodList(GROOVY_CONSTRUCTOR,theClass,c);
+    for (    MetaMethod method : list) {
+      Class[] paramTypes=method.getNativeParameterTypes();
+      Constructor ctor=retrieveConstructor(paramTypes);
+      if (ctor != null)       throw new GroovyRuntimeException("Cannot add new constructor for arguments [" + DefaultGroovyMethods.inspect(paramTypes) + "]. It already exists!");
+      registerInstanceMethod(method);
+    }
   }
   return this;
 }

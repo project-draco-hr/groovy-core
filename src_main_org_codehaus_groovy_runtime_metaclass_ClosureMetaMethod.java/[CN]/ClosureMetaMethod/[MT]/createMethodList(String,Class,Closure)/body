@@ -1,0 +1,21 @@
+{
+  ArrayList<ClosureMetaMethod> res=new ArrayList<ClosureMetaMethod>();
+  if (closure instanceof MethodClosure) {
+    MethodClosure methodClosure=(MethodClosure)closure;
+    Object owner=closure.getOwner();
+    Class ownerClass=(Class)(owner instanceof Class ? owner : owner.getClass());
+    for (    CachedMethod method : ReflectionCache.getCachedClass(ownerClass).getMethods()) {
+      if (method.getName().equals(methodClosure.getMethod())) {
+        res.add(new MethodClosureMetaMethod(name,declaringClass,closure,method));
+      }
+    }
+  }
+ else {
+    for (    CachedMethod method : ReflectionCache.getCachedClass(closure.getClass()).getMethods()) {
+      if (method.getName().equals("doCall")) {
+        res.add(new ClosureMetaMethod(name,declaringClass,closure,method));
+      }
+    }
+  }
+  return res;
+}

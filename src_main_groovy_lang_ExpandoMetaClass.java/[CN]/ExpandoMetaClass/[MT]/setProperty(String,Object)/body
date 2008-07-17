@@ -4,7 +4,10 @@
       property=GROOVY_CONSTRUCTOR;
     }
     Closure callable=(Closure)newValue;
-    registerInstanceMethod(new ClosureMetaMethod(property,theClass,callable));
+    final List<ClosureMetaMethod> list=ClosureMetaMethod.createMethodList(property,theClass,callable);
+    for (    MetaMethod method : list) {
+      registerInstanceMethod(method);
+    }
   }
  else {
     registerBeanProperty(property,newValue);
