@@ -1,6 +1,8 @@
 {
   performOperationOnMetaClass(new Callable(){
     public void call(){
+      final MetaMethodIndex.Header header=metaMethodIndex.getHeader(theClass);
+      final MetaMethodIndex.Entry methods=metaMethodIndex.getOrPutMethods(metaMethodFromSuper.getName(),header);
       MetaMethod existing=null;
       try {
         existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getNativeParameterTypes());
@@ -31,7 +33,7 @@
         ClosureMetaMethod localMethod=ClosureMetaMethod.copy(closureMethod);
         addMetaMethod(localMethod);
         MethodKey key=new DefaultCachedMethodKey(declaringClass,name,localMethod.getParameterTypes(),false);
-        checkIfGroovyObjectMethod(localMethod,name);
+        checkIfGroovyObjectMethod(localMethod);
         expandoMethods.put(key,localMethod);
       }
     }

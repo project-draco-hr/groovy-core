@@ -1,0 +1,18 @@
+{
+  if (mc != null && mc instanceof ExpandoMetaClass) {
+    ExpandoMetaClass emc=(ExpandoMetaClass)mc;
+    for (    Object mm : emc.getExpandoSubclassMethods()) {
+      if (mm instanceof MetaMethod) {
+        MetaMethod method=(MetaMethod)mm;
+        if (method.getDeclaringClass() == this)         arr.add(method);
+      }
+ else {
+        FastArray farr=(FastArray)mm;
+        for (int i=0; i != farr.size; ++i) {
+          MetaMethod method=(MetaMethod)farr.get(i);
+          if (method.getDeclaringClass() == this)           arr.add(method);
+        }
+      }
+    }
+  }
+}
