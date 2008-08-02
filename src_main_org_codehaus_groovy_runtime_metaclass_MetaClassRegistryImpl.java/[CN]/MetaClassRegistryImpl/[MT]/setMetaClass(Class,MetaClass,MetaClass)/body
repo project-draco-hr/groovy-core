@@ -1,0 +1,14 @@
+{
+  version.incrementAndGet();
+  final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  MetaClass mc=null;
+  info.lock();
+  try {
+    if (oldMc != null)     mc=info.getStrongMetaClass();
+    if (mc == oldMc)     info.setStrongMetaClass(newMc);
+  }
+  finally {
+    info.unlock();
+  }
+  if (oldMc == mc)   fireConstantMetaClassUpdate(theClass,newMc);
+}

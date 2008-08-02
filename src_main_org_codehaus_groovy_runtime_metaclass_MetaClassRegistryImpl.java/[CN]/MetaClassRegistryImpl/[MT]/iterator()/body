@@ -1,0 +1,39 @@
+{
+  final WeakReference[] refs;
+synchronized (metaClassInfo) {
+    cleanMetaClassList();
+    refs=(WeakReference[])metaClassInfo.toArray(new WeakReference[0]);
+  }
+  return new Iterator(){
+    private int index=0;
+    private MetaClass currentMeta;
+    private boolean hasNextCalled=false;
+    private boolean hasNext=false;
+    public boolean hasNext(){
+      if (hasNextCalled)       return hasNext;
+      hasNextCalled=true;
+      hasNext=true;
+      currentMeta=null;
+      while (currentMeta == null && index < refs.length) {
+        currentMeta=(MetaClass)refs[index].get();
+        index++;
+      }
+      hasNext=currentMeta != null;
+      return hasNext;
+    }
+    private void ensureNext(){
+      hasNext();
+      hasNextCalled=false;
+    }
+    public Object next(){
+      ensureNext();
+      return currentMeta;
+    }
+    public void remove(){
+      ensureNext();
+      setMetaClass(currentMeta.getTheClass(),currentMeta,null);
+      currentMeta=null;
+    }
+  }
+;
+}

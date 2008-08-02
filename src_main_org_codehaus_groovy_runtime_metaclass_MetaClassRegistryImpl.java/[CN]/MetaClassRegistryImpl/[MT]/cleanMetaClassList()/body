@@ -1,0 +1,15 @@
+{
+  boolean hasCollectedEntries=false;
+  java.lang.ref.Reference r=null;
+  while ((r=queue.poll()) != null) {
+    r.clear();
+    hasCollectedEntries=true;
+  }
+  if (!hasCollectedEntries)   return;
+  for (Iterator it=metaClassInfo.iterator(); it.hasNext(); ) {
+    WeakReference ref=(WeakReference)it.next();
+    if (ref.get() != null)     continue;
+    it.remove();
+    ref.clear();
+  }
+}
