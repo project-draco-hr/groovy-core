@@ -2,7 +2,7 @@
   final MetaClass metaClass=InvokerHelper.getMetaClass(receiver);
   CallSite site;
   if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInCurrentThread()) {
-    site=new PojoMetaClassGetPropertySite(this,metaClass);
+    site=new PojoMetaClassGetPropertySite(this);
   }
  else {
     final MetaProperty effective=((MetaClassImpl)metaClass).getEffectiveGetMetaProperty(receiver.getClass(),receiver,name,false);
@@ -11,7 +11,7 @@
  else       site=new GetEffectivePojoPropertySite(this,metaClass,effective);
     }
  else {
-      site=new PojoMetaClassGetPropertySite(this,metaClass);
+      site=new PojoMetaClassGetPropertySite(this);
     }
   }
   array.array[index]=site;
