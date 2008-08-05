@@ -62,12 +62,23 @@
     }
     fieldModifiers|=(modifiers & flags);
     fieldNode.setModifiers(fieldModifiers);
+    fieldNode.setSynthetic(true);
+    FieldNode storedNode=classNode.getField(fieldNode.getName());
+    if (storedNode != null && !classNode.hasProperty(name)) {
+      fieldNode=storedNode;
+      classNode.getFields().remove(storedNode);
+    }
     PropertyNode propertyNode=new PropertyNode(fieldNode,modifiers,null,null);
     configureAST(propertyNode,fieldDef);
     classNode.addProperty(propertyNode);
   }
  else {
     fieldNode.setModifiers(modifiers);
+    PropertyNode pn=classNode.getProperty(name);
+    if (pn != null && pn.getField().isSynthetic()) {
+      classNode.getFields().remove(pn.getField());
+      pn.setField(fieldNode);
+    }
     classNode.addField(fieldNode);
   }
 }
