@@ -1,0 +1,11 @@
+{
+  MetaClass answer=getMetaClassForClass();
+  if (answer != null)   return answer;
+  lock();
+  try {
+    return getMetaClassUnderLock();
+  }
+  finally {
+    unlock();
+  }
+}
