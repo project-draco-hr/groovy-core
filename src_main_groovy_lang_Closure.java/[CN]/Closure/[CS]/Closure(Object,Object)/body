@@ -2,17 +2,7 @@
   this.owner=owner;
   this.delegate=owner;
   this.thisObject=thisObject;
-  final Class clazz=this.getClass();
-  final CachedMethod[] methods=ReflectionCache.getCachedClass(clazz).getMethods();
-  maximumNumberOfParameters=-1;
-  for (int j=0; j < methods.length; j++) {
-    if ("doCall".equals(methods[j].getName())) {
-      final Class[] pt=methods[j].getNativeParameterTypes();
-      if (pt.length > maximumNumberOfParameters) {
-        parameterTypes=pt;
-        maximumNumberOfParameters=parameterTypes.length;
-      }
-    }
-  }
-  maximumNumberOfParameters=Math.max(maximumNumberOfParameters,0);
+  final CachedClosureClass cachedClass=(CachedClosureClass)ReflectionCache.getCachedClass(getClass());
+  parameterTypes=cachedClass.getParameterTypes();
+  maximumNumberOfParameters=cachedClass.getMaximumNumberOfParameters();
 }
