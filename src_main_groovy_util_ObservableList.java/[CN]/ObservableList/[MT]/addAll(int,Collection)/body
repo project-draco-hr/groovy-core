@@ -1,0 +1,22 @@
+{
+  boolean success=delegate.addAll(index,c);
+  if (success && c != null) {
+    List values=new ArrayList();
+    for (Iterator i=c.iterator(); i.hasNext(); ) {
+      Object element=i.next();
+      if (test != null) {
+        Object result=test.call(element);
+        if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
+          values.add(element);
+        }
+      }
+ else {
+        values.add(element);
+      }
+    }
+    if (values.size() > 0) {
+      pcs.firePropertyChange(new MultiElementAddedEvent(this,index,values));
+    }
+  }
+  return success;
+}

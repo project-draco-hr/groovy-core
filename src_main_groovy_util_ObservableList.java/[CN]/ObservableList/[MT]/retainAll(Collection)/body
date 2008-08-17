@@ -1,0 +1,19 @@
+{
+  if (c == null) {
+    return false;
+  }
+  List values=new ArrayList();
+  if (c != null) {
+    for (Iterator i=delegate.iterator(); i.hasNext(); ) {
+      Object element=i.next();
+      if (!c.contains(element)) {
+        values.add(element);
+      }
+    }
+  }
+  boolean success=delegate.retainAll(c);
+  if (success && !values.isEmpty()) {
+    pcs.firePropertyChange(new MultiElementRemovedEvent(this,values));
+  }
+  return success;
+}

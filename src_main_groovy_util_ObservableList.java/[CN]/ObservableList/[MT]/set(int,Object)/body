@@ -1,0 +1,13 @@
+{
+  Object oldValue=delegate.set(index,element);
+  if (test != null) {
+    Object result=test.call(element);
+    if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
+      pcs.firePropertyChange(new ElementUpdatedEvent(this,oldValue,element,index));
+    }
+  }
+ else {
+    pcs.firePropertyChange(new ElementUpdatedEvent(this,oldValue,element,index));
+  }
+  return oldValue;
+}
