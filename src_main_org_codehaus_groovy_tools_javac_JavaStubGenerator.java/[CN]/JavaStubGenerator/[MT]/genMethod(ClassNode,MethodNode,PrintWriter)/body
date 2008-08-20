@@ -1,6 +1,8 @@
 {
   if (methodNode.getName().equals("<clinit>"))   return;
   if (!clazz.isInterface())   printModifiers(out,methodNode.getModifiers());
+  writeGenericsBounds(out,methodNode.getGenericsTypes());
+  out.print(" ");
   printType(methodNode.getReturnType(),out);
   out.print(" ");
   out.print(methodNode.getName());
