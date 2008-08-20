@@ -1,6 +1,7 @@
 {
   if (!isEnum)   getConstructors(classNode,out);
-  List methods=classNode.getMethods();
+  List methods=(List)propertyMethods.clone();
+  methods.addAll(classNode.getMethods());
   if (methods != null)   for (Iterator it=methods.iterator(); it.hasNext(); ) {
     MethodNode methodNode=(MethodNode)it.next();
     if (isEnum && methodNode.isSynthetic()) {

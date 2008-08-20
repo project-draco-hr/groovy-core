@@ -15,7 +15,8 @@
     }
     protected void addInitialization(    ClassNode node){
     }
-    public void visitProperty(    PropertyNode node){
+    protected void addPropertyMethod(    MethodNode method){
+      propertyMethods.add(method);
     }
   }
 ;
@@ -64,10 +65,10 @@
     out.println(" {");
     genFields(classNode,out,isEnum);
     genMethods(classNode,out,isEnum);
-    genProps(classNode,out);
     out.println("}");
   }
   finally {
+    propertyMethods.clear();
     try {
       out.close();
     }
