@@ -26,12 +26,9 @@ catch (  NoClassDefFoundError ncdfe) {
       throw ncdfe;
     }
   }
-  if (cls != null) {
-    preferClassOverScript|=!recompile;
-    if (preferClassOverScript)     return cls;
-  }
+  if (cls != null && preferClassOverScript)   return cls;
   if (lookupScriptFiles) {
-synchronized (this) {
+synchronized (sourceCache) {
       try {
         final Class classCacheEntry=getClassCacheEntry(name);
         if (classCacheEntry != cls)         return classCacheEntry;
