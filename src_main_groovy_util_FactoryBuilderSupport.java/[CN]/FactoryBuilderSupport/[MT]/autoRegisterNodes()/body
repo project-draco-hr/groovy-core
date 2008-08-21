@@ -1,0 +1,32 @@
+{
+synchronized (this) {
+    if (autoRegistrationRunning || autoRegistrationComplete) {
+      return;
+    }
+  }
+  autoRegistrationRunning=true;
+  try {
+    for (    Method method : getClass().getMethods()) {
+      if (method.getName().startsWith("register") && method.getParameterTypes().length == 0) {
+        registringGroupName=method.getName().substring("register".length());
+        registrationGroup.put(registringGroupName,new TreeSet<String>());
+        try {
+          method.invoke(this);
+        }
+ catch (        IllegalAccessException e) {
+          throw new RuntimeException("Cound not init " + getClass().getName() + " because of an access error in "+ method.getName(),e);
+        }
+catch (        InvocationTargetException e) {
+          throw new RuntimeException("Cound not init " + getClass().getName() + " because of an exception in "+ method.getName(),e);
+        }
+ finally {
+          registringGroupName="";
+        }
+      }
+    }
+  }
+  finally {
+    autoRegistrationComplete=true;
+    autoRegistrationRunning=false;
+  }
+}

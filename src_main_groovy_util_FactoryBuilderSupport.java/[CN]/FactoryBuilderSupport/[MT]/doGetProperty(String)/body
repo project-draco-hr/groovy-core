@@ -1,3 +1,14 @@
 {
-  return super.getProperty(property);
+  Closure[] accessors=resolveExplicitProperty(property);
+  if (accessors != null) {
+    if (accessors[0] == null) {
+      throw new MissingPropertyException(property + " is declared as write only");
+    }
+ else {
+      return accessors[0].call();
+    }
+  }
+ else {
+    return super.getProperty(property);
+  }
 }

@@ -1,3 +1,14 @@
 {
-  super.setProperty(property,newValue);
+  Closure[] accessors=resolveExplicitProperty(property);
+  if (accessors != null) {
+    if (accessors[1] == null) {
+      throw new MissingPropertyException(property + " is declared as read only");
+    }
+ else {
+      accessors[1].call(newValue);
+    }
+  }
+ else {
+    super.setProperty(property,newValue);
+  }
 }

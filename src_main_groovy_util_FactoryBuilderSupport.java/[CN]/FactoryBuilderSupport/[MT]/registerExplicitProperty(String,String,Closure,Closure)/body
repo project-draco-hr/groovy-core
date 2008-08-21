@@ -1,0 +1,12 @@
+{
+  if (getter != null)   getter.setDelegate(this);
+  if (setter != null)   setter.setDelegate(this);
+  explicitProperties.put(name,new Closure[]{getter,setter});
+  String methodNameBase=MetaClassHelper.capitalize(name);
+  if (getter != null) {
+    registrationGroup.get(groupName).add("get" + methodNameBase);
+  }
+  if (setter != null) {
+    registrationGroup.get(groupName).add("set" + methodNameBase);
+  }
+}

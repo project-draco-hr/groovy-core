@@ -1,4 +1,13 @@
 {
+  Closure explicitMethod=resolveExplicitMethod(methodName,args);
+  if (explicitMethod != null) {
+    if (args instanceof Object[]) {
+      return explicitMethod.call((Object[])args);
+    }
+ else {
+      return explicitMethod.call(args);
+    }
+  }
   Object node;
   Closure closure=null;
   List list=InvokerHelper.asList(args);
