@@ -15,7 +15,7 @@
     ret+=calculateParameterDistance(arguments[noVargsLength],baseType);
   }
  else   if (arguments.length > parameters.length) {
-    ret+=(2 + arguments.length - parameters.length) << VARGS_SHIFT;
+    ret+=(2l + arguments.length - parameters.length) << VARGS_SHIFT;
     CachedClass vargsType=ReflectionCache.getCachedClass(parameters[noVargsLength].getTheClass().getComponentType());
     for (int i=noVargsLength; i < arguments.length; i++) {
       ret+=calculateParameterDistance(arguments[i],vargsType);

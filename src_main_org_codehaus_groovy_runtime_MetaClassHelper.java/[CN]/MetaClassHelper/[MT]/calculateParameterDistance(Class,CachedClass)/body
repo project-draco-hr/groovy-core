@@ -1,12 +1,12 @@
 {
   if (parameter.getTheClass() == argument)   return 0;
   if (parameter.isInterface()) {
-    return getMaximumInterfaceDistance(argument,parameter.getTheClass()) << 1;
+    return getMaximumInterfaceDistance(argument,parameter.getTheClass()) << INTERFACE_SHIFT;
   }
   long objectDistance=0;
   if (argument != null) {
     long pd=getPrimitiveDistance(parameter.getTheClass(),argument);
-    if (pd != -1)     return pd << 32;
+    if (pd != -1)     return pd << PRIMITIVE_SHIFT;
     objectDistance+=PRIMITIVES.length + 1;
     Class clazz=ReflectionCache.autoboxType(argument);
     while (clazz != null) {
@@ -32,5 +32,5 @@
       }
     }
   }
-  return objectDistance << 32;
+  return objectDistance << OBJECT_SHIFT;
 }
