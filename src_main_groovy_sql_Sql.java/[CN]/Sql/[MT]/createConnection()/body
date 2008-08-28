@@ -1,9 +1,9 @@
 {
-  if (isCacheStatements() && useConnection != null) {
+  if ((cacheStatements || cacheConnection) && useConnection != null) {
     return useConnection;
   }
   if (dataSource != null) {
-    Connection con=null;
+    Connection con;
     try {
       con=(Connection)AccessController.doPrivileged(new PrivilegedExceptionAction(){
         public Object run() throws SQLException {
@@ -21,7 +21,7 @@
         throw (RuntimeException)e;
       }
     }
-    if (isCacheStatements()) {
+    if (cacheStatements || cacheConnection) {
       useConnection=con;
     }
     return con;

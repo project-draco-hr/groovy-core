@@ -1,4 +1,13 @@
 {
-  if (useConnection == null)   return;
-  useConnection.close();
+  if (useConnection == null) {
+    log.log(Level.FINEST,"Close operation not supported when using datasets");
+    return;
+  }
+  try {
+    useConnection.close();
+  }
+ catch (  SQLException e) {
+    log.log(Level.SEVERE,"Caught exception closing connection: " + e,e);
+    throw e;
+  }
 }

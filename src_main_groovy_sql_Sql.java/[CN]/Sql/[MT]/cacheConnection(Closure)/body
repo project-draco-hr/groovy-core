@@ -1,0 +1,12 @@
+{
+  cacheConnection=true;
+  Connection connection=null;
+  try {
+    connection=createConnection();
+    closure.call();
+  }
+  finally {
+    cacheConnection=false;
+    closeResources(connection,null);
+  }
+}

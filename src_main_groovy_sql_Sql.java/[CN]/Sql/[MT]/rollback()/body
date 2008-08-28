@@ -1,9 +1,13 @@
 {
-  if (useConnection == null)   return;
+  if (useConnection == null) {
+    log.log(Level.FINEST,"Rollback operation not supported when using datasets");
+    return;
+  }
   try {
-    this.useConnection.rollback();
+    useConnection.rollback();
   }
  catch (  SQLException e) {
-    log.log(Level.SEVERE,"Caught exception rollbacking connection: " + e,e);
+    log.log(Level.SEVERE,"Caught exception rolling back connection: " + e,e);
+    throw e;
   }
 }

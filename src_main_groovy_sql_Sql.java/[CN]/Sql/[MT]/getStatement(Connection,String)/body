@@ -1,7 +1,7 @@
 {
   Statement stmt;
-  if (isCacheStatements()) {
-    stmt=(Statement)statementCache.get(sql);
+  if (cacheStatements) {
+    stmt=statementCache.get(sql);
     if (stmt == null) {
 synchronized (statementCache) {
         stmt=createStatement(connection);

@@ -1,9 +1,10 @@
 {
-  if (statementCache != null) {
+  if (!statementCache.isEmpty()) {
     for (    Object o : statementCache.values())     try {
       ((Statement)o).close();
     }
  catch (    SQLException e) {
+      log.log(Level.FINEST,"Failed to close statement. Already closed?",e);
     }
     statementCache.clear();
   }

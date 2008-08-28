@@ -1,9 +1,13 @@
 {
-  if (useConnection == null)   return;
+  if (useConnection == null) {
+    log.log(Level.FINEST,"Commit operation not supported when using datasets");
+    return;
+  }
   try {
-    this.useConnection.commit();
+    useConnection.commit();
   }
  catch (  SQLException e) {
     log.log(Level.SEVERE,"Caught exception committing connection: " + e,e);
+    throw e;
   }
 }
