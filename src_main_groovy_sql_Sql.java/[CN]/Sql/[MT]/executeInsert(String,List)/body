@@ -3,7 +3,7 @@
   PreparedStatement statement=null;
   try {
     log.fine(sql);
-    statement=connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+    statement=getPreparedStatement(connection,sql,Statement.RETURN_GENERATED_KEYS);
     setParameters(params,statement);
     configure(statement);
     this.updateCount=statement.executeUpdate();

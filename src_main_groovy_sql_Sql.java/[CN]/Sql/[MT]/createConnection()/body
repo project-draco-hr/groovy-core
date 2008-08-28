@@ -1,4 +1,7 @@
 {
+  if (isCacheStatements() && useConnection != null) {
+    return useConnection;
+  }
   if (dataSource != null) {
     Connection con=null;
     try {
@@ -17,6 +20,9 @@
  else {
         throw (RuntimeException)e;
       }
+    }
+    if (isCacheStatements()) {
+      useConnection=con;
     }
     return con;
   }

@@ -1,0 +1,12 @@
+{
+  setCacheStatements(true);
+  Connection connection=null;
+  try {
+    connection=createConnection();
+    closure.call();
+  }
+  finally {
+    setCacheStatements(false);
+    closeResources(connection,null);
+  }
+}

@@ -1,0 +1,16 @@
+{
+  PreparedStatement pStmt;
+  if (isCacheStatements()) {
+    pStmt=(PreparedStatement)statementCache.get(sql);
+    if (pStmt == null) {
+synchronized (statementCache) {
+        pStmt=createPreparedStatement(connection,sql,returnGeneratedKeys);
+        statementCache.put(sql,pStmt);
+      }
+    }
+  }
+ else {
+    pStmt=createPreparedStatement(connection,sql,returnGeneratedKeys);
+  }
+  return pStmt;
+}
