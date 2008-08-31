@@ -1,9 +1,5 @@
 {
   if (receiver == null)   return;
-  if (!isSpreadable(receiver)) {
-    setGroovyObjectField(messageArgument,senderClass,receiver,messageName);
-    return;
-  }
   for (Iterator it=InvokerHelper.asIterator(receiver); it.hasNext(); ) {
     setFieldSafe(messageArgument,senderClass,it.next(),messageName);
   }
