@@ -1,0 +1,20 @@
+{
+  if (metaClassField != null)   return metaClassField;
+  final String classInternalName=BytecodeHelper.getClassInternalName(node);
+  metaClassField=node.addField("metaClass",ACC_PRIVATE | ACC_TRANSIENT,ClassHelper.METACLASS_TYPE,new BytecodeExpression(){
+    public void visit(    MethodVisitor mv){
+      mv.visitVarInsn(ALOAD,0);
+      mv.visitInsn(DUP);
+      mv.visitMethodInsn(INVOKEVIRTUAL,classInternalName,"$getStaticMetaClass","()Lgroovy/lang/MetaClass;");
+      mv.visitFieldInsn(PUTFIELD,classInternalName,"metaClass","Lgroovy/lang/MetaClass;");
+      mv.visitVarInsn(ALOAD,0);
+      mv.visitFieldInsn(GETFIELD,classInternalName,"metaClass","Lgroovy/lang/MetaClass;");
+    }
+    public ClassNode getType(){
+      return ClassHelper.METACLASS_TYPE;
+    }
+  }
+);
+  metaClassField.setSynthetic(true);
+  return metaClassField;
+}
