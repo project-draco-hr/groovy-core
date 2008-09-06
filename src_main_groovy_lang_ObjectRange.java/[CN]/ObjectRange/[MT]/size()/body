@@ -1,19 +1,16 @@
 {
   if (size == -1) {
-    if (from instanceof Integer && to instanceof Integer || from instanceof Long && to instanceof Long) {
-      size=0;
-      int fromNum=((Number)from).intValue();
-      int toNum=((Number)to).intValue();
-      size=toNum - fromNum + 1;
+    if ((from instanceof Integer || from instanceof Long) && (to instanceof Integer || to instanceof Long)) {
+      long fromNum=((Number)from).longValue();
+      long toNum=((Number)to).longValue();
+      size=(int)(toNum - fromNum + 1);
     }
  else     if (from instanceof Character && to instanceof Character) {
-      size=0;
       char fromNum=((Character)from).charValue();
       char toNum=((Character)to).charValue();
       size=toNum - fromNum + 1;
     }
  else     if (from instanceof BigDecimal || to instanceof BigDecimal) {
-      size=0;
       BigDecimal fromNum=new BigDecimal("" + from);
       BigDecimal toNum=new BigDecimal("" + to);
       BigInteger sizeNum=toNum.subtract(fromNum).add(new BigDecimal(1.0)).toBigInteger();
@@ -23,10 +20,10 @@
       size=0;
       Comparable first=from;
       Comparable value=from;
-      while (to.compareTo(value) >= 0) {
+      while (compareTo(to,value) >= 0) {
         value=(Comparable)increment(value);
         size++;
-        if (first.compareTo(value) >= 0)         break;
+        if (compareTo(first,value) >= 0)         break;
       }
     }
   }
