@@ -1,0 +1,28 @@
+{
+  Map<String,TriggerBinding> result=new HashMap<String,TriggerBinding>();
+  result.put(JComboBox.class.getName() + "#selectedItem",new TriggerBinding(){
+    public FullBinding createBinding(    SourceBinding source,    TargetBinding target){
+      return new JComboBoxSelectedElementBinding((PropertyBinding)source,target,"selectedItem");
+    }
+  }
+);
+  result.put(JComboBox.class.getName() + "#selectedElement",new TriggerBinding(){
+    public FullBinding createBinding(    SourceBinding source,    TargetBinding target){
+      return new JComboBoxSelectedElementBinding((PropertyBinding)source,target,"selectedElement");
+    }
+  }
+);
+  result.put(JComboBox.class.getName() + "#selectedIndex",new TriggerBinding(){
+    public FullBinding createBinding(    SourceBinding source,    TargetBinding target){
+      return new JComboBoxSelectedIndexBinding((PropertyBinding)source,target);
+    }
+  }
+);
+  result.put(JComboBox.class.getName() + "#elements",new TriggerBinding(){
+    public FullBinding createBinding(    SourceBinding source,    TargetBinding target){
+      return new JComboBoxElementsBinding((PropertyBinding)source,target);
+    }
+  }
+);
+  return result;
+}
