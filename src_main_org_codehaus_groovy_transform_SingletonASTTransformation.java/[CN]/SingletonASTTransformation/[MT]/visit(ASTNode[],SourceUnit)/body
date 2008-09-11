@@ -1,0 +1,13 @@
+{
+  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  if (parent instanceof ClassNode) {
+    ClassNode classNode=(ClassNode)parent;
+    classNode.addField("instance",ACC_PUBLIC | ACC_FINAL | ACC_STATIC,classNode,new ConstructorCallExpression(classNode,new ArgumentListExpression()));
+    final BlockStatement body=new BlockStatement();
+    body.addStatement(new IfStatement(new BooleanExpression(new PropertyExpression(new ClassExpression(classNode),"instance")),new ThrowStatement(new ConstructorCallExpression(ClassHelper.make(RuntimeException.class),new ArgumentListExpression(new ConstantExpression("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ ".instance")))),new EmptyStatement()));
+    classNode.addConstructor(new ConstructorNode(ACC_PRIVATE,body));
+  }
+}
