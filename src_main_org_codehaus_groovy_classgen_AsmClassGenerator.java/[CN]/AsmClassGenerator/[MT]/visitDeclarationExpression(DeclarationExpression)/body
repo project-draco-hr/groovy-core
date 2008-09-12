@@ -1,18 +1,4 @@
 {
-  onLineNumber(expression,"visitDeclarationExpression: \"" + expression.getVariableExpression().getName() + "\"");
-  Expression rightExpression=expression.getRightExpression();
-  VariableExpression vex=expression.getVariableExpression();
-  ClassNode type=vex.getType();
-  if (ClassHelper.isPrimitiveType(type)) {
-    rightExpression.visit(this);
-  }
- else {
-    if (type != ClassHelper.OBJECT_TYPE) {
-      visitCastExpression(new CastExpression(type,rightExpression));
-    }
- else {
-      visitAndAutoboxBoolean(rightExpression);
-    }
-  }
-  compileStack.defineVariable(vex,true);
+  onLineNumber(expression,"visitDeclarationExpression: \"" + expression.getText() + "\"");
+  evaluateEqual(expression,true);
 }

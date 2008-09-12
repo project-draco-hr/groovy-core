@@ -17,12 +17,9 @@
     }
   }
   Expression rightExpression=expression.getRightExpression();
-  ClassNode type=getLHSType(leftExpression);
-  if (ClassHelper.isPrimitiveType(type)) {
-    visitAndAutoboxBoolean(rightExpression);
-  }
- else   if (!rightExpression.getType().isDerivedFrom(type)) {
-    visitCastExpression(new CastExpression(type,rightExpression));
+  if (!(leftExpression instanceof TupleExpression)) {
+    ClassNode type=getLHSType(leftExpression);
+    assignmentCastAndVisit(type,rightExpression);
   }
  else {
     visitAndAutoboxBoolean(rightExpression);
@@ -41,10 +38,21 @@
 ;
     for (Iterator iterator=tuple.getExpressions().iterator(); iterator.hasNext(); ) {
       VariableExpression var=(VariableExpression)iterator.next();
-      visitMethodCallExpression(new MethodCallExpression(lhsExpr,"getAt",new ArgumentListExpression(new ConstantExpression(Integer.valueOf(i)))));
+      MethodCallExpression call=new MethodCallExpression(lhsExpr,"getAt",new ArgumentListExpression(new ConstantExpression(Integer.valueOf(i))));
+      ClassNode type=getLHSType(var);
+      assignmentCastAndVisit(type,call);
       i++;
-      visitVariableExpression(var);
+      if (defineVariable) {
+        compileStack.defineVariable(var,true);
+      }
+ else {
+        visitVariableExpression(var);
+      }
     }
+  }
+ else   if (defineVariable) {
+    VariableExpression var=(VariableExpression)leftExpression;
+    compileStack.defineVariable(var,true);
   }
  else {
     mv.visitInsn(DUP);

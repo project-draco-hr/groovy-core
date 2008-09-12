@@ -1,7 +1,13 @@
 {
   expression.getRightExpression().visit(this);
-  VariableExpression vex=expression.getVariableExpression();
-  vex.setInStaticContext(currentScope.isInStaticContext());
-  declare(vex);
-  vex.setAccessedVariable(vex);
+  if (expression.isMultipleAssignmentDeclaration()) {
+    ArgumentListExpression list=(ArgumentListExpression)expression.getLeftExpression();
+    for (Iterator it=list.getExpressions().iterator(); it.hasNext(); ) {
+      VariableExpression exp=(VariableExpression)it.next();
+      declare(exp);
+    }
+  }
+ else {
+    declare(expression.getVariableExpression());
+  }
 }

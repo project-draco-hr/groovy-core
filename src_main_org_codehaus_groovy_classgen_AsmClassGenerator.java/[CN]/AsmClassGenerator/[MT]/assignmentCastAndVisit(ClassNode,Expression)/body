@@ -1,0 +1,11 @@
+{
+  if (ClassHelper.isPrimitiveType(type)) {
+    visitAndAutoboxBoolean(rightExpression);
+  }
+ else   if (!rightExpression.getType().isDerivedFrom(type)) {
+    visitCastExpression(new CastExpression(type,rightExpression));
+  }
+ else {
+    visitAndAutoboxBoolean(rightExpression);
+  }
+}
