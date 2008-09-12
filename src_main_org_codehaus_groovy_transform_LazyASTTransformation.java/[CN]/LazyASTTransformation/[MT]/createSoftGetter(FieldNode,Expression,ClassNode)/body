@@ -1,0 +1,21 @@
+{
+  BlockStatement body=new BlockStatement();
+  final FieldExpression fieldExpr=new FieldExpression(fieldNode);
+  final VariableExpression resExpr=new VariableExpression("res",type);
+  final MethodCallExpression callExpression=new MethodCallExpression(new FieldExpression(fieldNode),"get",new ArgumentListExpression());
+  callExpression.setSafe(true);
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,Token.newSymbol("=",-1,-1),callExpression)));
+  BlockStatement elseBlock=new BlockStatement();
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,Token.newSymbol("=",-1,-1),initExpr)));
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(SOFT_REF,resExpr))));
+  elseBlock.addStatement(new ExpressionStatement(resExpr));
+  final IfStatement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(resExpr),elseBlock);
+  if ((fieldNode.getModifiers() & ACC_VOLATILE) == 0) {
+    body.addStatement(mainIf);
+  }
+ else {
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(resExpr),new SynchronizedStatement(VariableExpression.THIS_EXPRESSION,mainIf)));
+  }
+  final String name="get" + fieldNode.getName().substring(1,2).toUpperCase() + fieldNode.getName().substring(2);
+  fieldNode.getDeclaringClass().addMethod(name,ACC_PUBLIC,type,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
+}

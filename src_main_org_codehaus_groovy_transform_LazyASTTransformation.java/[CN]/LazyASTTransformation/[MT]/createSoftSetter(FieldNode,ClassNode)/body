@@ -1,0 +1,9 @@
+{
+  BlockStatement body=new BlockStatement();
+  final FieldExpression fieldExpr=new FieldExpression(fieldNode);
+  final String name="set" + fieldNode.getName().substring(1,2).toUpperCase() + fieldNode.getName().substring(2);
+  final Parameter parameter=new Parameter(type,"value");
+  final VariableExpression paramExpr=new VariableExpression(parameter);
+  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(paramExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(SOFT_REF,paramExpr))),new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),ConstantExpression.NULL))));
+  fieldNode.getDeclaringClass().addMethod(name,ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{parameter},ClassNode.EMPTY_ARRAY,body);
+}

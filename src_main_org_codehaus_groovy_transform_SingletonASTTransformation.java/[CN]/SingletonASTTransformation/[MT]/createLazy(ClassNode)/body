@@ -3,6 +3,6 @@
   createConstructor(classNode,fieldNode);
   final BlockStatement body=new BlockStatement();
   final FieldExpression instanceExpression=new FieldExpression(fieldNode);
-  body.addStatement(new IfStatement(new BooleanExpression(instanceExpression),new ReturnStatement(instanceExpression),new SynchronizedStatement(new ClassExpression(classNode),new IfStatement(new BooleanExpression(instanceExpression),new ReturnStatement(instanceExpression),new ReturnStatement(new BinaryExpression(instanceExpression,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(classNode,new ArgumentListExpression())))))));
+  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(instanceExpression,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(instanceExpression),new SynchronizedStatement(new ClassExpression(classNode),new IfStatement(new BooleanExpression(new BinaryExpression(instanceExpression,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(instanceExpression),new ReturnStatement(new BinaryExpression(instanceExpression,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(classNode,new ArgumentListExpression())))))));
   classNode.addMethod("getInstance",ACC_STATIC | ACC_PUBLIC,classNode,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
 }
