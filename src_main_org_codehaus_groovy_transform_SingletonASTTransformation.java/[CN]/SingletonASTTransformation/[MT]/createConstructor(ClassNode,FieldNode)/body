@@ -1,0 +1,5 @@
+{
+  final BlockStatement body=new BlockStatement();
+  body.addStatement(new IfStatement(new BooleanExpression(new FieldExpression(field)),new ThrowStatement(new ConstructorCallExpression(ClassHelper.make(RuntimeException.class),new ArgumentListExpression(new ConstantExpression("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ ".instance")))),new EmptyStatement()));
+  classNode.addConstructor(new ConstructorNode(ACC_PRIVATE,body));
+}
