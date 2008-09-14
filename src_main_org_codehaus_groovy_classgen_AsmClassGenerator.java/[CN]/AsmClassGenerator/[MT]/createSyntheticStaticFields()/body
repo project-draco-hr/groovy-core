@@ -2,7 +2,7 @@
   for (Iterator iter=referencedClasses.iterator(); iter.hasNext(); ) {
     ClassRef ref=(ClassRef)iter.next();
     String staticFieldName=getStaticFieldName(ref.type);
-    FieldNode fn=classNode.getField(staticFieldName);
+    FieldNode fn=classNode.getDeclaredField(staticFieldName);
     if (fn != null) {
       boolean type=fn.getType() == ClassHelper.CLASS_Type;
       boolean modifiers=fn.getModifiers() == ACC_STATIC + ACC_SYNTHETIC;

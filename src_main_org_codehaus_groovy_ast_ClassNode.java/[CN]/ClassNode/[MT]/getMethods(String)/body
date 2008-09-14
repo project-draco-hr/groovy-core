@@ -1,6 +1,9 @@
 {
-  List answer=new ArrayList(getDeclaredMethods(name));
-  ClassNode parent=getSuperClass();
-  if (parent != null)   answer.addAll(parent.getMethods(name));
+  List answer=new ArrayList();
+  ClassNode node=this;
+  while (node != null) {
+    answer.addAll(node.getDeclaredMethods(name));
+    node=node.getSuperClass();
+  }
   return answer;
 }

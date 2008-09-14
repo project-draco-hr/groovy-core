@@ -9,8 +9,8 @@
   ClassNode node=this;
   TupleExpression args=(TupleExpression)arguments;
   do {
-    for (Iterator iter=node.getDeclaredMethods(name).iterator(); iter.hasNext(); ) {
-      MethodNode method=(MethodNode)iter.next();
+    for (    Object o : node.getMethods(name)) {
+      MethodNode method=(MethodNode)o;
       if (method.getParameters().length == count) {
         boolean match=true;
         for (int i=0; i != count; ++i)         if (!args.getType().isDerivedFrom(method.getParameters()[i].getType())) {

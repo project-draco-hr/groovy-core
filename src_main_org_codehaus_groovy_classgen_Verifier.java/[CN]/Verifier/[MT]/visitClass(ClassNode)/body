@@ -19,11 +19,11 @@
   addDefaultParameterMethods(node);
   addDefaultParameterConstructors(node);
   String _myClassFieldName="$myClass";
-  while (node.getField(_myClassFieldName) != null)   _myClassFieldName=_myClassFieldName + "$";
+  while (node.getDeclaredField(_myClassFieldName) != null)   _myClassFieldName=_myClassFieldName + "$";
   final String myClassFieldName=_myClassFieldName;
   final String classInternalName=BytecodeHelper.getClassInternalName(node);
   String _staticClassInfoFieldName="$staticClassInfo";
-  while (node.getField(_staticClassInfoFieldName) != null)   _staticClassInfoFieldName=_staticClassInfoFieldName + "$";
+  while (node.getDeclaredField(_staticClassInfoFieldName) != null)   _staticClassInfoFieldName=_staticClassInfoFieldName + "$";
   final String staticMetaClassFieldName=_staticClassInfoFieldName;
   FieldNode staticMetaClassField=node.addField(staticMetaClassFieldName,ACC_PRIVATE | ACC_STATIC,ClassHelper.make(ClassInfo.class,false),null);
   staticMetaClassField.setSynthetic(true);

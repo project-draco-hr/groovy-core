@@ -2,16 +2,16 @@
   FieldNode field=null;
   if (expression instanceof VariableExpression) {
     VariableExpression varExp=(VariableExpression)expression;
-    field=classNode.getField(varExp.getName());
+    field=classNode.getDeclaredField(varExp.getName());
   }
  else   if (expression instanceof FieldExpression) {
     FieldExpression fieldExp=(FieldExpression)expression;
-    field=classNode.getField(fieldExp.getFieldName());
+    field=classNode.getDeclaredField(fieldExp.getFieldName());
   }
  else   if (expression.getClass() == PropertyExpression.class) {
     PropertyExpression fieldExp=(PropertyExpression)expression;
     String possibleField=fieldExp.getPropertyAsString();
-    if (possibleField != null)     field=classNode.getField(possibleField);
+    if (possibleField != null)     field=classNode.getDeclaredField(possibleField);
   }
   return field != null && !field.isStatic();
 }

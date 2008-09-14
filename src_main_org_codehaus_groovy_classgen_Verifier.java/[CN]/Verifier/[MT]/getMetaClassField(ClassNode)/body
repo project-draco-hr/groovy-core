@@ -1,10 +1,10 @@
 {
-  FieldNode ret=node.getField("metaClass");
+  FieldNode ret=node.getDeclaredField("metaClass");
   if (ret != null)   return ret;
   ClassNode current=node;
   while (current != null && current != ClassHelper.OBJECT_TYPE) {
     current=current.getSuperClass();
-    ret=current.getField("metaClass");
+    ret=current.getDeclaredField("metaClass");
     if (ret == null)     continue;
     if (Modifier.isPrivate(ret.getModifiers()))     continue;
     return ret;

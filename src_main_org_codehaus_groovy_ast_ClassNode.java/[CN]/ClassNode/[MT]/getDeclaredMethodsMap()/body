@@ -11,16 +11,16 @@
   for (int i=0; i < interfaces.length; i++) {
     ClassNode iface=interfaces[i];
     Map ifaceMethodsMap=iface.getDeclaredMethodsMap();
-    for (Iterator iter=ifaceMethodsMap.keySet().iterator(); iter.hasNext(); ) {
-      String methSig=(String)iter.next();
+    for (    Object o : ifaceMethodsMap.keySet()) {
+      String methSig=(String)o;
       if (!result.containsKey(methSig)) {
         MethodNode methNode=(MethodNode)ifaceMethodsMap.get(methSig);
         result.put(methSig,methNode);
       }
     }
   }
-  for (Iterator iter=getMethods().iterator(); iter.hasNext(); ) {
-    MethodNode method=(MethodNode)iter.next();
+  for (  Object o : getMethods()) {
+    MethodNode method=(MethodNode)o;
     String sig=method.getTypeDescriptor();
     result.put(sig,method);
   }

@@ -11,9 +11,8 @@
     if (expression != null)     return expression;
   }
   Map importedClasses=module.getStaticImportClasses();
-  Iterator it=importedClasses.keySet().iterator();
-  while (it.hasNext()) {
-    String className=(String)it.next();
+  for (  Object o : importedClasses.keySet()) {
+    String className=(String)o;
     ClassNode node=(ClassNode)importedClasses.get(className);
     Expression expression=findStaticField(node,name);
     if (expression != null)     return expression;

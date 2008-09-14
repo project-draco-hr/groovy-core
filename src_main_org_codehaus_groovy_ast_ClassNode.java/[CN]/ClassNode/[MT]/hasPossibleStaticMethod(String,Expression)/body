@@ -4,8 +4,8 @@
     TupleExpression tuple=(TupleExpression)arguments;
     count=tuple.getExpressions().size();
   }
-  for (Iterator iter=getDeclaredMethods(name).iterator(); iter.hasNext(); ) {
-    MethodNode method=(MethodNode)iter.next();
+  for (  Object o : getMethods(name)) {
+    MethodNode method=(MethodNode)o;
     if (method.getParameters().length == count && method.isStatic()) {
       return true;
     }

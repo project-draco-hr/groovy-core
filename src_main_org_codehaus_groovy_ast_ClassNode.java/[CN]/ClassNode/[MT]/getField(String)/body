@@ -1,3 +1,9 @@
 {
-  return (FieldNode)redirect().fieldIndex.get(name);
+  ClassNode node=this;
+  while (node != null) {
+    FieldNode fn=node.getDeclaredField(name);
+    if (fn != null)     return fn;
+    node=node.getSuperClass();
+  }
+  return null;
 }

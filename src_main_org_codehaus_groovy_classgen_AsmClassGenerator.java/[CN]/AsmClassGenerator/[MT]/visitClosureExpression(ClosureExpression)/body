@@ -21,12 +21,12 @@
     Parameter param=localVariableParams[i];
     String name=param.getName();
     if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {
-      visitFieldExpression(new FieldExpression(classNode.getField(name)));
+      visitFieldExpression(new FieldExpression(classNode.getDeclaredField(name)));
     }
  else {
       Variable v=compileStack.getVariable(name,classNode.getSuperClass() != ClassHelper.CLOSURE_TYPE);
       if (v == null) {
-        FieldNode field=classNode.getField(name);
+        FieldNode field=classNode.getDeclaredField(name);
         mv.visitVarInsn(ALOAD,0);
         mv.visitFieldInsn(GETFIELD,internalClassName,name,BytecodeHelper.getTypeDescription(field.getType()));
         param.setClosureSharedVariable(false);
