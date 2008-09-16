@@ -3,6 +3,20 @@
     return null;
   }
   try {
+    if (Script.class.isAssignableFrom(scriptClass)) {
+      Script script=null;
+      try {
+        script=(Script)scriptClass.newInstance();
+      }
+ catch (      InstantiationException e) {
+      }
+catch (      IllegalAccessException e) {
+      }
+      if (script != null) {
+        script.setBinding(context);
+        return script.run();
+      }
+    }
     scriptClass.getMethod("main",new Class[]{String[].class});
     return InvokerHelper.invokeMethod(scriptClass,"main",new Object[]{args});
   }
