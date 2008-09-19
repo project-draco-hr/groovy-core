@@ -1,0 +1,28 @@
+{
+  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  List<PropertyNode> newNodes=new ArrayList<PropertyNode>();
+  if (parent instanceof ClassNode) {
+    ClassNode cNode=(ClassNode)parent;
+    if (cNode.isInterface()) {
+      throw new RuntimeException("@Immutable not allowed for interfaces");
+    }
+    if ((cNode.getModifiers() & ACC_FINAL) == 0) {
+      throw new RuntimeException("@Immutable class must be final");
+    }
+    final List<PropertyNode> list=cNode.getProperties();
+    for (    PropertyNode pNode : list) {
+      adjustPropertyForImmutability(pNode,newNodes);
+    }
+    for (    PropertyNode pNode : newNodes) {
+      list.remove(pNode);
+      addProperty(cNode,pNode);
+    }
+    createConstructor(cNode);
+    createHashCode(cNode);
+    createEquals(cNode);
+  }
+}

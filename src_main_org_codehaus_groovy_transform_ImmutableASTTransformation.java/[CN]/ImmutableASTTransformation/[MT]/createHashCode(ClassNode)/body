@@ -1,0 +1,9 @@
+{
+  final FieldNode hashField=cNode.addField("$hash$code",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.int_TYPE,null);
+  final BlockStatement body=new BlockStatement();
+  final Expression hash=new FieldExpression(hashField);
+  final List<PropertyNode> list=cNode.getProperties();
+  body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(hash,list),new EmptyStatement()));
+  body.addStatement(new ReturnStatement(hash));
+  cNode.addMethod(new MethodNode("hashCode",ACC_PUBLIC,ClassHelper.int_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+}

@@ -1,0 +1,13 @@
+{
+  final BlockStatement body=new BlockStatement();
+  final List<PropertyNode> list=cNode.getProperties();
+  Expression other=new VariableExpression("other");
+  body.addStatement(returnFalseIfNull(other));
+  body.addStatement(returnTrueIfIdentical(VariableExpression.THIS_EXPRESSION,other));
+  for (  PropertyNode pNode : list) {
+    body.addStatement(returnFalseIfPropertyNotEqual(pNode,other));
+  }
+  body.addStatement(new ReturnStatement(ConstantExpression.TRUE));
+  Parameter[] params={new Parameter(cNode,"other")};
+  cNode.addMethod(new MethodNode("equals",ACC_PUBLIC,ClassHelper.boolean_TYPE,params,ClassNode.EMPTY_ARRAY,body));
+}

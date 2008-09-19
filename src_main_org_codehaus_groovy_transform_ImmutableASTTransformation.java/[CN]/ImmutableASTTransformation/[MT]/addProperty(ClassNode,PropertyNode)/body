@@ -1,0 +1,8 @@
+{
+  final FieldNode fn=pNode.getField();
+  cNode.getFields().remove(fn);
+  cNode.addProperty(pNode.getName(),pNode.getModifiers() | ACC_FINAL,pNode.getType(),pNode.getInitialExpression(),pNode.getGetterBlock(),pNode.getSetterBlock());
+  final FieldNode newfn=cNode.getField(fn.getName());
+  cNode.getFields().remove(newfn);
+  cNode.addField(fn);
+}

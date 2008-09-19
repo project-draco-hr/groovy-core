@@ -1,0 +1,16 @@
+{
+  BlockStatement body=new BlockStatement();
+  final ClassNode fieldType=fNode.getType();
+  final Statement statement;
+  if (fieldType.isArray()) {
+    statement=createGetterBodyArray(fNode);
+  }
+ else   if (fieldType.isDerivedFrom(DATE_TYPE)) {
+    statement=createGetterBodyDate(fNode);
+  }
+ else {
+    statement=createGetterBodyDefault(fNode);
+  }
+  body.addStatement(statement);
+  return body;
+}

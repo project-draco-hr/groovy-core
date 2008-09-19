@@ -1,0 +1,7 @@
+{
+  if (field == null || field instanceof Enum || inImmutableList(field.getClass()))   return field;
+  if (field instanceof Collection)   return DefaultGroovyMethods.asImmutable((Collection)field);
+  if (field.getClass().getAnnotation(Immutable.class) != null)   return field;
+  final String typeName=field.getClass().getName();
+  throw new RuntimeException(createErrorMessage(fieldName,typeName,"constructing"));
+}

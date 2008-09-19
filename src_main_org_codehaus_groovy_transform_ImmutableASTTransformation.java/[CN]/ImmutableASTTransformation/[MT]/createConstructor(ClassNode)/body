@@ -1,0 +1,13 @@
+{
+  if (cNode.getDeclaredConstructors().size() != 0) {
+    throw new RuntimeException("@Immutable does not allow explicit constructors");
+  }
+  final BlockStatement body=new BlockStatement();
+  List<PropertyNode> list=cNode.getProperties();
+  final VariableExpression args=new VariableExpression("args");
+  for (  PropertyNode pNode : list) {
+    body.addStatement(createConstructorStatement(pNode));
+  }
+  Parameter[] params=new Parameter[]{new Parameter(HASHMAP_TYPE,"args")};
+  cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,new IfStatement(equalsNullExpr(args),new EmptyStatement(),body)));
+}

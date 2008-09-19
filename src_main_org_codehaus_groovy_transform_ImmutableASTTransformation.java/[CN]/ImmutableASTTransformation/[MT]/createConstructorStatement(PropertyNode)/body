@@ -1,0 +1,24 @@
+{
+  FieldNode fNode=pNode.getField();
+  final ClassNode fieldType=fNode.getType();
+  final Statement statement;
+  if (fieldType.isArray()) {
+    statement=createConstructorStatementArray(fNode);
+  }
+ else   if (fieldType.isDerivedFrom(DATE_TYPE)) {
+    statement=createConstructorStatementDate(fNode);
+  }
+ else   if (fieldType.isDerivedFrom(COLLECTION_TYPE) || fieldType.isDerivedFrom(MAP_TYPE)) {
+    statement=createConstructorStatementCollection(fNode);
+  }
+ else   if (isKnownImmutable(fieldType)) {
+    statement=createConstructorStatementDefault(fNode);
+  }
+ else   if (fieldType.isResolved()) {
+    throw new RuntimeException(createErrorMessage(fNode.getName(),fieldType.getName(),"compiling"));
+  }
+ else {
+    statement=createConstructorStatementGuarded(fNode);
+  }
+  return statement;
+}
