@@ -2,8 +2,8 @@
   FieldNode fNode=pNode.getField();
   final ClassNode fieldType=fNode.getType();
   final Statement statement;
-  if (fieldType.isArray()) {
-    statement=createConstructorStatementArray(fNode);
+  if (fieldType.isArray() || implementsInterface(fieldType,CLONEABLE_TYPE)) {
+    statement=createConstructorStatementArrayOrCloneable(fNode);
   }
  else   if (fieldType.isDerivedFrom(DATE_TYPE)) {
     statement=createConstructorStatementDate(fNode);
