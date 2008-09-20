@@ -7,19 +7,24 @@
   List<PropertyNode> newNodes=new ArrayList<PropertyNode>();
   if (parent instanceof ClassNode) {
     ClassNode cNode=(ClassNode)parent;
+    String cName=cNode.getName();
     if (cNode.isInterface()) {
-      throw new RuntimeException("@Immutable not allowed for interfaces");
+      throw new RuntimeException("Error processing interface '" + cName + "'. @Immutable not allowed for interfaces.");
     }
     if ((cNode.getModifiers() & ACC_FINAL) == 0) {
-      throw new RuntimeException("@Immutable class must be final");
+      throw new RuntimeException("Error processing class '" + cName + "'. @Immutable classes must be final.");
     }
-    final List<PropertyNode> list=cNode.getProperties();
-    for (    PropertyNode pNode : list) {
+    final List<PropertyNode> pList=cNode.getProperties();
+    for (    PropertyNode pNode : pList) {
       adjustPropertyForImmutability(pNode,newNodes);
     }
     for (    PropertyNode pNode : newNodes) {
-      list.remove(pNode);
+      pList.remove(pNode);
       addProperty(cNode,pNode);
+    }
+    final List<FieldNode> fList=cNode.getFields();
+    for (    FieldNode fNode : fList) {
+      ensureNotPublic(cName,fNode);
     }
     createConstructor(cNode);
     createHashCode(cNode);
