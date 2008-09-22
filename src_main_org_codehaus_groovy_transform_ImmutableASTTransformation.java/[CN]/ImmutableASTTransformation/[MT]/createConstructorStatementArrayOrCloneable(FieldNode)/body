@@ -3,5 +3,5 @@
   Expression initExpr=fNode.getInitialValueExpression();
   if (initExpr == null)   initExpr=ConstantExpression.NULL;
   final Expression array=findArg(fNode.getName());
-  return new IfStatement(equalsNullExpr(array),new IfStatement(equalsNullExpr(initExpr),assignField(fieldExpr,ConstantExpression.NULL),assignField(fieldExpr,cloneArrayOrCloneableExpr(initExpr))),assignField(fieldExpr,cloneArrayOrCloneableExpr(array)));
+  return new IfStatement(equalsNullExpr(array),new IfStatement(equalsNullExpr(initExpr),assignStatement(fieldExpr,ConstantExpression.NULL),assignStatement(fieldExpr,cloneArrayOrCloneableExpr(initExpr))),assignStatement(fieldExpr,cloneArrayOrCloneableExpr(array)));
 }

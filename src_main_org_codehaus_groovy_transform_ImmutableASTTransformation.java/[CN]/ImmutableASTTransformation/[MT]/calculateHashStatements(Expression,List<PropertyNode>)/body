@@ -1,14 +1,14 @@
 {
   final BlockStatement body=new BlockStatement();
   final Expression result=new VariableExpression("_result");
-  final StaticMethodCallExpression init=new StaticMethodCallExpression(HASHUTIL_TYPE,"initHash",MethodCallExpression.NO_ARGUMENTS);
+  final Expression init=new StaticMethodCallExpression(HASHUTIL_TYPE,"initHash",MethodCallExpression.NO_ARGUMENTS);
   body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,init)));
   for (  PropertyNode pNode : list) {
     final Expression fieldExpr=new FieldExpression(pNode.getField());
     final Expression args=new TupleExpression(result,fieldExpr);
     final Expression current=new StaticMethodCallExpression(HASHUTIL_TYPE,"updateHash",args);
-    body.addStatement(new ExpressionStatement(new BinaryExpression(result,ASSIGN,current)));
+    body.addStatement(assignStatement(result,current));
   }
-  body.addStatement(new ExpressionStatement(new BinaryExpression(hash,ASSIGN,result)));
+  body.addStatement(assignStatement(hash,result));
   return body;
 }

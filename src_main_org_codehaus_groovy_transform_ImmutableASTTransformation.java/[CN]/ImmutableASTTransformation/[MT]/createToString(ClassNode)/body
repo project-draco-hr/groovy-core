@@ -1,0 +1,24 @@
+{
+  final BlockStatement body=new BlockStatement();
+  final List<PropertyNode> list=cNode.getProperties();
+  final Expression result=new VariableExpression("_result");
+  final Expression init=new ConstructorCallExpression(STRINGBUFFER_TYPE,MethodCallExpression.NO_ARGUMENTS);
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,init)));
+  body.addStatement(append(result,new ConstantExpression(cNode.getName())));
+  body.addStatement(append(result,new ConstantExpression("(")));
+  boolean first=true;
+  for (  PropertyNode pNode : list) {
+    if (first) {
+      first=false;
+    }
+ else {
+      body.addStatement(append(result,new ConstantExpression(", ")));
+    }
+    body.addStatement(new IfStatement(new BooleanExpression(new FieldExpression(cNode.getField("$map$constructor"))),toStringPropertyName(result,pNode.getName()),new EmptyStatement()));
+    final FieldExpression fieldExpr=new FieldExpression(pNode.getField());
+    body.addStatement(append(result,new MethodCallExpression(fieldExpr,"toString",MethodCallExpression.NO_ARGUMENTS)));
+  }
+  body.addStatement(append(result,new ConstantExpression(")")));
+  body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));
+  cNode.addMethod(new MethodNode("toString",ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+}
