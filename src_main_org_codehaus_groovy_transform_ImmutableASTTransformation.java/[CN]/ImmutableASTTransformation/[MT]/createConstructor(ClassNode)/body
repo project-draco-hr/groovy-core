@@ -14,6 +14,16 @@
       body.addStatement(createConstructorStatementDefault(fNode));
     }
   }
-  Parameter[] params=new Parameter[]{new Parameter(HASHMAP_TYPE,"args")};
+  final Parameter[] params=new Parameter[]{new Parameter(HASHMAP_TYPE,"args")};
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,new IfStatement(equalsNullExpr(args),new EmptyStatement(),body)));
+  final MapExpression argMap=new MapExpression();
+  final Parameter[] orderedParams=new Parameter[list.size()];
+  int index=0;
+  for (  PropertyNode pNode : list) {
+    orderedParams[index++]=new Parameter(pNode.getField().getType(),pNode.getField().getName());
+    argMap.addMapEntryExpression(new ConstantExpression(pNode.getName()),new VariableExpression(pNode.getName()));
+  }
+  final BlockStatement orderedBody=new BlockStatement();
+  orderedBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.THIS,argMap)));
+  cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,orderedParams,ClassNode.EMPTY_ARRAY,orderedBody));
 }
