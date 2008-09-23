@@ -11,63 +11,73 @@
   Object node;
   Closure closure=null;
   List list=InvokerHelper.asList(args);
-  if (proxyBuilder.getContexts().isEmpty()) {
-    proxyBuilder.newContext();
-  }
-  Map namedArgs=Collections.EMPTY_MAP;
-  if ((list.size() > 0) && (list.get(0) instanceof LinkedHashMap)) {
-    namedArgs=(Map)list.get(0);
-    list=list.subList(1,list.size());
-  }
-  if ((list.size() > 0) && (list.get(list.size() - 1) instanceof Closure)) {
-    closure=(Closure)list.get(list.size() - 1);
-    list=list.subList(0,list.size() - 1);
-  }
-  Object arg;
-  if (list.size() == 0) {
-    arg=null;
-  }
- else   if (list.size() == 1) {
-    arg=list.get(0);
-  }
- else {
-    arg=list;
-  }
-  node=proxyBuilder.createNode(name,namedArgs,arg);
-  Object current=proxyBuilder.getCurrent();
-  if (current != null) {
-    proxyBuilder.setParent(current,node);
-  }
-  if (closure != null) {
-    Factory parentFactory=proxyBuilder.getCurrentFactory();
-    if (parentFactory.isLeaf()) {
-      throw new RuntimeException("'" + name + "' doesn't support nesting.");
-    }
-    boolean processContent=true;
-    if (parentFactory.isHandlesNodeChildren()) {
-      processContent=parentFactory.onNodeChildren(this,node,closure);
-    }
-    if (processContent) {
-      String parentName=proxyBuilder.getCurrentName();
-      Map parentContext=proxyBuilder.getContext();
+synchronized (proxyBuilder.contexts) {
+    if (proxyBuilder.getContexts().isEmpty()) {
       proxyBuilder.newContext();
-      proxyBuilder.getContext().put(OWNER,closure.getOwner());
-      proxyBuilder.getContext().put(CURRENT_NODE,node);
-      proxyBuilder.getContext().put(PARENT_FACTORY,parentFactory);
-      proxyBuilder.getContext().put(PARENT_NODE,current);
-      proxyBuilder.getContext().put(PARENT_CONTEXT,parentContext);
-      proxyBuilder.getContext().put(PARENT_NAME,parentName);
-      proxyBuilder.getContext().put(PARENT_BUILDER,parentContext.get(CURRENT_BUILDER));
-      proxyBuilder.getContext().put(CURRENT_BUILDER,parentContext.get(CHILD_BUILDER));
-      proxyBuilder.setClosureDelegate(closure,node);
-      closure.call();
-      proxyBuilder.popContext();
     }
-  }
-  proxyBuilder.nodeCompleted(current,node);
-  node=proxyBuilder.postNodeCompletion(current,node);
-  if (proxyBuilder.getContexts().size() == 1) {
-    proxyBuilder.popContext();
+    try {
+      Map namedArgs=Collections.EMPTY_MAP;
+      if ((list.size() > 0) && (list.get(0) instanceof LinkedHashMap)) {
+        namedArgs=(Map)list.get(0);
+        list=list.subList(1,list.size());
+      }
+      if ((list.size() > 0) && (list.get(list.size() - 1) instanceof Closure)) {
+        closure=(Closure)list.get(list.size() - 1);
+        list=list.subList(0,list.size() - 1);
+      }
+      Object arg;
+      if (list.size() == 0) {
+        arg=null;
+      }
+ else       if (list.size() == 1) {
+        arg=list.get(0);
+      }
+ else {
+        arg=list;
+      }
+      node=proxyBuilder.createNode(name,namedArgs,arg);
+      Object current=proxyBuilder.getCurrent();
+      if (current != null) {
+        proxyBuilder.setParent(current,node);
+      }
+      if (closure != null) {
+        Factory parentFactory=proxyBuilder.getCurrentFactory();
+        if (parentFactory.isLeaf()) {
+          throw new RuntimeException("'" + name + "' doesn't support nesting.");
+        }
+        boolean processContent=true;
+        if (parentFactory.isHandlesNodeChildren()) {
+          processContent=parentFactory.onNodeChildren(this,node,closure);
+        }
+        if (processContent) {
+          String parentName=proxyBuilder.getCurrentName();
+          Map parentContext=proxyBuilder.getContext();
+          proxyBuilder.newContext();
+          try {
+            proxyBuilder.getContext().put(OWNER,closure.getOwner());
+            proxyBuilder.getContext().put(CURRENT_NODE,node);
+            proxyBuilder.getContext().put(PARENT_FACTORY,parentFactory);
+            proxyBuilder.getContext().put(PARENT_NODE,current);
+            proxyBuilder.getContext().put(PARENT_CONTEXT,parentContext);
+            proxyBuilder.getContext().put(PARENT_NAME,parentName);
+            proxyBuilder.getContext().put(PARENT_BUILDER,parentContext.get(CURRENT_BUILDER));
+            proxyBuilder.getContext().put(CURRENT_BUILDER,parentContext.get(CHILD_BUILDER));
+            proxyBuilder.setClosureDelegate(closure,node);
+            closure.call();
+          }
+  finally {
+            proxyBuilder.popContext();
+          }
+        }
+      }
+      proxyBuilder.nodeCompleted(current,node);
+      node=proxyBuilder.postNodeCompletion(current,node);
+    }
+  finally {
+      if (proxyBuilder.getContexts().size() == 1) {
+        proxyBuilder.popContext();
+      }
+    }
   }
   return node;
 }
