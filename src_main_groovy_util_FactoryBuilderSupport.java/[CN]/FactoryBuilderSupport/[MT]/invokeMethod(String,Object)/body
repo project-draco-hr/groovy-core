@@ -7,8 +7,10 @@
   }
  catch (  RuntimeException e) {
     if (proxyBuilder.contexts.contains(previousContext)) {
-      while (proxyBuilder.getContext() != previousContext) {
+      Map<String,Object> context=proxyBuilder.getContext();
+      while (context != null && context != previousContext) {
         proxyBuilder.popContext();
+        context=proxyBuilder.getContext();
       }
     }
     throw e;
