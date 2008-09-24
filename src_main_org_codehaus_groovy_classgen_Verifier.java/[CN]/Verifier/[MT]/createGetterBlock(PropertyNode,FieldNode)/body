@@ -1,4 +1,16 @@
 {
-  Expression expression=new FieldExpression(field);
-  return new ReturnStatement(expression);
+  return new BytecodeSequence(new BytecodeInstruction(){
+    public void visit(    MethodVisitor mv){
+      if (field.isStatic()) {
+        mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(classNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
+      }
+ else {
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,BytecodeHelper.getClassInternalName(classNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
+      }
+      final BytecodeHelper helper=new BytecodeHelper(mv);
+      helper.doReturn(field.getType());
+    }
+  }
+);
 }
