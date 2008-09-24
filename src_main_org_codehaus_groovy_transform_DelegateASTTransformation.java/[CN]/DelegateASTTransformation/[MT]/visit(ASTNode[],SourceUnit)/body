@@ -14,6 +14,19 @@
       Map.Entry e=(Map.Entry)it.next();
       addDelegateMethod(fieldNode,owner,ownMethods,e);
     }
+    for (Iterator it=type.getProperties().iterator(); it.hasNext(); ) {
+      PropertyNode prop=(PropertyNode)it.next();
+      if (prop.isStatic() || !prop.isPublic())       continue;
+      String name=prop.getName();
+      String getterName="get" + Verifier.capitalize(name);
+      if (owner.getGetterMethod(getterName) == null) {
+        owner.addMethod(getterName,ACC_PUBLIC,nonGeneric(prop.getType()),Parameter.EMPTY_ARRAY,null,new ReturnStatement(new PropertyExpression(new FieldExpression(fieldNode),name)));
+      }
+      String setterName="set" + Verifier.capitalize(name);
+      if ((prop.getModifiers() & ACC_FINAL) != 0 && owner.getSetterMethod(setterName) == null) {
+        owner.addMethod(setterName,ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(nonGeneric(prop.getType()),"value")},null,new ExpressionStatement(new BinaryExpression(new PropertyExpression(new FieldExpression(fieldNode),name),Token.newSymbol(Types.EQUAL,-1,-1),new VariableExpression("value"))));
+      }
+    }
     final Expression member=node.getMember("interfaces");
     if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(false))     return;
     final Set allInterfaces=type.getAllInterfaces();
