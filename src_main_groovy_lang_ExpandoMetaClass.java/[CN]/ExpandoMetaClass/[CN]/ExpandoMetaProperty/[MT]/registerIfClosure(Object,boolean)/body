@@ -2,17 +2,18 @@
   if (arg instanceof Closure) {
     Closure callable=(Closure)arg;
     final List<ClosureMetaMethod> list=ClosureMetaMethod.createMethodList(propertyName,theClass,callable);
+    if (list.isEmpty() && this.isStatic) {
+      Class[] paramTypes=callable.getParameterTypes();
+      registerStatic(callable,replace,paramTypes);
+      return;
+    }
     for (    MetaMethod method : list) {
       Class[] paramTypes=method.getNativeParameterTypes();
-      if (!this.isStatic) {
-        Method foundMethod=checkIfMethodExists(theClass,propertyName,paramTypes,false);
-        if (foundMethod != null && !replace)         throw new GroovyRuntimeException("Cannot add new method [" + propertyName + "] for arguments ["+ DefaultGroovyMethods.inspect(paramTypes)+ "]. It already exists!");
-        registerInstanceMethod(method);
+      if (this.isStatic) {
+        registerStatic(callable,replace,paramTypes);
       }
  else {
-        Method foundMethod=checkIfMethodExists(theClass,propertyName,paramTypes,true);
-        if (foundMethod != null && !replace)         throw new GroovyRuntimeException("Cannot add new static method [" + propertyName + "] for arguments ["+ DefaultGroovyMethods.inspect(paramTypes)+ "]. It already exists!");
-        registerStaticMethod(propertyName,callable);
+        registerInstance(method,replace,paramTypes);
       }
     }
   }
