@@ -1,5 +1,5 @@
 {
-  ArrayList<ClosureMetaMethod> res=new ArrayList<ClosureMetaMethod>();
+  ArrayList<MetaMethod> res=new ArrayList<MetaMethod>();
   if (closure instanceof MethodClosure) {
     MethodClosure methodClosure=(MethodClosure)closure;
     Object owner=closure.getOwner();
@@ -11,10 +11,35 @@
     }
   }
  else {
-    for (    CachedMethod method : ReflectionCache.getCachedClass(closure.getClass()).getMethods()) {
-      if (method.getName().equals("doCall")) {
-        res.add(new ClosureMetaMethod(name,declaringClass,closure,method));
+    if (closure instanceof GeneratedClosure) {
+      for (      CachedMethod method : ReflectionCache.getCachedClass(closure.getClass()).getMethods()) {
+        if (method.getName().equals("doCall")) {
+          res.add(new ClosureMetaMethod(name,declaringClass,closure,method));
+        }
       }
+    }
+ else {
+      res.add(new MetaMethod(closure.getParameterTypes()){
+        public int getModifiers(){
+          return Modifier.PUBLIC;
+        }
+        public String getName(){
+          return name;
+        }
+        public Class getReturnType(){
+          return Object.class;
+        }
+        public CachedClass getDeclaringClass(){
+          return ReflectionCache.getCachedClass(declaringClass);
+        }
+        public Object invoke(        Object object,        Object[] arguments){
+          Closure cloned=(Closure)closure.clone();
+          cloned.setDelegate(object);
+          arguments=coerceArgumentsToClasses(arguments);
+          return InvokerHelper.invokeMethod(closure,"call",arguments);
+        }
+      }
+);
     }
   }
   return res;
