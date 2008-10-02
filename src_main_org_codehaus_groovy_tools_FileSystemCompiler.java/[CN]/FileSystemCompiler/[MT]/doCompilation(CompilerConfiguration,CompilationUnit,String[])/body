@@ -1,0 +1,10 @@
+{
+  File tmpDir=null;
+  if ((configuration.getJointCompilationOptions() != null) && !configuration.getJointCompilationOptions().containsKey("stubDir")) {
+    tmpDir=createTempDir();
+    configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+  }
+  FileSystemCompiler compiler=new FileSystemCompiler(configuration,unit);
+  compiler.compile(filenames);
+  if (tmpDir != null)   deleteRecursive(tmpDir);
+}

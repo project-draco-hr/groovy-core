@@ -1,0 +1,18 @@
+{
+  if (configuration.getJointCompilationOptions() != null) {
+    if (!configuration.getJointCompilationOptions().containsKey("stubDir")) {
+      try {
+        File tempStubDir=FileSystemCompiler.createTempDir();
+        temporaryFiles.add(tempStubDir);
+        configuration.getJointCompilationOptions().put("stubDir",tempStubDir);
+      }
+ catch (      IOException ioe) {
+        throw new BuildException(ioe);
+      }
+    }
+    return new JavaAwareCompilationUnit(configuration,buildClassLoaderFor());
+  }
+ else {
+    return new CompilationUnit(configuration,null,buildClassLoaderFor());
+  }
+}

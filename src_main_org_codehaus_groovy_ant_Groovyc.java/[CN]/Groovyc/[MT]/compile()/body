@@ -79,7 +79,6 @@
     if (stacktrace) {
       commandLineList.add("-e");
     }
-    File tempFile=null;
     int count=0;
     if (fork) {
       for (int i=0; i < compileList.length; i++) {
@@ -93,8 +92,8 @@
     }
     if (fork && (count > 32767)) {
       try {
-        tempFile=File.createTempFile("groovyc-files-",".txt");
-        tempFile.deleteOnExit();
+        File tempFile=File.createTempFile("groovyc-files-",".txt");
+        temporaryFiles.add(tempFile);
         PrintWriter pw=new PrintWriter(new FileWriter(tempFile));
         for (int i=0; i < compileList.length; i++) {
           pw.println(compileList[i].getPath());
@@ -138,9 +137,19 @@
     }
  else {
       try {
-        FileSystemCompiler.main(commandLine);
+        Options options=FileSystemCompiler.createCompilationOptions();
+        PosixParser cliParser=new PosixParser();
+        CommandLine cli;
+        cli=cliParser.parse(options,commandLine);
+        configuration=FileSystemCompiler.generateCompilerConfigurationFromOptions(cli);
+        String[] filenames=FileSystemCompiler.generateFileNamesFromOptions(cli);
+        boolean fileNameErrors=filenames == null;
+        fileNameErrors=fileNameErrors && !FileSystemCompiler.validateFiles(filenames);
+        if (!fileNameErrors) {
+          FileSystemCompiler.doCompilation(configuration,makeCompileUnit(),filenames);
+        }
       }
- catch (      RuntimeException re) {
+ catch (      Exception re) {
         Throwable t=re;
         if ((re.getClass() == RuntimeException.class) && (re.getCause() != null)) {
           t=re.getCause();
@@ -157,8 +166,10 @@
         }
       }
     }
-    if (tempFile != null) {
-      FileSystemCompiler.deleteRecursive(tempFile);
+    Iterator<File> files=temporaryFiles.iterator();
+    while (files.hasNext()) {
+      FileSystemCompiler.deleteRecursive(files.next());
+      files.remove();
     }
   }
 }

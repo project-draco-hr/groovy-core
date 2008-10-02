@@ -1,0 +1,21 @@
+{
+  CompilerConfiguration configuration=new CompilerConfiguration();
+  if (cli.hasOption("classpath")) {
+    configuration.setClasspath(cli.getOptionValue("classpath"));
+  }
+  if (cli.hasOption('d')) {
+    configuration.setTargetDirectory(cli.getOptionValue('d'));
+  }
+  if (cli.hasOption("encoding")) {
+    configuration.setSourceEncoding(cli.getOptionValue("encoding"));
+  }
+  if (cli.hasOption('j')) {
+    Map compilerOptions=new HashMap();
+    String[] opts=cli.getOptionValues("J");
+    compilerOptions.put("namedValues",opts);
+    opts=cli.getOptionValues("F");
+    compilerOptions.put("flags",opts);
+    configuration.setJointCompilationOptions(compilerOptions);
+  }
+  return configuration;
+}
