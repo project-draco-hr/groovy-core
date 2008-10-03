@@ -1,0 +1,23 @@
+{
+  File badGroovy=new File(antFile.getParentFile(),"GroovyTestBad1.groovy");
+  PrintStream ps=null;
+  try {
+    ps=new PrintStream(badGroovy);
+  }
+ catch (  FileNotFoundException e) {
+    fail("Could not create test file:" + badGroovy.getAbsolutePath());
+  }
+  ps.println("class GroovyTest1Bad { Thi$ $hould Fail! (somehow) };:??''+_|\\|");
+  ensureNotPresent("GroovycTestBad1");
+  try {
+    project.executeTarget(target);
+    fail("Ant script shuold have failed with execution exception");
+  }
+ catch (  BuildException be) {
+    be.printStackTrace();
+    ensureNotPresent("GroovycTestBad1");
+  }
+ finally {
+    badGroovy.delete();
+  }
+}
