@@ -1,0 +1,13 @@
+{
+  ClassNode classType;
+  if (isNewMethodStyle(mce)) {
+    classType=mce.getObjectExpression().getType();
+  }
+ else {
+    classType=findMatchingCandidateClass(mce);
+  }
+  if (classType != null) {
+    return new ConstructorCallExpression(classType,args);
+  }
+  return mce;
+}

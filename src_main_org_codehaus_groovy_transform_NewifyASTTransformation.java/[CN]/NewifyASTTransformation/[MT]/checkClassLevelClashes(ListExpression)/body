@@ -1,0 +1,9 @@
+{
+  final List<ClassExpression> classes=list.getExpressions();
+  for (  ClassExpression ce : classes) {
+    final String name=ce.getType().getNameWithoutPackage();
+    if (findClassWithMatchingBasename(name)) {
+      throw new RuntimeException("Error during @" + MY_NAME + " processing. Class '"+ name+ "' can't appear at method/constructor/field level if it already appears at the class level.");
+    }
+  }
+}

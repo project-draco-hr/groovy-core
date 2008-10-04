@@ -1,0 +1,16 @@
+{
+  final ListExpression oldClassesToNewify=classesToNewify;
+  final boolean oldAuto=auto;
+  checkClassLevelClashes(list);
+  checkAutoClash(autoFlag);
+  classesToNewify=list;
+  auto=autoFlag;
+  if (parent instanceof FieldNode) {
+    super.visitField((FieldNode)parent);
+  }
+ else {
+    super.visitMethod((MethodNode)parent);
+  }
+  classesToNewify=oldClassesToNewify;
+  auto=oldAuto;
+}

@@ -1,0 +1,14 @@
+{
+  if (expr == null)   return null;
+  if (expr instanceof MethodCallExpression) {
+    MethodCallExpression mce=(MethodCallExpression)expr;
+    Expression args=transform(mce.getArguments());
+    Expression method=transform(mce.getMethod());
+    Expression object=transform(mce.getObjectExpression());
+    if (isNewifyCandidate(mce)) {
+      return transformMethodCall(mce,args);
+    }
+    return new MethodCallExpression(object,method,args);
+  }
+  return expr.transformExpression(this);
+}

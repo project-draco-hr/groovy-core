@@ -1,0 +1,11 @@
+{
+  final HashSet<String> seen=new HashSet<String>();
+  final List<ClassExpression> classes=list.getExpressions();
+  for (  ClassExpression ce : classes) {
+    final String name=ce.getType().getNameWithoutPackage();
+    if (seen.contains(name)) {
+      throw new RuntimeException("Duplicate name '" + name + "' found during @"+ MY_NAME+ " processing.");
+    }
+    seen.add(name);
+  }
+}

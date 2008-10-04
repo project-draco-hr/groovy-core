@@ -1,0 +1,19 @@
+{
+  this.source=source;
+  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    internalError("Transformation called with wrong types: $node.class / $parent.class");
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(node.getClassNode())) {
+    internalError("Transformation called from wrong annotation: " + node.getClassNode().getName());
+  }
+  boolean autoFlag=determineAutoFlag(node.getMember("auto"));
+  ListExpression list=determineClassesToNewify(node.getMember("value"));
+  if (parent instanceof ClassNode) {
+    newifyClass(parent,autoFlag,list);
+  }
+ else   if (parent instanceof MethodNode || parent instanceof FieldNode) {
+    newifyMethodOrField(parent,autoFlag,list);
+  }
+}
