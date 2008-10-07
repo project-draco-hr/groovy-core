@@ -5,7 +5,12 @@
   for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
     boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent) || BindableASTTransformation.hasBindableAnnotation(parent.getDeclaringClass());
     if (propertyNode.getName().equals(fieldName)) {
-      createListenerSetter(source,node,bindable,declaringClass,propertyNode);
+      if (field.isStatic()) {
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber()),source));
+      }
+ else {
+        createListenerSetter(source,node,bindable,declaringClass,propertyNode);
+      }
       return;
     }
   }

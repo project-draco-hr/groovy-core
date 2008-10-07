@@ -2,10 +2,15 @@
   String fieldName=field.getName();
   for (  PropertyNode propertyNode : (Collection<PropertyNode>)declaringClass.getProperties()) {
     if (propertyNode.getName().equals(fieldName)) {
-      if (needsPropertyChangeSupport(declaringClass)) {
-        addPropertyChangeSupport(declaringClass);
+      if (field.isStatic()) {
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber()),source));
       }
-      createListenerSetter(source,node,declaringClass,propertyNode);
+ else {
+        if (needsPropertyChangeSupport(declaringClass)) {
+          addPropertyChangeSupport(declaringClass);
+        }
+        createListenerSetter(source,node,declaringClass,propertyNode);
+      }
       return;
     }
   }
