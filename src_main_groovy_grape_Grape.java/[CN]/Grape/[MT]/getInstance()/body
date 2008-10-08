@@ -1,0 +1,31 @@
+{
+  if (instance == null) {
+    try {
+      instance=(GrapeEngine)Class.forName("groovy.grape.GrapeIvy").newInstance();
+    }
+ catch (    InstantiationException e) {
+    }
+catch (    IllegalAccessException e) {
+    }
+catch (    ClassNotFoundException e) {
+    }
+    if (instance == null) {
+      instance=new GrapeEngine(){
+        public Object grab(        String endorsedModule){
+          return null;
+        }
+        public Object grab(        Map args){
+          return null;
+        }
+        public Object grab(        Map args,        Map... dependencies){
+          return null;
+        }
+        public Map<String,Map<String,List<String>>> enumerateGrapes(){
+          return Collections.emptyMap();
+        }
+      }
+;
+    }
+  }
+  return instance;
+}

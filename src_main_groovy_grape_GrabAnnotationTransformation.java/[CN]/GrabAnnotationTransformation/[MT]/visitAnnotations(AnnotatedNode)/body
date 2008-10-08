@@ -1,0 +1,14 @@
+{
+  super.visitAnnotations(node);
+  Iterator i=node.getAnnotations().iterator();
+  while (i.hasNext()) {
+    AnnotationNode an=(AnnotationNode)i.next();
+    String name=an.getClassNode().getName();
+    if ((GRAB_CLASS_NAME.equals(name)) || (allowShortGrab && GRAB_SHORT_NAME.equals(name)) || (grabAliases.contains(name))) {
+      grabAnnotations.add(an);
+    }
+    if ((GRAPES_CLASS_NAME.equals(name)) || (allowShortGrapes && GRAPES_SHORT_NAME.equals(name)) || (grapesAliases.contains(name))) {
+      grapesAnnotations.add(an);
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  sourceUnit=source;
+  ModuleNode mn=(ModuleNode)nodes[0];
+  allowShortGrab=true;
+  allowShortGrapes=true;
+  grabAliases=new HashSet();
+  grapesAliases=new HashSet();
+  Iterator i=mn.getImports().iterator();
+  while (i.hasNext()) {
+    ImportNode im=(ImportNode)i.next();
+    String alias=im.getAlias();
+    String className=im.getClassName();
+    if ((className.endsWith(GRAB_DOT_NAME) && ((alias == null) || (alias.length() == 0))) || (GRAB_CLASS_NAME.equals(alias))) {
+      allowShortGrab=false;
+    }
+ else     if (GRAB_CLASS_NAME.equals(className)) {
+      grabAliases.add(im.getAlias());
+    }
+    if ((className.endsWith(GRAPES_DOT_NAME) && ((alias == null) || (alias.length() == 0))) || (GRAPES_CLASS_NAME.equals(alias))) {
+      allowShortGrapes=false;
+    }
+ else     if (GRAPES_CLASS_NAME.equals(className)) {
+      grapesAliases.add(im.getAlias());
+    }
+  }
+  List<Map> grabMaps=new ArrayList<Map>();
+  for (  ClassNode classNode : (List<ClassNode>)sourceUnit.getAST().getClasses()) {
+    grabAnnotations=new ArrayList<AnnotationNode>();
+    grapesAnnotations=new ArrayList<AnnotationNode>();
+    visitClass(classNode);
+    ClassNode grapeClassNode=new ClassNode(Grape.class);
+    if (!grapesAnnotations.isEmpty()) {
+      for (int j=0; j < grapesAnnotations.size(); j++) {
+        AnnotationNode node=grapesAnnotations.get(j);
+        Expression init=node.getMember("initClass");
+        Expression value=node.getMember("value");
+        if (value instanceof ListExpression) {
+          for (          Object o : ((ListExpression)value).getExpressions()) {
+            if (o instanceof AnnotationConstantExpression) {
+              if (((AnnotationConstantExpression)o).getValue() instanceof AnnotationNode) {
+                AnnotationNode annotation=(AnnotationNode)((AnnotationConstantExpression)o).getValue();
+                if ((init != null) && (annotation.getMember("initClass") != null)) {
+                  annotation.setMember("initClass",init);
+                }
+                String name=annotation.getClassNode().getName();
+                if ((GRAB_CLASS_NAME.equals(name)) || (allowShortGrab && GRAB_SHORT_NAME.equals(name)) || (grabAliases.contains(name))) {
+                  grabAnnotations.add(annotation);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (!grabAnnotations.isEmpty()) {
+      for (int j=0; j < grabAnnotations.size(); j++) {
+        AnnotationNode node=grabAnnotations.get(j);
+        HashMap grabMap=new HashMap();
+        grabMap.put("group",((ConstantExpression)node.getMember("group")).getValue());
+        grabMap.put("module",((ConstantExpression)node.getMember("module")).getValue());
+        grabMap.put("version",((ConstantExpression)node.getMember("version")).getValue());
+        grabMaps.add(grabMap);
+        if ((node.getMember("initClass") == null) || (node.getMember("initClass") == ConstantExpression.TRUE)) {
+          List grabInitializers=new ArrayList();
+          MapExpression me=new MapExpression();
+          me.addMapEntryExpression(new ConstantExpression("group"),node.getMember("group"));
+          me.addMapEntryExpression(new ConstantExpression("module"),node.getMember("module"));
+          me.addMapEntryExpression(new ConstantExpression("version"),node.getMember("version"));
+          grabInitializers.add(new ExpressionStatement(new StaticMethodCallExpression(grapeClassNode,"grab",new ArgumentListExpression(me))));
+          classNode.addStaticInitializerStatements(grabInitializers,true);
+        }
+      }
+    }
+  }
+  if (!grabMaps.isEmpty()) {
+    Map basicArgs=new HashMap();
+    basicArgs.put("classLoader",sourceUnit.getClassLoader());
+    Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
+  }
+}
