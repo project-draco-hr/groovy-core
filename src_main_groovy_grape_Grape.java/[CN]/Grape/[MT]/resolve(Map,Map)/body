@@ -1,0 +1,18 @@
+{
+  URI[] uris=null;
+  if (enableGrapes) {
+    GrapeEngine instance=getInstance();
+    if (instance != null) {
+      if (!args.containsKey("autoDownload")) {
+        args.put("autoDownload",Boolean.valueOf(enableAutoDownload));
+      }
+      uris=instance.resolve(args,dependencies);
+    }
+  }
+  if (uris == null) {
+    return new URI[0];
+  }
+ else {
+    return uris;
+  }
+}

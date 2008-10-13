@@ -1,3 +1,11 @@
 {
-  if (enableGrapes)   getInstance().grab(args,dependencies);
+  if (enableGrapes) {
+    GrapeEngine instance=getInstance();
+    if (instance != null) {
+      if (!args.containsKey("autoDoanload")) {
+        args.put("autoDownload",Boolean.valueOf(enableAutoDownload));
+      }
+      instance.grab(args,dependencies);
+    }
+  }
 }

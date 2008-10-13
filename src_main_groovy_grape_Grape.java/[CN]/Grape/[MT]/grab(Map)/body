@@ -1,3 +1,11 @@
 {
-  if (enableGrapes)   getInstance().grab(dependency);
+  if (enableGrapes) {
+    GrapeEngine instance=getInstance();
+    if (instance != null) {
+      if (!dependency.containsKey("autoDownload")) {
+        dependency.put("autoDownload",Boolean.valueOf(enableAutoDownload));
+      }
+      instance.grab(dependency);
+    }
+  }
 }

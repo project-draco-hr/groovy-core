@@ -1,4 +1,15 @@
 {
-  if (enableGrapes)   return getInstance().enumerateGrapes();
- else   return Collections.emptyMap();
+  Map<String,Map<String,List<String>>> grapes=null;
+  if (enableGrapes) {
+    GrapeEngine instance=getInstance();
+    if (instance != null) {
+      grapes=instance.enumerateGrapes();
+    }
+  }
+  if (grapes == null) {
+    return Collections.emptyMap();
+  }
+ else {
+    return grapes;
+  }
 }
