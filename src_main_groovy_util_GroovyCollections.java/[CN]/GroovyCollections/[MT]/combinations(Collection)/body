@@ -1,28 +1,27 @@
 {
-  List combinations=new ArrayList();
-  for (Iterator outer=lists.iterator(); outer.hasNext(); ) {
-    Object candidateList=outer.next();
-    List list=(List)DefaultTypeTransformation.castToType(candidateList,List.class);
-    if (combinations.isEmpty()) {
-      for (int i=0; i < list.size(); i++) {
+  List collectedCombos=new ArrayList();
+  for (Iterator outer=collections.iterator(); outer.hasNext(); ) {
+    Collection items=DefaultTypeTransformation.asCollection(outer.next());
+    if (collectedCombos.isEmpty()) {
+      for (Iterator iterator=items.iterator(); iterator.hasNext(); ) {
         List l=new ArrayList();
-        l.add(list.get(i));
-        combinations.add(l);
+        l.add(iterator.next());
+        collectedCombos.add(l);
       }
     }
  else {
-      List savedCombinations=new ArrayList(combinations);
-      List newCombinations=new ArrayList();
-      for (Iterator inner=list.iterator(); inner.hasNext(); ) {
+      List savedCombos=new ArrayList(collectedCombos);
+      List newCombos=new ArrayList();
+      for (Iterator inner=items.iterator(); inner.hasNext(); ) {
         Object value=inner.next();
-        for (Iterator combos=savedCombinations.iterator(); combos.hasNext(); ) {
+        for (Iterator combos=savedCombos.iterator(); combos.hasNext(); ) {
           List oldlist=new ArrayList((List)combos.next());
           oldlist.add(value);
-          newCombinations.add(oldlist);
+          newCombos.add(oldlist);
         }
       }
-      combinations=newCombinations;
+      collectedCombos=newCombos;
     }
   }
-  return combinations;
+  return collectedCombos;
 }
