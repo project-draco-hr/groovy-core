@@ -6,9 +6,7 @@
     addError("you tried to assign a value to the class " + ce.getType().getName(),oldLeft);
     return de;
   }
-  Expression right=transform(de.getRightExpression());
-  if (right == de.getRightExpression())   return de;
-  DeclarationExpression newDeclExpr=new DeclarationExpression(left,de.getOperation(),right);
-  newDeclExpr.setSourcePosition(de);
-  return newDeclExpr;
+  de.setLeftExpression(left);
+  de.setRightExpression(transform(de.getRightExpression()));
+  return de;
 }
