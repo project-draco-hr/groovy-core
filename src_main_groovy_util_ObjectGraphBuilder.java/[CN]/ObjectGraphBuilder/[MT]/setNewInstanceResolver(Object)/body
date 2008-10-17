@@ -3,9 +3,12 @@
     this.newInstanceResolver=(NewInstanceResolver)newInstanceResolver;
   }
  else   if (newInstanceResolver instanceof Closure) {
+    final ObjectGraphBuilder self=this;
     this.newInstanceResolver=new NewInstanceResolver(){
       public Object newInstance(      Class klass,      Map attributes) throws InstantiationException, IllegalAccessException {
-        return ((Closure)newInstanceResolver).call(new Object[]{klass,attributes});
+        Closure cls=(Closure)newInstanceResolver;
+        cls.setDelegate(self);
+        return cls.call(new Object[]{klass,attributes});
       }
     }
 ;

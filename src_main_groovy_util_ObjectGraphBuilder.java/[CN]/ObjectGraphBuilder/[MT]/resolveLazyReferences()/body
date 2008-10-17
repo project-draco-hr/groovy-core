@@ -1,0 +1,21 @@
+{
+  if (!lazyReferencesAllowed)   return;
+  for (  NodeReference ref : lazyReferences) {
+    if (ref.parent == null)     continue;
+    Object child=null;
+    try {
+      child=getProperty(ref.refId);
+    }
+ catch (    MissingPropertyException mpe) {
+    }
+    if (child == null) {
+      throw new IllegalArgumentException("There is no valid node for reference " + ref.parentName + "."+ ref.childName+ "="+ ref.refId);
+    }
+    childPropertySetter.setChild(ref.parent,child,ref.parentName,relationNameResolver.resolveChildRelationName(ref.parentName,ref.parent,ref.childName,child));
+    String propertyName=relationNameResolver.resolveParentRelationName(ref.parentName,ref.parent,ref.childName,child);
+    MetaProperty metaProperty=InvokerHelper.getMetaClass(child).hasProperty(child,propertyName);
+    if (metaProperty != null) {
+      metaProperty.setProperty(child,ref.parent);
+    }
+  }
+}

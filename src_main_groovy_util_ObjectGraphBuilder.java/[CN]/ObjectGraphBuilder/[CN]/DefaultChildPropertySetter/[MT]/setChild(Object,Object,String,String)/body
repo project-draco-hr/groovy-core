@@ -1,9 +1,13 @@
 {
-  Object property=InvokerHelper.getProperty(parent,propertyName);
-  if (property != null && Collection.class.isAssignableFrom(property.getClass())) {
-    ((Collection)property).add(child);
-  }
+  try {
+    Object property=InvokerHelper.getProperty(parent,propertyName);
+    if (property != null && Collection.class.isAssignableFrom(property.getClass())) {
+      ((Collection)property).add(child);
+    }
  else {
-    InvokerHelper.setProperty(parent,propertyName,child);
+      InvokerHelper.setProperty(parent,propertyName,child);
+    }
+  }
+ catch (  MissingPropertyException mpe) {
   }
 }

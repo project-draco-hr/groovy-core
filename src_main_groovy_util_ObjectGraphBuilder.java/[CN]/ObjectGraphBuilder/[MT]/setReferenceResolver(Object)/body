@@ -2,10 +2,21 @@
   if (referenceResolver instanceof ReferenceResolver) {
     this.referenceResolver=(ReferenceResolver)referenceResolver;
   }
- else   if (referenceResolver instanceof Closure) {
+ else   if (referenceResolver instanceof String) {
     this.referenceResolver=new ReferenceResolver(){
       public String getReferenceFor(      String nodeName){
-        return (String)(((Closure)referenceResolver).call(new Object[]{nodeName}));
+        return (String)referenceResolver;
+      }
+    }
+;
+  }
+ else   if (referenceResolver instanceof Closure) {
+    final ObjectGraphBuilder self=this;
+    this.referenceResolver=new ReferenceResolver(){
+      public String getReferenceFor(      String nodeName){
+        Closure cls=(Closure)referenceResolver;
+        cls.setDelegate(self);
+        return (String)cls.call(new Object[]{nodeName});
       }
     }
 ;

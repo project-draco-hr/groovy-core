@@ -1,16 +1,46 @@
 {
   ObjectGraphBuilder ogbuilder=(ObjectGraphBuilder)builder;
   String refProperty=ogbuilder.referenceResolver.getReferenceFor((String)name);
-  String refId=(String)properties.remove(refProperty);
-  Object object=ogbuilder.getProperty(refId);
-  if (object == null) {
-    throw new IllegalArgumentException("There is no previous node with " + ogbuilder.identifierResolver.getIdentifierFor((String)name) + "="+ refId);
+  Object refId=properties.remove(refProperty);
+  Object object=null;
+  Boolean lazy=Boolean.FALSE;
+  if (refId instanceof String) {
+    try {
+      object=ogbuilder.getProperty((String)refId);
+    }
+ catch (    MissingPropertyException mpe) {
+    }
+    if (object == null) {
+      if (ogbuilder.isLazyReferencesAllowed()) {
+        lazy=Boolean.TRUE;
+      }
+ else {
+        throw new IllegalArgumentException("There is no previous node with " + ogbuilder.identifierResolver.getIdentifierFor((String)name) + "="+ refId);
+      }
+    }
+  }
+ else {
+    object=refId;
   }
   if (!properties.isEmpty()) {
     throw new IllegalArgumentException("You can not modify the properties of a referenced object.");
   }
   Map context=ogbuilder.getContext();
   context.put(ObjectGraphBuilder.NODE_NAME,name);
-  context.put(ObjectGraphBuilder.NODE_CLASS,object.getClass());
+  context.put(ObjectGraphBuilder.LAZY_REF,lazy);
+  if (lazy.booleanValue()) {
+    Map parentContext=ogbuilder.getParentContext();
+    Object parent=null;
+    String parentName=null;
+    String childName=(String)name;
+    if (parentContext != null) {
+      parent=context.get(CURRENT_NODE);
+      parentName=(String)parentContext.get(NODE_NAME);
+    }
+    ogbuilder.lazyReferences.add(new NodeReference(parent,parentName,childName,(String)refId));
+  }
+ else {
+    context.put(ObjectGraphBuilder.NODE_CLASS,object.getClass());
+  }
   return object;
 }

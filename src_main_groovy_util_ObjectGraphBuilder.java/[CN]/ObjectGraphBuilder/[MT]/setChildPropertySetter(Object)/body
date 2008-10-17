@@ -3,9 +3,12 @@
     this.childPropertySetter=(ChildPropertySetter)childPropertySetter;
   }
  else   if (childPropertySetter instanceof Closure) {
+    final ObjectGraphBuilder self=this;
     this.childPropertySetter=new ChildPropertySetter(){
       public void setChild(      Object parent,      Object child,      String parentName,      String propertyName){
-        ((Closure)childPropertySetter).call(new Object[]{parent,child,parentName,propertyName});
+        Closure cls=(Closure)childPropertySetter;
+        cls.setDelegate(self);
+        cls.call(new Object[]{parent,child,parentName,propertyName});
       }
     }
 ;

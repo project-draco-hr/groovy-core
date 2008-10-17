@@ -5,4 +5,13 @@
   childPropertySetter=new DefaultChildPropertySetter();
   identifierResolver=new DefaultIdentifierResolver();
   referenceResolver=new DefaultReferenceResolver();
+  addPostNodeCompletionDelegate(new Closure(this,this){
+    public void doCall(    ObjectGraphBuilder builder,    Object parent,    Object node){
+      if (parent == null) {
+        builder.resolveLazyReferences();
+        builder.dispose();
+      }
+    }
+  }
+);
 }

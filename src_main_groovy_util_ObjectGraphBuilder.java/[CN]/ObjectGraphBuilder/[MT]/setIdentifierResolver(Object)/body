@@ -2,10 +2,21 @@
   if (identifierResolver instanceof IdentifierResolver) {
     this.identifierResolver=(IdentifierResolver)identifierResolver;
   }
- else   if (identifierResolver instanceof Closure) {
+ else   if (identifierResolver instanceof String) {
     this.identifierResolver=new IdentifierResolver(){
       public String getIdentifierFor(      String nodeName){
-        return (String)(((Closure)identifierResolver).call(new Object[]{nodeName}));
+        return (String)identifierResolver;
+      }
+    }
+;
+  }
+ else   if (identifierResolver instanceof Closure) {
+    final ObjectGraphBuilder self=this;
+    this.identifierResolver=new IdentifierResolver(){
+      public String getIdentifierFor(      String nodeName){
+        Closure cls=(Closure)identifierResolver;
+        cls.setDelegate(self);
+        return (String)cls.call(new Object[]{nodeName});
       }
     }
 ;
