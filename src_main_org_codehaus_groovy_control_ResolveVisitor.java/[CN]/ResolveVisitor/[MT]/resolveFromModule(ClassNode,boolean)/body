@@ -1,13 +1,7 @@
 {
-  final String name=type.getName();
+  String name=type.getName();
   ModuleNode module=currentClass.getModule();
   if (module == null)   return false;
-  Object res=module.resolveCache.get(name);
-  if (res == NONE)   return false;
-  if (res != null) {
-    type.setRedirect((ClassNode)res);
-    return true;
-  }
   boolean newNameUsed=false;
   if (!type.hasPackageName() && module.hasPackageName() && !(type instanceof ConstructedClassWithPackage)) {
     type.setName(module.getPackageName() + name);
@@ -17,24 +11,17 @@
   for (Iterator iter=moduleClasses.iterator(); iter.hasNext(); ) {
     ClassNode mClass=(ClassNode)iter.next();
     if (mClass.getName().equals(type.getName())) {
-      if (mClass != type) {
-        type.setRedirect(mClass);
-      }
-      module.resolveCache.put(name,type.redirect());
+      if (mClass != type)       type.setRedirect(mClass);
       return true;
     }
   }
   if (newNameUsed)   type.setName(name);
   if (testModuleImports) {
-    if (resolveAliasFromModule(type)) {
-      module.resolveCache.put(name,type.redirect());
-      return true;
-    }
+    if (resolveAliasFromModule(type))     return true;
     if (module.hasPackageName()) {
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(module.getPackageName(),name);
       if (resolve(tmp,false,false,false)) {
         type.setRedirect(tmp.redirect());
-        module.resolveCache.put(name,type.redirect());
         return true;
       }
     }
@@ -45,11 +32,9 @@
       if (resolve(tmp,false,false,true)) {
         ambiguousClass(type,tmp,name);
         type.setRedirect(tmp.redirect());
-        module.resolveCache.put(name,type.redirect());
         return true;
       }
     }
   }
-  if (type.hasPackageName())   module.resolveCache.put(name,NONE);
   return false;
 }
