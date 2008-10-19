@@ -16,47 +16,10 @@
     }
   }
   if (arguments instanceof List) {
-    List list=(List)arguments;
-    StringBuffer buffer=new StringBuffer("[");
-    boolean first=true;
-    for (Iterator iter=list.iterator(); iter.hasNext(); ) {
-      if (first) {
-        first=false;
-      }
- else {
-        buffer.append(", ");
-      }
-      buffer.append(format(iter.next(),verbose));
-    }
-    buffer.append("]");
-    return buffer.toString();
+    return formatList(arguments,verbose);
   }
   if (arguments instanceof Map) {
-    Map map=(Map)arguments;
-    if (map.isEmpty()) {
-      return "[:]";
-    }
-    StringBuffer buffer=new StringBuffer("[");
-    boolean first=true;
-    for (Iterator iter=map.entrySet().iterator(); iter.hasNext(); ) {
-      if (first) {
-        first=false;
-      }
- else {
-        buffer.append(", ");
-      }
-      Map.Entry entry=(Map.Entry)iter.next();
-      buffer.append(format(entry.getKey(),verbose));
-      buffer.append(":");
-      if (entry.getValue() == map) {
-        buffer.append("this Map_");
-      }
- else {
-        buffer.append(format(entry.getValue(),verbose));
-      }
-    }
-    buffer.append("]");
-    return buffer.toString();
+    return formatMap(arguments,verbose);
   }
   if (arguments instanceof Element) {
     return DOMUtil.serialize((Element)arguments);
