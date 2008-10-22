@@ -1,10 +1,19 @@
 {
   File tmpDir=null;
-  if ((configuration.getJointCompilationOptions() != null) && !configuration.getJointCompilationOptions().containsKey("stubDir")) {
-    tmpDir=createTempDir();
-    configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+  try {
+    if ((configuration.getJointCompilationOptions() != null) && !configuration.getJointCompilationOptions().containsKey("stubDir")) {
+      tmpDir=createTempDir();
+      configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+    }
+    FileSystemCompiler compiler=new FileSystemCompiler(configuration,unit);
+    compiler.compile(filenames);
   }
-  FileSystemCompiler compiler=new FileSystemCompiler(configuration,unit);
-  compiler.compile(filenames);
-  if (tmpDir != null)   deleteRecursive(tmpDir);
+  finally {
+    try {
+      if (tmpDir != null)       deleteRecursive(tmpDir);
+    }
+ catch (    Throwable t) {
+      System.err.println("error: could not delete temp files - " + tmpDir.getPath());
+    }
+  }
 }
