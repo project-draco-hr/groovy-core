@@ -1,0 +1,21 @@
+{
+  if (threshold < 0)   throw new IllegalArgumentException("threshold must not be below 0.");
+  return new ReferenceManager(queue){
+    private AtomicInteger refCnt=new AtomicInteger();
+    private volatile ReferenceManager manager=createIdlingManager(queue);
+    @Override public void afterReferenceCreation(    Reference r){
+      if (manager == callback) {
+        callback.afterReferenceCreation(r);
+        return;
+      }
+      int count=refCnt.incrementAndGet();
+      if (count > threshold || count < 0) {
+        manager=callback;
+      }
+    }
+    @Override public String toString(){
+      return "ReferenceManager(thresholded, current manager=" + manager + ", threshold="+ refCnt.get()+ "/"+ threshold+ ")";
+    }
+  }
+;
+}

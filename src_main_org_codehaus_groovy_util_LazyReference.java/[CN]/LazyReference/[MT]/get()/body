@@ -1,5 +1,8 @@
 {
-  T res=value;
-  if (res != null)   return res;
-  return getLocked();
+  ManagedReference<T> resRef=reference;
+  if (resRef == INIT)   return getLocked(false);
+  if (resRef == NULL_REFERENCE)   return null;
+  T res=resRef.get();
+  if (res == null)   return getLocked(true);
+  return res;
 }

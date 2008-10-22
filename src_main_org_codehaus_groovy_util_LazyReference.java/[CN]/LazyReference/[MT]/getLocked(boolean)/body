@@ -1,0 +1,18 @@
+{
+  lock();
+  try {
+    ManagedReference<T> resRef=reference;
+    if (!force && resRef != INIT)     return resRef.get();
+    T res=initValue();
+    if (res == null) {
+      reference=NULL_REFERENCE;
+    }
+ else {
+      reference=new ManagedReference<T>(bundle,res);
+    }
+    return res;
+  }
+  finally {
+    unlock();
+  }
+}

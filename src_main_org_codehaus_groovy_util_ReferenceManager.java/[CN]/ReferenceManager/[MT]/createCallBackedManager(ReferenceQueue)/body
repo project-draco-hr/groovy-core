@@ -1,0 +1,25 @@
+{
+  return new ReferenceManager(queue){
+    @Override public void removeStallEntries(){
+      ReferenceQueue queue=getReferenceQueue();
+      for (; ; ) {
+        java.lang.ref.Reference r=queue.poll();
+        if (r == null)         break;
+        if (r instanceof Reference) {
+          Reference ref=(Reference)r;
+          Finalizable holder=ref.getHandler();
+          if (holder != null)           holder.finalizeReference();
+        }
+        r.clear();
+        r=null;
+      }
+    }
+    @Override public void afterReferenceCreation(    Reference r){
+      removeStallEntries();
+    }
+    @Override public String toString(){
+      return "ReferenceManager(callback)";
+    }
+  }
+;
+}
