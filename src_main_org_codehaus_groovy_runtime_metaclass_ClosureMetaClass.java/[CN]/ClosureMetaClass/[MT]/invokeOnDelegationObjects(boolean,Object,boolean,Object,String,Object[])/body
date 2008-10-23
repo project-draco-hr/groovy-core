@@ -8,6 +8,15 @@
  catch (    MissingMethodException mme) {
       first=mme;
     }
+catch (    GroovyRuntimeException gre) {
+      Throwable th=unwrap(gre);
+      if (th instanceof MissingMethodException) {
+        first=(MissingMethodException)th;
+      }
+ else {
+        throw gre;
+      }
+    }
   }
   if (invoke2) {
     GroovyObject go=(GroovyObject)o2;
@@ -16,6 +25,15 @@
     }
  catch (    MissingMethodException mme) {
       if (first == null)       first=mme;
+    }
+catch (    GroovyRuntimeException gre) {
+      Throwable th=unwrap(gre);
+      if (th instanceof MissingMethodException) {
+        first=(MissingMethodException)th;
+      }
+ else {
+        throw gre;
+      }
     }
   }
   throw first;
