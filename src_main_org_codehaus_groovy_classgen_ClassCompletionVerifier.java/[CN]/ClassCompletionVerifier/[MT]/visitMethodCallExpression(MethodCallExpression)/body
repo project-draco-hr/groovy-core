@@ -1,0 +1,13 @@
+{
+  super.visitMethodCallExpression(mce);
+  Expression aexp=mce.getArguments();
+  if (aexp instanceof TupleExpression) {
+    TupleExpression arguments=(TupleExpression)aexp;
+    for (Iterator it=arguments.getExpressions().iterator(); it.hasNext(); ) {
+      checkForInvalidDeclaration((Expression)it.next());
+    }
+  }
+ else {
+    checkForInvalidDeclaration(aexp);
+  }
+}
