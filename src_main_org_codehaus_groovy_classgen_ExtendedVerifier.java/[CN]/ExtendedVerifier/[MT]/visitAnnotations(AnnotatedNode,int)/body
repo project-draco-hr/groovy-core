@@ -11,7 +11,7 @@
   for (Iterator it=annotations.iterator(); it.hasNext(); ) {
     AnnotationNode an=(AnnotationNode)it.next();
     AnnotationNode annotation=visitAnnotation(an);
-    if (!annotation.isTargetAllowed(target)) {
+    if (!this.currentClass.isAnnotationDefinition() && !annotation.isTargetAllowed(target)) {
       addError("Annotation @" + annotation.getClassNode().getName() + " is not allowed on element "+ AnnotationNode.targetToName(target),annotation);
     }
   }
