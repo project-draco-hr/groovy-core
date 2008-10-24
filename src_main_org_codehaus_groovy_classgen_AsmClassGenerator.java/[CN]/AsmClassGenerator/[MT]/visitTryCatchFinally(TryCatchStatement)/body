@@ -39,8 +39,10 @@
     ClassNode exceptionType=catchStatement.getExceptionType();
     final Label catchStart=new Label();
     mv.visitLabel(catchStart);
+    compileStack.pushState();
     compileStack.defineVariable(catchStatement.getVariable(),true);
     catchStatement.visit(this);
+    compileStack.pop();
     mv.visitJumpInsn(GOTO,finallyStart);
     final String exceptionTypeInternalName=BytecodeHelper.getClassInternalName(exceptionType);
     exceptionBlocks.add(new Runnable(){
