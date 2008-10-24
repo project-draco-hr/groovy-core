@@ -21,6 +21,7 @@ class Key {
   for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
     MethodNode mn=(MethodNode)iter.next();
     if ((mn.getModifiers() & ACC_ABSTRACT) != 0)     continue;
+    if (mn.isStatic())     continue;
     if (isThis ^ (mn.getModifiers() & (ACC_PUBLIC | ACC_PROTECTED)) == 0)     continue;
     String methodName=mn.getName();
     if (isMopMethod(methodName)) {

@@ -6,8 +6,8 @@
     String methodDescriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameters());
     mv=cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,name,methodDescriptor,null,null);
     mv.visitVarInsn(ALOAD,0);
-    BytecodeHelper helper=new BytecodeHelper(mv);
     int newRegister=1;
+    BytecodeHelper helper=new BytecodeHelper(mv);
     for (int i=0; i < parameters.length; i++) {
       ClassNode type=parameters[i].getType();
       helper.load(parameters[i].getType(),newRegister);
