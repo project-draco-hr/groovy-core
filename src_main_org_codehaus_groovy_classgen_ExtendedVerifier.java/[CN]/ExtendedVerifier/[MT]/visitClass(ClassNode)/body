@@ -1,5 +1,10 @@
 {
   this.currentClass=node;
-  visitAnnotations(node,AnnotationNode.TYPE_TARGET);
+  if (node.isAnnotationDefinition()) {
+    visitAnnotations(node,AnnotationNode.ANNOTATION_TARGET);
+  }
+ else {
+    visitAnnotations(node,AnnotationNode.TYPE_TARGET);
+  }
   node.visitContents(this);
 }

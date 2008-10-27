@@ -9,9 +9,9 @@
   }
   Collection annotations=node.getAnnotations();
   for (Iterator it=annotations.iterator(); it.hasNext(); ) {
-    AnnotationNode an=(AnnotationNode)it.next();
-    AnnotationNode annotation=visitAnnotation(an);
-    if (!this.currentClass.isAnnotationDefinition() && !annotation.isTargetAllowed(target)) {
+    AnnotationNode annotation=visitAnnotation((AnnotationNode)it.next());
+    boolean isTargetAnnotation=annotation.getClassNode().isResolved() && annotation.getClassNode().getTypeClass() == Target.class;
+    if (!isTargetAnnotation && !annotation.isTargetAllowed(target)) {
       addError("Annotation @" + annotation.getClassNode().getName() + " is not allowed on element "+ AnnotationNode.targetToName(target),annotation);
     }
   }
