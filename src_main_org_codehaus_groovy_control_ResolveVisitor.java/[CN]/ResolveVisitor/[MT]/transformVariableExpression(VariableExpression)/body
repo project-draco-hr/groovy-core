@@ -1,8 +1,16 @@
 {
   Variable v=ve.getAccessedVariable();
   if (v instanceof DynamicVariable) {
-    ClassNode t=ClassHelper.make(ve.getName());
-    if (resolve(t)) {
+    String name=ve.getName();
+    ClassNode t=ClassHelper.make(name);
+    boolean isClass=t.isResolved();
+    if (!isClass) {
+      if (Character.isLowerCase(name.charAt(0))) {
+        t=new LowerCaseClass(name);
+      }
+      isClass=resolve(t);
+    }
+    if (isClass) {
       for (VariableScope scope=currentScope; scope != null && !scope.isRoot(); scope=scope.getParent()) {
         if (scope.isRoot())         break;
         if (scope.removeReferencedClassVariable(ve.getName()) == null)         break;

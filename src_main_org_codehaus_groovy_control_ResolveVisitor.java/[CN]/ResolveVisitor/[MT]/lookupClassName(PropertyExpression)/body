@@ -1,4 +1,5 @@
 {
+  boolean doInitialClassTest=true;
   String name="";
   for (Expression it=pe; it != null; it=((PropertyExpression)it).getObjectExpression()) {
     if (it instanceof VariableExpression) {
@@ -6,7 +7,15 @@
       if (ve.isSuperExpression() || ve.isThisExpression()) {
         return null;
       }
-      name=ve.getName() + "." + name;
+      String varName=ve.getName();
+      if (doInitialClassTest) {
+        if (!testVanillaNameForClass(varName))         return null;
+        doInitialClassTest=false;
+        name=varName;
+      }
+ else {
+        name=varName + "." + name;
+      }
       break;
     }
  else     if (!(it.getClass() == PropertyExpression.class)) {
@@ -18,9 +27,16 @@
       if (propertyPart == null || propertyPart.equals("class")) {
         return null;
       }
-      name=propertyPart + "." + name;
+      if (doInitialClassTest) {
+        if (!testVanillaNameForClass(propertyPart))         return null;
+        doInitialClassTest=false;
+        name=propertyPart;
+      }
+ else {
+        name=propertyPart + "." + name;
+      }
     }
   }
-  if (name.length() > 0)   return name.substring(0,name.length() - 1);
-  return null;
+  if (name.length() == 0)   return null;
+  return name;
 }

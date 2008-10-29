@@ -1,5 +1,8 @@
 {
   String name=type.getName();
+  if (type instanceof LowerCaseClass) {
+    cachedClasses.put(name,NO_CLASS);
+  }
   Object cached=cachedClasses.get(name);
   if (cached == NO_CLASS)   return false;
   if (cached == SCRIPT)   throw new GroovyBugError("name " + name + " was marked as script, but was not resolved as such");
