@@ -16,10 +16,16 @@
     AST collectionNode=variableNode.getNextSibling();
     ClassNode type=ClassHelper.OBJECT_TYPE;
     if (isType(VARIABLE_DEF,variableNode)) {
-      AST typeNode=variableNode.getFirstChild();
-      assertNodeType(TYPE,typeNode);
-      type=type(typeNode);
-      variableNode=typeNode.getNextSibling();
+      AST node=variableNode.getFirstChild();
+      if (isType(MODIFIERS,node)) {
+        int modifiersMask=modifiers(node,new ArrayList(),0);
+        if ((modifiersMask & ~Opcodes.ACC_FINAL) != 0) {
+          throw new ASTRuntimeException(node,"Only the 'final' modifier is allowed in front of the for loop variable.");
+        }
+        node=node.getNextSibling();
+      }
+      type=makeTypeWithArguments(node);
+      variableNode=node.getNextSibling();
     }
     String variable=identifier(variableNode);
     collectionExpression=expression(collectionNode);
