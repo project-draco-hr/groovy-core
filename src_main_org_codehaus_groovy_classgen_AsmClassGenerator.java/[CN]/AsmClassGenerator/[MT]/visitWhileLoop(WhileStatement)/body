@@ -5,8 +5,22 @@
   Label continueLabel=compileStack.getContinueLabel();
   Label breakLabel=compileStack.getBreakLabel();
   mv.visitLabel(continueLabel);
-  loop.getBooleanExpression().visit(this);
-  mv.visitJumpInsn(IFEQ,breakLabel);
+  Expression bool=loop.getBooleanExpression();
+  boolean boolHandled=false;
+  if (bool instanceof ConstantExpression) {
+    ConstantExpression constant=(ConstantExpression)bool;
+    if (constant.getValue() == Boolean.TRUE) {
+      boolHandled=true;
+    }
+ else     if (constant.getValue() == Boolean.FALSE) {
+      boolHandled=true;
+      mv.visitJumpInsn(GOTO,breakLabel);
+    }
+  }
+  if (!boolHandled) {
+    bool.visit(this);
+    mv.visitJumpInsn(IFEQ,breakLabel);
+  }
   loop.getLoopBlock().visit(this);
   mv.visitJumpInsn(GOTO,continueLabel);
   mv.visitLabel(breakLabel);

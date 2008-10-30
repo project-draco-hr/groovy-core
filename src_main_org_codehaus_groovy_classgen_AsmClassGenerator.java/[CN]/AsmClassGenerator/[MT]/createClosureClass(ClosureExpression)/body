@@ -7,7 +7,10 @@
     parameters=Parameter.EMPTY_ARRAY;
   }
  else   if (parameters.length == 0) {
-    parameters=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE,"it",ConstantExpression.NULL)};
+    Parameter it=new Parameter(ClassHelper.OBJECT_TYPE,"it",ConstantExpression.NULL);
+    parameters=new Parameter[]{it};
+    org.codehaus.groovy.ast.Variable ref=expression.getVariableScope().getDeclaredVariable("it");
+    if (ref != null)     it.setClosureSharedVariable(ref.isClosureSharedVariable());
   }
   Parameter[] localVariableParams=getClosureSharedVariables(expression);
   removeInitialValues(localVariableParams);
