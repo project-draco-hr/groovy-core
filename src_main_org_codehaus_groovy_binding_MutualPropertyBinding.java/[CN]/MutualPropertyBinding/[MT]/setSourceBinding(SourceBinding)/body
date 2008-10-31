@@ -1,0 +1,18 @@
+{
+  if (sourceBinding instanceof PropertyBinding) {
+    if (bound && sourceBoundBean != null) {
+      unbindProperty(sourceBoundBean,sourceBoundToProperty ? sourceBoundProperty : (String)null,this);
+      sourceBoundBean=null;
+      sourceBoundProperty=null;
+    }
+    super.setSourceBinding(sourceBinding);
+    if (bound) {
+      sourceBoundBean=((PropertyBinding)sourceBinding).bean;
+      sourceBoundProperty=bindProperty(sourceBoundBean,((PropertyBinding)sourceBinding).propertyName,this);
+      sourceBoundToProperty=sourceBoundProperty != null;
+    }
+  }
+ else {
+    throw new RuntimeException("Only PropertyBindings can be set in a Mutual Property Binding");
+  }
+}

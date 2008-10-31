@@ -1,0 +1,18 @@
+{
+  if (targetBinding instanceof PropertyBinding) {
+    if (bound && targetBoundBean != null) {
+      unbindProperty(targetBoundBean,targetBoundToProperty ? targetBoundProperty : (String)null,this);
+      targetBoundBean=null;
+      targetBoundProperty=null;
+    }
+    super.setTargetBinding(targetBinding);
+    if (bound) {
+      targetBoundBean=((PropertyBinding)targetBinding).bean;
+      targetBoundProperty=bindProperty(targetBoundBean,((PropertyBinding)targetBinding).propertyName,this);
+      targetBoundToProperty=targetBoundProperty != null;
+    }
+  }
+ else   if (targetBinding != null) {
+    throw new RuntimeException("Only PropertyBindings can be set in a Mutual Property Binding");
+  }
+}
