@@ -5,7 +5,9 @@
         continue;
       }
       if (pcsClassNode.equals(field.getType())) {
-        pcsField=field;
+        if ((field.getModifiers() & (ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED)) != ACC_PRIVATE) {
+          pcsField=field;
+        }
         return false;
       }
     }
