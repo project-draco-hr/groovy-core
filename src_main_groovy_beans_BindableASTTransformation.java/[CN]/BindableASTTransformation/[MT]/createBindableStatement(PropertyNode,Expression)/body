@@ -1,9 +1,3 @@
 {
-  Expression methodArguments=new ArgumentListExpression(new Expression[]{new ConstantExpression(propertyNode.getName()),fieldExpression,new BinaryExpression(fieldExpression,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression("value"))});
-  if (pcsField == null) {
-    return new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"firePropertyChange",methodArguments));
-  }
- else {
-    return new ExpressionStatement(new MethodCallExpression(new FieldExpression(pcsField),"firePropertyChange",methodArguments));
-  }
+  return new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"firePropertyChange",new ArgumentListExpression(new Expression[]{new ConstantExpression(propertyNode.getName()),fieldExpression,new BinaryExpression(fieldExpression,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression("value"))})));
 }

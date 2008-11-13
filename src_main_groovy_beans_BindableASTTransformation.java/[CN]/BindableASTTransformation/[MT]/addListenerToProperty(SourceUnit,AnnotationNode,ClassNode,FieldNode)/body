@@ -6,7 +6,7 @@
         source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber()),source));
       }
  else {
-        if (needsPropertyChangeSupport(declaringClass)) {
+        if (needsPropertyChangeSupport(declaringClass,source)) {
           addPropertyChangeSupport(declaringClass);
         }
         createListenerSetter(source,node,declaringClass,propertyNode);

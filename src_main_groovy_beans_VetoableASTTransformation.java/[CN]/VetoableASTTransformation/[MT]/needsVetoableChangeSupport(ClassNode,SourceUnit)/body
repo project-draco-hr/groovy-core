@@ -1,0 +1,20 @@
+{
+  boolean foundAdd=false, foundRemove=false, foundFire=false;
+  ClassNode consideredClass=declaringClass;
+  while (consideredClass != null) {
+    for (    MethodNode method : consideredClass.getMethods()) {
+      foundAdd=foundAdd || method.getName().equals("addVetoableChangeListener") && method.getParameters().length == 1;
+      foundRemove=foundRemove || method.getName().equals("removeVetoableChangeListener") && method.getParameters().length == 1;
+      foundFire=foundFire || method.getName().equals("fireVetoableChange") && method.getParameters().length == 3;
+      if (foundAdd && foundRemove && foundFire) {
+        return false;
+      }
+    }
+    consideredClass=consideredClass.getSuperClass();
+  }
+  if (foundAdd || foundRemove || foundFire) {
+    sourceUnit.getErrorCollector().addErrorAndContinue(new SimpleMessage("@Vetoable cannot be processed on " + declaringClass.getName() + " because some but not all of addVetoableChangeListener, removeVetoableChange, and fireVetoableChange were declared in the current or super classes.",sourceUnit));
+    return false;
+  }
+  return true;
+}
