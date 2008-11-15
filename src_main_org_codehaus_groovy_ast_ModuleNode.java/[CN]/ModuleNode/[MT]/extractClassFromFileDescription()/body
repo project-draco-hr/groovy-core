@@ -1,16 +1,17 @@
 {
   String answer=getDescription();
-  int idx=answer.lastIndexOf('.');
-  if (idx > 0) {
-    answer=answer.substring(0,idx);
+  int slashIdx=answer.lastIndexOf('/');
+  int separatorIdx=answer.lastIndexOf(File.separatorChar);
+  int dotIdx=answer.lastIndexOf('.');
+  if (dotIdx > 0 && dotIdx > Math.max(slashIdx,separatorIdx)) {
+    answer=answer.substring(0,dotIdx);
   }
-  idx=answer.lastIndexOf('/');
-  if (idx >= 0) {
-    answer=answer.substring(idx + 1);
+  if (slashIdx >= 0) {
+    answer=answer.substring(slashIdx + 1);
   }
-  idx=answer.lastIndexOf(File.separatorChar);
-  if (idx >= 0) {
-    answer=answer.substring(idx + 1);
+  separatorIdx=answer.lastIndexOf(File.separatorChar);
+  if (separatorIdx >= 0) {
+    answer=answer.substring(separatorIdx + 1);
   }
   return answer;
 }
