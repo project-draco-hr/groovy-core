@@ -1,0 +1,15 @@
+{
+  String getterName="get" + MetaClassHelper.capitalize(propertyName);
+  MethodNode setter=classNode.getSetterMethod("set" + MetaClassHelper.capitalize(propertyName));
+  if (setter != null) {
+    Statement code=setter.getCode();
+    VariableExpression oldValue=new VariableExpression("$oldValue");
+    VariableExpression newValue=new VariableExpression("$newValue");
+    BlockStatement block=new BlockStatement();
+    block.addStatement(new ExpressionStatement(new DeclarationExpression(oldValue,Token.newSymbol(Types.EQUALS,0,0),new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,ArgumentListExpression.EMPTY_ARGUMENTS))));
+    block.addStatement(code);
+    block.addStatement(new ExpressionStatement(new DeclarationExpression(newValue,Token.newSymbol(Types.EQUALS,0,0),new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,ArgumentListExpression.EMPTY_ARGUMENTS))));
+    block.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"firePropertyChange",new ArgumentListExpression(new Expression[]{new ConstantExpression(propertyName),oldValue,newValue}))));
+    setter.setCode(block);
+  }
+}
