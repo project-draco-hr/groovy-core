@@ -1,0 +1,12 @@
+{
+  final Object thiz=obj;
+  if (clazz == null || !clazz.isInterface()) {
+    throw new IllegalArgumentException("interface Class expected");
+  }
+  return (T)Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},new InvocationHandler(){
+    public Object invoke(    Object proxy,    Method m,    Object[] args) throws Throwable {
+      return invokeImpl(thiz,m.getName(),args);
+    }
+  }
+);
+}

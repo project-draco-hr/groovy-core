@@ -1,0 +1,14 @@
+{
+  try {
+    return new GroovyCompiledScript(this,getScriptClass(scriptSource));
+  }
+ catch (  SyntaxException e) {
+    throw new ScriptException(e.getMessage(),e.getSourceLocator(),e.getLine());
+  }
+catch (  IOException e) {
+    throw new ScriptException(e);
+  }
+catch (  CompilationFailedException ee) {
+    throw new ScriptException(ee);
+  }
+}

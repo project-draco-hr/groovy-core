@@ -1,0 +1,13 @@
+{
+  Closure closure=globalClosures.get(name);
+  if (closure != null) {
+    return closure.call(args);
+  }
+ else {
+    Object value=ctx.getAttribute(name);
+    if (value instanceof Closure) {
+      return ((Closure)value).call(args);
+    }
+  }
+  throw new MissingMethodException(name,getClass(),args);
+}

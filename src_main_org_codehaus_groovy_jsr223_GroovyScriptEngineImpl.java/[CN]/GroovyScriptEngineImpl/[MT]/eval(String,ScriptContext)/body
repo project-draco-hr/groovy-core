@@ -1,0 +1,12 @@
+{
+  try {
+    return eval(getScriptClass(script),ctx);
+  }
+ catch (  SyntaxException e) {
+    throw new ScriptException(e.getMessage(),e.getSourceLocator(),e.getLine());
+  }
+catch (  Exception e) {
+    if (DEBUG)     e.printStackTrace();
+    throw new ScriptException(e);
+  }
+}

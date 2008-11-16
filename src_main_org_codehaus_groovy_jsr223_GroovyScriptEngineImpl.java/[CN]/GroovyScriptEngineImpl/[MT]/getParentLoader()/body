@@ -1,0 +1,12 @@
+{
+  ClassLoader ctxtLoader=Thread.currentThread().getContextClassLoader();
+  try {
+    Class c=ctxtLoader.loadClass(Script.class.getName());
+    if (c == Script.class) {
+      return ctxtLoader;
+    }
+  }
+ catch (  ClassNotFoundException cnfe) {
+  }
+  return Script.class.getClassLoader();
+}

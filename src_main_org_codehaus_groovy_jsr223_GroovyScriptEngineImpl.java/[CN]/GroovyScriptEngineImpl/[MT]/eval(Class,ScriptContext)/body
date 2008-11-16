@@ -1,0 +1,76 @@
+{
+  if (null == ctx.getAttribute("context")) {
+    ctx.setAttribute("context",ctx,ScriptContext.ENGINE_SCOPE);
+    final Writer writer=ctx.getWriter();
+    ctx.setAttribute("out",(writer instanceof PrintWriter) ? writer : new PrintWriter(writer),ScriptContext.ENGINE_SCOPE);
+  }
+  Binding binding=new Binding(ctx.getBindings(ScriptContext.ENGINE_SCOPE)){
+    @Override public Object getVariable(    String name){
+synchronized (ctx) {
+        int scope=ctx.getAttributesScope(name);
+        if (scope != -1) {
+          return ctx.getAttribute(name,scope);
+        }
+      }
+      throw new MissingPropertyException(name,getClass());
+    }
+    @Override public void setVariable(    String name,    Object value){
+synchronized (ctx) {
+        int scope=ctx.getAttributesScope(name);
+        if (scope == -1) {
+          scope=ScriptContext.ENGINE_SCOPE;
+        }
+        ctx.setAttribute(name,value,scope);
+      }
+    }
+  }
+;
+  try {
+    Script scriptObject=InvokerHelper.createScript(scriptClass,binding);
+    Method[] methods=scriptClass.getMethods();
+    Map<String,Closure> closures=new HashMap<String,Closure>();
+    for (    Method m : methods) {
+      String name=m.getName();
+      closures.put(name,new MethodClosure(scriptObject,name));
+    }
+    globalClosures.putAll(closures);
+    MetaClass oldMetaClass=scriptObject.getMetaClass();
+    scriptObject.setMetaClass(new DelegatingMetaClass(oldMetaClass){
+      @Override public Object invokeMethod(      Object object,      String name,      Object args){
+        if (args == null) {
+          return invokeMethod(object,name,MetaClassHelper.EMPTY_ARRAY);
+        }
+        if (args instanceof Tuple) {
+          return invokeMethod(object,name,((Tuple)args).toArray());
+        }
+        if (args instanceof Object[]) {
+          return invokeMethod(object,name,(Object[])args);
+        }
+ else {
+          return invokeMethod(object,name,new Object[]{args});
+        }
+      }
+      @Override public Object invokeMethod(      Object object,      String name,      Object[] args){
+        try {
+          return super.invokeMethod(object,name,args);
+        }
+ catch (        MissingMethodException mme) {
+          return callGlobal(name,args,ctx);
+        }
+      }
+      @Override public Object invokeStaticMethod(      Object object,      String name,      Object[] args){
+        try {
+          return super.invokeStaticMethod(object,name,args);
+        }
+ catch (        MissingMethodException mme) {
+          return callGlobal(name,args,ctx);
+        }
+      }
+    }
+);
+    return scriptObject.run();
+  }
+ catch (  Exception e) {
+    throw new ScriptException(e);
+  }
+}

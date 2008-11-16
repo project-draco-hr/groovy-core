@@ -1,0 +1,10 @@
+{
+  Class clazz=classMap.get(script);
+  if (clazz != null) {
+    return clazz;
+  }
+  InputStream stream=new ByteArrayInputStream(script.getBytes());
+  clazz=loader.parseClass(stream,generateScriptName());
+  classMap.put(script,clazz);
+  return clazz;
+}

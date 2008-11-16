@@ -1,0 +1,19 @@
+{
+  if (name == null) {
+    throw new NullPointerException("method name is null");
+  }
+  try {
+    if (thiz != null) {
+      return InvokerHelper.invokeMethod(thiz,name,args);
+    }
+ else {
+      return callGlobal(name,args);
+    }
+  }
+ catch (  MissingMethodException mme) {
+    throw new NoSuchMethodException(mme.getMessage());
+  }
+catch (  Exception e) {
+    throw new ScriptException(e);
+  }
+}
