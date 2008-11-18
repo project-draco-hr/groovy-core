@@ -1,8 +1,8 @@
 {
-  if (null == ctx.getAttribute("context")) {
+  if (null == ctx.getAttribute("context",ScriptContext.ENGINE_SCOPE)) {
     ctx.setAttribute("context",ctx,ScriptContext.ENGINE_SCOPE);
     final Writer writer=ctx.getWriter();
-    ctx.setAttribute("out",(writer instanceof PrintWriter) ? writer : new PrintWriter(writer),ScriptContext.ENGINE_SCOPE);
+    ctx.setAttribute("out",(writer instanceof PrintWriter) ? writer : new PrintWriter(writer,true),ScriptContext.ENGINE_SCOPE);
   }
   Binding binding=new Binding(ctx.getBindings(ScriptContext.ENGINE_SCOPE)){
     @Override public Object getVariable(    String name){
