@@ -1,0 +1,34 @@
+{
+  Iterator fileItr=filenames.iterator();
+  while (fileItr.hasNext()) {
+    String filename=(String)fileItr.next();
+    Iterator pathItr=sourcepath.iterator();
+    while (pathItr.hasNext()) {
+      FileResource fileRes=(FileResource)pathItr.next();
+      String path=fileRes.getFile().getAbsolutePath();
+      if (new File(path + FS + filename).exists()) {
+        String srcFileName=path + FS + filename;
+        String src=DefaultGroovyMethods.getText(new File(srcFileName));
+        String packagePath=tool.getPath(filename);
+        packagePath=packagePath.replace('\\',FS);
+        String file=tool.getFile(filename);
+        try {
+          Map classDocs=getClassDocsFromSingleSource(packagePath,file,src);
+          rootDoc.putAllClasses(classDocs);
+          SimpleGroovyPackageDoc packageDoc=(SimpleGroovyPackageDoc)rootDoc.packageNamed(packagePath);
+          if (packageDoc == null) {
+            packageDoc=new SimpleGroovyPackageDoc(packagePath);
+          }
+          packageDoc.putAll(classDocs);
+          rootDoc.put(packagePath,packageDoc);
+        }
+ catch (        RecognitionException e) {
+          System.out.println("ignored due to RecognitionException: " + filename);
+        }
+catch (        TokenStreamException e) {
+          System.out.println("ignored due to TokenStreamException: " + filename);
+        }
+      }
+    }
+  }
+}
