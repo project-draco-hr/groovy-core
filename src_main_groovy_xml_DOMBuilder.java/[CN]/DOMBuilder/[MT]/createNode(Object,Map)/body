@@ -8,9 +8,15 @@
       if (value instanceof Map) {
         appendNamespaceAttributes(element,(Map)value);
       }
+ else       if (value instanceof String) {
+        setStringNS(element,"",value);
+      }
  else {
         throw new IllegalArgumentException("The value of the xmlns attribute must be a Map of QNames to String URIs");
       }
+    }
+ else     if (attrName.startsWith("xmlns:") && value instanceof String) {
+      setStringNS(element,attrName.substring(6),value);
     }
  else {
       String valueText=(value != null) ? value.toString() : "";
