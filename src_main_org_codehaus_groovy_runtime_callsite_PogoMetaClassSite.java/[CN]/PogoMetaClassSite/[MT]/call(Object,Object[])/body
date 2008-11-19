@@ -1,22 +1,26 @@
 {
   if (checkCall(receiver)) {
     try {
-      return metaClass.invokeMethod(receiver,name,args);
-    }
- catch (    MissingMethodException e) {
-      if (e instanceof MissingMethodExecutionFailed) {
-        throw (MissingMethodException)e.getCause();
+      try {
+        return metaClass.invokeMethod(receiver,name,args);
       }
- else       if (receiver.getClass() == e.getType() && e.getMethod().equals(name)) {
-        return ((GroovyObject)receiver).invokeMethod(name,args);
-      }
+ catch (      MissingMethodException e) {
+        if (e instanceof MissingMethodExecutionFailed) {
+          throw (MissingMethodException)e.getCause();
+        }
+ else         if (receiver.getClass() == e.getType() && e.getMethod().equals(name)) {
+          return ((GroovyObject)receiver).invokeMethod(name,args);
+        }
  else {
-        throw e;
+          throw e;
+        }
       }
     }
-catch (    GroovyRuntimeException gre) {
+ catch (    GroovyRuntimeException gre) {
       throw ScriptBytecodeAdapter.unwrap(gre);
     }
   }
- else   return CallSiteArray.defaultCall(this,receiver,args);
+ else {
+    return CallSiteArray.defaultCall(this,receiver,args);
+  }
 }
