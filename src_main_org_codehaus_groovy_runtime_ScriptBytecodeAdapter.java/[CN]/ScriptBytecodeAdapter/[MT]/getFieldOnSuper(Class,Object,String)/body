@@ -1,9 +1,14 @@
 {
-  if (receiver instanceof Class) {
-    return InvokerHelper.getAttribute(receiver,messageName);
-  }
+  try {
+    if (receiver instanceof Class) {
+      return InvokerHelper.getAttribute(receiver,messageName);
+    }
  else {
-    MetaClass mc=((GroovyObject)receiver).getMetaClass();
-    return mc.getAttribute(senderClass,receiver,messageName,true);
+      MetaClass mc=((GroovyObject)receiver).getMetaClass();
+      return mc.getAttribute(senderClass,receiver,messageName,true);
+    }
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
   }
 }

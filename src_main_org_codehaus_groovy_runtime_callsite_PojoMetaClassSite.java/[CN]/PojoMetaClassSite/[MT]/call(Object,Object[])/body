@@ -1,4 +1,13 @@
 {
-  if (checkCall(receiver))   return metaClass.invokeMethod(receiver,name,args);
- else   return CallSiteArray.defaultCall(this,receiver,args);
+  if (checkCall(receiver)) {
+    try {
+      return metaClass.invokeMethod(receiver,name,args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return CallSiteArray.defaultCall(this,receiver,args);
+  }
 }

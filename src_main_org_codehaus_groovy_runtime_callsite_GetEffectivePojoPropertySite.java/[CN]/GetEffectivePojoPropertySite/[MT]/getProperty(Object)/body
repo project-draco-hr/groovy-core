@@ -1,3 +1,8 @@
 {
-  return effective.getProperty(receiver);
+  try {
+    return effective.getProperty(receiver);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw ScriptBytecodeAdapter.unwrap(gre);
+  }
 }

@@ -1,20 +1,15 @@
 {
   args=metaMethod.coerceArgumentsToClasses(args);
   try {
-    try {
-      return reflect.invoke(receiver,args);
-    }
- catch (    IllegalArgumentException e) {
-      throw new InvokerInvocationException(e);
-    }
-catch (    IllegalAccessException e) {
-      throw new InvokerInvocationException(e);
-    }
-catch (    InvocationTargetException e) {
-      throw new InvokerInvocationException(e);
-    }
+    return reflect.invoke(receiver,args);
   }
- catch (  Exception e) {
-    throw metaMethod.processDoMethodInvokeException(e,receiver,args);
+ catch (  InvocationTargetException e) {
+    Throwable cause=e.getCause();
+    if (cause instanceof GroovyRuntimeException) {
+      throw ScriptBytecodeAdapter.unwrap((GroovyRuntimeException)cause);
+    }
+ else {
+      throw cause;
+    }
   }
 }

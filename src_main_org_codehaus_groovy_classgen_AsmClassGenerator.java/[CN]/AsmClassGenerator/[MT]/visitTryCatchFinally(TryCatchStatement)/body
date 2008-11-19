@@ -22,16 +22,6 @@
   mv.visitJumpInsn(GOTO,finallyStart);
   final Label greEnd=new Label();
   mv.visitLabel(greEnd);
-  final Label catchStartGre=new Label();
-  mv.visitLabel(catchStartGre);
-  mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;");
-  mv.visitInsn(ATHROW);
-  exceptionBlocks.add(new Runnable(){
-    public void run(){
-      mv.visitTryCatchBlock(tryStart,greEnd,catchStartGre,GRE);
-    }
-  }
-);
   final Label tryEnd=new Label();
   mv.visitLabel(tryEnd);
   for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {

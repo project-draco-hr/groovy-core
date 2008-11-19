@@ -2,5 +2,12 @@
   if (GroovyCategorySupport.hasCategoryInCurrentThread() || receiver.getClass() != metaClass.getTheClass()) {
     return createGetPropertySite(receiver).getProperty(receiver);
   }
- else   return effective.getProperty(receiver);
+ else {
+    try {
+      return effective.getProperty(receiver);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
 }

@@ -2,23 +2,28 @@
   Object result=null;
   boolean intercepting=receiver instanceof GroovyInterceptable;
   try {
-    if (intercepting) {
-      result=receiver.invokeMethod(messageName,messageArguments);
-    }
+    try {
+      if (intercepting) {
+        result=receiver.invokeMethod(messageName,messageArguments);
+      }
  else {
-      result=receiver.getMetaClass().invokeMethod(senderClass,receiver,messageName,messageArguments,false,true);
+        result=receiver.getMetaClass().invokeMethod(senderClass,receiver,messageName,messageArguments,false,true);
+      }
+    }
+ catch (    MissingMethodException e) {
+      if (e instanceof MissingMethodExecutionFailed) {
+        throw (MissingMethodException)e.getCause();
+      }
+ else       if (!intercepting && receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
+        result=receiver.invokeMethod(messageName,messageArguments);
+      }
+ else {
+        throw e;
+      }
     }
   }
- catch (  MissingMethodException e) {
-    if (e instanceof MissingMethodExecutionFailed) {
-      throw (MissingMethodException)e.getCause();
-    }
- else     if (!intercepting && receiver.getClass() == e.getType() && e.getMethod().equals(messageName)) {
-      result=receiver.invokeMethod(messageName,messageArguments);
-    }
- else {
-      throw e;
-    }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
   }
   return result;
 }

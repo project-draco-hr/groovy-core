@@ -1,7 +1,14 @@
 {
   if (receiver == metaClass.getTheClass() && MetaClassHelper.sameClasses(params,args)) {
     MetaClassHelper.unwrap(args);
-    return metaMethod.doMethodInvoke(metaClass.getTheClass(),args);
+    try {
+      return metaMethod.doMethodInvoke(metaClass.getTheClass(),args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
   }
- else   return CallSiteArray.defaultCallConstructor(this,receiver,args);
+ else {
+    return CallSiteArray.defaultCallConstructor(this,receiver,args);
+  }
 }

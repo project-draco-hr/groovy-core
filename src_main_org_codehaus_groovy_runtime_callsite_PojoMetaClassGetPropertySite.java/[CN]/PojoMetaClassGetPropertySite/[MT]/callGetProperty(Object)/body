@@ -1,3 +1,8 @@
 {
-  return InvokerHelper.getProperty(receiver,name);
+  try {
+    return InvokerHelper.getProperty(receiver,name);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw ScriptBytecodeAdapter.unwrap(gre);
+  }
 }

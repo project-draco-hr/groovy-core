@@ -1,4 +1,13 @@
 {
-  if (checkCall(receiver,args))   return invoke(receiver,args);
- else   return CallSiteArray.defaultCallCurrent(this,receiver,args);
+  if (checkCall(receiver,args)) {
+    try {
+      return invoke(receiver,args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return CallSiteArray.defaultCallCurrent(this,receiver,args);
+  }
 }

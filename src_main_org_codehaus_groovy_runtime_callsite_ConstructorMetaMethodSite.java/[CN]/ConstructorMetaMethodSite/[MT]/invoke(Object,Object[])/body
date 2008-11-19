@@ -1,4 +1,9 @@
 {
   MetaClassHelper.unwrap(args);
-  return metaMethod.doMethodInvoke(metaClass.getTheClass(),args);
+  try {
+    return metaMethod.doMethodInvoke(metaClass.getTheClass(),args);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw ScriptBytecodeAdapter.unwrap(gre);
+  }
 }

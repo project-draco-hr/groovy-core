@@ -1,4 +1,9 @@
 {
   MetaClass metaClass=GroovySystem.getMetaClassRegistry().getMetaClass(which);
-  return metaClass.selectConstructorAndTransformArguments(numberOfConstructors,arguments);
+  try {
+    return metaClass.selectConstructorAndTransformArguments(numberOfConstructors,arguments);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
+  }
 }

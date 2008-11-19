@@ -1,3 +1,8 @@
 {
-  return ((GroovyObject)receiver).getProperty(name);
+  try {
+    return ((GroovyObject)receiver).getProperty(name);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw ScriptBytecodeAdapter.unwrap(gre);
+  }
 }

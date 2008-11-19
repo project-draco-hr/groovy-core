@@ -1,4 +1,9 @@
 {
   if (receiver == null)   return;
-  receiver.getMetaClass().setAttribute(receiver,messageName,messageArgument);
+  try {
+    receiver.getMetaClass().setAttribute(receiver,messageName,messageArgument);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
+  }
 }

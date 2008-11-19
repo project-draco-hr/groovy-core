@@ -1,7 +1,12 @@
 {
   if (receiver == metaClass.getTheClass() && MetaClassHelper.sameClasses(params,args)) {
     final Object bean=constructor.invoke(NO_ARGS);
-    ((MetaClassImpl)metaClass).setProperties(bean,(Map)args[0]);
+    try {
+      ((MetaClassImpl)metaClass).setProperties(bean,(Map)args[0]);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
     return bean;
   }
  else   return CallSiteArray.defaultCallConstructor(this,receiver,args);

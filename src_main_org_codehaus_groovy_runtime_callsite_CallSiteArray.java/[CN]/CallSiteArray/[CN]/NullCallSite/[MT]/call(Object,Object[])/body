@@ -1,4 +1,13 @@
 {
-  if (receiver == null)   return InvokerHelper.invokeMethod(NullObject.getNullObject(),name,args);
- else   return CallSiteArray.defaultCall(this,receiver,args);
+  if (receiver == null) {
+    try {
+      return InvokerHelper.invokeMethod(NullObject.getNullObject(),name,args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return CallSiteArray.defaultCall(this,receiver,args);
+  }
 }

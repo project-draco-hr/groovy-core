@@ -1,4 +1,13 @@
 {
-  if (receiver instanceof GroovyInterceptable)   return ((GroovyObject)receiver).invokeMethod(name,InvokerHelper.asUnwrappedArray(args));
- else   return CallSiteArray.defaultCall(this,receiver,args);
+  if (receiver instanceof GroovyInterceptable) {
+    try {
+      return ((GroovyObject)receiver).invokeMethod(name,InvokerHelper.asUnwrappedArray(args));
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return CallSiteArray.defaultCall(this,receiver,args);
+  }
 }

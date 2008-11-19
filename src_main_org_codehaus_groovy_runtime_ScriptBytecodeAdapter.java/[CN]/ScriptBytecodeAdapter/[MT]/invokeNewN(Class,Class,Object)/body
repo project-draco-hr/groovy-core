@@ -1,3 +1,8 @@
 {
-  return InvokerHelper.invokeConstructorOf(receiver,arguments);
+  try {
+    return InvokerHelper.invokeConstructorOf(receiver,arguments);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
+  }
 }

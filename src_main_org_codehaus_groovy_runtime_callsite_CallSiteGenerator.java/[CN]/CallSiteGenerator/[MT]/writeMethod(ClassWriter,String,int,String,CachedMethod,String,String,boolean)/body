@@ -1,0 +1,67 @@
+{
+  MethodVisitor mv=cw.visitMethod(Opcodes.ACC_PUBLIC,"call" + name,"(L" + receiverType + ";"+ parameterDescription+ ")Ljava/lang/Object;",null,null);
+  mv.visitCode();
+  final Label tryStart=new Label();
+  mv.visitLabel(tryStart);
+  for (int i=0; i < argumentCount; ++i)   mv.visitVarInsn(Opcodes.ALOAD,i);
+  mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,superClass,"checkCall","(Ljava/lang/Object;" + parameterDescription + ")Z");
+  Label l0=new Label();
+  mv.visitJumpInsn(Opcodes.IFEQ,l0);
+  BytecodeHelper helper=new BytecodeHelper(mv);
+  Class callClass=cachedMethod.getDeclaringClass().getTheClass();
+  boolean useInterface=callClass.isInterface();
+  String type=BytecodeHelper.getClassInternalName(callClass.getName());
+  String descriptor=BytecodeHelper.getMethodDescriptor(cachedMethod.getReturnType(),cachedMethod.getNativeParameterTypes());
+  int invokeMethodCode=Opcodes.INVOKEVIRTUAL;
+  if (cachedMethod.isStatic()) {
+    invokeMethodCode=Opcodes.INVOKESTATIC;
+  }
+ else {
+    mv.visitVarInsn(Opcodes.ALOAD,1);
+    helper.doCast(callClass);
+    if (useInterface)     invokeMethodCode=Opcodes.INVOKEINTERFACE;
+  }
+  Method method=cachedMethod.setAccessible();
+  Class<?>[] parameters=method.getParameterTypes();
+  int size=parameters.length;
+  for (int i=0; i < size; i++) {
+    if (useArray) {
+      mv.visitVarInsn(Opcodes.ALOAD,2);
+      helper.pushConstant(i);
+      mv.visitInsn(Opcodes.AALOAD);
+    }
+ else {
+      mv.visitVarInsn(Opcodes.ALOAD,i + 2);
+    }
+    Class parameterType=parameters[i];
+    if (parameterType.isPrimitive()) {
+      helper.unbox(parameterType);
+    }
+ else {
+      helper.doCast(parameterType);
+    }
+  }
+  mv.visitMethodInsn(invokeMethodCode,type,cachedMethod.getName(),descriptor);
+  helper.box(cachedMethod.getReturnType());
+  if (cachedMethod.getReturnType() == void.class) {
+    mv.visitInsn(Opcodes.ACONST_NULL);
+  }
+  mv.visitInsn(Opcodes.ARETURN);
+  mv.visitLabel(l0);
+  for (int i=0; i < argumentCount; ++i)   mv.visitVarInsn(Opcodes.ALOAD,i);
+  if (!useArray) {
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray","(" + parameterDescription + ")[Ljava/lang/Object;");
+  }
+  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCall" + name,"(Lorg/codehaus/groovy/runtime/callsite/CallSite;L" + receiverType + ";[Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitInsn(Opcodes.ARETURN);
+  final Label tryEnd=new Label();
+  mv.visitLabel(tryEnd);
+  final Label catchStart=new Label();
+  mv.visitLabel(catchStart);
+  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;");
+  mv.visitInsn(Opcodes.ATHROW);
+  mv.visitTryCatchBlock(tryStart,tryEnd,catchStart,GRE);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+  return mv;
+}

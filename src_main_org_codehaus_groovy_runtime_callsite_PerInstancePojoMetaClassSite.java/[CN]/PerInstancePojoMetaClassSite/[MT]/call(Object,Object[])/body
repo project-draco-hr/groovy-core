@@ -1,4 +1,13 @@
 {
-  if (info.hasPerInstanceMetaClasses())   return InvokerHelper.getMetaClass(receiver).invokeMethod(receiver,name,args);
- else   return CallSiteArray.defaultCall(this,receiver,args);
+  if (info.hasPerInstanceMetaClasses()) {
+    try {
+      return InvokerHelper.getMetaClass(receiver).invokeMethod(receiver,name,args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return CallSiteArray.defaultCall(this,receiver,args);
+  }
 }
