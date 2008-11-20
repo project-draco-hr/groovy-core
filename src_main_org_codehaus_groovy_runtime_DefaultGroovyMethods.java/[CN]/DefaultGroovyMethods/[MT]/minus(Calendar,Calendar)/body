@@ -1,0 +1,20 @@
+{
+  Calendar a=self;
+  Calendar b=then;
+  boolean swap=a.before(b);
+  if (swap) {
+    Calendar t=a;
+    a=b;
+    b=t;
+  }
+  int days=0;
+  b=(Calendar)b.clone();
+  while (a.get(Calendar.YEAR) > b.get(Calendar.YEAR)) {
+    days+=1 + (b.getActualMaximum(Calendar.DAY_OF_YEAR) - b.get(Calendar.DAY_OF_YEAR));
+    b.set(Calendar.DAY_OF_YEAR,1);
+    b.add(Calendar.YEAR,1);
+  }
+  days+=a.get(Calendar.DAY_OF_YEAR) - b.get(Calendar.DAY_OF_YEAR);
+  if (swap)   days=-days;
+  return days;
+}
