@@ -1,3 +1,15 @@
 {
-  return new QName(uri,methodName,prefix);
+  String prefix=autoPrefix ? nsMap.keySet().iterator().next() : "";
+  String localPart=methodName;
+  int idx=methodName.indexOf(':');
+  if (idx > 0) {
+    prefix=methodName.substring(0,idx);
+    localPart=methodName.substring(idx + 1);
+  }
+  String namespaceURI=nsMap.get(prefix);
+  if (namespaceURI == null) {
+    namespaceURI="";
+    prefix="";
+  }
+  return new QName(namespaceURI,localPart,prefix);
 }
