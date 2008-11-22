@@ -1,9 +1,9 @@
 {
   if (self instanceof BigDecimal || to instanceof BigDecimal || stepNumber instanceof BigDecimal) {
-    final BigDecimal zero=new BigDecimal("0.0");
-    BigDecimal self1=(self instanceof BigDecimal) ? (BigDecimal)self : new BigDecimal("" + self);
-    BigDecimal to1=(to instanceof BigDecimal) ? (BigDecimal)to : new BigDecimal("" + to);
-    BigDecimal stepNumber1=(stepNumber instanceof BigDecimal) ? (BigDecimal)stepNumber : new BigDecimal("" + stepNumber);
+    final BigDecimal zero=BigDecimal.valueOf(0,1);
+    BigDecimal self1=(self instanceof BigDecimal) ? (BigDecimal)self : new BigDecimal(self.toString());
+    BigDecimal to1=(to instanceof BigDecimal) ? (BigDecimal)to : new BigDecimal(to.toString());
+    BigDecimal stepNumber1=(stepNumber instanceof BigDecimal) ? (BigDecimal)stepNumber : new BigDecimal(stepNumber.toString());
     if (stepNumber1.compareTo(zero) > 0 && to1.compareTo(self1) > 0) {
       for (BigDecimal i=self1; i.compareTo(to1) < 0; i=i.add(stepNumber1)) {
         closure.call(i);
@@ -17,10 +17,10 @@
  else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
   }
  else   if (self instanceof BigInteger || to instanceof BigInteger || stepNumber instanceof BigInteger) {
-    final BigInteger zero=new BigInteger("0");
-    BigInteger self1=(self instanceof BigInteger) ? (BigInteger)self : new BigInteger("" + self);
-    BigInteger to1=(to instanceof BigInteger) ? (BigInteger)to : new BigInteger("" + to);
-    BigInteger stepNumber1=(stepNumber instanceof BigInteger) ? (BigInteger)stepNumber : new BigInteger("" + stepNumber);
+    final BigInteger zero=BigInteger.valueOf(0);
+    BigInteger self1=(self instanceof BigInteger) ? (BigInteger)self : new BigInteger(self.toString());
+    BigInteger to1=(to instanceof BigInteger) ? (BigInteger)to : new BigInteger(to.toString());
+    BigInteger stepNumber1=(stepNumber instanceof BigInteger) ? (BigInteger)stepNumber : new BigInteger(stepNumber.toString());
     if (stepNumber1.compareTo(zero) > 0 && to1.compareTo(self1) > 0) {
       for (BigInteger i=self1; i.compareTo(to1) < 0; i=i.add(stepNumber1)) {
         closure.call(i);
