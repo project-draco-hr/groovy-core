@@ -1,44 +1,9 @@
 {
-  boolean displayStackTraceOnError=false;
   try {
-    Options options=createCompilationOptions();
-    PosixParser cliParser=new PosixParser();
-    CommandLine cli;
-    cli=cliParser.parse(options,args);
-    if (cli.hasOption('h')) {
-      displayHelp(options);
-      return;
-    }
-    if (cli.hasOption('v')) {
-      displayVersion();
-      return;
-    }
-    displayStackTraceOnError=cli.hasOption('e');
-    CompilerConfiguration configuration=generateCompilerConfigurationFromOptions(cli);
-    String[] filenames=generateFileNamesFromOptions(cli);
-    boolean fileNameErrors=filenames == null;
-    if (!fileNameErrors && (filenames.length == 0)) {
-      displayHelp(options);
-      return;
-    }
-    fileNameErrors=fileNameErrors && !validateFiles(filenames);
-    if (!fileNameErrors) {
-      doCompilation(configuration,null,filenames);
-    }
+    commandLineCompile(args);
   }
  catch (  Throwable e) {
-    RuntimeException re=new RuntimeException();
-    if (re.getStackTrace().length > 1) {
-      if (e instanceof RuntimeException) {
-        re=(RuntimeException)e;
-      }
- else {
-        re.initCause(e);
-      }
-    }
- else {
-      new ErrorReporter(e,displayStackTraceOnError).write(System.err);
-      System.exit(1);
-    }
+    new ErrorReporter(e,displayStackTraceOnError).write(System.err);
+    System.exit(1);
   }
 }
