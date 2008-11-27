@@ -1,0 +1,17 @@
+{
+  if (object instanceof String) {
+    return (String)object;
+  }
+ else   if (object instanceof QName) {
+    QName qname=(QName)object;
+    if (!namespaceAware) {
+      return qname.getLocalPart();
+    }
+    return qname.getQualifiedName();
+  }
+ else   if (object instanceof Node) {
+    Object name=((Node)object).name();
+    return getName(name);
+  }
+  return object.toString();
+}

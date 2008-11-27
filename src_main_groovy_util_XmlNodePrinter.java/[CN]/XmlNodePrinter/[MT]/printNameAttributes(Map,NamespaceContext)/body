@@ -5,7 +5,7 @@
   for (Iterator iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry entry=(Map.Entry)iter.next();
     out.print(" ");
-    out.print(entry.getKey().toString());
+    out.print(getName(entry.getKey()));
     out.print("=");
     Object value=entry.getValue();
     out.print(quote);
@@ -16,5 +16,6 @@
       printEscaped(InvokerHelper.toString(value));
     }
     out.print(quote);
+    printNamespace(entry.getKey(),ctx);
   }
 }

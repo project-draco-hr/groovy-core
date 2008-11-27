@@ -1,0 +1,26 @@
+{
+  if (namespaceAware) {
+    if (object instanceof Node) {
+      printNamespace(((Node)object).name(),ctx);
+    }
+ else     if (object instanceof QName) {
+      QName qname=(QName)object;
+      String namespaceUri=qname.getNamespaceURI();
+      if (namespaceUri != null) {
+        String prefix=qname.getPrefix();
+        if (!ctx.isNamespaceRegistered(namespaceUri)) {
+          ctx.registerNamespacePrefix(namespaceUri,prefix);
+          out.print(" ");
+          out.print("xmlns");
+          if (prefix.length() > 0) {
+            out.print(":");
+            out.print(prefix);
+          }
+          out.print("=" + quote);
+          out.print(namespaceUri);
+          out.print(quote);
+        }
+      }
+    }
+  }
+}
