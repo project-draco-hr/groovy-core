@@ -1,15 +1,15 @@
 {
   Object node;
-  Factory factory=proxyBuilder.resolveFactory(name,attributes,value);
+  Factory factory=getProxyBuilder().resolveFactory(name,attributes,value);
   if (factory == null) {
     LOG.log(Level.WARNING,"Could not find match for name '" + name + "'");
     throw new MissingMethodExceptionNoStack((String)name,Object.class,new Object[]{attributes,value});
   }
-  proxyBuilder.getContext().put(CURRENT_FACTORY,factory);
-  proxyBuilder.getContext().put(CURRENT_NAME,String.valueOf(name));
-  proxyBuilder.preInstantiate(name,attributes,value);
+  getProxyBuilder().getContext().put(CURRENT_FACTORY,factory);
+  getProxyBuilder().getContext().put(CURRENT_NAME,String.valueOf(name));
+  getProxyBuilder().preInstantiate(name,attributes,value);
   try {
-    node=factory.newInstance(proxyBuilder.getChildBuilder(),name,value,attributes);
+    node=factory.newInstance(getProxyBuilder().getChildBuilder(),name,value,attributes);
     if (node == null) {
       LOG.log(Level.WARNING,"Factory for name '" + name + "' returned null");
       return null;
@@ -21,7 +21,7 @@
  catch (  Exception e) {
     throw new RuntimeException("Failed to create component for '" + name + "' reason: "+ e,e);
   }
-  proxyBuilder.postInstantiate(name,attributes,node);
-  proxyBuilder.handleNodeAttributes(node,attributes);
+  getProxyBuilder().postInstantiate(name,attributes,node);
+  getProxyBuilder().handleNodeAttributes(node,attributes);
   return node;
 }

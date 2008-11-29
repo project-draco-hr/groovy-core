@@ -1,3 +1,8 @@
 {
-  return proxyBuilder.contexts;
+  LinkedList<Map<String,Object>> contexts=getProxyBuilder()._contexts.get();
+  if (contexts == null) {
+    contexts=new LinkedList<Map<String,Object>>();
+    getProxyBuilder()._contexts.set(contexts);
+  }
+  return contexts;
 }

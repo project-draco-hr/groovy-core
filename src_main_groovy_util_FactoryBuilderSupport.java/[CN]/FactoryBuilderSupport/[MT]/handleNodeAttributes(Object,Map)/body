@@ -2,7 +2,7 @@
   if (node == null) {
     return;
   }
-  for (  Closure attrDelegate : proxyBuilder.attributeDelegates) {
+  for (  Closure attrDelegate : getProxyBuilder().attributeDelegates) {
     FactoryBuilderSupport builder=this;
     if (attrDelegate.getOwner() instanceof FactoryBuilderSupport) {
       builder=(FactoryBuilderSupport)attrDelegate.getOwner();
@@ -12,7 +12,7 @@
     }
     attrDelegate.call(new Object[]{builder,node,attributes});
   }
-  if (proxyBuilder.getCurrentFactory().onHandleNodeAttributes(proxyBuilder.getChildBuilder(),node,attributes)) {
-    proxyBuilder.setNodeAttributes(node,attributes);
+  if (getProxyBuilder().getCurrentFactory().onHandleNodeAttributes(getProxyBuilder().getChildBuilder(),node,attributes)) {
+    getProxyBuilder().setNodeAttributes(node,attributes);
   }
 }
