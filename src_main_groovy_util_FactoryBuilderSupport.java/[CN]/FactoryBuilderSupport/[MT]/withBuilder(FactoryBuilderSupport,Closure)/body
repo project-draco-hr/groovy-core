@@ -4,14 +4,14 @@
   }
   Object result=null;
   Object previousContext=getProxyBuilder().getContext();
-  FactoryBuilderSupport previousProxyBuilder=getProxyBuilder();
+  FactoryBuilderSupport previousProxyBuilder=_localProxyBuilder.get();
   try {
-    setProxyBuilder(builder);
+    _localProxyBuilder.set(builder);
     closure.setDelegate(builder);
     result=closure.call();
   }
  catch (  RuntimeException e) {
-    setProxyBuilder(previousProxyBuilder);
+    _localProxyBuilder.set(previousProxyBuilder);
     if (getProxyBuilder().getContexts().contains(previousContext)) {
       Map<String,Object> context=getProxyBuilder().getContext();
       while (context != null && context != previousContext) {
@@ -22,7 +22,7 @@
     throw e;
   }
  finally {
-    setProxyBuilder(previousProxyBuilder);
+    _localProxyBuilder.set(previousProxyBuilder);
   }
   return result;
 }
