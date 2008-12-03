@@ -44,6 +44,9 @@
     name=new ConstantExpression("call");
     objectExpression=expression(selector,true);
   }
+  if (selector.getText().equals("this") || selector.getText().equals("super")) {
+    throw new ASTRuntimeException(elist,"Constructor call must be the first statement in a constructor.");
+  }
   Expression arguments=arguments(elist);
   MethodCallExpression expression=new MethodCallExpression(objectExpression,name,arguments);
   expression.setSafe(safe);
