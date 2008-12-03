@@ -1,4 +1,10 @@
 {
+  for (  Closure test : tests) {
+    Object result=test.call(className);
+    if (result != null) {
+      return DefaultTypeTransformation.castToBoolean(result);
+    }
+  }
   for (int i=0; i < GROOVY_PACKAGES.length; i++) {
     String groovyPackage=GROOVY_PACKAGES[i];
     if (className.startsWith(groovyPackage)) {
