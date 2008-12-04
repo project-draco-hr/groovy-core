@@ -1,23 +1,30 @@
 {
   Map methodsToAdd=new HashMap();
-  List declaredMethods=new ArrayList(classNode.getMethods());
   Map genericsSpec=new HashMap();
+  List declaredMethods=classNode.getAllDeclaredMethods();
+  boolean isNotAbstract=(classNode.getModifiers() & ACC_ABSTRACT) == 0;
   for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
     MethodNode m=(MethodNode)methodsIterator.next();
-    if (m.isStatic())     methodsIterator.remove();
+    if (m.isStatic() || !(m.isPublic() || m.isProtected())) {
+      methodsIterator.remove();
+    }
+ else     if (isNotAbstract && m.isAbstract()) {
+      methodsIterator.remove();
+    }
   }
   addCovariantMethods(classNode,declaredMethods,methodsToAdd,genericsSpec);
-  Set declaredMethodsSet=new HashSet();
+  Map declaredMethodsMap=new HashMap();
   if (methodsToAdd.size() > 0) {
     for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
       MethodNode m=(MethodNode)methodsIterator.next();
-      declaredMethodsSet.add(m.getTypeDescriptor());
+      declaredMethodsMap.put(m.getTypeDescriptor(),m);
     }
   }
   for (Iterator it=methodsToAdd.entrySet().iterator(); it.hasNext(); ) {
     Map.Entry entry=(Map.Entry)it.next();
     MethodNode method=(MethodNode)entry.getValue();
-    if (declaredMethodsSet.contains(entry.getKey()))     continue;
+    MethodNode mn=(MethodNode)declaredMethodsMap.get(entry.getKey());
+    if (mn != null && mn.getDeclaringClass().equals(classNode))     continue;
     classNode.addMethod(method);
   }
 }

@@ -9,13 +9,13 @@
   if (equalReturnType && normalEqualParameters)   return null;
   ClassNode testmr=correctToGenericsSpec(genericsSpec,omr);
   if (!isAssignable(mr,testmr)) {
-    throw new RuntimeParserException("the return type is incompatible with " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
+    throw new RuntimeParserException("The return type of " + overridingMethod.getTypeDescriptor() + " in "+ overridingMethod.getDeclaringClass().getName()+ " is incompatible with "+ oldMethod.getTypeDescriptor()+ " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
   }
   if ((oldMethod.getModifiers() & ACC_FINAL) != 0) {
-    throw new RuntimeParserException("cannot override final method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
+    throw new RuntimeParserException("Cannot override final method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
   }
   if (oldMethod.isStatic() != overridingMethod.isStatic()) {
-    throw new RuntimeParserException("cannot override method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName()+ " with disparate static modifier",overridingMethod);
+    throw new RuntimeParserException("Cannot override method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName()+ " with disparate static modifier",overridingMethod);
   }
   MethodNode newMethod=new MethodNode(oldMethod.getName(),overridingMethod.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,oldMethod.getReturnType().getPlainNodeReference(),cleanParameters(oldMethod.getParameters()),oldMethod.getExceptions(),null);
   List instructions=new ArrayList(1);
