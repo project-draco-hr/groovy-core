@@ -7,7 +7,10 @@
   }
   if (statement instanceof ExpressionStatement) {
     ExpressionStatement expStmt=(ExpressionStatement)statement;
-    return new ReturnStatement(expStmt.getExpression());
+    Expression expr=expStmt.getExpression();
+    ReturnStatement ret=new ReturnStatement(expr);
+    ret.setSourcePosition(expr);
+    return ret;
   }
   if (statement instanceof SynchronizedStatement) {
     SynchronizedStatement sync=(SynchronizedStatement)statement;
