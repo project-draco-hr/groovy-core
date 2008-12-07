@@ -1,0 +1,15 @@
+{
+  final ClassNode cNode=fNode.getDeclaringClass();
+  final List<PropertyNode> pList=cNode.getProperties();
+  PropertyNode foundProp=null;
+  for (  PropertyNode pNode : pList) {
+    if (pNode.getName().equals(fNode.getName())) {
+      foundProp=pNode;
+      break;
+    }
+  }
+  if (foundProp != null) {
+    revertVisibility(fNode);
+    pList.remove(foundProp);
+  }
+}

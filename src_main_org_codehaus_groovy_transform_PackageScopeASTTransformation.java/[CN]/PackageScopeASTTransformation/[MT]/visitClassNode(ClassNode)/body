@@ -1,0 +1,22 @@
+{
+  String cName=cNode.getName();
+  if (cNode.isInterface()) {
+    throw new RuntimeException("Error processing interface '" + cName + "'. "+ MY_TYPE_NAME+ " not allowed for interfaces.");
+  }
+  final List<PropertyNode> pList=cNode.getProperties();
+  List<PropertyNode> foundProps=new ArrayList<PropertyNode>();
+  List<String> foundNames=new ArrayList<String>();
+  for (  PropertyNode pNode : pList) {
+    foundProps.add(pNode);
+    foundNames.add(pNode.getName());
+  }
+  for (  PropertyNode pNode : foundProps) {
+    pList.remove(pNode);
+  }
+  final List<FieldNode> fList=cNode.getFields();
+  for (  FieldNode fNode : fList) {
+    if (foundNames.contains(fNode.getName())) {
+      revertVisibility(fNode);
+    }
+  }
+}
