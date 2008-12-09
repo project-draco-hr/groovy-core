@@ -1,0 +1,11 @@
+{
+  final List<FieldNode> fList=cNode.getFields();
+  for (  FieldNode fNode : fList) {
+    if (!fNode.isPublic() && !fNode.getName().contains("$") && (cNode.getProperty(fNode.getName()) == null)) {
+      body.addStatement(createConstructorStatementDefault(fNode));
+    }
+  }
+  body.addStatement(assignStatement(constructorStyle,ConstantExpression.TRUE));
+  final Parameter[] params=new Parameter[]{new Parameter(HASHMAP_TYPE,"args")};
+  cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,new IfStatement(equalsNullExpr(new VariableExpression("args")),new EmptyStatement(),body)));
+}

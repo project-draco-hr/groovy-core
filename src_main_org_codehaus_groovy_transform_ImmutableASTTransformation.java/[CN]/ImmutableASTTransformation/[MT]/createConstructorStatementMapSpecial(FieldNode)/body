@@ -1,0 +1,7 @@
+{
+  final FieldExpression fieldExpr=new FieldExpression(fNode);
+  Expression initExpr=fNode.getInitialValueExpression();
+  if (initExpr == null)   initExpr=ConstantExpression.NULL;
+  Expression args=findArg(fNode.getName());
+  return new IfStatement(equalsNullExpr(args),new IfStatement(equalsNullExpr(initExpr),new IfStatement(equalsNullExpr(new VariableExpression("args")),new EmptyStatement(),assignStatement(fieldExpr,cloneCollectionExpr(new VariableExpression("args")))),assignStatement(fieldExpr,cloneCollectionExpr(initExpr))),assignStatement(fieldExpr,cloneCollectionExpr(args)));
+}
