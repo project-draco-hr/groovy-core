@@ -2,6 +2,7 @@
   final FieldExpression fieldExpr=new FieldExpression(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
   if (initExpr == null)   initExpr=ConstantExpression.NULL;
-  Expression args=findArg(fNode.getName());
-  return new IfStatement(equalsNullExpr(args),new IfStatement(equalsNullExpr(initExpr),new IfStatement(equalsNullExpr(new VariableExpression("args")),new EmptyStatement(),assignStatement(fieldExpr,cloneCollectionExpr(new VariableExpression("args")))),assignStatement(fieldExpr,cloneCollectionExpr(initExpr))),assignStatement(fieldExpr,cloneCollectionExpr(args)));
+  Expression namedArgs=findArg(fNode.getName());
+  Expression baseArgs=new VariableExpression("args");
+  return new IfStatement(equalsNullExpr(baseArgs),new IfStatement(equalsNullExpr(initExpr),new EmptyStatement(),assignStatement(fieldExpr,cloneCollectionExpr(initExpr))),new IfStatement(equalsNullExpr(namedArgs),new IfStatement(isTrueExpr(new MethodCallExpression(baseArgs,"containsKey",new ConstantExpression(fNode.getName()))),assignStatement(fieldExpr,namedArgs),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs))),new IfStatement(isOneExpr(new MethodCallExpression(baseArgs,"size",MethodCallExpression.NO_ARGUMENTS)),assignStatement(fieldExpr,cloneCollectionExpr(namedArgs)),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs)))));
 }
