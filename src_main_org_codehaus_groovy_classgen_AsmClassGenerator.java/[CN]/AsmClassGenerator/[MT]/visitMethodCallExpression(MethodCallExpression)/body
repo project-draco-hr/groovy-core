@@ -4,7 +4,7 @@
   String methodName=call.getMethodAsString();
   boolean isSuperMethodCall=usesSuper(call);
   boolean isThisExpression=isThisExpression(call.getObjectExpression());
-  if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments)) {
+  if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments) && isNotExplicitThisInClosure(call.isImplicitThis())) {
     visitVariableExpression(new VariableExpression(methodName));
     if (arguments instanceof TupleExpression) {
       arguments.visit(this);
