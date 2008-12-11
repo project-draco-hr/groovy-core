@@ -1,0 +1,10 @@
+{
+  visitVariableExpression(new VariableExpression(methodName));
+  if (arguments instanceof TupleExpression) {
+    arguments.visit(this);
+  }
+ else {
+    new TupleExpression(arguments).visit(this);
+  }
+  invokeClosureMethod.call(mv);
+}

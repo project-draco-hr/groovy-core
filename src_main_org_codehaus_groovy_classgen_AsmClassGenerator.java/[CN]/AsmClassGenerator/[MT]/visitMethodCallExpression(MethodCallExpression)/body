@@ -5,14 +5,10 @@
   boolean isSuperMethodCall=usesSuper(call);
   boolean isThisExpression=isThisExpression(call.getObjectExpression());
   if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments) && isNotExplicitThisInClosure(call.isImplicitThis())) {
-    visitVariableExpression(new VariableExpression(methodName));
-    if (arguments instanceof TupleExpression) {
-      arguments.visit(this);
-    }
- else {
-      new TupleExpression(arguments).visit(this);
-    }
-    invokeClosureMethod.call(mv);
+    invokeClosure(arguments,methodName);
+  }
+ else   if (call.isImplicitThis() && isThisExpression && compileStack.containsVariable(methodName)) {
+    invokeClosure(arguments,methodName);
   }
  else {
     MethodCallerMultiAdapter adapter=invokeMethod;
