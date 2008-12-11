@@ -6,7 +6,8 @@
     Class ownerClass=(Class)(owner instanceof Class ? owner : owner.getClass());
     for (    CachedMethod method : ReflectionCache.getCachedClass(ownerClass).getMethods()) {
       if (method.getName().equals(methodClosure.getMethod())) {
-        res.add(new MethodClosureMetaMethod(name,declaringClass,closure,method));
+        MetaMethod metaMethod=new MethodClosureMetaMethod(name,declaringClass,closure,method);
+        res.add(adjustParamTypesForStdMethods(metaMethod,name));
       }
     }
   }
@@ -14,12 +15,13 @@
     if (closure instanceof GeneratedClosure) {
       for (      CachedMethod method : ReflectionCache.getCachedClass(closure.getClass()).getMethods()) {
         if (method.getName().equals("doCall")) {
-          res.add(new ClosureMetaMethod(name,declaringClass,closure,method));
+          MetaMethod metaMethod=new ClosureMetaMethod(name,declaringClass,closure,method);
+          res.add(adjustParamTypesForStdMethods(metaMethod,name));
         }
       }
     }
  else {
-      res.add(new MetaMethod(closure.getParameterTypes()){
+      MetaMethod metaMethod=new MetaMethod(closure.getParameterTypes()){
         public int getModifiers(){
           return Modifier.PUBLIC;
         }
@@ -39,7 +41,8 @@
           return InvokerHelper.invokeMethod(closure,"call",arguments);
         }
       }
-);
+;
+      res.add(adjustParamTypesForStdMethods(metaMethod,name));
     }
   }
   return res;
