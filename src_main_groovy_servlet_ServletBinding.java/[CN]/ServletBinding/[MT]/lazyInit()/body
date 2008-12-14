@@ -1,0 +1,16 @@
+{
+  if (initialized)   return;
+  initialized=true;
+  HttpServletResponse response=(HttpServletResponse)super.getVariable("response");
+  ServletContext context=(ServletContext)super.getVariable("context");
+  try {
+    super.setVariable("out",response.getWriter());
+    super.setVariable("sout",response.getOutputStream());
+    super.setVariable("html",new MarkupBuilder(response.getWriter()));
+  }
+ catch (  IOException e) {
+    String message="Failed to get writer or output stream from response.";
+    context.log(message,e);
+    throw new RuntimeException(message,e);
+  }
+}
