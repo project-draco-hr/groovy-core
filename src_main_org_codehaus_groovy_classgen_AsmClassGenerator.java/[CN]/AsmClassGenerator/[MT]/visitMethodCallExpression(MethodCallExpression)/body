@@ -1,18 +1,12 @@
 {
   onLineNumber(call,"visitMethodCallExpression: \"" + call.getMethod() + "\":");
-  Expression arguments=call.getArguments();
-  String methodName=call.getMethodAsString();
-  boolean isSuperMethodCall=usesSuper(call);
-  boolean isThisExpression=isThisExpression(call.getObjectExpression());
-  if (methodName != null && isThisExpression && isFieldOrVariable(methodName) && !classNode.hasPossibleMethod(methodName,arguments) && isNotExplicitThisInClosure(call.isImplicitThis())) {
-    invokeClosure(arguments,methodName);
-  }
- else   if (call.isImplicitThis() && isThisExpression && compileStack.containsVariable(methodName)) {
-    invokeClosure(arguments,methodName);
+  if (isClosureCall(call)) {
+    invokeClosure(call.getArguments(),call.getMethodAsString());
   }
  else {
+    boolean isSuperMethodCall=usesSuper(call);
     MethodCallerMultiAdapter adapter=invokeMethod;
-    if (isThisExpression)     adapter=invokeMethodOnCurrent;
+    if (isThisExpression(call.getObjectExpression()))     adapter=invokeMethodOnCurrent;
     if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
     if (isStaticInvocation(call))     adapter=invokeStaticMethod;
     makeInvokeMethodCall(call,isSuperMethodCall,adapter);
