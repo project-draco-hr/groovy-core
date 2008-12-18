@@ -1,7 +1,11 @@
 {
-  ClassNode innerClass=createClosureClass(expression);
-  addInnerClass(innerClass);
-  innerClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
+  ClassNode innerClass=(ClassNode)closureClassMap.get(expression);
+  if (innerClass == null) {
+    innerClass=createClosureClass(expression);
+    closureClassMap.put(expression,innerClass);
+    addInnerClass(innerClass);
+    innerClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
+  }
   String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
   passingClosureParams=true;
   List constructors=innerClass.getDeclaredConstructors();
