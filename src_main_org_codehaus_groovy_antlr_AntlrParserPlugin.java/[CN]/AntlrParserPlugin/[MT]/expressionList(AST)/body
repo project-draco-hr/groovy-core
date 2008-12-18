@@ -3,11 +3,7 @@
   for (AST child=node.getFirstChild(); child != null; child=child.getNextSibling()) {
     expressionList.add(expression(child));
   }
-  boolean isClassNodeForEnum=false;
-  if (classNode != null && classNode.getSuperClass().getName().equals("java.lang.Enum")) {
-    isClassNodeForEnum=true;
-  }
-  if (expressionList.size() == 1 && !isClassNodeForEnum) {
+  if (expressionList.size() == 1) {
     return (Expression)expressionList.get(0);
   }
  else {
