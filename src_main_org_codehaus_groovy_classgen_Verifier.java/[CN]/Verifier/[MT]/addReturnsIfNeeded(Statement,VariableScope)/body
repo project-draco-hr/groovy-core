@@ -45,7 +45,9 @@
       }
     }
  else {
-      return new ReturnStatement(ConstantExpression.NULL);
+      ReturnStatement ret=new ReturnStatement(ConstantExpression.NULL);
+      ret.setSourcePosition(block);
+      return ret;
     }
     return new BlockStatement(filterStatements(list),block.getVariableScope());
   }
