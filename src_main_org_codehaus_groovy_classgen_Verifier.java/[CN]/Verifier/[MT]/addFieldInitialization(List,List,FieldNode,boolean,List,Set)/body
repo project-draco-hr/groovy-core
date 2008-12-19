@@ -5,6 +5,9 @@
     if (fieldNode.isStatic()) {
       staticList.add(statement);
       fieldNode.setInitialValueExpression(null);
+      if (isEnumClassNode && explicitStaticPropsInEnum.contains(fieldNode.getName())) {
+        initStmtsAfterEnumValuesInit.add(statement);
+      }
     }
  else {
       list.add(statement);
