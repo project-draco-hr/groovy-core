@@ -1,4 +1,15 @@
 {
+  if (metaClass instanceof MetaClassImpl) {
+    boolean check=false;
+    for (    ClassInfo ci : ((MetaClassImpl)metaClass).theCachedClass.getHeirarchy()) {
+      final MetaClass aClass=ci.getStrongMetaClass();
+      if (aClass instanceof MutableMetaClass && ((MutableMetaClass)aClass).isModified()) {
+        check=true;
+        break;
+      }
+    }
+    if (!check)     return null;
+  }
   MetaMethod method=null;
   Class superClass;
   if (metaClass.getTheClass().isArray() && !metaClass.getTheClass().getComponentType().isPrimitive() && metaClass.getTheClass().getComponentType() != Object.class) {
