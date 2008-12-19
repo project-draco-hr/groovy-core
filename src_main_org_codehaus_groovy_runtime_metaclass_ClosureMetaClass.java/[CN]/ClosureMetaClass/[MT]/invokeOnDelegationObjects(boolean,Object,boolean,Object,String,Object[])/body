@@ -10,7 +10,7 @@
     }
 catch (    GroovyRuntimeException gre) {
       Throwable th=unwrap(gre);
-      if (th instanceof MissingMethodException) {
+      if ((th instanceof MissingMethodException) && (methodName.equals(((MissingMethodException)th).getMethod()))) {
         first=(MissingMethodException)th;
       }
  else {

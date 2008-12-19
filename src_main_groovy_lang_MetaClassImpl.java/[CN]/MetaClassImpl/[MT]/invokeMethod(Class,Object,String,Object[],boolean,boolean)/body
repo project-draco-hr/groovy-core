@@ -112,7 +112,12 @@ if (last == null) last=mme;
 catch (InvokerInvocationException iie) {
 if (iie.getCause() instanceof MissingMethodException) {
 MissingMethodException mme=(MissingMethodException)iie.getCause();
+if (methodName.equals(mme.getMethod())) {
 if (last == null) last=mme;
+}
+ else {
+throw iie;
+}
 }
  else throw iie;
 }
