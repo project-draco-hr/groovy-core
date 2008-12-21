@@ -1,15 +1,6 @@
 {
   final char[] objects=(char[])object;
   final int index=normaliseIndex(((Integer)args[0]).intValue(),objects.length);
-  Object newValue=args[1];
-  if (newValue instanceof GString)   newValue=newValue.toString();
-  if (newValue instanceof String) {
-    String s=(String)newValue;
-    if (s.length() != 1)     throw new IllegalArgumentException("String of length 1 expected but got a bigger one");
-    objects[index]=s.charAt(0);
-  }
- else {
-    objects[index]=((Character)newValue).charValue();
-  }
+  objects[index]=DefaultTypeTransformation.getCharFromSizeOneString(args[1]).charValue();
   return null;
 }

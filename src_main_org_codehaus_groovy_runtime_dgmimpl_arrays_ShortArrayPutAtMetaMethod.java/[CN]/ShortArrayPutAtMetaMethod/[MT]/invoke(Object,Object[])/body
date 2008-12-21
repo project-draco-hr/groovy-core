@@ -3,8 +3,14 @@
   final int index=normaliseIndex(((Integer)args[0]).intValue(),objects.length);
   Object newValue=args[1];
   if (!(newValue instanceof Short)) {
-    Number n=(Number)newValue;
-    objects[index]=((Number)newValue).shortValue();
+    if (newValue instanceof Character || newValue instanceof String || newValue instanceof GString) {
+      Character ch=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
+      objects[index]=((Short)DefaultTypeTransformation.castToType(ch,Short.class)).shortValue();
+    }
+ else {
+      Number n=(Number)newValue;
+      objects[index]=((Number)newValue).shortValue();
+    }
   }
  else   objects[index]=((Short)args[1]).shortValue();
   return null;

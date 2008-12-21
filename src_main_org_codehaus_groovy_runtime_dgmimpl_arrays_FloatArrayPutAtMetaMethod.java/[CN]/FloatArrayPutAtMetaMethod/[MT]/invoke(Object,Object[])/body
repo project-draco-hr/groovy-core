@@ -3,8 +3,14 @@
   final int index=normaliseIndex(((Integer)args[0]).intValue(),objects.length);
   Object newValue=args[1];
   if (!(newValue instanceof Float)) {
-    Number n=(Number)newValue;
-    objects[index]=((Number)newValue).floatValue();
+    if (newValue instanceof Character || newValue instanceof String || newValue instanceof GString) {
+      Character ch=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
+      objects[index]=((Float)DefaultTypeTransformation.castToType(ch,Float.class)).floatValue();
+    }
+ else {
+      Number n=(Number)newValue;
+      objects[index]=((Number)newValue).floatValue();
+    }
   }
  else   objects[index]=((Float)args[1]).floatValue();
   return null;
