@@ -1,3 +1,34 @@
 {
-  return null;
+  final MetaClass[] refs;
+synchronized (metaClassInfo) {
+    refs=(MetaClass[])metaClassInfo.toArray(new MetaClass[0]);
+  }
+  return new Iterator(){
+    private int index=0;
+    private MetaClass currentMeta;
+    private boolean hasNextCalled=false;
+    private boolean hasNext=false;
+    public boolean hasNext(){
+      if (hasNextCalled)       return hasNext;
+      hasNextCalled=true;
+      hasNext=true;
+      currentMeta=refs[index];
+      index++;
+      return hasNext;
+    }
+    private void ensureNext(){
+      hasNext();
+      hasNextCalled=false;
+    }
+    public Object next(){
+      ensureNext();
+      return currentMeta;
+    }
+    public void remove(){
+      ensureNext();
+      setMetaClass(currentMeta.getTheClass(),currentMeta,null);
+      currentMeta=null;
+    }
+  }
+;
 }
