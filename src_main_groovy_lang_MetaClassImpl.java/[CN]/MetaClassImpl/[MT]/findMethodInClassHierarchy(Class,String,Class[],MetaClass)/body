@@ -1,7 +1,7 @@
 {
   if (metaClass instanceof MetaClassImpl) {
     boolean check=false;
-    for (    ClassInfo ci : ((MetaClassImpl)metaClass).theCachedClass.getHeirarchy()) {
+    for (    ClassInfo ci : ((MetaClassImpl)metaClass).theCachedClass.getHierarchy()) {
       final MetaClass aClass=ci.getStrongMetaClass();
       if (aClass instanceof MutableMetaClass && ((MutableMetaClass)aClass).isModified()) {
         check=true;
@@ -20,12 +20,12 @@
   }
   if (superClass != null) {
     MetaClass superMetaClass=GroovySystem.getMetaClassRegistry().getMetaClass(superClass);
-    method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,superMetaClass);
+    method=findMethodInClassHierarchy(instanceKlazz,methodName,arguments,superMetaClass);
   }
  else {
     if (metaClass.getTheClass().isInterface()) {
       MetaClass superMetaClass=GroovySystem.getMetaClassRegistry().getMetaClass(Object.class);
-      method=findMethodInClassHeirarchy(instanceKlazz,methodName,arguments,superMetaClass);
+      method=findMethodInClassHierarchy(instanceKlazz,methodName,arguments,superMetaClass);
     }
   }
   method=findSubClassMethod(instanceKlazz,methodName,arguments,metaClass,method);
