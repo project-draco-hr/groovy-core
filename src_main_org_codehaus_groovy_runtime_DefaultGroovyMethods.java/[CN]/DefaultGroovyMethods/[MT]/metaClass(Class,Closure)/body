@@ -1,6 +1,6 @@
 {
   MetaClassRegistry metaClassRegistry=GroovySystem.getMetaClassRegistry();
-  MetaClass mc=metaClassRegistry.getMetaClass(klazz);
+  MetaClass mc=metaClassRegistry.getMetaClass(self);
   if (mc instanceof ExpandoMetaClass) {
     ((ExpandoMetaClass)mc).define(closure);
     return mc;
@@ -12,7 +12,7 @@
     }
  else {
       if (mc instanceof DelegatingMetaClass && ((DelegatingMetaClass)mc).getAdaptee().getClass() == MetaClassImpl.class) {
-        ExpandoMetaClass emc=new ExpandoMetaClass(klazz,false,true);
+        ExpandoMetaClass emc=new ExpandoMetaClass(self,false,true);
         emc.initialize();
         emc.define(closure);
         ((DelegatingMetaClass)mc).setAdaptee(emc);
@@ -20,10 +20,10 @@
       }
  else {
         if (mc.getClass() == MetaClassImpl.class) {
-          mc=new ExpandoMetaClass(klazz,false,true);
+          mc=new ExpandoMetaClass(self,false,true);
           mc.initialize();
           ((ExpandoMetaClass)mc).define(closure);
-          metaClassRegistry.setMetaClass(klazz,mc);
+          metaClassRegistry.setMetaClass(self,mc);
           return mc;
         }
  else {

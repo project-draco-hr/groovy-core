@@ -1,10 +1,10 @@
 {
-  MetaClass emc=hasPerInstanceMetaClass(object);
+  MetaClass emc=hasPerInstanceMetaClass(self);
   if (emc == null) {
-    final ExpandoMetaClass metaClass=new ExpandoMetaClass(object.getClass(),false,true);
+    final ExpandoMetaClass metaClass=new ExpandoMetaClass(self.getClass(),false,true);
     metaClass.initialize();
     metaClass.define(closure);
-    setMetaClass(object,metaClass);
+    setMetaClass(self,metaClass);
     return metaClass;
   }
  else {
