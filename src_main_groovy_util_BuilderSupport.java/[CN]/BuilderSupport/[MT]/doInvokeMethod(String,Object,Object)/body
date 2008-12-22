@@ -75,11 +75,11 @@ if (current != null) {
 proxyBuilder.setParent(current,node);
 }
 if (closure != null) {
-Object oldCurrent=current;
-current=node;
+Object oldCurrent=getCurrent();
+setCurrent(node);
 setClosureDelegate(closure,node);
 closure.call();
-current=oldCurrent;
+setCurrent(oldCurrent);
 }
 proxyBuilder.nodeCompleted(current,node);
 return proxyBuilder.postNodeCompletion(current,node);
