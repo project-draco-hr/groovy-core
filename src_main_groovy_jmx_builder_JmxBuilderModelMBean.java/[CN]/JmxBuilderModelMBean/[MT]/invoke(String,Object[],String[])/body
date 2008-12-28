@@ -1,0 +1,7 @@
+{
+  Object result=super.invoke(opName,opArgs,signature);
+  if (methodListeners.contains(opName)) {
+    this.sendNotification(buildCallListenerNotification(opName));
+  }
+  return result;
+}
