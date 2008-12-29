@@ -1,5 +1,17 @@
 {
-  List sublist=getSubList(self,splice);
-  sublist.clear();
-  sublist.addAll(values);
+  if (splice.isEmpty()) {
+    if (!values.isEmpty())     throw new IllegalArgumentException("Trying to replace 0 elements with " + values.size() + " elements");
+    return;
+  }
+  Object first=splice.iterator().next();
+  if (first instanceof Integer) {
+    if (values.size() != splice.size())     throw new IllegalArgumentException("Trying to replace " + splice.size() + " elements with "+ values.size()+ " elements");
+    Iterator<?> valuesIter=values.iterator();
+    for (    Object index : splice) {
+      putAt(self,(Integer)index,valuesIter.next());
+    }
+  }
+ else {
+    throw new IllegalArgumentException("Can only index a List with another List of Integers, not a List of " + first.getClass().getName());
+  }
 }
