@@ -1,3 +1,9 @@
 {
-  return createTemplate(new FileReader(file));
+  Reader reader=new FileReader(file);
+  try {
+    return createTemplate(reader);
+  }
+  finally {
+    DefaultGroovyMethods.closeWithWarning(reader);
+  }
 }

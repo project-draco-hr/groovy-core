@@ -1,3 +1,9 @@
 {
-  return createTemplate(new InputStreamReader(url.openStream()));
+  Reader reader=new InputStreamReader(url.openStream());
+  try {
+    return createTemplate(reader);
+  }
+  finally {
+    DefaultGroovyMethods.closeWithWarning(reader);
+  }
 }
