@@ -1,0 +1,11 @@
+{
+  StringWriter result=new StringWriter(self.length());
+  PlatformLineWriter w=new PlatformLineWriter(result,self.length());
+  try {
+    w.write(self);
+  }
+  finally {
+    closeWithWarning(w);
+  }
+  return result.toString();
+}
