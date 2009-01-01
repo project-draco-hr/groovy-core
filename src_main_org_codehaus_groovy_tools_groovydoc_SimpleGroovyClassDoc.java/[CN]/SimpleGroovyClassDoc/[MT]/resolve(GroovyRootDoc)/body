@@ -1,28 +1,22 @@
 {
   Map visibleClasses=rootDoc.getVisibleClasses(importedClassesAndPackages);
-  Iterator constructorItr=constructors.iterator();
-  while (constructorItr.hasNext()) {
-    GroovyConstructorDoc constructor=(GroovyConstructorDoc)constructorItr.next();
-    Iterator paramItr=Arrays.asList(constructor.parameters()).iterator();
-    while (paramItr.hasNext()) {
-      SimpleGroovyParameter param=(SimpleGroovyParameter)paramItr.next();
+  for (  GroovyConstructorDoc constructor : constructors) {
+    for (    GroovyParameter groovyParameter : Arrays.asList(constructor.parameters())) {
+      SimpleGroovyParameter param=(SimpleGroovyParameter)groovyParameter;
       String paramTypeName=param.typeName();
       if (visibleClasses.containsKey(paramTypeName)) {
         param.setType((GroovyType)visibleClasses.get(paramTypeName));
       }
     }
   }
-  Iterator methodItr=methods.iterator();
-  while (methodItr.hasNext()) {
-    GroovyMethodDoc method=(GroovyMethodDoc)methodItr.next();
+  for (  GroovyMethodDoc method : methods) {
     GroovyType returnType=method.returnType();
     String typeName=returnType.typeName();
     if (visibleClasses.containsKey(typeName)) {
       method.setReturnType((GroovyType)visibleClasses.get(typeName));
     }
-    Iterator paramItr=Arrays.asList(method.parameters()).iterator();
-    while (paramItr.hasNext()) {
-      SimpleGroovyParameter param=(SimpleGroovyParameter)paramItr.next();
+    for (    GroovyParameter groovyParameter : Arrays.asList(method.parameters())) {
+      SimpleGroovyParameter param=(SimpleGroovyParameter)groovyParameter;
       String paramTypeName=param.typeName();
       if (visibleClasses.containsKey(paramTypeName)) {
         param.setType((GroovyType)visibleClasses.get(paramTypeName));

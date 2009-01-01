@@ -2,13 +2,13 @@
   if (visit == OPENING_VISIT) {
     if (!insideAnonymousInnerClass()) {
       GroovySourceAST parentNode=getParentNode();
-      if (parentNode != null && parentNode.getType() == GroovyTokenTypes.OBJBLOCK) {
-        String fieldName=t.childOfType(GroovyTokenTypes.IDENT).getText();
+      if (parentNode != null && parentNode.getType() == OBJBLOCK) {
+        String fieldName=t.childOfType(IDENT).getText();
         SimpleGroovyFieldDoc currentFieldDoc=new SimpleGroovyFieldDoc(fieldName);
         String commentText=getJavaDocCommentsBeforeNode(t);
         currentFieldDoc.setRawCommentText(commentText);
         processModifiers(t,currentFieldDoc);
-        String typeName=getTypeNodeAsText(t.childOfType(GroovyTokenTypes.TYPE),"def");
+        String typeName=getTypeNodeAsText(t.childOfType(TYPE),"def");
         SimpleGroovyType type=new SimpleGroovyType(typeName);
         currentFieldDoc.setType(type);
         currentClassDoc.add(currentFieldDoc);

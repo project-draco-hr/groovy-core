@@ -1,14 +1,14 @@
 {
   if (t != null) {
-    if (t.getType() == GroovyTokenTypes.DOT) {
+    if (t.getType() == DOT) {
       GroovySourceAST firstChild=(GroovySourceAST)t.getFirstChild();
       GroovySourceAST secondChild=(GroovySourceAST)firstChild.getNextSibling();
       return (recurseDownImportBranch(firstChild) + "/" + recurseDownImportBranch(secondChild));
     }
-    if (t.getType() == GroovyTokenTypes.IDENT) {
+    if (t.getType() == IDENT) {
       return t.getText();
     }
-    if (t.getType() == GroovyTokenTypes.STAR) {
+    if (t.getType() == STAR) {
       return t.getText();
     }
   }

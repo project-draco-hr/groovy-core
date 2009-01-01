@@ -11,6 +11,9 @@
  else {
     this.firstSentenceCommentText=commentText;
   }
-  this.commentText=replaceAllTags(this.commentText,"(?m)@([a-z]*)\\s*(.*)$","<DL><DT><B>$1:</B></DT><DD>","</DD></DL>");
+  this.commentText=replaceAllTags(this.commentText,"","",LINK_REGEX);
+  this.commentText=replaceAllTags(this.commentText,"<TT>","</TT>",CODE_REGEX);
+  this.commentText=replaceAllTags(this.commentText,"<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX);
+  this.commentText=commentText.replaceAll("&at;","@").replaceAll("&dollar;","\\$");
   this.firstSentenceCommentText=this.firstSentenceCommentText.replaceAll("(?m)@([a-z]*\\s*.*)$","");
 }

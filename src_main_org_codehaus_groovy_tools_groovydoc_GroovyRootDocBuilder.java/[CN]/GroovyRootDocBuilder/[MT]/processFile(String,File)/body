@@ -1,0 +1,21 @@
+{
+  String src=DefaultGroovyMethods.getText(srcFile);
+  String packagePath=tool.getPath(filename).replace('\\',FS);
+  String file=tool.getFile(filename);
+  try {
+    Map<String,GroovyClassDoc> classDocs=getClassDocsFromSingleSource(packagePath,file,src);
+    rootDoc.putAllClasses(classDocs);
+    SimpleGroovyPackageDoc packageDoc=(SimpleGroovyPackageDoc)rootDoc.packageNamed(packagePath);
+    if (packageDoc == null) {
+      packageDoc=new SimpleGroovyPackageDoc(packagePath);
+    }
+    packageDoc.putAll(classDocs);
+    rootDoc.put(packagePath,packageDoc);
+  }
+ catch (  RecognitionException e) {
+    System.err.println("ignored due to RecognitionException: " + filename + " ["+ e.getMessage()+ "]");
+  }
+catch (  TokenStreamException e) {
+    System.err.println("ignored due to TokenStreamException: " + filename + " ["+ e.getMessage()+ "]");
+  }
+}

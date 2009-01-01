@@ -1,0 +1,78 @@
+{
+  List<String> addedPackages=new ArrayList<String>();
+  List<DirSet> dirSets=new ArrayList<DirSet>(packageSets);
+  if (this.sourcePath != null) {
+    PatternSet ps=new PatternSet();
+    if (packageNames.size() > 0) {
+      for (      String pn : packageNames) {
+        String pkg=pn.replace('.','/');
+        if (pkg.endsWith("*")) {
+          pkg+="*";
+        }
+        ps.createInclude().setName(pkg);
+      }
+    }
+ else {
+      ps.createInclude().setName("**");
+    }
+    for (    String epn : excludePackageNames) {
+      String pkg=epn.replace('.','/');
+      if (pkg.endsWith("*")) {
+        pkg+="*";
+      }
+      ps.createExclude().setName(pkg);
+    }
+    String[] pathElements=this.sourcePath.list();
+    for (    String pathElement : pathElements) {
+      File dir=new File(pathElement);
+      if (dir.isDirectory()) {
+        DirSet ds=new DirSet();
+        ds.setDefaultexcludes(useDefaultExcludes);
+        ds.setDir(dir);
+        ds.createPatternSet().addConfiguredPatternset(ps);
+        dirSets.add(ds);
+      }
+ else {
+        log.warn("Skipping " + pathElement + " since it is no directory.");
+      }
+    }
+  }
+  for (  DirSet ds : dirSets) {
+    File baseDir=ds.getDir(getProject());
+    log.debug("scanning " + baseDir + " for packages.");
+    DirectoryScanner dsc=ds.getDirectoryScanner(getProject());
+    String[] dirs=dsc.getIncludedDirectories();
+    boolean containsPackages=false;
+    for (    String dir : dirs) {
+      File pd=new File(baseDir,dir);
+      String[] files=pd.list(new FilenameFilter(){
+        public boolean accept(        File dir1,        String name){
+          return name.endsWith(".java") || name.endsWith(".groovy") || name.endsWith(".gv")|| name.endsWith(".gvy")|| name.endsWith(".gsh")|| (includeNoSourcePackages && name.equals("package.html"));
+        }
+      }
+);
+      for (      String filename : Arrays.asList(files)) {
+        sourceFilesToDoc.add(dir + File.separator + filename);
+      }
+      if (files.length > 0) {
+        if ("".equals(dir)) {
+          log.warn(baseDir + " contains source files in the default package," + " you must specify them as source files not packages.");
+        }
+ else {
+          containsPackages=true;
+          String pn=dir.replace(File.separatorChar,'.');
+          if (!addedPackages.contains(pn)) {
+            addedPackages.add(pn);
+            resultantPackages.add(pn);
+          }
+        }
+      }
+    }
+    if (containsPackages) {
+      sourcePath.createPathElement().setLocation(baseDir);
+    }
+ else {
+      log.verbose(baseDir + " doesn\'t contain any packages, dropping it.");
+    }
+  }
+}

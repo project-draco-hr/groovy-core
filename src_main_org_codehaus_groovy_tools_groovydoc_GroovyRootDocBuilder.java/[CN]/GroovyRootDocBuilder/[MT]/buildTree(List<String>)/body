@@ -1,0 +1,13 @@
+{
+  for (  String filename : filenames) {
+    Iterator pathItr=sourcepath.iterator();
+    while (pathItr.hasNext()) {
+      FileResource fileRes=(FileResource)pathItr.next();
+      String path=fileRes.getFile().getAbsolutePath();
+      File srcFile=new File(path + FS + filename);
+      if (srcFile.exists()) {
+        processFile(filename,srcFile);
+      }
+    }
+  }
+}
