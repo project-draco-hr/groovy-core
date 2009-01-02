@@ -1,19 +1,19 @@
 {
   this.rawCommentText=rawCommentText;
-  this.commentText=rawCommentText.replaceAll("(?m)^\\s*\\*","");
+  commentText=rawCommentText.replaceAll("(?m)^\\s*\\*","");
   BreakIterator boundary=BreakIterator.getSentenceInstance(Locale.getDefault());
   boundary.setText(commentText);
   int start=boundary.first();
   int end=boundary.next();
   if (start > -1 && end > -1) {
-    this.firstSentenceCommentText=commentText.substring(start,end);
+    firstSentenceCommentText=commentText.substring(start,end);
   }
  else {
-    this.firstSentenceCommentText=commentText;
+    firstSentenceCommentText=commentText;
   }
-  this.commentText=replaceAllTags(this.commentText,"","",LINK_REGEX);
-  this.commentText=replaceAllTags(this.commentText,"<TT>","</TT>",CODE_REGEX);
-  this.commentText=replaceAllTags(this.commentText,"<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX);
-  this.commentText=decodeSpecialSymbols(commentText);
-  this.firstSentenceCommentText=this.firstSentenceCommentText.replaceAll("(?m)@([a-z]+\\s*.*)$","");
+  commentText=replaceAllTags(commentText,"","",LINK_REGEX);
+  commentText=replaceAllTags(commentText,"<TT>","</TT>",CODE_REGEX);
+  commentText=replaceAllTags(commentText,"<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX);
+  commentText=decodeSpecialSymbols(commentText);
+  firstSentenceCommentText=firstSentenceCommentText.replaceAll("(?m)@([a-z]+\\s*.*)$","");
 }
