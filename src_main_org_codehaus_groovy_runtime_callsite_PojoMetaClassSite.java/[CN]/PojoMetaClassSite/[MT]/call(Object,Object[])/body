@@ -1,7 +1,11 @@
 {
   if (checkCall(receiver)) {
     try {
-      return metaClass.invokeMethod(receiver,name,args);
+      MetaClass metaClassToInvoke=metaClass;
+      if (metaClass instanceof ProxyMetaClass) {
+        metaClassToInvoke=GroovySystem.getMetaClassRegistry().getMetaClass(receiver.getClass());
+      }
+      return metaClassToInvoke.invokeMethod(receiver,name,args);
     }
  catch (    GroovyRuntimeException gre) {
       throw ScriptBytecodeAdapter.unwrap(gre);
