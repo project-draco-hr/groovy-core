@@ -6,10 +6,10 @@
     while (matcher.find()) {
       String tagname=matcher.group(1);
       if (tagname.equals("see") || tagname.equals("link")) {
-        matcher.appendReplacement(sb,s1 + getDocUrl(matcher.group(2)).replaceAll("[$]","&dollar;") + s2);
+        matcher.appendReplacement(sb,s1 + getDocUrl(encodeSpecialSymbols(matcher.group(2))) + s2);
       }
  else {
-        matcher.appendReplacement(sb,s1 + matcher.group(2).replaceAll("@","&at;").replaceAll("[$]","&dollar;") + s2);
+        matcher.appendReplacement(sb,s1 + encodeSpecialSymbols(matcher.group(2)) + s2);
       }
     }
     matcher.appendTail(sb);
