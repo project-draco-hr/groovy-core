@@ -1,0 +1,26 @@
+{
+  Map<String,Object> result=new HashMap<String,Object>(2);
+  int counter=0;
+  int port=initPort;
+  Registry reg=null;
+  while (reg == null && counter <= 4) {
+    try {
+      reg=LocateRegistry.createRegistry(port);
+      result.put("registry",reg);
+      result.put("port",new Integer(port));
+      break;
+    }
+ catch (    RemoteException ex) {
+      counter++;
+      port=port + 1;
+      System.out.println("JmxBuilder - *** FAILED *** to create RMI Registry - Will Retry on port [" + port + "].");
+      try {
+        Thread.currentThread().sleep(500);
+      }
+ catch (      InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  return result;
+}
