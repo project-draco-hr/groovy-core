@@ -1,17 +1,15 @@
 {
   String result="";
   LineColumn thisLineCol=new LineColumn(t.getLine(),t.getColumn());
-  if (thisLineCol.getLine() > lastSeenCol.getLine() + 1 || (isMajorType(t) && isMajorType(lastSeenNode))) {
-    lastLineCol=lastSeenCol;
-    lastSeenNode=t;
-  }
-  lastSeenCol=thisLineCol;
   String text=sourceBuffer.getSnippet(lastLineCol,thisLineCol);
   if (text != null) {
     Matcher m=previousJavaDocCommentPattern.matcher(text);
     if (m.find()) {
       result=m.group(1);
     }
+  }
+  if (isMajorType(t)) {
+    lastLineCol=thisLineCol;
   }
   return result;
 }
