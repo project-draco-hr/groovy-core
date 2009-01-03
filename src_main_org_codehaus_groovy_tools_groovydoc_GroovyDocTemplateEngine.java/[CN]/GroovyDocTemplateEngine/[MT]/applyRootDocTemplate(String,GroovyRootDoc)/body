@@ -1,14 +1,14 @@
 {
-  String templatePath=template;
   String templateWithBindingApplied="";
   try {
-    Template t=docTemplates.get(templatePath);
+    Template t=docTemplates.get(template);
     if (t == null) {
-      t=engine.createTemplate(resourceManager.getReader(templatePath));
-      docTemplates.put(templatePath,t);
+      t=engine.createTemplate(resourceManager.getReader(template));
+      docTemplates.put(template,t);
     }
     Map binding=new HashMap();
     binding.put("rootDoc",rootDoc);
+    binding.put("props",properties);
     templateWithBindingApplied=t.make(binding).toString();
   }
  catch (  Exception e) {

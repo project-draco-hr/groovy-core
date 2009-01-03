@@ -1,11 +1,14 @@
 {
   List<String> packagesToDoc=new ArrayList<String>();
   Path sourceDirs=new Path(getProject());
+  Properties properties=new Properties();
+  properties.put("windowTitle",windowTitle);
+  properties.put("footer",footer);
   if (sourcePath != null) {
     sourceDirs.addExisting(sourcePath);
   }
   parsePackages(packagesToDoc,sourceDirs);
-  GroovyDocTool htmlTool=new GroovyDocTool(new ClasspathResourceManager(),sourcePath,new String[]{TEMPLATE_BASEDIR + "top-level/index.html",TEMPLATE_BASEDIR + "top-level/overview-frame.html",TEMPLATE_BASEDIR + "top-level/allclasses-frame.html",TEMPLATE_BASEDIR + "top-level/overview-summary.html",TEMPLATE_BASEDIR + "top-level/stylesheet.css"},new String[]{TEMPLATE_BASEDIR + "package-level/package-frame.html",TEMPLATE_BASEDIR + "package-level/package-summary.html"},new String[]{TEMPLATE_BASEDIR + "class-level/classDocName.html"},links);
+  GroovyDocTool htmlTool=new GroovyDocTool(new ClasspathResourceManager(),sourcePath,new String[]{TEMPLATE_BASEDIR + "top-level/index.html",TEMPLATE_BASEDIR + "top-level/overview-frame.html",TEMPLATE_BASEDIR + "top-level/allclasses-frame.html",TEMPLATE_BASEDIR + "top-level/overview-summary.html",TEMPLATE_BASEDIR + "top-level/stylesheet.css"},new String[]{TEMPLATE_BASEDIR + "package-level/package-frame.html",TEMPLATE_BASEDIR + "package-level/package-summary.html"},new String[]{TEMPLATE_BASEDIR + "class-level/classDocName.html"},links,properties);
   try {
     htmlTool.add(sourceFilesToDoc);
     FileOutputTool output=new FileOutputTool();
