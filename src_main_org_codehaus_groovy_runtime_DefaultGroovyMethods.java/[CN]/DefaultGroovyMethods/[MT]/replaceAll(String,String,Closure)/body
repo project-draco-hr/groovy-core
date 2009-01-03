@@ -1,14 +1,14 @@
 {
   final Matcher matcher=Pattern.compile(regex).matcher(self);
   if (matcher.find()) {
-    final StringBuffer sb=new StringBuffer();
+    final StringBuffer sb=new StringBuffer(self.length() + 16);
     do {
       int count=matcher.groupCount();
       List groups=new ArrayList();
       for (int i=0; i <= count; i++) {
         groups.add(matcher.group(i));
       }
-      final String replacement=String.valueOf(closure.call(groups.toArray()));
+      final String replacement=InvokerHelper.toString(closure.call(groups.toArray()));
       matcher.appendReplacement(sb,Matcher.quoteReplacement(replacement));
     }
  while (matcher.find());
