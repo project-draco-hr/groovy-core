@@ -1,3 +1,11 @@
 {
-  visitVariableDef(t,visit);
+  if (visit == OPENING_VISIT) {
+    visitVariableDef(t,visit);
+    String defaultText=getDefaultValue(t);
+    if (defaultText != null) {
+      currentFieldDoc.setConstantValueExpression(defaultText);
+      String orig=currentFieldDoc.getRawCommentText();
+      currentFieldDoc.setRawCommentText(orig + "\n* @default " + defaultText);
+    }
+  }
 }

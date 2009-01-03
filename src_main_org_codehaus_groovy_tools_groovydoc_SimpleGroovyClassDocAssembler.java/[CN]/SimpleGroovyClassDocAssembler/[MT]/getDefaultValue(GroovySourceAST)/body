@@ -1,0 +1,11 @@
+{
+  GroovySourceAST child=(GroovySourceAST)t.getFirstChild();
+  if (t.getNumberOfChildren() != 4)   return null;
+  for (int i=1; i < t.getNumberOfChildren(); i++) {
+    child=(GroovySourceAST)child.getNextSibling();
+  }
+  if (child.getNumberOfChildren() == 0) {
+    return getChildTextFromSource(child);
+  }
+  return getChildTextFromSource((GroovySourceAST)child.getFirstChild());
+}
