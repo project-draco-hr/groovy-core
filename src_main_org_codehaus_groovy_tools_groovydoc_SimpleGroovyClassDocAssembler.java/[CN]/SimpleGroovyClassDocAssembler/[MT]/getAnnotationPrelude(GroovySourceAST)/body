@@ -1,15 +1,12 @@
 {
-  String result="";
   LineColumn thisLineCol=new LineColumn(t.getLine(),t.getColumn());
+  String result="";
   String text=sourceBuffer.getSnippet(lastLineCol,thisLineCol);
   if (text != null) {
-    Matcher m=PREV_JAVADOC_COMMENT_PATTERN.matcher(text);
+    Matcher m=ANNOTATION_PRELUDE_PATTERN.matcher(text);
     if (m.find()) {
       result=m.group(1);
     }
-  }
-  if (isMajorType(t)) {
-    lastLineCol=thisLineCol;
   }
   return result;
 }
