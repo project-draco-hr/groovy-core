@@ -22,7 +22,7 @@
   String _staticClassInfoFieldName="$staticClassInfo";
   while (node.getDeclaredField(_staticClassInfoFieldName) != null)   _staticClassInfoFieldName=_staticClassInfoFieldName + "$";
   final String staticMetaClassFieldName=_staticClassInfoFieldName;
-  FieldNode staticMetaClassField=node.addField(staticMetaClassFieldName,ACC_PRIVATE | ACC_STATIC,ClassHelper.make(ClassInfo.class,false),null);
+  FieldNode staticMetaClassField=node.addField(staticMetaClassFieldName,ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC,ClassHelper.make(ClassInfo.class,false),null);
   staticMetaClassField.setSynthetic(true);
   node.addSyntheticMethod("$getStaticMetaClass",ACC_PROTECTED,ClassHelper.make(MetaClass.class),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BytecodeSequence(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
