@@ -7,17 +7,27 @@
       int type=currentModifier.getType();
 switch (type) {
 case LITERAL_protected:
+        memberDoc.setProtected(true);
+      seenNonPublicVisibilityModifier=true;
+    break;
 case LITERAL_private:
-        seenNonPublicVisibilityModifier=true;
-      break;
+  memberDoc.setPrivate(true);
+seenNonPublicVisibilityModifier=true;
+break;
 case LITERAL_static:
-    programElementDoc.setStatic(true);
-  break;
+memberDoc.setStatic(true);
+break;
+case FINAL:
+memberDoc.setFinal(true);
+break;
+case ABSTRACT:
+memberDoc.setAbstract(true);
+break;
 }
 currentModifier=currentModifier.getNextSibling();
 }
 if (!seenNonPublicVisibilityModifier) {
-programElementDoc.setPublic(true);
+memberDoc.setPublic(true);
 }
 }
 }
