@@ -1,0 +1,18 @@
+{
+  List<String> result=new LinkedList<String>();
+  result.add(0,name());
+  SimpleGroovyClassDoc next=this;
+  while (next.superclass() != null) {
+    next=(SimpleGroovyClassDoc)next.superclass();
+    result.add(0,next.name().replaceAll("/","."));
+  }
+  if ("Object".equals(next.name())) {
+    return result;
+  }
+  Class nextClass=getClassOf(next.name());
+  while (nextClass != null && nextClass.getSuperclass() != null && !Object.class.equals(nextClass)) {
+    nextClass=nextClass.getSuperclass();
+    result.add(0,nextClass.getName());
+  }
+  return result;
+}
