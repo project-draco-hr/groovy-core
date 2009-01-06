@@ -7,8 +7,9 @@
  else {
       script=shell.parse(txt,scriptName);
     }
+    final Project project=getProject();
     script.setProperty("ant",builder);
-    script.setProperty("project",getProject());
+    script.setProperty("project",project);
     script.setProperty("properties",new AntProjectPropertiesDelegate(project));
     script.setProperty("target",getOwningTarget());
     script.setProperty("task",this);
