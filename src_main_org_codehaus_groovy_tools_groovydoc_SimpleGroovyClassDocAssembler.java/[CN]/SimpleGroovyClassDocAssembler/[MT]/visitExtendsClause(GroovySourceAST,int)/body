@@ -2,14 +2,7 @@
   if (visit == OPENING_VISIT) {
     GroovySourceAST superClassNode=t.childOfType(IDENT);
     if (superClassNode != null) {
-      String superClassName=superClassNode.getText();
-      if (superClassName.indexOf(".") == -1) {
-        for (        String name : importedClassesAndPackages) {
-          if (name.endsWith(superClassName)) {
-            superClassName=name;
-          }
-        }
-      }
+      String superClassName=extractName(superClassNode);
       currentClassDoc.setSuperClassName(superClassName);
     }
   }

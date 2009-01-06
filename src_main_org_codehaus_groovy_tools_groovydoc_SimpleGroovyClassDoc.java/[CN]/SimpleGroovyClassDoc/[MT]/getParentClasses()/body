@@ -1,12 +1,12 @@
 {
   List<String> result=new LinkedList<String>();
-  result.add(0,name());
+  result.add(0,getFullName(this));
   SimpleGroovyClassDoc next=this;
   while (next.superclass() != null) {
     next=(SimpleGroovyClassDoc)next.superclass();
-    result.add(0,next.name().replaceAll("/","."));
+    result.add(0,getFullName(next));
   }
-  if ("Object".equals(next.name())) {
+  if ("java.lang.Object".equals(next.name())) {
     return result;
   }
   Class nextClass=getClassOf(next.name());

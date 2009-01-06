@@ -2,15 +2,7 @@
   if (visit == OPENING_VISIT) {
     GroovySourceAST classNode=t.childOfType(IDENT);
     if (classNode != null) {
-      String className=classNode.getText();
-      if (className.indexOf(".") == -1) {
-        for (        String name : importedClassesAndPackages) {
-          if (name.endsWith(className)) {
-            className=name;
-          }
-        }
-      }
-      currentClassDoc.addAnnotationName(className);
+      currentClassDoc.addAnnotationName(extractName(classNode));
     }
   }
 }

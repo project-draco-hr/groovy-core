@@ -1,7 +1,7 @@
 {
   Map visibleClasses=rootDoc.getVisibleClasses(importedClassesAndPackages);
   for (  GroovyConstructorDoc constructor : constructors) {
-    for (    GroovyParameter groovyParameter : Arrays.asList(constructor.parameters())) {
+    for (    GroovyParameter groovyParameter : constructor.parameters()) {
       SimpleGroovyParameter param=(SimpleGroovyParameter)groovyParameter;
       String paramTypeName=param.typeName();
       if (visibleClasses.containsKey(paramTypeName)) {
@@ -15,7 +15,7 @@
     if (visibleClasses.containsKey(typeName)) {
       method.setReturnType((GroovyType)visibleClasses.get(typeName));
     }
-    for (    GroovyParameter groovyParameter : Arrays.asList(method.parameters())) {
+    for (    GroovyParameter groovyParameter : method.parameters()) {
       SimpleGroovyParameter param=(SimpleGroovyParameter)groovyParameter;
       String paramTypeName=param.typeName();
       if (visibleClasses.containsKey(paramTypeName)) {
@@ -24,12 +24,15 @@
     }
   }
   if (superClassName != null) {
-    superClass=rootDoc.classNamed(superClassName);
-    if (superClass == null) {
-      superClass=new SimpleGroovyClassDoc(null,superClassName);
-    }
+    superClass=resolveClass(rootDoc,superClassName);
   }
  else {
-    superClass=new SimpleGroovyClassDoc(null,"Object");
+    superClass=new SimpleGroovyClassDoc(null,"java.lang.Object");
+  }
+  for (  String name : interfaceNames) {
+    interfaceClasses.add(resolveClass(rootDoc,name));
+  }
+  for (  String name : annotationNames) {
+    annotationClasses.add(resolveClass(rootDoc,name));
   }
 }
