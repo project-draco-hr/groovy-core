@@ -1,7 +1,10 @@
 {
   if (self instanceof Writer) {
-    final PrintWriter pw=new GroovyPrintWriter((Writer)self);
-    pw.print(value);
+    try {
+      ((Writer)self).write(InvokerHelper.toString(value));
+    }
+ catch (    IOException e) {
+    }
   }
  else {
     System.out.print(InvokerHelper.toString(value));
