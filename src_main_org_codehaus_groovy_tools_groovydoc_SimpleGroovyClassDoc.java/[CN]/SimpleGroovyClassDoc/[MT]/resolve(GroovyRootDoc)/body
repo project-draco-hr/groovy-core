@@ -9,6 +9,14 @@
       }
     }
   }
+  for (  GroovyFieldDoc field : fields) {
+    SimpleGroovyFieldDoc mutableField=(SimpleGroovyFieldDoc)field;
+    GroovyType fieldType=field.type();
+    String typeName=fieldType.typeName();
+    if (visibleClasses.containsKey(typeName)) {
+      mutableField.setType((GroovyType)visibleClasses.get(typeName));
+    }
+  }
   for (  GroovyMethodDoc method : methods) {
     GroovyType returnType=method.returnType();
     String typeName=returnType.typeName();
