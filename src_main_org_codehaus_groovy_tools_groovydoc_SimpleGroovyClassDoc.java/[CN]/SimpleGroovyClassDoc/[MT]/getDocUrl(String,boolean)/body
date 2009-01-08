@@ -1,0 +1,24 @@
+{
+  if (type == null)   return type;
+  type=type.trim();
+  if (type.startsWith("#"))   return "<a href='" + type + "'>"+ type+ "</a>";
+  if (type.indexOf('.') == -1)   type=resolveExternalClass(type);
+  if (type.indexOf('.') == -1)   return type;
+  final String[] target=type.split("#");
+  String shortClassName=target[0].replaceAll(".*\\.","");
+  shortClassName+=(target.length > 1 ? "#" + target[1].split("\\(")[0] : "");
+  String name=full ? target[0] : shortClassName;
+  if (shortClassName.startsWith("groovy.") || shortClassName.startsWith("org.codehaus.groovy.")) {
+    return buildUrl(getRelativeRootPath(),target,name);
+  }
+  for (  Groovydoc.LinkArgument link : links) {
+    final StringTokenizer tokenizer=new StringTokenizer(link.getPackages(),", ");
+    while (tokenizer.hasMoreTokens()) {
+      final String token=tokenizer.nextToken();
+      if (type.startsWith(token)) {
+        return buildUrl(link.getHref(),target,name);
+      }
+    }
+  }
+  return type;
+}

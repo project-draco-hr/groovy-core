@@ -3,7 +3,7 @@
   GroovyRecognizer parser=getGroovyParser(src,sourceBuffer);
   parser.compilationUnit();
   AST ast=parser.getAST();
-  Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer,links,properties);
+  Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer,links,properties,true);
   AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
   traverser.process(ast);
   return ((SimpleGroovyClassDocAssembler)visitor).getGroovyClassDocs();

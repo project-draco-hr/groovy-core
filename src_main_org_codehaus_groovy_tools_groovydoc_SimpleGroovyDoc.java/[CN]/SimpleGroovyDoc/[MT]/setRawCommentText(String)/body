@@ -1,19 +1,4 @@
 {
   this.rawCommentText=rawCommentText;
-  commentText=rawCommentText.replaceAll("(?m)^\\s*\\*","");
-  BreakIterator boundary=BreakIterator.getSentenceInstance(Locale.getDefault());
-  boundary.setText(commentText);
-  int start=boundary.first();
-  int end=boundary.next();
-  if (start > -1 && end > -1) {
-    firstSentenceCommentText=commentText.substring(start,end);
-  }
- else {
-    firstSentenceCommentText=commentText;
-  }
-  commentText=replaceAllTags(commentText,"","",LINK_REGEX);
-  commentText=replaceAllTags(commentText,"<TT>","</TT>",CODE_REGEX);
-  commentText=replaceAllTags(commentText,"<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX);
-  commentText=decodeSpecialSymbols(commentText);
-  firstSentenceCommentText=stripTags(firstSentenceCommentText);
+  setFirstSentenceCommentText(calculateFirstSentence(rawCommentText));
 }

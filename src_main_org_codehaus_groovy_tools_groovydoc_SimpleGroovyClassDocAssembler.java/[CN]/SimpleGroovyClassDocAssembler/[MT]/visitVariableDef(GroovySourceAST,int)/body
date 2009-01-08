@@ -3,7 +3,7 @@
     GroovySourceAST parentNode=getParentNode();
     if (isFieldDefinition(parentNode)) {
       String fieldName=t.childOfType(IDENT).getText();
-      currentFieldDoc=new SimpleGroovyFieldDoc(fieldName);
+      currentFieldDoc=new SimpleGroovyFieldDoc(fieldName,currentClassDoc);
       String commentText=getJavaDocCommentsBeforeNode(t);
       currentFieldDoc.setRawCommentText(commentText);
       processModifiers(t,currentFieldDoc);
