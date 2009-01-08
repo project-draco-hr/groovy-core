@@ -1,7 +1,13 @@
 {
-  GroovyClassDoc doc=rootDoc.classNamed(name);
+  SimpleGroovyClassDoc doc=(SimpleGroovyClassDoc)rootDoc.classNamed(name);
   if (doc == null) {
-    doc=new SimpleGroovyClassDoc(null,name);
+    String shortname=name;
+    int slashIndex=name.lastIndexOf("/");
+    if (slashIndex > 0) {
+      shortname=name.substring(slashIndex + 1);
+    }
+    doc=new SimpleGroovyClassDoc(null,shortname);
+    doc.setFullPathName(name);
   }
   return doc;
 }

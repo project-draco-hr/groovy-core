@@ -6,6 +6,8 @@
   final String[] target=type.split("#");
   String shortClassName=target[0].replaceAll(".*\\.","");
   shortClassName+=(target.length > 1 ? "#" + target[1].split("\\(")[0] : "");
+  if (shortClassName.startsWith("groovy.") || shortClassName.startsWith("org.codehaus.groovy.")) {
+  }
   for (  Groovydoc.LinkArgument link : links) {
     final StringTokenizer tokenizer=new StringTokenizer(link.getPackages(),", ");
     while (tokenizer.hasMoreTokens()) {
@@ -15,7 +17,7 @@
         if (!apiBaseUrl.endsWith("/")) {
           apiBaseUrl+="/";
         }
-        String url=apiBaseUrl + target[0].replaceAll("\\.","/") + ".html"+ (target.length > 1 ? "#" + target[1] : "");
+        String url=apiBaseUrl + target[0].replace('.','/') + ".html"+ (target.length > 1 ? "#" + target[1] : "");
         return "<a href='" + url + "' title='"+ shortClassName+ "'>"+ shortClassName+ "</a>";
       }
     }
