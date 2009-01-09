@@ -6,7 +6,7 @@
       String commentText=getJavaDocCommentsBeforeNode(t);
       currentMethodDoc.setRawCommentText(commentText);
       processModifiers(t,currentMethodDoc);
-      String returnTypeName=getTypeNodeAsText(t.childOfType(TYPE),"def");
+      String returnTypeName=getTypeOrDefault(t);
       SimpleGroovyType returnType=new SimpleGroovyType(returnTypeName);
       currentMethodDoc.setReturnType(returnType);
       addParametersTo(currentMethodDoc,t,visit);

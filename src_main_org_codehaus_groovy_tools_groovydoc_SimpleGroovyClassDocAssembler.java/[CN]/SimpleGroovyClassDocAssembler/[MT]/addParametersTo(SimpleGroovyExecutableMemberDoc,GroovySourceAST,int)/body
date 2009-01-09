@@ -3,7 +3,7 @@
   if (parametersNode != null && parametersNode.getNumberOfChildren() > 0) {
     GroovySourceAST currentNode=(GroovySourceAST)parametersNode.getFirstChild();
     while (currentNode != null) {
-      String parameterTypeName=getTypeNodeAsText(currentNode.childOfType(TYPE),"def");
+      String parameterTypeName=getTypeOrDefault(currentNode);
       String parameterName=getText(currentNode.childOfType(IDENT));
       SimpleGroovyParameter parameter=new SimpleGroovyParameter(parameterName);
       parameter.setTypeName(parameterTypeName);

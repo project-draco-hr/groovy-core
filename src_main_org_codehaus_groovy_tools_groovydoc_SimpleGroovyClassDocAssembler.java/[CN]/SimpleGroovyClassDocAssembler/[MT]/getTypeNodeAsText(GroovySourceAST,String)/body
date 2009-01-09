@@ -1,39 +1,6 @@
 {
-  String returnValue=defaultText;
   if (typeNode != null && typeNode.getType() == TYPE && typeNode.getNumberOfChildren() > 0) {
-    GroovySourceAST child=(GroovySourceAST)typeNode.getFirstChild();
-switch (child.getType()) {
-case LITERAL_boolean:
-      returnValue="boolean";
-    break;
-case LITERAL_byte:
-  returnValue="byte";
-break;
-case LITERAL_char:
-returnValue="char";
-break;
-case LITERAL_double:
-returnValue="double";
-break;
-case LITERAL_float:
-returnValue="float";
-break;
-case LITERAL_int:
-returnValue="int";
-break;
-case LITERAL_long:
-returnValue="long";
-break;
-case LITERAL_short:
-returnValue="short";
-break;
-case LITERAL_void:
-returnValue="void";
-break;
-case IDENT:
-returnValue=child.getText();
-break;
-}
-}
-return returnValue;
+    return getAsText(typeNode,defaultText);
+  }
+  return defaultText;
 }
