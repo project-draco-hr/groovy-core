@@ -31,11 +31,8 @@
       }
     }
   }
-  if (superClassName != null) {
-    superClass=resolveClass(rootDoc,superClassName);
-  }
- else {
-    superClass=new SimpleGroovyClassDoc(null,"java.lang.Object");
+  for (  String name : superClassNames) {
+    superClasses.add(resolveClass(rootDoc,name));
   }
   for (  String name : interfaceNames) {
     interfaceClasses.add(resolveClass(rootDoc,name));
