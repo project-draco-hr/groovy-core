@@ -1,0 +1,16 @@
+{
+  if (resourceManager instanceof ClasspathResourceManager) {
+    OutputStream outputStream=null;
+    try {
+      InputStream inputStream=((ClasspathResourceManager)resourceManager).getInputStream(template);
+      outputStream=new FileOutputStream(destFileName);
+      DefaultGroovyMethods.leftShift(outputStream,inputStream);
+    }
+ catch (    IOException e) {
+      System.err.println("Resource " + template + " skipped due to: "+ e.getMessage());
+    }
+ finally {
+      DefaultGroovyMethods.closeQuietly(outputStream);
+    }
+  }
+}
