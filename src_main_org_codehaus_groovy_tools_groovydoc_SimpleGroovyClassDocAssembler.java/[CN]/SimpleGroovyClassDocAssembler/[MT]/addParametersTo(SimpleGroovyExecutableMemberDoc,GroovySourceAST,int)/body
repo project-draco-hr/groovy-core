@@ -9,15 +9,7 @@
       parameter.setTypeName(parameterTypeName);
       executableMemberDoc.add(parameter);
       if (currentNode.getNumberOfChildren() == 4) {
-        GroovySourceAST paramPart=(GroovySourceAST)currentNode.getFirstChild();
-        for (int i=1; i < currentNode.getNumberOfChildren(); i++) {
-          paramPart=(GroovySourceAST)paramPart.getNextSibling();
-        }
-        GroovySourceAST nodeToProcess=paramPart;
-        if (paramPart.getNumberOfChildren() > 0) {
-          nodeToProcess=(GroovySourceAST)paramPart.getFirstChild();
-        }
-        parameter.setDefaultValue(getChildTextFromSource(nodeToProcess,",)"));
+        handleDefaultValue(currentNode,parameter);
       }
       currentNode=(GroovySourceAST)currentNode.getNextSibling();
     }
