@@ -1,0 +1,13 @@
+{
+  for (  String importName : importedClassesAndPackages) {
+    if (importName.endsWith("/*")) {
+      String candidate=importName.substring(0,importName.length() - 2).replace('/','.') + "." + name;
+      try {
+        return Class.forName(candidate);
+      }
+ catch (      ClassNotFoundException e) {
+      }
+    }
+  }
+  return null;
+}

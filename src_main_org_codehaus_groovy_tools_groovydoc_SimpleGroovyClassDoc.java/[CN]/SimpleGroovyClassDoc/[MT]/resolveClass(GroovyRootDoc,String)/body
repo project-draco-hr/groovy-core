@@ -6,9 +6,10 @@
   Class c=null;
   if (slashIndex > 0) {
     shortname=name.substring(slashIndex + 1);
+    c=resolveExternalClass(name);
   }
  else {
-    c=resolveExternalClass(name);
+    c=resolveExternalClassFromImport(name);
   }
   if (c != null) {
     return new ExternalGroovyClassDoc(c);
