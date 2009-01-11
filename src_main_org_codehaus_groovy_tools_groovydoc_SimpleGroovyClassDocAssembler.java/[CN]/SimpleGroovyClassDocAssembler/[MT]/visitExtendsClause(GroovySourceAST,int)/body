@@ -3,7 +3,12 @@
     GroovySourceAST superClassNode=t.childOfType(IDENT);
     if (superClassNode != null) {
       String superClassName=extractName(superClassNode);
-      currentClassDoc.addSuperClassName(superClassName);
+      if (currentClassDoc.isInterface()) {
+        currentClassDoc.addInterfaceName(superClassName);
+      }
+ else {
+        currentClassDoc.setSuperClassName(superClassName);
+      }
     }
   }
 }

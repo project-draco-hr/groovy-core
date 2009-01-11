@@ -1,0 +1,12 @@
+{
+  Set<GroovyClassDoc> result=new HashSet<GroovyClassDoc>();
+  Class[] interfaces=d.externalClass().getInterfaces();
+  if (interfaces != null) {
+    for (    Class i : interfaces) {
+      ExternalGroovyClassDoc doc=new ExternalGroovyClassDoc(i);
+      result.add(doc);
+      result.addAll(getJavaInterfaces(doc));
+    }
+  }
+  return result;
+}

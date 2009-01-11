@@ -1,18 +1,26 @@
 {
-  List<String> result=new LinkedList<String>();
-  result.add(0,getFullName(this));
-  SimpleGroovyClassDoc next=this;
-  while (next.superclass() != null) {
-    next=(SimpleGroovyClassDoc)next.superclass();
-    result.add(0,getFullName(next));
+  List<GroovyClassDoc> result=new LinkedList<GroovyClassDoc>();
+  if (isInterface())   return result;
+  result.add(0,this);
+  GroovyClassDoc next=this;
+  while (next.superclass() != null && !"java.lang.Object".equals(next.qualifiedTypeName())) {
+    next=next.superclass();
+    result.add(0,next);
   }
-  if ("java.lang.Object".equals(next.fullDottedName())) {
-    return result;
-  }
-  Class nextClass=getClassOf(next.name());
+  GroovyClassDoc prev=next;
+  Class nextClass=getClassOf(next.qualifiedTypeName());
   while (nextClass != null && nextClass.getSuperclass() != null && !Object.class.equals(nextClass)) {
     nextClass=nextClass.getSuperclass();
-    result.add(0,nextClass.getName());
+    GroovyClassDoc nextDoc=new ExternalGroovyClassDoc(nextClass);
+    if (prev instanceof SimpleGroovyClassDoc) {
+      SimpleGroovyClassDoc parent=(SimpleGroovyClassDoc)prev;
+      parent.setSuperClass(nextDoc);
+    }
+    result.add(0,nextDoc);
+    prev=nextDoc;
+  }
+  if (!result.get(0).qualifiedTypeName().equals("java.lang.Object")) {
+    result.add(0,new ExternalGroovyClassDoc(Object.class));
   }
   return result;
 }

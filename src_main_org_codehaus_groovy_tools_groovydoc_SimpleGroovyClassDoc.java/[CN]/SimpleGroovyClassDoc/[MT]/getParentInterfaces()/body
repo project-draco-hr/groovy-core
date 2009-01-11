@@ -1,0 +1,22 @@
+{
+  Set<GroovyClassDoc> result=new HashSet<GroovyClassDoc>();
+  result.add(this);
+  Set<GroovyClassDoc> next=new HashSet<GroovyClassDoc>();
+  next.addAll(Arrays.asList(this.interfaces()));
+  while (next.size() > 0) {
+    Set<GroovyClassDoc> temp=next;
+    next=new HashSet<GroovyClassDoc>();
+    for (    GroovyClassDoc t : temp) {
+      if (t instanceof SimpleGroovyClassDoc) {
+        next.addAll(((SimpleGroovyClassDoc)t).getParentInterfaces());
+      }
+ else       if (t instanceof ExternalGroovyClassDoc) {
+        ExternalGroovyClassDoc d=(ExternalGroovyClassDoc)t;
+        next.addAll(getJavaInterfaces(d));
+      }
+    }
+    next=DefaultGroovyMethods.minus(next,result);
+    result.addAll(next);
+  }
+  return result;
+}

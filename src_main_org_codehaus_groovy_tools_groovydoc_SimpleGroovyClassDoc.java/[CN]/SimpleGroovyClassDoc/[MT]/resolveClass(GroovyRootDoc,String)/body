@@ -1,16 +1,19 @@
 {
-  SimpleGroovyClassDoc doc=(SimpleGroovyClassDoc)rootDoc.classNamed(name);
-  if (doc == null) {
-    String shortname=name;
-    int slashIndex=name.lastIndexOf("/");
-    if (slashIndex > 0) {
-      shortname=name.substring(slashIndex + 1);
-    }
- else {
-      name=resolveExternalClass(name);
-    }
-    doc=new SimpleGroovyClassDoc(null,shortname);
-    doc.setFullPathName(name);
+  GroovyClassDoc doc=rootDoc.classNamed(name);
+  if (doc != null)   return doc;
+  String shortname=name;
+  int slashIndex=name.lastIndexOf("/");
+  Class c=null;
+  if (slashIndex > 0) {
+    shortname=name.substring(slashIndex + 1);
   }
-  return doc;
+ else {
+    c=resolveExternalClass(name);
+  }
+  if (c != null) {
+    return new ExternalGroovyClassDoc(c);
+  }
+  SimpleGroovyClassDoc placeholder=new SimpleGroovyClassDoc(null,shortname);
+  placeholder.setFullPathName(name);
+  return placeholder;
 }
