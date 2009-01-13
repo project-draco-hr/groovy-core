@@ -10,9 +10,11 @@
   if (element != null) {
     init=expression(element);
     if (isType(ELIST,element)) {
-      ListExpression le=new ListExpression();
-      le.addExpression(init);
-      init=le;
+      if (init instanceof ListExpression && !((ListExpression)init).isWrapped()) {
+        ListExpression le=new ListExpression();
+        le.addExpression(init);
+        init=le;
+      }
     }
   }
   EnumHelper.addEnumConstant(classNode,identifier,init);
