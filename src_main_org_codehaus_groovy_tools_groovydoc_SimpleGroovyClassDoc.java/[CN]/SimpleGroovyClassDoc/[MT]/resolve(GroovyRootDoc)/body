@@ -37,7 +37,8 @@
   for (  String name : interfaceNames) {
     interfaceClasses.add(resolveClass(rootDoc,name));
   }
-  for (  String name : annotationNames) {
-    annotationClasses.add(resolveClass(rootDoc,name));
+  for (  GroovyAnnotationRef annotation : annotations()) {
+    SimpleGroovyAnnotationRef ref=(SimpleGroovyAnnotationRef)annotation;
+    ref.setType(resolveClass(rootDoc,ref.name()));
   }
 }

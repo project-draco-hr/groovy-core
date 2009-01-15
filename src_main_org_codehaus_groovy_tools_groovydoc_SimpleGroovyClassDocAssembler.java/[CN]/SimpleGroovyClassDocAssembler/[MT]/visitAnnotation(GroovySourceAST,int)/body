@@ -1,8 +1,21 @@
 {
   if (visit == OPENING_VISIT) {
-    GroovySourceAST classNode=t.childOfType(IDENT);
-    if (classNode != null) {
-      currentClassDoc.addAnnotationName(extractName(classNode));
+    GroovyAnnotationRef ref=getAnnotationRef(t);
+    if (ref != null) {
+      if (currentFieldDoc != null) {
+        currentFieldDoc.addAnnotationRef(ref);
+      }
+ else       if (currentConstructorDoc != null) {
+        currentConstructorDoc.addAnnotationRef(ref);
+      }
+ else       if (currentMethodDoc != null) {
+        currentMethodDoc.addAnnotationRef(ref);
+      }
+ else       if (!insideMethod) {
+        currentClassDoc.addAnnotationRef(ref);
+      }
+ else {
+      }
     }
   }
 }
