@@ -16,7 +16,13 @@
   Map importPackages=module.getStaticImportClasses();
   for (  Object o : importPackages.keySet()) {
     String className=(String)o;
-    ClassNode starImportType=(ClassNode)importPackages.get(className);
+    ClassNode starImportType=null;
+    if (isEnum(currentClass) && importPackages.containsKey(currentClass.getName())) {
+      starImportType=(ClassNode)importPackages.get(currentClass.getName());
+    }
+ else {
+      starImportType=(ClassNode)importPackages.get(className);
+    }
     Expression expression=findStaticMethod(starImportType,name,args);
     if (expression != null)     return expression;
   }
