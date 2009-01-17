@@ -1,3 +1,9 @@
 {
-  return null;
+  List<GroovyClassDoc> result=new ArrayList<GroovyClassDoc>(classDocs.values().size());
+  for (  GroovyClassDoc doc : classDocs.values()) {
+    if (doc.isException()) {
+      result.add(doc);
+    }
+  }
+  return result.toArray(new GroovyClassDoc[result.size()]);
 }

@@ -1,5 +1,9 @@
 {
-  List<GroovyClassDoc> classDocValues=new ArrayList<GroovyClassDoc>(classDocs.values());
-  Collections.sort(classDocValues);
-  return classDocValues.toArray(new GroovyClassDoc[classDocValues.size()]);
+  List<GroovyClassDoc> result=new ArrayList<GroovyClassDoc>(classDocs.values().size());
+  for (  GroovyClassDoc doc : classDocs.values()) {
+    if (doc.isOrdinaryClass()) {
+      result.add(doc);
+    }
+  }
+  return result.toArray(new GroovyClassDoc[result.size()]);
 }
