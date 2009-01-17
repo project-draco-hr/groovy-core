@@ -11,12 +11,13 @@
         String returnTypeName=getTypeOrDefault(t);
         SimpleGroovyType returnType=new SimpleGroovyType(returnTypeName);
         currentMethodDoc.setReturnType(returnType);
-        addParametersTo(currentMethodDoc,t);
+        addParametersTo(t,currentMethodDoc);
+        processAnnotations(t,currentMethodDoc);
         currentClassDoc.add(currentMethodDoc);
       }
     }
   }
- else {
+ else   if (visit == CLOSING_VISIT) {
     insideMethod=false;
     currentMethodDoc=null;
   }
