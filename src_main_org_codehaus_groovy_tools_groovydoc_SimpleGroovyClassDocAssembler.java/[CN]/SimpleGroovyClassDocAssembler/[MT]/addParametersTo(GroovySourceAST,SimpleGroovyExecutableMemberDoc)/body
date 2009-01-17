@@ -7,6 +7,13 @@
       String parameterName=getText(currentNode.childOfType(IDENT));
       SimpleGroovyParameter parameter=new SimpleGroovyParameter(parameterName);
       parameter.setTypeName(parameterTypeName);
+      GroovySourceAST modifiers=currentNode.childOfType(MODIFIERS);
+      if (modifiers != null) {
+        List<GroovySourceAST> annotations=modifiers.childrenOfType(ANNOTATION);
+        for (        GroovySourceAST a : annotations) {
+          addAnnotationRef(parameter,a);
+        }
+      }
       executableMemberDoc.add(parameter);
       if (currentNode.getNumberOfChildren() == 4) {
         handleDefaultValue(currentNode,parameter);
