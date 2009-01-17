@@ -11,9 +11,23 @@
       lineSeparator="\n";
     }
   }
-  self=normalize(self);
-  if (!lineSeparator.equals("\n")) {
-    self=self.replace("\n",lineSeparator);
-  }
-  return self;
+  final int len=self.length();
+  final StringBuilder sb=new StringBuilder((110 * len) / 100);
+  char chLookBack='\0';
+  for (int i=0; i < len; i++) {
+    final char ch=self.charAt(i);
+switch (ch) {
+case '\r':
+      sb.append(lineSeparator);
+    break;
+case '\n':
+  if (chLookBack != '\r')   sb.append(lineSeparator);
+break;
+default :
+sb.append(ch);
+break;
+}
+chLookBack=ch;
+}
+return sb.toString();
 }
