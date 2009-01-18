@@ -1,12 +1,14 @@
 {
+  List<File> sourcepathFiles=new ArrayList<File>();
+  for (  String sourcepath : sourcepaths) {
+    sourcepathFiles.add(new File(sourcepath).getAbsoluteFile());
+  }
   for (  String filename : filenames) {
-    Iterator pathItr=sourcepath.iterator();
-    while (pathItr.hasNext()) {
-      FileResource fileRes=(FileResource)pathItr.next();
-      String path=fileRes.getFile().getAbsolutePath();
-      File srcFile=new File(path + FS + filename);
+    for (    File spath : sourcepathFiles) {
+      File srcFile=new File(spath,filename);
       if (srcFile.exists()) {
         processFile(filename,srcFile);
+        break;
       }
     }
   }

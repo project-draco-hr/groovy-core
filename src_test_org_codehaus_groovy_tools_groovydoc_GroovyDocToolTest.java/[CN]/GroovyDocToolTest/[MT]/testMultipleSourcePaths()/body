@@ -1,0 +1,11 @@
+{
+  GroovyDocTool multipleXmlTool=new GroovyDocTool(new FileSystemResourceManager("src"),new String[]{"src/main","src/test"},new String[]{TEMPLATES_DIR + "/top-level/rootDocStructuredData.xml"},new String[]{TEMPLATES_DIR + "/package-level/packageDocStructuredData.xml"},new String[]{TEMPLATES_DIR + "/class-level/classDocStructuredData.xml"},new ArrayList(),new Properties());
+  List srcList=new ArrayList();
+  srcList.add("groovy/model/DefaultTableColumn.java");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/GroovyDocToolTestSampleGroovy.groovy");
+  multipleXmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  multipleXmlTool.renderToOutput(output,MOCK_DIR);
+  assertTrue(output.getText(MOCK_DIR + "/groovy/model/DefaultTableColumn.html") != null);
+  assertTrue(output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/GroovyDocToolTestSampleGroovy.html") != null);
+}
