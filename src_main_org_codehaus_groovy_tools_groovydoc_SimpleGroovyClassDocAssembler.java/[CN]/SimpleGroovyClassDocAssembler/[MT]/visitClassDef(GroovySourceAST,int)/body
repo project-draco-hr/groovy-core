@@ -1,14 +1,27 @@
 {
   if (visit == OPENING_VISIT) {
-    String className=t.childOfType(IDENT).getText();
-    currentClassDoc=(SimpleGroovyClassDoc)classDocs.get(packagePath + FS + className);
-    if (currentClassDoc == null) {
-      currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+    SimpleGroovyClassDoc parent=getCurrentClassDoc();
+    String shortName=getIdentFor(t);
+    String className=shortName;
+    if (parent != null && isNested() && !insideAnonymousInnerClass()) {
+      className=parent.name() + "." + className;
     }
-    String commentText=getJavaDocCommentsBeforeNode(t);
-    currentClassDoc.setRawCommentText(commentText);
-    currentClassDoc.setFullPathName(packagePath + FS + currentClassDoc.name());
-    classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
-    processAnnotations(t,currentClassDoc);
+ else {
+      foundClasses=new HashMap<String,SimpleGroovyClassDoc>();
+    }
+    SimpleGroovyClassDoc current=(SimpleGroovyClassDoc)classDocs.get(packagePath + FS + className);
+    if (current == null) {
+      current=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+    }
+    current.setRawCommentText(getJavaDocCommentsBeforeNode(t));
+    current.setFullPathName(packagePath + FS + current.name());
+    current.setTokenType(t.getType());
+    processAnnotations(t,current);
+    classDocs.put(current.getFullPathName(),current);
+    foundClasses.put(shortName,current);
+    if (parent != null) {
+      parent.addNested(current);
+      current.setOuter(parent);
+    }
   }
 }

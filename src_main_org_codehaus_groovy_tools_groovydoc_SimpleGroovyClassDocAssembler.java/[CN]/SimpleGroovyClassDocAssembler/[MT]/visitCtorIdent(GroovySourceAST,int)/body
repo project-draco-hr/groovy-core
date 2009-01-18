@@ -1,13 +1,11 @@
 {
-  if (visit == OPENING_VISIT) {
-    if (!insideAnonymousInnerClass()) {
-      currentConstructorDoc=new SimpleGroovyConstructorDoc(currentClassDoc.name(),currentClassDoc);
-      String commentText=getJavaDocCommentsBeforeNode(t);
-      currentConstructorDoc.setRawCommentText(commentText);
-      processModifiers(t,currentConstructorDoc);
-      addParametersTo(t,currentConstructorDoc);
-      processAnnotations(t,currentConstructorDoc);
-      currentClassDoc.add(currentConstructorDoc);
-    }
+  if (visit == OPENING_VISIT && !insideEnum && !insideAnonymousInnerClass()) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    SimpleGroovyConstructorDoc currentConstructorDoc=new SimpleGroovyConstructorDoc(currentClassDoc.name(),currentClassDoc);
+    currentConstructorDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
+    processModifiers(t,currentConstructorDoc);
+    addParametersTo(t,currentConstructorDoc);
+    processAnnotations(t,currentConstructorDoc);
+    currentClassDoc.add(currentConstructorDoc);
   }
 }

@@ -1,9 +1,7 @@
 {
-  if (visit == OPENING_VISIT) {
-    visitClassDef(t,visit);
-    currentClassDoc.setTokenType(t.getType());
-  }
- else {
-    adjustForAutomaticEnumMethods();
+  visitClassDef(t,visit);
+  SimpleGroovyClassDoc currentClassDoc=getCurrentOrTopLevelClassDoc(t);
+  if (visit == CLOSING_VISIT && currentClassDoc != null) {
+    adjustForAutomaticEnumMethods(currentClassDoc);
   }
 }

@@ -1,24 +1,15 @@
 {
-  if (visit == OPENING_VISIT) {
-    insideMethod=true;
-    if (!insideEnum) {
-      if (!insideAnonymousInnerClass()) {
-        String methodName=t.childOfType(IDENT).getText();
-        currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
-        String commentText=getJavaDocCommentsBeforeNode(t);
-        currentMethodDoc.setRawCommentText(commentText);
-        processModifiers(t,currentMethodDoc);
-        String returnTypeName=getTypeOrDefault(t);
-        SimpleGroovyType returnType=new SimpleGroovyType(returnTypeName);
-        currentMethodDoc.setReturnType(returnType);
-        addParametersTo(t,currentMethodDoc);
-        processAnnotations(t,currentMethodDoc);
-        currentClassDoc.add(currentMethodDoc);
-      }
+  if (visit == OPENING_VISIT && !insideEnum && !insideAnonymousInnerClass()) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    if (currentClassDoc != null) {
+      String methodName=getIdentFor(t);
+      SimpleGroovyMethodDoc currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
+      currentMethodDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
+      processModifiers(t,currentMethodDoc);
+      currentMethodDoc.setReturnType(new SimpleGroovyType(getTypeOrDefault(t)));
+      addParametersTo(t,currentMethodDoc);
+      processAnnotations(t,currentMethodDoc);
+      currentClassDoc.add(currentMethodDoc);
     }
-  }
- else   if (visit == CLOSING_VISIT) {
-    insideMethod=false;
-    currentMethodDoc=null;
   }
 }

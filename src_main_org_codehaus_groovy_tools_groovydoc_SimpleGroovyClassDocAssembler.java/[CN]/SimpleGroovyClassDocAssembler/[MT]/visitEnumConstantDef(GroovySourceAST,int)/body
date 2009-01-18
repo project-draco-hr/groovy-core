@@ -1,14 +1,13 @@
 {
   if (visit == OPENING_VISIT) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
     insideEnum=true;
-    String enumConstantName=t.childOfType(IDENT).getText();
+    String enumConstantName=getIdentFor(t);
     SimpleGroovyFieldDoc currentEnumConstantDoc=new SimpleGroovyFieldDoc(enumConstantName,currentClassDoc);
-    String commentText=getJavaDocCommentsBeforeNode(t);
-    currentEnumConstantDoc.setRawCommentText(commentText);
+    currentEnumConstantDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
     processModifiers(t,currentEnumConstantDoc);
     String typeName=getTypeNodeAsText(t.childOfType(TYPE),currentClassDoc.getTypeDescription());
-    SimpleGroovyType type=new SimpleGroovyType(typeName);
-    currentEnumConstantDoc.setType(type);
+    currentEnumConstantDoc.setType(new SimpleGroovyType(typeName));
     currentClassDoc.addEnumConstant(currentEnumConstantDoc);
   }
  else   if (visit == CLOSING_VISIT) {

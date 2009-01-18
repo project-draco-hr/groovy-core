@@ -1,15 +1,12 @@
 {
-  if (visit == OPENING_VISIT && !insideAnonymousInnerClass()) {
-    GroovySourceAST parentNode=getParentNode();
-    if (isFieldDefinition(parentNode)) {
-      String fieldName=t.childOfType(IDENT).getText();
+  if (visit == OPENING_VISIT && !insideAnonymousInnerClass() && isFieldDefinition()) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    if (currentClassDoc != null) {
+      String fieldName=getIdentFor(t);
       currentFieldDoc=new SimpleGroovyFieldDoc(fieldName,currentClassDoc);
-      String commentText=getJavaDocCommentsBeforeNode(t);
-      currentFieldDoc.setRawCommentText(commentText);
+      currentFieldDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
       processModifiers(t,currentFieldDoc);
-      String typeName=getTypeOrDefault(t);
-      GroovyType type=new SimpleGroovyType(typeName);
-      currentFieldDoc.setType(type);
+      currentFieldDoc.setType(new SimpleGroovyType(getTypeOrDefault(t)));
       processAnnotations(t,currentFieldDoc);
       currentClassDoc.add(currentFieldDoc);
     }
