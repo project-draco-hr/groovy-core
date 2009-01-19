@@ -3,6 +3,7 @@
   Expression method=transform(mce.getMethod());
   Expression object=transform(mce.getObjectExpression());
   MethodCallExpression result=new MethodCallExpression(object,method,args);
+  transformForEnumIfNeeded(result);
   result.setSafe(mce.isSafe());
   result.setImplicitThis(mce.isImplicitThis());
   result.setSpreadSafe(mce.isSpreadSafe());
