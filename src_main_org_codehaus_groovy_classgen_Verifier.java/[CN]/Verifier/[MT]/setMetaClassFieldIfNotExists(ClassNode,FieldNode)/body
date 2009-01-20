@@ -1,7 +1,7 @@
 {
   if (metaClassField != null)   return metaClassField;
   final String classInternalName=BytecodeHelper.getClassInternalName(node);
-  metaClassField=node.addField("metaClass",ACC_PRIVATE | ACC_TRANSIENT,ClassHelper.METACLASS_TYPE,new BytecodeExpression(){
+  metaClassField=node.addField("metaClass",ACC_PRIVATE | ACC_TRANSIENT | ACC_SYNTHETIC,ClassHelper.METACLASS_TYPE,new BytecodeExpression(){
     public void visit(    MethodVisitor mv){
       mv.visitVarInsn(ALOAD,0);
       mv.visitInsn(DUP);
