@@ -18,14 +18,14 @@
   }
   Object value=node.value();
   if (value instanceof List) {
-    printName(node,ctx,true);
+    printName(node,ctx,true,isListOfSimple((List)value));
     printList((List)value,ctx);
-    printName(node,ctx,false);
+    printName(node,ctx,false,isListOfSimple((List)value));
     out.flush();
     return;
   }
-  printName(node,ctx,true);
+  printName(node,ctx,true,preserveWhitespace);
   printSimpleItemWithIndent(value);
-  printName(node,ctx,false);
+  printName(node,ctx,false,preserveWhitespace);
   out.flush();
 }
