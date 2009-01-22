@@ -1,4 +1,9 @@
 {
   if (!annotatedType.isResolved())   return null;
-  return (GroovyASTTransformationClass)annotatedType.getTypeClass().getAnnotation(GroovyASTTransformationClass.class);
+  for (  Annotation ann : annotatedType.getTypeClass().getAnnotations()) {
+    if (ann.annotationType().getName().equals(GroovyASTTransformationClass.class.getName())) {
+      return ann;
+    }
+  }
+  return null;
 }
