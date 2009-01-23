@@ -2,9 +2,12 @@
   if (argument instanceof Float) {
     return argument;
   }
-  Float res=new Float(((Number)argument).floatValue());
-  if (argument instanceof BigDecimal && res.isInfinite()) {
-    throw new IllegalArgumentException(Float.class + " out of range while converting from BigDecimal");
+  if (argument instanceof Number) {
+    Float res=new Float(((Number)argument).floatValue());
+    if (argument instanceof BigDecimal && res.isInfinite()) {
+      throw new IllegalArgumentException(Float.class + " out of range while converting from BigDecimal");
+    }
+    return res;
   }
-  return res;
+  return argument;
 }
