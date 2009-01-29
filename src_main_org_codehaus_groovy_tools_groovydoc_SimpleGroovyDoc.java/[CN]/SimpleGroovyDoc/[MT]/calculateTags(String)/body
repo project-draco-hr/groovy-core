@@ -1,0 +1,28 @@
+{
+  String trimmed=rawCommentText.replaceFirst("(?s).*?\\*\\s*@","@");
+  if (trimmed.equals(rawCommentText))   return;
+  String cleaned=trimmed.replaceAll("(?m)^\\s*\\*\\s*([^*]*)$","$1").trim();
+  String[] split=cleaned.split("(?m)^@");
+  List<GroovyTag> result=new ArrayList<GroovyTag>();
+  for (  String s : split) {
+    String tagname=null;
+    if (s.startsWith("param") || s.startsWith("throws")) {
+      Matcher m=TAG3_PATTERN.matcher(s);
+      if (m.find()) {
+        tagname=m.group(1);
+        result.add(new SimpleGroovyTag(tagname,m.group(2),m.group(3)));
+      }
+    }
+ else {
+      Matcher m=TAG2_PATTERN.matcher(s);
+      if (m.find()) {
+        tagname=m.group(1);
+        result.add(new SimpleGroovyTag(tagname,null,m.group(2)));
+      }
+    }
+    if ("deprecated".equals(tagname)) {
+      setDeprecated(true);
+    }
+  }
+  tags=result.toArray(new GroovyTag[result.size()]);
+}
