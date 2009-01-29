@@ -1,9 +1,11 @@
 {
-  try {
-    final Constructor constructor=orig.getClass().getConstructor();
-    return (Collection)constructor.newInstance();
-  }
- catch (  Exception e) {
+  if (orig instanceof AbstractCollection) {
+    try {
+      final Constructor constructor=orig.getClass().getConstructor();
+      return (Collection)constructor.newInstance();
+    }
+ catch (    Exception e) {
+    }
   }
   return null;
 }

@@ -1,17 +1,19 @@
 {
-  try {
-    final Constructor constructor=orig.getClass().getConstructor(Map.class);
-    return (Map)constructor.newInstance(orig);
-  }
- catch (  Exception e) {
-  }
-  try {
-    final Constructor constructor=orig.getClass().getConstructor();
-    final Map result=(Map)constructor.newInstance();
-    result.putAll(orig);
-    return result;
-  }
- catch (  Exception e) {
+  if ((orig instanceof AbstractMap) || (orig instanceof Hashtable)) {
+    try {
+      final Constructor constructor=orig.getClass().getConstructor(Map.class);
+      return (Map)constructor.newInstance(orig);
+    }
+ catch (    Exception e) {
+    }
+    try {
+      final Constructor constructor=orig.getClass().getConstructor();
+      final Map result=(Map)constructor.newInstance();
+      result.putAll(orig);
+      return result;
+    }
+ catch (    Exception e) {
+    }
   }
   return null;
 }
