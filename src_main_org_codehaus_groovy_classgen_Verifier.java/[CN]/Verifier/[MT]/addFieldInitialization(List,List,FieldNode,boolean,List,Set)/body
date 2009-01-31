@@ -3,7 +3,12 @@
   if (expression != null) {
     ExpressionStatement statement=new ExpressionStatement(new BinaryExpression(new FieldExpression(fieldNode),Token.newSymbol(Types.EQUAL,fieldNode.getLineNumber(),fieldNode.getColumnNumber()),expression));
     if (fieldNode.isStatic()) {
-      staticList.add(statement);
+      if (fieldNode.isStatic() && expression instanceof ConstantExpression) {
+        staticList.add(0,statement);
+      }
+ else {
+        staticList.add(statement);
+      }
       fieldNode.setInitialValueExpression(null);
       if (isEnumClassNode && explicitStaticPropsInEnum.contains(fieldNode.getName())) {
         initStmtsAfterEnumValuesInit.add(statement);
