@@ -22,7 +22,8 @@ catch (  CompilationFailedException cfe) {
     return false;
   }
   if (cls == null)   return false;
-  cachedClasses.put(name,cls);
-  setClass(type,cls);
+  ClassNode cn=ClassHelper.make(cls);
+  cachedClasses.put(name,cn);
+  type.setRedirect(cn);
   return cls.getClassLoader() == loader;
 }
