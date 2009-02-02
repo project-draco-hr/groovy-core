@@ -1,3 +1,5 @@
 {
-  return ResourceBundle.getBundle(bundleName,locale,ReflectionUtils.getCallingClass().getClassLoader());
+  ClassLoader targetCL=ReflectionUtils.getCallingClass().getClassLoader();
+  if (targetCL == null)   targetCL=ClassLoader.getSystemClassLoader();
+  return ResourceBundle.getBundle(bundleName,locale,targetCL);
 }
