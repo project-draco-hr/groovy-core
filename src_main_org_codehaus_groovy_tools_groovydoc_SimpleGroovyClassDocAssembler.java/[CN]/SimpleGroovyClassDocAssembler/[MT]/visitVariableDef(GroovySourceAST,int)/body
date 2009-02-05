@@ -5,10 +5,15 @@
       String fieldName=getIdentFor(t);
       currentFieldDoc=new SimpleGroovyFieldDoc(fieldName,currentClassDoc);
       currentFieldDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
-      processModifiers(t,currentFieldDoc);
+      boolean isProp=processModifiers(t,currentFieldDoc);
       currentFieldDoc.setType(new SimpleGroovyType(getTypeOrDefault(t)));
       processAnnotations(t,currentFieldDoc);
-      currentClassDoc.add(currentFieldDoc);
+      if (isProp) {
+        currentClassDoc.addProperty(currentFieldDoc);
+      }
+ else {
+        currentClassDoc.add(currentFieldDoc);
+      }
     }
   }
 }

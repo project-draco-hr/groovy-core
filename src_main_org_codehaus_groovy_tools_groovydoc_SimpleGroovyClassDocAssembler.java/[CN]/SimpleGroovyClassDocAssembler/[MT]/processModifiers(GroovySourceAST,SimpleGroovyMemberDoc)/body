@@ -26,8 +26,10 @@ break;
 }
 currentModifier=currentModifier.getNextSibling();
 }
-if (!seenNonPublicVisibilityModifier) {
+if (!seenNonPublicVisibilityModifier && isGroovy) {
 memberDoc.setPublic(true);
+return true;
 }
 }
+return false;
 }
