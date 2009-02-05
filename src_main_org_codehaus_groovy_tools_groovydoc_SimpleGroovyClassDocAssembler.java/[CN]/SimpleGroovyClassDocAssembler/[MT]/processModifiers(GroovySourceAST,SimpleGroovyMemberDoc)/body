@@ -2,17 +2,22 @@
   GroovySourceAST modifiers=t.childOfType(MODIFIERS);
   if (modifiers != null) {
     AST currentModifier=modifiers.getFirstChild();
-    boolean seenNonPublicVisibilityModifier=false;
+    boolean hasNonPublicVisibility=false;
+    boolean hasPublicVisibility=false;
     while (currentModifier != null) {
       int type=currentModifier.getType();
 switch (type) {
-case LITERAL_protected:
-        memberDoc.setProtected(true);
-      seenNonPublicVisibilityModifier=true;
+case LITERAL_public:
+        memberDoc.setPublic(true);
+      hasPublicVisibility=true;
     break;
+case LITERAL_protected:
+  memberDoc.setProtected(true);
+hasNonPublicVisibility=true;
+break;
 case LITERAL_private:
-  memberDoc.setPrivate(true);
-seenNonPublicVisibilityModifier=true;
+memberDoc.setPrivate(true);
+hasNonPublicVisibility=true;
 break;
 case LITERAL_static:
 memberDoc.setStatic(true);
@@ -26,10 +31,10 @@ break;
 }
 currentModifier=currentModifier.getNextSibling();
 }
-if (!seenNonPublicVisibilityModifier) {
-if (!isGroovy || !(t instanceof GroovyFieldDoc)) memberDoc.setPublic(true);
-return isGroovy;
+if (!hasNonPublicVisibility && !(memberDoc instanceof GroovyFieldDoc)) {
+memberDoc.setPublic(true);
 }
+if (memberDoc instanceof GroovyFieldDoc && !hasNonPublicVisibility && !hasPublicVisibility&& isGroovy) return true;
 }
 return false;
 }
