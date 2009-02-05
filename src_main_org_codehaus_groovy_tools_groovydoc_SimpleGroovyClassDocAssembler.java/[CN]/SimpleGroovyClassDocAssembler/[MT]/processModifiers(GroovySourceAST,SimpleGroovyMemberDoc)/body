@@ -26,9 +26,9 @@ break;
 }
 currentModifier=currentModifier.getNextSibling();
 }
-if (!seenNonPublicVisibilityModifier && isGroovy) {
-memberDoc.setPublic(true);
-return true;
+if (!seenNonPublicVisibilityModifier) {
+if (!isGroovy || !(t instanceof GroovyFieldDoc)) memberDoc.setPublic(true);
+return isGroovy;
 }
 }
 return false;
