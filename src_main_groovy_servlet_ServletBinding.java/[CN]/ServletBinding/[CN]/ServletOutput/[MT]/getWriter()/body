@@ -1,0 +1,37 @@
+{
+  return new PrintWriter(new InvalidOutputStream()){
+    public boolean checkError(){
+      return getResponseWriter().checkError();
+    }
+    public void close(){
+      getResponseWriter().close();
+    }
+    public void flush(){
+      getResponseWriter().flush();
+    }
+    public void write(    char[] buf){
+      getResponseWriter().write(buf);
+    }
+    public void write(    char[] buf,    int off,    int len){
+      getResponseWriter().write(buf,off,len);
+    }
+    public void write(    int c){
+      getResponseWriter().write(c);
+    }
+    public void write(    String s,    int off,    int len){
+      getResponseWriter().write(s,off,len);
+    }
+    public void println(){
+      getResponseWriter().println();
+    }
+    public PrintWriter format(    String format,    Object... args){
+      getResponseWriter().format(format,args);
+      return this;
+    }
+    public PrintWriter format(    Locale l,    String format,    Object... args){
+      getResponseWriter().format(l,format,args);
+      return this;
+    }
+  }
+;
+}
