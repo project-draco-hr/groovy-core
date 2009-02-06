@@ -41,5 +41,9 @@
     }
     superClass=superClass.getSuperclass();
   }
+  if (prop != null) {
+    MetaClass propMC=registry.getMetaClass(prop.getClass());
+    return propMC.invokeMethod(prop,CLOSURE_CALL_METHOD,arguments);
+  }
   return invokeStaticMissingMethod(sender,methodName,arguments);
 }
