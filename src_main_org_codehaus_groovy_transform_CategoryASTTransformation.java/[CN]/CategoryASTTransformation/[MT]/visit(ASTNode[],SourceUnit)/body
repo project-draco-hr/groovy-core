@@ -45,6 +45,16 @@
           }
         }
       }
+ else       if (exp instanceof PropertyExpression) {
+        PropertyExpression pe=(PropertyExpression)exp;
+        if (pe.getObjectExpression() instanceof VariableExpression) {
+          VariableExpression vex=(VariableExpression)pe.getObjectExpression();
+          if (vex.isThisExpression()) {
+            pe.setObjectExpression(THIS_EXPRESSION);
+            return pe;
+          }
+        }
+      }
       return super.transform(exp);
     }
   }
