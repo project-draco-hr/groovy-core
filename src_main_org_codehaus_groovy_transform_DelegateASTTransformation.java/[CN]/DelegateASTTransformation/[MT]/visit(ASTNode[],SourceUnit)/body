@@ -33,7 +33,7 @@
     final Set ownerIfaces=owner.getAllInterfaces();
     for (Iterator it=allInterfaces.iterator(); it.hasNext(); ) {
       ClassNode iface=(ClassNode)it.next();
-      if (!ownerIfaces.contains(iface)) {
+      if (Modifier.isPublic(iface.getModifiers()) && !ownerIfaces.contains(iface)) {
         final ClassNode[] ifaces=owner.getInterfaces();
         final ClassNode[] newIfaces=new ClassNode[ifaces.length + 1];
         System.arraycopy(ifaces,0,newIfaces,0,ifaces.length);
