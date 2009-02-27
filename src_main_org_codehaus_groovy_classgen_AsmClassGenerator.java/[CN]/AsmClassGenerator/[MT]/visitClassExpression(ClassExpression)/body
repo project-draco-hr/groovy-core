@@ -10,7 +10,10 @@
     String internalClassName=this.internalClassName;
     if (classNode.isInterface()) {
       internalClassName=BytecodeHelper.getClassInternalName(interfaceClassLoadingClass);
+      mv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
     }
-    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$get$" + staticFieldName,"()Ljava/lang/Class;");
+ else {
+      mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$get$" + staticFieldName,"()Ljava/lang/Class;");
+    }
   }
 }
