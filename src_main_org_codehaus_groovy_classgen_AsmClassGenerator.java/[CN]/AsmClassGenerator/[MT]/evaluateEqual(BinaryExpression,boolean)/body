@@ -18,7 +18,13 @@
   }
   Expression rightExpression=expression.getRightExpression();
   if (!(leftExpression instanceof TupleExpression)) {
-    ClassNode type=getLHSType(leftExpression);
+    ClassNode type=null;
+    if (expression instanceof DeclarationExpression) {
+      type=leftExpression.getType();
+    }
+ else {
+      type=getLHSType(leftExpression);
+    }
     assignmentCastAndVisit(type,rightExpression);
   }
  else {
