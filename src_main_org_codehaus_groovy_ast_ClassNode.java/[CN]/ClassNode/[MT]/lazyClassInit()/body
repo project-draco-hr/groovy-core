@@ -1,5 +1,8 @@
 {
 synchronized (lazyInitLock) {
+    if (redirect != null) {
+      throw new GroovyBugError("lazyClassInit called on a proxy ClassNode, that must not happen." + "A redirect() call is missing somewhere!");
+    }
     if (lazyInitDone)     return;
     VMPluginFactory.getPlugin().configureClassNode(compileUnit,this);
     lazyInitDone=true;
