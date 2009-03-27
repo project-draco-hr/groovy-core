@@ -2,14 +2,6 @@
   Class cls=getClassCacheEntry(name);
   boolean recompile=isRecompilable(cls);
   if (!recompile)   return cls;
-  SecurityManager sm=System.getSecurityManager();
-  if (sm != null) {
-    String className=name.replace('/','.');
-    int i=className.lastIndexOf('.');
-    if (i != -1) {
-      sm.checkPackageAccess(className.substring(0,i));
-    }
-  }
   ClassNotFoundException last=null;
   try {
     Class parentClassLoaderClass=super.loadClass(name,resolve);
@@ -24,6 +16,14 @@ catch (  NoClassDefFoundError ncdfe) {
     }
  else {
       throw ncdfe;
+    }
+  }
+  SecurityManager sm=System.getSecurityManager();
+  if (sm != null) {
+    String className=name.replace('/','.');
+    int i=className.lastIndexOf('.');
+    if (i != -1 && !className.startsWith("sun.reflect.")) {
+      sm.checkPackageAccess(className.substring(0,i));
     }
   }
   if (cls != null && preferClassOverScript)   return cls;
