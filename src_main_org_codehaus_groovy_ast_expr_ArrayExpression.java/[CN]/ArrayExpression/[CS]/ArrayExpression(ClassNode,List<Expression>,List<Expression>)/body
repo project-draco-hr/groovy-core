@@ -1,0 +1,19 @@
+{
+  super.setType(makeArray(elementType,sizeExpression));
+  if (expressions == null)   expressions=Collections.emptyList();
+  this.elementType=elementType;
+  this.expressions=expressions;
+  this.sizeExpression=sizeExpression;
+  for (  Object item : expressions) {
+    if (item != null && !(item instanceof Expression)) {
+      throw new ClassCastException("Item: " + item + " is not an Expression");
+    }
+  }
+  if (sizeExpression != null) {
+    for (    Object item : sizeExpression) {
+      if (!(item instanceof Expression)) {
+        throw new ClassCastException("Item: " + item + " is not an Expression");
+      }
+    }
+  }
+}

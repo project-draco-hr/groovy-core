@@ -1,8 +1,6 @@
 {
   statement.getTryStatement().visit(this);
-  List list=statement.getCatchStatements();
-  for (Iterator iter=list.iterator(); iter.hasNext(); ) {
-    CatchStatement catchStatement=(CatchStatement)iter.next();
+  for (  CatchStatement catchStatement : statement.getCatchStatements()) {
     catchStatement.visit(this);
   }
   statement.getFinallyStatement().visit(this);

@@ -1,7 +1,7 @@
 {
   node=node.redirect();
   String name=node.getName();
-  ClassNode stored=(ClassNode)classes.get(name);
+  ClassNode stored=classes.get(name);
   if (stored != null && stored != node) {
     SourceUnit nodeSource=node.getModule().getContext();
     SourceUnit storedSource=stored.getModule().getContext();
@@ -19,7 +19,7 @@
   }
   classes.put(name,node);
   if (classesToCompile.containsKey(name)) {
-    ClassNode cn=(ClassNode)classesToCompile.get(name);
+    ClassNode cn=classesToCompile.get(name);
     cn.setRedirect(node);
     classesToCompile.remove(name);
   }

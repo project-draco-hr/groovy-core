@@ -1,0 +1,9 @@
+{
+  List<T> list=new ArrayList<T>(expressions.size());
+  for (  Expression expr : expressions) {
+    Expression transformed=transformer.transform(expr);
+    if (!transformedType.isInstance(transformed))     throw new GroovyBugError(String.format("Transformed expression should have type %s but has type %s",transformedType,transformed.getClass()));
+    list.add(transformedType.cast(transformed));
+  }
+  return list;
+}

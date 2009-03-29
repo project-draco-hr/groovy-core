@@ -1,11 +1,10 @@
 {
   ClassNode[] interfaces=redirect().getInterfaces();
   if (declaresInterfaceDirect(interfaces,classNode))   return true;
-  List superInterfaces=Arrays.asList(interfaces);
+  List<ClassNode> superInterfaces=Arrays.asList(interfaces);
   while (superInterfaces.size() > 0) {
-    List keep=new ArrayList();
-    for (int i=0; i < superInterfaces.size(); i++) {
-      ClassNode cn=(ClassNode)superInterfaces.get(i);
+    List<ClassNode> keep=new ArrayList<ClassNode>();
+    for (    ClassNode cn : superInterfaces) {
       if (cn.declaresInterface(classNode))       return true;
       keep.addAll(Arrays.asList(cn.getInterfaces()));
     }

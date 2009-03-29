@@ -1,11 +1,11 @@
 {
   if (isEmpty())   return;
-  List classes=getClasses();
-  LinkedList sorted=new LinkedList();
+  List<ClassNode> classes=getClasses();
+  LinkedList<ClassNode> sorted=new LinkedList<ClassNode>();
   int level=1;
   while (!classes.isEmpty()) {
-    for (Iterator cni=classes.iterator(); cni.hasNext(); ) {
-      ClassNode cn=(ClassNode)cni.next();
+    for (Iterator<ClassNode> cni=classes.iterator(); cni.hasNext(); ) {
+      ClassNode cn=cni.next();
       ClassNode sn=cn;
       for (int i=0; sn != null && i < level; i++)       sn=sn.getSuperClass();
       if (sn != null && sn.isPrimaryClassNode())       continue;

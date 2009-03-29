@@ -24,8 +24,7 @@
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
   Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new VariableExpression("context"))));
   classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ClassHelper.make(Binding.class),"context")},ClassNode.EMPTY_ARRAY,stmt);
-  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    MethodNode node=(MethodNode)iter.next();
+  for (  MethodNode node : methods) {
     int modifiers=node.getModifiers();
     if ((modifiers & ACC_ABSTRACT) != 0) {
       throw new RuntimeException("Cannot use abstract methods in a script, they are only available inside classes. Method: " + node.getName());
