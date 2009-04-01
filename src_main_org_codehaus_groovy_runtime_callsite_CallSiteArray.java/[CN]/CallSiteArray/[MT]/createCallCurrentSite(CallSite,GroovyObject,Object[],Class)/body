@@ -3,7 +3,10 @@
   if (receiver instanceof GroovyInterceptable)   site=new PogoInterceptableSite(callSite);
  else {
     MetaClass metaClass=receiver.getMetaClass();
-    if (metaClass instanceof MetaClassImpl) {
+    if (receiver.getClass() != metaClass.getTheClass() && !metaClass.getTheClass().isInterface()) {
+      site=new PogoInterceptableSite(callSite);
+    }
+ else     if (metaClass instanceof MetaClassImpl) {
       site=((MetaClassImpl)metaClass).createPogoCallCurrentSite(callSite,sender,args);
     }
  else     site=new PogoMetaClassSite(callSite,metaClass);
