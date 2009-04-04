@@ -5,7 +5,7 @@
     CachedMethod method=cachedMethods[i];
     if (!method.isStatic() || !method.isPublic())     continue;
     if (method.getParameterTypes().length == 0)     continue;
-    ClassWriter cw=new ClassWriter(true);
+    ClassWriter cw=new ClassWriter(ClassWriter.COMPUTE_MAXS);
     final String className="org/codehaus/groovy/runtime/dgm$" + cur;
     cw.visit(V1_3,ACC_PUBLIC,className,null,"org/codehaus/groovy/reflection/GeneratedMetaMethod",null);
     MethodVisitor mv;
