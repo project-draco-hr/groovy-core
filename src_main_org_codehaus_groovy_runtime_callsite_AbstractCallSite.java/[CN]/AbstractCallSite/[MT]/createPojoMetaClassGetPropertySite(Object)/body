@@ -7,8 +7,8 @@
  else {
     final MetaProperty effective=((MetaClassImpl)metaClass).getEffectiveGetMetaProperty(receiver.getClass(),receiver,name,false);
     if (effective != null) {
-      if (effective instanceof CachedField)       site=new GetEffectivePojoFieldSite(this,metaClass,(CachedField)effective);
- else       site=new GetEffectivePojoPropertySite(this,metaClass,effective);
+      if (effective instanceof CachedField)       site=new GetEffectivePojoFieldSite(this,(MetaClassImpl)metaClass,(CachedField)effective);
+ else       site=new GetEffectivePojoPropertySite(this,(MetaClassImpl)metaClass,effective);
     }
  else {
       site=new PojoMetaClassGetPropertySite(this);
