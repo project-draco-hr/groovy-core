@@ -3,7 +3,8 @@
     return expression.getType() != ClassHelper.VOID_TYPE;
   }
   if (expression instanceof DeclarationExpression) {
-    return false;
+    DeclarationExpression de=(DeclarationExpression)expression;
+    return de.getLeftExpression() instanceof TupleExpression;
   }
   if (expression instanceof BinaryExpression) {
     BinaryExpression binExp=(BinaryExpression)expression;
