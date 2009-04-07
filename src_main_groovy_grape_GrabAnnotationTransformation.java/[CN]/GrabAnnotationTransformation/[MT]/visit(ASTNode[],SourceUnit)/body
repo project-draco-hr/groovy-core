@@ -5,9 +5,7 @@
   allowShortGrapes=true;
   grabAliases=new HashSet();
   grapesAliases=new HashSet();
-  Iterator i=mn.getImports().iterator();
-  while (i.hasNext()) {
-    ImportNode im=(ImportNode)i.next();
+  for (  ImportNode im : mn.getImports()) {
     String alias=im.getAlias();
     String className=im.getClassName();
     if ((className.endsWith(GRAB_DOT_NAME) && ((alias == null) || (alias.length() == 0))) || (GRAB_CLASS_NAME.equals(alias))) {
@@ -24,14 +22,13 @@
     }
   }
   List<Map<String,Object>> grabMaps=new ArrayList();
-  for (  ClassNode classNode : (List<ClassNode>)sourceUnit.getAST().getClasses()) {
+  for (  ClassNode classNode : sourceUnit.getAST().getClasses()) {
     grabAnnotations=new ArrayList<AnnotationNode>();
     grapesAnnotations=new ArrayList<AnnotationNode>();
     visitClass(classNode);
     ClassNode grapeClassNode=new ClassNode(Grape.class);
     if (!grapesAnnotations.isEmpty()) {
-      for (int j=0; j < grapesAnnotations.size(); j++) {
-        AnnotationNode node=grapesAnnotations.get(j);
+      for (      AnnotationNode node : grapesAnnotations) {
         Expression init=node.getMember("initClass");
         Expression value=node.getMember("value");
         if (value instanceof ListExpression) {
@@ -53,8 +50,7 @@
       }
     }
     if (!grabAnnotations.isEmpty()) {
-      grabAnnotationLoop:       for (int j=0; j < grabAnnotations.size(); j++) {
-        AnnotationNode node=grabAnnotations.get(j);
+      grabAnnotationLoop:       for (      AnnotationNode node : grabAnnotations) {
         Map<String,Object> grabMap=new HashMap();
         for (        String s : new String[]{"group","module","version"}) {
           if (node.getMember(s) == null) {
@@ -81,6 +77,11 @@
   if (!grabMaps.isEmpty()) {
     Map basicArgs=new HashMap();
     basicArgs.put("classLoader",sourceUnit.getClassLoader());
-    Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
+    try {
+      Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
+    }
+ catch (    RuntimeException re) {
+      source.addException(re);
+    }
   }
 }

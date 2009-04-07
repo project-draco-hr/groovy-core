@@ -1,8 +1,6 @@
 {
   super.visitAnnotations(node);
-  Iterator i=node.getAnnotations().iterator();
-  while (i.hasNext()) {
-    AnnotationNode an=(AnnotationNode)i.next();
+  for (  AnnotationNode an : node.getAnnotations()) {
     String name=an.getClassNode().getName();
     if ((GRAB_CLASS_NAME.equals(name)) || (allowShortGrab && GRAB_SHORT_NAME.equals(name)) || (grabAliases.contains(name))) {
       grabAnnotations.add(an);
