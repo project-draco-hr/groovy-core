@@ -2,7 +2,13 @@
   SourceBuffer sourceBuffer=new SourceBuffer();
   JavaRecognizer parser=getJavaParser(src,sourceBuffer);
   String[] tokenNames=parser.getTokenNames();
-  parser.compilationUnit();
+  try {
+    parser.compilationUnit();
+  }
+ catch (  OutOfMemoryError e) {
+    System.out.println("Out of memory while processing: " + packagePath + "/"+ file);
+    throw e;
+  }
   AST ast=parser.getAST();
   Visitor java2groovyConverter=new Java2GroovyConverter(tokenNames);
   AntlrASTProcessor java2groovyTraverser=new PreOrderTraversal(java2groovyConverter);

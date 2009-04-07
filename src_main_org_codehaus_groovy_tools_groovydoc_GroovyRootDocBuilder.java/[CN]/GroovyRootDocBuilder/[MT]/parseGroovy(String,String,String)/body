@@ -1,7 +1,13 @@
 {
   SourceBuffer sourceBuffer=new SourceBuffer();
   GroovyRecognizer parser=getGroovyParser(src,sourceBuffer);
-  parser.compilationUnit();
+  try {
+    parser.compilationUnit();
+  }
+ catch (  OutOfMemoryError e) {
+    System.out.println("Out of memory while processing: " + packagePath + "/"+ file);
+    throw e;
+  }
   AST ast=parser.getAST();
   Visitor visitor=new SimpleGroovyClassDocAssembler(packagePath,file,sourceBuffer,links,properties,true);
   AntlrASTProcessor traverser=new SourceCodeTraversal(visitor);
