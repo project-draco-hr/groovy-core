@@ -1,5 +1,5 @@
 {
-  if (isCacheStatements())   return;
+  if (cacheStatements)   return;
   if (statement != null) {
     try {
       statement.close();
@@ -8,6 +8,7 @@
       log.log(Level.INFO,"Caught exception closing statement: " + e,e);
     }
   }
+  if (cacheConnection)   return;
   if (dataSource != null) {
     try {
       connection.close();
