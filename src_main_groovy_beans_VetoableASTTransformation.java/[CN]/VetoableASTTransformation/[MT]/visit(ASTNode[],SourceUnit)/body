@@ -7,6 +7,9 @@
     addListenerToClass(source,node,(ClassNode)nodes[1]);
   }
  else {
+    if ((((FieldNode)nodes[1]).getModifiers() & Opcodes.ACC_FINAL) != 0) {
+      source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot annotate a final property.",node.getLineNumber(),node.getColumnNumber()),source));
+    }
     addListenerToProperty(source,node,(AnnotatedNode)nodes[1]);
   }
 }

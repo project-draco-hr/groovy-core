@@ -1,7 +1,7 @@
 {
   boolean bindable=BindableASTTransformation.hasBindableAnnotation(classNode);
-  for (  PropertyNode propertyNode : (Collection<PropertyNode>)classNode.getProperties()) {
-    if (!hasVetoableAnnotation(propertyNode.getField()) && !propertyNode.getField().isStatic()) {
+  for (  PropertyNode propertyNode : classNode.getProperties()) {
+    if (!hasVetoableAnnotation(propertyNode.getField()) && !((propertyNode.getField().getModifiers() & Opcodes.ACC_FINAL) != 0) && !propertyNode.getField().isStatic()) {
       createListenerSetter(source,node,bindable || BindableASTTransformation.hasBindableAnnotation(propertyNode.getField()),classNode,propertyNode);
     }
   }

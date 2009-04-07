@@ -2,9 +2,9 @@
   if (needsPropertyChangeSupport(classNode,source)) {
     addPropertyChangeSupport(classNode);
   }
-  for (  PropertyNode propertyNode : (Collection<PropertyNode>)classNode.getProperties()) {
+  for (  PropertyNode propertyNode : classNode.getProperties()) {
     FieldNode field=propertyNode.getField();
-    if (hasBindableAnnotation(field) || field.isStatic() || VetoableASTTransformation.hasVetoableAnnotation(field)) {
+    if (hasBindableAnnotation(field) || ((field.getModifiers() & Opcodes.ACC_FINAL) != 0) || field.isStatic()|| VetoableASTTransformation.hasVetoableAnnotation(field)) {
       continue;
     }
     createListenerSetter(source,node,classNode,propertyNode);
