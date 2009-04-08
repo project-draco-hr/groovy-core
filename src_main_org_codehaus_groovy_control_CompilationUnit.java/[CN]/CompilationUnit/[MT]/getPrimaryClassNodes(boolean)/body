@@ -16,18 +16,13 @@
     int i=0;
     for (Iterator iter=unsorted.iterator(); iter.hasNext(); i++) {
       ClassNode node=(ClassNode)iter.next();
-      int count=0;
       ClassNode element=node;
-      while (element != null) {
-        count++;
-        element=element.getSuperClass();
-      }
       if (node.isInterface()) {
-        indexInterface[i]=count;
+        indexInterface[i]=getSuperInterfaceCount(element);
         indexClass[i]=-1;
       }
  else {
-        indexClass[i]=count;
+        indexClass[i]=getSuperClassCount(element);
         indexInterface[i]=-1;
       }
     }
