@@ -31,7 +31,7 @@
       if (Modifier.isStatic(mod)) {
         if (method instanceof CachedMethod)         staticMethod(self,arr,(CachedMethod)method);
       }
- else {
+ else       if (method.getDeclaringClass().getTheClass() != Object.class || method.getName().equals("toString")) {
         final MixinInstanceMetaMethod metaMethod=new MixinInstanceMetaMethod(method,mixin);
         arr.add(metaMethod);
       }
