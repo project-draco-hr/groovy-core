@@ -4,8 +4,8 @@
   }
   Object result=sourceBinding.getSourceValue();
   if (getValidator() != null) {
-    Object validation=getValidator().call();
-    if ((validation == null) || ((validation instanceof Boolean) && !((Boolean)validation).booleanValue())) {
+    Object validation=getValidator().call(result);
+    if ((validation == null) || ((validation instanceof Boolean) && !(Boolean)validation)) {
       return;
     }
   }
