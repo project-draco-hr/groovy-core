@@ -5,8 +5,8 @@
   if (dataSource != null) {
     Connection con;
     try {
-      con=(Connection)AccessController.doPrivileged(new PrivilegedExceptionAction(){
-        public Object run() throws SQLException {
+      con=AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>(){
+        public Connection run() throws SQLException {
           return dataSource.getConnection();
         }
       }
@@ -26,7 +26,5 @@
     }
     return con;
   }
- else {
-    return useConnection;
-  }
+  return useConnection;
 }
