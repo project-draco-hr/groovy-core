@@ -3,7 +3,12 @@
   Connection connection=null;
   try {
     connection=createConnection();
-    closure.call(connection);
+    if (closure.getMaximumNumberOfParameters() == 1) {
+      closure.call(connection);
+    }
+ else {
+      closure.call();
+    }
   }
   finally {
     cacheConnection=false;
