@@ -13,6 +13,11 @@
     if (connection != null)     connection.rollback();
     throw e;
   }
+catch (  GroovyRuntimeException e) {
+    log.log(Level.INFO,"Rolling back due to exception: " + e,e);
+    if (connection != null)     connection.rollback();
+    throw e;
+  }
  finally {
     if (connection != null)     connection.setAutoCommit(true);
     cacheConnection=savedCacheConnection;
