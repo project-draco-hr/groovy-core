@@ -7,4 +7,10 @@
   super.setVariable("out",output.getWriter());
   super.setVariable("sout",output.getOutputStream());
   super.setVariable("html",new MarkupBuilder(output.getWriter()));
+  MethodClosure c=new MethodClosure(this,"forward");
+  super.setVariable("forward",c);
+  c=new MethodClosure(this,"include");
+  super.setVariable("include",c);
+  c=new MethodClosure(this,"redirect");
+  super.setVariable("redirect",c);
 }
