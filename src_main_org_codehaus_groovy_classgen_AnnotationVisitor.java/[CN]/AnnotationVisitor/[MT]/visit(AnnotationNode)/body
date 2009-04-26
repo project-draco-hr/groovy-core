@@ -5,6 +5,9 @@
     addError("class " + node.getClassNode().getName() + " is not an annotation");
     return node;
   }
+  if (!checkIfMandatoryAnnotationValuesPassed(node)) {
+    return node;
+  }
   Map attributes=node.getMembers();
   for (Iterator it=attributes.entrySet().iterator(); it.hasNext(); ) {
     Map.Entry entry=(Map.Entry)it.next();

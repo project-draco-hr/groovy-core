@@ -1,0 +1,13 @@
+{
+  boolean ok=true;
+  Map attributes=node.getMembers();
+  List<MethodNode> methods=node.getClassNode().getMethods();
+  for (  MethodNode mn : methods) {
+    String methodName=mn.getName();
+    if (mn.getCode() == null && !attributes.containsKey(methodName)) {
+      addError("No explicit/default value found for annotation attribute '" + methodName + "' in annotation "+ node.getClassNode(),node);
+      ok=false;
+    }
+  }
+  return ok;
+}
