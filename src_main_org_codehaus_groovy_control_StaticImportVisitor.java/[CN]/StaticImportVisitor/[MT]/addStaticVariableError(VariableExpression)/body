@@ -4,5 +4,5 @@
   if (ve.isThisExpression() || ve.isSuperExpression())   return;
   Variable v=ve.getAccessedVariable();
   if (v != null && !(v instanceof DynamicVariable) && v.isInStaticContext())   return;
-  addError("The name " + ve.getName() + " doesn't refer to a declared variable or class. The static"+ " scope requires that you declare variables before using them. If the variable should have"+ " been a class check the spelling.",ve);
+  addError("Apparent variable '" + ve.getName() + "' was found in a static scope but doesn't refer"+ " to a local variable, static field or class. Possible causes:\n"+ "You attemped to reference a variable in the binding or an instance variable from a static context.\n"+ "You mispelled a classname or statically imported field. Please check the spelling.\n"+ "You attempted to use a method '"+ ve.getName()+ "' but left out brackets in a place not allowed by the grammar.",ve);
 }
