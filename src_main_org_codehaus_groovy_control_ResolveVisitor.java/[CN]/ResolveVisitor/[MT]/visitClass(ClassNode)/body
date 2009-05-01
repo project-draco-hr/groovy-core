@@ -15,6 +15,12 @@
     for (Iterator iter=importPackages.values().iterator(); iter.hasNext(); ) {
       ClassNode type=(ClassNode)iter.next();
       if (resolve(type,false,false,true))       continue;
+      if (type.getPackageName() == null && node.getPackageName() != null) {
+        String oldTypeName=type.getName();
+        type.setName(node.getPackageName() + "." + oldTypeName);
+        if (resolve(type,false,false,true))         continue;
+        type.setName(oldTypeName);
+      }
       addError("unable to resolve class " + type.getName(),type);
     }
     for (Iterator iter=module.getStaticImportAliases().values().iterator(); iter.hasNext(); ) {
