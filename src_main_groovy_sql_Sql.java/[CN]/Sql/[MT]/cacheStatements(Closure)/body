@@ -1,12 +1,14 @@
 {
-  setCacheStatements(true);
+  boolean savedCacheStatements=cacheStatements;
+  cacheStatements=true;
   Connection connection=null;
   try {
     connection=createConnection();
     callClosurePossiblyWithConnection(closure,connection);
   }
   finally {
-    setCacheStatements(false);
+    cacheStatements=false;
     closeResources(connection,null);
+    cacheStatements=savedCacheStatements;
   }
 }

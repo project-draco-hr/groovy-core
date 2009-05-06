@@ -22,7 +22,11 @@ catch (  Error e) {
   }
  finally {
     if (connection != null)     connection.setAutoCommit(true);
-    cacheConnection=savedCacheConnection;
+    cacheConnection=false;
     closeResources(connection,null);
+    cacheConnection=savedCacheConnection;
+    if (dataSource != null && !cacheConnection) {
+      useConnection=null;
+    }
   }
 }

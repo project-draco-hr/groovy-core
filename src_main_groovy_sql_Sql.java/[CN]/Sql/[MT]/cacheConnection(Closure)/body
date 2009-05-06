@@ -1,4 +1,5 @@
 {
+  boolean savedCacheConnection=cacheConnection;
   cacheConnection=true;
   Connection connection=null;
   try {
@@ -8,5 +9,9 @@
   finally {
     cacheConnection=false;
     closeResources(connection,null);
+    cacheConnection=savedCacheConnection;
+    if (dataSource != null && !cacheConnection) {
+      useConnection=null;
+    }
   }
 }
