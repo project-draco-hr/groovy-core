@@ -1,15 +1,13 @@
 {
   if (!bound) {
     bound=true;
-    if (sourceBinding != null) {
-      sourceBoundBean=((PropertyBinding)sourceBinding).bean;
-      sourceBoundProperty=bindProperty(sourceBoundBean,((PropertyBinding)sourceBinding).propertyName,this);
-      sourceBoundToProperty=sourceBoundProperty != null;
+    if ((converter == null) != (reverseConverter == null)) {
+      throw new RuntimeException("Both converter or reverseConverter must be set or unset to bind.  Only " + ((converter != null) ? "converter" : "reverseConverter") + " is set.");
     }
-    if (targetBinding != null) {
-      targetBoundBean=((PropertyBinding)targetBinding).bean;
-      targetBoundProperty=bindProperty(targetBoundBean,((PropertyBinding)targetBinding).propertyName,this);
-      targetBoundToProperty=targetBoundProperty != null;
+    if (forwardBinding == null || reverseBinding == null) {
+      return;
     }
+    forwardBinding.bind();
+    reverseBinding.bind();
   }
 }

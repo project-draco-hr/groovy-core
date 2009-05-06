@@ -1,18 +1,15 @@
 {
-  if (sourceBinding instanceof PropertyBinding) {
-    if (bound && sourceBoundBean != null) {
-      unbindProperty(sourceBoundBean,sourceBoundToProperty ? sourceBoundProperty : (String)null,this);
-      sourceBoundBean=null;
-      sourceBoundProperty=null;
+  try {
+    if (sourceBinding == null) {
+      forwardTriggerBinding=null;
     }
-    super.setSourceBinding(sourceBinding);
-    if (bound) {
-      sourceBoundBean=((PropertyBinding)sourceBinding).bean;
-      sourceBoundProperty=bindProperty(sourceBoundBean,((PropertyBinding)sourceBinding).propertyName,this);
-      sourceBoundToProperty=sourceBoundProperty != null;
-    }
-  }
  else {
-    throw new RuntimeException("Only PropertyBindings can be set in a Mutual Property Binding");
+      forwardTriggerBinding=(TriggerBinding)triggerFactory.call(sourceBinding);
+    }
+    this.sourceBinding=(PropertyBinding)sourceBinding;
   }
+ catch (  RuntimeException re) {
+    throw new UnsupportedOperationException("Mutual Bindings may only change source bindings to other PropertyBindings");
+  }
+  rebuildBindings();
 }

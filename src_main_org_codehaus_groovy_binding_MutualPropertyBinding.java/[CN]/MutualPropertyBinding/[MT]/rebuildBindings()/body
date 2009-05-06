@@ -1,0 +1,26 @@
+{
+  if (bound) {
+    if (forwardBinding != null) {
+      forwardBinding.unbind();
+    }
+    if (reverseBinding != null) {
+      reverseBinding.unbind();
+    }
+  }
+  if (forwardTriggerBinding == null || sourceBinding == null || reverseTriggerBinding == null || targetBinding == null) {
+    return;
+  }
+  forwardBinding=forwardTriggerBinding.createBinding(sourceBinding,targetBinding);
+  reverseBinding=reverseTriggerBinding.createBinding(targetBinding,sourceBinding);
+  if ((converter != null) && (reverseConverter != null)) {
+    forwardBinding.setConverter(converter);
+    reverseBinding.setConverter(reverseConverter);
+  }
+  if (validator != null) {
+    forwardBinding.setValidator(validator);
+  }
+  if (bound) {
+    forwardBinding.bind();
+    reverseBinding.bind();
+  }
+}
