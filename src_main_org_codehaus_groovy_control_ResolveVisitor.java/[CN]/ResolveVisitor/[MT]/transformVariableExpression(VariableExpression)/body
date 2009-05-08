@@ -9,6 +9,7 @@
         t=new LowerCaseClass(name);
       }
       isClass=resolve(t);
+      if (!isClass)       isClass=resolveToInnerEnum(t);
     }
     if (isClass) {
       for (VariableScope scope=currentScope; scope != null && !scope.isRoot(); scope=scope.getParent()) {
