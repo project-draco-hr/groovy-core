@@ -1,0 +1,43 @@
+{
+  super.visitConstructorCallExpression(call);
+  if (!call.isUsingAnnonymousInnerClass())   return;
+  InnerClassNode innerClass=(InnerClassNode)call.getType();
+  if (!innerClass.getDeclaredConstructors().isEmpty())   return;
+  if ((innerClass.getModifiers() & Opcodes.ACC_STATIC) != 0)   return;
+  VariableScope scope=innerClass.getVariableScope();
+  if (scope == null || scope.getReferencedLocalVariablesCount() == 0)   return;
+  List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
+  BlockStatement block=new BlockStatement();
+  List parameters=new ArrayList(expressions.size() + 1 + scope.getReferencedLocalVariablesCount());
+  List superCallArguments=new ArrayList(expressions.size());
+  int pCount=0;
+  for (  Expression expr : expressions) {
+    pCount++;
+    Parameter param=new Parameter(ClassHelper.OBJECT_TYPE,"p" + pCount);
+    parameters.add(param);
+    superCallArguments.add(new VariableExpression(param));
+  }
+  ConstructorCallExpression cce=new ConstructorCallExpression(ClassNode.SUPER,new TupleExpression(superCallArguments));
+  block.addStatement(new ExpressionStatement(cce));
+  expressions.add(VariableExpression.THIS_EXPRESSION);
+  pCount++;
+  Parameter thisParameter=new Parameter(classNode,"p" + pCount);
+  parameters.add(thisParameter);
+  int privateSynthetic=Opcodes.ACC_PRIVATE + Opcodes.ACC_SYNTHETIC;
+  FieldNode thisField=innerClass.addField("this$0",privateSynthetic,ClassHelper.OBJECT_TYPE,null);
+  addFieldInit(thisParameter,thisField,block,false);
+  for (Iterator it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
+    pCount++;
+    org.codehaus.groovy.ast.Variable var=(org.codehaus.groovy.ast.Variable)it.next();
+    VariableExpression ve=new VariableExpression(var);
+    ve.setClosureSharedVariable(true);
+    ve.setUseReferenceDirectly(true);
+    expressions.add(ve);
+    Parameter p=new Parameter(ClassHelper.REFERENCE_TYPE,"p" + pCount);
+    parameters.add(p);
+    FieldNode pField=innerClass.addField(ve.getName(),privateSynthetic,ClassHelper.REFERENCE_TYPE,null);
+    pField.setHolder(true);
+    addFieldInit(p,pField,block,true);
+  }
+  innerClass.addConstructor(ACC_PUBLIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
+}

@@ -1,0 +1,14 @@
+{
+  ClassNode oldNode=classNode;
+  ClassNode outerClass=getClassOrScript(oldNode);
+  String fullName=outerClass.getName() + '$' + innerClassCounter;
+  innerClassCounter++;
+  classNode=new InnerClassNode(outerClass,fullName,Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE);
+  assertNodeType(OBJBLOCK,node);
+  objectBlock(node);
+  output.addClass(classNode);
+  AnonymousInnerClassCarrier ret=new AnonymousInnerClassCarrier();
+  ret.innerClass=classNode;
+  classNode=oldNode;
+  return ret;
+}

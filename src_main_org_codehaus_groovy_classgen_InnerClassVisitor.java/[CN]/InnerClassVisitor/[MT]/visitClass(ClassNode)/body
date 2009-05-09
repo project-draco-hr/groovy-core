@@ -1,0 +1,8 @@
+{
+  this.classNode=node;
+  super.visitClass(node);
+  if (node.isEnum() || node.isInterface())   return;
+  addDispatcherMethods();
+  if (!(node instanceof InnerClassNode))   return;
+  addDefaultMethods((InnerClassNode)node);
+}

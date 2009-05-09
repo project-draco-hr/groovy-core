@@ -22,7 +22,13 @@
     return arrayExpression;
   }
   Expression arguments=arguments(elist);
-  ConstructorCallExpression expression=new ConstructorCallExpression(type,arguments);
-  configureAST(expression,constructorCallNode);
-  return expression;
+  ClassNode innerClass=getAnonymousInnerClassNode(arguments);
+  ConstructorCallExpression ret=new ConstructorCallExpression(type,arguments);
+  if (innerClass != null) {
+    ret.setType(innerClass);
+    ret.setUsingAnonymousInnerClass(true);
+    innerClass.setUnresolvedSuperClass(type);
+  }
+  configureAST(ret,constructorCallNode);
+  return ret;
 }

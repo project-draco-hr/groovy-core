@@ -1,0 +1,25 @@
+{
+  if (scriptDummy != null)   return scriptDummy;
+  String name=getPackageName();
+  if (name == null) {
+    name="";
+  }
+  if (getDescription() == null) {
+    throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
+  }
+  name+=extractClassFromFileDescription();
+  String baseClassName=null;
+  if (unit != null)   baseClassName=unit.getConfig().getScriptBaseClass();
+  ClassNode baseClass=null;
+  if (baseClassName != null) {
+    baseClass=ClassHelper.make(baseClassName);
+  }
+  if (baseClass == null) {
+    baseClass=ClassHelper.SCRIPT_TYPE;
+  }
+  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
+  classNode.setScript(true);
+  classNode.setScriptBody(true);
+  scriptDummy=classNode;
+  return classNode;
+}

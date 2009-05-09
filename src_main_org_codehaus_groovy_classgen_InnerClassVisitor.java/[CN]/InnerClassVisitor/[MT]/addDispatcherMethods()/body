@@ -1,0 +1,32 @@
+{
+  Parameter[] parameters=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE,"receiver"),new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"args")};
+  MethodNode method=classNode.addSyntheticMethod("this$dist$invoke",ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC+ ACC_STATIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  BlockStatement block=new BlockStatement();
+  List gStringStrings=new ArrayList();
+  gStringStrings.add(new ConstantExpression(""));
+  gStringStrings.add(new ConstantExpression(""));
+  List gStringValues=new ArrayList();
+  gStringValues.add(new VariableExpression(parameters[1]));
+  block.addStatement(new ReturnStatement(new MethodCallExpression(new VariableExpression(parameters[0]),new GStringExpression("$name",gStringStrings,gStringValues),new ArgumentListExpression(new SpreadExpression(new VariableExpression(parameters[2]))))));
+  method.setCode(block);
+  parameters=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE,"receiver"),new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"value")};
+  method=classNode.addSyntheticMethod("this$dist$set",ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC+ ACC_STATIC,ClassHelper.VOID_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  block=new BlockStatement();
+  gStringStrings=new ArrayList();
+  gStringStrings.add(new ConstantExpression(""));
+  gStringStrings.add(new ConstantExpression(""));
+  gStringValues=new ArrayList();
+  gStringValues.add(new VariableExpression(parameters[1]));
+  block.addStatement(new ExpressionStatement(new BinaryExpression(new AttributeExpression(new VariableExpression(parameters[0]),new GStringExpression("$name",gStringStrings,gStringValues)),Token.newSymbol(Types.ASSIGN,-1,-1),new VariableExpression(parameters[2]))));
+  method.setCode(block);
+  parameters=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE,"receiver"),new Parameter(ClassHelper.STRING_TYPE,"name")};
+  method=classNode.addSyntheticMethod("this$dist$get",ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC+ ACC_STATIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  block=new BlockStatement();
+  gStringStrings=new ArrayList();
+  gStringStrings.add(new ConstantExpression(""));
+  gStringStrings.add(new ConstantExpression(""));
+  gStringValues=new ArrayList();
+  gStringValues.add(new VariableExpression(parameters[1]));
+  block.addStatement(new ReturnStatement(new AttributeExpression(new VariableExpression(parameters[0]),new GStringExpression("$name",gStringStrings,gStringValues))));
+  method.setCode(block);
+}

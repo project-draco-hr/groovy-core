@@ -1,0 +1,16 @@
+{
+  if (arguments instanceof TupleExpression) {
+    TupleExpression te=(TupleExpression)arguments;
+    List expressions=te.getExpressions();
+    if (expressions.size() == 0)     return null;
+    Expression last=(Expression)expressions.remove(expressions.size() - 1);
+    if (last instanceof AnonymousInnerClassCarrier) {
+      AnonymousInnerClassCarrier carrier=(AnonymousInnerClassCarrier)last;
+      return carrier.innerClass;
+    }
+ else {
+      expressions.add(last);
+    }
+  }
+  return null;
+}

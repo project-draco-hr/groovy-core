@@ -7,7 +7,7 @@
     innerClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
   }
   String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
-  passingClosureParams=true;
+  passingParams=true;
   List constructors=innerClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
   Parameter[] localVariableParams=node.getParameters();
@@ -41,6 +41,6 @@
       mv.visitVarInsn(ALOAD,v.getIndex());
     }
   }
-  passingClosureParams=false;
+  passingParams=false;
   mv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
 }
