@@ -4,5 +4,9 @@
   if (node.isEnum() || node.isInterface())   return;
   addDispatcherMethods();
   if (!(node instanceof InnerClassNode))   return;
+  if (node.getSuperClass().isInterface()) {
+    node.addInterface(node.getUnresolvedSuperClass());
+    node.setUnresolvedSuperClass(ClassHelper.OBJECT_TYPE);
+  }
   addDefaultMethods((InnerClassNode)node);
 }

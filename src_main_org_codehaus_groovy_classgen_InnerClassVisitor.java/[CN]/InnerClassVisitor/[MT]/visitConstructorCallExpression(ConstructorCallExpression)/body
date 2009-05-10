@@ -3,9 +3,9 @@
   if (!call.isUsingAnnonymousInnerClass())   return;
   InnerClassNode innerClass=(InnerClassNode)call.getType();
   if (!innerClass.getDeclaredConstructors().isEmpty())   return;
-  if ((innerClass.getModifiers() & Opcodes.ACC_STATIC) != 0)   return;
+  if ((innerClass.getModifiers() & ACC_STATIC) != 0)   return;
   VariableScope scope=innerClass.getVariableScope();
-  if (scope == null || scope.getReferencedLocalVariablesCount() == 0)   return;
+  if (scope == null)   return;
   List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
   BlockStatement block=new BlockStatement();
   List parameters=new ArrayList(expressions.size() + 1 + scope.getReferencedLocalVariablesCount());
@@ -21,10 +21,10 @@
   block.addStatement(new ExpressionStatement(cce));
   expressions.add(VariableExpression.THIS_EXPRESSION);
   pCount++;
-  Parameter thisParameter=new Parameter(classNode,"p" + pCount);
+  Parameter thisParameter=new Parameter(innerClass.getOuterClass(),"p" + pCount);
   parameters.add(thisParameter);
   int privateSynthetic=Opcodes.ACC_PRIVATE + Opcodes.ACC_SYNTHETIC;
-  FieldNode thisField=innerClass.addField("this$0",privateSynthetic,ClassHelper.OBJECT_TYPE,null);
+  FieldNode thisField=innerClass.addField("this$0",privateSynthetic,innerClass.getOuterClass(),null);
   addFieldInit(thisParameter,thisField,block,false);
   for (Iterator it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
     pCount++;
