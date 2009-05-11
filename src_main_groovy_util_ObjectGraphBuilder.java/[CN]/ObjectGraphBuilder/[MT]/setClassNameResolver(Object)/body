@@ -5,7 +5,7 @@
  else   if (classNameResolver instanceof String) {
     this.classNameResolver=new ClassNameResolver(){
       public String resolveClassname(      String classname){
-        return classNameResolver + "." + classname.substring(0,1).toUpperCase()+ classname.substring(1);
+        return makeClassName((String)classNameResolver,classname);
       }
     }
 ;
@@ -20,6 +20,23 @@
       }
     }
 ;
+  }
+ else   if (classNameResolver instanceof Map) {
+    Map classNameResolverOptions=(Map)classNameResolver;
+    String resolverName=(String)classNameResolverOptions.get(CLASSNAME_RESOLVER_KEY);
+    if (resolverName == null) {
+      throw new RuntimeException("key '" + CLASSNAME_RESOLVER_KEY + "' not defined");
+    }
+    if (CLASSNAME_RESOLVER_REFLECTION.equals(resolverName)) {
+      String root=(String)classNameResolverOptions.get(CLASSNAME_RESOLVER_REFLECTION_ROOT);
+      if (root == null) {
+        throw new RuntimeException("key '" + CLASSNAME_RESOLVER_REFLECTION_ROOT + "' not defined");
+      }
+      this.classNameResolver=new ReflectionClassNameResolver(root);
+    }
+ else {
+      throw new RuntimeException("unknown class name resolver " + resolverName);
+    }
   }
  else {
     this.classNameResolver=new DefaultClassNameResolver();

@@ -1,0 +1,35 @@
+{
+  Object currentNode=getContext().get(CURRENT_NODE);
+  if (currentNode == null) {
+    return makeClassName(root,classname);
+  }
+ else {
+    try {
+      Class klass=currentNode.getClass().getDeclaredField(classname).getType();
+      if (Collection.class.isAssignableFrom(klass)) {
+        Type type=currentNode.getClass().getDeclaredField(classname).getGenericType();
+        if (type instanceof ParameterizedType) {
+          ParameterizedType ptype=(ParameterizedType)type;
+          Type[] actualTypeArguments=ptype.getActualTypeArguments();
+          if (actualTypeArguments.length != 1) {
+            throw new RuntimeException("can't determine class name for collection field " + classname + " with multiple generics");
+          }
+          Type typeArgument=actualTypeArguments[0];
+          if (typeArgument instanceof Class) {
+            klass=(Class)actualTypeArguments[0];
+          }
+ else {
+            throw new RuntimeException("can't instantiate collection field " + classname + " elements as they aren't a class");
+          }
+        }
+ else {
+          throw new RuntimeException("collection field " + classname + " must be genericised");
+        }
+      }
+      return klass.getName();
+    }
+ catch (    NoSuchFieldException e) {
+      throw new RuntimeException("can't find field " + classname + " for node class "+ currentNode.getClass().getName(),e);
+    }
+  }
+}
