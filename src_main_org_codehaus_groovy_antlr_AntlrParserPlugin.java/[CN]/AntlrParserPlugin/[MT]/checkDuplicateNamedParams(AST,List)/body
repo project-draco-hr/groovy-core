@@ -1,0 +1,17 @@
+{
+  if (expressionList.isEmpty())   return;
+  Set<String> namedArgumentNames=new HashSet<String>();
+  MapEntryExpression meExp;
+  for (Iterator iter=expressionList.iterator(); iter.hasNext(); ) {
+    meExp=(MapEntryExpression)iter.next();
+    if (meExp.getKeyExpression() instanceof ConstantExpression) {
+      String argName=((ConstantExpression)meExp.getKeyExpression()).getText();
+      if (!namedArgumentNames.contains(argName)) {
+        namedArgumentNames.add(argName);
+      }
+ else {
+        throw new ASTRuntimeException(elist,"Duplicate named parameter '" + argName + "' found.");
+      }
+    }
+  }
+}
