@@ -61,6 +61,7 @@
         grabMap.put("group",((ConstantExpression)node.getMember("group")).getValue());
         grabMap.put("module",((ConstantExpression)node.getMember("module")).getValue());
         grabMap.put("version",((ConstantExpression)node.getMember("version")).getValue());
+        if (node.getMember("classifier") != null)         grabMap.put("classifier",((ConstantExpression)node.getMember("classifier")).getValue());
         grabMaps.add(grabMap);
         if ((node.getMember("initClass") == null) || (node.getMember("initClass") == ConstantExpression.TRUE)) {
           List grabInitializers=new ArrayList();
@@ -68,6 +69,7 @@
           me.addMapEntryExpression(new ConstantExpression("group"),node.getMember("group"));
           me.addMapEntryExpression(new ConstantExpression("module"),node.getMember("module"));
           me.addMapEntryExpression(new ConstantExpression("version"),node.getMember("version"));
+          if (node.getMember("classifier") != null)           me.addMapEntryExpression(new ConstantExpression("classifier"),node.getMember("classifier"));
           grabInitializers.add(new ExpressionStatement(new StaticMethodCallExpression(grapeClassNode,"grab",new ArgumentListExpression(me))));
           classNode.addStaticInitializerStatements(grabInitializers,true);
         }
