@@ -2,6 +2,9 @@
   if (scriptClass == null) {
     return null;
   }
+  System.err.println(scriptClass + " ? " + (Script.class.isAssignableFrom(scriptClass)));
+  System.err.println(scriptClass.getSuperclass());
+  System.err.println(java.util.Arrays.toString(scriptClass.getInterfaces()));
   try {
     if (Script.class.isAssignableFrom(scriptClass)) {
       Script script=null;
@@ -13,6 +16,7 @@
 catch (      IllegalAccessException e) {
       }
       if (script != null) {
+        System.err.println(script);
         script.setBinding(context);
         script.setProperty("args",args);
         return script.run();
