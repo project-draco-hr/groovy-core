@@ -1,9 +1,13 @@
 {
-  LocalMap recent=recentThreadMap;
-  if (recent != null && recent.myThread == Thread.currentThread())   return recent;
+  SoftReference<LocalMap> mapRef=recentThreadMapRef;
+  LocalMap recent=null;
+  if (mapRef != null)   recent=mapRef.get();
+  if (recent != null && recent.myThread.get() == Thread.currentThread()) {
+    return mapRef;
+  }
  else {
-    final LocalMap res=super.get();
-    recentThreadMap=res;
-    return res;
+    SoftReference<LocalMap> ref=super.get();
+    recentThreadMapRef=ref;
+    return ref;
   }
 }
