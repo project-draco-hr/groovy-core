@@ -1,3 +1,5 @@
 {
-  return localMap.get().get(cls);
+  ThreadLocalMapHandler handler=localMapRef.get();
+  if (handler != null)   return handler.get().get(cls);
+  return (ClassInfo)globalClassSet.getOrPut(cls,null);
 }

@@ -1,8 +1,5 @@
 {
-  final MetaClass metaClass=receiver.getMetaClass();
-  if (metaClass.getTheClass() != receiver.getClass()) {
-    return new PogoGetPropertySite(this,metaClass.getTheClass());
-  }
+  MetaClass metaClass=receiver.getMetaClass();
   CallSite site;
   if (metaClass.getClass() != MetaClassImpl.class || GroovyCategorySupport.hasCategoryInCurrentThread()) {
     site=new PogoMetaClassGetPropertySite(this,metaClass);
