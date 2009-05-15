@@ -1,11 +1,9 @@
 {
-  Map constantAttrs=new HashMap();
-  Map enumAttrs=new HashMap();
-  Map atAttrs=new HashMap();
-  Map arrayAttrs=new HashMap();
-  Iterator mIt=an.getMembers().keySet().iterator();
-  while (mIt.hasNext()) {
-    String name=(String)mIt.next();
+  Map<String,Object> constantAttrs=new HashMap<String,Object>();
+  Map<String,PropertyExpression> enumAttrs=new HashMap<String,PropertyExpression>();
+  Map<String,Object> atAttrs=new HashMap<String,Object>();
+  Map<String,ListExpression> arrayAttrs=new HashMap<String,ListExpression>();
+  for (  String name : an.getMembers().keySet()) {
     Expression expr=an.getMember(name);
     if (expr instanceof AnnotationConstantExpression) {
       atAttrs.put(name,((AnnotationConstantExpression)expr).getValue());
@@ -17,23 +15,20 @@
       constantAttrs.put(name,Type.getType(BytecodeHelper.getTypeDescription(expr.getType())));
     }
  else     if (expr instanceof PropertyExpression) {
-      enumAttrs.put(name,expr);
+      enumAttrs.put(name,(PropertyExpression)expr);
     }
  else     if (expr instanceof ListExpression) {
-      arrayAttrs.put(name,expr);
+      arrayAttrs.put(name,(ListExpression)expr);
     }
   }
-  for (Iterator it=constantAttrs.entrySet().iterator(); it.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)it.next();
+  for (  Map.Entry entry : constantAttrs.entrySet()) {
     av.visit((String)entry.getKey(),entry.getValue());
   }
-  for (Iterator it=enumAttrs.entrySet().iterator(); it.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)it.next();
+  for (  Map.Entry entry : enumAttrs.entrySet()) {
     PropertyExpression propExp=(PropertyExpression)entry.getValue();
     av.visitEnum((String)entry.getKey(),BytecodeHelper.getTypeDescription(propExp.getObjectExpression().getType()),String.valueOf(((ConstantExpression)propExp.getProperty()).getValue()));
   }
-  for (Iterator it=atAttrs.entrySet().iterator(); it.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)it.next();
+  for (  Map.Entry entry : atAttrs.entrySet()) {
     AnnotationNode atNode=(AnnotationNode)entry.getValue();
     AnnotationVisitor av2=av.visitAnnotation((String)entry.getKey(),BytecodeHelper.getTypeDescription(atNode.getClassNode()));
     visitAnnotationAttributes(atNode,av2);

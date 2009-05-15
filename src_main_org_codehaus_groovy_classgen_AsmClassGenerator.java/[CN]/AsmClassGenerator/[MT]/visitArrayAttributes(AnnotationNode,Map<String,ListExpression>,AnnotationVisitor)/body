@@ -1,0 +1,14 @@
+{
+  if (arrayAttr.isEmpty())   return;
+  for (  Map.Entry entry : arrayAttr.entrySet()) {
+    AnnotationVisitor av2=av.visitArray((String)entry.getKey());
+    List<Expression> values=((ListExpression)entry.getValue()).getExpressions();
+    if (!values.isEmpty()) {
+      int arrayElementType=determineCommonArrayType(values);
+      for (      Expression exprChild : values) {
+        visitAnnotationArrayElement(exprChild,arrayElementType,av2);
+      }
+    }
+    av2.visitEnd();
+  }
+}

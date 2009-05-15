@@ -1,0 +1,20 @@
+{
+switch (arrayElementType) {
+case 1:
+    AnnotationNode atAttr=(AnnotationNode)((AnnotationConstantExpression)expr).getValue();
+  AnnotationVisitor av2=av.visitAnnotation(null,BytecodeHelper.getTypeDescription(atAttr.getClassNode()));
+visitAnnotationAttributes(atAttr,av2);
+av2.visitEnd();
+break;
+case 2:
+av.visit(null,((ConstantExpression)expr).getValue());
+break;
+case 3:
+av.visit(null,Type.getType(BytecodeHelper.getTypeDescription(expr.getType())));
+break;
+case 4:
+PropertyExpression propExpr=(PropertyExpression)expr;
+av.visitEnum(null,BytecodeHelper.getTypeDescription(propExpr.getObjectExpression().getType()),String.valueOf(((ConstantExpression)propExpr.getProperty()).getValue()));
+break;
+}
+}

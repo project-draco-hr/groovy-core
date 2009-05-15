@@ -8,9 +8,8 @@
   if (!checkIfMandatoryAnnotationValuesPassed(node)) {
     return node;
   }
-  Map attributes=node.getMembers();
-  for (Iterator it=attributes.entrySet().iterator(); it.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)it.next();
+  Map<String,Expression> attributes=node.getMembers();
+  for (  Map.Entry entry : attributes.entrySet()) {
     String attrName=(String)entry.getKey();
     Expression attrExpr=(Expression)entry.getValue();
     ClassNode attrType=getAttributeType(node,attrName);
