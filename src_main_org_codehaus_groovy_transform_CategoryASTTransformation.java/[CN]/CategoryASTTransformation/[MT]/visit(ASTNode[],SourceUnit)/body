@@ -35,6 +35,15 @@
       varStack.getLast().add(expression.getVariableExpression().getName());
       super.visitDeclarationExpression(expression);
     }
+    public void visitForLoop(    ForStatement forLoop){
+      Expression exp=forLoop.getCollectionExpression();
+      exp.visit(this);
+      Parameter loopParam=forLoop.getVariable();
+      if (loopParam != null) {
+        varStack.getLast().add(loopParam.getName());
+      }
+      super.visitForLoop(forLoop);
+    }
     public void visitExpressionStatement(    ExpressionStatement es){
       Expression exp=es.getExpression();
       if (exp instanceof DeclarationExpression) {
