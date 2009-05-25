@@ -1,0 +1,20 @@
+{
+  if (!hasPlausibleSourcePosition(stat))   throw new SourceTextNotAvailableException(stat,sourceUnit,"Invalid source position");
+  firstLine=stat.getLineNumber();
+  textOffsets.add(0);
+  normalizedText="";
+  for (int line=stat.getLineNumber(); line <= stat.getLastLineNumber(); line++) {
+    String lineText=sourceUnit.getSample(line,0,janitor);
+    if (lineText == null)     throw new SourceTextNotAvailableException(stat,sourceUnit,"SourceUnit.getSample() returned null");
+    if (line == stat.getLastLineNumber())     lineText=lineText.substring(0,stat.getLastColumnNumber() - 1);
+    if (line == stat.getLineNumber()) {
+      lineText=lineText.substring(stat.getColumnNumber() - 1);
+      lineOffsets.add(stat.getColumnNumber() - 1);
+    }
+ else     lineOffsets.add(countLeadingWhitespace(lineText));
+    lineText=lineText.trim();
+    if (line != stat.getLastLineNumber() && lineText.length() > 0)     lineText+=' ';
+    normalizedText+=lineText;
+    textOffsets.add(normalizedText.length());
+  }
+}

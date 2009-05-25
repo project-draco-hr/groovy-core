@@ -1,0 +1,10 @@
+{
+  if (!(expr instanceof MethodCallExpression))   return expr;
+  MethodCallExpression methodExpr=(MethodCallExpression)expr;
+  Expression targetExpr=methodExpr.getObjectExpression();
+  if (!(targetExpr instanceof VariableExpression))   return expr;
+  VariableExpression var=(VariableExpression)targetExpr;
+  if (var != AssertionRewriter.recorderVariable)   return expr;
+  if (!methodExpr.getMethodAsString().equals(ValueRecorder.RECORD_METHOD_NAME))   return expr;
+  return ((ArgumentListExpression)methodExpr.getArguments()).getExpression(0);
+}

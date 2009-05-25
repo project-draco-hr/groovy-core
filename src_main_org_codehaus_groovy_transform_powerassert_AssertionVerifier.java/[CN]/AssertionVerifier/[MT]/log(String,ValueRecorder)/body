@@ -1,0 +1,18 @@
+{
+  Writer out=null;
+  try {
+    out=new FileWriter(LOG_FILE,true);
+    out.write(AssertionRenderer.render(text,recorder));
+    out.write("\n\n");
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    try {
+      if (out != null)       out.close();
+    }
+ catch (    IOException ignored) {
+    }
+  }
+}

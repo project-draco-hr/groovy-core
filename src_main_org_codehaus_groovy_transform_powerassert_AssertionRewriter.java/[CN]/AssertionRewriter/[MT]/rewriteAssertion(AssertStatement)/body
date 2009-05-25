@@ -1,0 +1,17 @@
+{
+  if (stat.getMessageExpression() != ConstantExpression.NULL)   return;
+  SourceText text;
+  try {
+    text=new SourceText(stat,sourceUnit,janitor);
+  }
+ catch (  SourceTextNotAvailableException e) {
+    return;
+  }
+  assertFound=true;
+  ExpressionStatement verifyCall=new ExpressionStatement(new MethodCallExpression(new ClassExpression(verifierClass),AssertionVerifier.VERIFY_METHOD_NAME,new ArgumentListExpression(TruthExpressionRewriter.rewrite(stat.getBooleanExpression(),text,this),new ConstantExpression(text.getNormalizedText()),recorderVariable)));
+  BlockStatement tryBlock=new BlockStatement();
+  tryBlock.addStatement(verifyCall);
+  tryBlock.setSourcePosition(stat);
+  TryCatchStatement tryCatchStat=new TryCatchStatement(tryBlock,new ExpressionStatement(new MethodCallExpression(recorderVariable,ValueRecorder.CLEAR_METHOD_NAME,ArgumentListExpression.EMPTY_ARGUMENTS)));
+  replaceVisitedStatementWith(tryCatchStat);
+}

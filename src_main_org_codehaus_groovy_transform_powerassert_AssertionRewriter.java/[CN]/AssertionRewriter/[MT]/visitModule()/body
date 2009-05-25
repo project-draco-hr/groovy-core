@@ -1,0 +1,10 @@
+{
+  ModuleNode module=sourceUnit.getAST();
+  try {
+    @SuppressWarnings("unchecked") List<ClassNode> classes=module.getClasses();
+    for (    ClassNode clazz : classes)     visitClass(clazz);
+  }
+  finally {
+    janitor.cleanup();
+  }
+}

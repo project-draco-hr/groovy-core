@@ -1,0 +1,17 @@
+{
+  if (value == null)   return "null";
+  String str;
+  String errorMsg="";
+  try {
+    str=value.getClass().isArray() ? arrayToString(value) : value.toString();
+  }
+ catch (  Exception e) {
+    str=null;
+    errorMsg=" (toString() threw " + e.getClass().getName() + ")";
+  }
+  if (str == null || str.equals("")) {
+    String hash=Integer.toHexString(System.identityHashCode(value));
+    return value.getClass().getName() + "@" + hash+ errorMsg;
+  }
+  return str;
+}

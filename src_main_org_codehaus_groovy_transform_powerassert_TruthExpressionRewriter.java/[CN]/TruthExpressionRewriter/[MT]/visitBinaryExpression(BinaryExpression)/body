@@ -1,0 +1,8 @@
+{
+  Expression left=expr.getLeftExpression();
+  Expression right=expr.getRightExpression();
+  Token op=expr.getOperation();
+  BinaryExpression conversion=new BinaryExpression(Types.ofType(op.getType(),Types.ASSIGNMENT_OPERATOR) ? left : rewrite(left),op,rewrite(right));
+  conversion.setSourcePosition(expr);
+  result=Types.ofType(op.getType(),Types.MATCHED_CONTAINER) ? record(conversion,sourceText.getNormalizedColumn(op.getText(),right.getLineNumber(),right.getColumnNumber())) : record(conversion,op);
+}

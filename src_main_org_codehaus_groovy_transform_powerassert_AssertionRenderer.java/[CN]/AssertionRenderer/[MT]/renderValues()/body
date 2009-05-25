@@ -1,0 +1,25 @@
+{
+  nextValue:   for (  Value value : recorder.getValues()) {
+    String str=valueToString(value.getValue());
+    if (str == null)     continue;
+    int startColumn=value.getColumn();
+    if (startColumn < 1)     continue;
+    String[] strs=str.split("\n");
+    int endColumn=strs.length == 1 ? value.getColumn() + str.length() : Integer.MAX_VALUE;
+    for (int i=1; i < lines.size(); i++)     if (endColumn < startColumns.get(i)) {
+      placeString(lines.get(i),str,startColumn);
+      startColumns.set(i,startColumn);
+      continue nextValue;
+    }
+ else {
+      placeString(lines.get(i),"|",startColumn);
+      if (i > 1)       startColumns.set(i,startColumn + 1);
+    }
+    for (    String s : strs) {
+      StringBuilder newLine=new StringBuilder();
+      lines.add(newLine);
+      placeString(newLine,s,startColumn);
+      startColumns.add(startColumn);
+    }
+  }
+}
