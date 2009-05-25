@@ -1,5 +1,8 @@
 {
-  property=transformer.transform(property);
-  objectExpression=transformer.transform(objectExpression);
-  return this;
+  PropertyExpression ret=new PropertyExpression(transformer.transform(objectExpression),transformer.transform(property),safe);
+  ret.setSpreadSafe(spreadSafe);
+  ret.setStatic(isStatic);
+  ret.setImplicitThis(implicitThis);
+  ret.setSourcePosition(this);
+  return ret;
 }
