@@ -18,6 +18,7 @@ synchronized (sourceCache) {
     answer=collector.generatedClass;
     for (Iterator iter=collector.getLoadedClasses().iterator(); iter.hasNext(); ) {
       Class clazz=(Class)iter.next();
+      definePackage(clazz.getName());
       setClassCacheEntry(clazz);
     }
     if (shouldCacheSource)     sourceCache.put(codeSource.getName(),answer);
