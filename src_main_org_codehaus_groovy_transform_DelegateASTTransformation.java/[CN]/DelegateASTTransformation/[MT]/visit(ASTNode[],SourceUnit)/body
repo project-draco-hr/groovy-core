@@ -1,21 +1,19 @@
 {
-  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedClass] but got: " + Arrays.asList(nodes));
   }
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (parent instanceof FieldNode) {
     FieldNode fieldNode=(FieldNode)parent;
     final ClassNode type=fieldNode.getType();
-    final Map fieldMethods=type.getDeclaredMethodsMap();
+    final Map<String,MethodNode> fieldMethods=type.getDeclaredMethodsMap();
     final ClassNode owner=fieldNode.getOwner();
-    final Map ownMethods=owner.getDeclaredMethodsMap();
-    for (Iterator it=fieldMethods.entrySet().iterator(); it.hasNext(); ) {
-      Map.Entry e=(Map.Entry)it.next();
+    final Map<String,MethodNode> ownMethods=owner.getDeclaredMethodsMap();
+    for (    Map.Entry<String,MethodNode> e : fieldMethods.entrySet()) {
       addDelegateMethod(fieldNode,owner,ownMethods,e);
     }
-    for (Iterator it=type.getProperties().iterator(); it.hasNext(); ) {
-      PropertyNode prop=(PropertyNode)it.next();
+    for (    PropertyNode prop : type.getProperties()) {
       if (prop.isStatic() || !prop.isPublic())       continue;
       String name=prop.getName();
       String getterName="get" + Verifier.capitalize(name);
@@ -29,10 +27,9 @@
     }
     final Expression member=node.getMember("interfaces");
     if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(false))     return;
-    final Set allInterfaces=type.getAllInterfaces();
-    final Set ownerIfaces=owner.getAllInterfaces();
-    for (Iterator it=allInterfaces.iterator(); it.hasNext(); ) {
-      ClassNode iface=(ClassNode)it.next();
+    final Set<ClassNode> allInterfaces=type.getAllInterfaces();
+    final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
+    for (    ClassNode iface : allInterfaces) {
       if (Modifier.isPublic(iface.getModifiers()) && !ownerIfaces.contains(iface)) {
         final ClassNode[] ifaces=owner.getInterfaces();
         final ClassNode[] newIfaces=new ClassNode[ifaces.length + 1];
