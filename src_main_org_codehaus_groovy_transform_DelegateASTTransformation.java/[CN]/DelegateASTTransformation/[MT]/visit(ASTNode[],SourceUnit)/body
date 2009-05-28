@@ -1,6 +1,6 @@
 {
   if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedClass] but got: " + Arrays.asList(nodes));
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
   }
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
@@ -9,24 +9,20 @@
     final ClassNode type=fieldNode.getType();
     final Map<String,MethodNode> fieldMethods=type.getDeclaredMethodsMap();
     final ClassNode owner=fieldNode.getOwner();
+    final Expression deprecatedElement=node.getMember("deprecated");
+    final boolean deprecated=(deprecatedElement instanceof ConstantExpression && ((ConstantExpression)deprecatedElement).getValue().equals(true));
     final Map<String,MethodNode> ownMethods=owner.getDeclaredMethodsMap();
     for (    Map.Entry<String,MethodNode> e : fieldMethods.entrySet()) {
-      addDelegateMethod(fieldNode,owner,ownMethods,e);
+      addDelegateMethod(fieldNode,owner,ownMethods,e,deprecated);
     }
     for (    PropertyNode prop : type.getProperties()) {
       if (prop.isStatic() || !prop.isPublic())       continue;
       String name=prop.getName();
-      String getterName="get" + Verifier.capitalize(name);
-      if (owner.getGetterMethod(getterName) == null) {
-        owner.addMethod(getterName,ACC_PUBLIC,nonGeneric(prop.getType()),Parameter.EMPTY_ARRAY,null,new ReturnStatement(new PropertyExpression(new FieldExpression(fieldNode),name)));
-      }
-      String setterName="set" + Verifier.capitalize(name);
-      if ((prop.getModifiers() & ACC_FINAL) != 0 && owner.getSetterMethod(setterName) == null) {
-        owner.addMethod(setterName,ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(nonGeneric(prop.getType()),"value")},null,new ExpressionStatement(new BinaryExpression(new PropertyExpression(new FieldExpression(fieldNode),name),Token.newSymbol(Types.EQUAL,-1,-1),new VariableExpression("value"))));
-      }
+      addGetterIfNeeded(fieldNode,owner,prop,name);
+      addSetterIfNeeded(fieldNode,owner,prop,name);
     }
-    final Expression member=node.getMember("interfaces");
-    if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(false))     return;
+    final Expression interfacesElement=node.getMember("interfaces");
+    if (interfacesElement instanceof ConstantExpression && ((ConstantExpression)interfacesElement).getValue().equals(false))     return;
     final Set<ClassNode> allInterfaces=type.getAllInterfaces();
     final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
     for (    ClassNode iface : allInterfaces) {
