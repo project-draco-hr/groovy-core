@@ -2,7 +2,8 @@
   MethodNode method=e.getValue();
   if (!method.isPublic() || method.isStatic())   return;
   if (!method.getAnnotations(DEPRECATED_TYPE).isEmpty() && !deprecated)   return;
-  if (!ownMethods.containsKey(e.getKey())) {
+  MethodNode existingNode=ownMethods.get(e.getKey());
+  if (existingNode == null || existingNode.getCode() == null) {
     final ArgumentListExpression args=new ArgumentListExpression();
     final Parameter[] params=method.getParameters();
     final Parameter[] newParams=new Parameter[params.length];
