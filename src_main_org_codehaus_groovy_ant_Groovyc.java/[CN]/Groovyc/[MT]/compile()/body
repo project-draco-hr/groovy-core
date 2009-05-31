@@ -14,7 +14,7 @@
         for (Iterator i=javac.getRuntimeConfigurableWrapper().getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
           final Map.Entry e=(Map.Entry)i.next();
           final String key=e.getKey().toString();
-          final String value=e.getValue().toString();
+          final String value=getProject().replaceProperties(e.getValue().toString());
           if (key.indexOf("debug") != -1) {
             String level="";
             if (javac.getDebugLevel() != null) {
@@ -103,7 +103,7 @@
           commandLineList.add("@" + tempFile.getPath());
         }
  catch (        IOException e) {
-          log("Error createing file list",e,Project.MSG_ERR);
+          log("Error creating file list",e,Project.MSG_ERR);
         }
       }
  else {
@@ -170,14 +170,12 @@
     }
   }
   finally {
-    Iterator<File> files=temporaryFiles.iterator();
-    while (files.hasNext()) {
-      File tmpFile=files.next();
+    for (    File temporaryFile : temporaryFiles) {
       try {
-        FileSystemCompiler.deleteRecursive(tmpFile);
+        FileSystemCompiler.deleteRecursive(temporaryFile);
       }
  catch (      Throwable t) {
-        System.err.println("error: could not delete temp files - " + tmpFile.getPath());
+        System.err.println("error: could not delete temp files - " + temporaryFile.getPath());
       }
     }
   }
