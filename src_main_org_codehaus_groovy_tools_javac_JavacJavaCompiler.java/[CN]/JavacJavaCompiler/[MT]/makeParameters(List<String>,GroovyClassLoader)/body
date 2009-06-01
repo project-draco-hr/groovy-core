@@ -1,6 +1,6 @@
 {
   Map options=config.getJointCompilationOptions();
-  LinkedList paras=new LinkedList();
+  LinkedList<String> paras=new LinkedList<String>();
   File target=config.getTargetDirectory();
   if (target == null)   target=new File(".");
   paras.add("-d");
@@ -9,8 +9,8 @@
   paras.add(((File)options.get("stubDir")).getAbsolutePath());
   String[] flags=(String[])options.get("flags");
   if (flags != null) {
-    for (int i=0; i < flags.length; i++) {
-      paras.add('-' + flags[i]);
+    for (    String flag : flags) {
+      paras.add('-' + flag);
     }
   }
   boolean hadClasspath=false;
@@ -43,5 +43,5 @@
     paras.add(resultPath.toString());
   }
   paras.addAll(files);
-  return (String[])paras.toArray(new String[paras.size()]);
+  return paras.toArray(new String[paras.size()]);
 }

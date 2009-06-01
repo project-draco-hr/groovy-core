@@ -1,18 +1,18 @@
 {
   String[] filenames=cli.getArgs();
-  List fileList=new ArrayList(filenames.length);
+  List<String> fileList=new ArrayList<String>(filenames.length);
   boolean errors=false;
-  for (int i=0; i < filenames.length; i++) {
-    if (filenames[i].startsWith("@")) {
+  for (  String filename : filenames) {
+    if (filename.startsWith("@")) {
       try {
-        BufferedReader br=new BufferedReader(new FileReader(filenames[i].substring(1)));
+        BufferedReader br=new BufferedReader(new FileReader(filename.substring(1)));
         String file;
         while ((file=br.readLine()) != null) {
           fileList.add(file);
         }
       }
  catch (      IOException ioe) {
-        System.err.println("error: file not readable: " + filenames[i].substring(1));
+        System.err.println("error: file not readable: " + filename.substring(1));
         errors=true;
       }
     }
@@ -24,6 +24,6 @@
     return null;
   }
  else {
-    return (String[])fileList.toArray(new String[fileList.size()]);
+    return fileList.toArray(new String[fileList.size()]);
   }
 }
