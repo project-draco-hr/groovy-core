@@ -9,14 +9,7 @@
     temp.close();
   }
   finally {
-    if (dis != null) {
-      try {
-        dis.close();
-      }
- catch (      IOException e) {
-        LOG.warning("Caught exception closing DataInputStream: " + e);
-      }
-    }
+    closeWithWarning(dis);
   }
   return bytes;
 }

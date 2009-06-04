@@ -6,11 +6,13 @@
         closure.call(socket);
       }
   finally {
-        try {
-          socket.close();
-        }
- catch (        IOException e) {
-          LOG.warning("Caught exception closing socket: " + e);
+        if (socket != null) {
+          try {
+            socket.close();
+          }
+ catch (          IOException e) {
+            LOG.warning("Caught exception closing socket: " + e);
+          }
         }
       }
     }
