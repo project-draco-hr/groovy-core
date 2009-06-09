@@ -3,8 +3,10 @@
   URLConnection dependentScriptConn=null;
   try {
     dependentScriptConn=rc.getResourceConnection(filename);
-    ScriptCacheEntry currentCacheEntry=(ScriptCacheEntry)currentCacheEntryHolder.get();
-    if (currentCacheEntry != null)     currentCacheEntry.dependencies.put(dependentScriptConn.getURL(),new Long(dependentScriptConn.getLastModified()));
+    ScriptCacheEntry currentCacheEntry=currentCacheEntryHolder.get();
+    if (currentCacheEntry != null) {
+      currentCacheEntry.dependencies.put(dependentScriptConn.getURL(),dependentScriptConn.getLastModified());
+    }
     return parseClass(dependentScriptConn.getInputStream(),filename);
   }
  catch (  ResourceException e1) {

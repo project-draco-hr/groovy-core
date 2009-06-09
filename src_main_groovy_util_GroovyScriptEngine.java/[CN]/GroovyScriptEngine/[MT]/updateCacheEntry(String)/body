@@ -2,32 +2,20 @@
   ScriptCacheEntry entry;
   scriptName=scriptName.intern();
 synchronized (scriptName) {
-    URLConnection groovyScriptConn=rc.getResourceConnection(scriptName);
-    long lastModified=groovyScriptConn.getLastModified();
-    entry=(ScriptCacheEntry)scriptCache.get(scriptName);
+    URLConnection scriptConn=rc.getResourceConnection(scriptName);
+    long lastModified=scriptConn.getLastModified();
+    entry=scriptCache.get(scriptName);
     if (entry == null || entry.lastModified < lastModified || dependencyOutOfDate(entry)) {
-      ScriptCacheEntry currentCacheEntry=new ScriptCacheEntry();
-      currentCacheEntryHolder.set(currentCacheEntry);
-      InputStream in=null;
-      try {
-        in=groovyScriptConn.getInputStream();
-        currentCacheEntry.scriptClass=groovyLoader.parseClass(in,scriptName);
-      }
- catch (      Exception e) {
-        throw new ScriptException("Could not parse scriptName: " + scriptName,e);
-      }
- finally {
-        currentCacheEntryHolder.set(null);
-        try {
-          if (in != null)           in.close();
-        }
- catch (        IOException e) {
-        }
-      }
-      currentCacheEntry.lastModified=lastModified;
-      scriptCache.put(scriptName,currentCacheEntry);
-      entry=currentCacheEntry;
-      currentCacheEntry=null;
+      ScriptCacheEntry cacheEntry=new ScriptCacheEntry();
+      currentCacheEntryHolder.set(cacheEntry);
+      cacheEntry.scriptClass=parseScript(scriptName,scriptConn);
+      cacheEntry.lastModified=lastModified;
+      scriptCache.put(scriptName,cacheEntry);
+      entry=cacheEntry;
+      cacheEntry=null;
+    }
+ else {
+      forceClose(scriptConn);
     }
   }
   return entry;

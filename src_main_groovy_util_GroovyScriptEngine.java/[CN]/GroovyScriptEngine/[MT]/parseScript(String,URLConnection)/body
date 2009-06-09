@@ -1,0 +1,13 @@
+{
+  try {
+    InputStream in=scriptConn.getInputStream();
+    return groovyLoader.parseClass(in,scriptName);
+  }
+ catch (  Exception e) {
+    throw new ScriptException("Could not parse script: " + scriptName,e);
+  }
+ finally {
+    currentCacheEntryHolder.set(null);
+    forceClose(scriptConn);
+  }
+}
