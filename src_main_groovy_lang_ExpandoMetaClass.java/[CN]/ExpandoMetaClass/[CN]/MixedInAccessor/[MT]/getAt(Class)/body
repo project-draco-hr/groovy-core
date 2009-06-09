@@ -22,10 +22,10 @@
 {
           final Object mixedInInstance=mixin.getMixinInstance(object);
           setMetaClass(new OwnedMetaClass(InvokerHelper.getMetaClass(mixedInInstance)){
-            protected Object getOwner(){
+            @Override protected Object getOwner(){
               return mixedInInstance;
             }
-            protected MetaClass getOwnerMetaClass(            Object owner){
+            @Override protected MetaClass getOwnerMetaClass(            Object owner){
               return ((MixedInMetaClass)getAdaptee()).getAdaptee();
             }
           }

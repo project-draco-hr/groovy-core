@@ -25,11 +25,9 @@
   PropertyDescriptor[] descriptors=info.getPropertyDescriptors();
   setupProperties(descriptors);
   EventSetDescriptor[] eventDescriptors=info.getEventSetDescriptors();
-  for (int i=0; i < eventDescriptors.length; i++) {
-    EventSetDescriptor descriptor=eventDescriptors[i];
+  for (  EventSetDescriptor descriptor : eventDescriptors) {
     Method[] listenerMethods=descriptor.getListenerMethods();
-    for (int j=0; j < listenerMethods.length; j++) {
-      Method listenerMethod=listenerMethods[j];
+    for (    Method listenerMethod : listenerMethods) {
       final MetaMethod metaMethod=CachedMethod.find(descriptor.getAddListenerMethod());
       addToAllMethodsIfPublic(metaMethod);
       String name=listenerMethod.getName();

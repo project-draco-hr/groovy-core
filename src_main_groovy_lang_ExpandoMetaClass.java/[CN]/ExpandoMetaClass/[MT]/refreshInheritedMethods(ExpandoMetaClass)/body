@@ -1,16 +1,15 @@
 {
-  List metaMethods=superExpando.getExpandoMethods();
-  for (Iterator j=metaMethods.iterator(); j.hasNext(); ) {
-    MetaMethod metaMethod=(MetaMethod)j.next();
+  List<MetaMethod> metaMethods=superExpando.getExpandoMethods();
+  for (  MetaMethod metaMethod : metaMethods) {
     if (metaMethod.isStatic()) {
       if (superExpando.getTheClass() != getTheClass())       continue;
       registerStaticMethod(metaMethod.getName(),(Closure)((ClosureStaticMetaMethod)metaMethod).getClosure().clone());
     }
  else     addSuperMethodIfNotOverriden(metaMethod);
   }
-  Collection metaProperties=superExpando.getExpandoProperties();
-  for (Iterator j=metaProperties.iterator(); j.hasNext(); ) {
-    MetaBeanProperty property=(MetaBeanProperty)j.next();
+  Collection<MetaProperty> metaProperties=superExpando.getExpandoProperties();
+  for (  Object metaProperty : metaProperties) {
+    MetaBeanProperty property=(MetaBeanProperty)metaProperty;
     expandoProperties.put(property.getName(),property);
     addMetaBeanProperty(property);
   }

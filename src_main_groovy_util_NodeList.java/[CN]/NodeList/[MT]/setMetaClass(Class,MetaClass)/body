@@ -1,6 +1,6 @@
 {
   final MetaClass newMetaClass=new DelegatingMetaClass(metaClass){
-    public Object getAttribute(    final Object object,    final String attribute){
+    @Override public Object getAttribute(    final Object object,    final String attribute){
       NodeList nl=(NodeList)object;
       Iterator it=nl.iterator();
       List result=new ArrayList();
@@ -10,7 +10,7 @@
       }
       return result;
     }
-    public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
+    @Override public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
       NodeList nl=(NodeList)object;
       Iterator it=nl.iterator();
       while (it.hasNext()) {
@@ -18,7 +18,7 @@
         node.attributes().put(attribute,newValue);
       }
     }
-    public Object getProperty(    Object object,    String property){
+    @Override public Object getProperty(    Object object,    String property){
       if (object instanceof NodeList) {
         NodeList nl=(NodeList)object;
         return nl.getAt(property);
