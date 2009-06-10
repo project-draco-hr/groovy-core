@@ -1,7 +1,7 @@
 {
   if (groovyLoader == null || groovyLoader.getParent() != parentClassLoader) {
-    groovyLoader=AccessController.doPrivileged(new PrivilegedAction<GroovyClassLoader>(){
-      public GroovyClassLoader run(){
+    groovyLoader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+      public Object run(){
         ScriptClassLoader loader;
         if (parentClassLoader instanceof GroovyClassLoader)         loader=new ScriptClassLoader((GroovyClassLoader)parentClassLoader);
  else         loader=new ScriptClassLoader(parentClassLoader);
