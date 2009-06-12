@@ -6,8 +6,9 @@
   if (packageDoc == null) {
     packageDoc=new SimpleGroovyPackageDoc(packagePath);
   }
-  if (filename.endsWith("package.html")) {
-    processHtmlPackage(src,packageDoc);
+  if (filename.endsWith("package.html") || filename.endsWith("package-info.java") || filename.endsWith("package-info.groovy")) {
+    processPackageInfo(src,filename,packageDoc);
+    rootDoc.put(packagePath,packageDoc);
     return;
   }
   try {
