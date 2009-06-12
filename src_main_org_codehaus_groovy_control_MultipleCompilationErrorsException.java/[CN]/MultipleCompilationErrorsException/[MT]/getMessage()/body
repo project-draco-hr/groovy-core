@@ -2,11 +2,13 @@
   StringWriter data=new StringWriter();
   PrintWriter writer=new PrintWriter(data);
   Janitor janitor=new Janitor();
+  writer.write(super.getMessage());
+  writer.println(":");
   try {
     collector.write(writer,janitor);
   }
   finally {
     janitor.cleanup();
   }
-  return super.getMessage() + ", " + data.toString();
+  return data.toString();
 }
