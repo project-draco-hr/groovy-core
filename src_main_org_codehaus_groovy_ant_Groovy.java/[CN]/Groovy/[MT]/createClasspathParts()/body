@@ -10,10 +10,9 @@
   }
   String groovyHome=null;
   final String[] strings=getSysProperties().getVariables();
-  for (int i=0; i < strings.length; i++) {
-    String string=strings[i];
-    if (string.startsWith("-Dgroovy.home=")) {
-      groovyHome=string.substring("-Dgroovy.home=".length());
+  for (  String prop : strings) {
+    if (prop.startsWith("-Dgroovy.home=")) {
+      groovyHome=prop.substring("-Dgroovy.home=".length());
     }
   }
   if (groovyHome == null) {
@@ -30,8 +29,7 @@
     throw new IllegalStateException("GROOVY_HOME incorrectly defined. No embeddable directory found in: " + groovyHome);
   }
   final File[] files=jarDir.listFiles();
-  for (int i=0; i < files.length; i++) {
-    File file=files[i];
+  for (  File file : files) {
     try {
       log.debug("Adding jar to classpath: " + file.getCanonicalPath());
     }
