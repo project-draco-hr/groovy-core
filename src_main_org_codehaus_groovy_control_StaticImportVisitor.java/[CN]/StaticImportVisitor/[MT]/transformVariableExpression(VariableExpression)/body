@@ -4,6 +4,9 @@
     Expression result=findStaticFieldImportFromModule(v.getName());
     if (result != null) {
       result.setSourcePosition(ve);
+      if (inAnnotation) {
+        result=transformConstantAttributeExpression(result);
+      }
       return result;
     }
     if (!inPropertyExpression || inSpecialConstructorCall)     addStaticVariableError(ve);

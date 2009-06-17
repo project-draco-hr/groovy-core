@@ -2,8 +2,7 @@
   AnnotationNode an=(AnnotationNode)ace.getValue();
   ClassNode type=an.getClassNode();
   resolveOrFail(type,", unable to find class for annotation",an);
-  for (Iterator iter=an.getMembers().entrySet().iterator(); iter.hasNext(); ) {
-    Map.Entry member=(Map.Entry)iter.next();
+  for (  Map.Entry member : an.getMembers().entrySet()) {
     Expression memberValue=(Expression)member.getValue();
     member.setValue(transform(memberValue));
   }

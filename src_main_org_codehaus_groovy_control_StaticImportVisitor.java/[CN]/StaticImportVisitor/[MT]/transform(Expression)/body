@@ -22,10 +22,21 @@
     }
     return result;
   }
-  if (exp.getClass() == ConstantExpression.class) {
+  if (exp instanceof ConstantExpression) {
     Expression result=exp.transformExpression(this);
     if (inPropertyExpression) {
       foundConstant=result;
+    }
+    if (inAnnotation && exp instanceof AnnotationConstantExpression) {
+      ConstantExpression ce=(ConstantExpression)result;
+      if (ce.getValue() instanceof AnnotationNode) {
+        AnnotationNode an=(AnnotationNode)ce.getValue();
+        Map<String,Expression> attributes=an.getMembers();
+        for (        Map.Entry entry : attributes.entrySet()) {
+          Expression attrExpr=transform((Expression)entry.getValue());
+          entry.setValue(attrExpr);
+        }
+      }
     }
     return result;
   }

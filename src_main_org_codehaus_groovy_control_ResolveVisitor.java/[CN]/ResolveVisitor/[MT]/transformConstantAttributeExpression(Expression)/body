@@ -1,0 +1,35 @@
+{
+  if (exp instanceof PropertyExpression) {
+    PropertyExpression pe=(PropertyExpression)exp;
+    if (pe.getObjectExpression() instanceof ClassExpression) {
+      ClassExpression ce=(ClassExpression)pe.getObjectExpression();
+      ClassNode type=ce.getType();
+      if (type.isEnum())       return exp;
+      FieldNode fn=type.getField(pe.getPropertyAsString());
+      if (fn != null && !fn.isEnum() && fn.isStatic() && fn.isFinal()) {
+        if (fn.getInitialValueExpression() instanceof ConstantExpression) {
+          return fn.getInitialValueExpression();
+        }
+      }
+      try {
+        if (type.isResolved()) {
+          Field field=type.getTypeClass().getField(pe.getPropertyAsString());
+          if (field != null) {
+            return new ConstantExpression(field.get(null));
+          }
+        }
+      }
+ catch (      Exception e) {
+      }
+    }
+  }
+ else   if (exp instanceof ListExpression) {
+    ListExpression le=(ListExpression)exp;
+    ListExpression result=new ListExpression();
+    for (    Expression e : le.getExpressions()) {
+      result.addExpression(transformConstantAttributeExpression(e));
+    }
+    return result;
+  }
+  return exp;
+}

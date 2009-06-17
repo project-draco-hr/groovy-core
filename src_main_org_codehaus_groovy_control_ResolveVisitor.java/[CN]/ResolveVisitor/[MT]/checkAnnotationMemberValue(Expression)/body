@@ -1,0 +1,14 @@
+{
+  if (newValue instanceof PropertyExpression) {
+    PropertyExpression pe=(PropertyExpression)newValue;
+    if (!(pe.getObjectExpression() instanceof ClassExpression)) {
+      addError("unable to find class '" + pe.getText() + "' for annotation attribute constant",pe.getObjectExpression());
+    }
+  }
+ else   if (newValue instanceof ListExpression) {
+    ListExpression le=(ListExpression)newValue;
+    for (    Expression e : le.getExpressions()) {
+      checkAnnotationMemberValue(e);
+    }
+  }
+}

@@ -7,17 +7,12 @@
     if (an.isBuiltIn())     continue;
     ClassNode type=an.getClassNode();
     resolveOrFail(type,",  unable to find class for annotation",an);
-    for (Iterator iter=an.getMembers().entrySet().iterator(); iter.hasNext(); ) {
-      Map.Entry member=(Map.Entry)iter.next();
+    for (    Map.Entry member : an.getMembers().entrySet()) {
       Expression memberValue=(Expression)member.getValue();
       Expression newValue=transform(memberValue);
+      newValue=transformConstantAttributeExpression(newValue);
       member.setValue(newValue);
-      if (newValue instanceof PropertyExpression) {
-        PropertyExpression pe=(PropertyExpression)newValue;
-        if (!(pe.getObjectExpression() instanceof ClassExpression)) {
-          addError("unable to find class for enum",pe.getObjectExpression());
-        }
-      }
+      checkAnnotationMemberValue(newValue);
     }
   }
 }
