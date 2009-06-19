@@ -1,9 +1,9 @@
 {
-  MethodVisitor mv=cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC + ACC_STATIC,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;",null,null);
+  mv=cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC + ACC_STATIC,"$createCallSiteArray","()Lorg/codehaus/groovy/runtime/callsite/CallSiteArray;",null,null);
   mv.visitCode();
   mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/callsite/CallSiteArray");
   mv.visitInsn(DUP);
-  mv.visitFieldInsn(GETSTATIC,internalClassName,"$ownClass","Ljava/lang/Class;");
+  visitClassExpression(new ClassExpression(classNode));
   final int size=callSites.size();
   mv.visitLdcInsn(size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/String");

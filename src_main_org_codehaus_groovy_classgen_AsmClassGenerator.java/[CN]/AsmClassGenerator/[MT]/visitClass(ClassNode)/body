@@ -25,6 +25,7 @@
       if (!classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
         createMopMethods();
       }
+      generateCallSiteArray();
       createSyntheticStaticFields();
     }
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
@@ -43,7 +44,6 @@
       }
       cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,innerClass.getModifiers());
     }
-    generateCallSiteArray();
     cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {
