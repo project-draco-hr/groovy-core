@@ -10,7 +10,7 @@
     for (    Map.Entry member : an.getMembers().entrySet()) {
       Expression memberValue=(Expression)member.getValue();
       Expression newValue=transform(memberValue);
-      newValue=transformConstantAttributeExpression(newValue);
+      newValue=transformInlineConstants(newValue);
       member.setValue(newValue);
       checkAnnotationMemberValue(newValue);
     }

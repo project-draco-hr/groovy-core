@@ -11,25 +11,26 @@
           return fn.getInitialValueExpression();
         }
       }
-      try {
-        if (type.isResolved()) {
-          Field field=type.getTypeClass().getField(pe.getPropertyAsString());
-          if (field != null) {
-            return new ConstantExpression(field.get(null));
-          }
-        }
-      }
- catch (      Exception e) {
-      }
     }
   }
  else   if (exp instanceof ListExpression) {
     ListExpression le=(ListExpression)exp;
     ListExpression result=new ListExpression();
     for (    Expression e : le.getExpressions()) {
-      result.addExpression(transformConstantAttributeExpression(e));
+      result.addExpression(transformInlineConstants(e));
     }
     return result;
+  }
+ else   if (exp instanceof AnnotationConstantExpression) {
+    ConstantExpression ce=(ConstantExpression)exp;
+    if (ce.getValue() instanceof AnnotationNode) {
+      AnnotationNode an=(AnnotationNode)ce.getValue();
+      Map<String,Expression> attributes=an.getMembers();
+      for (      Map.Entry entry : attributes.entrySet()) {
+        Expression attrExpr=transformInlineConstants((Expression)entry.getValue());
+        entry.setValue(attrExpr);
+      }
+    }
   }
   return exp;
 }

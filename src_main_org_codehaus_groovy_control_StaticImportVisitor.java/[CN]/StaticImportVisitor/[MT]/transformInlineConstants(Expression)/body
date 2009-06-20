@@ -11,23 +11,13 @@
           return fn.getInitialValueExpression();
         }
       }
-      try {
-        if (type.isResolved()) {
-          Field field=type.getTypeClass().getField(pe.getPropertyAsString());
-          if (field != null) {
-            return new ConstantExpression(field.get(null));
-          }
-        }
-      }
- catch (      Exception e) {
-      }
     }
   }
  else   if (exp instanceof ListExpression) {
     ListExpression le=(ListExpression)exp;
     ListExpression result=new ListExpression();
     for (    Expression e : le.getExpressions()) {
-      result.addExpression(transformConstantAttributeExpression(e));
+      result.addExpression(transformInlineConstants(e));
     }
     return result;
   }

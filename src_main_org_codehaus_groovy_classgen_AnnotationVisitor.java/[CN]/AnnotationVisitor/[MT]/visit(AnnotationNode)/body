@@ -11,7 +11,8 @@
   Map<String,Expression> attributes=node.getMembers();
   for (  Map.Entry entry : attributes.entrySet()) {
     String attrName=(String)entry.getKey();
-    Expression attrExpr=(Expression)entry.getValue();
+    Expression attrExpr=transformInlineConstants((Expression)entry.getValue());
+    entry.setValue(attrExpr);
     ClassNode attrType=getAttributeType(node,attrName);
     visitExpression(attrName,attrExpr,attrType);
   }
