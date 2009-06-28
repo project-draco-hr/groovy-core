@@ -1,0 +1,13 @@
+{
+  try {
+    ASTNode[] badInput=new ASTNode[]{new ConstantExpression("sample"),new EmptyExpression()};
+    new SingletonASTTransformation().visit(badInput,null);
+    Assert.fail("Contract Failure");
+  }
+ catch (  RuntimeException ex) {
+    Assert.assertTrue("Bad error msg: " + ex.getMessage(),ex.getMessage().contains("wrong types"));
+    Assert.assertTrue("Bad error msg: " + ex.getMessage(),ex.getMessage().contains("ConstantExpression"));
+    Assert.assertTrue("Bad error msg: " + ex.getMessage(),ex.getMessage().contains("EmptyExpression"));
+    Assert.assertTrue("Bad error msg: " + ex.getMessage(),ex.getMessage().contains("Expected: AnnotationNode / AnnotatedNode"));
+  }
+}
