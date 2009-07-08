@@ -27,9 +27,10 @@
     if (verbose) {
       log("Creating new template from file " + file + "...");
     }
-    FileReader reader=null;
+    String fileEncoding=System.getProperty("groovy.source.encoding");
+    Reader reader=null;
     try {
-      reader=new FileReader(file);
+      reader=fileEncoding == null ? new FileReader(file) : new InputStreamReader(new FileInputStream(file),fileEncoding);
       template=engine.createTemplate(reader);
     }
  catch (    Exception e) {
