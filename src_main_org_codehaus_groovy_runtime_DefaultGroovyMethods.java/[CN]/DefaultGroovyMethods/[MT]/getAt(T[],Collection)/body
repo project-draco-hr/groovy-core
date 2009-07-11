@@ -1,0 +1,16 @@
+{
+  List<T> answer=new ArrayList<T>(indices.size());
+  for (  Object value : indices) {
+    if (value instanceof Range) {
+      answer.addAll(getAt(self,(Range)value));
+    }
+ else     if (value instanceof Collection) {
+      answer.addAll(getAt(self,(Collection)value));
+    }
+ else {
+      int idx=DefaultTypeTransformation.intUnbox(value);
+      answer.add(getAtImpl(self,idx));
+    }
+  }
+  return answer;
+}

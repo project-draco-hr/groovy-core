@@ -1,0 +1,15 @@
+{
+  List<Number> result=new ArrayList<Number>();
+  long count=0;
+  long startCount=startIndex.longValue();
+  for (Iterator iter=InvokerHelper.asIterator(self); iter.hasNext(); count++) {
+    Object value=iter.next();
+    if (count < startCount) {
+      continue;
+    }
+    if (DefaultTypeTransformation.castToBoolean(closure.call(value))) {
+      result.add(count);
+    }
+  }
+  return result;
+}

@@ -1,11 +1,11 @@
 {
   CachedClass cachedClass=ReflectionCache.getCachedClass(categoryClass);
-  LinkedList classStack=new LinkedList();
+  LinkedList<CachedClass> classStack=new LinkedList<CachedClass>();
   for (CachedClass superClass=cachedClass; superClass.getTheClass() != Object.class; superClass=superClass.getCachedSuperClass()) {
     classStack.add(superClass);
   }
   while (!classStack.isEmpty()) {
-    CachedClass klazz=(CachedClass)classStack.removeLast();
+    CachedClass klazz=classStack.removeLast();
     applyUse(klazz);
   }
 }

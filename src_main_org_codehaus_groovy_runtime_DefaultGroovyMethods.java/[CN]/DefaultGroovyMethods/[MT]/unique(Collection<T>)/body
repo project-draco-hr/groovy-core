@@ -1,0 +1,18 @@
+{
+  if (self instanceof Set)   return self;
+  List<T> answer=new ArrayList<T>();
+  NumberAwareComparator<T> numberAwareComparator=new NumberAwareComparator<T>();
+  for (  T t : self) {
+    boolean duplicated=false;
+    for (    T t2 : answer) {
+      if (numberAwareComparator.compare(t,t2) == 0) {
+        duplicated=true;
+        break;
+      }
+    }
+    if (!duplicated)     answer.add(t);
+  }
+  self.clear();
+  self.addAll(answer);
+  return self;
+}

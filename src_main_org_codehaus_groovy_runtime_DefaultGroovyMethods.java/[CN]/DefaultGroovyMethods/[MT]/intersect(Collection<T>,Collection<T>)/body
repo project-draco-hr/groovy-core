@@ -1,0 +1,15 @@
+{
+  if (left.isEmpty())   return createSimilarCollection(left,0);
+  if (left.size() < right.size()) {
+    Collection<T> swaptemp=left;
+    left=right;
+    right=swaptemp;
+  }
+  Collection<T> result=createSimilarCollection(left,left.size());
+  Collection<T> pickFrom=new TreeSet<T>(new NumberAwareComparator<T>());
+  pickFrom.addAll(left);
+  for (  final T t : right) {
+    if (pickFrom.contains(t))     result.add(t);
+  }
+  return result;
+}

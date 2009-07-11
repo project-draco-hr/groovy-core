@@ -1,0 +1,11 @@
+{
+  List<T> list=asList(self);
+  int params=closure.getMaximumNumberOfParameters();
+  if (params == 1) {
+    Collections.sort(list,new OrderBy<T>(closure));
+  }
+ else {
+    Collections.sort(list,new ClosureComparator<T>(closure));
+  }
+  return list;
+}

@@ -1,0 +1,14 @@
+{
+  Map<K,V> answer=createMapFromClass(orig);
+  if (answer != null)   return answer;
+  if (orig instanceof SortedMap) {
+    return new TreeMap<K,V>();
+  }
+  if (orig instanceof Properties) {
+    return (Map<K,V>)new Properties();
+  }
+  if (orig instanceof Hashtable) {
+    return new Hashtable<K,V>();
+  }
+  return new LinkedHashMap<K,V>();
+}

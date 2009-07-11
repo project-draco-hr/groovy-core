@@ -1,13 +1,12 @@
 {
-  List metaProps=getMetaPropertyValues(self);
-  Map props=new LinkedHashMap(metaProps.size());
-  for (Iterator itr=metaProps.iterator(); itr.hasNext(); ) {
-    PropertyValue pv=(PropertyValue)itr.next();
+  List<PropertyValue> metaProps=getMetaPropertyValues(self);
+  Map<String,Object> props=new LinkedHashMap<String,Object>(metaProps.size());
+  for (  PropertyValue mp : metaProps) {
     try {
-      props.put(pv.getName(),pv.getValue());
+      props.put(mp.getName(),mp.getValue());
     }
  catch (    Exception e) {
-      LOG.throwing(self.getClass().getName(),"getProperty(" + pv.getName() + ")",e);
+      LOG.throwing(self.getClass().getName(),"getProperty(" + mp.getName() + ")",e);
     }
   }
   return props;
