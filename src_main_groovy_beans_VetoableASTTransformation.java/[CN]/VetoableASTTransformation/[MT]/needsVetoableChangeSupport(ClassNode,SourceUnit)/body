@@ -12,6 +12,14 @@
     }
     consideredClass=consideredClass.getSuperClass();
   }
+  consideredClass=declaringClass.getSuperClass();
+  while (consideredClass != null) {
+    if (hasVetoableAnnotation(consideredClass))     return false;
+    for (    FieldNode field : consideredClass.getFields()) {
+      if (hasVetoableAnnotation(field))       return false;
+    }
+    consideredClass=consideredClass.getSuperClass();
+  }
   if (foundAdd || foundRemove || foundFire) {
     sourceUnit.getErrorCollector().addErrorAndContinue(new SimpleMessage("@Vetoable cannot be processed on " + declaringClass.getName() + " because some but not all of addVetoableChangeListener, removeVetoableChange, and fireVetoableChange were declared in the current or super classes.",sourceUnit));
     return false;
