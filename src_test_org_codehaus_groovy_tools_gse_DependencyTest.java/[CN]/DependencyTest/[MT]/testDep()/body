@@ -9,7 +9,7 @@
   }
 ,Phases.CLASS_GENERATION);
   cu.addSource("depTest.gtest",new StringBufferInputStream("class C1 {}\n" + "class C2 {}\n" + "class C3 {}\n"+ "class A1 {C1 x}\n"+ "class A2 extends C2{}\n"+ "class A3 {C1 foo(C2 x){new C3()}}\n"));
-  cu.compile();
+  cu.compile(Phases.CLASS_GENERATION);
   assertEquals(cache.get("C1").size(),0);
   assertEquals(cache.get("C2").size(),0);
   assertEquals(cache.get("C3").size(),0);
