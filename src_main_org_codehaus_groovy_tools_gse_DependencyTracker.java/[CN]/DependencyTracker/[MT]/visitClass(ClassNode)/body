@@ -1,6 +1,8 @@
 {
   Set<String> old=current;
   current=cache.get(node.getName());
+  addToCache(node.getSuperClass());
+  addToCache(node.getInterfaces());
   super.visitClass(node);
   current=old;
 }

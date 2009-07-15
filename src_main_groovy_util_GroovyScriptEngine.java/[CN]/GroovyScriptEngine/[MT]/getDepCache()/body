@@ -1,6 +1,6 @@
 {
   ThreadLocal<StringSetMap> local=dependencyCache.get();
-  if (local != null)   return local;
+  if (local != null)   return local.get();
   local=new ThreadLocal<StringSetMap>(){
     @Override protected StringSetMap initialValue(){
       return new StringSetMap();
@@ -8,5 +8,5 @@
   }
 ;
   dependencyCache=new WeakReference<ThreadLocal<StringSetMap>>(local);
-  return local;
+  return local.get();
 }
