@@ -1,0 +1,11 @@
+{
+  for (  Parameter p : node.getParameters()) {
+    addToCache(p.getType());
+  }
+  addToCache(node.getReturnType());
+  ClassNode[] exceptions=node.getExceptions();
+  if (exceptions != null) {
+    for (    ClassNode cn : exceptions)     addToCache(cn);
+  }
+  super.visitMethod(node);
+}

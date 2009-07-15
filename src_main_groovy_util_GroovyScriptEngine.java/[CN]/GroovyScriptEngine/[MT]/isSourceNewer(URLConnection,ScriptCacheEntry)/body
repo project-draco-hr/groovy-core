@@ -1,0 +1,20 @@
+{
+  if (entry == null)   return true;
+  long lastMod;
+  URL source=conn.getURL();
+  if (source.getProtocol().equals("file")) {
+    String path=source.getPath().replace('/',File.separatorChar).replace('|',':');
+    File file=new File(path);
+    lastMod=file.lastModified();
+  }
+ else {
+    lastMod=conn.getLastModified();
+    try {
+      conn.getInputStream().close();
+    }
+ catch (    IOException e) {
+      throw new ResourceException(e);
+    }
+  }
+  return entry.lastModified + config.getMinimumRecompilationInterval() < lastMod;
+}

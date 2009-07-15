@@ -1,0 +1,13 @@
+{
+  return (GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      if (parentLoader instanceof GroovyClassLoader) {
+        return new ScriptClassLoader((GroovyClassLoader)parentLoader);
+      }
+ else {
+        return new ScriptClassLoader(parentLoader);
+      }
+    }
+  }
+);
+}

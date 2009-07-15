@@ -1,0 +1,14 @@
+{
+  Class answer=super.parseClass(codeSource,shouldCacheSource);
+  StringSetMap cache=dependencyCache.get().get();
+  long time=System.currentTimeMillis();
+  for (  Map.Entry<String,Set<String>> entry : cache.entrySet()) {
+    String entryName=entry.getKey();
+    Class clazz=getClassCacheEntry(entryName);
+    if (clazz == null)     continue;
+    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,entry.getValue());
+    scriptCache.put(entryName,cacheEntry);
+  }
+  cache.clear();
+  return answer;
+}

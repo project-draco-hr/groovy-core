@@ -1,0 +1,12 @@
+{
+  CompilationUnit cu=super.createCompilationUnit(config,source);
+  final StringSetMap cache=dependencyCache.get().get();
+  cu.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
+    @Override public void call(    final SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      DependencyTracker dt=new DependencyTracker(source,cache);
+      dt.visitClass(classNode);
+    }
+  }
+,Phases.CLASS_GENERATION);
+  return cu;
+}
