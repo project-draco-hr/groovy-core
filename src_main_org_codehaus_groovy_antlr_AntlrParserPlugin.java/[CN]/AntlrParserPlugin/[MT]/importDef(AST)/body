@@ -1,6 +1,14 @@
 {
   boolean isStatic=importNode.getType() == STATIC_IMPORT;
+  List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
   AST node=importNode.getFirstChild();
+  if (isType(ANNOTATIONS,node)) {
+    if (node.getFirstChild() != null) {
+      AST child=node.getFirstChild();
+      if (isType(ANNOTATION,child))       annotations.add(annotation(child));
+    }
+    node=node.getNextSibling();
+  }
   String alias=null;
   if (isType(LITERAL_as,node)) {
     node=node.getFirstChild();
@@ -11,7 +19,7 @@
     String name=identifier(node);
     ClassNode type=ClassHelper.make(name);
     configureAST(type,importNode);
-    importClass(type,name,alias);
+    addImport(type,name,alias,annotations);
     return;
   }
   AST packageNode=node.getFirstChild();
@@ -21,10 +29,10 @@
     if (isStatic) {
       ClassNode type=ClassHelper.make(packageName);
       configureAST(type,importNode);
-      staticImportClassWithStar(type,packageName);
+      addStaticStarImport(type,packageName,annotations);
     }
  else {
-      importPackageWithStar(packageName);
+      addStarImport(packageName,annotations);
     }
     if (alias != null)     throw new GroovyBugError("imports like 'import foo.* as Bar' are not " + "supported and should be caught by the grammar");
   }
@@ -33,12 +41,12 @@
     if (isStatic) {
       ClassNode type=ClassHelper.make(packageName);
       configureAST(type,importNode);
-      staticImportMethodOrField(type,name,alias);
+      addStaticImport(type,name,alias,annotations);
     }
  else {
       ClassNode type=ClassHelper.make(packageName + "." + name);
       configureAST(type,importNode);
-      importClass(type,name,alias);
+      addImport(type,name,alias,annotations);
     }
   }
 }

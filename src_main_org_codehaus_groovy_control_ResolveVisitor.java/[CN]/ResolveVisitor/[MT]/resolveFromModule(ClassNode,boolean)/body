@@ -10,9 +10,8 @@
     type.setName(module.getPackageName() + name);
     newNameUsed=true;
   }
-  List moduleClasses=module.getClasses();
-  for (Iterator iter=moduleClasses.iterator(); iter.hasNext(); ) {
-    ClassNode mClass=(ClassNode)iter.next();
+  List<ClassNode> moduleClasses=module.getClasses();
+  for (  ClassNode mClass : moduleClasses) {
     if (mClass.getName().equals(type.getName())) {
       if (mClass != type)       type.setRedirect(mClass);
       return true;
@@ -28,9 +27,8 @@
         return true;
       }
     }
-    List packages=module.getImportPackages();
-    for (Iterator iter=packages.iterator(); iter.hasNext(); ) {
-      String packagePrefix=(String)iter.next();
+    List<String> packages=module.getImportPackages();
+    for (    String packagePrefix : packages) {
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(packagePrefix,name);
       if (resolve(tmp,false,false,true)) {
         ambiguousClass(type,tmp,name);

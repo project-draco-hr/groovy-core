@@ -8,7 +8,23 @@
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
     cv.visit(getBytecodeVersion(),classNode.getModifiers(),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cv.visitSource(sourceFile,null);
-    visitAnnotations(classNode,cv);
+    if (classNode.getName().endsWith("package-info")) {
+      PackageNode packageNode=classNode.getPackage();
+      if (packageNode != null) {
+        for (        AnnotationNode an : packageNode.getAnnotations()) {
+          if (an.isBuiltIn())           continue;
+          if (an.hasSourceRetention())           continue;
+          AnnotationVisitor av=getAnnotationVisitor(classNode,an,cv);
+          visitAnnotationAttributes(an,av);
+          av.visitEnd();
+        }
+      }
+      cv.visitEnd();
+      return;
+    }
+ else {
+      visitAnnotations(classNode,cv);
+    }
     if (classNode.isInterface()) {
       ClassNode owner=classNode;
       if (owner instanceof InnerClassNode) {

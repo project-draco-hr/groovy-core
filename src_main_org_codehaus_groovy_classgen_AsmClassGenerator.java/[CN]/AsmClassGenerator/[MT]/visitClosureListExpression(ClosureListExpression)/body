@@ -1,12 +1,12 @@
 {
   compileStack.pushVariableScope(expression.getVariableScope());
-  List expressions=expression.getExpressions();
+  List<Expression> expressions=expression.getExpressions();
   final int size=expressions.size();
-  LinkedList declarations=new LinkedList();
+  LinkedList<DeclarationExpression> declarations=new LinkedList<DeclarationExpression>();
   for (int i=0; i < size; i++) {
-    Object expr=expressions.get(i);
+    Expression expr=expressions.get(i);
     if (expr instanceof DeclarationExpression) {
-      declarations.add(expr);
+      declarations.add((DeclarationExpression)expr);
       DeclarationExpression de=(DeclarationExpression)expr;
       BinaryExpression be=new BinaryExpression(de.getLeftExpression(),de.getOperation(),de.getRightExpression());
       expressions.set(i,be);

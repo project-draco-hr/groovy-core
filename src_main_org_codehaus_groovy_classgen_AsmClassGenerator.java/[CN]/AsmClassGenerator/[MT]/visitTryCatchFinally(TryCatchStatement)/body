@@ -1,7 +1,6 @@
 {
   onLineNumber(statement,"visitTryCatchFinally");
   visitStatement(statement);
-  CatchStatement catchStatement=statement.getCatchStatement(0);
   Statement tryStatement=statement.getTryStatement();
   final Statement finallyStatement=statement.getFinallyStatement();
   int anyExceptionIndex=compileStack.defineTemporaryVariable("exception",false);
@@ -24,8 +23,7 @@
   mv.visitLabel(greEnd);
   final Label tryEnd=new Label();
   mv.visitLabel(tryEnd);
-  for (Iterator it=statement.getCatchStatements().iterator(); it.hasNext(); ) {
-    catchStatement=(CatchStatement)it.next();
+  for (  CatchStatement catchStatement : statement.getCatchStatements()) {
     ClassNode exceptionType=catchStatement.getExceptionType();
     final Label catchStart=new Label();
     mv.visitLabel(catchStart);

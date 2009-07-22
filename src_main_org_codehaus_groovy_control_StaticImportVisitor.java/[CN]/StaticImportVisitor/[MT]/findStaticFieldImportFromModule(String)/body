@@ -1,19 +1,15 @@
 {
   ModuleNode module=currentClass.getModule();
   if (module == null)   return null;
-  Map aliases=module.getStaticImportAliases();
+  Map<String,ImportNode> importNodes=module.getStaticImports();
   stillResolving=false;
-  if (aliases.containsKey(name)) {
-    ClassNode node=(ClassNode)aliases.get(name);
-    Map fields=module.getStaticImportFields();
-    String fieldName=(String)fields.get(name);
-    Expression expression=findStaticField(node,fieldName);
+  if (importNodes.containsKey(name)) {
+    ImportNode importNode=importNodes.get(name);
+    Expression expression=findStaticField(importNode.getType(),importNode.getFieldName());
     if (expression != null)     return expression;
   }
-  Map importedClasses=module.getStaticImportClasses();
-  for (  Object o : importedClasses.keySet()) {
-    String className=(String)o;
-    ClassNode node=(ClassNode)importedClasses.get(className);
+  for (  ImportNode importNode : module.getStaticStarImports().values()) {
+    ClassNode node=importNode.getType();
     Expression expression=findStaticField(node,name);
     if (expression != null)     return expression;
   }

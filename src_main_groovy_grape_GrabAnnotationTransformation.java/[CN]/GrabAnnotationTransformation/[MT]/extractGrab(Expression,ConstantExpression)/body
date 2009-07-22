@@ -1,0 +1,12 @@
+{
+  if (ce.getValue() instanceof AnnotationNode) {
+    AnnotationNode annotation=(AnnotationNode)ce.getValue();
+    if ((init != null) && (annotation.getMember("initClass") != null)) {
+      annotation.setMember("initClass",init);
+    }
+    String name=annotation.getClassNode().getName();
+    if ((GRAB_CLASS_NAME.equals(name)) || (allowShortGrab && GRAB_SHORT_NAME.equals(name)) || (grabAliases.contains(name))) {
+      grabAnnotations.add(annotation);
+    }
+  }
+}

@@ -1,9 +1,5 @@
 {
-  List annotations=parameter.getAnnotations();
-  if (annotations.isEmpty())   return;
-  Iterator it=annotations.iterator();
-  while (it.hasNext()) {
-    AnnotationNode an=(AnnotationNode)it.next();
+  for (  AnnotationNode an : parameter.getAnnotations()) {
     if (an.isBuiltIn())     continue;
     if (an.hasSourceRetention())     continue;
     final String annotationDescriptor=BytecodeHelper.getTypeDescription(an.getClassNode());

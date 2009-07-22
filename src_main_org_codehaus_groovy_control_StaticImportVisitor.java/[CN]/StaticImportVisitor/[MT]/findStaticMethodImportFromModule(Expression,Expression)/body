@@ -1,30 +1,32 @@
 {
   ModuleNode module=currentClass.getModule();
   if (module == null || !(method instanceof ConstantExpression))   return null;
-  Map aliases=module.getStaticImportAliases();
+  Map<String,ImportNode> importNodes=module.getStaticImports();
   ConstantExpression ce=(ConstantExpression)method;
   Object value=ce.getValue();
   if (!(value instanceof String))   return null;
   final String name=(String)value;
-  if (aliases.containsKey(name)) {
-    ClassNode node=(ClassNode)aliases.get(name);
-    Map fields=module.getStaticImportFields();
-    String fieldName=(String)fields.get(name);
-    Expression expression=findStaticMethod(node,fieldName,args);
+  if (importNodes.containsKey(name)) {
+    ImportNode importNode=importNodes.get(name);
+    Expression expression=findStaticMethod(importNode.getType(),importNode.getFieldName(),args);
     if (expression != null)     return expression;
   }
-  Map importPackages=module.getStaticImportClasses();
-  for (  Object o : importPackages.keySet()) {
-    String className=(String)o;
-    ClassNode starImportType=null;
-    if (isEnum(currentClass) && importPackages.containsKey(currentClass.getName())) {
-      starImportType=(ClassNode)importPackages.get(currentClass.getName());
-    }
- else {
-      starImportType=(ClassNode)importPackages.get(className);
-    }
+  Map<String,ImportNode> importPackages=module.getStaticStarImports();
+  ClassNode starImportType=null;
+  if (isEnum(currentClass) && importPackages.containsKey(currentClass.getName())) {
+    ImportNode importNode=importPackages.get(currentClass.getName());
+    starImportType=importNode == null ? null : importNode.getType();
     Expression expression=findStaticMethod(starImportType,name,args);
     if (expression != null)     return expression;
+  }
+ else {
+    for (    Map.Entry<String,ImportNode> entry : importPackages.entrySet()) {
+      String className=entry.getKey();
+      ImportNode importNode=importPackages.get(className);
+      starImportType=importNode == null ? null : importNode.getType();
+      Expression expression=findStaticMethod(starImportType,name,args);
+      if (expression != null)       return expression;
+    }
   }
   return null;
 }

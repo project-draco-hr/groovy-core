@@ -1,5 +1,4 @@
 {
-  HashMap mops=new HashMap();
 class Key {
     int hash=0;
     String name;
@@ -17,9 +16,10 @@ class Key {
       return other.name.equals(name) && equalParameterTypes(other.params,params);
     }
   }
-  LinkedList mopCalls=new LinkedList();
-  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    MethodNode mn=(MethodNode)iter.next();
+  HashMap<Key,MethodNode> mops=new HashMap<Key,MethodNode>();
+  LinkedList<MethodNode> mopCalls=new LinkedList<MethodNode>();
+  for (  Object method : methods) {
+    MethodNode mn=(MethodNode)method;
     if ((mn.getModifiers() & ACC_ABSTRACT) != 0)     continue;
     if (mn.isStatic())     continue;
     if (isThis ^ (mn.getModifiers() & (ACC_PUBLIC | ACC_PROTECTED)) == 0)     continue;

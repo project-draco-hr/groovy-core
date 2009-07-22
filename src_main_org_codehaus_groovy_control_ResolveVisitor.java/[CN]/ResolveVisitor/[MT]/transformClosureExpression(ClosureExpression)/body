@@ -3,11 +3,11 @@
   inClosure=true;
   Parameter[] paras=ce.getParameters();
   if (paras != null) {
-    for (int i=0; i < paras.length; i++) {
-      ClassNode t=paras[i].getType();
+    for (    Parameter para : paras) {
+      ClassNode t=para.getType();
       resolveOrFail(t,ce);
-      if (paras[i].hasInitialExpression()) {
-        Object initialVal=paras[i].getInitialExpression();
+      if (para.hasInitialExpression()) {
+        Object initialVal=para.getInitialExpression();
         if (initialVal instanceof Expression) {
           transform((Expression)initialVal);
         }

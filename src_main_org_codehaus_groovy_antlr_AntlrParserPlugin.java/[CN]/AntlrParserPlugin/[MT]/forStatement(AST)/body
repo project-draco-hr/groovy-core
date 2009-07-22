@@ -18,7 +18,7 @@
     if (isType(VARIABLE_DEF,variableNode)) {
       AST node=variableNode.getFirstChild();
       if (isType(MODIFIERS,node)) {
-        int modifiersMask=modifiers(node,new ArrayList(),0);
+        int modifiersMask=modifiers(node,new ArrayList<AnnotationNode>(),0);
         if ((modifiersMask & ~Opcodes.ACC_FINAL) != 0) {
           throw new ASTRuntimeException(node,"Only the 'final' modifier is allowed in front of the for loop variable.");
         }

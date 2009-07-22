@@ -6,8 +6,7 @@
   ClassNode[] bounds=genericsType.getUpperBounds();
   if (!genericParameterNames.containsKey(name)) {
     if (bounds != null) {
-      for (int j=0; j < bounds.length; j++) {
-        ClassNode upperBound=bounds[j];
+      for (      ClassNode upperBound : bounds) {
         resolveOrFail(upperBound,genericsType);
         type.setRedirect(upperBound);
         resolveGenericsTypes(upperBound.getGenericsTypes());
@@ -21,7 +20,7 @@
     }
   }
  else {
-    GenericsType gt=(GenericsType)genericParameterNames.get(name);
+    GenericsType gt=genericParameterNames.get(name);
     type.setRedirect(gt.getType());
     genericsType.setPlaceholder(true);
   }

@@ -1,9 +1,5 @@
 {
-  List annotations=targetNode.getAnnotations();
-  if (annotations.isEmpty())   return;
-  Iterator it=annotations.iterator();
-  while (it.hasNext()) {
-    AnnotationNode an=(AnnotationNode)it.next();
+  for (  AnnotationNode an : targetNode.getAnnotations()) {
     if (an.isBuiltIn())     continue;
     if (an.hasSourceRetention())     continue;
     AnnotationVisitor av=getAnnotationVisitor(targetNode,an,visitor);

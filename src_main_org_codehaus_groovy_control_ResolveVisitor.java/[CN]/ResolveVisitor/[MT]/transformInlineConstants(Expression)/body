@@ -25,10 +25,8 @@
     ConstantExpression ce=(ConstantExpression)exp;
     if (ce.getValue() instanceof AnnotationNode) {
       AnnotationNode an=(AnnotationNode)ce.getValue();
-      Map<String,Expression> attributes=an.getMembers();
-      for (      Map.Entry entry : attributes.entrySet()) {
-        Expression attrExpr=transformInlineConstants((Expression)entry.getValue());
-        entry.setValue(attrExpr);
+      for (      Map.Entry<String,Expression> member : an.getMembers().entrySet()) {
+        member.setValue(transformInlineConstants(member.getValue()));
       }
     }
   }

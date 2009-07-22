@@ -12,7 +12,7 @@
     ClassNode[] exceptions=makeClassNodes(compileUnit,m.getGenericExceptionTypes(),m.getExceptionTypes());
     MethodNode mn=new MethodNode(m.getName(),m.getModifiers(),ret,params,exceptions,null);
     setMethodDefaultValue(mn,m);
-    setAnnotationMetaData(mn,m);
+    setAnnotationMetaData(m.getAnnotations(),mn);
     classNode.addMethod(mn);
   }
   Constructor[] constructors=clazz.getDeclaredConstructors();
@@ -24,5 +24,9 @@
   Class sc=clazz.getSuperclass();
   if (sc != null)   classNode.setUnresolvedSuperClass(makeClassNode(compileUnit,clazz.getGenericSuperclass(),sc));
   makeInterfaceTypes(compileUnit,classNode,clazz);
-  setAnnotationMetaData(classNode);
+  setAnnotationMetaData(classNode.getTypeClass().getAnnotations(),classNode);
+  PackageNode packageNode=classNode.getPackage();
+  if (packageNode != null) {
+    setAnnotationMetaData(classNode.getTypeClass().getPackage().getAnnotations(),packageNode);
+  }
 }

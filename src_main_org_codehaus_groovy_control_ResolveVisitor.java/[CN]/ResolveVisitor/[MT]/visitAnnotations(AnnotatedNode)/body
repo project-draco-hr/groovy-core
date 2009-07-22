@@ -1,15 +1,11 @@
 {
-  List annotations=node.getAnnotations();
+  List<AnnotationNode> annotations=node.getAnnotations();
   if (annotations.isEmpty())   return;
-  Iterator it=annotations.iterator();
-  while (it.hasNext()) {
-    AnnotationNode an=(AnnotationNode)it.next();
+  for (  AnnotationNode an : annotations) {
     if (an.isBuiltIn())     continue;
-    ClassNode type=an.getClassNode();
-    resolveOrFail(type,",  unable to find class for annotation",an);
-    for (    Map.Entry member : an.getMembers().entrySet()) {
-      Expression memberValue=(Expression)member.getValue();
-      Expression newValue=transform(memberValue);
+    resolveOrFail(an.getClassNode(),",  unable to find class for annotation",an);
+    for (    Map.Entry<String,Expression> member : an.getMembers().entrySet()) {
+      Expression newValue=transform(member.getValue());
       newValue=transformInlineConstants(newValue);
       member.setValue(newValue);
       checkAnnotationMemberValue(newValue);

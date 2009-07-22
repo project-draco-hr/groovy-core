@@ -17,9 +17,15 @@
   if (baseClass == null) {
     baseClass=ClassHelper.SCRIPT_TYPE;
   }
-  ClassNode classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
-  classNode.setScript(true);
-  classNode.setScriptBody(true);
+  ClassNode classNode;
+  if (isPackageInfo()) {
+    classNode=new ClassNode(name,ACC_ABSTRACT | ACC_INTERFACE | ACC_SYNTHETIC,ClassHelper.OBJECT_TYPE);
+  }
+ else {
+    classNode=new ClassNode(name,ACC_PUBLIC,baseClass);
+    classNode.setScript(true);
+    classNode.setScriptBody(true);
+  }
   scriptDummy=classNode;
   return classNode;
 }

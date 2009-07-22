@@ -33,19 +33,13 @@
         Expression value=node.getMember("value");
         if (value instanceof ListExpression) {
           for (          Object o : ((ListExpression)value).getExpressions()) {
-            if (o instanceof AnnotationConstantExpression) {
-              if (((AnnotationConstantExpression)o).getValue() instanceof AnnotationNode) {
-                AnnotationNode annotation=(AnnotationNode)((AnnotationConstantExpression)o).getValue();
-                if ((init != null) && (annotation.getMember("initClass") != null)) {
-                  annotation.setMember("initClass",init);
-                }
-                String name=annotation.getClassNode().getName();
-                if ((GRAB_CLASS_NAME.equals(name)) || (allowShortGrab && GRAB_SHORT_NAME.equals(name)) || (grabAliases.contains(name))) {
-                  grabAnnotations.add(annotation);
-                }
-              }
+            if (o instanceof ConstantExpression) {
+              extractGrab(init,(ConstantExpression)o);
             }
           }
+        }
+ else         if (value instanceof ConstantExpression) {
+          extractGrab(init,(ConstantExpression)value);
         }
       }
     }

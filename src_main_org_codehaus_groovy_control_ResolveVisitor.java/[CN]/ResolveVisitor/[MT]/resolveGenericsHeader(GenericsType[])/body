@@ -1,27 +1,26 @@
 {
   if (types == null)   return;
   currentClass.setUsingGenerics(true);
-  for (int i=0; i < types.length; i++) {
-    ClassNode type=types[i].getType();
-    String name=type.getName();
-    ClassNode[] bounds=types[i].getUpperBounds();
+  for (  GenericsType type : types) {
+    ClassNode classNode=type.getType();
+    String name=classNode.getName();
+    ClassNode[] bounds=type.getUpperBounds();
     if (bounds != null) {
       boolean nameAdded=false;
-      for (int j=0; j < bounds.length; j++) {
-        ClassNode upperBound=bounds[j];
-        if (!nameAdded && upperBound != null || !resolve(type)) {
-          genericParameterNames.put(name,types[i]);
-          types[i].setPlaceholder(true);
-          type.setRedirect(upperBound);
+      for (      ClassNode upperBound : bounds) {
+        if (!nameAdded && upperBound != null || !resolve(classNode)) {
+          genericParameterNames.put(name,type);
+          type.setPlaceholder(true);
+          classNode.setRedirect(upperBound);
           nameAdded=true;
         }
-        resolveOrFail(upperBound,type);
+        resolveOrFail(upperBound,classNode);
       }
     }
  else {
-      genericParameterNames.put(name,types[i]);
-      type.setRedirect(ClassHelper.OBJECT_TYPE);
-      types[i].setPlaceholder(true);
+      genericParameterNames.put(name,type);
+      classNode.setRedirect(ClassHelper.OBJECT_TYPE);
+      type.setPlaceholder(true);
     }
   }
 }

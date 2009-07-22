@@ -1,0 +1,20 @@
+{
+  if (node != null) {
+    for (    ImportNode importNode : node.getImports()) {
+      visitAnnotations(importNode);
+      importNode.visit(this);
+    }
+    for (    ImportNode importStarNode : node.getStarImports()) {
+      visitAnnotations(importStarNode);
+      importStarNode.visit(this);
+    }
+    for (    ImportNode importStaticNode : node.getStaticImports().values()) {
+      visitAnnotations(importStaticNode);
+      importStaticNode.visit(this);
+    }
+    for (    ImportNode importStaticStarNode : node.getStaticStarImports().values()) {
+      visitAnnotations(importStaticStarNode);
+      importStaticStarNode.visit(this);
+    }
+  }
+}

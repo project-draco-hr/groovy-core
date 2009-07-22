@@ -1,0 +1,13 @@
+{
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  File f=new File("temp/log.txt");
+  try {
+    DefaultGroovyMethods.append(f,parent.getClass().getSimpleName() + " " + parent.getAnnotations().get(0).getMember("value").getText()+ " ");
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+  }
+}

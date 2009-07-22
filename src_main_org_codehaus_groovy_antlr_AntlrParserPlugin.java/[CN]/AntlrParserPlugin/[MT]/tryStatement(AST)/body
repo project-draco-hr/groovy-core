@@ -3,7 +3,7 @@
   Statement tryStatement=statement(tryNode);
   Statement finallyStatement=EmptyStatement.INSTANCE;
   AST node=tryNode.getNextSibling();
-  List catches=new ArrayList();
+  List<CatchStatement> catches=new ArrayList<CatchStatement>();
   for (; node != null && isType(LITERAL_catch,node); node=node.getNextSibling()) {
     catches.add(catchStatement(node));
   }
@@ -16,8 +16,7 @@
   }
   TryCatchStatement tryCatchStatement=new TryCatchStatement(tryStatement,finallyStatement);
   configureAST(tryCatchStatement,tryStatementNode);
-  for (Iterator iter=catches.iterator(); iter.hasNext(); ) {
-    CatchStatement statement=(CatchStatement)iter.next();
+  for (  CatchStatement statement : catches) {
     tryCatchStatement.addCatch(statement);
   }
   return tryCatchStatement;

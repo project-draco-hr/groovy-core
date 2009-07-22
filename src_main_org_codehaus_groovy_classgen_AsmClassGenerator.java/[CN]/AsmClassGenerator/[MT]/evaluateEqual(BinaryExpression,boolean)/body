@@ -42,9 +42,9 @@
       }
     }
 ;
-    for (Iterator iterator=tuple.getExpressions().iterator(); iterator.hasNext(); ) {
-      VariableExpression var=(VariableExpression)iterator.next();
-      MethodCallExpression call=new MethodCallExpression(lhsExpr,"getAt",new ArgumentListExpression(new ConstantExpression(Integer.valueOf(i))));
+    for (    Expression e : tuple.getExpressions()) {
+      VariableExpression var=(VariableExpression)e;
+      MethodCallExpression call=new MethodCallExpression(lhsExpr,"getAt",new ArgumentListExpression(new ConstantExpression(i)));
       ClassNode type=getLHSType(var);
       assignmentCastAndVisit(type,call);
       i++;

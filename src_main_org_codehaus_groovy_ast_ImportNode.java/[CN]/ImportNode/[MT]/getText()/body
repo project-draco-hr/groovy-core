@@ -1,8 +1,18 @@
 {
+  if (isStar && !isStatic) {
+    return "import " + packageName + "*";
+  }
+  if (isStar) {
+    return "import static " + type.getName() + ".*";
+  }
+  if (isStatic) {
+    if (alias != null && !alias.isEmpty() && !alias.equals(fieldName)) {
+      return "import static " + type.getName() + "."+ fieldName+ " as "+ alias;
+    }
+    return "import static " + type.getName() + "."+ fieldName;
+  }
   if (alias == null || alias.length() == 0) {
     return "import " + type.getName();
   }
- else {
-    return "import " + type.getName() + " as "+ alias;
-  }
+  return "import " + type.getName() + " as "+ alias;
 }

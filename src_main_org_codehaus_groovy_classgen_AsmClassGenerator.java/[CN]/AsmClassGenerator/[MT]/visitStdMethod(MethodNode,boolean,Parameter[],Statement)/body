@@ -15,8 +15,7 @@
   compileStack.clear();
   final Label finallyStart=new Label();
   mv.visitJumpInsn(GOTO,finallyStart);
-  for (Iterator iter=exceptionBlocks.iterator(); iter.hasNext(); ) {
-    Runnable runnable=(Runnable)iter.next();
+  for (  Runnable runnable : exceptionBlocks) {
     runnable.run();
   }
   exceptionBlocks.clear();
