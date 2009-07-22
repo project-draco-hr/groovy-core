@@ -1,0 +1,14 @@
+{
+  cu.addSource("testTransitiveDep.gtest",new StringBufferInputStream("class A1 {}\n" + "class A2 extends A1{}\n" + "class A3 extends A2{}\n"));
+  cu.compile(Phases.CLASS_GENERATION);
+  cache.makeTransitiveHull();
+  Set<String> dep=cache.get("A1");
+  assertEquals(dep.size(),0);
+  dep=cache.get("A2");
+  assertEquals(dep.size(),1);
+  assertTrue(dep.contains("A1"));
+  dep=cache.get("A3");
+  assertEquals(dep.size(),2);
+  assertTrue(dep.contains("A1"));
+  assertTrue(dep.contains("A2"));
+}
