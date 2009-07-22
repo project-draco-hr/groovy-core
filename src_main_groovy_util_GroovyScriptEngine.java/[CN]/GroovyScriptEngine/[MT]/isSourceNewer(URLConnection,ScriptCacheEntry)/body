@@ -1,5 +1,7 @@
 {
   if (entry == null)   return true;
+  final long entryChangeTime=entry.lastModified + config.getMinimumRecompilationInterval();
+  if (entryChangeTime < System.currentTimeMillis())   return false;
   long lastMod;
   URL source=conn.getURL();
   if (source.getProtocol().equals("file")) {
@@ -16,5 +18,5 @@
       throw new ResourceException(e);
     }
   }
-  return entry.lastModified + config.getMinimumRecompilationInterval() < lastMod;
+  return entryChangeTime < lastMod;
 }
