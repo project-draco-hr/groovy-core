@@ -2,11 +2,6 @@
   if (source != null) {
     if ((oldClass != null && isSourceNewer(source,oldClass)) || (oldClass == null)) {
       sourceCache.remove(className);
-      if (isFile(source)) {
-        String path=source.getPath().replace('/',File.separatorChar).replace('|',':');
-        File file=new File(path);
-        if (file.exists())         return parseClass(file);
-      }
       return parseClass(source.openStream(),className);
     }
   }
