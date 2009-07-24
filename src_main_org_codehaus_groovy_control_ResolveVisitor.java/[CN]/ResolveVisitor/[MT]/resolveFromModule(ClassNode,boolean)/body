@@ -27,8 +27,8 @@
         return true;
       }
     }
-    List<String> packages=module.getImportPackages();
-    for (    String packagePrefix : packages) {
+    for (    ImportNode importNode : module.getStarImports()) {
+      String packagePrefix=importNode.getPackageName();
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(packagePrefix,name);
       if (resolve(tmp,false,false,true)) {
         ambiguousClass(type,tmp,name);
