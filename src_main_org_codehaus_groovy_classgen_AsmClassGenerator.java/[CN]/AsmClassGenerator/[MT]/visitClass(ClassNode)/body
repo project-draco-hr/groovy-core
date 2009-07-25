@@ -6,8 +6,7 @@
     this.outermostClass=null;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    int modifiers=classNode.getModifiers();
-    cv.visit(getBytecodeVersion(),adjustedModifiers(modifiers),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visit(getBytecodeVersion(),adjustedModifiers(classNode.getModifiers()),internalClassName,BytecodeHelper.getGenericsSignature(classNode),internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cv.visitSource(sourceFile,null);
     if (classNode.getName().endsWith("package-info")) {
       PackageNode packageNode=classNode.getPackage();
