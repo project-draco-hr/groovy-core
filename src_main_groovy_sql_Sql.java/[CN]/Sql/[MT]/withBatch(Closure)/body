@@ -1,0 +1,18 @@
+{
+  boolean savedCacheConnection=cacheConnection;
+  cacheConnection=true;
+  Connection connection=null;
+  Statement statement=null;
+  try {
+    connection=createConnection();
+    connection.setAutoCommit(false);
+    statement=connection.createStatement();
+    closure.call(statement);
+    return statement.executeBatch();
+  }
+  finally {
+    if (connection != null)     connection.setAutoCommit(true);
+    closeResources(connection,statement);
+    cacheConnection=savedCacheConnection;
+  }
+}
