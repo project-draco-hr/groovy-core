@@ -2,7 +2,6 @@
   if ("super".equals(name) || "this".equals(name))   return null;
   VariableScope scope=currentScope;
   Variable var=new DynamicVariable(name,currentScope.isInStaticContext());
-  Variable dummyStart=var;
   VariableScope dynamicScope=null;
   while (!scope.isRoot()) {
     if (dynamicScope == null && scope.isResolvingDynamic()) {
@@ -14,7 +13,7 @@
       var=var1;
       break;
     }
-    var1=(Variable)scope.getReferencedLocalVariable(var.getName());
+    var1=scope.getReferencedLocalVariable(var.getName());
     if (var1 != null) {
       var=var1;
       break;
@@ -47,7 +46,6 @@
   if (!scope.isRoot()) {
     scope=currentScope;
     while (scope != end) {
-      Map references=null;
       if (end.isClassScope() || end.isRoot() || (end.isReferencedClassVariable(name) && end.getDeclaredVariable(name) == null)) {
         scope.putReferencedClassVariable(var);
       }

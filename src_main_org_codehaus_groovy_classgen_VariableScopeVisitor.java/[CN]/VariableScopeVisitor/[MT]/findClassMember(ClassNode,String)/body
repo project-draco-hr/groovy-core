@@ -3,25 +3,15 @@
   if (cn.isScript()) {
     return new DynamicVariable(name,false);
   }
-  List l=cn.getFields();
-  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
-    FieldNode f=(FieldNode)iter.next();
-    if (f.getName().equals(name))     return f;
+  for (  FieldNode fn : cn.getFields()) {
+    if (fn.getName().equals(name))     return fn;
   }
-  l=cn.getMethods();
-  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
-    MethodNode f=(MethodNode)iter.next();
-    String methodName=f.getName();
-    String pName=getPropertyName(f);
-    if (pName == null)     continue;
-    if (!pName.equals(name))     continue;
-    PropertyNode var=new PropertyNode(pName,f.getModifiers(),getPropertyType(f),cn,null,null,null);
-    return var;
+  for (  MethodNode mn : cn.getMethods()) {
+    String pName=getPropertyName(mn);
+    if (pName != null && pName.equals(name))     return new PropertyNode(pName,mn.getModifiers(),getPropertyType(mn),cn,null,null,null);
   }
-  l=cn.getProperties();
-  for (Iterator iter=l.iterator(); iter.hasNext(); ) {
-    PropertyNode f=(PropertyNode)iter.next();
-    if (f.getName().equals(name))     return f;
+  for (  PropertyNode pn : cn.getProperties()) {
+    if (pn.getName().equals(name))     return pn;
   }
   Variable ret=findClassMember(cn.getSuperClass(),name);
   if (ret != null)   return ret;

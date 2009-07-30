@@ -2,8 +2,8 @@
   expression.getRightExpression().visit(this);
   if (expression.isMultipleAssignmentDeclaration()) {
     ArgumentListExpression list=(ArgumentListExpression)expression.getLeftExpression();
-    for (Iterator it=list.getExpressions().iterator(); it.hasNext(); ) {
-      VariableExpression exp=(VariableExpression)it.next();
+    for (    Expression e : list.getExpressions()) {
+      VariableExpression exp=(VariableExpression)e;
       declare(exp);
     }
   }
