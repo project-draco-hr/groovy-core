@@ -46,6 +46,7 @@
     if (!grabAnnotations.isEmpty()) {
       grabAnnotationLoop:       for (      AnnotationNode node : grabAnnotations) {
         Map<String,Object> grabMap=new HashMap<String,Object>();
+        checkForConvenienceForm(node);
         for (        String s : new String[]{"group","module","version","classifier"}) {
           Expression member=node.getMember(s);
           if (member == null && !s.equals("classifier")) {
