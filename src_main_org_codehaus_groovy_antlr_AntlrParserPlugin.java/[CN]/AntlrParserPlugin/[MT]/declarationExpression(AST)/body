@@ -28,7 +28,9 @@
   }
  else {
     String name=identifier(node);
-    leftExpression=new VariableExpression(name,type);
+    VariableExpression ve=new VariableExpression(name,type);
+    ve.addAnnotations(annotations);
+    leftExpression=ve;
     right=node.getNextSibling();
     if (right != null) {
       assertNodeType(ASSIGN,right);
