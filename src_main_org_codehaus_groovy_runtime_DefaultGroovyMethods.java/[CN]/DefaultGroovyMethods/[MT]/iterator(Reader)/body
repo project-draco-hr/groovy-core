@@ -2,7 +2,7 @@
   final BufferedReader bufferedReader;
   if (self instanceof BufferedReader)   bufferedReader=(BufferedReader)self;
  else   bufferedReader=new BufferedReader(self);
-  return new Iterator(){
+  return new Iterator<String>(){
     String nextVal;
     boolean nextMustRead=true;
     boolean hasNext=true;
@@ -18,7 +18,7 @@
       }
       return hasNext;
     }
-    public Object next(){
+    public String next(){
       String retval=null;
       if (nextMustRead) {
         try {

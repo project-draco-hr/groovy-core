@@ -1,5 +1,5 @@
 {
-  return new Iterator(){
+  return new Iterator<Byte>(){
     Byte nextVal;
     boolean nextMustRead=true;
     boolean hasNext=true;
@@ -15,7 +15,7 @@
       }
       return hasNext;
     }
-    public Object next(){
+    public Byte next(){
       Byte retval=null;
       if (nextMustRead) {
         try {
@@ -30,7 +30,7 @@
       return retval;
     }
     public void remove(){
-      throw new UnsupportedOperationException("Cannot remove() from an InputStream Iterator");
+      throw new UnsupportedOperationException("Cannot remove() from a DataInputStream Iterator");
     }
   }
 ;

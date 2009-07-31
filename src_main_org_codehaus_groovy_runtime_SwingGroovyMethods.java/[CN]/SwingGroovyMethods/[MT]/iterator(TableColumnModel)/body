@@ -1,0 +1,15 @@
+{
+  return new Iterator<TableColumn>(){
+    private int index=0;
+    public boolean hasNext(){
+      return index > -1 && index < self.getColumnCount();
+    }
+    public TableColumn next(){
+      return self.getColumn(index++);
+    }
+    public void remove(){
+      if (hasNext())       self.removeColumn(self.getColumn(index--));
+    }
+  }
+;
+}

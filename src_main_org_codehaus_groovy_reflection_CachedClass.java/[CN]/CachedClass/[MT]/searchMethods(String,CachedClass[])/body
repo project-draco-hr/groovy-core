@@ -1,8 +1,7 @@
 {
   CachedMethod[] methods=getMethods();
   CachedMethod res=null;
-  for (int i=0; i < methods.length; i++) {
-    CachedMethod m=methods[i];
+  for (  CachedMethod m : methods) {
     if (m.getName().equals(name) && ReflectionCache.arrayContentsEq(parameterTypes,m.getParameterTypes()) && (res == null || res.getReturnType().isAssignableFrom(m.getReturnType())))     res=m;
   }
   return res;

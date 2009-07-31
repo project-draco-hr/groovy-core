@@ -1,0 +1,21 @@
+{
+  return new Iterator(){
+    private int row=0;
+    public boolean hasNext(){
+      return row < self.getRowCount();
+    }
+    public Object next(){
+      int cols=self.getColumnCount();
+      Object[] rowData=new Object[cols];
+      for (int col=0; col < cols; col++) {
+        rowData[col]=self.getValueAt(row,col);
+      }
+      row++;
+      return rowData;
+    }
+    public void remove(){
+      throw new UnsupportedOperationException("TableModel is immutable.");
+    }
+  }
+;
+}

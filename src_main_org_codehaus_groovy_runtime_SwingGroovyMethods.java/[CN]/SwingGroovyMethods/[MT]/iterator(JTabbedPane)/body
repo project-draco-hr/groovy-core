@@ -1,0 +1,15 @@
+{
+  return new Iterator<Component>(){
+    private int index=0;
+    public boolean hasNext(){
+      return index > -1 && index < self.getTabCount();
+    }
+    public Component next(){
+      return self.getComponentAt(index++);
+    }
+    public void remove(){
+      if (hasNext())       self.removeTabAt(index--);
+    }
+  }
+;
+}
