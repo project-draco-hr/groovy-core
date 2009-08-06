@@ -3,9 +3,7 @@
   PreparedStatement statement=null;
   try {
     log.fine(sql);
-    statement=getPreparedStatement(connection,sql);
-    setParameters(params,statement);
-    configure(statement);
+    statement=getPreparedStatement(connection,sql,params);
     this.updateCount=statement.executeUpdate();
     return this.updateCount;
   }

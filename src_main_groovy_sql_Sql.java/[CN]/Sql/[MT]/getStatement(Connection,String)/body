@@ -1,16 +1,5 @@
 {
-  Statement stmt;
-  if (cacheStatements) {
-    stmt=statementCache.get(sql);
-    if (stmt == null) {
-synchronized (statementCache) {
-        stmt=createStatement(connection);
-        statementCache.put(sql,stmt);
-      }
-    }
-  }
- else {
-    stmt=createStatement(connection);
-  }
+  Statement stmt=getAbstractStatement(new CreateStatementCommand(),connection,sql);
+  configure(stmt);
   return stmt;
 }
