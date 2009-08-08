@@ -5,11 +5,11 @@
     log.fine(sql);
     statement=getStatement(connection,sql);
     boolean hasResultSet=statement.execute(sql,Statement.RETURN_GENERATED_KEYS);
-    List<List> autoKeys=new ArrayList<List>();
+    List<List<Object>> autoKeys=new ArrayList<List<Object>>();
     ResultSet keys=statement.getGeneratedKeys();
     int count=keys.getMetaData().getColumnCount();
     while (keys.next()) {
-      List rowKeys=new ArrayList(count);
+      List<Object> rowKeys=new ArrayList<Object>(count);
       for (int i=1; i <= count; i++) {
         rowKeys.add(keys.getObject(i));
       }

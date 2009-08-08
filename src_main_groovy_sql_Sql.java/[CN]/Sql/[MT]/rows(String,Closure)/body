@@ -1,22 +1,5 @@
 {
-  List<GroovyRowResult> results=new ArrayList<GroovyRowResult>();
-  Connection connection=createConnection();
-  Statement statement=getStatement(connection,sql);
-  ResultSet rs=null;
-  try {
-    log.fine(sql);
-    rs=statement.executeQuery(sql);
-    if (metaClosure != null)     metaClosure.call(rs.getMetaData());
-    while (rs.next()) {
-      results.add(SqlGroovyMethods.toRowResult(rs));
-    }
-    return (results);
-  }
- catch (  SQLException e) {
-    log.log(Level.FINE,"Failed to execute: " + sql,e);
-    throw e;
-  }
- finally {
-    closeResources(connection,statement,rs);
-  }
+  ResultSet rs=executeQuery(sql);
+  if (metaClosure != null)   metaClosure.call(rs.getMetaData());
+  return asList(sql,rs);
 }

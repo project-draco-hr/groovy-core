@@ -1,0 +1,17 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    log.fine(sql);
+    ResultSet result=runQuery(connection);
+    assert(null != statement);
+    return result;
+  }
+ catch (  SQLException e) {
+    log.log(Level.FINE,"Failed to execute: " + sql,e);
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement,null);
+  }
+}
