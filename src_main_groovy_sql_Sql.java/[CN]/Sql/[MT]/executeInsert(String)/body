@@ -4,19 +4,9 @@
   try {
     log.fine(sql);
     statement=getStatement(connection,sql);
-    boolean hasResultSet=statement.execute(sql,Statement.RETURN_GENERATED_KEYS);
-    List<List<Object>> autoKeys=new ArrayList<List<Object>>();
+    this.updateCount=statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
     ResultSet keys=statement.getGeneratedKeys();
-    int count=keys.getMetaData().getColumnCount();
-    while (keys.next()) {
-      List<Object> rowKeys=new ArrayList<Object>(count);
-      for (int i=1; i <= count; i++) {
-        rowKeys.add(keys.getObject(i));
-      }
-      autoKeys.add(rowKeys);
-    }
-    this.updateCount=statement.getUpdateCount();
-    return autoKeys;
+    return calculateKeys(keys);
   }
  catch (  SQLException e) {
     log.log(Level.FINE,"Failed to execute: " + sql,e);
