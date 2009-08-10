@@ -1,8 +1,5 @@
 {
-  if (returnGeneratedKeys != 0) {
-    return connection.prepareStatement(sql,returnGeneratedKeys);
-  }
- else {
-    return connection.prepareStatement(sql);
-  }
+  if (returnGeneratedKeys != 0)   return connection.prepareStatement(sql,returnGeneratedKeys);
+  if (appearsLikeStoredProc(sql))   return connection.prepareCall(sql);
+  return connection.prepareStatement(sql);
 }
