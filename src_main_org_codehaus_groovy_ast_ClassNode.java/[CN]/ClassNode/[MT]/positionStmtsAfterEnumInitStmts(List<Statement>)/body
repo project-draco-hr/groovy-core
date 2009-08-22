@@ -1,0 +1,23 @@
+{
+  MethodNode method=getOrAddStaticConstructorNode();
+  Statement statement=method.getCode();
+  if (statement instanceof BlockStatement) {
+    BlockStatement block=(BlockStatement)statement;
+    List<Statement> blockStatements=block.getStatements();
+    ListIterator<Statement> litr=blockStatements.listIterator();
+    while (litr.hasNext()) {
+      Statement stmt=litr.next();
+      if (stmt instanceof ExpressionStatement && ((ExpressionStatement)stmt).getExpression() instanceof BinaryExpression) {
+        BinaryExpression bExp=(BinaryExpression)((ExpressionStatement)stmt).getExpression();
+        if (bExp.getLeftExpression() instanceof FieldExpression) {
+          FieldExpression fExp=(FieldExpression)bExp.getLeftExpression();
+          if (fExp.getFieldName().equals("$VALUES")) {
+            for (            Statement tmpStmt : staticFieldStatements) {
+              litr.add(tmpStmt);
+            }
+          }
+        }
+      }
+    }
+  }
+}

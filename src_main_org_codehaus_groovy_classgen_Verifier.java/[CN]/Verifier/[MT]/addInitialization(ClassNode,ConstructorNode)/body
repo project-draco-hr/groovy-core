@@ -4,10 +4,10 @@
   if (first != null && first.isThisCall())   return;
   List statements=new ArrayList();
   List staticStatements=new ArrayList();
-  final boolean isEnumClassNode=isEnum(node);
-  List initStmtsAfterEnumValuesInit=new ArrayList();
+  final boolean isEnum=node.isEnum();
+  List<Statement> initStmtsAfterEnumValuesInit=new ArrayList();
   Set explicitStaticPropsInEnum=new HashSet();
-  if (isEnumClassNode) {
+  if (isEnum) {
     for (Iterator iter=node.getProperties().iterator(); iter.hasNext(); ) {
       PropertyNode propNode=(PropertyNode)iter.next();
       if (!propNode.isSynthetic() && propNode.getField().isStatic()) {
@@ -16,7 +16,7 @@
     }
   }
   for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
-    addFieldInitialization(statements,staticStatements,(FieldNode)iter.next(),isEnumClassNode,initStmtsAfterEnumValuesInit,explicitStaticPropsInEnum);
+    addFieldInitialization(statements,staticStatements,(FieldNode)iter.next(),isEnum,initStmtsAfterEnumValuesInit,explicitStaticPropsInEnum);
   }
   statements.addAll(node.getObjectInitializerStatements());
   if (!statements.isEmpty()) {
@@ -42,11 +42,11 @@
     constructorNode.setCode(newBlock);
   }
   if (!staticStatements.isEmpty()) {
-    if (isEnumClassNode) {
+    if (isEnum) {
       staticStatements.removeAll(initStmtsAfterEnumValuesInit);
       node.addStaticInitializerStatements(staticStatements,true);
       if (!initStmtsAfterEnumValuesInit.isEmpty()) {
-        node.addStaticInitializerStatements(initStmtsAfterEnumValuesInit,false);
+        node.positionStmtsAfterEnumInitStmts(initStmtsAfterEnumValuesInit);
       }
     }
  else {
