@@ -50,8 +50,10 @@
     if (Modifier.isFinal(field.getModifiers())) {
       throw new ReadOnlyPropertyException(name,theClass);
     }
-    field.setProperty(object,newValue);
-    return;
+    if (!(this.isMap && isPrivateOrPkgPrivate(field.getModifiers()))) {
+      field.setProperty(object,newValue);
+      return;
+    }
   }
   if (method == null && !useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
     method=getCategoryMethodSetter(sender,"set",true);
