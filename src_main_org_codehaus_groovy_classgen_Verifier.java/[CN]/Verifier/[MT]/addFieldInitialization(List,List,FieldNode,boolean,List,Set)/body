@@ -1,7 +1,11 @@
 {
   Expression expression=fieldNode.getInitialExpression();
   if (expression != null) {
-    ExpressionStatement statement=new ExpressionStatement(new BinaryExpression(new FieldExpression(fieldNode),Token.newSymbol(Types.EQUAL,fieldNode.getLineNumber(),fieldNode.getColumnNumber()),expression));
+    final FieldExpression fe=new FieldExpression(fieldNode);
+    if (fieldNode.getType().equals(ClassHelper.REFERENCE_TYPE) && ((fieldNode.getModifiers() & Opcodes.ACC_SYNTHETIC) != 0)) {
+      fe.setUseReferenceDirectly(true);
+    }
+    ExpressionStatement statement=new ExpressionStatement(new BinaryExpression(fe,Token.newSymbol(Types.EQUAL,fieldNode.getLineNumber(),fieldNode.getColumnNumber()),expression));
     if (fieldNode.isStatic()) {
       if (expression instanceof ConstantExpression) {
         staticList.add(0,statement);
