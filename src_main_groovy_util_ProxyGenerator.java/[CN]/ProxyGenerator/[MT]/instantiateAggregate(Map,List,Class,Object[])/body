@@ -50,6 +50,10 @@
       selectedMethods.put(method.getName(),method);
       addOverridingMapCall(buffer,method,closureIndicator);
     }
+ else     if (Modifier.isAbstract(method.getModifiers())) {
+      selectedMethods.put(method.getName(),method);
+      addMapOrDummyCall(map,buffer,method);
+    }
   }
   List interfaceMethods=new ArrayList();
   for (int i=0; i < interfacesToImplement.size(); i++) {
