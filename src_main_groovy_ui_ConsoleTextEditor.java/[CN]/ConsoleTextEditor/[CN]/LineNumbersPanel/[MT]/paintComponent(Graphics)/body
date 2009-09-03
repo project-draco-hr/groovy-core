@@ -1,0 +1,22 @@
+{
+  super.paintComponent(g);
+  int start=textEditor.viewToModel(getViewport().getViewPosition());
+  int end=textEditor.viewToModel(new Point(10,getViewport().getViewPosition().y + (int)textEditor.getVisibleRect().getHeight()));
+  Document doc=textEditor.getDocument();
+  int startline=doc.getDefaultRootElement().getElementIndex(start) + 1;
+  int endline=doc.getDefaultRootElement().getElementIndex(end) + 1;
+  int fontHeight=g.getFontMetrics(textEditor.getFont()).getHeight();
+  int fontDesc=g.getFontMetrics(textEditor.getFont()).getDescent();
+  int starting_y=-1;
+  try {
+    starting_y=textEditor.modelToView(start).y + fontHeight - fontDesc;
+  }
+ catch (  BadLocationException e1) {
+    e1.printStackTrace();
+  }
+  g.setFont(textEditor.getFont());
+  for (int line=startline, y=starting_y; line <= endline; y+=fontHeight, line++) {
+    String lineNumber=DefaultGroovyMethods.padLeft(Integer.toString(line),4," ");
+    g.drawString(lineNumber,0,y);
+  }
+}

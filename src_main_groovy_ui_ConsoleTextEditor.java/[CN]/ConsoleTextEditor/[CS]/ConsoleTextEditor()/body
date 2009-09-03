@@ -1,12 +1,32 @@
 {
   textEditor.setFont(StructuredSyntaxResources.EDITOR_FONT);
-  setWheelScrollingEnabled(true);
-  setViewportView(textEditor);
+  setViewportView(new JPanel(new BorderLayout()){
+{
+      add(numbersPanel,BorderLayout.WEST);
+      add(textEditor,BorderLayout.CENTER);
+    }
+  }
+);
   textEditor.setDragEnabled(editable);
+  getVerticalScrollBar().setUnitIncrement(10);
   initActions();
   DefaultStyledDocument doc=new DefaultStyledDocument();
   doc.setDocumentFilter(new GroovyFilter(doc));
   textEditor.setDocument(doc);
+  doc.addDocumentListener(new DocumentListener(){
+    public void insertUpdate(    DocumentEvent documentEvent){
+      documentChangedSinceLastRepaint=true;
+    }
+    public void removeUpdate(    DocumentEvent documentEvent){
+      documentChangedSinceLastRepaint=true;
+    }
+    public void changedUpdate(    DocumentEvent documentEvent){
+      documentChangedSinceLastRepaint=true;
+      int width=3 * Preferences.userNodeForPackage(Console.class).getInt("fontSize",12);
+      numbersPanel.setPreferredSize(new Dimension(width,width));
+    }
+  }
+);
   this.undoManager=new TextUndoManager();
   doc.addUndoableEditListener(undoManager);
   undoManager.addPropertyChangeListener(undoAction);
