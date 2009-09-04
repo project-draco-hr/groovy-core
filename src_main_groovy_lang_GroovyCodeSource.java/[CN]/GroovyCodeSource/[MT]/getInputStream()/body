@@ -1,13 +1,26 @@
 {
-  if (this.inputStream != null) {
-    return this.inputStream;
+  IOException ioe=null;
+  if (file == null) {
+    try {
+      new ByteArrayInputStream(scriptText.getBytes("UTF-8"));
+    }
+ catch (    UnsupportedEncodingException e) {
+      ioe=e;
+    }
   }
  else {
     try {
       if (file != null)       return new FileInputStream(file);
     }
  catch (    FileNotFoundException fnfe) {
+      ioe=fnfe;
     }
-    return inputStream;
+  }
+  String errorMsg="Impossible to read the bytes from the associated script: " + scriptText + " with name: "+ name;
+  if (ioe != null) {
+    throw new RuntimeException(errorMsg,ioe);
+  }
+ else {
+    throw new RuntimeException(errorMsg);
   }
 }

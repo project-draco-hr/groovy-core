@@ -1,7 +1,12 @@
 {
   GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
-      return new GroovyCodeSource(in,fileName,"/groovy/script");
+      try {
+        return new GroovyCodeSource(DefaultGroovyMethods.getText(in),fileName,"/groovy/script");
+      }
+ catch (      IOException e) {
+        throw new RuntimeException("Impossible to read the content of the input stream for file named: " + fileName,e);
+      }
     }
   }
 );

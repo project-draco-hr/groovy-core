@@ -1,8 +1,9 @@
 {
-  try {
-    return parse(new ByteArrayInputStream(scriptText.getBytes(config.getSourceEncoding())),fileName);
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyCodeSource(scriptText,fileName,"/groovy/shell");
+    }
   }
- catch (  UnsupportedEncodingException e) {
-    throw new CompilationFailedException(0,null,e);
-  }
+);
+  return parse(gcs);
 }

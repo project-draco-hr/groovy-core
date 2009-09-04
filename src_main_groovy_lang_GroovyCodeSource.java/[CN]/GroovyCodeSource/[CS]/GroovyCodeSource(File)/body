@@ -13,7 +13,6 @@
     throw e;
   }
   this.file=file;
-  this.inputStream=null;
   this.cachable=true;
   try {
     Object[] info=(Object[])AccessController.doPrivileged(new PrivilegedExceptionAction(){
@@ -28,6 +27,7 @@
 );
     this.name=(String)info[0];
     this.codeSource=(CodeSource)info[1];
+    this.scriptText=DefaultGroovyMethods.getText(file);
   }
  catch (  PrivilegedActionException pae) {
     throw new RuntimeException("Could not construct a URL from: " + file);

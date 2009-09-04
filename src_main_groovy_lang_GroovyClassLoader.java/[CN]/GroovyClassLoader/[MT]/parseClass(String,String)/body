@@ -1,10 +1,3 @@
 {
-  byte[] bytes=null;
-  try {
-    bytes=text.getBytes(config.getSourceEncoding());
-  }
- catch (  UnsupportedEncodingException e) {
-    throw new CompilationFailedException(1,null,e);
-  }
-  return parseClass(new ByteArrayInputStream(bytes),fileName);
+  return parseClass(new GroovyCodeSource(text,fileName));
 }
