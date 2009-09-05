@@ -16,6 +16,16 @@
       if (main != null)       throw new IOException("duplicate definition of main in line " + lineNumber + " : "+ line);
       main=line.substring(MAIN_PREFIX.length()).trim();
     }
+ else     if (line.startsWith(PROP_PREFIX)) {
+      String params=line.substring(PROP_PREFIX.length()).trim();
+      int index=params.indexOf('=');
+      if (index == -1) {
+        throw new IOException("unexpected property format - expecting name=value" + lineNumber + " : "+ line);
+      }
+      String propName=params.substring(0,index);
+      String propValue=assignProperties(params.substring(index + 1));
+      System.setProperty(propName,propValue);
+    }
  else {
       throw new IOException("unexpected line in " + lineNumber + " : "+ line);
     }
