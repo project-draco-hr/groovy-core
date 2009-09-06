@@ -1,4 +1,6 @@
 {
+  boolean hasExistingToString=hasDeclaredMethod(cNode,"toString",0);
+  if (hasExistingToString && hasDeclaredMethod(cNode,"_toString",0))   return;
   final BlockStatement body=new BlockStatement();
   final List<PropertyNode> list=cNode.getProperties();
   final Expression result=new VariableExpression("_result");
@@ -20,5 +22,5 @@
   }
   body.addStatement(append(result,new ConstantExpression(")")));
   body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));
-  cNode.addMethod(new MethodNode("toString",ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+  cNode.addMethod(new MethodNode(hasExistingToString ? "_toString" : "toString",hasExistingToString ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
 }
