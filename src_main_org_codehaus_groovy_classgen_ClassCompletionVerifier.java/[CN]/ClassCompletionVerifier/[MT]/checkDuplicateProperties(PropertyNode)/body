@@ -1,0 +1,15 @@
+{
+  ClassNode cn=node.getDeclaringClass();
+  String name=node.getName();
+  String getterName="get" + MetaClassHelper.capitalize(name);
+  if (Character.isUpperCase(name.charAt(0))) {
+    for (    PropertyNode propNode : cn.getProperties()) {
+      String otherName=propNode.getField().getName();
+      String otherGetterName="get" + MetaClassHelper.capitalize(otherName);
+      if (node != propNode && getterName.equals(otherGetterName)) {
+        String msg="The field " + name + " and "+ otherName+ " on the class "+ cn.getName()+ " will result in duplicate JavaBean properties, which is not allowed";
+        addError(msg,node);
+      }
+    }
+  }
+}
