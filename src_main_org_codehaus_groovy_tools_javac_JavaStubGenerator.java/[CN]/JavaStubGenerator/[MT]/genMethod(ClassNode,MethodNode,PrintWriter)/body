@@ -1,5 +1,6 @@
 {
   if (methodNode.getName().equals("<clinit>"))   return;
+  if (methodNode.isPrivate() || !Utilities.isJavaIdentifier(methodNode.getName()))   return;
   if (!clazz.isInterface())   printModifiers(out,methodNode.getModifiers());
   writeGenericsBounds(out,methodNode.getGenericsTypes());
   out.print(" ");
