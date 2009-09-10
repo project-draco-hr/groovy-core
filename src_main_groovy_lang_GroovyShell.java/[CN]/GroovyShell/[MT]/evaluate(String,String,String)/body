@@ -1,3 +1,13 @@
 {
-  return evaluate(new GroovyCodeSource(scriptText,fileName,codeBase));
+  SecurityManager sm=System.getSecurityManager();
+  if (sm != null) {
+    sm.checkPermission(new GroovyCodeSourcePermission(codeBase));
+  }
+  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
+    public Object run(){
+      return new GroovyCodeSource(scriptText,fileName,codeBase);
+    }
+  }
+);
+  return evaluate(gcs);
 }
