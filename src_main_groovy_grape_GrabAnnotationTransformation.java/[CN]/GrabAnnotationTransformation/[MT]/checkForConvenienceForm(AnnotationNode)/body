@@ -4,13 +4,34 @@
   Object allParts=((ConstantExpression)val).getValue();
   if (!(allParts instanceof String))   return;
   String allstr=(String)allParts;
-  if (allstr.contains(":")) {
-    String[] parts=allstr.split(":");
+  if (allstr.contains("#")) {
+    Matcher m=IVY_PATTERN.matcher(allstr);
+    if (!m.find())     return;
+    if (m.group(1) == null || m.group(2) == null)     return;
+    node.addMember("module",new ConstantExpression(m.group(2)));
+    node.addMember("group",new ConstantExpression(m.group(1)));
+    if (m.group(6) != null)     node.addMember("conf",new ConstantExpression(m.group(6)));
+    if (m.group(4) != null)     node.addMember("version",new ConstantExpression(m.group(4)));
+ else     node.addMember("version",new ConstantExpression("*"));
+    node.getMembers().remove("value");
+  }
+ else   if (allstr.contains(":")) {
+    String ext="";
+    String[] parts;
+    if (allstr.contains("@")) {
+      parts=allstr.split("@");
+      if (parts.length > 2)       return;
+      allstr=parts[0];
+      ext=parts[1];
+    }
+    parts=allstr.split(":");
     if (parts.length > 4)     return;
     if (parts.length > 3)     node.addMember("classifier",new ConstantExpression(parts[3]));
     if (parts.length > 2)     node.addMember("version",new ConstantExpression(parts[2]));
  else     node.addMember("version",new ConstantExpression("*"));
+    if (!ext.isEmpty())     node.addMember("ext",new ConstantExpression(ext));
     node.addMember("module",new ConstantExpression(parts[1]));
     node.addMember("group",new ConstantExpression(parts[0]));
+    node.getMembers().remove("value");
   }
 }

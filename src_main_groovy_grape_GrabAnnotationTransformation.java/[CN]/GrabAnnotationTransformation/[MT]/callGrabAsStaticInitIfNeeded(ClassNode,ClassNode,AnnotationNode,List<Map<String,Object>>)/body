@@ -1,0 +1,32 @@
+{
+  if ((node.getMember("initClass") == null) || (node.getMember("initClass") == ConstantExpression.TRUE)) {
+    List<Statement> grabInitializers=new ArrayList<Statement>();
+    MapExpression me=new MapExpression();
+    for (    String s : GRAB_REQUIRED) {
+      me.addMapEntryExpression(new ConstantExpression(s),node.getMember(s));
+    }
+    for (    String s : GRAB_OPTIONAL) {
+      if (node.getMember(s) != null)       me.addMapEntryExpression(new ConstantExpression(s),node.getMember(s));
+    }
+    ArgumentListExpression grabArgs;
+    if (grabExcludeMaps.isEmpty()) {
+      grabArgs=new ArgumentListExpression(me);
+    }
+ else {
+      MapExpression args=new MapExpression();
+      ListExpression list=new ListExpression();
+      for (      Map<String,Object> map : grabExcludeMaps) {
+        Set<Map.Entry<String,Object>> entries=map.entrySet();
+        MapExpression inner=new MapExpression();
+        for (        Map.Entry<String,Object> entry : entries) {
+          inner.addMapEntryExpression(new ConstantExpression(entry.getKey()),new ConstantExpression(entry.getValue()));
+        }
+        list.addExpression(inner);
+      }
+      args.addMapEntryExpression(new ConstantExpression("excludes"),list);
+      grabArgs=new ArgumentListExpression(args,me);
+    }
+    grabInitializers.add(new ExpressionStatement(new StaticMethodCallExpression(grapeClassNode,"grab",grabArgs)));
+    classNode.addStaticInitializerStatements(grabInitializers,true);
+  }
+}
