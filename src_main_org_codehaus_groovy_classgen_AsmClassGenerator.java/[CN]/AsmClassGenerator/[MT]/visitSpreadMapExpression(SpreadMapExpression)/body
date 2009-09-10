@@ -1,5 +1,8 @@
 {
   Expression subExpression=expression.getExpression();
+  AssertionTracker old=assertionTracker;
+  assertionTracker=null;
   subExpression.visit(this);
   spreadMap.call(mv);
+  assertionTracker=old;
 }

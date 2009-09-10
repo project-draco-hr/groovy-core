@@ -1,0 +1,9 @@
+{
+  if (assertionTracker == null)   return;
+  if (unboxedValue) {
+    mv.visitInsn(DUP);
+    helper.boxBoolean();
+  }
+  record(assertionTracker.sourceText.getNormalizedColumn(token.getStartLine(),token.getStartColumn()));
+  if (unboxedValue)   mv.visitInsn(POP);
+}

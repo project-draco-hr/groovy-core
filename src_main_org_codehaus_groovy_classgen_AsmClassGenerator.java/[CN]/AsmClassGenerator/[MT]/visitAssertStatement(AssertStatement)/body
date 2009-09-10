@@ -1,48 +1,65 @@
 {
   onLineNumber(statement,"visitAssertStatement");
   visitStatement(statement);
+  boolean rewriteAssert=true;
+  rewriteAssert=statement.getMessageExpression() == ConstantExpression.NULL;
+  AssertionTracker oldTracker=assertionTracker;
+  Janitor janitor=new Janitor();
+  final Label tryStart=new Label();
+  if (rewriteAssert) {
+    assertionTracker=new AssertionTracker();
+    try {
+      assertionTracker.sourceText=new SourceText(statement,source,janitor);
+      mv.visitTypeInsn(NEW,"org/codehaus/groovy/transform/powerassert/ValueRecorder");
+      mv.visitInsn(DUP);
+      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/transform/powerassert/ValueRecorder","<init>","()V");
+      assertionTracker.recorderIndex=compileStack.defineTemporaryVariable("recorder",true);
+      mv.visitLabel(tryStart);
+    }
+ catch (    SourceTextNotAvailableException e) {
+      rewriteAssert=false;
+      assertionTracker=oldTracker;
+    }
+  }
   BooleanExpression booleanExpression=statement.getBooleanExpression();
   booleanExpression.visit(this);
-  Label l0=new Label();
-  mv.visitJumpInsn(IFEQ,l0);
-  Label l1=new Label();
-  mv.visitJumpInsn(GOTO,l1);
-  mv.visitLabel(l0);
-  String expressionText=booleanExpression.getText();
-  List<String> list=new ArrayList<String>();
-  addVariableNames(booleanExpression,list);
-  if (list.isEmpty()) {
-    mv.visitLdcInsn(expressionText);
+  Label exceptionThrower=new Label();
+  mv.visitJumpInsn(IFEQ,exceptionThrower);
+  if (rewriteAssert) {
+    mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/transform/powerassert/ValueRecorder","clear","()V");
+  }
+  Label afterAssert=new Label();
+  mv.visitJumpInsn(GOTO,afterAssert);
+  mv.visitLabel(exceptionThrower);
+  if (rewriteAssert) {
+    mv.visitLdcInsn(assertionTracker.sourceText.getNormalizedText());
+    mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/transform/powerassert/AssertionRenderer","render","(Ljava/lang/String;Lorg/codehaus/groovy/transform/powerassert/ValueRecorder;)Ljava/lang/String;");
   }
  else {
-    boolean first=true;
-    mv.visitTypeInsn(NEW,"java/lang/StringBuffer");
-    mv.visitInsn(DUP);
-    mv.visitLdcInsn(expressionText + ". Values: ");
-    mv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
-    int tempIndex=compileStack.defineTemporaryVariable("assert",true);
-    for (    String name : list) {
-      String text=name + " = ";
-      if (first) {
-        first=false;
-      }
- else {
-        text=", " + text;
-      }
-      mv.visitVarInsn(ALOAD,tempIndex);
-      mv.visitLdcInsn(text);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
-      mv.visitInsn(POP);
-      mv.visitVarInsn(ALOAD,tempIndex);
-      new VariableExpression(name).visit(this);
-      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","toString","(Ljava/lang/Object;)Ljava/lang/String;");
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
-      mv.visitInsn(POP);
-    }
-    mv.visitVarInsn(ALOAD,tempIndex);
-    compileStack.removeVar(tempIndex);
+    writeSourclessAssertText(statement);
   }
+  AssertionTracker savedTracker=assertionTracker;
+  assertionTracker=null;
   statement.getMessageExpression().visit(this);
   assertFailedMethod.call(mv);
-  mv.visitLabel(l1);
+  if (rewriteAssert) {
+    final Label tryEnd=new Label();
+    mv.visitLabel(tryEnd);
+    mv.visitJumpInsn(GOTO,afterAssert);
+    final Label catchAny=new Label();
+    mv.visitLabel(catchAny);
+    mv.visitVarInsn(ALOAD,savedTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/transform/powerassert/ValueRecorder","clear","()V");
+    mv.visitInsn(ATHROW);
+    exceptionBlocks.add(new Runnable(){
+      public void run(){
+        mv.visitTryCatchBlock(tryStart,tryEnd,catchAny,null);
+      }
+    }
+);
+  }
+  mv.visitLabel(afterAssert);
+  assertionTracker=oldTracker;
 }
