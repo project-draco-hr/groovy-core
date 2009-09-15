@@ -1,3 +1,11 @@
 {
-  return new QueryCommand(sql).execute();
+  AbstractQueryCommand command=createQueryCommand(sql);
+  ResultSet rs=null;
+  try {
+    rs=command.execute();
+  }
+  finally {
+    command.closeResources();
+  }
+  return rs;
 }

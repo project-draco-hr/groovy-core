@@ -1,3 +1,11 @@
 {
-  return new PreparedQueryCommand(sql,params).execute();
+  AbstractQueryCommand command=createPreparedQueryCommand(sql,params);
+  ResultSet rs=null;
+  try {
+    rs=command.execute();
+  }
+  finally {
+    command.closeResources();
+  }
+  return rs;
 }

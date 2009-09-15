@@ -1,4 +1,9 @@
 {
-  ResultSet rs=executePreparedQuery(sql,params);
-  return asList(sql,rs);
+  AbstractQueryCommand command=createPreparedQueryCommand(sql,params);
+  try {
+    return asList(sql,command.execute());
+  }
+  finally {
+    command.closeResources();
+  }
 }

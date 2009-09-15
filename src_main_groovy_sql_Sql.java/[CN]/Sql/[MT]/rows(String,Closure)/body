@@ -1,5 +1,14 @@
 {
-  ResultSet rs=executeQuery(sql);
-  if (metaClosure != null)   metaClosure.call(rs.getMetaData());
-  return asList(sql,rs);
+  AbstractQueryCommand command=createQueryCommand(sql);
+  ResultSet rs=null;
+  try {
+    rs=command.execute();
+    if (metaClosure != null)     metaClosure.call(rs.getMetaData());
+    List<GroovyRowResult> result=asList(sql,rs);
+    rs=null;
+    return result;
+  }
+  finally {
+    command.closeResources(rs);
+  }
 }
