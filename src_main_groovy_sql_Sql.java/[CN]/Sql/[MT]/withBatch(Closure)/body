@@ -3,8 +3,10 @@
   cacheConnection=true;
   Connection connection=null;
   Statement statement=null;
+  boolean savedAutoCommit=true;
   try {
     connection=createConnection();
+    savedAutoCommit=connection.getAutoCommit();
     connection.setAutoCommit(false);
     statement=createStatement(connection);
     closure.call(statement);
@@ -26,7 +28,7 @@ catch (  Error e) {
     throw e;
   }
  finally {
-    if (connection != null)     connection.setAutoCommit(true);
+    if (connection != null)     connection.setAutoCommit(savedAutoCommit);
     cacheConnection=false;
     closeResources(connection,statement);
     cacheConnection=savedCacheConnection;
