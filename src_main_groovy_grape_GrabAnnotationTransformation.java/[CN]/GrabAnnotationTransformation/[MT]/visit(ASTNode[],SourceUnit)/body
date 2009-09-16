@@ -62,7 +62,7 @@
     if (!grabExcludeAnnotations.isEmpty()) {
       grabExcludeAnnotationLoop:       for (      AnnotationNode node : grabExcludeAnnotations) {
         Map<String,Object> grabExcludeMap=new HashMap<String,Object>();
-        checkForConvenienceForm(node);
+        checkForConvenienceForm(node,true);
         for (        String s : GRABEXCLUDE_REQUIRED) {
           Expression member=node.getMember(s);
           if (member == null) {
@@ -81,7 +81,7 @@
     if (!grabAnnotations.isEmpty()) {
       grabAnnotationLoop:       for (      AnnotationNode node : grabAnnotations) {
         Map<String,Object> grabMap=new HashMap<String,Object>();
-        checkForConvenienceForm(node);
+        checkForConvenienceForm(node,false);
         for (        String s : GRAB_ALL) {
           Expression member=node.getMember(s);
           if (member == null && !GRAB_OPTIONAL.contains(s)) {
