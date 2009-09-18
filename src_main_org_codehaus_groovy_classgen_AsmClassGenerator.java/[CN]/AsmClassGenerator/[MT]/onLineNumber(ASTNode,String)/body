@@ -1,12 +1,10 @@
 {
   if (statement == null)   return;
   int line=statement.getLineNumber();
-  int col=statement.getColumnNumber();
   this.currentASTNode=statement;
   if (line < 0)   return;
   if (!ASM_DEBUG && line == lineNumber)   return;
   lineNumber=line;
-  columnNumber=col;
   if (mv != null) {
     Label l=new Label();
     mv.visitLabel(l);

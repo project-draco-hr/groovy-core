@@ -6,6 +6,6 @@
   arguments.getExpression(0).visit(this);
   arguments.getExpression(1).visit(this);
   Parameter p=new Parameter(ClassHelper.OBJECT_TYPE,"_p");
-  String descriptor=helper.getMethodDescriptor(ClassHelper.VOID_TYPE,new Parameter[]{p,p});
+  String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,new Parameter[]{p,p});
   mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
 }
