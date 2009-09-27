@@ -24,6 +24,14 @@
     ifs.setElseBlock(addReturnsIfNeeded(ifs.getElseBlock(),scope));
     return ifs;
   }
+  if (statement instanceof SwitchStatement) {
+    SwitchStatement swi=(SwitchStatement)statement;
+    for (    CaseStatement caseStatement : swi.getCaseStatements()) {
+      caseStatement.setCode(adjustSwitchCaseCode(caseStatement.getCode(),scope));
+    }
+    swi.setDefaultStatement(adjustSwitchCaseCode(swi.getDefaultStatement(),scope));
+    return swi;
+  }
   if (statement instanceof TryCatchStatement) {
     TryCatchStatement trys=(TryCatchStatement)statement;
     trys.setTryStatement(addReturnsIfNeeded(trys.getTryStatement(),scope));
