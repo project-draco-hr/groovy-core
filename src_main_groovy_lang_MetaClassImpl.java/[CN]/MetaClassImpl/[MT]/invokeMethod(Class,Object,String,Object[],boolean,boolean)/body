@@ -107,7 +107,12 @@ try {
 return invokeMethodOnGroovyObject(methodName,originalArguments,owner);
 }
  catch (MissingMethodException mme) {
+if (methodName.equals(mme.getMethod())) {
 if (last == null) last=mme;
+}
+ else {
+throw mme;
+}
 }
 catch (InvokerInvocationException iie) {
 if (iie.getCause() instanceof MissingMethodException) {

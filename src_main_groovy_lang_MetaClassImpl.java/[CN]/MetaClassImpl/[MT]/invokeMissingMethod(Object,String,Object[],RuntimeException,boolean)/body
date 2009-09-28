@@ -31,6 +31,10 @@
       }
       throw iie;
     }
+catch (    MissingMethodException mme) {
+      if (methodMissing instanceof ClosureMetaMethod)       throw new MissingMethodExecutionFailed(mme.getMethod(),mme.getClass(),mme.getArguments(),mme.isStatic(),mme);
+ else       throw mme;
+    }
   }
  else   if (original != null)   throw original;
  else   throw new MissingMethodExceptionNoStack(methodName,theClass,arguments,false);
