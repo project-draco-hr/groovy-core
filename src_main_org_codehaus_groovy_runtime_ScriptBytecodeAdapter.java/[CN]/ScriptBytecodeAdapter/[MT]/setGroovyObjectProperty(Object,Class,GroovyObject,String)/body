@@ -1,3 +1,8 @@
 {
-  receiver.setProperty(messageName,messageArgument);
+  try {
+    receiver.setProperty(messageName,messageArgument);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
+  }
 }

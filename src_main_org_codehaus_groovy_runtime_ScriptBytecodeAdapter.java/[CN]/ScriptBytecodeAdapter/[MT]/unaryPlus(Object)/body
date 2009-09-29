@@ -1,3 +1,8 @@
 {
-  return InvokerHelper.unaryPlus(value);
+  try {
+    return InvokerHelper.unaryPlus(value);
+  }
+ catch (  GroovyRuntimeException gre) {
+    throw unwrap(gre);
+  }
 }
