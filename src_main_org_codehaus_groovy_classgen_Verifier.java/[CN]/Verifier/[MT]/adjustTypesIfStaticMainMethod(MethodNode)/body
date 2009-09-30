@@ -1,0 +1,15 @@
+{
+  if (node.getName().equals("main") && node.isStatic()) {
+    Parameter[] params=node.getParameters();
+    if (params.length == 1) {
+      Parameter param=params[0];
+      if (param.getType() == null || param.getType() == ClassHelper.OBJECT_TYPE) {
+        param.setType(ClassHelper.STRING_TYPE.makeArray());
+        ClassNode returnType=node.getReturnType();
+        if (returnType == ClassHelper.OBJECT_TYPE) {
+          node.setReturnType(ClassHelper.VOID_TYPE);
+        }
+      }
+    }
+  }
+}
