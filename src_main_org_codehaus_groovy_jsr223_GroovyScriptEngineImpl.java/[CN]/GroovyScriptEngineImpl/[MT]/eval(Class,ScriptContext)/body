@@ -4,6 +4,9 @@
     final Writer writer=ctx.getWriter();
     ctx.setAttribute("out",(writer instanceof PrintWriter) ? writer : new PrintWriter(writer,true),ScriptContext.ENGINE_SCOPE);
   }
+  if (ctx.getWriter() != null) {
+    ctx.setAttribute("out",new PrintWriter(ctx.getWriter(),true),ScriptContext.ENGINE_SCOPE);
+  }
   Binding binding=new Binding(ctx.getBindings(ScriptContext.ENGINE_SCOPE)){
     @Override public Object getVariable(    String name){
 synchronized (ctx) {
@@ -72,5 +75,9 @@ synchronized (ctx) {
   }
  catch (  Exception e) {
     throw new ScriptException(e);
+  }
+ finally {
+    ctx.removeAttribute("context",ScriptContext.ENGINE_SCOPE);
+    ctx.removeAttribute("out",ScriptContext.ENGINE_SCOPE);
   }
 }
