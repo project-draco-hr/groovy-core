@@ -1,7 +1,5 @@
 {
-  for (Iterator iter=referencedClasses.iterator(); iter.hasNext(); ) {
-    ClassRef ref=(ClassRef)iter.next();
-    String staticFieldName=getStaticFieldName(ref.type);
+  for (  String staticFieldName : referencedClasses.keySet()) {
     FieldNode fn=classNode.getDeclaredField(staticFieldName);
     if (fn != null) {
       boolean type=fn.getType() == ClassHelper.CLASS_Type;
@@ -23,7 +21,7 @@
     Label l0=new Label();
     mv.visitJumpInsn(IFNONNULL,l0);
     mv.visitInsn(POP);
-    mv.visitLdcInsn(BytecodeHelper.getClassLoadingTypeDescription(ref.type));
+    mv.visitLdcInsn(BytecodeHelper.getClassLoadingTypeDescription(referencedClasses.get(staticFieldName)));
     mv.visitMethodInsn(INVOKESTATIC,internalClassName,"class$","(Ljava/lang/String;)Ljava/lang/Class;");
     mv.visitInsn(DUP);
     mv.visitFieldInsn(PUTSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");

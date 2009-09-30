@@ -1,9 +1,7 @@
 {
   if (referencedClasses.isEmpty())   return;
   addInnerClass(interfaceClassLoadingClass);
-  for (Iterator iter=referencedClasses.iterator(); iter.hasNext(); ) {
-    ClassRef ref=(ClassRef)iter.next();
-    String staticFieldName=getStaticFieldName(ref.type);
-    interfaceClassLoadingClass.addField(staticFieldName,ACC_STATIC + ACC_SYNTHETIC,ClassHelper.CLASS_Type,new ClassExpression(ref.type));
+  for (  String staticFieldName : referencedClasses.keySet()) {
+    interfaceClassLoadingClass.addField(staticFieldName,ACC_STATIC + ACC_SYNTHETIC,ClassHelper.CLASS_Type,new ClassExpression(referencedClasses.get(staticFieldName)));
   }
 }
