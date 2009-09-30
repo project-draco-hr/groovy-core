@@ -1,0 +1,8 @@
+{
+  Binding context=new Binding();
+  CompilerConfiguration config=new CompilerConfiguration();
+  config.setScriptBaseClass(DerivedScript.class.getName());
+  GroovyShell shell=new GroovyShell(context,config);
+  String script="evaluate '''\n" + "class XXXX{}\n" + "assert evaluate('XXXX') == XXXX\n"+ "'''";
+  shell.evaluate(script);
+}
