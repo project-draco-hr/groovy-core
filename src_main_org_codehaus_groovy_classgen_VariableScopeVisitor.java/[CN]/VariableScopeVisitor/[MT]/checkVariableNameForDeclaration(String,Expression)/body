@@ -2,11 +2,7 @@
   if ("super".equals(name) || "this".equals(name))   return null;
   VariableScope scope=currentScope;
   Variable var=new DynamicVariable(name,currentScope.isInStaticContext());
-  VariableScope dynamicScope=null;
-  while (!scope.isRoot()) {
-    if (dynamicScope == null && scope.isResolvingDynamic()) {
-      dynamicScope=scope;
-    }
+  while (true) {
     Variable var1;
     var1=scope.getDeclaredVariable(var.getName());
     if (var1 != null) {
@@ -27,38 +23,29 @@
     if (classScope != null) {
       Variable member=findClassMember(classScope,var.getName());
       if (member != null) {
-        boolean cc=currentScope.isInStaticContext() || isSpecialConstructorCall;
-        boolean cm=member.isInStaticContext();
-        if (cm || cm == cc)         var=member;
+        boolean staticScope=currentScope.isInStaticContext() || isSpecialConstructorCall;
+        boolean staticMember=member.isInStaticContext();
+        if (!(staticScope && !staticMember))         var=member;
       }
       break;
     }
     scope=scope.getParent();
   }
   VariableScope end=scope;
-  if (scope.isRoot() && dynamicScope == null) {
-    declare(var,expression);
-    addError("The variable " + var.getName() + " is undefined in the current scope",expression);
-  }
- else   if (scope.isRoot() && dynamicScope != null) {
-    scope=dynamicScope;
-  }
-  if (!scope.isRoot()) {
-    scope=currentScope;
-    while (scope != end) {
-      if (end.isClassScope() || end.isRoot() || (end.isReferencedClassVariable(name) && end.getDeclaredVariable(name) == null)) {
-        scope.putReferencedClassVariable(var);
-      }
- else {
-        var.setClosureSharedVariable(var.isClosureSharedVariable() || inClosure);
-        scope.putReferencedLocalVariable(var);
-      }
-      scope=scope.getParent();
+  scope=currentScope;
+  while (scope != end) {
+    if (end.isClassScope() || (end.isReferencedClassVariable(name) && end.getDeclaredVariable(name) == null)) {
+      scope.putReferencedClassVariable(var);
     }
-    if (end.isResolvingDynamic()) {
-      if (end.getDeclaredVariable(var.getName()) == null) {
-        end.putDeclaredVariable(var);
-      }
+ else {
+      var.setClosureSharedVariable(var.isClosureSharedVariable() || inClosure);
+      scope.putReferencedLocalVariable(var);
+    }
+    scope=scope.getParent();
+  }
+  if (end.isResolvingDynamic()) {
+    if (end.getDeclaredVariable(var.getName()) == null) {
+      end.putDeclaredVariable(var);
     }
   }
   return var;
