@@ -2,7 +2,14 @@
   final MetaClassRegistry metaClassRegistry=GroovySystem.getMetaClassRegistry();
   if (metaClass == null)   metaClassRegistry.removeMetaClass(self);
  else {
-    if (metaClass instanceof HandleMetaClass)     metaClassRegistry.setMetaClass(self,((HandleMetaClass)metaClass).getAdaptee());
- else     metaClassRegistry.setMetaClass(self,metaClass);
+    if (metaClass instanceof HandleMetaClass) {
+      metaClassRegistry.setMetaClass(self,((HandleMetaClass)metaClass).getAdaptee());
+    }
+ else {
+      metaClassRegistry.setMetaClass(self,metaClass);
+    }
+    if (self == NullObject.class) {
+      NullObject.getNullObject().setMetaClass(metaClass);
+    }
   }
 }
