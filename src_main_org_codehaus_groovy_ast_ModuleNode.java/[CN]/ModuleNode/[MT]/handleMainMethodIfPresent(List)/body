@@ -1,0 +1,21 @@
+{
+  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
+    MethodNode node=(MethodNode)iter.next();
+    if (node.getName().equals("main")) {
+      int modifiers=node.getModifiers();
+      if (node.isStatic() && node.getParameters().length == 1) {
+        boolean retTypeMatches, argTypeMatches;
+        ClassNode argType=node.getParameters()[0].getType();
+        ClassNode retType=node.getReturnType();
+        argTypeMatches=(argType.equals(ClassHelper.OBJECT_TYPE) || argType.getName().contains("String[]"));
+        retTypeMatches=(retType == ClassHelper.VOID_TYPE || retType == ClassHelper.OBJECT_TYPE);
+        if (retTypeMatches && argTypeMatches) {
+          if (statementBlock.isEmpty()) {
+            addStatement(node.getCode());
+          }
+          iter.remove();
+        }
+      }
+    }
+  }
+}
