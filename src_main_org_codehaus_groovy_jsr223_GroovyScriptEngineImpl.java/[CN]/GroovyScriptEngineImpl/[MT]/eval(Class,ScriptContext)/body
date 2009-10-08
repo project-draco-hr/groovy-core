@@ -29,49 +29,55 @@ synchronized (ctx) {
   }
 ;
   try {
-    Script scriptObject=InvokerHelper.createScript(scriptClass,binding);
-    Method[] methods=scriptClass.getMethods();
-    Map<String,Closure> closures=new HashMap<String,Closure>();
-    for (    Method m : methods) {
-      String name=m.getName();
-      closures.put(name,new MethodClosure(scriptObject,name));
+    if (!Script.class.isAssignableFrom(scriptClass)) {
+      return scriptClass;
     }
-    globalClosures.putAll(closures);
-    MetaClass oldMetaClass=scriptObject.getMetaClass();
-    scriptObject.setMetaClass(new DelegatingMetaClass(oldMetaClass){
-      @Override public Object invokeMethod(      Object object,      String name,      Object args){
-        if (args == null) {
-          return invokeMethod(object,name,MetaClassHelper.EMPTY_ARRAY);
-        }
-        if (args instanceof Tuple) {
-          return invokeMethod(object,name,((Tuple)args).toArray());
-        }
-        if (args instanceof Object[]) {
-          return invokeMethod(object,name,(Object[])args);
-        }
  else {
-          return invokeMethod(object,name,new Object[]{args});
+      Script scriptObject=(Script)scriptClass.newInstance();
+      scriptObject.setBinding(binding);
+      Method[] methods=scriptClass.getMethods();
+      Map<String,Closure> closures=new HashMap<String,Closure>();
+      for (      Method m : methods) {
+        String name=m.getName();
+        closures.put(name,new MethodClosure(scriptObject,name));
+      }
+      globalClosures.putAll(closures);
+      MetaClass oldMetaClass=scriptObject.getMetaClass();
+      scriptObject.setMetaClass(new DelegatingMetaClass(oldMetaClass){
+        @Override public Object invokeMethod(        Object object,        String name,        Object args){
+          if (args == null) {
+            return invokeMethod(object,name,MetaClassHelper.EMPTY_ARRAY);
+          }
+          if (args instanceof Tuple) {
+            return invokeMethod(object,name,((Tuple)args).toArray());
+          }
+          if (args instanceof Object[]) {
+            return invokeMethod(object,name,(Object[])args);
+          }
+ else {
+            return invokeMethod(object,name,new Object[]{args});
+          }
+        }
+        @Override public Object invokeMethod(        Object object,        String name,        Object[] args){
+          try {
+            return super.invokeMethod(object,name,args);
+          }
+ catch (          MissingMethodException mme) {
+            return callGlobal(name,args,ctx);
+          }
+        }
+        @Override public Object invokeStaticMethod(        Object object,        String name,        Object[] args){
+          try {
+            return super.invokeStaticMethod(object,name,args);
+          }
+ catch (          MissingMethodException mme) {
+            return callGlobal(name,args,ctx);
+          }
         }
       }
-      @Override public Object invokeMethod(      Object object,      String name,      Object[] args){
-        try {
-          return super.invokeMethod(object,name,args);
-        }
- catch (        MissingMethodException mme) {
-          return callGlobal(name,args,ctx);
-        }
-      }
-      @Override public Object invokeStaticMethod(      Object object,      String name,      Object[] args){
-        try {
-          return super.invokeStaticMethod(object,name,args);
-        }
- catch (        MissingMethodException mme) {
-          return callGlobal(name,args,ctx);
-        }
-      }
-    }
 );
-    return scriptObject.run();
+      return scriptObject.run();
+    }
   }
  catch (  Exception e) {
     throw new ScriptException(e);
