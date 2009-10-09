@@ -1,12 +1,23 @@
 {
   this.classNode=node;
+  thisField=null;
+  InnerClassNode innerClass=null;
+  if (!node.isEnum() && !node.isInterface() && node instanceof InnerClassNode) {
+    innerClass=(InnerClassNode)node;
+    if (!isStatic(innerClass) && innerClass.getVariableScope() == null) {
+      thisField=innerClass.addField("this$0",publicSynthetic,node.getOuterClass(),null);
+    }
+    if (innerClass.getVariableScope() == null && innerClass.getDeclaredConstructors().isEmpty()) {
+      innerClass.addConstructor(publicSynthetic,new Parameter[0],null,null);
+    }
+  }
   super.visitClass(node);
   if (node.isEnum() || node.isInterface())   return;
   addDispatcherMethods();
-  if (!(node instanceof InnerClassNode))   return;
+  if (innerClass == null)   return;
   if (node.getSuperClass().isInterface()) {
     node.addInterface(node.getUnresolvedSuperClass());
     node.setUnresolvedSuperClass(ClassHelper.OBJECT_TYPE);
   }
-  addDefaultMethods((InnerClassNode)node);
+  addDefaultMethods(innerClass);
 }

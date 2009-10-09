@@ -30,13 +30,25 @@
       return;
     }
   }
-  final String methodName=expression.getPropertyAsString();
-  if (adapter == getProperty && !expression.isSpreadSafe() && methodName != null) {
-    makeGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+  final String propName=expression.getPropertyAsString();
+  if (expression.getObjectExpression() instanceof ClassExpression && propName != null && propName.equals("this")) {
+    ClassNode type=expression.getObjectExpression().getType();
+    ClassNode iterType=classNode;
+    mv.visitVarInsn(ALOAD,0);
+    while (!iterType.equals(type)) {
+      String ownerName=BytecodeHelper.getClassInternalName(iterType);
+      iterType=iterType.getOuterClass();
+      String typeName=BytecodeHelper.getTypeDescription(iterType);
+      mv.visitFieldInsn(GETFIELD,ownerName,"this$0",typeName);
+    }
+    return;
+  }
+  if (adapter == getProperty && !expression.isSpreadSafe() && propName != null) {
+    makeGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
   }
  else {
-    if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && methodName != null) {
-      makeGroovyObjectGetPropertySite(objectExpression,methodName,expression.isSafe(),expression.isImplicitThis());
+    if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && propName != null) {
+      makeGroovyObjectGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
     }
  else {
       makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());

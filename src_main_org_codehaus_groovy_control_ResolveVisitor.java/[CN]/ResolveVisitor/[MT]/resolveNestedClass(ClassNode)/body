@@ -1,0 +1,24 @@
+{
+  String name=currentClass.getName() + "$" + type.getName();
+  ClassNode val=ClassHelper.make(name);
+  if (resolveFromCompileUnit(val)) {
+    type.setRedirect(val);
+    return true;
+  }
+  if (!(currentClass instanceof InnerClassNode))   return false;
+  LinkedList<ClassNode> outerClasses=new LinkedList<ClassNode>();
+  ClassNode outer=currentClass.getOuterClass();
+  while (outer != null) {
+    outerClasses.addFirst(outer);
+    outer=outer.getOuterClass();
+  }
+  for (  ClassNode testNode : outerClasses) {
+    name=testNode.getName() + "$" + type.getName();
+    val=ClassHelper.make(name);
+    if (resolveFromCompileUnit(val)) {
+      type.setRedirect(val);
+      return true;
+    }
+  }
+  return false;
+}

@@ -25,9 +25,8 @@
   ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic);
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
   parameters.add(thisParameter);
-  int privateSynthetic=Opcodes.ACC_PRIVATE + Opcodes.ACC_SYNTHETIC;
-  FieldNode thisField=innerClass.addField("this$0",privateSynthetic,outerClassType,null);
-  addFieldInit(thisParameter,thisField,block,false);
+  thisField=innerClass.addField("this$0",publicSynthetic,outerClassType,null);
+  addFieldInit(thisParameter,thisField,block);
   for (Iterator it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
     pCount++;
     org.codehaus.groovy.ast.Variable var=(org.codehaus.groovy.ast.Variable)it.next();
@@ -39,7 +38,7 @@
     parameters.add(p);
     final VariableExpression initial=new VariableExpression(p);
     initial.setUseReferenceDirectly(true);
-    final FieldNode pField=innerClass.addFieldFirst(ve.getName(),privateSynthetic,ClassHelper.REFERENCE_TYPE,initial);
+    final FieldNode pField=innerClass.addFieldFirst(ve.getName(),publicSynthetic,ClassHelper.REFERENCE_TYPE,initial);
     final int finalPCount=pCount;
     pField.setHolder(true);
   }
