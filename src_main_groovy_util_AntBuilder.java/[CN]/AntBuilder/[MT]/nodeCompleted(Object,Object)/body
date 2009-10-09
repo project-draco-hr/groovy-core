@@ -1,4 +1,5 @@
 {
+  if (parent == null)   insideTask=false;
   antElementHandler.onEndElement(null,null,antXmlContext);
   lastCompletedNode=node;
   if (parent != null && !(parent instanceof Target)) {
@@ -15,6 +16,9 @@
     lastCompletedNode=task;
     if (task instanceof Task) {
       final String taskName=((Task)task).getTaskName();
+      if ("antcall".equals(taskName) && parent == null) {
+        throw new BuildException("antcall not supported within AntBuilder, consider using 'ant.project.executeTarget('targetName')' instead.");
+      }
       InputStream savedIn=System.in;
       InputStream savedProjectInputStream=project.getDefaultInputStream();
       if (!(savedIn instanceof DemuxInputStream)) {

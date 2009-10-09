@@ -10,7 +10,7 @@
   if ("import".equals(name)) {
     antXmlContext.setCurrentTarget(implicitTarget);
   }
- else   if ("target".equals(name)) {
+ else   if ("target".equals(name) && !insideTask) {
     return onStartTarget(attrs,tagName,ns);
   }
   try {
@@ -19,6 +19,7 @@
  catch (  final SAXParseException e) {
     log.log(Level.SEVERE,"Caught: " + e,e);
   }
+  insideTask=true;
   final RuntimeConfigurable wrapper=(RuntimeConfigurable)antXmlContext.getWrapperStack().lastElement();
   return wrapper.getProxy();
 }
