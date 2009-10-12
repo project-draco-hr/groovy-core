@@ -1,15 +1,24 @@
 {
+  ThreadLocal<CompilationUnit> localCu=getLocalCompilationUnit();
+  ThreadLocal<StringSetMap> localCache=getDepCache();
+  ScriptCacheEntry origEntry=scriptCache.get(codeSource.getName());
+  Set<String> origDep=null;
+  if (origEntry != null)   origDep=origEntry.dependencies;
+  if (origDep != null)   localCache.get().put(".",origDep);
   Class answer=super.parseClass(codeSource,false);
-  StringSetMap cache=getDepCache();
+  StringSetMap cache=localCache.get();
   cache.makeTransitiveHull();
   long time=System.currentTimeMillis();
   for (  Map.Entry<String,Set<String>> entry : cache.entrySet()) {
-    String entryName=entry.getKey();
-    Class clazz=getClassCacheEntry(entryName);
+    String className=entry.getKey();
+    Class clazz=getClassCacheEntry(className);
     if (clazz == null)     continue;
-    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,entry.getValue());
+    String entryName=getPath(clazz);
+    Set<String> value=convertToPaths(entry.getValue());
+    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,value);
     scriptCache.put(entryName,cacheEntry);
   }
   cache.clear();
+  localCu.set(null);
   return answer;
 }

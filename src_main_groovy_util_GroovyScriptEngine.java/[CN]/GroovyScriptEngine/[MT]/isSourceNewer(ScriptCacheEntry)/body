@@ -1,0 +1,21 @@
+{
+  if (entry == null)   return true;
+  long time=System.currentTimeMillis();
+  for (  String scriptName : entry.dependencies) {
+    ScriptCacheEntry depEntry=scriptCache.get(scriptName);
+    long entryChangeTime=depEntry.lastModified + config.getMinimumRecompilationInterval();
+    if (entryChangeTime > time)     continue;
+    URLConnection conn=rc.getResourceConnection(scriptName);
+    URL source=conn.getURL();
+    String path=source.getPath().replace('/',File.separatorChar).replace('|',':');
+    File file=new File(path);
+    long lastMod=file.lastModified();
+    if (entryChangeTime > lastMod) {
+      ScriptCacheEntry newEntry=new ScriptCacheEntry(depEntry.scriptClass,time,depEntry.dependencies);
+      scriptCache.put(scriptName,newEntry);
+      continue;
+    }
+    return true;
+  }
+  return false;
+}

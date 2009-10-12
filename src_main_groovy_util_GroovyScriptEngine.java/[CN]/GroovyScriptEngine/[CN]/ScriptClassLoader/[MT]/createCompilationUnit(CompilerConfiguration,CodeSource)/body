@@ -1,6 +1,15 @@
 {
   CompilationUnit cu=super.createCompilationUnit(config,source);
-  final StringSetMap cache=getDepCache();
+  getLocalCompilationUnit().set(cu);
+  final StringSetMap cache=getDepCache().get();
+  for (  String depSourcePath : cache.get(".")) {
+    try {
+      cu.addSource(new URL("file","",depSourcePath));
+    }
+ catch (    MalformedURLException e) {
+    }
+  }
+  cache.clear();
   cu.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
     @Override public void call(    final SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
       DependencyTracker dt=new DependencyTracker(source,cache);

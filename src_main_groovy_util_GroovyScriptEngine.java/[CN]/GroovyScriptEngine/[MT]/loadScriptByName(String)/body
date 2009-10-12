@@ -1,12 +1,13 @@
 {
-  ScriptCacheEntry entry=scriptCache.get(scriptName);
   URLConnection conn=rc.getResourceConnection(scriptName);
+  String path=conn.getURL().getPath();
+  ScriptCacheEntry entry=scriptCache.get(path);
   Class clazz=null;
   if (entry != null)   clazz=entry.scriptClass;
-  if (isSourceNewer(conn,entry)) {
+  if (isSourceNewer(entry)) {
     try {
       String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : "UTF-8";
-      clazz=groovyLoader.parseClass(DefaultGroovyMethods.getText(conn.getInputStream(),encoding),conn.getURL().getFile());
+      clazz=groovyLoader.parseClass(DefaultGroovyMethods.getText(conn.getInputStream(),encoding),conn.getURL().getPath());
     }
  catch (    IOException e) {
       throw new ResourceException(e);
