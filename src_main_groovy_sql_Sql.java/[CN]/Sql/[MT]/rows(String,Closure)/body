@@ -3,8 +3,7 @@
   ResultSet rs=null;
   try {
     rs=command.execute();
-    if (metaClosure != null)     metaClosure.call(rs.getMetaData());
-    List<GroovyRowResult> result=asList(sql,rs);
+    List<GroovyRowResult> result=asList(sql,rs,metaClosure);
     rs=null;
     return result;
   }

@@ -1,0 +1,19 @@
+{
+  List<GroovyRowResult> results=new ArrayList<GroovyRowResult>();
+  try {
+    if (metaClosure != null) {
+      metaClosure.call(rs.getMetaData());
+    }
+    while (rs.next()) {
+      results.add(SqlGroovyMethods.toRowResult(rs));
+    }
+    return (results);
+  }
+ catch (  SQLException e) {
+    log.log(Level.INFO,"Failed to retrieve row from ResultSet for: " + sql,e);
+    throw e;
+  }
+ finally {
+    rs.close();
+  }
+}

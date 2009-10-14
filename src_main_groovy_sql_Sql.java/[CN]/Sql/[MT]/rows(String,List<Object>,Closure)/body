@@ -1,0 +1,9 @@
+{
+  AbstractQueryCommand command=createPreparedQueryCommand(sql,params);
+  try {
+    return asList(sql,command.execute(),metaClosure);
+  }
+  finally {
+    command.closeResources();
+  }
+}

@@ -1,16 +1,3 @@
 {
-  List<GroovyRowResult> results=new ArrayList<GroovyRowResult>();
-  try {
-    while (rs.next()) {
-      results.add(SqlGroovyMethods.toRowResult(rs));
-    }
-    return (results);
-  }
- catch (  SQLException e) {
-    log.log(Level.INFO,"Failed to retrieve row from ResultSet for: " + sql,e);
-    throw e;
-  }
- finally {
-    rs.close();
-  }
+  return asList(sql,rs,null);
 }
