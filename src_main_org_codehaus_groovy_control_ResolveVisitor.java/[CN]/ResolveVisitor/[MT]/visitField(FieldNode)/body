@@ -1,5 +1,7 @@
 {
   ClassNode t=node.getType();
-  resolveOrFail(t,node);
+  if (!fieldTypesChecked.contains(node)) {
+    resolveOrFail(t,node);
+  }
   super.visitField(node);
 }
