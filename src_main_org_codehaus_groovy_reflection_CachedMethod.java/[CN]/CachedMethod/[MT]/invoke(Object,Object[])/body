@@ -9,6 +9,7 @@ catch (  IllegalAccessException e) {
     throw new InvokerInvocationException(e);
   }
 catch (  InvocationTargetException e) {
-    throw e.getCause() instanceof RuntimeException ? (RuntimeException)e.getCause() : new InvokerInvocationException(e);
+    Throwable cause=e.getCause();
+    throw (cause instanceof RuntimeException && !(cause instanceof MissingMethodException)) ? (RuntimeException)cause : new InvokerInvocationException(e);
   }
 }
