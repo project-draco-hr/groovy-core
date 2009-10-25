@@ -1,5 +1,6 @@
 {
-  MethodVisitor mv=cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC + ACC_STATIC,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;",null,null);
+  int visibility=(classNode instanceof InterfaceHelperClassNode) ? ACC_PUBLIC : ACC_PRIVATE;
+  MethodVisitor mv=cv.visitMethod(visibility + ACC_SYNTHETIC + ACC_STATIC,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;",null,null);
   mv.visitCode();
   mv.visitFieldInsn(GETSTATIC,internalClassName,"$callSiteArray","Ljava/lang/ref/SoftReference;");
   Label l0=new Label();
