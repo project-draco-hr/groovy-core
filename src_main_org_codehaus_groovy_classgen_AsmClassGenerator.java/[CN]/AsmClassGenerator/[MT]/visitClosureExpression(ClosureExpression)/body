@@ -13,7 +13,7 @@
   Parameter[] localVariableParams=node.getParameters();
   mv.visitTypeInsn(NEW,innerClassinternalName);
   mv.visitInsn(DUP);
-  if (isStaticMethod() && !classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
+  if ((isStaticMethod() || specialCallWithinConstructor) && !classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
     visitClassExpression(new ClassExpression(classNode));
     visitClassExpression(new ClassExpression(getOutermostClass()));
   }

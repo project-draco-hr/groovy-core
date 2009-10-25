@@ -1,7 +1,9 @@
 {
   onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
   if (call.isSpecialCall()) {
+    specialCallWithinConstructor=true;
     visitSpecialConstructorCall(call);
+    specialCallWithinConstructor=false;
     return;
   }
   Expression arguments=call.getArguments();
