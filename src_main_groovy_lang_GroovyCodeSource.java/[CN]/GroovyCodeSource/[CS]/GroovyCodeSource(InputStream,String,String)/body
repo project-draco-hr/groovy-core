@@ -1,19 +1,3 @@
 {
-  this.name=name;
-  SecurityManager sm=System.getSecurityManager();
-  if (sm != null) {
-    sm.checkPermission(new GroovyCodeSourcePermission(codeBase));
-  }
-  try {
-    this.codeSource=new CodeSource(new URL("file","",codeBase),(java.security.cert.Certificate[])null);
-  }
- catch (  MalformedURLException murle) {
-    throw new RuntimeException("A CodeSource file URL cannot be constructed from the supplied codeBase: " + codeBase);
-  }
-  try {
-    this.scriptText=DefaultGroovyMethods.getText(inputStream);
-  }
- catch (  IOException e) {
-    throw new RuntimeException("Impossible to read the text content from that input stream, for script: " + name + " with codeBase: "+ codeBase,e);
-  }
+  this(new InputStreamReader(inputStream,"UTF-8"),name,codeBase);
 }
