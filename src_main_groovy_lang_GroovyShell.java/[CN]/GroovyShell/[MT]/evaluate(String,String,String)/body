@@ -3,8 +3,8 @@
   if (sm != null) {
     sm.checkPermission(new GroovyCodeSourcePermission(codeBase));
   }
-  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
+  GroovyCodeSource gcs=AccessController.doPrivileged(new PrivilegedAction<GroovyCodeSource>(){
+    public GroovyCodeSource run(){
       return new GroovyCodeSource(scriptText,fileName,codeBase);
     }
   }

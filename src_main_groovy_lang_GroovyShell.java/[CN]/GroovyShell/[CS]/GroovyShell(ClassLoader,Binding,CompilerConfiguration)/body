@@ -6,8 +6,8 @@
     throw new IllegalArgumentException("Compiler configuration must not be null.");
   }
   final ClassLoader parentLoader=(parent != null) ? parent : GroovyShell.class.getClassLoader();
-  this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
+  this.loader=AccessController.doPrivileged(new PrivilegedAction<GroovyClassLoader>(){
+    public GroovyClassLoader run(){
       return new GroovyClassLoader(parentLoader,config);
     }
   }
