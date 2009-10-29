@@ -1,3 +1,10 @@
 {
-  this(new InputStreamReader(inputStream,"UTF-8"),name,codeBase);
+  this.name=name;
+  this.codeSource=createCodeSource(codeBase);
+  try {
+    this.scriptText=DefaultGroovyMethods.getText(inputStream);
+  }
+ catch (  IOException e) {
+    throw new RuntimeException("Impossible to read the text content from that input stream, for script: " + name + " with codeBase: "+ codeBase,e);
+  }
 }
