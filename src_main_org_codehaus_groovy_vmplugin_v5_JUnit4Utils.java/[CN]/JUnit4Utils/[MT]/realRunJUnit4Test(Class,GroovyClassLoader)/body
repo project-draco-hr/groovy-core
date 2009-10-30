@@ -1,6 +1,7 @@
 {
   try {
-    Object result=InvokerHelper.invokeStaticMethod("org.junit.runner.JUnitCore","runClasses",new Object[]{scriptClass});
+    Class junitCoreClass=loader.loadClass("org.junit.runner.JUnitCore");
+    Object result=InvokerHelper.invokeStaticMethod(junitCoreClass,"runClasses",new Object[]{scriptClass});
     System.out.print("JUnit 4 Runner, Tests: " + InvokerHelper.getProperty(result,"runCount"));
     System.out.print(", Failures: " + InvokerHelper.getProperty(result,"failureCount"));
     System.out.println(", Time: " + InvokerHelper.getProperty(result,"runTime"));

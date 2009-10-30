@@ -1,8 +1,10 @@
 {
   try {
-    Object testng=InvokerHelper.invokeConstructorOf("org.testng.TestNG",new Object[]{});
+    Class testNGClass=loader.loadClass("org.testng.TestNG");
+    Object testng=InvokerHelper.invokeConstructorOf(testNGClass,new Object[]{});
     InvokerHelper.invokeMethod(testng,"setTestClasses",new Object[]{scriptClass});
-    Object listener=InvokerHelper.invokeConstructorOf("org.testng.TestListenerAdapter",new Object[]{});
+    Class listenerClass=loader.loadClass("org.testng.TestListenerAdapter");
+    Object listener=InvokerHelper.invokeConstructorOf(listenerClass,new Object[]{});
     InvokerHelper.invokeMethod(testng,"addListener",new Object[]{listener});
     Object result=InvokerHelper.invokeMethod(testng,"run",new Object[]{});
     return result;
