@@ -15,4 +15,20 @@
     }
     node.setMember("value",elementExprs);
   }
+ else {
+    Method[] declaredMethods=type.getDeclaredMethods();
+    for (int i=0; i < declaredMethods.length; i++) {
+      Method declaredMethod=declaredMethods[i];
+      try {
+        Object value=declaredMethod.invoke(annotation);
+        Expression valueExpression=annotationValueToExpression(value);
+        if (valueExpression == null)         continue;
+        node.setMember(declaredMethod.getName(),valueExpression);
+      }
+ catch (      IllegalAccessException e) {
+      }
+catch (      InvocationTargetException e) {
+      }
+    }
+  }
 }
