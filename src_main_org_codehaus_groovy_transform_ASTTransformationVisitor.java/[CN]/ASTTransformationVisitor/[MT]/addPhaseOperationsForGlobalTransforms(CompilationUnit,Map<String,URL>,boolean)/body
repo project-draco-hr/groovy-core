@@ -1,0 +1,34 @@
+{
+  GroovyClassLoader transformLoader=compilationUnit.getTransformLoader();
+  for (  Map.Entry<String,URL> entry : transformNames.entrySet()) {
+    try {
+      Class gTransClass=transformLoader.loadClass(entry.getKey(),false,true,false);
+      GroovyASTTransformation transformAnnotation=(GroovyASTTransformation)gTransClass.getAnnotation(GroovyASTTransformation.class);
+      if (transformAnnotation == null) {
+        compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.POSSIBLE_ERRORS,"Transform Class " + entry.getKey() + " is specified as a global transform in "+ entry.getValue().toExternalForm()+ " but it is not annotated by "+ GroovyASTTransformation.class.getName()+ " the global tranform associated with it may fail and cause the compilation to fail.",null,null));
+        continue;
+      }
+      if (ASTTransformation.class.isAssignableFrom(gTransClass)) {
+        final ASTTransformation instance=(ASTTransformation)gTransClass.newInstance();
+        CompilationUnit.SourceUnitOperation suOp=new CompilationUnit.SourceUnitOperation(){
+          public void call(          SourceUnit source) throws CompilationFailedException {
+            instance.visit(new ASTNode[]{source.getAST()},source);
+          }
+        }
+;
+        if (isFirstScan) {
+          compilationUnit.addPhaseOperation(suOp,transformAnnotation.phase().getPhaseNumber());
+        }
+ else {
+          compilationUnit.addNewPhaseOperation(suOp,transformAnnotation.phase().getPhaseNumber());
+        }
+      }
+ else {
+        compilationUnit.getErrorCollector().addError(new SimpleMessage("Transform Class " + entry.getKey() + " specified at "+ entry.getValue().toExternalForm()+ " is not an ASTTransformation.",null));
+      }
+    }
+ catch (    Exception e) {
+      compilationUnit.getErrorCollector().addError(new SimpleMessage("Could not instantiate global transform class " + entry.getKey() + " specified at "+ entry.getValue().toExternalForm()+ "  because of exception "+ e.toString(),null));
+    }
+  }
+}

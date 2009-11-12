@@ -1,0 +1,11 @@
+{
+  recordPhaseOpsInAllOtherPhases(currPhase);
+  LinkedList currentPhaseNewOps=newPhaseOperations[currPhase];
+  while (!currentPhaseNewOps.isEmpty()) {
+    Object operation=currentPhaseNewOps.removeFirst();
+    phaseOperations[currPhase].add(operation);
+    doPhaseOperation(operation);
+    recordPhaseOpsInAllOtherPhases(currPhase);
+    currentPhaseNewOps=newPhaseOperations[currPhase];
+  }
+}

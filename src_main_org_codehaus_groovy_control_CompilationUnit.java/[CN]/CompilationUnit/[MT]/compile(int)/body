@@ -2,18 +2,8 @@
   gotoPhase(Phases.INITIALIZATION);
   throughPhase=Math.min(throughPhase,Phases.ALL);
   while (throughPhase >= phase && phase <= Phases.ALL) {
-    for (Iterator it=phaseOperations[phase].iterator(); it.hasNext(); ) {
-      Object operation=it.next();
-      if (operation instanceof PrimaryClassNodeOperation) {
-        applyToPrimaryClassNodes((PrimaryClassNodeOperation)operation);
-      }
- else       if (operation instanceof SourceUnitOperation) {
-        applyToSourceUnits((SourceUnitOperation)operation);
-      }
- else {
-        applyToGeneratedGroovyClasses((GroovyClassOperation)operation);
-      }
-    }
+    processPhaseOperations(phase);
+    processNewPhaseOperations(phase);
     if (progressCallback != null)     progressCallback.call(this,phase);
     completePhase();
     applyToSourceUnits(mark);

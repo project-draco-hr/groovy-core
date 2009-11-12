@@ -1,0 +1,72 @@
+{
+  GroovyClassLoader transformLoader=compilationUnit.getTransformLoader();
+  Map<String,URL> transformNames=new LinkedHashMap<String,URL>();
+  try {
+    Enumeration<URL> globalServices=transformLoader.getResources("META-INF/services/org.codehaus.groovy.transform.ASTTransformation");
+    while (globalServices.hasMoreElements()) {
+      URL service=globalServices.nextElement();
+      String className;
+      BufferedReader svcIn=new BufferedReader(new InputStreamReader(service.openStream()));
+      try {
+        className=svcIn.readLine();
+      }
+ catch (      IOException ioe) {
+        compilationUnit.getErrorCollector().addError(new SimpleMessage("IOException reading the service definition at " + service.toExternalForm() + " because of exception "+ ioe.toString(),null));
+        continue;
+      }
+      while (className != null) {
+        if (!className.startsWith("#") && className.length() > 0) {
+          if (transformNames.containsKey(className)) {
+            if (!service.equals(transformNames.get(className))) {
+              compilationUnit.getErrorCollector().addWarning(WarningMessage.POSSIBLE_ERRORS,"The global transform for class " + className + " is defined in both "+ transformNames.get(className).toExternalForm()+ " and "+ service.toExternalForm()+ " - the former definition will be used and the latter ignored.",null,null);
+            }
+          }
+ else {
+            transformNames.put(className,service);
+          }
+        }
+        try {
+          className=svcIn.readLine();
+        }
+ catch (        IOException ioe) {
+          compilationUnit.getErrorCollector().addError(new SimpleMessage("IOException reading the service definition at " + service.toExternalForm() + " because of exception "+ ioe.toString(),null));
+          continue;
+        }
+      }
+    }
+  }
+ catch (  IOException e) {
+    compilationUnit.getErrorCollector().addError(new SimpleMessage("IO Exception attempting to load global transforms:" + e.getMessage(),null));
+  }
+  try {
+    Class.forName("java.lang.annotation.Annotation");
+  }
+ catch (  Exception e) {
+    StringBuffer sb=new StringBuffer();
+    sb.append("Global ASTTransformations are not enabled in retro builds of groovy.\n");
+    sb.append("The following transformations will be ignored:");
+    for (    Map.Entry<String,URL> entry : transformNames.entrySet()) {
+      sb.append('\t');
+      sb.append(entry.getKey());
+      sb.append('\n');
+    }
+    compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.POSSIBLE_ERRORS,sb.toString(),null,null));
+    return;
+  }
+  if (isFirstScan) {
+    for (    Map.Entry<String,URL> entry : transformNames.entrySet()) {
+      globalTransformNames.add(entry.getKey());
+    }
+    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+  }
+ else {
+    Iterator<Map.Entry<String,URL>> it=transformNames.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String,URL> entry=it.next();
+      if (!globalTransformNames.add(entry.getKey())) {
+        it.remove();
+      }
+    }
+    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+  }
+}
