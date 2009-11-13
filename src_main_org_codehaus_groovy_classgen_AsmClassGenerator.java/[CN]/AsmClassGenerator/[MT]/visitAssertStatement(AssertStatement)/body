@@ -42,7 +42,7 @@
   }
   AssertionTracker savedTracker=assertionTracker;
   assertionTracker=null;
-  statement.getMessageExpression().visit(this);
+  visitAndAutoboxBoolean(statement.getMessageExpression());
   assertFailedMethod.call(mv);
   if (rewriteAssert) {
     final Label tryEnd=new Label();
