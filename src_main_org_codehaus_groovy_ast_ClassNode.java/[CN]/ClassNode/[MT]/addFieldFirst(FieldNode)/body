@@ -1,6 +1,9 @@
 {
-  node.setDeclaringClass(redirect());
-  node.setOwner(redirect());
-  redirect().fields.addFirst(node);
-  redirect().fieldIndex.put(node.getName(),node);
+  final ClassNode r=redirect();
+  node.setDeclaringClass(r);
+  node.setOwner(r);
+  if (r.fields == null)   r.fields=new LinkedList<FieldNode>();
+  if (r.fieldIndex == null)   r.fieldIndex=new HashMap<String,FieldNode>();
+  r.fields.addFirst(node);
+  r.fieldIndex.put(node.getName(),node);
 }

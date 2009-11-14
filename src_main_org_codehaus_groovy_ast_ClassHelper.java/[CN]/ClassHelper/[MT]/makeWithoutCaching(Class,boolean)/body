@@ -1,5 +1,15 @@
 {
-  ClassNode t=new ClassNode(c);
-  if (includeGenerics)   VMPluginFactory.getPlugin().setAdditionalClassInformation(t);
-  return t;
+  if (c.isArray()) {
+    ClassNode cn=makeWithoutCaching(c.getComponentType(),includeGenerics);
+    return cn.makeArray();
+  }
+  final ClassNode cached=makeCached(c);
+  if (includeGenerics) {
+    return cached;
+  }
+ else {
+    ClassNode t=makeWithoutCaching(c.getName());
+    t.setRedirect(cached);
+    return t;
+  }
 }

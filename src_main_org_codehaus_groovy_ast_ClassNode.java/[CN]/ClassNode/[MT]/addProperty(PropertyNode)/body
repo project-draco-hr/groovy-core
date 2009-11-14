@@ -2,5 +2,7 @@
   node.setDeclaringClass(redirect());
   FieldNode field=node.getField();
   addField(field);
-  redirect().properties.add(node);
+  final ClassNode r=redirect();
+  if (r.properties == null)   r.properties=new ArrayList<PropertyNode>();
+  r.properties.add(node);
 }
