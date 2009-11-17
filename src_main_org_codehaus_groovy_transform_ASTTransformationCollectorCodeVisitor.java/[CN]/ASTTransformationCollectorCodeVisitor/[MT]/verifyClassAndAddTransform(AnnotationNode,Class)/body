@@ -1,0 +1,8 @@
+{
+  if (ASTTransformation.class.isAssignableFrom(klass)) {
+    classNode.addTransform(klass,annotation);
+  }
+ else {
+    source.getErrorCollector().addError(new SimpleMessage("Not an ASTTransformation: " + klass.getName() + " declared by "+ annotation.getClassNode().getName(),source));
+  }
+}
