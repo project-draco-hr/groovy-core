@@ -1,6 +1,8 @@
 {
   out.print("public ");
-  out.print(clazz.getNameWithoutPackage());
+  String className=clazz.getNameWithoutPackage();
+  if (clazz instanceof InnerClassNode)   className=className.substring(className.lastIndexOf("$") + 1);
+  out.println(className);
   printParams(constructorNode,out);
   ConstructorCallExpression constrCall=getConstructorCallExpression(constructorNode);
   if (constrCall == null || !constrCall.isSpecialCall()) {

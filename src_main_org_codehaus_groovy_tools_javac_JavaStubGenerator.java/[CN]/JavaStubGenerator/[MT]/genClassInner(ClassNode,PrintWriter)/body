@@ -1,0 +1,66 @@
+{
+  try {
+    Verifier verifier=new Verifier(){
+      public void addCovariantMethods(      ClassNode cn){
+      }
+      protected void addTimeStamp(      ClassNode node){
+      }
+      protected void addInitialization(      ClassNode node){
+      }
+      protected void addPropertyMethod(      MethodNode method){
+        propertyMethods.add(method);
+      }
+      protected void addReturnIfNeeded(      MethodNode node){
+      }
+    }
+;
+    verifier.visitClass(classNode);
+    boolean isInterface=classNode.isInterface();
+    boolean isEnum=(classNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
+    printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
+    if (isInterface) {
+      out.print("interface ");
+    }
+ else     if (isEnum) {
+      out.print("enum ");
+    }
+ else {
+      out.print("class ");
+    }
+    String className=classNode.getNameWithoutPackage();
+    if (classNode instanceof InnerClassNode)     className=className.substring(className.lastIndexOf("$") + 1);
+    out.println(className);
+    writeGenericsBounds(out,classNode,true);
+    ClassNode superClass=classNode.getUnresolvedSuperClass(false);
+    if (!isInterface && !isEnum) {
+      out.print("  extends ");
+      printType(superClass,out);
+    }
+    ClassNode[] interfaces=classNode.getInterfaces();
+    if (interfaces != null && interfaces.length > 0) {
+      if (isInterface) {
+        out.println("  extends");
+      }
+ else {
+        out.println("  implements");
+      }
+      for (int i=0; i < interfaces.length - 1; ++i) {
+        out.print("    ");
+        printType(interfaces[i],out);
+        out.print(",");
+      }
+      out.print("    ");
+      printType(interfaces[interfaces.length - 1],out);
+    }
+    out.println(" {");
+    genFields(classNode,out,isEnum);
+    genMethods(classNode,out,isEnum);
+    for (Iterator<InnerClassNode> inner=classNode.getInnerClasses(); inner.hasNext(); ) {
+      genClassInner(inner.next(),out);
+    }
+    out.println("}");
+  }
+  finally {
+    propertyMethods.clear();
+  }
+}
