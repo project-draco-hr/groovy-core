@@ -1,0 +1,29 @@
+{
+  if (value == null)   return super.newInstance(builder,name,value,properties);
+  Object bean=null;
+  Class klass=null;
+  Map context=builder.getContext();
+  if (value instanceof String || value instanceof GString) {
+    String classname=value.toString();
+    klass=resolveClass(builder,classname,name,value,properties);
+    bean=resolveInstance(builder,name,value,klass,properties);
+  }
+ else   if (value instanceof Class) {
+    klass=(Class)value;
+    bean=resolveInstance(builder,name,value,klass,properties);
+  }
+ else {
+    klass=value.getClass();
+    bean=value;
+  }
+  String nodename=klass.getSimpleName();
+  if (nodename.length() > 1) {
+    nodename=nodename.substring(0,1).toLowerCase() + nodename.substring(1);
+  }
+ else {
+    nodename=nodename.toLowerCase();
+  }
+  context.put(ObjectGraphBuilder.NODE_NAME,nodename);
+  context.put(ObjectGraphBuilder.NODE_CLASS,klass);
+  return bean;
+}
