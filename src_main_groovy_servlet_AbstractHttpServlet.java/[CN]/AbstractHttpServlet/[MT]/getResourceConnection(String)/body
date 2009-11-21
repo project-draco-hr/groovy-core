@@ -1,16 +1,6 @@
 {
-  String basePath=servletContext.getRealPath(".");
+  String basePath=servletContext.getRealPath("/");
   if (name.startsWith(basePath))   name=name.substring(basePath.length());
-  String baseVirtualPath=null;
-  try {
-    URL baseVirtualURL=servletContext.getResource("/");
-    if (baseVirtualURL != null) {
-      baseVirtualPath=baseVirtualURL.getPath();
-      if (name.startsWith(baseVirtualPath))       name=name.substring(baseVirtualPath.length());
-    }
-  }
- catch (  MalformedURLException e1) {
-  }
   Matcher matcher=resourceNameMatcher;
   if (matcher != null) {
     matcher.reset(name);
@@ -29,12 +19,17 @@
     }
   }
   try {
-    URL url=servletContext.getResource("/" + name);
+    String tryScriptName="/" + name;
+    URL url=servletContext.getResource(tryScriptName);
     if (url == null) {
+      tryScriptName="/WEB-INF/groovy/" + name;
       url=servletContext.getResource("/WEB-INF/groovy/" + name);
     }
     if (url == null) {
       throw new ResourceException("Resource \"" + name + "\" not found!");
+    }
+ else {
+      url=new URL("file","",servletContext.getRealPath(tryScriptName));
     }
     return url.openConnection();
   }
