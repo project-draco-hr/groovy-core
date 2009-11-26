@@ -1,12 +1,20 @@
 {
   if (!loaded) {
-    InputStream is=ReleaseInfo.class.getClassLoader().getResourceAsStream(RELEASE_INFO_FILE);
-    if (is != null) {
-      try {
+    URL url=null;
+    ClassLoader cl=ReleaseInfo.class.getClassLoader();
+    if (cl instanceof URLClassLoader) {
+      url=((URLClassLoader)cl).findResource(RELEASE_INFO_FILE);
+    }
+ else {
+      url=cl.getResource(RELEASE_INFO_FILE);
+    }
+    try {
+      InputStream is=url.openStream();
+      if (is != null) {
         releaseInfo.load(is);
       }
- catch (      IOException ioex) {
-      }
+    }
+ catch (    IOException ioex) {
     }
     loaded=true;
   }
