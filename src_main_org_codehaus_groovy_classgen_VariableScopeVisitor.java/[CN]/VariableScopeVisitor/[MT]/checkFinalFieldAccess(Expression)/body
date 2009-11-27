@@ -1,0 +1,15 @@
+{
+  if (!(expression instanceof VariableExpression))   return;
+  VariableExpression ve=(VariableExpression)expression;
+  Variable v=ve.getAccessedVariable();
+  boolean error=false;
+  if (v instanceof PropertyNode) {
+    PropertyNode pn=(PropertyNode)v;
+    error=(pn.getModifiers() & Opcodes.ACC_FINAL) != 0;
+  }
+ else   if (v instanceof FieldNode) {
+    FieldNode fn=(FieldNode)v;
+    error=(fn.getModifiers() & Opcodes.ACC_FINAL) != 0;
+  }
+  if (error)   addError("cannnot access final field or property " + "outside of constructor.",expression);
+}
