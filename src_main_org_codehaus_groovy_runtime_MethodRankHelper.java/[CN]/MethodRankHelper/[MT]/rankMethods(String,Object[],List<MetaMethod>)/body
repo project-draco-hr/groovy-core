@@ -1,0 +1,19 @@
+{
+  ArrayList<RankableMethod> rm=new ArrayList(methods.size());
+  Class[] ta=new Class[arguments.length];
+  Class nullC=NullObject.class;
+  for (int i=0; i < arguments.length; i++) {
+    ta[i]=arguments[i] == null ? nullC : arguments[i].getClass();
+  }
+  for (  MetaMethod m : methods) {
+    rm.add(new RankableMethod(name,ta,m));
+  }
+  Collections.sort(rm);
+  List<MetaMethod> l=new ArrayList(rm.size());
+  for (  RankableMethod m : rm) {
+    if (l.size() > MAX_RECOMENDATIONS)     break;
+    if (m.score > MAX_METHOD_SCORE)     break;
+    l.add(m.m);
+  }
+  return l;
+}

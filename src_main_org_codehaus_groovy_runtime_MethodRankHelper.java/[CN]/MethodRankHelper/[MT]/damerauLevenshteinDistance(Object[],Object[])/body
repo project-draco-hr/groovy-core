@@ -1,0 +1,38 @@
+{
+  if (s == null || t == null) {
+    throw new IllegalArgumentException("Arrays must not be null");
+  }
+  int n=s.length;
+  int m=t.length;
+  if (n == 0) {
+    return m;
+  }
+ else   if (m == 0) {
+    return n;
+  }
+  int[][] vals=new int[3][n + 1];
+  int _d[];
+  int i;
+  int j;
+  Object t_j;
+  int cost;
+  for (i=0; i <= n; i++) {
+    vals[1][i]=i * DL_DELETE;
+  }
+  for (j=1; j <= m; j++) {
+    t_j=t[j - 1];
+    vals[0][0]=j * DL_DELETE;
+    for (i=1; i <= n; i++) {
+      cost=s[i - 1].equals(t_j) ? 0 : DL_SUBSTITUTION;
+      vals[0][i]=Math.min(Math.min(vals[0][i - 1] + DL_DELETE,vals[1][i] + DL_DELETE),vals[1][i - 1] + cost);
+      if (i > 1 && j > 1 && s[i - 1].equals(t[j - 2]) && s[i - 2].equals(t_j)) {
+        vals[0][i]=Math.min(vals[0][i],vals[2][i - 2] + DL_TRANSPOSITION);
+      }
+    }
+    _d=vals[2];
+    vals[2]=vals[1];
+    vals[1]=vals[0];
+    vals[0]=_d;
+  }
+  return vals[1][n];
+}

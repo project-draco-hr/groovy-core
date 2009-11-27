@@ -1,0 +1,49 @@
+{
+  if (s == null || t == null) {
+    throw new IllegalArgumentException("Strings must not be null");
+  }
+  int n=s.length();
+  int m=t.length();
+  if (n == 0) {
+    return m;
+  }
+ else   if (m == 0) {
+    return n;
+  }
+  int[][] vals=new int[3][n + 1];
+  int _d[];
+  int i;
+  int j;
+  char t_j;
+  char s_i;
+  int cost;
+  for (i=0; i <= n; i++) {
+    vals[1][i]=i * DL_DELETE;
+  }
+  for (j=1; j <= m; j++) {
+    t_j=t.charAt(j - 1);
+    vals[0][0]=j * DL_DELETE;
+    for (i=1; i <= n; i++) {
+      s_i=s.charAt(i - 1);
+      if (Character.isLowerCase(s_i) ^ Character.isLowerCase(t_j)) {
+        cost=caselessCompare(s_i,t_j) ? DL_CASE : DL_SUBSTITUTION;
+      }
+ else {
+        cost=s_i == t_j ? 0 : DL_SUBSTITUTION;
+      }
+      vals[0][i]=Math.min(Math.min(vals[0][i - 1] + DL_DELETE,vals[1][i] + DL_DELETE),vals[1][i - 1] + cost);
+      if (i > 1 && j > 1) {
+        cost=Character.isLowerCase(s_i) ^ Character.isLowerCase(t.charAt(j - 2)) ? DL_CASE : 0;
+        cost=Character.isLowerCase(s.charAt(i - 2)) ^ Character.isLowerCase(t_j) ? cost + DL_CASE : cost;
+        if (caselessCompare(s_i,t.charAt(j - 2)) && caselessCompare(s.charAt(i - 2),t_j)) {
+          vals[0][i]=Math.min(vals[0][i],vals[2][i - 2] + DL_TRANSPOSITION + cost);
+        }
+      }
+    }
+    _d=vals[2];
+    vals[2]=vals[1];
+    vals[1]=vals[0];
+    vals[0]=_d;
+  }
+  return vals[1][n];
+}

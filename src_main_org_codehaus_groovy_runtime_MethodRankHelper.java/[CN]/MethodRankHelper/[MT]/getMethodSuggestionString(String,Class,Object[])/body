@@ -1,0 +1,20 @@
+{
+  ClassInfo ci=ClassInfo.getClassInfo(type);
+  List<MetaMethod> methods=new ArrayList(ci.getMetaClass().getMethods());
+  methods.addAll(ci.getMetaClass().getMetaMethods());
+  List<MetaMethod> sugg=rankMethods(methodName,arguments,methods);
+  if (!sugg.isEmpty()) {
+    StringBuffer sb=new StringBuffer();
+    sb.append("\nPossible solutions: ");
+    for (int i=0; i < sugg.size(); i++) {
+      if (i != 0)       sb.append(", ");
+      sb.append(sugg.get(i).getName() + "(");
+      sb.append(listParameterNames(sugg.get(i).getParameterTypes()));
+      sb.append(")");
+    }
+    return sb.toString();
+  }
+ else {
+    return "";
+  }
+}

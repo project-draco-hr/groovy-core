@@ -1,0 +1,18 @@
+{
+  ClassInfo ci=ClassInfo.getClassInfo(type);
+  List<MetaProperty> fi=ci.getMetaClass().getProperties();
+  List<RankableField> rf=new ArrayList(fi.size());
+  StringBuffer sb=new StringBuffer();
+  sb.append("\nPossible solutions: ");
+  for (  MetaProperty mp : fi)   rf.add(new RankableField(fieldName,mp));
+  Collections.sort(rf);
+  int i=0;
+  for (  RankableField f : rf) {
+    if (i > MAX_RECOMENDATIONS)     break;
+    if (f.score > MAX_FIELD_SCORE)     break;
+    if (i > 0)     sb.append(", ");
+    sb.append(f.f.getName());
+    i++;
+  }
+  return i > 0 ? sb.toString() : "";
+}

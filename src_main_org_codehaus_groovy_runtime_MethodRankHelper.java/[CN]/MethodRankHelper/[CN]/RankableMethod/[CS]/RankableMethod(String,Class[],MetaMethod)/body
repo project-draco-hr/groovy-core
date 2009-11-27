@@ -1,0 +1,10 @@
+{
+  this.m=m2;
+  int nameDist=delDistance(name,m2.getName());
+  Class[] mArgs=new Class[m2.getParameterTypes().length];
+  for (int i=0; i < mArgs.length; i++) {
+    mArgs[i]=boxVar(m2.getParameterTypes()[i].getTheClass());
+  }
+  int argDist=damerauLevenshteinDistance(argumentTypes,mArgs);
+  this.score=nameDist + argDist;
+}
