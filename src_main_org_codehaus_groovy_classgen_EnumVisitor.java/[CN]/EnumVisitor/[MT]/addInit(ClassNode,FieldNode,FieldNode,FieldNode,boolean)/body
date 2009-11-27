@@ -1,0 +1,57 @@
+{
+  addConstructor(enumClass);
+  Parameter[] parameter=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE.makeArray(),"para")};
+  MethodNode initMethod=new MethodNode("$INIT",PUBLIC_FS,enumClass,parameter,ClassNode.EMPTY_ARRAY,null);
+  initMethod.setSynthetic(true);
+  ConstructorCallExpression cce=new ConstructorCallExpression(ClassNode.THIS,new ArgumentListExpression(new SpreadExpression(new VariableExpression("para"))));
+  BlockStatement code=new BlockStatement();
+  code.addStatement(new ReturnStatement(cce));
+  initMethod.setCode(code);
+  enumClass.addMethod(initMethod);
+  List fields=enumClass.getFields();
+  List arrayInit=new ArrayList();
+  int value=-1;
+  Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
+  List block=new ArrayList();
+  FieldNode tempMin=null;
+  FieldNode tempMax=null;
+  for (Iterator iterator=fields.iterator(); iterator.hasNext(); ) {
+    FieldNode field=(FieldNode)iterator.next();
+    if ((field.getModifiers() & Opcodes.ACC_ENUM) == 0)     continue;
+    value++;
+    if (tempMin == null)     tempMin=field;
+    tempMax=field;
+    ClassNode enumBase=enumClass;
+    ArgumentListExpression args=new ArgumentListExpression();
+    args.addExpression(new ConstantExpression(field.getName()));
+    args.addExpression(new ConstantExpression(Integer.valueOf(value)));
+    if (field.getInitialExpression() != null) {
+      ListExpression oldArgs=(ListExpression)field.getInitialExpression();
+      for (Iterator oldArgsIterator=oldArgs.getExpressions().iterator(); oldArgsIterator.hasNext(); ) {
+        Expression exp=(Expression)oldArgsIterator.next();
+        if (exp instanceof ClassExpression && exp.getType() instanceof InnerClassNode) {
+          InnerClassNode inner=(InnerClassNode)exp.getType();
+          if (inner.getVariableScope() == null) {
+            enumBase=inner;
+            continue;
+          }
+        }
+        args.addExpression(exp);
+      }
+    }
+    field.setInitialValueExpression(null);
+    block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(field),assign,new StaticMethodCallExpression(enumBase,"$INIT",args))));
+    arrayInit.add(new FieldExpression(field));
+  }
+  if (!isAic) {
+    if (tempMin != null) {
+      block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(minValue),assign,new FieldExpression(tempMin))));
+      block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(maxValue),assign,new FieldExpression(tempMax))));
+      enumClass.addField(minValue);
+      enumClass.addField(maxValue);
+    }
+    block.add(new ExpressionStatement(new BinaryExpression(new FieldExpression(values),assign,new ArrayExpression(enumClass,arrayInit))));
+    enumClass.addField(values);
+  }
+  enumClass.addStaticInitializerStatements(block,true);
+}

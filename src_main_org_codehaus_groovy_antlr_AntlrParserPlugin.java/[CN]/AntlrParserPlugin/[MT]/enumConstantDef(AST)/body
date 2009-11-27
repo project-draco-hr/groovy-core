@@ -9,7 +9,14 @@
   element=element.getNextSibling();
   if (element != null) {
     init=expression(element);
-    if (isType(ELIST,element)) {
+    ClassNode innerClass=getAnonymousInnerClassNode(init);
+    if (innerClass != null) {
+      innerClass.setSuperClass(classNode);
+      innerClass.setModifiers(classNode.getModifiers() | Opcodes.ACC_FINAL);
+      init=new ClassExpression(innerClass);
+      classNode.setModifiers(classNode.getModifiers() & ~Opcodes.ACC_FINAL);
+    }
+ else     if (isType(ELIST,element)) {
       if (init instanceof ListExpression && !((ListExpression)init).isWrapped()) {
         ListExpression le=new ListExpression();
         le.addExpression(init);
