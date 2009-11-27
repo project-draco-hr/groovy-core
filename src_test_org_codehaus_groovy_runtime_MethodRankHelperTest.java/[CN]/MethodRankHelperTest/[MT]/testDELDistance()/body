@@ -1,0 +1,30 @@
+{
+  assertEquals("Identical Strings",0,MethodRankHelper.delDistance("asdf","asdf"));
+  assertEquals("Case Start",MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("Asdf","asdf"));
+  assertEquals("Case Mid",MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("aSdf","asdf"));
+  assertEquals("Case End",MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("asdF","asdf"));
+  assertEquals("Del Start",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("sdf","asdf"));
+  assertEquals("Del Mid",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("adf","asdf"));
+  assertEquals("Del End",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("asd","asdf"));
+  assertEquals("Ins Start",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("aasdf","asdf"));
+  assertEquals("Ins Mid",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("assdf","asdf"));
+  assertEquals("Ins End",MethodRankHelper.DL_DELETE,MethodRankHelper.delDistance("asdff","asdf"));
+  assertEquals("Sub Start",MethodRankHelper.DL_SUBSTITUTION,MethodRankHelper.delDistance("Qsdf","asdf"));
+  assertEquals("Sub Mid",MethodRankHelper.DL_SUBSTITUTION,MethodRankHelper.delDistance("aQdf","asdf"));
+  assertEquals("Sub End",MethodRankHelper.DL_SUBSTITUTION,MethodRankHelper.delDistance("asdQ","asdf"));
+  assertEquals("Tra Start",MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("sadf","asdf"));
+  assertEquals("Tra Mid",MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("adsf","asdf"));
+  assertEquals("Tra End",MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("asfd","asdf"));
+  assertEquals("TraCase Start1",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("sAdf","asdf"));
+  assertEquals("TraCase Start2",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("Sadf","asdf"));
+  assertEquals("TraCase Mid1",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("aDsf","asdf"));
+  assertEquals("TraCase Mid2",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("adSf","asdf"));
+  assertEquals("TraCase End1",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("asFd","asdf"));
+  assertEquals("TraCase End2",MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION,MethodRankHelper.delDistance("asfD","asdf"));
+  assertEquals("2x TraCase1",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2,MethodRankHelper.delDistance("sAfD","asdf"));
+  assertEquals("2x TraCase2",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2,MethodRankHelper.delDistance("SaFd","asdf"));
+  assertEquals("2x TraCase + Case",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2 + MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("SAfD","asdf"));
+  assertEquals("2x TraCase + Case",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2 + MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("SAFd","asdf"));
+  assertEquals("2x TraCase + Case",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2 + MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("sAFD","asdf"));
+  assertEquals("2x TraCase + Case",(MethodRankHelper.DL_CASE + MethodRankHelper.DL_TRANSPOSITION) * 2 + MethodRankHelper.DL_CASE,MethodRankHelper.delDistance("SaFD","asdf"));
+}
