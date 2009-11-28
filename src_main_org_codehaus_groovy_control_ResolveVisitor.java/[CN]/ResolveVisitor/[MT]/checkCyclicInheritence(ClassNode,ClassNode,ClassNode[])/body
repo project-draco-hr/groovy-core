@@ -1,0 +1,27 @@
+{
+  if (!originalNode.isInterface()) {
+    if (parentToCompare == null)     return;
+    if (originalNode == parentToCompare.redirect()) {
+      addError("Cyclic inheritance involving " + parentToCompare.getName() + " in class "+ originalNode.getName(),originalNode);
+      return;
+    }
+    if (parentToCompare == ClassHelper.OBJECT_TYPE)     return;
+    checkCyclicInheritence(originalNode,parentToCompare.getUnresolvedSuperClass(),null);
+  }
+ else {
+    if (interfacesToCompare != null && interfacesToCompare.length > 0) {
+      for (      ClassNode intfToCompare : interfacesToCompare) {
+        if (originalNode == intfToCompare.redirect()) {
+          addError("Cyclic inheritance involving " + intfToCompare.getName() + " in interface "+ originalNode.getName(),originalNode);
+          return;
+        }
+      }
+      for (      ClassNode intf : interfacesToCompare) {
+        checkCyclicInheritence(originalNode,null,intf.getInterfaces());
+      }
+    }
+ else {
+      return;
+    }
+  }
+}

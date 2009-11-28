@@ -34,13 +34,11 @@
     module.setImportsResolved(true);
   }
   ClassNode sn=node.getUnresolvedSuperClass();
-  if (sn != null) {
-    resolveOrFail(sn,node,true);
-    checkCyclicInheritence(node);
-  }
+  if (sn != null)   resolveOrFail(sn,node,true);
   for (  ClassNode anInterface : node.getInterfaces()) {
     resolveOrFail(anInterface,node,true);
   }
+  checkCyclicInheritence(node,node.getUnresolvedSuperClass(),node.getInterfaces());
   super.visitClass(node);
   currentClass=oldNode;
 }
