@@ -1,0 +1,17 @@
+{
+  Set<List<T>> ans=new HashSet<List<T>>();
+  for (  T h : items) {
+    Set<List<T>> next=new HashSet<List<T>>();
+    for (    List<T> it : ans) {
+      List<T> sublist=new ArrayList<T>(it);
+      sublist.add(h);
+      next.add(sublist);
+    }
+    next.addAll(ans);
+    List<T> hlist=new ArrayList<T>();
+    hlist.add(h);
+    next.add(hlist);
+    ans=next;
+  }
+  return ans;
+}
