@@ -1,0 +1,17 @@
+{
+  MethodVisitor mv;
+  mv=cw.visitMethod(ACC_PUBLIC,"invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+  helper=new BytecodeHelper(mv);
+  mv.visitCode();
+  mv.visitVarInsn(ALOAD,1);
+  helper.doCast(method.getParameterTypes()[0].getTheClass());
+  loadParameters(method,2,mv);
+  mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods",method.getName(),methodDescriptor);
+  helper.box(returnType);
+  if (method.getReturnType() == void.class) {
+    mv.visitInsn(ACONST_NULL);
+  }
+  mv.visitInsn(ARETURN);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+}

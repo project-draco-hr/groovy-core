@@ -1,0 +1,30 @@
+{
+  MethodVisitor mv;
+  if (method.getParamsCount() == 2 && method.getParameterTypes()[0].isNumber && method.getParameterTypes()[1].isNumber) {
+    mv=cw.visitMethod(ACC_PUBLIC,"isValidMethod","([Ljava/lang/Class;)Z",null,null);
+    mv.visitCode();
+    mv.visitVarInsn(ALOAD,1);
+    Label l0=new Label();
+    mv.visitJumpInsn(IFNULL,l0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitMethodInsn(INVOKEVIRTUAL,className,"getParameterTypes","()[Lorg/codehaus/groovy/reflection/CachedClass;");
+    mv.visitInsn(ICONST_0);
+    mv.visitInsn(AALOAD);
+    mv.visitVarInsn(ALOAD,1);
+    mv.visitInsn(ICONST_0);
+    mv.visitInsn(AALOAD);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/reflection/CachedClass","isAssignableFrom","(Ljava/lang/Class;)Z");
+    Label l1=new Label();
+    mv.visitJumpInsn(IFEQ,l1);
+    mv.visitLabel(l0);
+    mv.visitInsn(ICONST_1);
+    Label l2=new Label();
+    mv.visitJumpInsn(GOTO,l2);
+    mv.visitLabel(l1);
+    mv.visitInsn(ICONST_0);
+    mv.visitLabel(l2);
+    mv.visitInsn(IRETURN);
+    mv.visitMaxs(0,0);
+    mv.visitEnd();
+  }
+}

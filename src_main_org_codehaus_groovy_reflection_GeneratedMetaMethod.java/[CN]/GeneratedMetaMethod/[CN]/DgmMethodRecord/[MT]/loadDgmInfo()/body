@@ -1,0 +1,33 @@
+{
+  ClassLoader loader=DgmMethodRecord.class.getClassLoader();
+  DataInputStream in=new DataInputStream(new BufferedInputStream(loader.getResourceAsStream("META-INF/dgminfo")));
+  HashMap<Integer,Class> classes=new HashMap<Integer,Class>();
+  for (int i=0; i < primitiveClasses.length; i++) {
+    classes.put(i,primitiveClasses[i]);
+  }
+  int skip=0;
+  for (; ; ) {
+    String name=in.readUTF();
+    if (name.length() == 0)     break;
+    int key=in.readInt();
+    if (skip++ < primitiveClasses.length)     continue;
+    Class cls=loader.loadClass(name);
+    classes.put(key,cls);
+  }
+  int size=in.readInt();
+  ArrayList<DgmMethodRecord> res=new ArrayList<DgmMethodRecord>(size);
+  for (int i=0; i != size; ++i) {
+    DgmMethodRecord record=new DgmMethodRecord();
+    record.className=in.readUTF();
+    record.methodName=in.readUTF();
+    record.returnType=classes.get(in.readInt());
+    int psize=in.readInt();
+    record.parameters=new Class[psize];
+    for (int j=0; j < record.parameters.length; j++) {
+      record.parameters[j]=classes.get(in.readInt());
+    }
+    res.add(record);
+  }
+  in.close();
+  return res;
+}

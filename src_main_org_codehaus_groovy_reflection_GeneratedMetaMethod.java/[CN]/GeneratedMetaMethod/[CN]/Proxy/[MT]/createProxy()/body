@@ -1,0 +1,11 @@
+{
+  try {
+    Class<?> aClass=getClass().getClassLoader().loadClass(className.replace('/','.'));
+    Constructor<?> constructor=aClass.getConstructor(String.class,CachedClass.class,Class.class,Class[].class);
+    proxy=(MetaMethod)constructor.newInstance(getName(),getDeclaringClass(),getReturnType(),getNativeParameterTypes());
+  }
+ catch (  Throwable t) {
+    t.printStackTrace();
+    System.exit(0);
+  }
+}
