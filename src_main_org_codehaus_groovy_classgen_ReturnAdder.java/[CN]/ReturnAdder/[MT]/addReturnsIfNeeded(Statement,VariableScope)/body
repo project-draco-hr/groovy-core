@@ -27,9 +27,9 @@
   if (statement instanceof SwitchStatement) {
     SwitchStatement swi=(SwitchStatement)statement;
     for (    CaseStatement caseStatement : swi.getCaseStatements()) {
-      caseStatement.setCode(adjustSwitchCaseCode(caseStatement.getCode(),scope));
+      caseStatement.setCode(adjustSwitchCaseCode(caseStatement.getCode(),scope,false));
     }
-    swi.setDefaultStatement(adjustSwitchCaseCode(swi.getDefaultStatement(),scope));
+    swi.setDefaultStatement(adjustSwitchCaseCode(swi.getDefaultStatement(),scope,true));
     return swi;
   }
   if (statement instanceof TryCatchStatement) {
