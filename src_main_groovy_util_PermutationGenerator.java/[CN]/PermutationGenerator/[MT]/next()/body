@@ -1,0 +1,33 @@
+{
+  if (numLeft.equals(total)) {
+    numLeft=numLeft.subtract(BigInteger.ONE);
+    return items;
+  }
+  int temp;
+  int j=a.length - 2;
+  while (a[j] > a[j + 1]) {
+    j--;
+  }
+  int k=a.length - 1;
+  while (a[j] > a[k]) {
+    k--;
+  }
+  temp=a[k];
+  a[k]=a[j];
+  a[j]=temp;
+  int r=a.length - 1;
+  int s=j + 1;
+  while (r > s) {
+    temp=a[s];
+    a[s]=a[r];
+    a[r]=temp;
+    r--;
+    s++;
+  }
+  numLeft=numLeft.subtract(BigInteger.ONE);
+  List<E> ans=new ArrayList<E>(a.length);
+  for (  int index : a) {
+    ans.add(items.get(index));
+  }
+  return ans;
+}
