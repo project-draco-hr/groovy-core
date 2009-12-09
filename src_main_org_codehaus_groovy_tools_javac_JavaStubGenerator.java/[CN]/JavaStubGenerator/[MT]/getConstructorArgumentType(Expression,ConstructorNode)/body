@@ -2,10 +2,9 @@
   if (!(arg instanceof VariableExpression))   return arg.getType();
   VariableExpression vexp=(VariableExpression)arg;
   String name=vexp.getName();
-  Parameter[] params=node.getParameters();
-  for (int i=0; i < params.length; i++) {
-    if (params[i].getName().equals(name)) {
-      return params[i].getType();
+  for (  Parameter param : node.getParameters()) {
+    if (param.getName().equals(name)) {
+      return param.getType();
     }
   }
   return vexp.getType();

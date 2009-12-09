@@ -1,9 +1,7 @@
 {
   ClassNode type=node.getDeclaringClass();
   ClassNode superType=type.getSuperClass();
-  boolean hadPrivateConstructor=false;
-  for (Iterator iter=superType.getDeclaredConstructors().iterator(); iter.hasNext(); ) {
-    ConstructorNode c=(ConstructorNode)iter.next();
+  for (  ConstructorNode c : superType.getDeclaredConstructors()) {
     if (c.isPublic() || c.isProtected()) {
       return c.getParameters();
     }

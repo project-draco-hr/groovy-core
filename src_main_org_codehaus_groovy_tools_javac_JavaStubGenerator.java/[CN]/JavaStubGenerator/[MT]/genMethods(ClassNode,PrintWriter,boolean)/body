@@ -1,17 +1,16 @@
 {
   if (!isEnum)   getConstructors(classNode,out);
-  List methods=(List)propertyMethods.clone();
+  @SuppressWarnings("unchecked") List<MethodNode> methods=(List)propertyMethods.clone();
   methods.addAll(classNode.getMethods());
-  if (methods != null)   for (Iterator it=methods.iterator(); it.hasNext(); ) {
-    MethodNode methodNode=(MethodNode)it.next();
-    if (isEnum && methodNode.isSynthetic()) {
-      String name=methodNode.getName();
-      Parameter[] params=methodNode.getParameters();
+  for (  MethodNode method : methods) {
+    if (isEnum && method.isSynthetic()) {
+      String name=method.getName();
+      Parameter[] params=method.getParameters();
       if (name.equals("values") && params.length == 0)       continue;
       if (name.equals("valueOf") && params.length == 1 && params[0].getType().equals(ClassHelper.STRING_TYPE)) {
         continue;
       }
     }
-    genMethod(classNode,methodNode,out);
+    genMethod(classNode,method,out);
   }
 }
