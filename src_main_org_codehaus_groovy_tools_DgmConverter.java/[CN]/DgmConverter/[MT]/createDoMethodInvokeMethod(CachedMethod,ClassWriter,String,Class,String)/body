@@ -31,7 +31,7 @@
     helper.doCast(method.getParameterTypes()[0].getTheClass());
     loadParameters(method,2,mv);
   }
-  mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods",method.getName(),methodDescriptor);
+  mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(method.getDeclaringClass().getTheClass()),method.getName(),methodDescriptor);
   helper.box(returnType);
   if (method.getReturnType() == void.class) {
     mv.visitInsn(ACONST_NULL);

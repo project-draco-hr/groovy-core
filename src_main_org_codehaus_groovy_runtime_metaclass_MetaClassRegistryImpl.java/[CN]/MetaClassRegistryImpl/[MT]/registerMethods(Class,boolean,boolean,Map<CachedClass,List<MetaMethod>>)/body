@@ -1,5 +1,4 @@
 {
-  CachedMethod[] methods=ReflectionCache.getCachedClass(theClass).getMethods();
   if (useMethodWrapper) {
     try {
       ArrayList<GeneratedMetaMethod.DgmMethodRecord> records=GeneratedMetaMethod.DgmMethodRecord.loadDgmInfo();
@@ -21,12 +20,9 @@
       e.printStackTrace();
       System.exit(0);
     }
-    final Class[] additionals=DefaultGroovyMethods.additionals;
-    for (int i=0; i != additionals.length; ++i) {
-      createMetaMethodFromClass(map,additionals[i]);
-    }
   }
  else {
+    CachedMethod[] methods=ReflectionCache.getCachedClass(theClass).getMethods();
     for (    CachedMethod method : methods) {
       final int mod=method.getModifiers();
       if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && method.getCachedMethod().getAnnotation(Deprecated.class) == null) {
