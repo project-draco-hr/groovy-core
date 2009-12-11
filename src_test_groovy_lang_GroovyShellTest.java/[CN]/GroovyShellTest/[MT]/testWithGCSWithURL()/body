@@ -1,0 +1,14 @@
+{
+  String scriptFileName="src/test/groovy/bugs/GROOVY3934Helper.groovy";
+  File helperScript=new File(scriptFileName);
+  if (!helperScript.exists()) {
+    fail("File " + scriptFileName + " does not exist");
+  }
+ else {
+    URL url=helperScript.toURL();
+    GroovyCodeSource gcs=new GroovyCodeSource(url);
+    GroovyShell shell=new GroovyShell();
+    Object result=shell.evaluate(gcs);
+    assertEquals("GROOVY3934Helper script called",result);
+  }
+}
