@@ -1,0 +1,45 @@
+{
+  Throwable reason=null;
+  try {
+    final Method fireTaskStarted=Project.class.getDeclaredMethod("fireTaskStarted",Task.class);
+    fireTaskStarted.setAccessible(true);
+    fireTaskStarted.invoke(project,task);
+    Object realThing;
+    realThing=task;
+    task.maybeConfigure();
+    if (task instanceof UnknownElement) {
+      realThing=((UnknownElement)task).getRealThing();
+    }
+    DispatchUtils.execute(task);
+    return realThing != null ? realThing : task;
+  }
+ catch (  BuildException ex) {
+    if (ex.getLocation() == Location.UNKNOWN_LOCATION) {
+      ex.setLocation(task.getLocation());
+    }
+    reason=ex;
+    throw ex;
+  }
+catch (  Exception ex) {
+    reason=ex;
+    BuildException be=new BuildException(ex);
+    be.setLocation(task.getLocation());
+    throw be;
+  }
+catch (  Error ex) {
+    reason=ex;
+    throw ex;
+  }
+ finally {
+    try {
+      final Method fireTaskFinished=Project.class.getDeclaredMethod("fireTaskFinished",Task.class,Throwable.class);
+      fireTaskFinished.setAccessible(true);
+      fireTaskFinished.invoke(project,task,reason);
+    }
+ catch (    Exception e) {
+      BuildException be=new BuildException(e);
+      be.setLocation(task.getLocation());
+      throw be;
+    }
+  }
+}

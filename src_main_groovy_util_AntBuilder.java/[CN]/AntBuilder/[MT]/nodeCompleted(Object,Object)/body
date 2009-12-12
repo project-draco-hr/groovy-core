@@ -7,34 +7,26 @@
     return;
   }
   if (node instanceof Task) {
-    Object task=node;
-    if (node instanceof UnknownElement) {
-      final UnknownElement unknownElement=(UnknownElement)node;
-      unknownElement.maybeConfigure();
-      task=unknownElement.getRealThing();
+    Task task=(Task)node;
+    final String taskName=task.getTaskName();
+    if ("antcall".equals(taskName) && parent == null) {
+      throw new BuildException("antcall not supported within AntBuilder, consider using 'ant.project.executeTarget('targetName')' instead.");
     }
-    lastCompletedNode=task;
-    if (task instanceof Task) {
-      final String taskName=((Task)task).getTaskName();
-      if ("antcall".equals(taskName) && parent == null) {
-        throw new BuildException("antcall not supported within AntBuilder, consider using 'ant.project.executeTarget('targetName')' instead.");
-      }
-      InputStream savedIn=System.in;
-      InputStream savedProjectInputStream=project.getDefaultInputStream();
-      if (!(savedIn instanceof DemuxInputStream)) {
-        project.setDefaultInputStream(savedIn);
-        System.setIn(new DemuxInputStream(project));
-      }
-      try {
-        ((Task)task).perform();
-      }
+    InputStream savedIn=System.in;
+    InputStream savedProjectInputStream=project.getDefaultInputStream();
+    if (!(savedIn instanceof DemuxInputStream)) {
+      project.setDefaultInputStream(savedIn);
+      System.setIn(new DemuxInputStream(project));
+    }
+    try {
+      lastCompletedNode=performTask(task);
+    }
   finally {
-        project.setDefaultInputStream(savedProjectInputStream);
-        System.setIn(savedIn);
-      }
-      if ("import".equals(taskName)) {
-        antXmlContext.setCurrentTarget(collectorTarget);
-      }
+      project.setDefaultInputStream(savedProjectInputStream);
+      System.setIn(savedIn);
+    }
+    if ("import".equals(taskName)) {
+      antXmlContext.setCurrentTarget(collectorTarget);
     }
   }
  else   if (node instanceof Target) {
