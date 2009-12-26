@@ -5,7 +5,8 @@ case Types.EQUAL:
     evaluateEqual(expression,false);
   break;
 case Types.COMPARE_IDENTICAL:
-evaluateBinaryExpression(compareIdenticalMethod,expression);
+case Types.COMPARE_NOT_IDENTICAL:
+source.addError(new SyntaxException("Operators === and !== are not supported. Use this.is(that) instead",expression.getLineNumber(),expression.getColumnNumber()));
 break;
 case Types.COMPARE_EQUAL:
 evaluateBinaryExpression(compareEqualMethod,expression);
