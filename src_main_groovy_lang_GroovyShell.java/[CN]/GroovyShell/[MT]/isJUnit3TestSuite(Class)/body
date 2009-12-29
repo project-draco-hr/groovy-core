@@ -1,0 +1,16 @@
+{
+  boolean isUnitTestSuite=false;
+  try {
+    try {
+      Class testSuiteClass=this.loader.loadClass("junit.framework.TestSuite");
+      if (testSuiteClass.isAssignableFrom(scriptClass)) {
+        isUnitTestSuite=true;
+      }
+    }
+ catch (    ClassNotFoundException e) {
+    }
+  }
+ catch (  Throwable e) {
+  }
+  return isUnitTestSuite;
+}

@@ -1,0 +1,9 @@
+{
+  try {
+    Object testSuite=InvokerHelper.invokeStaticMethod(scriptClass,"suite",new Object[]{});
+    return InvokerHelper.invokeStaticMethod("junit.textui.TestRunner","run",new Object[]{testSuite});
+  }
+ catch (  ClassNotFoundException e) {
+    throw new GroovyRuntimeException("Failed to run the unit test. JUnit is not on the Classpath.");
+  }
+}
