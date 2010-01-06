@@ -3,7 +3,7 @@
   final File[] files=self.listFiles();
   if (files == null)   return;
   for (  File file : files) {
-    if (!onlyDir || file.isDirectory()) {
+    if ((fileType != FileType.FilesOnly && file.isDirectory()) || (fileType != FileType.DirectoriesOnly && file.isFile())) {
       closure.call(file);
     }
   }

@@ -1,0 +1,11 @@
+{
+  checkDir(self);
+  final File[] files=self.listFiles();
+  if (files == null)   return;
+  final MetaClass metaClass=InvokerHelper.getMetaClass(filter);
+  for (  final File currentFile : files) {
+    if ((fileType != FileType.FilesOnly && currentFile.isDirectory()) || (fileType != FileType.DirectoriesOnly && currentFile.isFile())) {
+      if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",currentFile.getName())))       closure.call(currentFile);
+    }
+  }
+}
