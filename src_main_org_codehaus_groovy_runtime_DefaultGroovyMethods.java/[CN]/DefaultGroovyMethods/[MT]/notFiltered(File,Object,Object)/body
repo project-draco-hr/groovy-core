@@ -1,0 +1,8 @@
+{
+  if (filter == null && excludeFilter == null)   return true;
+  final MetaClass filterMC=filter == null ? null : InvokerHelper.getMetaClass(filter);
+  final MetaClass excludeMC=excludeFilter == null ? null : InvokerHelper.getMetaClass(excludeFilter);
+  boolean included=filter == null || (filter != null && DefaultTypeTransformation.castToBoolean(filterMC.invokeMethod(filter,"isCase",file.getName())));
+  boolean excluded=excludeFilter != null && DefaultTypeTransformation.castToBoolean(excludeMC.invokeMethod(excludeFilter,"isCase",file.getName()));
+  return included && !excluded;
+}
