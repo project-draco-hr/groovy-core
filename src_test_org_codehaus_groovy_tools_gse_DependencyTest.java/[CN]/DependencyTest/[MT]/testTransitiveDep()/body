@@ -3,12 +3,12 @@
   cu.compile(Phases.CLASS_GENERATION);
   cache.makeTransitiveHull();
   Set<String> dep=cache.get("A1");
-  assertEquals(dep.size(),0);
-  dep=cache.get("A2");
   assertEquals(dep.size(),1);
+  dep=cache.get("A2");
+  assertEquals(dep.size(),2);
   assertTrue(dep.contains("A1"));
   dep=cache.get("A3");
-  assertEquals(dep.size(),2);
+  assertEquals(dep.size(),3);
   assertTrue(dep.contains("A1"));
   assertTrue(dep.contains("A2"));
 }
