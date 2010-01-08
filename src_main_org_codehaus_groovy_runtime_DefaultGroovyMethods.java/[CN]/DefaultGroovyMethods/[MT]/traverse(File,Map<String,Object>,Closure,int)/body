@@ -13,7 +13,7 @@
     for (    File file : files) {
       if (file.isDirectory()) {
         if (type != FileType.FilesOnly) {
-          if (notFiltered(file,filter,excludeFilter)) {
+          if (closure != null && notFiltered(file,filter,excludeFilter)) {
             Object closureResult=closure.call(file);
             if (closureResult == FileVisitResult.SKIP_SIBLINGS)             break;
             if (closureResult == FileVisitResult.TERMINATE)             return FileVisitResult.TERMINATE;
@@ -39,7 +39,7 @@
         }
       }
  else       if (type != FileType.DirectoriesOnly) {
-        if (notFiltered(file,filter,excludeFilter)) {
+        if (closure != null && notFiltered(file,filter,excludeFilter)) {
           Object closureResult=closure.call(file);
           if (closureResult == FileVisitResult.SKIP_SIBLINGS)           break;
           if (closureResult == FileVisitResult.TERMINATE)           return FileVisitResult.TERMINATE;

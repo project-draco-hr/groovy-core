@@ -16,7 +16,7 @@
   if (preResult == FileVisitResult.TERMINATE || preResult == FileVisitResult.SKIP_SUBTREE)   return;
   FileVisitResult terminated=traverse(self,options,closure,maxDepth);
   if (type != FileType.FilesOnly && visitRoot) {
-    if (notFiltered(self,filter,excludeFilter)) {
+    if (closure != null && notFiltered(self,filter,excludeFilter)) {
       Object closureResult=closure.call(self);
       if (closureResult == FileVisitResult.TERMINATE)       return;
     }
