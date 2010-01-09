@@ -1,0 +1,30 @@
+{
+  if (filter == null && nameFilter == null && excludeFilter == null && excludeNameFilter == null)   return true;
+  if (filter != null && nameFilter != null)   throw new IllegalArgumentException("Can't set both 'filter' and 'nameFilter'");
+  if (excludeFilter != null && excludeNameFilter != null)   throw new IllegalArgumentException("Can't set both 'excludeFilter' and 'excludeNameFilter'");
+  Object filterToUse=null;
+  Object filterParam=null;
+  if (filter != null) {
+    filterToUse=filter;
+    filterParam=file;
+  }
+ else   if (nameFilter != null) {
+    filterToUse=nameFilter;
+    filterParam=file.getName();
+  }
+  Object excludeFilterToUse=null;
+  Object excludeParam=null;
+  if (excludeFilter != null) {
+    excludeFilterToUse=excludeFilter;
+    excludeParam=file;
+  }
+ else   if (excludeNameFilter != null) {
+    excludeFilterToUse=excludeNameFilter;
+    excludeParam=file.getName();
+  }
+  final MetaClass filterMC=filterToUse == null ? null : InvokerHelper.getMetaClass(filterToUse);
+  final MetaClass excludeMC=excludeFilterToUse == null ? null : InvokerHelper.getMetaClass(excludeFilterToUse);
+  boolean included=filterToUse == null || (filterToUse != null && DefaultTypeTransformation.castToBoolean(filterMC.invokeMethod(filterToUse,"isCase",filterParam)));
+  boolean excluded=excludeFilterToUse != null && DefaultTypeTransformation.castToBoolean(excludeMC.invokeMethod(excludeFilterToUse,"isCase",excludeParam));
+  return included && !excluded;
+}

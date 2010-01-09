@@ -4,7 +4,9 @@
   final Closure post=(Closure)options.get("postDir");
   final FileType type=(FileType)options.get("type");
   final Object filter=options.get("filter");
+  final Object nameFilter=options.get("nameFilter");
   final Object excludeFilter=options.get("excludeFilter");
+  final Object excludeNameFilter=options.get("excludeNameFilter");
   final Closure sort=(Closure)options.get("sort");
   final File[] origFiles=self.listFiles();
   if (origFiles != null) {
@@ -12,8 +14,8 @@
     if (sort != null)     files=sort(files,sort);
     for (    File file : files) {
       if (file.isDirectory()) {
-        if (type != FileType.FilesOnly) {
-          if (closure != null && notFiltered(file,filter,excludeFilter)) {
+        if (type != FileType.FILES) {
+          if (closure != null && notFiltered(file,filter,nameFilter,excludeFilter,excludeNameFilter)) {
             Object closureResult=closure.call(file);
             if (closureResult == FileVisitResult.SKIP_SIBLINGS)             break;
             if (closureResult == FileVisitResult.TERMINATE)             return FileVisitResult.TERMINATE;
@@ -38,8 +40,8 @@
           if (postResult == FileVisitResult.TERMINATE)           return FileVisitResult.TERMINATE;
         }
       }
- else       if (type != FileType.DirectoriesOnly) {
-        if (closure != null && notFiltered(file,filter,excludeFilter)) {
+ else       if (type != FileType.DIRECTORIES) {
+        if (closure != null && notFiltered(file,filter,nameFilter,excludeFilter,excludeNameFilter)) {
           Object closureResult=closure.call(file);
           if (closureResult == FileVisitResult.SKIP_SIBLINGS)           break;
           if (closureResult == FileVisitResult.TERMINATE)           return FileVisitResult.TERMINATE;
