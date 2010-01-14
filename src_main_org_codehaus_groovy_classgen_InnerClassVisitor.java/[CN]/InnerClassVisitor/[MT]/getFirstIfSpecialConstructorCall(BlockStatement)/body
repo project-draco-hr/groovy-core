@@ -1,0 +1,12 @@
+{
+  if (code == null)   return null;
+  final List<Statement> statementList=code.getStatements();
+  if (statementList.isEmpty())   return null;
+  final Statement statement=statementList.get(0);
+  if (!(statement instanceof ExpressionStatement))   return null;
+  Expression expression=((ExpressionStatement)statement).getExpression();
+  if (!(expression instanceof ConstructorCallExpression))   return null;
+  ConstructorCallExpression cce=(ConstructorCallExpression)expression;
+  if (cce.isSpecialCall())   return cce;
+  return null;
+}

@@ -28,7 +28,7 @@
   addFieldInit(thisPara,thisField,newCode);
   ConstructorCallExpression cce=getFirstIfSpecialConstructorCall(block);
   if (cce == null) {
-    newCode.addStatement(block);
+    block.getStatements().add(0,newCode);
   }
  else   if (cce.isThisCall()) {
     TupleExpression args=(TupleExpression)cce.getArguments();
@@ -39,9 +39,7 @@
     newCode=block;
   }
  else {
-    block.getStatements().remove(0);
-    newCode.getStatements().add(0,firstStatement);
-    newCode.addStatement(block);
+    block.getStatements().add(1,newCode);
   }
-  node.setCode(newCode);
+  node.setCode(block);
 }
