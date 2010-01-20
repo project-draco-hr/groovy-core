@@ -27,7 +27,7 @@
     if (verbose) {
       log("Creating new template from file " + file + "...");
     }
-    String fileEncoding=System.getProperty("groovy.source.encoding");
+    String fileEncoding=(fileEncodingParamVal != null) ? fileEncodingParamVal : System.getProperty(GROOVY_SOURCE_ENCODING);
     Reader reader=null;
     try {
       reader=fileEncoding == null ? new FileReader(file) : new InputStreamReader(new FileInputStream(file),fileEncoding);
