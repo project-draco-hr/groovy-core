@@ -1,0 +1,14 @@
+{
+  ClassNode cn=call.getType().redirect();
+  if (!shouldHandleImplicitThisForInnerClass(cn))   return;
+  boolean isInStaticContext=true;
+  if (currentMethod != null)   isInStaticContext=currentMethod.getVariableScope().isInStaticContext();
+ else   if (currentField != null)   isInStaticContext=currentField.isStatic();
+  if (isInStaticContext)   return;
+  if (classNode != ((InnerClassNode)cn).getOuterClass())   return;
+  Expression argsExp=call.getArguments();
+  if (argsExp instanceof ArgumentListExpression) {
+    ArgumentListExpression argsListExp=(ArgumentListExpression)argsExp;
+    argsListExp.getExpressions().add(0,VariableExpression.THIS_EXPRESSION);
+  }
+}

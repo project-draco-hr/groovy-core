@@ -1,11 +1,6 @@
 {
-  if (classNode.isEnum() || classNode.isInterface())   return;
-  if ((classNode.getModifiers() & Opcodes.ACC_STATIC) != 0)   return;
+  if (!shouldHandleImplicitThisForInnerClass(classNode))   return;
   Statement code=node.getCode();
-  if (!(classNode instanceof InnerClassNode))   return;
-  InnerClassNode innerClass=(InnerClassNode)classNode;
-  if (innerClass.getVariableScope() != null)   return;
-  if ((innerClass.getModifiers() & ACC_STATIC) != 0)   return;
   Parameter[] params=node.getParameters();
   Parameter[] newParams=new Parameter[params.length + 1];
   System.arraycopy(params,0,newParams,1,params.length);

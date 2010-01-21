@@ -1,6 +1,9 @@
 {
   super.visitConstructorCallExpression(call);
-  if (!call.isUsingAnnonymousInnerClass())   return;
+  if (!call.isUsingAnnonymousInnerClass()) {
+    passThisReference(call);
+    return;
+  }
   InnerClassNode innerClass=(InnerClassNode)call.getType();
   if (!innerClass.getDeclaredConstructors().isEmpty())   return;
   if ((innerClass.getModifiers() & ACC_STATIC) != 0)   return;

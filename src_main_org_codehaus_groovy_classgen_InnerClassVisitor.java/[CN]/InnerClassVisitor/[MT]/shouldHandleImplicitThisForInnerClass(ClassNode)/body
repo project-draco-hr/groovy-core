@@ -1,0 +1,9 @@
+{
+  if (cn.isEnum() || cn.isInterface())   return false;
+  if ((cn.getModifiers() & Opcodes.ACC_STATIC) != 0)   return false;
+  if (!(cn instanceof InnerClassNode))   return false;
+  InnerClassNode innerClass=(InnerClassNode)cn;
+  if (innerClass.getVariableScope() != null)   return false;
+  if ((innerClass.getModifiers() & ACC_STATIC) != 0)   return false;
+  return true;
+}
