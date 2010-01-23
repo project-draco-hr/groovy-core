@@ -1,6 +1,8 @@
 {
   Expression oldLeft=de.getLeftExpression();
+  checkingVariableTypeInDeclaration=true;
   Expression left=transform(oldLeft);
+  checkingVariableTypeInDeclaration=false;
   if (left instanceof ClassExpression) {
     ClassExpression ce=(ClassExpression)left;
     addError("you tried to assign a value to the class " + ce.getType().getName(),oldLeft);

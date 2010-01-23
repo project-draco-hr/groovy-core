@@ -1,5 +1,8 @@
 {
   Variable v=ve.getAccessedVariable();
+  if (!(v instanceof DynamicVariable) && !checkingVariableTypeInDeclaration) {
+    return ve;
+  }
   if (v instanceof DynamicVariable) {
     String name=ve.getName();
     ClassNode t=ClassHelper.make(name);
