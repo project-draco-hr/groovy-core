@@ -12,6 +12,7 @@
   cache.clear();
   cu.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
     @Override public void call(    final SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      if (classNode instanceof InnerClassNode)       return;
       DependencyTracker dt=new DependencyTracker(source,cache);
       dt.visitClass(classNode);
     }
