@@ -5,10 +5,17 @@
   if (currentMethod != null)   isInStaticContext=currentMethod.getVariableScope().isInStaticContext();
  else   if (currentField != null)   isInStaticContext=currentField.isStatic();
   if (isInStaticContext)   return;
-  if (classNode != ((InnerClassNode)cn).getOuterClass())   return;
+  ClassNode parent=classNode;
+  int level=0;
+  for (; parent != null && parent != cn.getOuterClass(); parent=parent.getOuterClass()) {
+    level++;
+  }
+  if (parent == null)   return;
   Expression argsExp=call.getArguments();
   if (argsExp instanceof TupleExpression) {
     TupleExpression argsListExp=(TupleExpression)argsExp;
-    argsListExp.getExpressions().add(0,VariableExpression.THIS_EXPRESSION);
+    Expression this0=VariableExpression.THIS_EXPRESSION;
+    for (int i=0; i != level; ++i)     this0=new PropertyExpression(this0,"this$0");
+    argsListExp.getExpressions().add(0,this0);
   }
 }
