@@ -1,11 +1,20 @@
 {
-  if (null == interceptor) {
+  if (null == interceptor && !fallingThrough) {
     throw new RuntimeException("cannot set property '" + property + "' without interceptor");
   }
-  if (interceptor instanceof PropertyAccessInterceptor) {
-    ((PropertyAccessInterceptor)interceptor).beforeSet(object,property,newValue);
+  Object result=FALL_THROUGH_MARKER;
+  if (interceptor != null && interceptor instanceof PropertyAccessInterceptor) {
+    Object[] resultHolder=new Object[1];
+    ((PropertyAccessInterceptor)interceptor).beforeSet(resultHolder,property,newValue);
+    result=resultHolder[0];
   }
- else {
-    super.setProperty(aClass,object,property,newValue,b,b);
+  if (result == FALL_THROUGH_MARKER) {
+    Interceptor saved=interceptor;
+    interceptor=null;
+    boolean savedFallingThrough=fallingThrough;
+    fallingThrough=true;
+    adaptee.setProperty(aClass,object,property,newValue,b,b1);
+    fallingThrough=savedFallingThrough;
+    interceptor=saved;
   }
 }

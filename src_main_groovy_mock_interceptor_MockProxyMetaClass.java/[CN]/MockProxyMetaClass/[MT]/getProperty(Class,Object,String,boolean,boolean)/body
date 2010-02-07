@@ -1,11 +1,19 @@
 {
-  if (null == interceptor) {
+  if (null == interceptor && !fallingThrough) {
     throw new RuntimeException("cannot get property '" + property + "' without interceptor");
   }
-  if (interceptor instanceof PropertyAccessInterceptor) {
-    return ((PropertyAccessInterceptor)interceptor).beforeGet(object,property);
+  Object result=FALL_THROUGH_MARKER;
+  if (interceptor != null && interceptor instanceof PropertyAccessInterceptor) {
+    result=((PropertyAccessInterceptor)interceptor).beforeGet(object,property);
   }
- else {
-    return super.getProperty(aClass,object,property,b,b);
+  if (result == FALL_THROUGH_MARKER) {
+    Interceptor saved=interceptor;
+    interceptor=null;
+    boolean savedFallingThrough=fallingThrough;
+    fallingThrough=true;
+    result=adaptee.getProperty(aClass,object,property,b,b1);
+    fallingThrough=savedFallingThrough;
+    interceptor=saved;
   }
+  return result;
 }

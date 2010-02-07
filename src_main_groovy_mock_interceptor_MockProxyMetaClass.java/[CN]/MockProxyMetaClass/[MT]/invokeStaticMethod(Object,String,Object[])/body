@@ -1,6 +1,19 @@
 {
-  if (null == interceptor) {
+  if (null == interceptor && !fallingThrough) {
     throw new RuntimeException("cannot invoke static method '" + methodName + "' without interceptor");
   }
-  return interceptor.beforeInvoke(object,methodName,arguments);
+  Object result=FALL_THROUGH_MARKER;
+  if (interceptor != null) {
+    result=interceptor.beforeInvoke(object,methodName,arguments);
+  }
+  if (result == FALL_THROUGH_MARKER) {
+    Interceptor saved=interceptor;
+    interceptor=null;
+    boolean savedFallingThrough=fallingThrough;
+    fallingThrough=true;
+    result=adaptee.invokeStaticMethod(object,methodName,arguments);
+    fallingThrough=savedFallingThrough;
+    interceptor=saved;
+  }
+  return result;
 }
