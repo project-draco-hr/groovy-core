@@ -1,7 +1,12 @@
 {
   this.objectExpression=objectExpression;
   this.method=method;
-  this.arguments=arguments;
+  if (!(arguments instanceof TupleExpression)) {
+    this.arguments=new TupleExpression(arguments);
+  }
+ else {
+    this.arguments=arguments;
+  }
   this.setType(ClassHelper.DYNAMIC_TYPE);
   this.setImplicitThis(true);
 }
