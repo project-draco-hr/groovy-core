@@ -24,12 +24,11 @@
   shortClassName+=(target.length > 1 ? "#" + target[1].split("\\(")[0] : "");
   String name=(full ? target[0] : shortClassName).replaceAll("#",".");
   if (savedRootDoc != null) {
-    GroovyClassDoc doc=savedRootDoc.classNamed(target[0].replaceAll("\\.","/"));
-    String base="./";
-    for (int i=0; i < fullPathName.split("/").length - 1; i++) {
-      base+="../";
+    String slashedName=target[0].replaceAll("\\.","/");
+    GroovyClassDoc doc=savedRootDoc.classNamed(slashedName);
+    if (doc != null) {
+      return buildUrl(getRelativeRootPath(),target,label == null ? name : label);
     }
-    if (doc != null)     return buildUrl(base,target,label == null ? name : label);
   }
   for (  LinkArgument link : links) {
     final StringTokenizer tokenizer=new StringTokenizer(link.getPackages(),", ");
