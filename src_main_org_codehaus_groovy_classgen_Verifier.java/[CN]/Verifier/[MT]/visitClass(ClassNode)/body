@@ -16,12 +16,6 @@
   if (interfaceSet.size() != interfaces.size()) {
     throw new RuntimeParserException("Duplicate interfaces in implements list: " + interfaces,classNode);
   }
-  for (  Object intf : interfaces) {
-    String intfName=(String)intf;
-    if (intfName.equals(node.getName())) {
-      throw new RuntimeParserException("Cycle detected: the type " + node.getName() + " cannot implement itself",classNode);
-    }
-  }
   addDefaultParameterMethods(node);
   addDefaultParameterConstructors(node);
   final String classInternalName=BytecodeHelper.getClassInternalName(node);
