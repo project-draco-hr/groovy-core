@@ -1,0 +1,43 @@
+{
+  if (type == null)   return type;
+  type=type.trim();
+  String label=null;
+  Matcher matcher=REF_LABEL_REGEX.matcher(type);
+  if (matcher.find()) {
+    type=matcher.group(1);
+    label=matcher.group(4);
+  }
+  if (type.startsWith("#"))   return "<a href='" + type + "'>"+ label == null ? type : label + "</a>";
+  if (type.endsWith("[]")) {
+    return getDocUrl(type.substring(0,type.length() - 2),full,links,relativePath,rootDoc,classDoc) + "[]";
+  }
+  if (type.indexOf('.') == -1 && classDoc != null) {
+    String[] pieces=type.split("#");
+    String candidate=pieces[0];
+    Class c=classDoc.resolveExternalClassFromImport(candidate);
+    if (c != null)     type=c.getName();
+    if (pieces.length > 1)     type+="#" + pieces[1];
+  }
+  if (type.indexOf('.') == -1)   return type;
+  final String[] target=type.split("#");
+  String shortClassName=target[0].replaceAll(".*\\.","");
+  shortClassName+=(target.length > 1 ? "#" + target[1].split("\\(")[0] : "");
+  String name=(full ? target[0] : shortClassName).replaceAll("#",".");
+  if (rootDoc != null) {
+    String slashedName=target[0].replaceAll("\\.","/");
+    GroovyClassDoc doc=rootDoc.classNamed(slashedName);
+    if (doc != null) {
+      return buildUrl(relativePath,target,label == null ? name : label);
+    }
+  }
+  for (  LinkArgument link : links) {
+    final StringTokenizer tokenizer=new StringTokenizer(link.getPackages(),", ");
+    while (tokenizer.hasMoreTokens()) {
+      final String token=tokenizer.nextToken();
+      if (type.startsWith(token)) {
+        return buildUrl(link.getHref(),target,label == null ? name : label);
+      }
+    }
+  }
+  return type;
+}

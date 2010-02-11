@@ -1,4 +1,7 @@
 {
-  if (super.firstSentenceCommentText() == null)   setFirstSentenceCommentText(stripTags(((SimpleGroovyClassDoc)belongsToClass).replaceTags(calculateFirstSentence(getRawCommentText()))));
+  if (super.firstSentenceCommentText() == null) {
+    SimpleGroovyClassDoc classDoc=(SimpleGroovyClassDoc)belongsToClass;
+    setFirstSentenceCommentText(stripTags(classDoc.replaceTags(calculateFirstSentence(getRawCommentText()))));
+  }
   return super.firstSentenceCommentText();
 }
