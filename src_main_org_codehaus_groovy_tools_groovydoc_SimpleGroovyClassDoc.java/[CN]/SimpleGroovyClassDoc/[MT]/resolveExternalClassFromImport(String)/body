@@ -1,7 +1,14 @@
 {
+  if (PRIMITIVES.contains(name))   return null;
   for (  String importName : importedClassesAndPackages) {
-    if (importName.endsWith("/*")) {
-      String candidate=importName.substring(0,importName.length() - 2).replace('/','.') + "." + name;
+    String candidate=null;
+    if (importName.endsWith("/" + name)) {
+      candidate=importName.replaceAll("/",".");
+    }
+ else     if (importName.endsWith("/*")) {
+      candidate=importName.substring(0,importName.length() - 2).replace('/','.') + "." + name;
+    }
+    if (candidate != null) {
       try {
         return Class.forName(candidate);
       }
