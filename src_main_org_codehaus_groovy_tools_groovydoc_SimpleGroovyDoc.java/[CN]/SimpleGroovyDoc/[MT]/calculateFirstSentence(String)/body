@@ -1,5 +1,7 @@
 {
-  String text=raw.replaceAll("(?m)^\\s*\\*","");
+  String text=raw.replaceAll("(?m)^\\s*\\*","").trim();
+  text=text.replaceFirst("(?ms)\\n\\s*\\n.*","").trim();
+  text=text.replaceFirst("(?ms)\\n\\s*@(see|param|throws|return|author|since|exception|version|deprecated|todo)\\s.*","").trim();
   BreakIterator boundary=BreakIterator.getSentenceInstance(Locale.getDefault());
   boundary.setText(text);
   int start=boundary.first();
