@@ -28,7 +28,7 @@
       visitFieldExpression(new FieldExpression(classNode.getDeclaredField(name)));
     }
  else {
-      Variable v=compileStack.getVariable(name,classNode.getSuperClass() != ClassHelper.CLOSURE_TYPE);
+      Variable v=compileStack.getVariable(name,!classNodeUsesReferences());
       if (v == null) {
         FieldNode field=classNode.getDeclaredField(name);
         mv.visitVarInsn(ALOAD,0);
