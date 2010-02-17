@@ -1,23 +1,6 @@
 {
   String basePath=servletContext.getRealPath("/");
   if (name.startsWith(basePath))   name=name.substring(basePath.length());
-  Matcher matcher=resourceNameMatcher;
-  if (matcher != null) {
-    matcher.reset(name);
-    String replaced;
-    if (resourceNameReplaceAll) {
-      replaced=resourceNameMatcher.replaceAll(resourceNameReplacement);
-    }
- else {
-      replaced=resourceNameMatcher.replaceFirst(resourceNameReplacement);
-    }
-    if (!name.equals(replaced)) {
-      if (verbose) {
-        log("Replaced resource name \"" + name + "\" with \""+ replaced+ "\".");
-      }
-      name=replaced;
-    }
-  }
   name=name.replaceAll("\\\\","/");
   if (name.startsWith("/"))   name=name.substring(1);
   try {
