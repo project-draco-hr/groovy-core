@@ -1,9 +1,15 @@
 {
   if (PRIMITIVES.contains(name))   return null;
-  GroovyClassDoc doc=rootDoc.classNamed(name);
+  GroovyClassDoc doc=((SimpleGroovyRootDoc)rootDoc).classNamedExact(name);
   if (doc != null)   return doc;
-  String shortname=name;
   int slashIndex=name.lastIndexOf("/");
+  if (slashIndex < 1) {
+    doc=resolveInternalClassDocFromImport(rootDoc,name);
+    if (doc != null)     return doc;
+    doc=rootDoc.classNamed(name);
+    if (doc != null)     return doc;
+  }
+  String shortname=name;
   Class c=null;
   if (slashIndex > 0) {
     shortname=name.substring(slashIndex + 1);
