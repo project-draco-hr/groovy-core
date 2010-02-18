@@ -1,11 +1,14 @@
 {
-  if (PRIMITIVES.contains(name))   return null;
+  if (isPrimitiveType(name))   return null;
   GroovyClassDoc doc=((SimpleGroovyRootDoc)rootDoc).classNamedExact(name);
   if (doc != null)   return doc;
   int slashIndex=name.lastIndexOf("/");
   if (slashIndex < 1) {
     doc=resolveInternalClassDocFromImport(rootDoc,name);
     if (doc != null)     return doc;
+    for (    GroovyClassDoc nestedDoc : nested) {
+      if (nestedDoc.name().endsWith("." + name))       return nestedDoc;
+    }
     doc=rootDoc.classNamed(name);
     if (doc != null)     return doc;
   }
