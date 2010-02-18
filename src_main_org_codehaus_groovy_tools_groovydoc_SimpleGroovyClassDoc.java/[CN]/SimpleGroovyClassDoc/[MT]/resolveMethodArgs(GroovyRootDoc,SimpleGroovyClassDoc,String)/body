@@ -1,0 +1,22 @@
+{
+  if (type.indexOf("(") < 0)   return type;
+  Matcher m=NAME_ARGS_REGEX.matcher(type);
+  if (m.matches()) {
+    String name=m.group(1);
+    String args=m.group(2);
+    StringBuilder sb=new StringBuilder();
+    sb.append(name);
+    sb.append("(");
+    String[] argParts=SPLIT_ARGS_REGEX.split(args);
+    boolean first=true;
+    for (    String argPart : argParts) {
+      if (first)       first=false;
+ else       sb.append(", ");
+      GroovyClassDoc doc=classDoc.resolveClass(rootDoc,argPart);
+      sb.append(doc == null ? argPart : doc.qualifiedTypeName());
+    }
+    sb.append(")");
+    return sb.toString();
+  }
+  return type;
+}

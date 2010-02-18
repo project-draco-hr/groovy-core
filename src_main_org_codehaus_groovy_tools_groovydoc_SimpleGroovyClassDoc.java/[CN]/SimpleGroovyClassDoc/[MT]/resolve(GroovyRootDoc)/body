@@ -8,6 +8,10 @@
       if (visibleClasses.containsKey(paramTypeName)) {
         param.setType((GroovyType)visibleClasses.get(paramTypeName));
       }
+ else {
+        GroovyClassDoc doc=resolveClass(rootDoc,paramTypeName);
+        if (doc != null)         param.setType(doc);
+      }
     }
   }
   for (  GroovyFieldDoc field : fields) {
@@ -17,6 +21,10 @@
     if (visibleClasses.containsKey(typeName)) {
       mutableField.setType((GroovyType)visibleClasses.get(typeName));
     }
+ else {
+      GroovyClassDoc doc=resolveClass(rootDoc,typeName);
+      if (doc != null)       mutableField.setType(doc);
+    }
   }
   for (  GroovyMethodDoc method : methods) {
     GroovyType returnType=method.returnType();
@@ -24,11 +32,19 @@
     if (visibleClasses.containsKey(typeName)) {
       method.setReturnType((GroovyType)visibleClasses.get(typeName));
     }
+ else {
+      GroovyClassDoc doc=resolveClass(rootDoc,typeName);
+      if (doc != null)       method.setReturnType(doc);
+    }
     for (    GroovyParameter groovyParameter : method.parameters()) {
       SimpleGroovyParameter param=(SimpleGroovyParameter)groovyParameter;
       String paramTypeName=param.typeName();
       if (visibleClasses.containsKey(paramTypeName)) {
         param.setType((GroovyType)visibleClasses.get(paramTypeName));
+      }
+ else {
+        GroovyClassDoc doc=resolveClass(rootDoc,paramTypeName);
+        if (doc != null)         param.setType(doc);
       }
     }
   }

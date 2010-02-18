@@ -7,7 +7,7 @@
     type=matcher.group(1);
     label=matcher.group(4);
   }
-  if (type.startsWith("#"))   return "<a href='" + type + "'>"+ label == null ? type : label + "</a>";
+  if (type.startsWith("#"))   return "<a href='" + resolveMethodArgs(rootDoc,classDoc,type) + "'>"+ (label == null ? type.substring(1) : label)+ "</a>";
   if (type.endsWith("[]")) {
     if (label != null)     return getDocUrl(type.substring(0,type.length() - 2) + " " + label,full,links,relativePath,rootDoc,classDoc);
     return getDocUrl(type.substring(0,type.length() - 2),full,links,relativePath,rootDoc,classDoc) + "[]";
