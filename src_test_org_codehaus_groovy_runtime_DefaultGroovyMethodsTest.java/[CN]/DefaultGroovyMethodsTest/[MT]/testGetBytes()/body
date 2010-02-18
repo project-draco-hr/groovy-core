@@ -1,0 +1,14 @@
+{
+  byte[] bytes={42,45,47,14,10,84};
+  ByteArrayInputStream is=new ByteArrayInputStream(bytes);
+  try {
+    byte[] answer=DefaultGroovyMethods.getBytes(is);
+    assertEquals(bytes.length,answer.length);
+    for (int i=0; i < bytes.length; i++) {
+      assertEquals(bytes[i],answer[i]);
+    }
+  }
+ catch (  IOException e) {
+    fail();
+  }
+}
