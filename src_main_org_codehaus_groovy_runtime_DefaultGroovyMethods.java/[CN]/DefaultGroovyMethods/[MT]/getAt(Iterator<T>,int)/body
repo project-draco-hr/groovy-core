@@ -1,0 +1,19 @@
+{
+  if (idx < 0) {
+    List<T> list=toList(self);
+    int adjustedIndex=idx + list.size();
+    if (adjustedIndex < 0 || adjustedIndex >= list.size())     return null;
+    return list.get(adjustedIndex);
+  }
+  int count=0;
+  while (self.hasNext()) {
+    if (count == idx) {
+      return self.next();
+    }
+ else {
+      count++;
+      self.next();
+    }
+  }
+  return null;
+}
