@@ -1,0 +1,20 @@
+{
+  int from=r.getFromInt();
+  int to=r.getToInt();
+  if (from == to)   return new NodesHolder(Arrays.asList(xgetAt(nodeList,from)));
+  if (from < 0)   from=from + nodeList.getLength();
+  if (to < 0)   to=to + nodeList.getLength();
+  if (from > to) {
+    r=r.isReverse() ? new IntRange(to,from) : new IntRange(from,to);
+    from=r.getFromInt();
+    to=r.getToInt();
+  }
+  ArrayList<Node> nodes=new ArrayList<Node>(to - from + 1);
+  if (r.isReverse()) {
+    for (int i=to; i >= from; i--)     nodes.add(nodeList.item(i));
+  }
+ else {
+    for (int i=from; i <= to; i++)     nodes.add(nodeList.item(i));
+  }
+  return new NodesHolder(nodes);
+}
