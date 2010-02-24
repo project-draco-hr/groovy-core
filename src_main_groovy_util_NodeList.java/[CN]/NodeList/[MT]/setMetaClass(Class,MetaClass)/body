@@ -11,10 +11,8 @@
       return result;
     }
     @Override public void setAttribute(    final Object object,    final String attribute,    final Object newValue){
-      NodeList nl=(NodeList)object;
-      Iterator it=nl.iterator();
-      while (it.hasNext()) {
-        Node node=(Node)it.next();
+      for (      Object o : (NodeList)object) {
+        Node node=(Node)o;
         node.attributes().put(attribute,newValue);
       }
     }
