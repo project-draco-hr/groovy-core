@@ -1,3 +1,10 @@
 {
-  return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + new StreamingMarkupBuilder().bindNode(node).toString();
+  try {
+    Object builder=((Class)Class.forName("groovy.xml.StreamingMarkupBuilder")).newInstance();
+    Writable w=(Writable)InvokerHelper.invokeMethod(builder,"bindNode",node);
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + w.toString();
+  }
+ catch (  Exception e) {
+    return "Couldn't convert node to string because: " + e.getMessage();
+  }
 }
