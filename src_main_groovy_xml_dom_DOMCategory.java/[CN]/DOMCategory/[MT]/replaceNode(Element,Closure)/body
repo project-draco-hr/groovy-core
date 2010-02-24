@@ -1,0 +1,12 @@
+{
+  DOMBuilder b=new DOMBuilder(self.getOwnerDocument());
+  Element newNode=(Element)b.invokeMethod("rootNode",c);
+  Node n=newNode.getFirstChild();
+  while (n != null && n.getNodeType() != Node.ELEMENT_NODE) {
+    n=n.getNextSibling();
+  }
+  if (n == null)   throw new GroovyRuntimeException("Replacement node must be an element.");
+  newNode=(Element)n;
+  self.getParentNode().replaceChild(newNode,self);
+  return newNode;
+}
