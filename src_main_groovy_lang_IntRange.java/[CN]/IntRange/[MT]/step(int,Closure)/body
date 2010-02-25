@@ -1,8 +1,16 @@
 {
+  if (step == 0) {
+    if (from != to) {
+      throw new GroovyRuntimeException("Infinite loop detected due to step size of 0");
+    }
+ else {
+      return;
+    }
+  }
   if (reverse) {
     step=-step;
   }
-  if (step >= 0) {
+  if (step > 0) {
     int value=from;
     while (value <= to) {
       closure.call(Integer.valueOf(value));

@@ -14,7 +14,7 @@
         closure.call(i);
       }
     }
- else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
+ else     if (self1.compareTo(to1) != 0)     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
   }
  else   if (self instanceof BigInteger || to instanceof BigInteger || stepNumber instanceof BigInteger) {
     final BigInteger zero=BigInteger.valueOf(0);
@@ -31,7 +31,7 @@
         closure.call(i);
       }
     }
- else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
+ else     if (self1.compareTo(to1) != 0)     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
   }
  else {
     int self1=self.intValue();
@@ -47,6 +47,6 @@
         closure.call(i);
       }
     }
- else     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
+ else     if (self1 != to1)     throw new GroovyRuntimeException("Infinite loop in " + self1 + ".step("+ to1+ ", "+ stepNumber1+ ")");
   }
 }
