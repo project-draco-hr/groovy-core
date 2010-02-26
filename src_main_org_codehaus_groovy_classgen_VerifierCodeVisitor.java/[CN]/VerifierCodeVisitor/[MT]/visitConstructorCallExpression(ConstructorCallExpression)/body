@@ -1,0 +1,6 @@
+{
+  ClassNode callType=call.getType();
+  if (callType.isEnum() && !callType.equals(verifier.getClassNode())) {
+    throw new RuntimeParserException("Enum constructor calls are only allowed inside the enum class",(Expression)call);
+  }
+}
