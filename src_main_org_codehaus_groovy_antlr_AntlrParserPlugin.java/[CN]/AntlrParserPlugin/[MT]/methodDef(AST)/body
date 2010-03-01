@@ -58,6 +58,11 @@
     code=statement(node);
     hasAnnotationDefault=true;
   }
+ else   if ((modifiers & Opcodes.ACC_ABSTRACT) > 0) {
+    if (node != null) {
+      throw new ASTRuntimeException(methodDef,"Abstract methods do not define a body.");
+    }
+  }
   MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
   methodNode.addAnnotations(annotations);
   methodNode.setGenericsTypes(generics);
