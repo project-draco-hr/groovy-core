@@ -1,9 +1,9 @@
 {
   GroovyASTTransformation annotation=transform.getAnnotation(GroovyASTTransformation.class);
-  Set<ASTNode> nodes=transformInstances.get(annotation.phase()).get(transform);
+  Set<ASTNode> nodes=getTransformInstances().get(annotation.phase()).get(transform);
   if (nodes == null) {
     nodes=new LinkedHashSet<ASTNode>();
-    transformInstances.get(annotation.phase()).put(transform,nodes);
+    getTransformInstances().get(annotation.phase()).put(transform,nodes);
   }
   nodes.add(node);
 }
