@@ -1,0 +1,12 @@
+{
+  Iterator iter=InvokerHelper.asIterator(self);
+  boolean result=false;
+  while (iter.hasNext()) {
+    Object value=iter.next();
+    if (DefaultTypeTransformation.castToBoolean(closure.call(value))) {
+      iter.remove();
+      result=true;
+    }
+  }
+  return result;
+}
