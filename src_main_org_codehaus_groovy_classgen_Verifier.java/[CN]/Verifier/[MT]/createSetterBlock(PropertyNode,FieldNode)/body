@@ -1,16 +1,15 @@
 {
-  final ClassNode biClassNode=classNode;
   return new BytecodeSequence(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
       final BytecodeHelper helper=new BytecodeHelper(mv);
       if (field.isStatic()) {
         helper.load(field.getType(),0);
-        mv.visitFieldInsn(PUTSTATIC,BytecodeHelper.getClassInternalName(biClassNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
+        mv.visitFieldInsn(PUTSTATIC,BytecodeHelper.getClassInternalName(classNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
       }
  else {
         mv.visitVarInsn(ALOAD,0);
         helper.load(field.getType(),1);
-        mv.visitFieldInsn(PUTFIELD,BytecodeHelper.getClassInternalName(biClassNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
+        mv.visitFieldInsn(PUTFIELD,BytecodeHelper.getClassInternalName(classNode),field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
       }
       mv.visitInsn(RETURN);
     }
