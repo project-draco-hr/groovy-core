@@ -4,12 +4,16 @@
   try {
     code.call();
   }
- catch (  Throwable e) {
-    th=e;
+ catch (  GroovyRuntimeException gre) {
+    orig=ScriptBytecodeAdapter.unwrap(gre);
+    th=orig.getCause();
+  }
+catch (  Throwable e) {
     orig=e;
-    while (th != null && !clazz.isInstance(th)) {
-      th=th.getCause();
-    }
+    th=orig.getCause();
+  }
+  while (th != null && !clazz.isInstance(th)) {
+    th=th.getCause();
   }
   if (orig == null) {
     fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName());
