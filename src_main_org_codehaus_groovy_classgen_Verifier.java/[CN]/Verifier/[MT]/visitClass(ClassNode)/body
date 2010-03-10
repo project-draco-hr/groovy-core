@@ -6,16 +6,7 @@
     node.visitContents(this);
     return;
   }
-  ClassNode[] classNodes=classNode.getInterfaces();
-  List interfaces=new ArrayList();
-  for (int i=0; i < classNodes.length; i++) {
-    ClassNode classNode=classNodes[i];
-    interfaces.add(classNode.getName());
-  }
-  Set interfaceSet=new HashSet(interfaces);
-  if (interfaceSet.size() != interfaces.size()) {
-    throw new RuntimeParserException("Duplicate interfaces in implements list: " + interfaces,classNode);
-  }
+  checkDuplicateInterfaces();
   addDefaultParameterMethods(node);
   addDefaultParameterConstructors(node);
   final String classInternalName=BytecodeHelper.getClassInternalName(node);
@@ -25,8 +16,6 @@
   addDefaultConstructor(node);
   if (!(node instanceof InnerClassNode))   addTimeStamp(node);
   addInitialization(node);
-  checkReturnInObjectInitializer(node.getObjectInitializerStatements());
-  node.getObjectInitializerStatements().clear();
   addCovariantMethods(node);
   node.visitContents(this);
 }

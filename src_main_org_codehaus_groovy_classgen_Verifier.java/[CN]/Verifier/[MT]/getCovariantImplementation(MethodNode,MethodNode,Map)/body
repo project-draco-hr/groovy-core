@@ -20,6 +20,7 @@
   }
   MethodNode newMethod=new MethodNode(oldMethod.getName(),overridingMethod.getModifiers() | ACC_SYNTHETIC | ACC_BRIDGE,oldMethod.getReturnType().getPlainNodeReference(),cleanParameters(oldMethod.getParameters()),oldMethod.getExceptions(),null);
   List instructions=new ArrayList(1);
+  final ClassNode biClassNode=classNode;
   instructions.add(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
       BytecodeHelper helper=new BytecodeHelper(mv);
@@ -32,7 +33,7 @@
           helper.doCast(goal[i].getType());
         }
       }
-      mv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(classNode),overridingMethod.getName(),BytecodeHelper.getMethodDescriptor(overridingMethod.getReturnType(),overridingMethod.getParameters()));
+      mv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(biClassNode),overridingMethod.getName(),BytecodeHelper.getMethodDescriptor(overridingMethod.getReturnType(),overridingMethod.getParameters()));
       helper.doReturn(oldMethod.getReturnType());
     }
   }

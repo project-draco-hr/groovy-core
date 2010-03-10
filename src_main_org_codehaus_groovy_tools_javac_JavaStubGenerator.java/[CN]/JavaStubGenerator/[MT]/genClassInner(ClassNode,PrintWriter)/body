@@ -15,6 +15,10 @@
       }
       protected void addReturnIfNeeded(      MethodNode node){
       }
+      protected void addDefaultConstructor(      ClassNode node){
+        if (!node.getDeclaredConstructors().isEmpty())         return;
+        defaultConstructor=true;
+      }
     }
 ;
     verifier.visitClass(classNode);
@@ -60,11 +64,13 @@
     genMethods(classNode,out,isEnum);
     for (Iterator<InnerClassNode> inner=classNode.getInnerClasses(); inner.hasNext(); ) {
       propertyMethods.clear();
+      defaultConstructor=false;
       genClassInner(inner.next(),out);
     }
     out.println("}");
   }
   finally {
     propertyMethods.clear();
+    defaultConstructor=false;
   }
 }
