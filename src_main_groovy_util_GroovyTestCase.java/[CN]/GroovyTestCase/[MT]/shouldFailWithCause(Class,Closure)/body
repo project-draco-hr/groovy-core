@@ -1,19 +1,21 @@
 {
   Throwable th=null;
+  Throwable orig=null;
   try {
     code.call();
   }
  catch (  Throwable e) {
     th=e;
-    while (th.getCause() != null) {
+    orig=e;
+    while (th != null && !clazz.isInstance(th)) {
       th=th.getCause();
     }
   }
-  if (th == null) {
+  if (orig == null) {
     fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName());
   }
- else   if (!clazz.isInstance(th)) {
-    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName()+ ", instead got Exception "+ th);
+ else   if (th == null) {
+    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName()+ ", instead found these Exceptions:\n"+ buildExceptionList(orig));
   }
   return th.getMessage();
 }
