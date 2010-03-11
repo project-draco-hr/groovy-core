@@ -1,6 +1,7 @@
 {
   MetaMethod getter=getGetter();
   if (getter == null) {
+    if (Modifier.isPublic(field.getModifiers()))     return field.getProperty(object);
     throw new GroovyRuntimeException("Cannot read write-only property: " + name);
   }
   return getter.invoke(object,MetaClassHelper.EMPTY_ARRAY);

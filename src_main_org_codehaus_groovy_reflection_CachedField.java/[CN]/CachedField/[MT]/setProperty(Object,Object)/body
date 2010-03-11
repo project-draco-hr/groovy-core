@@ -1,5 +1,8 @@
 {
   final Object goalValue=DefaultTypeTransformation.castToType(newValue,field.getType());
+  if (isFinal()) {
+    throw new GroovyRuntimeException("Cannot set the property '" + name + "' because the backing field is final.");
+  }
   try {
     field.set(object,goalValue);
   }

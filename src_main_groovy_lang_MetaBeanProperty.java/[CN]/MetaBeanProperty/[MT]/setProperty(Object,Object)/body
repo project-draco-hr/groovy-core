@@ -1,6 +1,10 @@
 {
   MetaMethod setter=getSetter();
   if (setter == null) {
+    if (Modifier.isPublic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())) {
+      field.setProperty(object,newValue);
+      return;
+    }
     throw new GroovyRuntimeException("Cannot set read-only property: " + name);
   }
   newValue=DefaultTypeTransformation.castToType(newValue,getType());
