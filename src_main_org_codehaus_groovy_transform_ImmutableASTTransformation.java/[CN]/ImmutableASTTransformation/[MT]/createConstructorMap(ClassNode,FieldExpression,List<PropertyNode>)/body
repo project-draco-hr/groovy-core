@@ -3,5 +3,7 @@
   for (  PropertyNode pNode : list) {
     body.addStatement(createConstructorStatement(cNode,pNode));
   }
+  Expression checkArgs=new ArgumentListExpression(new VariableExpression("this"),new VariableExpression("args"));
+  body.addStatement(new ExpressionStatement(new StaticMethodCallExpression(SELF_TYPE,"checkPropNames",checkArgs)));
   createConstructorMapCommon(cNode,constructorStyle,body);
 }
