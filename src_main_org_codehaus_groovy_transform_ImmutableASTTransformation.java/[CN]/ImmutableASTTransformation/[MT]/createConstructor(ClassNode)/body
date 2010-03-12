@@ -4,7 +4,7 @@
   if (cNode.getDeclaredConstructors().size() != 0) {
     throw new RuntimeException("Explicit constructors not allowed for " + MY_TYPE_NAME + " class: "+ cNode.getNameWithoutPackage());
   }
-  List<PropertyNode> list=cNode.getProperties();
+  List<PropertyNode> list=getInstanceProperties(cNode);
   boolean specialHashMapCase=list.size() == 1 && list.get(0).getField().getType().equals(HASHMAP_TYPE);
   if (specialHashMapCase) {
     createConstructorMapSpecial(cNode,constructorStyle,list);
