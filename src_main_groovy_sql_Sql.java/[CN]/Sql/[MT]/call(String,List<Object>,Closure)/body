@@ -3,7 +3,7 @@
   CallableStatement statement=connection.prepareCall(sql);
   List<GroovyResultSet> resultSetResources=new ArrayList<GroovyResultSet>();
   try {
-    log.fine(sql);
+    LOG.fine(sql);
     setParameters(params,statement);
     statement.execute();
     List<Object> results=new ArrayList<Object>();
@@ -34,7 +34,7 @@
     closure.call(results.toArray(new Object[inouts]));
   }
  catch (  SQLException e) {
-    log.log(Level.WARNING,"Failed to execute: " + sql,e);
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
     throw e;
   }
  finally {

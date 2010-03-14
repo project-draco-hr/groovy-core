@@ -1,13 +1,15 @@
 {
-  if (useConnection == null) {
-    log.log(Level.FINEST,"Close operation not supported when using datasets - attempt to close ignored");
-    return;
-  }
   try {
-    useConnection.close();
+    clearStatementCache();
   }
- catch (  SQLException e) {
-    log.log(Level.SEVERE,"Caught exception closing connection: " + e,e);
-    throw e;
+  finally {
+    if (useConnection != null) {
+      try {
+        useConnection.close();
+      }
+ catch (      SQLException e) {
+        LOG.finest("Caught exception closing connection: " + e.getMessage());
+      }
+    }
   }
 }

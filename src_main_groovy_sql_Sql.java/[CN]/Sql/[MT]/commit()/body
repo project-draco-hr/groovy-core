@@ -1,13 +1,13 @@
 {
   if (useConnection == null) {
-    log.log(Level.FINEST,"Commit operation not supported when using datasets unless using withTransaction or cacheConnection - attempt to commit ignored");
+    LOG.info("Commit operation not supported when using datasets unless using withTransaction or cacheConnection - attempt to commit ignored");
     return;
   }
   try {
     useConnection.commit();
   }
  catch (  SQLException e) {
-    log.log(Level.SEVERE,"Caught exception committing connection: " + e,e);
+    LOG.warning("Caught exception committing connection: " + e.getMessage());
     throw e;
   }
 }

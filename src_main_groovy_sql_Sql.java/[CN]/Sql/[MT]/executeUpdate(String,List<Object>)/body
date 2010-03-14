@@ -2,13 +2,13 @@
   Connection connection=createConnection();
   PreparedStatement statement=null;
   try {
-    log.fine(sql + " | " + params);
+    LOG.fine(sql + " | " + params);
     statement=getPreparedStatement(connection,sql,params);
     this.updateCount=statement.executeUpdate();
     return this.updateCount;
   }
  catch (  SQLException e) {
-    log.log(Level.FINE,"Failed to execute: " + sql,e);
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
     throw e;
   }
  finally {

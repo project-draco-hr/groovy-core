@@ -1,13 +1,13 @@
 {
   if (useConnection == null) {
-    log.log(Level.FINEST,"Rollback operation not supported when using datasets unless using withTransaction or cacheConnection - attempt to rollback ignored");
+    LOG.info("Rollback operation not supported when using datasets unless using withTransaction or cacheConnection - attempt to rollback ignored");
     return;
   }
   try {
     useConnection.rollback();
   }
  catch (  SQLException e) {
-    log.log(Level.SEVERE,"Caught exception rolling back connection: " + e,e);
+    LOG.warning("Caught exception rolling back connection: " + e.getMessage());
     throw e;
   }
 }
