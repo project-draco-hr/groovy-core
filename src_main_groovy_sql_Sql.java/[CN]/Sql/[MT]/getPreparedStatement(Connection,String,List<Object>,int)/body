@@ -1,6 +1,7 @@
 {
-  PreparedStatement statement=(PreparedStatement)getAbstractStatement(new CreatePreparedStatementCommand(returnGeneratedKeys),connection,sql);
-  setParameters(params,statement);
+  SqlWithParams updated=checkForNamedParams(sql,params);
+  PreparedStatement statement=(PreparedStatement)getAbstractStatement(new CreatePreparedStatementCommand(returnGeneratedKeys),connection,updated.getSql());
+  setParameters(updated.getParams(),statement);
   configure(statement);
   return statement;
 }

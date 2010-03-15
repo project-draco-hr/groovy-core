@@ -1,0 +1,16 @@
+{
+  StringBuilder newSql=new StringBuilder();
+  int txtIndex=0;
+  Matcher matcher=NAMED_QUERY_PATTERN.matcher(sql);
+  while (matcher.find()) {
+    newSql.append(sql.substring(txtIndex,matcher.start())).append('?');
+    String indexStr=matcher.group(1);
+    int index=(indexStr == null || indexStr.length() == 0) ? 0 : new Integer(matcher.group(1)) - 1;
+    if (index < 0 || index >= params.size())     throw new IllegalArgumentException("Invalid index " + index + " should be in range 1.."+ params.size());
+    String prop=matcher.group(2);
+    updatedParams.add(InvokerHelper.getProperty(params.get(index),prop));
+    txtIndex=matcher.end();
+  }
+  newSql.append(sql.substring(txtIndex));
+  return newSql.toString();
+}
