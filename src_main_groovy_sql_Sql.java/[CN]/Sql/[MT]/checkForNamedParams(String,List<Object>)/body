@@ -1,5 +1,5 @@
 {
-  if (!sql.contains("'") && !NAMED_QUERY_PATTERN.matcher(sql).find()) {
+  if (!NAMED_QUERY_PATTERN.matcher(sql).find()) {
     return new SqlWithParams(sql,params);
   }
   List<Object> updatedParams=new ArrayList<Object>();
@@ -31,6 +31,11 @@ i++;
 if (inString) throw new IllegalStateException("Failed to process query. Unterminated ' character?");
 sb.append(adaptForNamedParams(currentChunk.toString(),params,updatedParams));
 String newSql=sb.toString();
-if (!sql.equals(newSql)) LOG.fine(newSql + " | " + updatedParams);
+if (sql.equals(newSql)) {
+return new SqlWithParams(sql,params);
+}
+ else {
+LOG.fine(newSql + " | " + updatedParams);
+}
 return new SqlWithParams(newSql,updatedParams);
 }
