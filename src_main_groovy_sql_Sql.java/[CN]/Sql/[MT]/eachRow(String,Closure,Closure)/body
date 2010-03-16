@@ -3,7 +3,6 @@
   Statement statement=getStatement(connection,sql);
   ResultSet results=null;
   try {
-    LOG.fine(sql);
     results=statement.executeQuery(sql);
     if (metaClosure != null)     metaClosure.call(results.getMetaData());
     GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();

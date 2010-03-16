@@ -1,5 +1,6 @@
 {
   SqlWithParams updated=checkForNamedParams(sql,params);
+  LOG.fine(updated.getSql() + " | " + updated.getParams());
   PreparedStatement statement=(PreparedStatement)getAbstractStatement(new CreatePreparedStatementCommand(returnGeneratedKeys),connection,updated.getSql());
   setParameters(updated.getParams(),statement);
   configure(statement);
