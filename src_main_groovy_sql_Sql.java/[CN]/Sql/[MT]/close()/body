@@ -1,17 +1,13 @@
 {
   namedParamSqlCache.clear();
   namedParamIndexPropCache.clear();
-  try {
-    clearStatementCache();
-  }
-  finally {
-    if (useConnection != null) {
-      try {
-        useConnection.close();
-      }
- catch (      SQLException e) {
-        LOG.finest("Caught exception closing connection: " + e.getMessage());
-      }
+  clearStatementCache();
+  if (useConnection != null) {
+    try {
+      useConnection.close();
+    }
+ catch (    SQLException e) {
+      LOG.finest("Caught exception closing connection: " + e.getMessage());
     }
   }
 }
