@@ -7,7 +7,11 @@
   int index=name.length();
   while (true) {
     pname=name.substring(0,index);
-    ClassNode aliasedNode=module.getImportType(pname);
+    ClassNode aliasedNode=null;
+    ImportNode importNode=module.getImport(pname);
+    if (importNode != null && importNode != currImportNode) {
+      aliasedNode=importNode.getType();
+    }
     if (aliasedNode != null) {
       if (pname.length() == name.length()) {
         type.setRedirect(aliasedNode);
