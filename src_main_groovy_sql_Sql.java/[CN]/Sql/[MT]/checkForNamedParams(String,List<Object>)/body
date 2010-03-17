@@ -2,37 +2,54 @@
   if (!NAMED_QUERY_PATTERN.matcher(sql).find()) {
     return new SqlWithParams(sql,params);
   }
-  List<Object> updatedParams=new ArrayList<Object>();
-  StringBuilder sb=new StringBuilder();
-  StringBuilder currentChunk=new StringBuilder();
-  char[] chars=sql.toCharArray();
-  int i=0;
-  boolean inString=false;
-  while (i < chars.length) {
+  List<Tuple> indexPropList;
+  String newSql;
+  if (namedParamSqlCache.containsKey(sql)) {
+    newSql=namedParamSqlCache.get(sql);
+    indexPropList=namedParamIndexPropCache.get(sql);
+  }
+ else {
+    indexPropList=new ArrayList<Tuple>();
+    StringBuilder sb=new StringBuilder();
+    StringBuilder currentChunk=new StringBuilder();
+    char[] chars=sql.toCharArray();
+    int i=0;
+    boolean inString=false;
+    while (i < chars.length) {
 switch (chars[i]) {
 case '\'':
-      inString=!inString;
-    if (inString) {
-      sb.append(adaptForNamedParams(currentChunk.toString(),params,updatedParams));
-      currentChunk=new StringBuilder();
-      currentChunk.append(chars[i]);
-    }
+        inString=!inString;
+      if (inString) {
+        sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+        currentChunk=new StringBuilder();
+        currentChunk.append(chars[i]);
+      }
  else {
-      currentChunk.append(chars[i]);
-      sb.append(currentChunk);
-      currentChunk=new StringBuilder();
-    }
-  break;
+        currentChunk.append(chars[i]);
+        sb.append(currentChunk);
+        currentChunk=new StringBuilder();
+      }
+    break;
 default :
-currentChunk.append(chars[i]);
+  currentChunk.append(chars[i]);
 }
 i++;
 }
 if (inString) throw new IllegalStateException("Failed to process query. Unterminated ' character?");
-sb.append(adaptForNamedParams(currentChunk.toString(),params,updatedParams));
-String newSql=sb.toString();
+sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+newSql=sb.toString();
+namedParamSqlCache.put(sql,newSql);
+namedParamIndexPropCache.put(sql,indexPropList);
+}
 if (sql.equals(newSql)) {
 return new SqlWithParams(sql,params);
+}
+List<Object> updatedParams=new ArrayList<Object>();
+for (Tuple tuple : indexPropList) {
+int index=(Integer)tuple.get(0);
+String prop=(String)tuple.get(1);
+if (index < 0 || index >= params.size()) throw new IllegalArgumentException("Invalid index " + index + " should be in range 1.."+ params.size());
+updatedParams.add(InvokerHelper.getProperty(params.get(index),prop));
 }
 return new SqlWithParams(newSql,updatedParams);
 }
