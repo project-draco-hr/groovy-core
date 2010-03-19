@@ -1,0 +1,14 @@
+{
+  importedClassesAndPackages.add(packagePath + "/*");
+  if (isGroovy) {
+    for (    String pkg : ResolveVisitor.DEFAULT_IMPORTS) {
+      importedClassesAndPackages.add(pkg.replace('.','/') + "*");
+    }
+  }
+ else {
+    importedClassesAndPackages.add("java/lang/*");
+  }
+  SimpleGroovyClassDoc currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+  currentClassDoc.setFullPathName(packagePath + FS + className);
+  classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+}

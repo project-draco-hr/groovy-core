@@ -1,12 +1,15 @@
 {
   String src=DefaultGroovyMethods.getText(srcFile);
-  String packagePath=tool.getPath(filename).replace('\\',FS);
+  String packagePath=isAbsolute ? "DefaultPackage" : tool.getPath(filename).replace('\\',FS);
   String file=tool.getFile(filename);
-  SimpleGroovyPackageDoc packageDoc=(SimpleGroovyPackageDoc)rootDoc.packageNamed(packagePath);
-  if (packageDoc == null) {
-    packageDoc=new SimpleGroovyPackageDoc(packagePath);
+  SimpleGroovyPackageDoc packageDoc=null;
+  if (!isAbsolute) {
+    packageDoc=(SimpleGroovyPackageDoc)rootDoc.packageNamed(packagePath);
   }
   if (filename.endsWith("package.html") || filename.endsWith("package-info.java") || filename.endsWith("package-info.groovy")) {
+    if (packageDoc == null) {
+      packageDoc=new SimpleGroovyPackageDoc(packagePath);
+    }
     processPackageInfo(src,filename,packageDoc);
     rootDoc.put(packagePath,packageDoc);
     return;
@@ -14,6 +17,16 @@
   try {
     Map<String,GroovyClassDoc> classDocs=getClassDocsFromSingleSource(packagePath,file,src);
     rootDoc.putAllClasses(classDocs);
+    if (isAbsolute) {
+      final Map.Entry<String,GroovyClassDoc> docEntry=classDocs.entrySet().iterator().next();
+      String fullPath=docEntry.getValue().getFullPathName();
+      int slash=fullPath.lastIndexOf(FS);
+      if (slash > 0)       packagePath=fullPath.substring(0,slash);
+      packageDoc=(SimpleGroovyPackageDoc)rootDoc.packageNamed(packagePath);
+    }
+    if (packageDoc == null) {
+      packageDoc=new SimpleGroovyPackageDoc(packagePath);
+    }
     packageDoc.putAll(classDocs);
     rootDoc.put(packagePath,packageDoc);
   }

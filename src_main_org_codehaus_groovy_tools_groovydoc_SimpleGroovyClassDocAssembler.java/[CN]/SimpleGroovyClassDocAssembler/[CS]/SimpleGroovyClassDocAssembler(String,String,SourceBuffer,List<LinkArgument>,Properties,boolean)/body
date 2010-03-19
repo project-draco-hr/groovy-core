@@ -6,23 +6,13 @@
   this.isGroovy=isGroovy;
   stack=new Stack<GroovySourceAST>();
   classDocs=new HashMap<String,GroovyClassDoc>();
-  String className=file;
+  className=file;
   if (file != null) {
     int idx=file.lastIndexOf(".");
     className=file.substring(0,idx);
   }
+  deferSetup=packagePath.equals("DefaultPackage");
   importedClassesAndPackages=new ArrayList<String>();
-  importedClassesAndPackages.add(packagePath + "/*");
-  if (isGroovy) {
-    for (    String pkg : ResolveVisitor.DEFAULT_IMPORTS) {
-      importedClassesAndPackages.add(pkg.replace('.','/') + "*");
-    }
-  }
- else {
-    importedClassesAndPackages.add("java/lang/*");
-  }
-  SimpleGroovyClassDoc currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
-  currentClassDoc.setFullPathName(packagePath + FS + className);
-  classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+  if (!deferSetup)   setUpImports(packagePath,links,isGroovy,className);
   lastLineCol=new LineColumn(1,1);
 }

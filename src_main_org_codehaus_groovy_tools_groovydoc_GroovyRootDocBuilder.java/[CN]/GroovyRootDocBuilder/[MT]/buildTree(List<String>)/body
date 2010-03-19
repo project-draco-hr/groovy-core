@@ -7,10 +7,15 @@
     }
   }
   for (  String filename : filenames) {
+    File srcFile=new File(filename);
+    if (srcFile.exists()) {
+      processFile(filename,srcFile,true);
+      continue;
+    }
     for (    File spath : sourcepathFiles) {
-      File srcFile=new File(spath,filename);
+      srcFile=new File(spath,filename);
       if (srcFile.exists()) {
-        processFile(filename,srcFile);
+        processFile(filename,srcFile,false);
         break;
       }
     }
