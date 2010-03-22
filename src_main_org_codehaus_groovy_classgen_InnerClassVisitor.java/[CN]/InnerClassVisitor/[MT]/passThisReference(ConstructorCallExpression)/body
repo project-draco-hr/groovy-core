@@ -4,7 +4,13 @@
   boolean isInStaticContext=true;
   if (currentMethod != null)   isInStaticContext=currentMethod.getVariableScope().isInStaticContext();
  else   if (currentField != null)   isInStaticContext=currentField.isStatic();
-  if (isInStaticContext)   return;
+  if (isInStaticContext) {
+    Expression args=call.getArguments();
+    if (args instanceof TupleExpression && ((TupleExpression)args).getExpressions().isEmpty()) {
+      addError("No enclosing instance passed in constructor call of a non-static inner class",call);
+    }
+    return;
+  }
   ClassNode parent=classNode;
   int level=0;
   for (; parent != null && parent != cn.getOuterClass(); parent=parent.getOuterClass()) {
