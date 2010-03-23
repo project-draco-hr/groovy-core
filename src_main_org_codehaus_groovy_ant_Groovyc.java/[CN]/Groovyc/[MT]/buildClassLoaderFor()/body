@@ -1,5 +1,5 @@
 {
-  ClassLoader parent=this.getClass().getClassLoader();
+  ClassLoader parent=getIncludeantruntime() ? getClass().getClassLoader() : new AntClassLoader(new RootLoader(new URL[0],null),getProject(),getClasspath());
   if (parent instanceof AntClassLoader) {
     AntClassLoader antLoader=(AntClassLoader)parent;
     String[] pathElm=antLoader.getClasspath().split(File.pathSeparator);
