@@ -27,7 +27,13 @@
   Object mavenPom=null;
   final Project project=getProject();
   final ClassLoader baseClassLoader;
-  if ("org.apache.commons.grant.GrantProject".equals(project.getClass().getName())) {
+  ClassLoader savedLoader=null;
+  final Thread thread=Thread.currentThread();
+  boolean maven="org.apache.commons.grant.GrantProject".equals(project.getClass().getName());
+  if (maven) {
+    if (contextClassLoader) {
+      throw new BuildException("Using setContextClassLoader not permitted when using Maven.",getLocation());
+    }
     try {
       final Object propsHandler=project.getClass().getMethod("getPropsHandler").invoke(project);
       final Field contextField=propsHandler.getClass().getDeclaredField("context");
@@ -38,15 +44,23 @@
  catch (    Exception e) {
       throw new BuildException("Impossible to retrieve Maven's Ant project: " + e.getMessage(),getLocation());
     }
-    Thread.currentThread().setContextClassLoader(GroovyShell.class.getClassLoader());
     baseClassLoader=mavenPom.getClass().getClassLoader();
   }
  else {
     baseClassLoader=GroovyShell.class.getClassLoader();
   }
+  if (contextClassLoader || maven) {
+    savedLoader=thread.getContextClassLoader();
+    thread.setContextClassLoader(GroovyShell.class.getClassLoader());
+  }
   final String scriptName=computeScriptName();
   final GroovyClassLoader classLoader=new GroovyClassLoader(baseClassLoader);
   addClassPathes(classLoader);
   final GroovyShell groovy=new GroovyShell(classLoader,new Binding(),configuration);
-  parseAndRunScript(groovy,txt,mavenPom,scriptName,null,new AntBuilder(this));
+  try {
+    parseAndRunScript(groovy,txt,mavenPom,scriptName,null,new AntBuilder(this));
+  }
+  finally {
+    if (contextClassLoader || maven)     thread.setContextClassLoader(savedLoader);
+  }
 }
