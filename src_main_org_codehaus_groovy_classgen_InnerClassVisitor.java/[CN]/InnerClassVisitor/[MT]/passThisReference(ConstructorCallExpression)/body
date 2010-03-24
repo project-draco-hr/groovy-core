@@ -4,6 +4,7 @@
   boolean isInStaticContext=true;
   if (currentMethod != null)   isInStaticContext=currentMethod.getVariableScope().isInStaticContext();
  else   if (currentField != null)   isInStaticContext=currentField.isStatic();
+ else   if (processingObjInitStatements)   isInStaticContext=false;
   if (isInStaticContext) {
     Expression args=call.getArguments();
     if (args instanceof TupleExpression && ((TupleExpression)args).getExpressions().isEmpty()) {
