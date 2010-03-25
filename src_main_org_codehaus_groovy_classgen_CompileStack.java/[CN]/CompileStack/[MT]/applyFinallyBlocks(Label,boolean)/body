@@ -13,14 +13,14 @@
       }
     }
   }
-  List blocksToRemove;
+  List<BlockRecorder> blocksToRemove;
   if (result == null) {
-    blocksToRemove=Collections.EMPTY_LIST;
+    blocksToRemove=(List<BlockRecorder>)Collections.EMPTY_LIST;
   }
  else {
     blocksToRemove=result.finallyBlocks;
   }
-  ArrayList blocks=new ArrayList(finallyBlocks);
+  List<BlockRecorder> blocks=new LinkedList<BlockRecorder>(finallyBlocks);
   blocks.removeAll(blocksToRemove);
-  applyFinallyBlocks(blocks);
+  applyBlockRecorder(blocks);
 }

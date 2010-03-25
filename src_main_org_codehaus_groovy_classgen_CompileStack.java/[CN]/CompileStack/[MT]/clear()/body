@@ -17,10 +17,19 @@
       mv.visitLocalVariable(v.getName(),type,null,start,end,v.getIndex());
     }
   }
+  for (  ExceptionTableEntry ep : typedExceptions) {
+    mv.visitTryCatchBlock(ep.start,ep.end,ep.goal,ep.sig);
+  }
+  for (  ExceptionTableEntry ep : untypedExceptions) {
+    mv.visitTryCatchBlock(ep.start,ep.end,ep.goal,ep.sig);
+  }
   pop();
+  typedExceptions.clear();
+  untypedExceptions.clear();
   stackVariables.clear();
   usedVariables.clear();
   scope=null;
+  finallyBlocks.clear();
   mv=null;
   resetVariableIndex(false);
   superBlockNamedLabels.clear();

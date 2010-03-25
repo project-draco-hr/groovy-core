@@ -1,0 +1,15 @@
+{
+  if (blocks.size() == 0 || blocks.size() == visitedBlocks.size())   return;
+  Label end=new Label();
+  mv.visitInsn(NOP);
+  mv.visitLabel(end);
+  Label newStart=new Label();
+  for (  BlockRecorder fb : blocks) {
+    if (visitedBlocks.contains(fb))     continue;
+    fb.closeRange(end);
+    fb.excludedStatement.run();
+    fb.startRange(newStart);
+  }
+  mv.visitInsn(NOP);
+  mv.visitLabel(newStart);
+}

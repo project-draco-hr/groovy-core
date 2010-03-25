@@ -15,7 +15,7 @@
     if (!(statement.isReturningNullOrVoid())) {
       throwException("Cannot use return statement with an expression on a method that returns void");
     }
-    compileStack.applyFinallyBlocks();
+    compileStack.applyBlockRecorder();
     mv.visitInsn(RETURN);
     outputReturn=true;
     return;
@@ -28,9 +28,9 @@
  else {
     doConvertAndCast(returnType,expression,false,true,false);
   }
-  if (compileStack.hasFinallyBlocks()) {
+  if (compileStack.hasBlockRecorder()) {
     int returnValueIdx=compileStack.defineTemporaryVariable("returnValue",ClassHelper.OBJECT_TYPE,true);
-    compileStack.applyFinallyBlocks();
+    compileStack.applyBlockRecorder();
     helper.load(ClassHelper.OBJECT_TYPE,returnValueIdx);
   }
   helper.unbox(returnType);

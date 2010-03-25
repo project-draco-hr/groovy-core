@@ -1,0 +1,14 @@
+{
+  final BlockRecorder block=new BlockRecorder();
+  Runnable tryRunner=new Runnable(){
+    public void run(){
+      compileStack.pushBlockRecorderVisit(block);
+      finallyStatement.visit(AsmClassGenerator.this);
+      compileStack.popBlockRecorderVisit(block);
+    }
+  }
+;
+  block.excludedStatement=tryRunner;
+  compileStack.pushBlockRecorder(block);
+  return block;
+}

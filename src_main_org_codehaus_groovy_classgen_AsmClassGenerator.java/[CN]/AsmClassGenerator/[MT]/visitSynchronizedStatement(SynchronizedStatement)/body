@@ -9,6 +9,7 @@
   mv.visitVarInsn(ALOAD,index);
   mv.visitInsn(MONITORENTER);
   mv.visitLabel(synchronizedStart);
+  mv.visitInsn(NOP);
   Runnable finallyPart=new Runnable(){
     public void run(){
       mv.visitVarInsn(ALOAD,index);
@@ -16,7 +17,9 @@
     }
   }
 ;
-  compileStack.pushFinallyBlock(finallyPart);
+  BlockRecorder fb=new BlockRecorder(finallyPart);
+  fb.startRange(synchronizedStart);
+  compileStack.pushBlockRecorder(fb);
   statement.getCode().visit(this);
   finallyPart.run();
   mv.visitJumpInsn(GOTO,synchronizedEnd);
@@ -24,11 +27,7 @@
   finallyPart.run();
   mv.visitInsn(ATHROW);
   mv.visitLabel(synchronizedEnd);
-  compileStack.popFinallyBlock();
-  exceptionBlocks.add(new Runnable(){
-    public void run(){
-      mv.visitTryCatchBlock(synchronizedStart,catchAll,catchAll,null);
-    }
-  }
-);
+  fb.closeRange(synchronizedEnd);
+  compileStack.writeExceptionTable(fb,catchAll,null);
+  compileStack.pop();
 }

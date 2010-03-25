@@ -53,12 +53,7 @@
     mv.visitVarInsn(ALOAD,savedTracker.recorderIndex);
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V");
     mv.visitInsn(ATHROW);
-    exceptionBlocks.add(new Runnable(){
-      public void run(){
-        mv.visitTryCatchBlock(tryStart,tryEnd,catchAny,null);
-      }
-    }
-);
+    compileStack.addExceptionBlock(tryStart,tryEnd,catchAny,null);
   }
   mv.visitLabel(afterAssert);
   assertionTracker=oldTracker;

@@ -13,10 +13,4 @@
     mv.visitInsn(RETURN);
   }
   compileStack.clear();
-  final Label finallyStart=new Label();
-  mv.visitJumpInsn(GOTO,finallyStart);
-  for (  Runnable runnable : exceptionBlocks) {
-    runnable.run();
-  }
-  exceptionBlocks.clear();
 }
