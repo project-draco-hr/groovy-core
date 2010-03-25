@@ -15,6 +15,23 @@
       }
       protected void addReturnIfNeeded(      MethodNode node){
       }
+      protected void addMethod(      ClassNode node,      boolean shouldBeSynthetic,      String name,      int modifiers,      ClassNode returnType,      Parameter[] parameters,      ClassNode[] exceptions,      Statement code){
+        propertyMethods.add(new MethodNode(name,modifiers,returnType,parameters,exceptions,code));
+      }
+      protected void addConstructor(      Parameter[] newParams,      ConstructorNode ctor,      Statement code,      ClassNode node){
+        constructors.add(new ConstructorNode(ctor.getModifiers(),newParams,ctor.getExceptions(),code));
+      }
+      protected void addDefaultParameters(      DefaultArgsAction action,      MethodNode method){
+        final Parameter[] parameters=method.getParameters();
+        final Expression[] saved=new Expression[parameters.length];
+        for (int i=0; i < parameters.length; i++) {
+          if (parameters[i].hasInitialExpression())           saved[i]=parameters[i].getInitialExpression();
+        }
+        super.addDefaultParameters(action,method);
+        for (int i=0; i < parameters.length; i++) {
+          if (saved[i] != null)           parameters[i].setInitialExpression(saved[i]);
+        }
+      }
     }
 ;
     verifier.visitClass(classNode);
@@ -60,11 +77,13 @@
     genMethods(classNode,out,isEnum);
     for (Iterator<InnerClassNode> inner=classNode.getInnerClasses(); inner.hasNext(); ) {
       propertyMethods.clear();
+      constructors.clear();
       genClassInner(inner.next(),out);
     }
     out.println("}");
   }
   finally {
     propertyMethods.clear();
+    constructors.clear();
   }
 }
