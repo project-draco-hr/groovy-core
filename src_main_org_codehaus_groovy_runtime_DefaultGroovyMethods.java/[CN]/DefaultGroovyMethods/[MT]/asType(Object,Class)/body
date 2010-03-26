@@ -12,6 +12,15 @@
       Object mixedIn=emc.castToMixedType(obj,type);
       if (mixedIn != null)       return mixedIn;
     }
+    if (type.isInterface()) {
+      try {
+        List<Class> interfaces=new ArrayList<Class>();
+        interfaces.add(type);
+        return ProxyGenerator.INSTANCE.instantiateDelegate(interfaces,obj);
+      }
+ catch (      GroovyRuntimeException cause) {
+      }
+    }
     throw e;
   }
 }
