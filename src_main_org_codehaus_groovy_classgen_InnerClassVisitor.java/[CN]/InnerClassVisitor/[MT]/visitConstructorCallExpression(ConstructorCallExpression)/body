@@ -12,9 +12,10 @@
   boolean isStatic=scope.isInStaticContext();
   List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
   BlockStatement block=new BlockStatement();
-  List parameters=new ArrayList(expressions.size() + 1 + scope.getReferencedLocalVariablesCount());
+  final int additionalParamCount=1 + scope.getReferencedLocalVariablesCount();
+  List parameters=new ArrayList(expressions.size() + additionalParamCount);
   List superCallArguments=new ArrayList(expressions.size());
-  int pCount=0;
+  int pCount=additionalParamCount;
   for (  Expression expr : expressions) {
     pCount++;
     Parameter param=new Parameter(ClassHelper.OBJECT_TYPE,"p" + pCount);
@@ -23,11 +24,11 @@
   }
   ConstructorCallExpression cce=new ConstructorCallExpression(ClassNode.SUPER,new TupleExpression(superCallArguments));
   block.addStatement(new ExpressionStatement(cce));
-  expressions.add(VariableExpression.THIS_EXPRESSION);
-  pCount++;
+  pCount=0;
+  expressions.add(pCount,VariableExpression.THIS_EXPRESSION);
   ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic);
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
-  parameters.add(thisParameter);
+  parameters.add(pCount,thisParameter);
   thisField=innerClass.addField("this$0",publicSynthetic,outerClassType,null);
   addFieldInit(thisParameter,thisField,block);
   for (Iterator it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
@@ -36,14 +37,13 @@
     VariableExpression ve=new VariableExpression(var);
     ve.setClosureSharedVariable(true);
     ve.setUseReferenceDirectly(true);
-    expressions.add(ve);
+    expressions.add(pCount,ve);
     Parameter p=new Parameter(ClassHelper.REFERENCE_TYPE,"p" + pCount);
-    parameters.add(p);
+    parameters.add(pCount,p);
     final VariableExpression initial=new VariableExpression(p);
     initial.setUseReferenceDirectly(true);
     final FieldNode pField=innerClass.addFieldFirst(ve.getName(),publicSynthetic,ClassHelper.REFERENCE_TYPE,initial);
-    final int finalPCount=pCount;
     pField.setHolder(true);
   }
-  innerClass.addConstructor(ACC_PUBLIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
+  innerClass.addConstructor(ACC_SYNTHETIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
 }
