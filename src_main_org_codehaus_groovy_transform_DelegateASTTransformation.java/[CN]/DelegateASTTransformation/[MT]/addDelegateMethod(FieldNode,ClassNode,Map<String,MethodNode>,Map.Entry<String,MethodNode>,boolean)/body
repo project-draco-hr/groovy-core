@@ -12,6 +12,6 @@
       newParams[i]=newParam;
       args.addExpression(new VariableExpression(newParam));
     }
-    owner.addMethod(method.getName(),method.getModifiers() & (~ACC_ABSTRACT),nonGeneric(method.getReturnType()),newParams,method.getExceptions(),new ExpressionStatement(new MethodCallExpression(new FieldExpression(fieldNode),method.getName(),args)));
+    owner.addMethod(method.getName(),method.getModifiers() & (~ACC_ABSTRACT) & (~ACC_NATIVE),nonGeneric(method.getReturnType()),newParams,method.getExceptions(),new ExpressionStatement(new MethodCallExpression(new FieldExpression(fieldNode),method.getName(),args)));
   }
 }
