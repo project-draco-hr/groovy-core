@@ -2,16 +2,17 @@
   List<String> packagesToDoc=new ArrayList<String>();
   Path sourceDirs=new Path(getProject());
   Properties properties=new Properties();
-  properties.put("windowTitle",windowTitle);
-  properties.put("docTitle",docTitle);
-  properties.put("footer",footer);
-  properties.put("header",header);
-  properties.put("privateScope",privateScope);
-  properties.put("protectedScope",protectedScope);
-  properties.put("publicScope",publicScope);
-  properties.put("packageScope",packageScope);
-  properties.put("author",author);
-  properties.put("overviewFile",overviewFile != null ? overviewFile.getAbsolutePath() : "");
+  properties.setProperty("windowTitle",windowTitle);
+  properties.setProperty("docTitle",docTitle);
+  properties.setProperty("footer",footer);
+  properties.setProperty("header",header);
+  checkScopeProperties(properties);
+  properties.setProperty("publicScope",publicScope.toString());
+  properties.setProperty("protectedScope",protectedScope.toString());
+  properties.setProperty("packageScope",packageScope.toString());
+  properties.setProperty("privateScope",privateScope.toString());
+  properties.setProperty("author",author.toString());
+  properties.setProperty("overviewFile",overviewFile != null ? overviewFile.getAbsolutePath() : "");
   if (sourcePath != null) {
     sourceDirs.addExisting(sourcePath);
   }

@@ -1,6 +1,9 @@
 {
+  if ("true".equals(properties.getProperty("privateScope")))   properties.setProperty("packageScope","true");
+  if ("true".equals(properties.getProperty("packageScope")))   properties.setProperty("protectedScope","true");
+  if ("true".equals(properties.getProperty("protectedScope")))   properties.setProperty("publicScope","true");
   if (templateEngine != null) {
-    GroovyDocWriter writer=new GroovyDocWriter(this,output,templateEngine);
+    GroovyDocWriter writer=new GroovyDocWriter(this,output,templateEngine,properties);
     GroovyRootDoc rootDoc=rootDocBuilder.getRootDoc();
     writer.writeRoot(rootDoc,destdir);
     writer.writePackages(rootDoc,destdir);

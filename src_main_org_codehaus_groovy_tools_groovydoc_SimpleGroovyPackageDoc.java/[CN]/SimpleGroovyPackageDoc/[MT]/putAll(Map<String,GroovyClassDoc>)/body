@@ -1,7 +1,8 @@
 {
-  classDocs.putAll(classes);
-  for (  GroovyClassDoc doc : classes.values()) {
-    SimpleGroovyProgramElementDoc programElement=(SimpleGroovyProgramElementDoc)doc;
+  for (  Map.Entry<String,GroovyClassDoc> docEntry : classes.entrySet()) {
+    final GroovyClassDoc classDoc=docEntry.getValue();
+    classDocs.put(docEntry.getKey(),classDoc);
+    SimpleGroovyProgramElementDoc programElement=(SimpleGroovyProgramElementDoc)classDoc;
     programElement.setContainingPackage(this);
   }
 }

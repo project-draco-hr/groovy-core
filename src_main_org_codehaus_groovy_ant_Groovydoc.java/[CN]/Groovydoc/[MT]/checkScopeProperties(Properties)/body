@@ -1,0 +1,13 @@
+{
+  int scopeCount=0;
+  if (packageScope)   scopeCount++;
+  if (privateScope)   scopeCount++;
+  if (protectedScope)   scopeCount++;
+  if (publicScope)   scopeCount++;
+  if (scopeCount == 0) {
+    protectedScope=true;
+  }
+ else   if (scopeCount > 1) {
+    throw new BuildException("More than one of public, private, package, or protected scopes specified.");
+  }
+}
