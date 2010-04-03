@@ -1,0 +1,14 @@
+{
+  super(uncurriedClosure.clone());
+  curriedParams=arguments;
+  this.index=index;
+  final int origMaxLen=uncurriedClosure.getMaximumNumberOfParameters();
+  maximumNumberOfParameters=origMaxLen - arguments.length;
+  if (index < 0) {
+    if (index < -origMaxLen || index > -arguments.length)     throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range "+ (-origMaxLen)+ ".."+ (-arguments.length)+ " but found "+ index);
+    this.index+=origMaxLen;
+  }
+ else   if (index > maximumNumberOfParameters) {
+    throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range 0.."+ maximumNumberOfParameters+ " but found "+ index);
+  }
+}

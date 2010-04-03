@@ -1,6 +1,7 @@
 {
   Class[] oldParams=((Closure)getOwner()).getParameterTypes();
   Class[] newParams=new Class[oldParams.length - curriedParams.length];
-  System.arraycopy(oldParams,curriedParams.length,newParams,0,newParams.length);
+  System.arraycopy(oldParams,0,newParams,0,index);
+  if (newParams.length - index > 0)   System.arraycopy(oldParams,curriedParams.length + index,newParams,index,newParams.length - index);
   return newParams;
 }
