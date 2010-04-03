@@ -1,0 +1,12 @@
+{
+  delegate.addBatch(sql);
+  batchCount++;
+  if (batchSize != 0 && batchCount % batchSize == 0) {
+    int[] result=delegate.executeBatch();
+    connection.commit();
+    for (    int i : result) {
+      results.add(i);
+    }
+    log.fine("Successfully executed batch with " + result.length + " command(s)");
+  }
+}
