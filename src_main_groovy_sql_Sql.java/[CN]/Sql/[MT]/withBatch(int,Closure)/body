@@ -2,7 +2,7 @@
   boolean savedCacheConnection=cacheConnection;
   cacheConnection=true;
   Connection connection=null;
-  Statement statement=null;
+  BatchingStatementWrapper statement=null;
   boolean savedAutoCommit=true;
   boolean savedWithinBatch=withinBatch;
   try {
@@ -10,18 +10,10 @@
     connection=createConnection();
     savedAutoCommit=connection.getAutoCommit();
     connection.setAutoCommit(false);
-    if (batchSize == 0) {
-      statement=createStatement(connection);
-    }
- else {
-      statement=new BatchingStatementWrapper(createStatement(connection),batchSize,LOG,connection);
-    }
+    statement=new BatchingStatementWrapper(createStatement(connection),batchSize,LOG,connection);
     closure.call(statement);
     int[] result=statement.executeBatch();
     connection.commit();
-    if (batchSize == 0) {
-      LOG.fine("Successfully executed batch with " + result.length + " command(s)");
-    }
     return result;
   }
  catch (  SQLException e) {
@@ -39,7 +31,8 @@ catch (  Error e) {
  finally {
     if (connection != null)     connection.setAutoCommit(savedAutoCommit);
     cacheConnection=false;
-    closeResources(connection,statement);
+    closeResources(statement);
+    closeResources(connection);
     cacheConnection=savedCacheConnection;
     withinBatch=savedWithinBatch;
     if (dataSource != null && !cacheConnection) {
