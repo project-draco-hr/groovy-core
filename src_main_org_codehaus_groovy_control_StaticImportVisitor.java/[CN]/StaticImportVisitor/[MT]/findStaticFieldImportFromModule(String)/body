@@ -7,10 +7,14 @@
     ImportNode importNode=importNodes.get(name);
     Expression expression=findStaticField(importNode.getType(),importNode.getFieldName());
     if (expression != null)     return expression;
+    expression=findStaticGetterForField(importNode.getType(),importNode.getFieldName());
+    if (expression != null)     return expression;
   }
   for (  ImportNode importNode : module.getStaticStarImports().values()) {
     ClassNode node=importNode.getType();
     Expression expression=findStaticField(node,name);
+    if (expression != null)     return expression;
+    expression=findStaticGetterForField(node,name);
     if (expression != null)     return expression;
   }
   return null;
