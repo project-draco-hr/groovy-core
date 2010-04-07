@@ -8,7 +8,7 @@
     for (    ImportNode importNode : module.getImports()) {
       currImportNode=importNode;
       ClassNode type=importNode.getType();
-      if (resolve(type,true,false,true)) {
+      if (resolve(type,false,false,true)) {
         currImportNode=null;
         continue;
       }
@@ -17,7 +17,7 @@
     }
     for (    ImportNode importNode : module.getStaticStarImports().values()) {
       ClassNode type=importNode.getType();
-      if (resolve(type,true,false,true))       continue;
+      if (resolve(type,false,false,true))       continue;
       if (type.getPackageName() == null && node.getPackageName() != null) {
         String oldTypeName=type.getName();
         type.setName(node.getPackageName() + "." + oldTypeName);
