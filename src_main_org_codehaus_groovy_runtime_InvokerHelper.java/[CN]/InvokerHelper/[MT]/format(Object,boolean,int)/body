@@ -1,0 +1,45 @@
+{
+  if (arguments == null) {
+    final NullObject nullObject=NullObject.getNullObject();
+    return (String)nullObject.getMetaClass().invokeMethod(nullObject,"toString",EMPTY_ARGS);
+  }
+  if (arguments.getClass().isArray()) {
+    if (arguments instanceof char[]) {
+      return new String((char[])arguments);
+    }
+    return format(DefaultTypeTransformation.asCollection(arguments),verbose);
+  }
+  if (arguments instanceof Range) {
+    Range range=(Range)arguments;
+    if (verbose) {
+      return range.inspect();
+    }
+ else {
+      return range.toString();
+    }
+  }
+  if (arguments instanceof Collection) {
+    return formatList((Collection)arguments,verbose,maxSize);
+  }
+  if (arguments instanceof Map) {
+    return formatMap((Map)arguments,verbose,maxSize);
+  }
+  if (arguments instanceof Element) {
+    return XmlUtil.serialize((Element)arguments);
+  }
+  if (arguments instanceof String) {
+    if (verbose) {
+      String arg=((String)arguments).replaceAll("\\n","\\\\n");
+      arg=arg.replaceAll("\\r","\\\\r");
+      arg=arg.replaceAll("\\t","\\\\t");
+      arg=arg.replaceAll("\\f","\\\\f");
+      arg=arg.replaceAll("\\\"","\\\\\"");
+      arg=arg.replaceAll("\\\\","\\\\");
+      return "\"" + arg + "\"";
+    }
+ else {
+      return (String)arguments;
+    }
+  }
+  return arguments.toString();
+}

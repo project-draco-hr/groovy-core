@@ -4,21 +4,25 @@
   }
   StringBuffer buffer=new StringBuffer("[");
   boolean first=true;
-  for (Iterator iter=map.entrySet().iterator(); iter.hasNext(); ) {
+  for (  Object o : map.entrySet()) {
     if (first) {
       first=false;
     }
  else {
       buffer.append(", ");
     }
-    Map.Entry entry=(Map.Entry)iter.next();
+    if (maxSize != -1 && buffer.length() > maxSize) {
+      buffer.append("...");
+      break;
+    }
+    Map.Entry entry=(Map.Entry)o;
     buffer.append(format(entry.getKey(),verbose));
     buffer.append(":");
     if (entry.getValue() == map) {
-      buffer.append("this Map_");
+      buffer.append("(this Map)");
     }
  else {
-      buffer.append(format(entry.getValue(),verbose));
+      buffer.append(format(entry.getValue(),verbose,sizeLeft(maxSize,buffer)));
     }
   }
   buffer.append("]");
