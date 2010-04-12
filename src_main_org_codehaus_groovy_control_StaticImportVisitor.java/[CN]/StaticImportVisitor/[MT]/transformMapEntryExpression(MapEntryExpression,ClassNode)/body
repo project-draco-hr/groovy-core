@@ -1,0 +1,16 @@
+{
+  Expression key=me.getKeyExpression();
+  Expression value=me.getValueExpression();
+  ModuleNode module=currentClass.getModule();
+  if (module != null && key instanceof ConstantExpression) {
+    Map<String,ImportNode> importNodes=module.getStaticImports();
+    if (importNodes.containsKey(key.getText())) {
+      ImportNode importNode=importNodes.get(key.getText());
+      if (importNode.getType().equals(constructorCallType)) {
+        String newKey=importNode.getFieldName();
+        return new MapEntryExpression(new ConstantExpression(newKey),value.transformExpression(this));
+      }
+    }
+  }
+  return me;
+}

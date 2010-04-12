@@ -5,13 +5,14 @@
       ClassExpression ce=(ClassExpression)pe.getObjectExpression();
       ClassNode type=ce.getType();
       if (type.isEnum())       return exp;
-      FieldNode fn=type.getField(pe.getPropertyAsString());
-      if (fn != null && !fn.isEnum() && fn.isStatic() && fn.isFinal()) {
-        if (fn.getInitialValueExpression() instanceof ConstantExpression) {
-          return fn.getInitialValueExpression();
-        }
-      }
+      Expression constant=findConstant(type.getField(pe.getPropertyAsString()));
+      if (constant != null)       return constant;
     }
+  }
+ else   if (exp instanceof FieldExpression) {
+    FieldExpression fe=(FieldExpression)exp;
+    Expression constant=findConstant(fe.getField());
+    if (constant != null)     return constant;
   }
  else   if (exp instanceof ListExpression) {
     ListExpression le=(ListExpression)exp;

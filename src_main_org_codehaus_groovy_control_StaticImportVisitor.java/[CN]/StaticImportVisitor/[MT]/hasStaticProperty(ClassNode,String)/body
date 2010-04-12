@@ -1,0 +1,10 @@
+{
+  ClassNode classNode=staticImportType;
+  while (classNode != null) {
+    for (    PropertyNode pn : classNode.getProperties()) {
+      if (pn.getName().equals(propName) && pn.isStatic())       return true;
+    }
+    classNode=classNode.getSuperClass();
+  }
+  return false;
+}

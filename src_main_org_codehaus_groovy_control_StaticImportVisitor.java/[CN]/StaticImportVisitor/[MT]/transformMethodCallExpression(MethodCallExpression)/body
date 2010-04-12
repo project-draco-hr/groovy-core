@@ -3,7 +3,7 @@
   Expression method=transform(mce.getMethod());
   Expression object=transform(mce.getObjectExpression());
   boolean isExplicitThisOrSuper=false;
-  boolean isExplicitSuper=false;
+  boolean isExplicitSuper;
   if (object instanceof VariableExpression) {
     VariableExpression ve=(VariableExpression)object;
     isExplicitThisOrSuper=!mce.isImplicitThis() && (ve.getName().equals("this") || ve.getName().equals("super"));
@@ -20,9 +20,9 @@
         ret.setSourcePosition(mce);
         return ret;
       }
- else       if (method instanceof ConstantExpression) {
+      if (method instanceof ConstantExpression && !inLeftExpression) {
         String methodName=(String)((ConstantExpression)method).getValue();
-        ret=findStaticFieldImportFromModule(methodName);
+        ret=findStaticFieldOrPropAccessorImportFromModule(methodName);
         if (ret != null) {
           ret=new MethodCallExpression(ret,"call",args);
           ret.setSourcePosition(mce);

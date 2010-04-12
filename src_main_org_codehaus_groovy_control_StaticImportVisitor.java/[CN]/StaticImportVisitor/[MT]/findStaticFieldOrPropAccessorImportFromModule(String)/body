@@ -1,0 +1,30 @@
+{
+  ModuleNode module=currentClass.getModule();
+  if (module == null)   return null;
+  Map<String,ImportNode> importNodes=module.getStaticImports();
+  stillResolving=false;
+  Expression expression;
+  String accessorName=getAccessorName(name);
+  if (importNodes.containsKey(accessorName)) {
+    ImportNode importNode=importNodes.get(accessorName);
+    expression=findStaticPropertyAccessorByFullName(importNode.getType(),importNode.getFieldName());
+    if (expression != null)     return expression;
+    expression=findStaticPropertyAccessor(importNode.getType(),getPropNameForAccessor(importNode.getFieldName()));
+    if (expression != null)     return expression;
+  }
+  if (importNodes.containsKey(name)) {
+    ImportNode importNode=importNodes.get(name);
+    expression=findStaticPropertyAccessor(importNode.getType(),importNode.getFieldName());
+    if (expression != null)     return expression;
+    expression=findStaticField(importNode.getType(),importNode.getFieldName());
+    if (expression != null)     return expression;
+  }
+  for (  ImportNode importNode : module.getStaticStarImports().values()) {
+    ClassNode node=importNode.getType();
+    expression=findStaticPropertyAccessor(node,name);
+    if (expression != null)     return expression;
+    expression=findStaticField(node,name);
+    if (expression != null)     return expression;
+  }
+  return null;
+}

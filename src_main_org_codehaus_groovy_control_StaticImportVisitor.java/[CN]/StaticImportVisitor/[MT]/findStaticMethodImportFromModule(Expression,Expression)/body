@@ -3,29 +3,48 @@
   if (module == null || !(method instanceof ConstantExpression))   return null;
   Map<String,ImportNode> importNodes=module.getStaticImports();
   ConstantExpression ce=(ConstantExpression)method;
+  Expression expression;
   Object value=ce.getValue();
   if (!(value instanceof String))   return null;
   final String name=(String)value;
   if (importNodes.containsKey(name)) {
     ImportNode importNode=importNodes.get(name);
-    Expression expression=findStaticMethod(importNode.getType(),importNode.getFieldName(),args);
+    expression=findStaticMethod(importNode.getType(),importNode.getFieldName(),args);
     if (expression != null)     return expression;
+    expression=findStaticPropertyAccessorGivenArgs(importNode.getType(),getPropNameForAccessor(importNode.getFieldName()),args);
+    if (expression != null) {
+      return new StaticMethodCallExpression(importNode.getType(),importNode.getFieldName(),args);
+    }
   }
-  Map<String,ImportNode> importPackages=module.getStaticStarImports();
-  ClassNode starImportType=null;
-  if (isEnum(currentClass) && importPackages.containsKey(currentClass.getName())) {
-    ImportNode importNode=importPackages.get(currentClass.getName());
+  if (validPropName(name)) {
+    String propName=getPropNameForAccessor(name);
+    if (importNodes.containsKey(propName)) {
+      ImportNode importNode=importNodes.get(propName);
+      expression=findStaticMethod(importNode.getType(),name.substring(0,3) + capitalize(importNode.getFieldName()),args);
+      if (expression != null)       return expression;
+      expression=findStaticPropertyAccessorGivenArgs(importNode.getType(),importNode.getFieldName(),args);
+      if (expression != null) {
+        return new StaticMethodCallExpression(importNode.getType(),name.substring(0,3) + capitalize(importNode.getFieldName()),args);
+      }
+    }
+  }
+  Map<String,ImportNode> starImports=module.getStaticStarImports();
+  ClassNode starImportType;
+  if (isEnum(currentClass) && starImports.containsKey(currentClass.getName())) {
+    ImportNode importNode=starImports.get(currentClass.getName());
     starImportType=importNode == null ? null : importNode.getType();
-    Expression expression=findStaticMethod(starImportType,name,args);
+    expression=findStaticMethod(starImportType,name,args);
     if (expression != null)     return expression;
   }
  else {
-    for (    Map.Entry<String,ImportNode> entry : importPackages.entrySet()) {
-      String className=entry.getKey();
-      ImportNode importNode=importPackages.get(className);
+    for (    ImportNode importNode : starImports.values()) {
       starImportType=importNode == null ? null : importNode.getType();
-      Expression expression=findStaticMethod(starImportType,name,args);
+      expression=findStaticMethod(starImportType,name,args);
       if (expression != null)       return expression;
+      expression=findStaticPropertyAccessorGivenArgs(starImportType,getPropNameForAccessor(name),args);
+      if (expression != null) {
+        return new StaticMethodCallExpression(starImportType,name,args);
+      }
     }
   }
   return null;

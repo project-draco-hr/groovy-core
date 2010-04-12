@@ -1,0 +1,21 @@
+{
+  int type=be.getOperation().getType();
+  boolean oldInLeftExpression;
+  Expression right=transform(be.getRightExpression());
+  if (type == Types.EQUAL) {
+    oldInLeftExpression=inLeftExpression;
+    inLeftExpression=true;
+    Expression left=transform(be.getLeftExpression());
+    inLeftExpression=oldInLeftExpression;
+    if (left instanceof StaticMethodCallExpression) {
+      StaticMethodCallExpression smce=(StaticMethodCallExpression)left;
+      StaticMethodCallExpression result=new StaticMethodCallExpression(smce.getOwnerType(),smce.getMethod(),right);
+      result.setSourcePosition(be);
+      return result;
+    }
+  }
+  Expression left=transform(be.getLeftExpression());
+  be.setLeftExpression(left);
+  be.setRightExpression(right);
+  return be;
+}

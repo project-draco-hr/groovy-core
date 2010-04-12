@@ -1,0 +1,8 @@
+{
+  Expression accessor=findStaticPropertyAccessorByFullName(staticImportType,getAccessorName(propName));
+  if (accessor == null && hasStaticProperty(staticImportType,propName)) {
+    if (inLeftExpression)     accessor=new StaticMethodCallExpression(staticImportType,getAccessorName(propName),ArgumentListExpression.EMPTY_ARGUMENTS);
+ else     accessor=new PropertyExpression(new ClassExpression(staticImportType),propName);
+  }
+  return accessor;
+}
