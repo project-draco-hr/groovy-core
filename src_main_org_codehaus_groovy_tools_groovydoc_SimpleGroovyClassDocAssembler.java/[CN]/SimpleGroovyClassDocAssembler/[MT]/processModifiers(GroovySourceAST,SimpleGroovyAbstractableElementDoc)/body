@@ -1,9 +1,9 @@
 {
   GroovySourceAST modifiers=t.childOfType(MODIFIERS);
+  boolean hasNonPublicVisibility=false;
+  boolean hasPublicVisibility=false;
   if (modifiers != null) {
     AST currentModifier=modifiers.getFirstChild();
-    boolean hasNonPublicVisibility=false;
-    boolean hasPublicVisibility=false;
     while (currentModifier != null) {
       int type=currentModifier.getType();
 switch (type) {
@@ -45,5 +45,5 @@ memberOrClass.setPublic(true);
  else if (!isGroovy) {
 memberOrClass.setPackagePrivate(true);
 }
-return memberOrClass instanceof GroovyFieldDoc && isGroovy;
+return memberOrClass instanceof GroovyFieldDoc && isGroovy && !hasNonPublicVisibility & !hasPublicVisibility;
 }
