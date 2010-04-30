@@ -1,15 +1,25 @@
 {
   if (visit == OPENING_VISIT && !insideEnum && !insideAnonymousInnerClass()) {
     SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
-    if (currentClassDoc != null) {
-      String methodName=getIdentFor(t);
-      SimpleGroovyMethodDoc currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
-      currentMethodDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
-      processModifiers(t,currentMethodDoc);
-      currentMethodDoc.setReturnType(new SimpleGroovyType(getTypeOrDefault(t)));
-      addParametersTo(t,currentMethodDoc);
-      processAnnotations(t,currentMethodDoc);
-      currentClassDoc.add(currentMethodDoc);
+    if (currentClassDoc == null) {
+      currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+      currentClassDoc.setFullPathName(packagePath + FS + className);
+      currentClassDoc.setPublic(true);
+      currentClassDoc.setScript(true);
+      currentClassDoc.setSuperClassName("groovy/lang/Script");
+      classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+      if (foundClasses == null) {
+        foundClasses=new HashMap<String,SimpleGroovyClassDoc>();
+      }
+      foundClasses.put(className,currentClassDoc);
     }
+    String methodName=getIdentFor(t);
+    SimpleGroovyMethodDoc currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
+    currentMethodDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
+    processModifiers(t,currentMethodDoc);
+    currentMethodDoc.setReturnType(new SimpleGroovyType(getTypeOrDefault(t)));
+    addParametersTo(t,currentMethodDoc);
+    processAnnotations(t,currentMethodDoc);
+    currentClassDoc.add(currentMethodDoc);
   }
 }

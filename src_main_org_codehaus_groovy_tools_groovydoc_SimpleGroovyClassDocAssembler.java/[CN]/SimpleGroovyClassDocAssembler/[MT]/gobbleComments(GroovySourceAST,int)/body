@@ -1,0 +1,11 @@
+{
+  if (visit == OPENING_VISIT) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    if (currentClassDoc == null || currentClassDoc.isScript()) {
+      if (t.getLine() > lastLineCol.getLine() || (t.getLine() == lastLineCol.getLine() && t.getColumn() > lastLineCol.getColumn())) {
+        getJavaDocCommentsBeforeNode(t);
+        lastLineCol=new LineColumn(t.getLine(),t.getColumn());
+      }
+    }
+  }
+}
