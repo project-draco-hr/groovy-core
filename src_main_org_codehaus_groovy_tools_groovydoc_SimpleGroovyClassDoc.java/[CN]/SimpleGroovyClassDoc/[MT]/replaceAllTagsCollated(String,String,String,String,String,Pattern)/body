@@ -1,0 +1,49 @@
+{
+  Matcher matcher=regex.matcher(self + "@endMarker");
+  if (matcher.find()) {
+    matcher.reset();
+    Map<String,List<String>> savedTags=new HashMap<String,List<String>>();
+    StringBuffer sb=new StringBuffer();
+    while (matcher.find()) {
+      String tagname=matcher.group(1);
+      if (!tagname.equals("interface")) {
+        String content=encodeSpecialSymbols(matcher.group(2));
+        if ("see".equals(tagname)) {
+          content=getDocUrl(content);
+        }
+ else         if ("param".equals(tagname)) {
+          int index=content.indexOf(" ");
+          if (index >= 0) {
+            content="<code>" + content.substring(0,index) + "</code> - "+ content.substring(index);
+          }
+        }
+        if (TAG_TEXT.containsKey(tagname)) {
+          String text=TAG_TEXT.get(tagname);
+          List<String> contents=savedTags.get(text);
+          if (contents == null) {
+            contents=new ArrayList<String>();
+            savedTags.put(text,contents);
+          }
+          contents.add(content);
+          matcher.appendReplacement(sb,"");
+        }
+ else {
+          matcher.appendReplacement(sb,preKey + tagname + postKey+ content+ postValues);
+        }
+      }
+    }
+    matcher.appendTail(sb);
+    sb=new StringBuffer(sb.substring(0,sb.length() - 10));
+    for (    Map.Entry<String,List<String>> e : savedTags.entrySet()) {
+      sb.append(preKey);
+      sb.append(e.getKey());
+      sb.append(postKey);
+      sb.append(DefaultGroovyMethods.join(e.getValue(),valueSeparator));
+      sb.append(postValues);
+    }
+    return sb.toString();
+  }
+ else {
+    return self;
+  }
+}

@@ -5,11 +5,12 @@
     StringBuffer sb=new StringBuffer();
     while (matcher.find()) {
       String tagname=matcher.group(1);
-      if (tagname.equals("see") || tagname.equals("link")) {
-        matcher.appendReplacement(sb,s1 + getDocUrl(encodeSpecialSymbols(matcher.group(2))) + s2);
-      }
- else       if (!tagname.equals("interface")) {
-        matcher.appendReplacement(sb,s1 + encodeSpecialSymbols(matcher.group(2)) + s2);
+      if (!tagname.equals("interface")) {
+        String content=encodeSpecialSymbols(matcher.group(2));
+        if (tagname.equals("link")) {
+          content=getDocUrl(content);
+        }
+        matcher.appendReplacement(sb,s1 + content + s2);
       }
     }
     matcher.appendTail(sb);

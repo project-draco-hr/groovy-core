@@ -2,7 +2,6 @@
   String result=comment.replaceAll("(?m)^\\s*\\*","");
   result=replaceAllTags(result,"","",LINK_REGEX);
   result=replaceAllTags(result,"<TT>","</TT>",CODE_REGEX);
-  result=replaceAllTags(result + "@endMarker","<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX);
-  result=result.substring(0,result.length() - 10);
+  result=replaceAllTagsCollated(result,"<DL><DT><B>",":</B></DT><DD>","</DD><DD>","</DD></DL>",TAG_REGEX);
   return decodeSpecialSymbols(result);
 }
