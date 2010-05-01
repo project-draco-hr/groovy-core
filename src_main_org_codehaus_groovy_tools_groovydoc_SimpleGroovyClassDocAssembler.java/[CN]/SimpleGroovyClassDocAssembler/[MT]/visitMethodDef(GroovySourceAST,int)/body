@@ -2,16 +2,24 @@
   if (visit == OPENING_VISIT && !insideEnum && !insideAnonymousInnerClass()) {
     SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
     if (currentClassDoc == null) {
-      currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
-      currentClassDoc.setFullPathName(packagePath + FS + className);
-      currentClassDoc.setPublic(true);
-      currentClassDoc.setScript(true);
-      currentClassDoc.setSuperClassName("groovy/lang/Script");
-      classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
-      if (foundClasses == null) {
-        foundClasses=new HashMap<String,SimpleGroovyClassDoc>();
+      if ("true".equals(properties.getProperty("processScripts","true"))) {
+        currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+        currentClassDoc.setFullPathName(packagePath + FS + className);
+        currentClassDoc.setPublic(true);
+        currentClassDoc.setScript(true);
+        currentClassDoc.setSuperClassName("groovy/lang/Script");
+        if ("true".equals(properties.getProperty("includeMainForScripts","true"))) {
+          currentClassDoc.add(createMainMethod(currentClassDoc));
+        }
+        classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+        if (foundClasses == null) {
+          foundClasses=new HashMap<String,SimpleGroovyClassDoc>();
+        }
+        foundClasses.put(className,currentClassDoc);
       }
-      foundClasses.put(className,currentClassDoc);
+ else {
+        return;
+      }
     }
     String methodName=getIdentFor(t);
     SimpleGroovyMethodDoc currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
