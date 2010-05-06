@@ -1,0 +1,19 @@
+{
+  Class arrayComponentClass=objects.getClass().getComponentType();
+  Object adjustedNewVal=newValue;
+  if (newValue instanceof Number) {
+    if (!arrayComponentClass.equals(newValue.getClass())) {
+      adjustedNewVal=DefaultTypeTransformation.castToType(newValue,arrayComponentClass);
+    }
+  }
+ else   if (Character.class.isAssignableFrom(arrayComponentClass)) {
+    adjustedNewVal=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
+  }
+ else   if (Number.class.isAssignableFrom(arrayComponentClass)) {
+    if (newValue instanceof Character || newValue instanceof String || newValue instanceof GString) {
+      Character ch=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
+      adjustedNewVal=DefaultTypeTransformation.castToType(ch,arrayComponentClass);
+    }
+  }
+  return adjustedNewVal;
+}
