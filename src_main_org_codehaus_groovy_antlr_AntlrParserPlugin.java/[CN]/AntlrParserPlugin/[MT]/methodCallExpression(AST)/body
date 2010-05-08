@@ -3,6 +3,7 @@
   Expression objectExpression;
   AST selector;
   AST elist=node.getNextSibling();
+  List<GenericsType> typeArgumentList=null;
   boolean implicitThis=false;
   boolean safe=isType(OPTIONAL_DOT,node);
   boolean spreadSafe=isType(SPREAD_DOT,node);
@@ -15,6 +16,10 @@
     implicitThis=true;
     objectExpression=VariableExpression.THIS_EXPRESSION;
     selector=node;
+  }
+  if (isType(TYPE_ARGUMENTS,selector)) {
+    typeArgumentList=getTypeArgumentsList(selector);
+    selector=selector.getNextSibling();
   }
   Expression name=null;
   if (isType(LITERAL_super,selector)) {
@@ -33,6 +38,7 @@
     configureAST(attributeExpression,node);
     Expression arguments=arguments(elist);
     MethodCallExpression expression=new MethodCallExpression(attributeExpression,"call",arguments);
+    setTypeArgumentsOnMethodCallExpression(expression,typeArgumentList);
     configureAST(expression,methodCallNode);
     return expression;
   }
@@ -52,6 +58,7 @@
   expression.setSafe(safe);
   expression.setSpreadSafe(spreadSafe);
   expression.setImplicitThis(implicitThis);
+  setTypeArgumentsOnMethodCallExpression(expression,typeArgumentList);
   Expression ret=expression;
   if (implicitThis && "this".equals(expression.getMethodAsString())) {
     ret=new ConstructorCallExpression(this.classNode,arguments);

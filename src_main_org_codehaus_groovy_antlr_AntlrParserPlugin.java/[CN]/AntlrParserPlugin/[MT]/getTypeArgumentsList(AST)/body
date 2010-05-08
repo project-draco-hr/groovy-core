@@ -1,0 +1,12 @@
+{
+  assertNodeType(TYPE_ARGUMENTS,node);
+  List<GenericsType> typeArgumentList=new LinkedList<GenericsType>();
+  AST typeArgument=node.getFirstChild();
+  while (typeArgument != null) {
+    assertNodeType(TYPE_ARGUMENT,typeArgument);
+    GenericsType gt=makeGenericsArgumentType(typeArgument);
+    typeArgumentList.add(gt);
+    typeArgument=typeArgument.getNextSibling();
+  }
+  return typeArgumentList;
+}
