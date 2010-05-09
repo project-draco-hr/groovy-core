@@ -23,17 +23,17 @@
   addFieldInit(thisPara,thisField,newCode);
   ConstructorCallExpression cce=getFirstIfSpecialConstructorCall(block);
   if (cce == null) {
-    block.getStatements().add(0,newCode);
+    cce=new ConstructorCallExpression(ClassNode.SUPER,new TupleExpression());
+    block.getStatements().add(0,new ExpressionStatement(cce));
   }
- else   if (cce.isThisCall()) {
+  if (shouldImplicitlyPassThisPara(cce)) {
     TupleExpression args=(TupleExpression)cce.getArguments();
     List<Expression> expressions=args.getExpressions();
     VariableExpression ve=new VariableExpression(thisPara.getName());
     ve.setAccessedVariable(thisPara);
     expressions.add(0,ve);
-    newCode=block;
   }
- else {
+  if (cce.isSuperCall()) {
     block.getStatements().add(1,newCode);
   }
   node.setCode(block);

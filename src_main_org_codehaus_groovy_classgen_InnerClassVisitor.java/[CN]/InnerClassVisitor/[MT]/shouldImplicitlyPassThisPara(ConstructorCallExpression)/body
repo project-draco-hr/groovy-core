@@ -1,0 +1,16 @@
+{
+  boolean pass=false;
+  ClassNode superCN=classNode.getSuperClass();
+  if (cce.isThisCall()) {
+    pass=true;
+  }
+ else   if (cce.isSuperCall()) {
+    if (!superCN.isEnum() && !superCN.isInterface() && superCN instanceof InnerClassNode) {
+      InnerClassNode superInnerCN=(InnerClassNode)superCN;
+      if (!isStatic(superInnerCN) && superCN.getOuterClass().equals(classNode.getOuterClass())) {
+        pass=true;
+      }
+    }
+  }
+  return pass;
+}
