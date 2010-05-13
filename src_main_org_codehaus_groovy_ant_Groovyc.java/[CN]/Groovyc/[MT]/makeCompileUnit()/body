@@ -1,10 +1,17 @@
 {
-  if (configuration.getJointCompilationOptions() != null) {
-    if (!configuration.getJointCompilationOptions().containsKey("stubDir")) {
+  Map<String,Object> options=configuration.getJointCompilationOptions();
+  if (options != null) {
+    if (keepStubs) {
+      options.put("keepStubs",Boolean.TRUE);
+    }
+    if (stubDir != null) {
+      options.put("stubDir",stubDir);
+    }
+ else {
       try {
         File tempStubDir=FileSystemCompiler.createTempDir();
         temporaryFiles.add(tempStubDir);
-        configuration.getJointCompilationOptions().put("stubDir",tempStubDir);
+        options.put("stubDir",tempStubDir);
       }
  catch (      IOException ioe) {
         throw new BuildException(ioe);
