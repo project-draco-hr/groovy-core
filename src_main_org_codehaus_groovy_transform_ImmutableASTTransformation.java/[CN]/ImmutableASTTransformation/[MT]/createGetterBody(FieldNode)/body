@@ -2,7 +2,7 @@
   BlockStatement body=new BlockStatement();
   final ClassNode fieldType=fNode.getType();
   final Statement statement;
-  if (fieldType.isArray() || implementsInterface(fieldType,CLONEABLE_TYPE)) {
+  if (fieldType.isArray() || fieldType.implementsInterface(CLONEABLE_TYPE)) {
     statement=createGetterBodyArrayOrCloneable(fNode);
   }
  else   if (fieldType.isDerivedFrom(DATE_TYPE)) {

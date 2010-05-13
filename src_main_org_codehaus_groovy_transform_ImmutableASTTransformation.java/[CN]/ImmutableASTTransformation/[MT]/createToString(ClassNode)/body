@@ -18,7 +18,7 @@
     }
     body.addStatement(new IfStatement(new BooleanExpression(new FieldExpression(cNode.getField("$map$constructor"))),toStringPropertyName(result,pNode.getName()),new EmptyStatement()));
     final FieldExpression fieldExpr=new FieldExpression(pNode.getField());
-    body.addStatement(append(result,new MethodCallExpression(fieldExpr,"toString",MethodCallExpression.NO_ARGUMENTS)));
+    body.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",fieldExpr)));
   }
   body.addStatement(append(result,new ConstantExpression(")")));
   body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));

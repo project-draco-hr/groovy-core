@@ -2,13 +2,13 @@
   FieldNode fNode=pNode.getField();
   final ClassNode fieldType=fNode.getType();
   final Statement statement;
-  if (fieldType.isArray() || implementsInterface(fieldType,CLONEABLE_TYPE)) {
+  if (fieldType.isArray() || fieldType.implementsInterface(CLONEABLE_TYPE)) {
     statement=createConstructorStatementArrayOrCloneable(fNode);
   }
  else   if (fieldType.isDerivedFrom(DATE_TYPE)) {
     statement=createConstructorStatementDate(fNode);
   }
- else   if (fieldType.isDerivedFrom(COLLECTION_TYPE) || fieldType.isDerivedFrom(MAP_TYPE)) {
+ else   if (isOrImplements(fieldType,COLLECTION_TYPE) || isOrImplements(fieldType,MAP_TYPE)) {
     statement=createConstructorStatementCollection(fNode);
   }
  else   if (isKnownImmutable(fieldType)) {
