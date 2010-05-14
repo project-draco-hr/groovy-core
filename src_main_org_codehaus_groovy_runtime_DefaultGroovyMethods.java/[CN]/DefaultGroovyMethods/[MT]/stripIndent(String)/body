@@ -1,0 +1,14 @@
+{
+  if (self.length() == 0)   return self;
+  int runningCount=-1;
+  try {
+    for (    String line : readLines(self)) {
+      if (runningCount == -1)       runningCount=line.length();
+      runningCount=findMinimumLeadingSpaces(line,runningCount);
+      if (runningCount == 0)       break;
+    }
+  }
+ catch (  IOException e) {
+  }
+  return stripIndent(self,runningCount == -1 ? 0 : runningCount);
+}
