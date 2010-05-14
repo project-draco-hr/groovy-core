@@ -6,7 +6,9 @@
       builder.append(stripMarginFromLine(line,marginChar));
       builder.append("\n");
     }
-    builder.deleteCharAt(builder.length() - 1);
+    if (!self.endsWith("\n")) {
+      builder.deleteCharAt(builder.length() - 1);
+    }
     return builder.toString();
   }
  catch (  IOException e) {
