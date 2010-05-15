@@ -1,6 +1,14 @@
 {
   BigDecimal bigLeft=toBigDecimal(left);
   BigDecimal bigRight=toBigDecimal(right);
-  int scale=Math.max(bigLeft.scale(),bigRight.scale());
-  return normalize(bigLeft.divide(bigRight,Math.max(scale,MAX_DIVISION_SCALE),BigDecimal.ROUND_HALF_UP));
+  try {
+    return bigLeft.divide(bigRight);
+  }
+ catch (  ArithmeticException e) {
+    int precision=Math.max(bigLeft.precision(),bigRight.precision()) + ADDITIONAL_PRECISION;
+    BigDecimal result=bigLeft.divide(bigRight,new MathContext(precision));
+    int scale=Math.max(Math.max(bigLeft.scale(),bigRight.scale()),MAX_DIVISION_SCALE);
+    if (result.scale() > scale)     result=result.setScale(scale,BigDecimal.ROUND_HALF_UP);
+    return result;
+  }
 }
