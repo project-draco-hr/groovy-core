@@ -4,11 +4,12 @@
     SingleKeyHashMap propertyIndex=classPropertyIndex.getNotNull(klass);
     for (MetaMethodIndex.Entry e=header.head; e != null; e=e.nextClassEntry) {
       String methodName=e.name;
-      if (methodName.length() < 4)       continue;
-      boolean isGetter=methodName.startsWith("get");
+      if (methodName.length() < 3 || (!methodName.startsWith("is") && methodName.length() < 4))       continue;
+      boolean isGetter=methodName.startsWith("get") || methodName.startsWith("is");
+      boolean isBooleanGetter=methodName.startsWith("is");
       boolean isSetter=methodName.startsWith("set");
       if (!isGetter && !isSetter)       continue;
-      MetaMethod propertyMethod=findPropertyMethod(isThis ? e.methods : e.methodsForSuper,isGetter);
+      MetaMethod propertyMethod=findPropertyMethod(isThis ? e.methods : e.methodsForSuper,isGetter,isBooleanGetter);
       if (propertyMethod == null)       continue;
       String propName=getPropName(methodName);
       createMetaBeanProperty(propertyIndex,propName,isGetter,propertyMethod);

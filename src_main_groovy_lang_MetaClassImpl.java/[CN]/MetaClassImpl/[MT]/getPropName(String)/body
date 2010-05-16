@@ -2,7 +2,8 @@
   String name=propNames.get(methodName);
   if (name != null)   return name;
 synchronized (propNames) {
-    String propName=java.beans.Introspector.decapitalize(methodName.substring(3));
+    String stripped=methodName.startsWith("is") ? methodName.substring(2) : methodName.substring(3);
+    String propName=java.beans.Introspector.decapitalize(stripped);
     propNames.put(methodName,propName);
     return propName;
   }
