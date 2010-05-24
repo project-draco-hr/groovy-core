@@ -1,21 +1,20 @@
 {
   BlockStatement body=new BlockStatement();
-  final FieldExpression fieldExpr=new FieldExpression(fieldNode);
-  final VariableExpression resExpr=new VariableExpression("res",type);
+  final Expression fieldExpr=new FieldExpression(fieldNode);
+  final Expression resExpr=new VariableExpression("res",type);
   final MethodCallExpression callExpression=new MethodCallExpression(new FieldExpression(fieldNode),"get",new ArgumentListExpression());
   callExpression.setSafe(true);
-  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,Token.newSymbol("=",-1,-1),callExpression)));
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,equalsOp(),callExpression)));
   BlockStatement elseBlock=new BlockStatement();
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,Token.newSymbol("=",-1,-1),initExpr)));
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(SOFT_REF,resExpr))));
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,equalsOp(),initExpr)));
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),new ConstructorCallExpression(SOFT_REF,resExpr))));
   elseBlock.addStatement(new ExpressionStatement(resExpr));
-  final IfStatement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(resExpr),elseBlock);
+  final Statement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(resExpr),elseBlock);
   if ((fieldNode.getModifiers() & ACC_VOLATILE) == 0) {
     body.addStatement(mainIf);
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(resExpr),new SynchronizedStatement(VariableExpression.THIS_EXPRESSION,mainIf)));
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(resExpr),new SynchronizedStatement(synchTarget(),mainIf)));
   }
-  final String name="get" + MetaClassHelper.capitalize(fieldNode.getName().substring(1));
-  fieldNode.getDeclaringClass().addMethod(name,ACC_PUBLIC,type,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
+  addMethod(fieldNode,body,type);
 }

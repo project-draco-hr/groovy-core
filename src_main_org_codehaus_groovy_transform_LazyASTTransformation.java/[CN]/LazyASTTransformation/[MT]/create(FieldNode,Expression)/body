@@ -1,12 +1,11 @@
 {
   BlockStatement body=new BlockStatement();
-  final FieldExpression fieldExpr=new FieldExpression(fieldNode);
+  final Expression fieldExpr=new FieldExpression(fieldNode);
   if ((fieldNode.getModifiers() & ACC_VOLATILE) == 0) {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ExpressionStatement(fieldExpr),new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),initExpr))));
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(fieldExpr),new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))));
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(fieldExpr),new SynchronizedStatement(VariableExpression.THIS_EXPRESSION,new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,Token.newSymbol("=",-1,-1),initExpr))))));
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new SynchronizedStatement(synchTarget(),new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))))));
   }
-  final String name="get" + MetaClassHelper.capitalize(fieldNode.getName().substring(1));
-  fieldNode.getDeclaringClass().addMethod(name,ACC_PUBLIC,fieldNode.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
+  addMethod(fieldNode,body,fieldNode.getType());
 }
