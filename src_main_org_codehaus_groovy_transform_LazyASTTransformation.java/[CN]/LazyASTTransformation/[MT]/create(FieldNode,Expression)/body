@@ -5,7 +5,7 @@
     body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(fieldExpr),new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))));
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new SynchronizedStatement(synchTarget(),new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))))));
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new SynchronizedStatement(synchTarget(fieldNode),new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))))));
   }
   addMethod(fieldNode,body,fieldNode.getType());
 }

@@ -6,5 +6,6 @@
   final Expression paramExpr=new VariableExpression(parameter);
   body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(paramExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),new ConstructorCallExpression(SOFT_REF,paramExpr))),new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),NULL_EXPR))));
   int visibility=ACC_PUBLIC;
+  if (fieldNode.isStatic())   visibility|=ACC_STATIC;
   fieldNode.getDeclaringClass().addMethod(name,visibility,ClassHelper.VOID_TYPE,new Parameter[]{parameter},ClassNode.EMPTY_ARRAY,body);
 }
