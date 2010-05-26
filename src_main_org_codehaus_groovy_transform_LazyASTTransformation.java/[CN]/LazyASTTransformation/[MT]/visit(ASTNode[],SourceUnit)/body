@@ -5,7 +5,7 @@
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (parent instanceof FieldNode) {
-    FieldNode fieldNode=(FieldNode)parent;
+    final FieldNode fieldNode=(FieldNode)parent;
     final Expression member=node.getMember("soft");
     final Expression init=getInitExpr(fieldNode);
     fieldNode.rename("$" + fieldNode.getName());
@@ -13,6 +13,9 @@
     if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(true))     createSoft(fieldNode,init);
  else {
       create(fieldNode,init);
+      if (ClassHelper.isPrimitiveType(fieldNode.getType())) {
+        fieldNode.setType(ClassHelper.getWrapper(fieldNode.getType()));
+      }
     }
   }
 }

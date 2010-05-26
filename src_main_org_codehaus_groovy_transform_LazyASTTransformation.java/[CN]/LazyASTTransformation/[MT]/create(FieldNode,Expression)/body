@@ -1,11 +1,13 @@
 {
-  BlockStatement body=new BlockStatement();
-  final Expression fieldExpr=new FieldExpression(fieldNode);
-  if ((fieldNode.getModifiers() & ACC_VOLATILE) == 0) {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(fieldExpr),new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))));
+  final BlockStatement body=new BlockStatement();
+  if (fieldNode.isStatic()) {
+    addHolderClassIdiomBody(body,fieldNode,initExpr);
+  }
+ else   if (isVolatile(fieldNode)) {
+    addNonThreadSafeBody(body,fieldNode,initExpr);
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new SynchronizedStatement(synchTarget(fieldNode),new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,notEqualsOp(),NULL_EXPR)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,equalsOp(),initExpr))))));
+    addDoubleCheckedLockingBody(body,fieldNode,initExpr);
   }
   addMethod(fieldNode,body,fieldNode.getType());
 }

@@ -1,20 +1,20 @@
 {
-  BlockStatement body=new BlockStatement();
+  final BlockStatement body=new BlockStatement();
   final Expression fieldExpr=new FieldExpression(fieldNode);
   final Expression resExpr=new VariableExpression("res",type);
   final MethodCallExpression callExpression=new MethodCallExpression(new FieldExpression(fieldNode),"get",new ArgumentListExpression());
   callExpression.setSafe(true);
-  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,equalsOp(),callExpression)));
-  BlockStatement elseBlock=new BlockStatement();
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,equalsOp(),initExpr)));
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,equalsOp(),new ConstructorCallExpression(SOFT_REF,resExpr))));
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,ASSIGN,callExpression)));
+  final BlockStatement elseBlock=new BlockStatement();
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,ASSIGN,initExpr)));
+  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,ASSIGN,new ConstructorCallExpression(SOFT_REF,resExpr))));
   elseBlock.addStatement(new ExpressionStatement(resExpr));
-  final Statement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(resExpr),elseBlock);
-  if ((fieldNode.getModifiers() & ACC_VOLATILE) == 0) {
+  final Statement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(resExpr),elseBlock);
+  if (isVolatile(fieldNode)) {
     body.addStatement(mainIf);
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,notEqualsOp(),NULL_EXPR)),new ExpressionStatement(resExpr),new SynchronizedStatement(synchTarget(fieldNode),mainIf)));
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(resExpr),new SynchronizedStatement(synchTarget(fieldNode),mainIf)));
   }
   addMethod(fieldNode,body,type);
 }
