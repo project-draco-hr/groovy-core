@@ -1,6 +1,7 @@
 {
+  int oldSize=size();
   if (map != null) {
-    List events=new ArrayList();
+    List<PropertyEvent> events=new ArrayList<PropertyEvent>();
     for (Iterator entries=map.entrySet().iterator(); entries.hasNext(); ) {
       Map.Entry entry=(Map.Entry)entries.next();
       String key=String.valueOf(entry.getKey());
@@ -36,7 +37,8 @@
       }
     }
     if (events.size() > 0) {
-      pcs.firePropertyChange(new MultiPropertyEvent(this,(PropertyEvent[])events.toArray(new PropertyEvent[events.size()])));
+      fireMultiPropertyEvent(events);
+      fireSizeChangedEvent(oldSize,size());
     }
   }
 }

@@ -1,4 +1,5 @@
 {
+  int oldSize=size();
   int index=size() - 1;
   index=index < 0 ? 0 : index;
   boolean success=delegate.addAll(c);
@@ -17,7 +18,8 @@
       }
     }
     if (values.size() > 0) {
-      pcs.firePropertyChange(new MultiElementAddedEvent(this,index,values));
+      fireMultiElementAddedEvent(index,values);
+      fireSizeChangedEvent(oldSize,size());
     }
   }
   return success;

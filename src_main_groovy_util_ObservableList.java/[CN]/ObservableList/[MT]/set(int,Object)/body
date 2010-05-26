@@ -3,11 +3,11 @@
   if (test != null) {
     Object result=test.call(element);
     if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
-      pcs.firePropertyChange(new ElementUpdatedEvent(this,oldValue,element,index));
+      fireElementUpdatedEvent(index,oldValue,element);
     }
   }
  else {
-    pcs.firePropertyChange(new ElementUpdatedEvent(this,oldValue,element,index));
+    fireElementUpdatedEvent(index,oldValue,element);
   }
   return oldValue;
 }

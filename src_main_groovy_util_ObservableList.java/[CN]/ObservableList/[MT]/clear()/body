@@ -1,8 +1,10 @@
 {
+  int oldSize=size();
   List values=new ArrayList();
   values.addAll(delegate);
   delegate.clear();
   if (!values.isEmpty()) {
-    pcs.firePropertyChange(new ElementClearedEvent(this,values));
+    fireElementClearedEvent(values);
   }
+  fireSizeChangedEvent(oldSize,size());
 }

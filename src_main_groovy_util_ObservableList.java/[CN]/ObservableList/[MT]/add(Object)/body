@@ -1,14 +1,17 @@
 {
+  int oldSize=size();
   boolean success=delegate.add(o);
   if (success) {
     if (test != null) {
       Object result=test.call(o);
       if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
-        pcs.firePropertyChange(new ElementAddedEvent(this,o,size() - 1));
+        fireElementAddedEvent(size() - 1,o);
+        fireSizeChangedEvent(oldSize,size());
       }
     }
  else {
-      pcs.firePropertyChange(new ElementAddedEvent(this,o,size() - 1));
+      fireElementAddedEvent(size() - 1,o);
+      fireSizeChangedEvent(oldSize,size());
     }
   }
   return success;

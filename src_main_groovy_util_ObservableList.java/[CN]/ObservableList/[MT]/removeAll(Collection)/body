@@ -11,9 +11,11 @@
       }
     }
   }
+  int oldSize=size();
   boolean success=delegate.removeAll(c);
   if (success && !values.isEmpty()) {
-    pcs.firePropertyChange(new MultiElementRemovedEvent(this,values));
+    fireMultiElementRemovedEvent(values);
+    fireSizeChangedEvent(oldSize,size());
   }
   return success;
 }

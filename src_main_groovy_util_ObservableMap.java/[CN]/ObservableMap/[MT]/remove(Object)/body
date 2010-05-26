@@ -1,7 +1,9 @@
 {
+  int oldSize=size();
   Object result=delegate.remove(key);
   if (key != null) {
-    pcs.firePropertyChange(new PropertyRemovedEvent(this,String.valueOf(key),result));
+    firePropertyRemovedEvent(key,result);
+    fireSizeChangedEvent(oldSize,size());
   }
   return result;
 }

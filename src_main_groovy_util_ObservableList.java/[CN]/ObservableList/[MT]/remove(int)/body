@@ -1,5 +1,7 @@
 {
+  int oldSize=size();
   Object element=delegate.remove(index);
-  pcs.firePropertyChange(new ElementRemovedEvent(this,element,index));
+  fireElementRemovedEvent(index,element);
+  fireSizeChangedEvent(oldSize,size());
   return element;
 }
