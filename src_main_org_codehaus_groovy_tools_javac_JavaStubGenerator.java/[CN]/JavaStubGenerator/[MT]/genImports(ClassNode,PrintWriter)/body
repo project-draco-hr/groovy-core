@@ -1,19 +1,15 @@
 {
-  Set<String> imports=new HashSet<String>();
-  imports.addAll(Arrays.asList(ResolveVisitor.DEFAULT_IMPORTS));
+  List<String> imports=new ArrayList<String>();
   ModuleNode moduleNode=classNode.getModule();
   for (  ImportNode importNode : moduleNode.getStarImports()) {
     imports.add(importNode.getPackageName());
   }
   for (  ImportNode imp : moduleNode.getImports()) {
-    String name=imp.getType().getName();
-    int lastDot=name.lastIndexOf('.');
-    if (lastDot != -1)     imports.add(name.substring(0,lastDot + 1));
+    imports.add(imp.getType().getName());
   }
   for (  String imp : imports) {
-    out.print("import ");
-    out.print(imp);
-    out.println("*;");
+    String s=new StringBuilder().append("import ").append(imp).append((imp.charAt(imp.length() - 1) == '.') ? "*;" : ";").toString().replace('$','.');
+    out.println(s);
   }
   out.println();
 }
