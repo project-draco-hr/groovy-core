@@ -1,0 +1,9 @@
+{
+  ClassNode cNode=fNode.getDeclaringClass();
+  BlockStatement body=new BlockStatement();
+  Parameter[] params=new Parameter[2];
+  params[0]=new Parameter(ClassHelper.int_TYPE,"index");
+  params[1]=new Parameter(componentType,"value");
+  body.addStatement(new ExpressionStatement(new BinaryExpression(new BinaryExpression(new VariableExpression(fNode.getName()),INDEX,new VariableExpression(params[0])),ASSIGN,new VariableExpression(params[1]))));
+  cNode.addMethod(makeName(fNode,"set"),getModifiers(fNode),ClassHelper.VOID_TYPE,params,null,body);
+}
