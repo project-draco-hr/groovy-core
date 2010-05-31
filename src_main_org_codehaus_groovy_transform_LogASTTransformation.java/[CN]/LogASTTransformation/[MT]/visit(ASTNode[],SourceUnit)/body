@@ -23,7 +23,7 @@
         addError("Class annotated with Log annotation cannot have log field declared",logField);
       }
  else {
-        ClassNode loggerClassNode=new ClassNode(Logger.class);
+        ClassNode loggerClassNode=new ClassNode("java.util.logging.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class));
         logNode=node.addField("log",Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,loggerClassNode,new MethodCallExpression(new ClassExpression(loggerClassNode),"getLogger",new ConstantExpression(node.getName())));
       }
       super.visitClass(node);
