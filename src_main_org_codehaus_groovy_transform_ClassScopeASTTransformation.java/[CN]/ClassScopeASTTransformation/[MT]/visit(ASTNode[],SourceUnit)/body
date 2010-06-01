@@ -1,0 +1,17 @@
+{
+  sourceUnit=source;
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new GroovyBugError("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(node.getClassNode()))   return;
+  if (parent instanceof DeclarationExpression) {
+    DeclarationExpression de=(DeclarationExpression)parent;
+    ClassNode cNode=de.getDeclaringClass();
+    VariableExpression ve=de.getVariableExpression();
+    cNode.addField(ve.getName(),ACC_PRIVATE,ve.getType(),null);
+    candidate=de;
+    super.visitClass(cNode);
+  }
+}

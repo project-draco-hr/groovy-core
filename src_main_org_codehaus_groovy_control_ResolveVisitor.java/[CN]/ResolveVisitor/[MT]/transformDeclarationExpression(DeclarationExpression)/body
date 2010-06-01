@@ -1,4 +1,5 @@
 {
+  visitAnnotations(de);
   Expression oldLeft=de.getLeftExpression();
   checkingVariableTypeInDeclaration=true;
   Expression left=transform(oldLeft);
@@ -11,6 +12,11 @@
   Expression right=transform(de.getRightExpression());
   if (right == de.getRightExpression())   return de;
   DeclarationExpression newDeclExpr=new DeclarationExpression(left,de.getOperation(),right);
+  newDeclExpr.setDeclaringClass(de.getDeclaringClass());
+  if (newDeclExpr.getDeclaringClass() == null && currentMethod != null) {
+    newDeclExpr.setDeclaringClass(currentMethod.getDeclaringClass());
+  }
   newDeclExpr.setSourcePosition(de);
+  newDeclExpr.addAnnotations(de.getAnnotations());
   return newDeclExpr;
 }

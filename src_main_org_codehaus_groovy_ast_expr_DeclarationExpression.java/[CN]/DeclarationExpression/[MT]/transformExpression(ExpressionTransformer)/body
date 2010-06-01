@@ -1,6 +1,7 @@
 {
-  Expression left=getLeftExpression();
   Expression ret=new DeclarationExpression(transformer.transform(getLeftExpression()),getOperation(),transformer.transform(getRightExpression()));
   ret.setSourcePosition(this);
+  ret.addAnnotations(getAnnotations());
+  ret.setDeclaringClass(getDeclaringClass());
   return ret;
 }
