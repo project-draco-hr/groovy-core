@@ -1,13 +1,11 @@
 {
   if (isConstructor(node))   return;
-  List methods=currentClass.getMethods(node.getName());
   boolean hasPrivate=false;
   boolean hasPublic=false;
-  for (Iterator iter=methods.iterator(); iter.hasNext(); ) {
-    MethodNode element=(MethodNode)iter.next();
-    if (element == node)     continue;
-    if (!element.getDeclaringClass().equals(node.getDeclaringClass()))     continue;
-    int modifiers=element.getModifiers();
+  for (  MethodNode method : currentClass.getMethods(node.getName())) {
+    if (method == node)     continue;
+    if (!method.getDeclaringClass().equals(node.getDeclaringClass()))     continue;
+    int modifiers=method.getModifiers();
     if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
       hasPublic=true;
     }

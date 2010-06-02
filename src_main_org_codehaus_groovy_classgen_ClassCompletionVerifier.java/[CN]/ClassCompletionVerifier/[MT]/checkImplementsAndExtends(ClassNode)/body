@@ -3,9 +3,8 @@
   if (cn.isInterface() && !node.isInterface()) {
     addError("You are not allowed to extend the " + getDescription(cn) + ", use implements instead.",node);
   }
-  ClassNode[] interfaces=node.getInterfaces();
-  for (int i=0; i < interfaces.length; i++) {
-    cn=interfaces[i];
+  for (  ClassNode anInterface : node.getInterfaces()) {
+    cn=anInterface;
     if (!cn.isInterface()) {
       addError("You are not allowed to implement the " + getDescription(cn) + ", use extends instead.",node);
     }

@@ -1,8 +1,6 @@
 {
   if (!cn.isInterface())   return;
-  List methods=cn.getMethods();
-  for (Iterator cnIter=methods.iterator(); cnIter.hasNext(); ) {
-    MethodNode method=(MethodNode)cnIter.next();
+  for (  MethodNode method : cn.getMethods()) {
     if (Modifier.isFinal(method.getModifiers())) {
       addError("The " + getDescription(method) + " from "+ getDescription(cn)+ " must not be final. It is by definition abstract.",method);
     }
