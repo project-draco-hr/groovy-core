@@ -9,8 +9,11 @@
   if (parent instanceof DeclarationExpression) {
     DeclarationExpression de=(DeclarationExpression)parent;
     ClassNode cNode=de.getDeclaringClass();
+    if (!cNode.isDerivedFrom(SCRIPT_TYPE)) {
+      addError("Error: annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
+    }
     VariableExpression ve=de.getVariableExpression();
-    cNode.addField(ve.getName(),ve.getModifiers(),ve.getType(),null);
+    cNode.addField(ve.getName(),ve.getModifiers(),ve.getType(),de.getRightExpression());
     candidate=de;
     super.visitClass(cNode);
   }
