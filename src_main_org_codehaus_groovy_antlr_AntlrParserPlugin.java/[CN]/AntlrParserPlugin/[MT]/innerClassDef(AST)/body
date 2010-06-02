@@ -26,6 +26,8 @@
   }
   MixinNode[] mixins={};
   ClassNode outerClass=classNode;
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
   if (classNode != null) {
     name=classNode.getNameWithoutPackage() + "$" + name;
     String fullName=dot(classNode.getPackageName(),name);
@@ -36,6 +38,7 @@
   }
   classNode.addAnnotations(annotations);
   classNode.setGenericsTypes(genericsType);
+  classNode.setSyntheticPublic(syntheticPublic);
   configureAST(classNode,classDef);
   output.addClass(classNode);
   int oldClassCount=innerClassCounter;

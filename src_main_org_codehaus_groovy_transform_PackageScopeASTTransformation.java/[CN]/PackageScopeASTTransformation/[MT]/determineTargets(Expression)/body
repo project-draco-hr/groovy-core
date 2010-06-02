@@ -1,0 +1,16 @@
+{
+  List<groovy.transform.PackageScopeTarget> list=new ArrayList<groovy.transform.PackageScopeTarget>();
+  if (expr instanceof PropertyExpression) {
+    list.add(extractTarget((PropertyExpression)expr));
+  }
+ else   if (expr instanceof ListExpression) {
+    final ListExpression expressionList=(ListExpression)expr;
+    final List<Expression> expressions=expressionList.getExpressions();
+    for (    Expression ex : expressions) {
+      if (ex instanceof PropertyExpression) {
+        list.add(extractTarget((PropertyExpression)ex));
+      }
+    }
+  }
+  return list;
+}

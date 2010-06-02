@@ -20,7 +20,10 @@
   }
   assertNodeType(SLIST,node);
   Statement code=statementList(node);
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
   ConstructorNode constructorNode=classNode.addConstructor(modifiers,parameters,exceptions,code);
+  constructorNode.setSyntheticPublic(syntheticPublic);
   constructorNode.addAnnotations(annotations);
   configureAST(constructorNode,constructorDef);
 }

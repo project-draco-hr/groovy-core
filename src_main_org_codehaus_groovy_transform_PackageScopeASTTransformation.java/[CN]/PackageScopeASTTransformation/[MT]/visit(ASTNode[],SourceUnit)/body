@@ -1,14 +1,26 @@
 {
-  if (!(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: wrong types: $node.class / $parent.class");
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
   }
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
-  if (!MY_TYPE.equals(node.getClassNode()))   return;
+  boolean legacyMode=LEGACY_TYPE_NAME.equals(node.getClassNode().getName());
+  if (!MY_TYPE.equals(node.getClassNode()) && !legacyMode)   return;
+  Expression value=node.getMember("value");
   if (parent instanceof ClassNode) {
-    visitClassNode((ClassNode)parent);
+    List<groovy.transform.PackageScopeTarget> targets;
+    if (value == null)     targets=Arrays.asList(legacyMode ? PackageScopeTarget.FIELDS : PackageScopeTarget.CLASS);
+ else     targets=determineTargets(value);
+    visitClassNode((ClassNode)parent,targets);
+    parent.getAnnotations();
   }
- else   if (parent instanceof FieldNode) {
-    visitFieldNode((FieldNode)parent);
+ else {
+    if (value != null)     throw new RuntimeException("Error during " + MY_TYPE_NAME + " processing: "+ TARGET_CLASS_NAME+ " only allowed at class level.");
+    if (parent instanceof MethodNode) {
+      visitMethodNode((MethodNode)parent);
+    }
+ else     if (parent instanceof FieldNode) {
+      visitFieldNode((FieldNode)parent);
+    }
   }
 }

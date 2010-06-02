@@ -63,10 +63,13 @@
       throw new ASTRuntimeException(methodDef,"Abstract methods do not define a body.");
     }
   }
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
   MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
   methodNode.addAnnotations(annotations);
   methodNode.setGenericsTypes(generics);
   methodNode.setAnnotationDefault(hasAnnotationDefault);
+  methodNode.setSyntheticPublic(syntheticPublic);
   configureAST(methodNode,methodDef);
   if (classNode != null) {
     classNode.addMethod(methodNode);

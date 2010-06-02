@@ -22,7 +22,10 @@
     interfaces=interfaces(node);
     node=node.getNextSibling();
   }
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
   classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,null);
+  classNode.setSyntheticPublic(syntheticPublic);
   classNode.addAnnotations(annotations);
   classNode.setGenericsTypes(genericsType);
   configureAST(classNode,classDef);

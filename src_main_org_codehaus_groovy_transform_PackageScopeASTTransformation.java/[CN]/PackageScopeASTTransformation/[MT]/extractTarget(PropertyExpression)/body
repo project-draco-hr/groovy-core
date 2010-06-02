@@ -1,0 +1,18 @@
+{
+  Expression oe=expr.getObjectExpression();
+  if (oe instanceof ClassExpression) {
+    ClassExpression ce=(ClassExpression)oe;
+    if (ce.getType().getTypeClass().equals(TARGET_CLASS)) {
+      Expression prop=expr.getProperty();
+      if (prop instanceof ConstantExpression) {
+        String propName=(String)((ConstantExpression)prop).getValue();
+        try {
+          return PackageScopeTarget.valueOf(propName);
+        }
+ catch (        IllegalArgumentException iae) {
+        }
+      }
+    }
+  }
+  throw new RuntimeException("Internal error during " + MY_TYPE_NAME + " processing. Annotation parameters must be of type: "+ TARGET_CLASS_NAME+ ".");
+}
