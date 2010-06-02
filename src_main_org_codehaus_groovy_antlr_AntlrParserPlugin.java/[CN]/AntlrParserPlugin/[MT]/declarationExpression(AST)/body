@@ -2,14 +2,9 @@
   AST node=variableDef.getFirstChild();
   ClassNode type=null;
   List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
-  boolean staticVariable=false;
-  AST modifierNode=null;
+  int modifiers=0;
   if (isType(MODIFIERS,node)) {
-    int modifiers=modifiers(node,annotations,0);
-    if ((modifiers & Opcodes.ACC_STATIC) != 0) {
-      modifierNode=node;
-      staticVariable=true;
-    }
+    modifiers=modifiers(node,annotations,0);
     node=node.getNextSibling();
   }
   if (isType(TYPE,node)) {
@@ -33,11 +28,10 @@
     if (right != null)     rightExpression=expression(right);
   }
  else {
-    if (staticVariable) {
-      throw new ASTRuntimeException(modifierNode,"Variable definition has an incorrect modifier 'static'.");
-    }
     String name=identifier(node);
-    leftExpression=new VariableExpression(name,type);
+    VariableExpression ve=new VariableExpression(name,type);
+    ve.setModifiers(modifiers);
+    leftExpression=ve;
     right=node.getNextSibling();
     if (right != null) {
       assertNodeType(ASSIGN,right);
