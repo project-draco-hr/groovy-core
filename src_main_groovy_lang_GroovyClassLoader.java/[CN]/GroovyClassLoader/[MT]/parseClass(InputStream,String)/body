@@ -1,6 +1,6 @@
 {
-  GroovyCodeSource gcs=(GroovyCodeSource)AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
+  GroovyCodeSource gcs=AccessController.doPrivileged(new PrivilegedAction<GroovyCodeSource>(){
+    public GroovyCodeSource run(){
       try {
         String scriptText=config.getSourceEncoding() != null ? DefaultGroovyMethods.getText(in,config.getSourceEncoding()) : DefaultGroovyMethods.getText(in);
         return new GroovyCodeSource(scriptText,fileName,"/groovy/script");
