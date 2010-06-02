@@ -28,25 +28,23 @@ catch (  NoClassDefFoundError ncdfe) {
   }
   if (cls != null && preferClassOverScript)   return cls;
   if (lookupScriptFiles) {
-synchronized (sourceCache) {
-      try {
-        final Class classCacheEntry=getClassCacheEntry(name);
-        if (classCacheEntry != cls)         return classCacheEntry;
-        URL source=resourceLoader.loadGroovySource(name);
-        Class oldClass=cls;
-        cls=null;
-        cls=recompile(source,name,oldClass);
-      }
- catch (      IOException ioe) {
-        last=new ClassNotFoundException("IOException while opening groovy source: " + name,ioe);
-      }
+    try {
+      final Class classCacheEntry=getClassCacheEntry(name);
+      if (classCacheEntry != cls)       return classCacheEntry;
+      URL source=resourceLoader.loadGroovySource(name);
+      Class oldClass=cls;
+      cls=null;
+      cls=recompile(source,name,oldClass);
+    }
+ catch (    IOException ioe) {
+      last=new ClassNotFoundException("IOException while opening groovy source: " + name,ioe);
+    }
  finally {
-        if (cls == null) {
-          removeClassCacheEntry(name);
-        }
+      if (cls == null) {
+        removeClassCacheEntry(name);
+      }
  else {
-          setClassCacheEntry(cls);
-        }
+        setClassCacheEntry(cls);
       }
     }
   }
