@@ -4,14 +4,19 @@
   ScriptCacheEntry entry=scriptCache.get(path);
   Class clazz=null;
   if (entry != null)   clazz=entry.scriptClass;
-  if (isSourceNewer(entry)) {
-    try {
-      String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : "UTF-8";
-      clazz=groovyLoader.parseClass(DefaultGroovyMethods.getText(conn.getInputStream(),encoding),conn.getURL().getPath());
+  try {
+    if (isSourceNewer(entry)) {
+      try {
+        String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : "UTF-8";
+        clazz=groovyLoader.parseClass(DefaultGroovyMethods.getText(conn.getInputStream(),encoding),conn.getURL().getPath());
+      }
+ catch (      IOException e) {
+        throw new ResourceException(e);
+      }
     }
- catch (    IOException e) {
-      throw new ResourceException(e);
-    }
+  }
+  finally {
+    forceClose(conn);
   }
   return clazz;
 }
