@@ -6,5 +6,10 @@
   }
  catch (  NoSuchMethodException e) {
   }
-  return createPogoGetPropertySite(aClass);
+  if (receiver instanceof Class) {
+    return createClassMetaClassGetPropertySite((Class)receiver);
+  }
+ else {
+    return createPogoGetPropertySite(aClass);
+  }
 }
