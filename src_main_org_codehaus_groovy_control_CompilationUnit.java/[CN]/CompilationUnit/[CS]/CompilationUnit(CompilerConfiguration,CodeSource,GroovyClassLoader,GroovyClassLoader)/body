@@ -1,14 +1,14 @@
 {
   super(configuration,loader,null);
   this.transformLoader=transformLoader;
-  this.names=new ArrayList();
-  this.queuedSources=new LinkedList();
-  this.sources=new HashMap();
+  this.names=new ArrayList<String>();
+  this.queuedSources=new LinkedList<SourceUnit>();
+  this.sources=new HashMap<String,SourceUnit>();
   this.summariesBySourceName=new HashMap();
   this.summariesByPublicClassName=new HashMap();
   this.classSourcesByPublicClassName=new HashMap();
   this.ast=new CompileUnit(this.classLoader,security,this.configuration);
-  this.generatedClasses=new ArrayList();
+  this.generatedClasses=new ArrayList<GroovyClass>();
   this.verifier=new Verifier();
   this.resolveVisitor=new ResolveVisitor(this);
   this.staticImportVisitor=new StaticImportVisitor(this);

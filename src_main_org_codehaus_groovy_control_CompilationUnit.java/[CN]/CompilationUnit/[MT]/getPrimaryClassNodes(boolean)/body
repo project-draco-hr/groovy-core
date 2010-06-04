@@ -1,23 +1,18 @@
 {
-  List unsorted=new ArrayList();
-  Iterator modules=this.ast.getModules().iterator();
-  while (modules.hasNext()) {
-    ModuleNode module=(ModuleNode)modules.next();
-    Iterator classNodes=module.getClasses().iterator();
-    while (classNodes.hasNext()) {
-      ClassNode classNode=(ClassNode)classNodes.next();
+  List<ClassNode> unsorted=new ArrayList<ClassNode>();
+  for (  ModuleNode module : this.ast.getModules()) {
+    for (    ClassNode classNode : module.getClasses()) {
       unsorted.add(classNode);
     }
   }
-  if (sort == false)   return unsorted;
+  if (!sort)   return unsorted;
   int[] indexClass=new int[unsorted.size()];
   int[] indexInterface=new int[unsorted.size()];
 {
     int i=0;
-    for (Iterator iter=unsorted.iterator(); iter.hasNext(); i++) {
-      ClassNode node=(ClassNode)iter.next();
-      ClassNode element=node;
-      if (node.isInterface()) {
+    for (Iterator<ClassNode> iter=unsorted.iterator(); iter.hasNext(); i++) {
+      ClassNode element=iter.next();
+      if (element.isInterface()) {
         indexInterface[i]=getSuperInterfaceCount(element);
         indexClass[i]=-1;
       }
@@ -27,7 +22,7 @@
       }
     }
   }
-  List sorted=getSorted(indexInterface,unsorted);
+  List<ClassNode> sorted=getSorted(indexInterface,unsorted);
   sorted.addAll(getSorted(indexClass,unsorted));
   return sorted;
 }

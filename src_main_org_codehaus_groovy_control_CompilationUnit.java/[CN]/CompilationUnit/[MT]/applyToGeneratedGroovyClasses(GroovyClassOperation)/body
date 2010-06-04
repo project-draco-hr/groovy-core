@@ -2,10 +2,7 @@
   if (this.phase != Phases.OUTPUT && !(this.phase == Phases.CLASS_GENERATION && this.phaseComplete)) {
     throw new GroovyBugError("CompilationUnit not ready for output(). Current phase=" + getPhaseDescription());
   }
-  boolean failures=false;
-  Iterator iterator=this.generatedClasses.iterator();
-  while (iterator.hasNext()) {
-    GroovyClass gclass=(GroovyClass)iterator.next();
+  for (  GroovyClass gclass : this.generatedClasses) {
     try {
       body.call(gclass);
     }
@@ -19,8 +16,7 @@ catch (    GroovyBugError e) {
       throw e;
     }
 catch (    Exception e) {
-      GroovyBugError gbe=new GroovyBugError(e);
-      throw gbe;
+      throw new GroovyBugError(e);
     }
   }
   getErrorCollector().failIfErrors();
