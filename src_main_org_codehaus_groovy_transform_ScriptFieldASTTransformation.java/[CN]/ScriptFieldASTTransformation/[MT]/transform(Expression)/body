@@ -1,7 +1,13 @@
 {
   if (expr == null)   return null;
-  if (expr instanceof DeclarationExpression && expr == candidate) {
-    return new ConstantExpression(null);
+  if (expr instanceof DeclarationExpression) {
+    DeclarationExpression de=(DeclarationExpression)expr;
+    if (de.getVariableExpression() == candidate.getVariableExpression()) {
+      if (insideScriptBody) {
+        return EmptyExpression.INSTANCE;
+      }
+      addError("Error: annotation " + MY_TYPE_NAME + " can only be used within a Script body.",expr);
+    }
   }
   return expr.transformExpression(this);
 }
