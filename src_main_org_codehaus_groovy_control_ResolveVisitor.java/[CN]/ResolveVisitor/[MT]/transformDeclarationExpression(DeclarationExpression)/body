@@ -10,12 +10,13 @@
     return de;
   }
   Expression right=transform(de.getRightExpression());
-  if (right == de.getRightExpression())   return de;
+  if (right == de.getRightExpression()) {
+    fixDeclaringClass(de);
+    return de;
+  }
   DeclarationExpression newDeclExpr=new DeclarationExpression(left,de.getOperation(),right);
   newDeclExpr.setDeclaringClass(de.getDeclaringClass());
-  if (newDeclExpr.getDeclaringClass() == null && currentMethod != null) {
-    newDeclExpr.setDeclaringClass(currentMethod.getDeclaringClass());
-  }
+  fixDeclaringClass(newDeclExpr);
   newDeclExpr.setSourcePosition(de);
   newDeclExpr.addAnnotations(de.getAnnotations());
   return newDeclExpr;
