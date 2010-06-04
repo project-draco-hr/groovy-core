@@ -1,9 +1,7 @@
 {
-  List expressions=expression.getExpressions();
-  for (Iterator iter=expressions.iterator(); iter.hasNext(); ) {
-    Object element=iter.next();
+  for (  Expression element : expression.getExpressions()) {
     if (element instanceof MapEntryExpression) {
-      throw new RuntimeParserException("no map entry allowed at this place",(Expression)element);
+      throw new RuntimeParserException("No map entry allowed at this place",element);
     }
   }
   super.visitListExpression(expression);
