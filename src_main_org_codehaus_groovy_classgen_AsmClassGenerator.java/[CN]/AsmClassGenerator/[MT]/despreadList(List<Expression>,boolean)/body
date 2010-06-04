@@ -1,14 +1,14 @@
 {
-  ArrayList spreadIndexes=new ArrayList();
-  ArrayList spreadExpressions=new ArrayList();
-  ArrayList normalArguments=new ArrayList();
+  List<Expression> spreadIndexes=new ArrayList<Expression>();
+  List<Expression> spreadExpressions=new ArrayList<Expression>();
+  List<Expression> normalArguments=new ArrayList<Expression>();
   for (int i=0; i < expressions.size(); i++) {
-    Object expr=expressions.get(i);
+    Expression expr=expressions.get(i);
     if (!(expr instanceof SpreadExpression)) {
       normalArguments.add(expr);
     }
  else {
-      spreadIndexes.add(new ConstantExpression(Integer.valueOf(i - spreadExpressions.size())));
+      spreadIndexes.add(new ConstantExpression(i - spreadExpressions.size()));
       spreadExpressions.add(((SpreadExpression)expr).getExpression());
     }
   }

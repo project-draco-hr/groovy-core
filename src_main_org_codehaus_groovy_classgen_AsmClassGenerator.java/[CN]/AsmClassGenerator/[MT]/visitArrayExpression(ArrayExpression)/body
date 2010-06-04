@@ -1,12 +1,11 @@
 {
   ClassNode elementType=expression.getElementType();
   String arrayTypeName=BytecodeHelper.getClassInternalName(elementType);
-  List sizeExpression=expression.getSizeExpression();
+  List<Expression> sizeExpression=expression.getSizeExpression();
   int size=0;
   int dimensions=0;
   if (sizeExpression != null) {
-    for (Iterator iter=sizeExpression.iterator(); iter.hasNext(); ) {
-      Expression element=(Expression)iter.next();
+    for (    Expression element : sizeExpression) {
       if (element == ConstantExpression.EMPTY_EXPRESSION)       break;
       dimensions++;
       visitAndAutoboxBoolean(element);
