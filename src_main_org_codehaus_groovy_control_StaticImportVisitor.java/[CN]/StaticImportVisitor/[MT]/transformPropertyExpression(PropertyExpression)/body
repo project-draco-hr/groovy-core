@@ -17,14 +17,6 @@
       }
     }
   }
-  if (objectExpression instanceof VariableExpression) {
-    VariableExpression ve=(VariableExpression)objectExpression;
-    boolean isExplicitSuper=ve.getName().equals("super");
-    if (isExplicitSuper && currentMethod != null && currentMethod.isStatic()) {
-      addError("'super' cannot be used in a static context, use the explicit class instead.",pe);
-      return null;
-    }
-  }
   if (foundArgs != null && foundConstant != null) {
     Expression result=findStaticMethodImportFromModule(foundConstant,foundArgs);
     if (result != null) {
@@ -35,6 +27,5 @@
   foundArgs=oldFoundArgs;
   foundConstant=oldFoundConstant;
   pe.setObjectExpression(objectExpression);
-  if (!inSpecialConstructorCall)   checkStaticScope(pe);
   return pe;
 }

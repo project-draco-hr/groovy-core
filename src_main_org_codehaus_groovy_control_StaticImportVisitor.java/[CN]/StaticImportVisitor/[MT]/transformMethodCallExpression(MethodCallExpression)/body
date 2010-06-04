@@ -3,15 +3,9 @@
   Expression method=transform(mce.getMethod());
   Expression object=transform(mce.getObjectExpression());
   boolean isExplicitThisOrSuper=false;
-  boolean isExplicitSuper;
   if (object instanceof VariableExpression) {
     VariableExpression ve=(VariableExpression)object;
     isExplicitThisOrSuper=!mce.isImplicitThis() && (ve.getName().equals("this") || ve.getName().equals("super"));
-    isExplicitSuper=ve.getName().equals("super");
-    if (isExplicitSuper && currentMethod != null && currentMethod.isStatic()) {
-      addError("'super' cannot be used in a static context, use the explicit class instead.",mce);
-      return mce;
-    }
   }
   if (mce.isImplicitThis() || isExplicitThisOrSuper) {
     if (mce.isImplicitThis()) {

@@ -35,8 +35,8 @@
       if (ce.getValue() instanceof AnnotationNode) {
         AnnotationNode an=(AnnotationNode)ce.getValue();
         Map<String,Expression> attributes=an.getMembers();
-        for (        Map.Entry entry : attributes.entrySet()) {
-          Expression attrExpr=transform((Expression)entry.getValue());
+        for (        Map.Entry<String,Expression> entry : attributes.entrySet()) {
+          Expression attrExpr=transform(entry.getValue());
           entry.setValue(attrExpr);
         }
       }
