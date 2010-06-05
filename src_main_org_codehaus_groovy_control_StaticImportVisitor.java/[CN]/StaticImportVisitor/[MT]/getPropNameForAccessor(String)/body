@@ -1,5 +1,6 @@
 {
-  if (fieldName.length() < 4)   return fieldName;
+  int prefixLength=fieldName.startsWith("is") ? 2 : 3;
+  if (fieldName.length() < prefixLength + 1)   return fieldName;
   if (!validPropName(fieldName))   return fieldName;
-  return String.valueOf(fieldName.charAt(3)).toLowerCase() + fieldName.substring(4);
+  return String.valueOf(fieldName.charAt(prefixLength)).toLowerCase() + fieldName.substring(prefixLength + 1);
 }

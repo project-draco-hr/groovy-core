@@ -11,6 +11,16 @@
     expression=findStaticPropertyAccessor(importNode.getType(),getPropNameForAccessor(importNode.getFieldName()));
     if (expression != null)     return expression;
   }
+  if (accessorName.startsWith("get")) {
+    accessorName="is" + accessorName.substring(3);
+    if (importNodes.containsKey(accessorName)) {
+      ImportNode importNode=importNodes.get(accessorName);
+      expression=findStaticPropertyAccessorByFullName(importNode.getType(),importNode.getFieldName());
+      if (expression != null)       return expression;
+      expression=findStaticPropertyAccessor(importNode.getType(),getPropNameForAccessor(importNode.getFieldName()));
+      if (expression != null)       return expression;
+    }
+  }
   if (importNodes.containsKey(name)) {
     ImportNode importNode=importNodes.get(name);
     expression=findStaticPropertyAccessor(importNode.getType(),importNode.getFieldName());

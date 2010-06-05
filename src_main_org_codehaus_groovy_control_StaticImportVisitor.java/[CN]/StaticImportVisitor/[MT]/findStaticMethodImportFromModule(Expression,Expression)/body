@@ -20,11 +20,11 @@
     String propName=getPropNameForAccessor(name);
     if (importNodes.containsKey(propName)) {
       ImportNode importNode=importNodes.get(propName);
-      expression=findStaticMethod(importNode.getType(),name.substring(0,3) + capitalize(importNode.getFieldName()),args);
+      expression=findStaticMethod(importNode.getType(),prefix(name) + capitalize(importNode.getFieldName()),args);
       if (expression != null)       return expression;
       expression=findStaticPropertyAccessorGivenArgs(importNode.getType(),importNode.getFieldName(),args);
       if (expression != null) {
-        return new StaticMethodCallExpression(importNode.getType(),name.substring(0,3) + capitalize(importNode.getFieldName()),args);
+        return new StaticMethodCallExpression(importNode.getType(),prefix(name) + capitalize(importNode.getFieldName()),args);
       }
     }
   }
