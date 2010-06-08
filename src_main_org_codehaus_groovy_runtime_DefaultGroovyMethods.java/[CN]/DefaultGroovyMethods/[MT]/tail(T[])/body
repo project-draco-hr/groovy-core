@@ -1,0 +1,9 @@
+{
+  if (self.length == 0) {
+    throw new NoSuchElementException("Cannot access tail() for an empty Object array");
+  }
+  Class<T> componentType=(Class<T>)self.getClass().getComponentType();
+  T[] result=(T[])Array.newInstance(componentType,self.length - 1);
+  System.arraycopy(self,1,result,0,self.length - 1);
+  return result;
+}
