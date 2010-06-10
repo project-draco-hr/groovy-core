@@ -21,13 +21,13 @@
   fb.startRange(synchronizedStart);
   compileStack.pushBlockRecorder(fb);
   statement.getCode().visit(this);
+  fb.closeRange(catchAll);
+  compileStack.writeExceptionTable(fb,catchAll,null);
+  compileStack.pop();
   finallyPart.run();
   mv.visitJumpInsn(GOTO,synchronizedEnd);
   mv.visitLabel(catchAll);
   finallyPart.run();
   mv.visitInsn(ATHROW);
   mv.visitLabel(synchronizedEnd);
-  fb.closeRange(synchronizedEnd);
-  compileStack.writeExceptionTable(fb,catchAll,null);
-  compileStack.pop();
 }
