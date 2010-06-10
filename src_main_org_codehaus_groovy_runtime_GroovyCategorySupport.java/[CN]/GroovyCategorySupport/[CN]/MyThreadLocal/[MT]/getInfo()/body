@@ -1,6 +1,14 @@
 {
-  ThreadCategoryInfo tcinfo=(ThreadCategoryInfo)get().get();
-  if (tcinfo == null) {
+  final SoftReference reference=get();
+  ThreadCategoryInfo tcinfo;
+  if (reference != null) {
+    tcinfo=(ThreadCategoryInfo)reference.get();
+    if (tcinfo == null) {
+      tcinfo=new ThreadCategoryInfo();
+      set(new SoftReference(tcinfo));
+    }
+  }
+ else {
     tcinfo=new ThreadCategoryInfo();
     set(new SoftReference(tcinfo));
   }
