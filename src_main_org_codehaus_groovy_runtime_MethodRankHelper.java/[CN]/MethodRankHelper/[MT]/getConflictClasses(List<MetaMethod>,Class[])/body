@@ -1,0 +1,19 @@
+{
+  LinkedList<Pair<Class,Class>> ret=new LinkedList();
+  Set<Class> recordedClasses=new HashSet<Class>();
+  for (  MetaMethod method : sugg) {
+    Class[] para=method.getNativeParameterTypes();
+    for (int pi=0; pi < para.length; pi++) {
+      if (recordedClasses.contains(para[pi]))       continue;
+      for (int ai=0; ai < argumentClasses.length; ai++) {
+        if (argumentClasses[ai] == null)         continue;
+        if (argumentClasses[ai] == para[pi])         continue;
+        if (argumentClasses[ai].getName().equals(para[pi].getName())) {
+          ret.add(new Pair(argumentClasses[ai],para[pi]));
+        }
+      }
+      recordedClasses.add(para[pi]);
+    }
+  }
+  return ret;
+}

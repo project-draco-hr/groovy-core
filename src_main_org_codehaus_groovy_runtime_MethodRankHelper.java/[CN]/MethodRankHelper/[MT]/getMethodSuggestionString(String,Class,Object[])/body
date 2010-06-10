@@ -3,8 +3,8 @@
   List<MetaMethod> methods=new ArrayList(ci.getMetaClass().getMethods());
   methods.addAll(ci.getMetaClass().getMetaMethods());
   List<MetaMethod> sugg=rankMethods(methodName,arguments,methods);
+  StringBuffer sb=new StringBuffer();
   if (!sugg.isEmpty()) {
-    StringBuffer sb=new StringBuffer();
     sb.append("\nPossible solutions: ");
     for (int i=0; i < sugg.size(); i++) {
       if (i != 0)       sb.append(", ");
@@ -12,9 +12,28 @@
       sb.append(listParameterNames(sugg.get(i).getParameterTypes()));
       sb.append(")");
     }
-    return sb.toString();
   }
+  Class[] argumentClasses=getArgumentClasses(arguments);
+  List<Pair<Class,Class>> conflictClasses=getConflictClasses(sugg,argumentClasses);
+  if (!conflictClasses.isEmpty()) {
+    sb.append("\nThe following classes appear as argument class and as parameter class, ");
+    sb.append("but are defined by different class loader:\n");
+    boolean first=true;
+    for (    Pair<Class,Class> pair : conflictClasses) {
+      if (!first) {
+        sb.append(", ");
+      }
  else {
-    return "";
+        first=false;
+      }
+      sb.append(pair.u.getName() + " (defined by '");
+      sb.append(pair.u.getClassLoader());
+      sb.append("' and '");
+      sb.append(pair.v.getClassLoader());
+      sb.append("')");
+    }
+    sb.append("\nIf one of the method suggestions matches the method you wanted to call, ");
+    sb.append("\nthen check your class loader setup.");
   }
+  return sb.toString();
 }
