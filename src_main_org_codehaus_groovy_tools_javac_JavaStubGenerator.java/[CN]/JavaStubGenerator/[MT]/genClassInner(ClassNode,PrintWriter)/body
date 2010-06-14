@@ -35,8 +35,10 @@
     }
 ;
     verifier.visitClass(classNode);
+    currentModule=classNode.getModule();
     boolean isInterface=classNode.isInterface();
     boolean isEnum=(classNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
+    printAnnotations(out,classNode);
     printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
     if (isInterface) {
       out.print("interface ");
@@ -85,5 +87,6 @@
   finally {
     propertyMethods.clear();
     constructors.clear();
+    currentModule=null;
   }
 }

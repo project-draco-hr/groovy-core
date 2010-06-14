@@ -29,6 +29,9 @@
     }
   }
  else {
-    out.print(type.redirect().getName().replace('$','.'));
+    String name=type.getName();
+    ClassNode alias=currentModule.getImportType(name);
+    if (alias != null)     name=alias.getName();
+    out.print(name.replace('$','.'));
   }
 }
