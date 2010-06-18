@@ -1,5 +1,6 @@
 {
   if (value == null)   return "null";
+  if (isEmptyStr(value))   return "\"\"";
   String str;
   String errorMsg="";
   try {
@@ -11,6 +12,9 @@
   }
   if (str == null || str.equals("")) {
     String hash=Integer.toHexString(System.identityHashCode(value));
+    if (errorMsg.equals("")) {
+      errorMsg=(str == null) ? " (toString() == null)" : " (toString() == \"\")";
+    }
     return value.getClass().getName() + "@" + hash+ errorMsg;
   }
   return str;
