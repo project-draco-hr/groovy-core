@@ -1,0 +1,27 @@
+{
+  if (self == null) {
+    return other == null;
+  }
+  if (other == null) {
+    return false;
+  }
+  if (self.size() != other.size()) {
+    return false;
+  }
+  final Iterator it1=self.iterator();
+  Collection otherItems=new HashSet(other);
+  while (it1.hasNext()) {
+    final Object o1=it1.next();
+    final Iterator it2=otherItems.iterator();
+    Object foundItem=null;
+    while (it2.hasNext() && foundItem == null) {
+      final Object o2=it2.next();
+      if (coercedEquals(o1,o2)) {
+        foundItem=o2;
+      }
+    }
+    if (foundItem == null)     return false;
+    otherItems.remove(foundItem);
+  }
+  return otherItems.size() == 0;
+}

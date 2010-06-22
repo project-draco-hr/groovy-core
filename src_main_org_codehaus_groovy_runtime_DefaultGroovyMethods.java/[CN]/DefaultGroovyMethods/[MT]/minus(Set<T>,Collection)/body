@@ -1,8 +1,18 @@
 {
   final Set<T> ansSet=createSimilarSet(self);
   ansSet.addAll(self);
-  if (self.size() > 0) {
-    ansSet.removeAll(operands);
+  if (operands != null && operands.size() > 0) {
+    final Iterator it1=self.iterator();
+    while (it1.hasNext()) {
+      final Object o1=it1.next();
+      final Iterator it2=operands.iterator();
+      while (it2.hasNext()) {
+        final Object o2=it2.next();
+        if (coercedEquals(o1,o2)) {
+          ansSet.remove(o1);
+        }
+      }
+    }
   }
   return ansSet;
 }
