@@ -1,8 +1,37 @@
 {
+  boolean getAtOp=false;
+  BinaryExpression be=null;
+  Expression getAtResultExp=null;
+  String varName="tmp_postfix_" + method;
+  final int idx=compileStack.defineTemporaryVariable(varName,false);
+  if (expression instanceof BinaryExpression) {
+    be=(BinaryExpression)expression;
+    if (be.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      getAtOp=true;
+      be.getRightExpression().visit(this);
+      mv.visitVarInsn(ASTORE,idx);
+      BytecodeExpression newRightExp=new BytecodeExpression(){
+        public void visit(        MethodVisitor mv){
+          mv.visitVarInsn(ALOAD,idx);
+        }
+      }
+;
+      be.setRightExpression(newRightExp);
+    }
+  }
   expression.visit(this);
-  int tempIdx=compileStack.defineTemporaryVariable("postfix_" + method,true);
-  execMethodAndStoreForSubscriptOperator(method,expression);
+  final int tempIdx=compileStack.defineTemporaryVariable("postfix_" + method,true);
+  if (getAtOp) {
+    getAtResultExp=new BytecodeExpression(){
+      public void visit(      MethodVisitor mv){
+        mv.visitVarInsn(ALOAD,tempIdx);
+      }
+    }
+;
+  }
+  execMethodAndStoreForSubscriptOperator(method,expression,getAtResultExp);
   mv.visitInsn(POP);
   mv.visitVarInsn(ALOAD,tempIdx);
   compileStack.removeVar(tempIdx);
+  compileStack.removeVar(idx);
 }
