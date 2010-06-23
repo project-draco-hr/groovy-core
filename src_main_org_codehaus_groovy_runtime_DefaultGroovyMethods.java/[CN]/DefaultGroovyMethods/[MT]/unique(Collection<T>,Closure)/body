@@ -1,7 +1,9 @@
 {
   int params=closure.getMaximumNumberOfParameters();
   if (params == 1) {
-    unique(self,new OrderBy<T>(closure));
+    OrderBy<T> by=new OrderBy<T>(closure);
+    by.setEqualityCheck(true);
+    unique(self,by);
   }
  else {
     unique(self,new ClosureComparator<T>(closure));
