@@ -137,6 +137,7 @@
     args=new Object[1];
     args[0]=object;
   }
+  Exception nested=null;
   if (args != null) {
     try {
       return InvokerHelper.invokeConstructorOf(type,args);
@@ -145,7 +146,15 @@
       throw iie;
     }
 catch (    Exception e) {
+      nested=e;
     }
   }
-  throw new GroovyCastException(object,type);
+  GroovyCastException gce;
+  if (nested != null) {
+    gce=new GroovyCastException(object,type,nested);
+  }
+ else {
+    gce=new GroovyCastException(object,type);
+  }
+  throw gce;
 }
