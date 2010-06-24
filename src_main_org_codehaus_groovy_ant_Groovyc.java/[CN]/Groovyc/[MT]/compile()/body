@@ -79,6 +79,9 @@
         if ((fileEncodingProp != null) && !fileEncodingProp.equals("")) {
           commandLineList.add("-Dfile.encoding=" + fileEncodingProp);
         }
+        if ((targetBytecode != null)) {
+          commandLineList.add("-Dgroovy.target.bytecode=" + targetBytecode);
+        }
         if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
           commandLineList.add("-Xms" + memoryInitialSize);
         }
@@ -170,6 +173,9 @@
           String[] filenames=FileSystemCompiler.generateFileNamesFromOptions(cli);
           boolean fileNameErrors=filenames == null;
           fileNameErrors=fileNameErrors && !FileSystemCompiler.validateFiles(filenames);
+          if (targetBytecode != null) {
+            configuration.setTargetBytecode(targetBytecode);
+          }
           if (!fileNameErrors) {
             FileSystemCompiler.doCompilation(configuration,makeCompileUnit(),filenames);
           }
