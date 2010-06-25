@@ -1,19 +1,22 @@
 {
   if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+    throw new GroovyBugError("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
   }
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (parent instanceof FieldNode) {
     FieldNode fieldNode=(FieldNode)parent;
     final ClassNode type=fieldNode.getType();
-    final Map<String,MethodNode> fieldMethods=type.getDeclaredMethodsMap();
+    if (type.equals(ClassHelper.OBJECT_TYPE) || type.equals(GROOVYOBJECT_TYPE)) {
+      addError("@Delegate field '" + fieldNode.getName() + "' has an inappropriate type: "+ type.getName()+ ". Please add an explicit type but not java.lang.Object or groovy.lang.GroovyObject",parent,source);
+      return;
+    }
+    final List<MethodNode> fieldMethods=getAllMethods(type);
     final ClassNode owner=fieldNode.getOwner();
     final Expression deprecatedElement=node.getMember("deprecated");
-    final boolean deprecated=(deprecatedElement instanceof ConstantExpression && ((ConstantExpression)deprecatedElement).getValue().equals(true));
-    final Map<String,MethodNode> ownMethods=owner.getDeclaredMethodsMap();
-    for (    Map.Entry<String,MethodNode> e : fieldMethods.entrySet()) {
-      addDelegateMethod(fieldNode,owner,ownMethods,e,deprecated);
+    final boolean deprecated=hasBooleanValue(deprecatedElement,true);
+    for (    MethodNode mn : fieldMethods) {
+      addDelegateMethod(fieldNode,owner,getAllMethods(owner),mn,deprecated);
     }
     for (    PropertyNode prop : type.getProperties()) {
       if (prop.isStatic() || !prop.isPublic())       continue;
@@ -22,7 +25,7 @@
       addSetterIfNeeded(fieldNode,owner,prop,name);
     }
     final Expression interfacesElement=node.getMember("interfaces");
-    if (interfacesElement instanceof ConstantExpression && ((ConstantExpression)interfacesElement).getValue().equals(false))     return;
+    if (hasBooleanValue(interfacesElement,false))     return;
     final Set<ClassNode> allInterfaces=type.getAllInterfaces();
     final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
     for (    ClassNode iface : allInterfaces) {
