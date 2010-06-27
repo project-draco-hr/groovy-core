@@ -1,4 +1,5 @@
 {
+  boolean isInterface=classNode.isInterface();
   List<FieldNode> fields=classNode.getFields();
   if (fields == null)   return;
   List<FieldNode> enumFields=new ArrayList<FieldNode>(fields.size());
@@ -14,6 +15,6 @@
   }
   genEnumFields(enumFields,out);
   for (  FieldNode normalField : normalFields) {
-    genField(normalField,out);
+    genField(normalField,out,isInterface);
   }
 }
