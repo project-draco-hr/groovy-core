@@ -4,20 +4,20 @@
   if (testStaticInnerClasses) {
     if (type instanceof ConstructedClassWithPackage) {
       ConstructedClassWithPackage tmp=(ConstructedClassWithPackage)type;
-      String name=((ConstructedClassWithPackage)type).className;
-      tmp.className=replaceLastPoint(name);
+      String savedName=tmp.className;
+      tmp.className=replaceLastPoint(savedName);
       if (resolve(tmp,false,true,true)) {
         type.setRedirect(tmp.redirect());
         return true;
       }
-      tmp.className=name;
+      tmp.className=savedName;
     }
  else {
-      String name=type.getName();
-      String replacedPointType=replaceLastPoint(name);
+      String savedName=type.getName();
+      String replacedPointType=replaceLastPoint(savedName);
       type.setName(replacedPointType);
       if (resolve(type,false,true,true))       return true;
-      type.setName(name);
+      type.setName(savedName);
     }
   }
   return false;

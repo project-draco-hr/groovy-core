@@ -36,6 +36,15 @@
         return true;
       }
     }
+    for (    ImportNode importNode : module.getStaticStarImports().values()) {
+      ClassNode node=ClassHelper.make(importNode.getType().getName() + "$" + name);
+      if (resolve(node,false,false,false)) {
+        if ((node.getModifiers() & ~Opcodes.ACC_STATIC) != 0) {
+          type.setRedirect(node.redirect());
+          return true;
+        }
+      }
+    }
   }
   return false;
 }
