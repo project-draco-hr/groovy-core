@@ -23,8 +23,19 @@
     if (module.hasPackageName()) {
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(module.getPackageName(),name);
       if (resolve(tmp,false,false,false)) {
+        ambiguousClass(type,tmp,name);
         type.setRedirect(tmp.redirect());
         return true;
+      }
+    }
+    for (    ImportNode importNode : module.getStaticImports().values()) {
+      ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
+      if (resolve(tmp,false,false,false)) {
+        if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
+          ambiguousClass(type,tmp,name);
+          type.setRedirect(tmp.redirect());
+          return true;
+        }
       }
     }
     for (    ImportNode importNode : module.getStarImports()) {
@@ -37,10 +48,11 @@
       }
     }
     for (    ImportNode importNode : module.getStaticStarImports().values()) {
-      ClassNode node=ClassHelper.make(importNode.getType().getName() + "$" + name);
-      if (resolve(node,false,false,false)) {
-        if ((node.getModifiers() & ~Opcodes.ACC_STATIC) != 0) {
-          type.setRedirect(node.redirect());
+      ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
+      if (resolve(tmp,false,false,false)) {
+        if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
+          ambiguousClass(type,tmp,name);
+          type.setRedirect(tmp.redirect());
           return true;
         }
       }
