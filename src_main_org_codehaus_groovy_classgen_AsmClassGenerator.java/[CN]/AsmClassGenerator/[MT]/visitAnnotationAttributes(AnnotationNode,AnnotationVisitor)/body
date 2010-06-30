@@ -20,6 +20,10 @@
  else     if (expr instanceof ListExpression) {
       arrayAttrs.put(name,(ListExpression)expr);
     }
+ else     if (expr instanceof ClosureExpression) {
+      ClassNode closureClass=getOrAddClosureClass((ClosureExpression)expr);
+      constantAttrs.put(name,Type.getType(BytecodeHelper.getTypeDescription(closureClass)));
+    }
   }
   for (  Map.Entry entry : constantAttrs.entrySet()) {
     av.visit((String)entry.getKey(),entry.getValue());

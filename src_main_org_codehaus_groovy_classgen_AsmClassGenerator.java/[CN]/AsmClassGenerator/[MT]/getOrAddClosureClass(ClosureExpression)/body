@@ -1,0 +1,10 @@
+{
+  ClassNode closureClass=closureClassMap.get(expression);
+  if (closureClass == null) {
+    closureClass=createClosureClass(expression);
+    closureClassMap.put(expression,closureClass);
+    addInnerClass(closureClass);
+    closureClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
+  }
+  return closureClass;
+}

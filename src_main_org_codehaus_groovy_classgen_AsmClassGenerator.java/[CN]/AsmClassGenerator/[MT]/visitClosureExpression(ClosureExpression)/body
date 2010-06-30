@@ -1,17 +1,11 @@
 {
-  ClassNode innerClass=closureClassMap.get(expression);
-  if (innerClass == null) {
-    innerClass=createClosureClass(expression);
-    closureClassMap.put(expression,innerClass);
-    addInnerClass(innerClass);
-    innerClass.addInterface(ClassHelper.GENERATED_CLOSURE_Type);
-  }
-  String innerClassinternalName=BytecodeHelper.getClassInternalName(innerClass);
+  ClassNode closureClass=getOrAddClosureClass(expression);
+  String closureClassInternalName=BytecodeHelper.getClassInternalName(closureClass);
   passingParams=true;
-  List constructors=innerClass.getDeclaredConstructors();
+  List constructors=closureClass.getDeclaredConstructors();
   ConstructorNode node=(ConstructorNode)constructors.get(0);
   Parameter[] localVariableParams=node.getParameters();
-  mv.visitTypeInsn(NEW,innerClassinternalName);
+  mv.visitTypeInsn(NEW,closureClassInternalName);
   mv.visitInsn(DUP);
   if ((isStaticMethod() || specialCallWithinConstructor) && !classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
     visitClassExpression(new ClassExpression(classNode));
@@ -42,5 +36,5 @@
     }
   }
   passingParams=false;
-  mv.visitMethodInsn(INVOKESPECIAL,innerClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
+  mv.visitMethodInsn(INVOKESPECIAL,closureClassInternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
 }

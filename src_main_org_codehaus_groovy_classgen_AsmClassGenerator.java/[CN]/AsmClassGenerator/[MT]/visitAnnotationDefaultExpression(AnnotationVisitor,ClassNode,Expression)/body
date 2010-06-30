@@ -1,5 +1,10 @@
 {
-  if (type.isArray()) {
+  if (exp instanceof ClosureExpression) {
+    ClassNode closureClass=getOrAddClosureClass((ClosureExpression)exp);
+    Type t=Type.getType(BytecodeHelper.getTypeDescription(closureClass));
+    av.visit(null,t);
+  }
+ else   if (type.isArray()) {
     ListExpression list=(ListExpression)exp;
     AnnotationVisitor avl=av.visitArray(null);
     ClassNode componentType=type.getComponentType();
