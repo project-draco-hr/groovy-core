@@ -29,12 +29,13 @@
       }
     }
     for (    ImportNode importNode : module.getStaticImports().values()) {
-      ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
-      if (resolve(tmp,false,false,false)) {
-        if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
-          ambiguousClass(type,tmp,name);
-          type.setRedirect(tmp.redirect());
-          return true;
+      if (importNode.getFieldName().equals(name)) {
+        ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
+        if (resolve(tmp,false,false,true)) {
+          if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
+            type.setRedirect(tmp.redirect());
+            return true;
+          }
         }
       }
     }
@@ -48,8 +49,8 @@
       }
     }
     for (    ImportNode importNode : module.getStaticStarImports().values()) {
-      ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
-      if (resolve(tmp,false,false,false)) {
+      ClassNode tmp=ClassHelper.make(importNode.getClassName() + "$" + name);
+      if (resolve(tmp,false,false,true)) {
         if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
           ambiguousClass(type,tmp,name);
           type.setRedirect(tmp.redirect());
