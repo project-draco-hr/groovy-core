@@ -29,7 +29,7 @@
         if (map) {
           final MapExpression me=new MapExpression();
           for (          Expression expression : list.getExpressions()) {
-            me.addMapEntryExpression((MapEntryExpression)expression);
+            me.addMapEntryExpression((MapEntryExpression)transform(expression));
           }
           me.setSourcePosition(list);
           final CastExpression ce=new CastExpression(left.getType(),me);
@@ -40,7 +40,7 @@
     }
     if (be.getRightExpression() instanceof MapEntryExpression) {
       final MapExpression me=new MapExpression();
-      me.addMapEntryExpression((MapEntryExpression)be.getRightExpression());
+      me.addMapEntryExpression((MapEntryExpression)transform(be.getRightExpression()));
       me.setSourcePosition(be.getRightExpression());
       final CastExpression ce=new CastExpression(left.getType(),me);
       ce.setSourcePosition(be);
