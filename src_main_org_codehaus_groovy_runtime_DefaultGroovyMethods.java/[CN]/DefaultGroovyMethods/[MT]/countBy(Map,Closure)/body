@@ -1,14 +1,7 @@
 {
-  boolean isTwoParams=(closure.getParameterTypes().length == 2);
   Map<Object,Integer> answer=new LinkedHashMap<Object,Integer>();
-  for (Iterator iter=self.entrySet().iterator(); iter.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)iter.next();
-    if (isTwoParams) {
-      countAnswer(answer,closure.call(new Object[]{entry.getKey(),entry.getValue()}));
-    }
- else {
-      countAnswer(answer,closure.call(entry));
-    }
+  for (  Object entry : self.entrySet()) {
+    countAnswer(answer,callClosureForMapEntry(closure,(Map.Entry)entry));
   }
   return answer;
 }
