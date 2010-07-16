@@ -15,7 +15,7 @@
   for (  FieldNode fNode : list) {
     if (excludes.contains(fNode.getName()) || fNode.getName().contains("$"))     continue;
     first=appendPrefix(cNode,body,result,first,fNode.getName());
-    body.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",new FieldExpression(fNode))));
+    body.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",new VariableExpression(fNode))));
   }
   if (includeSuper) {
     appendPrefix(cNode,body,result,first,"super");

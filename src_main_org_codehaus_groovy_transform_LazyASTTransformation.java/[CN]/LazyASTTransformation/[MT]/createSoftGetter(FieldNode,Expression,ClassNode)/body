@@ -1,8 +1,8 @@
 {
   final BlockStatement body=new BlockStatement();
-  final Expression fieldExpr=new FieldExpression(fieldNode);
+  final Expression fieldExpr=new VariableExpression(fieldNode);
   final Expression resExpr=new VariableExpression("res",type);
-  final MethodCallExpression callExpression=new MethodCallExpression(new FieldExpression(fieldNode),"get",new ArgumentListExpression());
+  final MethodCallExpression callExpression=new MethodCallExpression(fieldExpr,"get",new ArgumentListExpression());
   callExpression.setSafe(true);
   body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,ASSIGN,callExpression)));
   final BlockStatement elseBlock=new BlockStatement();

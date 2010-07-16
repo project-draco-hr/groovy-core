@@ -5,7 +5,7 @@
   body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,init)));
   for (  FieldNode fNode : list) {
     if (fNode.getName().contains("$"))     continue;
-    final Expression fieldExpr=new FieldExpression(fNode);
+    final Expression fieldExpr=new VariableExpression(fNode);
     final Expression args=new TupleExpression(result,fieldExpr);
     final Expression current=new StaticMethodCallExpression(HASHUTIL_TYPE,"updateHash",args);
     body.addStatement(assignStatement(result,current));
