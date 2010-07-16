@@ -1,0 +1,30 @@
+{
+  init(nodes,source);
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode anno=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(anno.getClassNode()))   return;
+  if (parent instanceof ClassNode) {
+    ClassNode cNode=(ClassNode)parent;
+    checkNotInterface(cNode,MY_TYPE_NAME);
+    cNode.addInterface(CLONEABLE_TYPE);
+    boolean includeFields=memberHasValue(anno,"includeFields",true);
+    AutoCloneStyle style=getStyle(anno,"style");
+    List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    List<FieldNode> list=getInstancePropertyFields(cNode);
+    if (includeFields) {
+      list.addAll(getInstanceNonPropertyFields(cNode));
+    }
+    if (style == null)     style=AutoCloneStyle.CLONE;
+switch (style) {
+case COPY_CONSTRUCTOR:
+      createCloneCopyConstructor(cNode,list,excludes);
+    break;
+case SERIALIZATION:
+  createCloneSerialization(cNode,list,excludes);
+break;
+case CLONE:
+createClone(cNode,list,excludes);
+break;
+}
+}
+}

@@ -1,0 +1,8 @@
+{
+  Expression initialExp=fNode.getInitialExpression() != null ? fNode.getInitialExpression() : ConstantExpression.NULL;
+  final ClassNode paramType=fNode.getType();
+  if (ClassHelper.isPrimitiveType(paramType) && initialExp.equals(ConstantExpression.NULL)) {
+    initialExp=primitivesInitialValues.get(paramType.getTypeClass());
+  }
+  return initialExp;
+}

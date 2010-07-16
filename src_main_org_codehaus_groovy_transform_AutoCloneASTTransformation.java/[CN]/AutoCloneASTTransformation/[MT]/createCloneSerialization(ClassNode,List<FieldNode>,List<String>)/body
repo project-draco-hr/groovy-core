@@ -1,0 +1,24 @@
+{
+  final BlockStatement body=new BlockStatement();
+  final Expression baos=new VariableExpression("baos");
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(baos,ASSIGN,new ConstructorCallExpression(BAOS_TYPE,MethodCallExpression.NO_ARGUMENTS))));
+  BlockStatement writeClosureCode=new BlockStatement();
+  final Expression it=new VariableExpression("it");
+  writeClosureCode.addStatement(new ExpressionStatement(new MethodCallExpression(it,"writeObject",VariableExpression.THIS_EXPRESSION)));
+  ClosureExpression writeClosure=new ClosureExpression(new Parameter[]{},writeClosureCode);
+  writeClosure.setVariableScope(new VariableScope());
+  body.addStatement(new ExpressionStatement(new MethodCallExpression(baos,"withObjectOutputStream",new ArgumentListExpression(writeClosure))));
+  final Expression bais=new VariableExpression("bais");
+  ConstructorCallExpression bytes=new ConstructorCallExpression(BAIS_TYPE,new TupleExpression(new MethodCallExpression(baos,"toByteArray",MethodCallExpression.NO_ARGUMENTS)));
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(bais,ASSIGN,bytes)));
+  BlockStatement readClosureCode=new BlockStatement();
+  readClosureCode.addStatement(new ExpressionStatement(new MethodCallExpression(it,"readObject",MethodCallExpression.NO_ARGUMENTS)));
+  ClosureExpression readClosure=new ClosureExpression(new Parameter[]{},readClosureCode);
+  readClosure.setVariableScope(new VariableScope());
+  Expression klass=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"getClass",MethodCallExpression.NO_ARGUMENTS);
+  Expression classLoader=new MethodCallExpression(klass,"getClassLoader",MethodCallExpression.NO_ARGUMENTS);
+  Expression result=new MethodCallExpression(bais,"withObjectInputStream",new ArgumentListExpression(classLoader,readClosure));
+  body.addStatement(new ReturnStatement(result));
+  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[0],exceptions,body);
+}

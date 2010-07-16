@@ -1,0 +1,45 @@
+{
+  List<ConstructorNode> constructors=cNode.getDeclaredConstructors();
+  if (constructors.size() > 1 && !force)   return;
+  boolean foundEmpty=constructors.size() == 1 && constructors.get(0).getFirstStatement() == null;
+  if (constructors.size() == 1 && !foundEmpty && !force)   return;
+  if (foundEmpty)   constructors.remove(0);
+  List<FieldNode> superList=new ArrayList<FieldNode>();
+  if (includeSuperProperties) {
+    superList.addAll(getSuperPropertyFields(cNode.getSuperClass()));
+  }
+  if (includeSuperFields) {
+    superList.addAll(getSuperNonPropertyFields(cNode.getSuperClass()));
+  }
+  List<FieldNode> list=new ArrayList<FieldNode>();
+  if (includeProperties) {
+    list.addAll(getInstancePropertyFields(cNode));
+  }
+  if (includeFields) {
+    list.addAll(getInstanceNonPropertyFields(cNode));
+  }
+  final List<Parameter> params=new ArrayList<Parameter>();
+  final List<Expression> superParams=new ArrayList<Expression>();
+  final BlockStatement body=new BlockStatement();
+  for (  FieldNode fNode : superList) {
+    String name=fNode.getName();
+    if (excludes.contains(name) || name.contains("$"))     continue;
+    params.add(createParam(fNode,name));
+    if (callSuper) {
+      superParams.add(new VariableExpression(name));
+    }
+ else {
+      body.addStatement(assignStatement(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),new VariableExpression(name)));
+    }
+  }
+  if (callSuper) {
+    body.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,new ArgumentListExpression(superParams))));
+  }
+  for (  FieldNode fNode : list) {
+    String name=fNode.getName();
+    if (excludes.contains(name) || name.contains("$"))     continue;
+    params.add(createParam(fNode,name));
+    body.addStatement(assignStatement(new FieldExpression(fNode),new VariableExpression(name)));
+  }
+  cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
+}

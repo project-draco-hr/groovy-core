@@ -1,0 +1,18 @@
+{
+  init(nodes,source);
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode anno=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(anno.getClassNode()))   return;
+  if (parent instanceof ClassNode) {
+    ClassNode cNode=(ClassNode)parent;
+    checkNotInterface(cNode,MY_TYPE_NAME);
+    boolean includeFields=memberHasValue(anno,"includeFields",true);
+    boolean includeProperties=!memberHasValue(anno,"includeProperties",false);
+    boolean includeSuperFields=memberHasValue(anno,"includeSuperFields",true);
+    boolean includeSuperProperties=memberHasValue(anno,"includeSuperProperties",true);
+    boolean callSuper=memberHasValue(anno,"callSuper",true);
+    boolean force=memberHasValue(anno,"force",true);
+    List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    createConstructor(cNode,includeFields,includeProperties,includeSuperFields,includeSuperProperties,callSuper,force,excludes);
+  }
+}

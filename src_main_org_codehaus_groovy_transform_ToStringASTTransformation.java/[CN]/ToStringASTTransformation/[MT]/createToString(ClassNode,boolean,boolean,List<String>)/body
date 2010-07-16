@@ -1,0 +1,27 @@
+{
+  boolean hasExistingToString=hasDeclaredMethod(cNode,"toString",0);
+  if (hasExistingToString && hasDeclaredMethod(cNode,"_toString",0))   return;
+  final BlockStatement body=new BlockStatement();
+  final Expression result=new VariableExpression("_result");
+  final Expression init=new ConstructorCallExpression(STRINGBUFFER_TYPE,MethodCallExpression.NO_ARGUMENTS);
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,init)));
+  body.addStatement(append(result,new ConstantExpression(cNode.getName())));
+  body.addStatement(append(result,new ConstantExpression("(")));
+  boolean first=true;
+  List<FieldNode> list=getInstancePropertyFields(cNode);
+  if (includeFields) {
+    list.addAll(getInstanceNonPropertyFields(cNode));
+  }
+  for (  FieldNode fNode : list) {
+    if (excludes.contains(fNode.getName()) || fNode.getName().contains("$"))     continue;
+    first=appendPrefix(cNode,body,result,first,fNode.getName());
+    body.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",new FieldExpression(fNode))));
+  }
+  if (includeSuper) {
+    appendPrefix(cNode,body,result,first,"super");
+    body.addStatement(append(result,new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"toString",MethodCallExpression.NO_ARGUMENTS)));
+  }
+  body.addStatement(append(result,new ConstantExpression(")")));
+  body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));
+  cNode.addMethod(new MethodNode(hasExistingToString ? "_toString" : "toString",hasExistingToString ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+}

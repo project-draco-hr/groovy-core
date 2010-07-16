@@ -1,0 +1,28 @@
+{
+  BlockStatement initBody=new BlockStatement();
+  if (cNode.getDeclaredConstructors().size() == 0) {
+    initBody.addStatement(new EmptyStatement());
+    cNode.addConstructor(ACC_PUBLIC,new Parameter[0],ClassNode.EMPTY_ARRAY,initBody);
+    initBody=new BlockStatement();
+  }
+  Parameter initParam=new Parameter(cNode,"other");
+  final Expression other=new VariableExpression(initParam);
+  boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
+  if (hasParent) {
+    initBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,other)));
+  }
+  for (  FieldNode fieldNode : list) {
+    if (excludes.contains(fieldNode.getName()))     continue;
+    PropertyExpression direct=new PropertyExpression(other,fieldNode.getName());
+    Expression cloned=new MethodCallExpression(direct,"clone",MethodCallExpression.NO_ARGUMENTS);
+    Expression to=new FieldExpression(fieldNode);
+    Statement assignCloned=assignStatement(to,cloned);
+    Statement assignDirect=assignStatement(to,direct);
+    initBody.addStatement(new IfStatement(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+  }
+  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  cNode.addConstructor(ACC_PROTECTED,new Parameter[]{initParam},ClassNode.EMPTY_ARRAY,initBody);
+  final BlockStatement cloneBody=new BlockStatement();
+  cloneBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(cNode,new ArgumentListExpression(VariableExpression.THIS_EXPRESSION))));
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[0],exceptions,cloneBody);
+}

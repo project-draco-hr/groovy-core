@@ -1,7 +1,7 @@
 {
   FieldNode fNode=pNode.getField();
   final ClassNode fieldType=fNode.getType();
-  final Statement statement;
+  Statement statement=null;
   if (fieldType.isArray() || fieldType.implementsInterface(CLONEABLE_TYPE)) {
     statement=createConstructorStatementArrayOrCloneable(fNode);
   }
@@ -15,7 +15,7 @@
     statement=createConstructorStatementDefault(fNode);
   }
  else   if (fieldType.isResolved()) {
-    throw new RuntimeException(createErrorMessage(cNode.getName(),fNode.getName(),fieldType.getName(),"compiling"));
+    addError(createErrorMessage(cNode.getName(),fNode.getName(),fieldType.getName(),"compiling"),fNode);
   }
  else {
     statement=createConstructorStatementGuarded(cNode,fNode);

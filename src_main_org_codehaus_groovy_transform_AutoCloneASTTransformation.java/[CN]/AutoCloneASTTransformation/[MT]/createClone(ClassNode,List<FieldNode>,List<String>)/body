@@ -1,0 +1,17 @@
+{
+  final BlockStatement body=new BlockStatement();
+  final Expression result=new VariableExpression("_result");
+  final Expression clone=new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"clone",MethodCallExpression.NO_ARGUMENTS);
+  body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,clone)));
+  for (  FieldNode fieldNode : list) {
+    if (excludes.contains(fieldNode.getName()))     continue;
+    Expression from=new MethodCallExpression(new FieldExpression(fieldNode),"clone",MethodCallExpression.NO_ARGUMENTS);
+    Expression to=new PropertyExpression(result,fieldNode.getName());
+    Statement doClone=assignStatement(to,from);
+    Statement doNothing=new EmptyStatement();
+    body.addStatement(new IfStatement(isInstanceOf(new FieldExpression(fieldNode),CLONEABLE_TYPE),doClone,doNothing));
+  }
+  body.addStatement(new ReturnStatement(result));
+  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[0],exceptions,body);
+}

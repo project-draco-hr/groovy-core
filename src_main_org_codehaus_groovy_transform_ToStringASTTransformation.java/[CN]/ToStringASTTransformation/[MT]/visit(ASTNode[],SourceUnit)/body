@@ -1,0 +1,19 @@
+{
+  init(nodes,source);
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode anno=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(anno.getClassNode()))   return;
+  if (parent instanceof ClassNode) {
+    ClassNode cNode=(ClassNode)parent;
+    checkNotInterface(cNode,MY_TYPE_NAME);
+    boolean includeSuper=memberHasValue(anno,"includeSuper",true);
+    if (includeSuper && cNode.getSuperClass().getName().equals("java.lang.Object")) {
+      addError("Error during " + MY_TYPE_NAME + " processing: includeSuper=true but '"+ cNode.getName()+ "' has no super class.",anno);
+    }
+    boolean includeNames=memberHasValue(anno,"includeNames",true);
+    boolean includeFields=memberHasValue(anno,"includeFields",true);
+    List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    toStringInit(cNode,new ConstantExpression(includeNames));
+    createToString(cNode,includeSuper,includeFields,excludes);
+  }
+}

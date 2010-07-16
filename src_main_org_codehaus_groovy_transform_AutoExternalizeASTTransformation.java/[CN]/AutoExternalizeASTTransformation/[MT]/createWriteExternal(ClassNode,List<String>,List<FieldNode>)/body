@@ -1,0 +1,11 @@
+{
+  final BlockStatement body=new BlockStatement();
+  VariableExpression out=new VariableExpression("out",OBJECTOUTPUT_TYPE);
+  for (  FieldNode fNode : list) {
+    if (excludes.contains(fNode.getName()))     continue;
+    if ((fNode.getModifiers() & ACC_TRANSIENT) != 0)     continue;
+    body.addStatement(new ExpressionStatement(new MethodCallExpression(out,"write" + suffixForField(fNode),new FieldExpression(fNode))));
+  }
+  ClassNode[] exceptions={ClassHelper.make(IOException.class)};
+  cNode.addMethod("writeExternal",ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(OBJECTOUTPUT_TYPE,"out")},exceptions,body);
+}

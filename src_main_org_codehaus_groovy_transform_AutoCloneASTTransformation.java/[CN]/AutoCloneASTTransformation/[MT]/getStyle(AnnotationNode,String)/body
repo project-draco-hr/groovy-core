@@ -1,0 +1,14 @@
+{
+  final Expression member=node.getMember(name);
+  if (member != null && member instanceof PropertyExpression) {
+    PropertyExpression prop=(PropertyExpression)member;
+    Expression oe=prop.getObjectExpression();
+    if (oe instanceof ClassExpression) {
+      ClassExpression ce=(ClassExpression)oe;
+      if (ce.getType().getTypeClass() == AutoCloneStyle.class) {
+        return AutoCloneStyle.valueOf(prop.getPropertyAsString());
+      }
+    }
+  }
+  return null;
+}

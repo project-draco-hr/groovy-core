@@ -1,25 +1,19 @@
 {
-  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
-  }
+  init(nodes,source);
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (!MY_TYPE.equals(node.getClassNode()))   return;
-  List<PropertyNode> newNodes=new ArrayList<PropertyNode>();
+  List<PropertyNode> newProperties=new ArrayList<PropertyNode>();
   if (parent instanceof ClassNode) {
     ClassNode cNode=(ClassNode)parent;
     String cName=cNode.getName();
-    if (cNode.isInterface()) {
-      throw new RuntimeException("Error processing interface '" + cName + "'. "+ MY_TYPE_NAME+ " not allowed for interfaces.");
-    }
-    if ((cNode.getModifiers() & ACC_FINAL) == 0) {
-      cNode.setModifiers(cNode.getModifiers() | ACC_FINAL);
-    }
+    checkNotInterface(cNode,MY_TYPE_NAME);
+    makeClassFinal(cNode);
     final List<PropertyNode> pList=getInstanceProperties(cNode);
     for (    PropertyNode pNode : pList) {
-      adjustPropertyForImmutability(pNode,newNodes);
+      adjustPropertyForImmutability(pNode,newProperties);
     }
-    for (    PropertyNode pNode : newNodes) {
+    for (    PropertyNode pNode : newProperties) {
       cNode.getProperties().remove(pNode);
       addProperty(cNode,pNode);
     }
@@ -27,9 +21,9 @@
     for (    FieldNode fNode : fList) {
       ensureNotPublic(cName,fNode);
     }
-    createConstructor(cNode);
-    createHashCode(cNode);
-    createEquals(cNode);
-    createToString(cNode);
+    createConstructors(cNode);
+    createHashCode(cNode,true,false,false,new ArrayList<String>());
+    createEquals(cNode,false,false,new ArrayList<String>());
+    createToString(cNode,false,false,new ArrayList<String>());
   }
 }
