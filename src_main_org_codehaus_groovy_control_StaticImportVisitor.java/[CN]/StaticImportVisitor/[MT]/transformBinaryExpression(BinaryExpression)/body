@@ -3,10 +3,11 @@
   boolean oldInLeftExpression;
   Expression right=transform(be.getRightExpression());
   be.setRightExpression(right);
+  Expression left;
   if (type == Types.EQUAL) {
     oldInLeftExpression=inLeftExpression;
     inLeftExpression=true;
-    Expression left=transform(be.getLeftExpression());
+    left=transform(be.getLeftExpression());
     inLeftExpression=oldInLeftExpression;
     if (left instanceof StaticMethodCallExpression) {
       StaticMethodCallExpression smce=(StaticMethodCallExpression)left;
@@ -14,14 +15,10 @@
       result.setSourcePosition(be);
       return result;
     }
-    if (left instanceof FieldExpression) {
-      FieldExpression fe=(FieldExpression)left;
-      fe.setSourcePosition(left);
-      be.setLeftExpression(left);
-      return be;
-    }
   }
-  Expression left=transform(be.getLeftExpression());
+ else {
+    left=transform(be.getLeftExpression());
+  }
   be.setLeftExpression(left);
   return be;
 }
