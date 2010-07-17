@@ -12,10 +12,11 @@
     initBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,other)));
   }
   for (  FieldNode fieldNode : list) {
-    if (excludes.contains(fieldNode.getName()))     continue;
-    PropertyExpression direct=new PropertyExpression(other,fieldNode.getName());
+    String name=fieldNode.getName();
+    if (excludes.contains(name))     continue;
+    PropertyExpression direct=new PropertyExpression(other,name);
     Expression cloned=new MethodCallExpression(direct,"clone",MethodCallExpression.NO_ARGUMENTS);
-    Expression to=new FieldExpression(fieldNode);
+    Expression to=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);
     Statement assignCloned=assignStatement(to,cloned);
     Statement assignDirect=assignStatement(to,direct);
     initBody.addStatement(new IfStatement(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));

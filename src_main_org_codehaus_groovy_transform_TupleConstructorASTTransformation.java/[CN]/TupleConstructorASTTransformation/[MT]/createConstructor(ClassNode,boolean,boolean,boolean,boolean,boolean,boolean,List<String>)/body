@@ -39,7 +39,7 @@
     String name=fNode.getName();
     if (excludes.contains(name) || name.contains("$"))     continue;
     params.add(createParam(fNode,name));
-    body.addStatement(assignStatement(new FieldExpression(fNode),new VariableExpression(name)));
+    body.addStatement(assignStatement(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),new VariableExpression(name)));
   }
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
 }

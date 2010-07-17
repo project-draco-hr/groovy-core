@@ -1,7 +1,8 @@
 {
-  final Expression fieldExpr=new FieldExpression(fNode);
+  final String name=fNode.getName();
+  final Expression fieldExpr=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);
   Expression initExpr=fNode.getInitialValueExpression();
   if (initExpr == null)   initExpr=ConstantExpression.NULL;
-  Expression value=findArg(fNode.getName());
+  Expression value=findArg(name);
   return new IfStatement(equalsNullExpr(value),new IfStatement(equalsNullExpr(initExpr),new EmptyStatement(),assignStatement(fieldExpr,initExpr)),assignStatement(fieldExpr,value));
 }
