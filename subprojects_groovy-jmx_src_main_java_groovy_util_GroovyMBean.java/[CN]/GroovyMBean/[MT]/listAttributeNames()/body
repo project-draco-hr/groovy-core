@@ -1,0 +1,13 @@
+{
+  List<String> list=new ArrayList<String>();
+  try {
+    MBeanAttributeInfo[] attrs=beanInfo.getAttributes();
+    for (    MBeanAttributeInfo attr : attrs) {
+      list.add(attr.getName());
+    }
+  }
+ catch (  Exception e) {
+    throwException("Could not list attribute names. Reason: ",e);
+  }
+  return list;
+}

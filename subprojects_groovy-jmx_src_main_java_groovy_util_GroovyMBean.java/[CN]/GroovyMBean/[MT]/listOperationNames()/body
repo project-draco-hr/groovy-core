@@ -1,0 +1,13 @@
+{
+  List<String> list=new ArrayList<String>();
+  try {
+    MBeanOperationInfo[] operations=beanInfo.getOperations();
+    for (    MBeanOperationInfo operation : operations) {
+      list.add(operation.getName());
+    }
+  }
+ catch (  Exception e) {
+    throwException("Could not list operation names. Reason: ",e);
+  }
+  return list;
+}

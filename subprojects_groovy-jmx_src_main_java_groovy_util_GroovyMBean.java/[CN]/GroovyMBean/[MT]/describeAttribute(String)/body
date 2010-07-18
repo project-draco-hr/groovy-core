@@ -1,0 +1,15 @@
+{
+  String ret="Attribute not found";
+  try {
+    MBeanAttributeInfo[] attributes=beanInfo.getAttributes();
+    for (    MBeanAttributeInfo attribute : attributes) {
+      if (attribute.getName().equals(attributeName)) {
+        return describeAttribute(attribute);
+      }
+    }
+  }
+ catch (  Exception e) {
+    throwException("Could not describe attribute '" + attributeName + "'. Reason: ",e);
+  }
+  return ret;
+}

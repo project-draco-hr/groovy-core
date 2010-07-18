@@ -1,0 +1,20 @@
+{
+  for (  Map.Entry<String,Map> item : descriptor.entrySet()) {
+    Map<String,Object> listener=item.getValue();
+    ObjectName broadcaster=(ObjectName)listener.get("from");
+    try {
+      String eventType=(String)listener.get("event");
+      if (eventType != null) {
+        NotificationFilterSupport filter=new NotificationFilterSupport();
+        filter.enableType(eventType);
+        server.addNotificationListener(broadcaster,JmxEventListener.getListener(),filter,listener);
+      }
+ else {
+        server.addNotificationListener(broadcaster,JmxEventListener.getListener(),null,listener);
+      }
+    }
+ catch (    InstanceNotFoundException e) {
+      throw new JmxBuilderException(e);
+    }
+  }
+}
