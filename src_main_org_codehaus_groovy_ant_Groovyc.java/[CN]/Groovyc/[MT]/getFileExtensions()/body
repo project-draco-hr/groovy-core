@@ -1,0 +1,12 @@
+{
+  if (fileExtensions == null) {
+    Path classpath=getClasspath() != null ? getClasspath() : new Path(getProject());
+    final String[] pe=classpath.list();
+    final GroovyClassLoader loader=new GroovyClassLoader(getClass().getClassLoader());
+    for (    String file : pe) {
+      loader.addClasspath(file);
+    }
+    fileExtensions=loader.getFileExtensionsForGlobalTransforms();
+  }
+  return fileExtensions;
+}

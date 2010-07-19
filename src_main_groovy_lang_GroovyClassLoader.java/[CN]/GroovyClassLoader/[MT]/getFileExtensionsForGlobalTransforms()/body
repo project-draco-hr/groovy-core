@@ -1,0 +1,39 @@
+{
+  if (fileExtensions != null)   return fileExtensions;
+  Set<String> res=new LinkedHashSet<String>();
+  res.add("*.groovy");
+  try {
+    Enumeration<URL> globalServices=getResources("META-INF/services/org.codehaus.groovy.transform.ASTTransformation");
+    while (globalServices.hasMoreElements()) {
+      URL service=globalServices.nextElement();
+      String line;
+      BufferedReader svcIn=new BufferedReader(new InputStreamReader(service.openStream()));
+      try {
+        line=svcIn.readLine();
+      }
+ catch (      IOException ioe) {
+        continue;
+      }
+      while (line != null) {
+        if (line.startsWith(FILES)) {
+          line=line.substring(FILES.length());
+          line=line.trim();
+          final String[] exts=line.split(",");
+          for (          String ext : exts) {
+            res.add("*." + ext.trim().toLowerCase());
+          }
+        }
+        try {
+          line=svcIn.readLine();
+        }
+ catch (        IOException ioe) {
+          break;
+        }
+      }
+    }
+  }
+ catch (  IOException e) {
+  }
+  fileExtensions=res;
+  return fileExtensions;
+}

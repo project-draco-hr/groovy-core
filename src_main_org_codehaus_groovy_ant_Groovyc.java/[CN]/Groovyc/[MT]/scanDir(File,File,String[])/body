@@ -1,10 +1,15 @@
 {
   GlobPatternMapper m=new GlobPatternMapper();
-  m.setFrom(scriptExtension);
+  m.setFrom("*.groovy");
   m.setTo("*.class");
   SourceFileScanner sfs=new SourceFileScanner(this);
-  File[] newFiles=sfs.restrictAsFiles(files,srcDir,destDir,m);
-  addToCompileList(newFiles);
+  File[] newFiles;
+  for (  String extension : getFileExtensions()) {
+    m.setFrom(extension);
+    m.setTo("*.class");
+    newFiles=sfs.restrictAsFiles(files,srcDir,destDir,m);
+    addToCompileList(newFiles);
+  }
   if (jointCompilation) {
     m.setFrom("*.java");
     m.setTo("*.class");
