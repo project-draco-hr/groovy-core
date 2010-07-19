@@ -1,21 +1,17 @@
 {
-  if (value == null)   return "null";
-  if (isEmptyStr(value))   return "\"\"";
-  String str;
-  String errorMsg="";
+  String toString;
   try {
-    str=value.getClass().isArray() ? arrayToString(value) : value.toString();
+    toString=DefaultGroovyMethods.toString(value);
   }
  catch (  Exception e) {
-    str=null;
-    errorMsg=" (toString() threw " + e.getClass().getName() + ")";
+    return String.format("%s (toString() threw %s)",javaLangObjectToString(value),e.getClass().getName());
   }
-  if (str == null || str.equals("")) {
-    String hash=Integer.toHexString(System.identityHashCode(value));
-    if (errorMsg.equals("")) {
-      errorMsg=(str == null) ? " (toString() == null)" : " (toString() == \"\")";
-    }
-    return value.getClass().getName() + "@" + hash+ errorMsg;
+  if (toString == null) {
+    return String.format("%s (toString() == null)",javaLangObjectToString(value));
   }
-  return str;
+  if (toString.equals("")) {
+    if (hasStringLikeType(value))     return "\"\"";
+    return String.format("%s (toString() == \"\")",javaLangObjectToString(value));
+  }
+  return toString;
 }
