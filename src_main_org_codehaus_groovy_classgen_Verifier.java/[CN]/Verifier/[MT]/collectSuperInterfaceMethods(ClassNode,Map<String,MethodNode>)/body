@@ -1,12 +1,11 @@
 {
   List cnInterfaces=Arrays.asList(cn.getInterfaces());
   ClassNode sn=cn.getSuperClass();
-  while (!sn.equals(ClassHelper.OBJECT_TYPE)) {
+  while (sn != null && !sn.equals(ClassHelper.OBJECT_TYPE)) {
     ClassNode[] interfaces=sn.getInterfaces();
-    for (int i=0; i < interfaces.length; i++) {
-      ClassNode iface=interfaces[i];
+    for (    ClassNode iface : interfaces) {
       if (!cnInterfaces.contains(iface)) {
-        Map ifaceMethodsMap=iface.getDeclaredMethodsMap();
+        Map<String,MethodNode> ifaceMethodsMap=iface.getDeclaredMethodsMap();
         allInterfaceMethods.putAll(ifaceMethodsMap);
       }
     }
