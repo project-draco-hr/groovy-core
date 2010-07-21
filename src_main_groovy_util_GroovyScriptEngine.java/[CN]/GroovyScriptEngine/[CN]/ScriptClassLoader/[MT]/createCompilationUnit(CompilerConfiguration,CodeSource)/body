@@ -4,9 +4,9 @@
   final StringSetMap cache=getDepCache().get();
   for (  String depSourcePath : cache.get(".")) {
     try {
-      cu.addSource(new URL("file","",depSourcePath));
+      cu.addSource(getResourceConnection(depSourcePath).getURL());
     }
- catch (    MalformedURLException e) {
+ catch (    ResourceException e) {
     }
   }
   cache.clear();
