@@ -1,15 +1,15 @@
 {
   if (entry == null)   return true;
-  long time=System.currentTimeMillis();
+  long now=System.currentTimeMillis();
   for (  String scriptName : entry.dependencies) {
     ScriptCacheEntry depEntry=scriptCache.get(scriptName);
-    long entryChangeTime=depEntry.lastModified + config.getMinimumRecompilationInterval();
-    if (entryChangeTime > time)     continue;
+    long nextPossibleRecompilationTime=depEntry.lastModified + config.getMinimumRecompilationInterval();
+    if (nextPossibleRecompilationTime > now)     continue;
     URLConnection conn=rc.getResourceConnection(scriptName);
     long lastMod=conn.getLastModified();
     forceClose(conn);
-    if (entryChangeTime > lastMod) {
-      ScriptCacheEntry newEntry=new ScriptCacheEntry(depEntry.scriptClass,time,depEntry.dependencies);
+    if (nextPossibleRecompilationTime < lastMod) {
+      ScriptCacheEntry newEntry=new ScriptCacheEntry(depEntry.scriptClass,lastMod,depEntry.dependencies);
       scriptCache.put(scriptName,newEntry);
       continue;
     }
