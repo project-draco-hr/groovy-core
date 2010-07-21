@@ -1,0 +1,17 @@
+{
+  final Map<K,V> ansMap=createSimilarMap(left);
+  if (right != null && right.size() > 0) {
+    final Iterator<Map.Entry<K,V>> it1=left.entrySet().iterator();
+    while (it1.hasNext()) {
+      final Map.Entry<K,V> e1=it1.next();
+      final Iterator<Map.Entry<K,V>> it2=right.entrySet().iterator();
+      while (it2.hasNext()) {
+        final Map.Entry<K,V> e2=it2.next();
+        if (DefaultTypeTransformation.compareEqual(e1,e2)) {
+          ansMap.put(e1.getKey(),e1.getValue());
+        }
+      }
+    }
+  }
+  return ansMap;
+}
