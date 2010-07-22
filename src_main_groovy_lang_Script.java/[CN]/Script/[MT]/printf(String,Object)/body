@@ -1,0 +1,11 @@
+{
+  Object object;
+  try {
+    object=getProperty("out");
+  }
+ catch (  MissingPropertyException e) {
+    DefaultGroovyMethods.printf(System.out,format,value);
+    return;
+  }
+  InvokerHelper.invokeMethod(object,"printf",new Object[]{format,value});
+}
