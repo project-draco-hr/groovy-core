@@ -8,6 +8,7 @@
   final boolean isLogBack="groovy.util.logging.LogBack".equals(logAnnotation.getClassNode().getName());
   final boolean isLog4j="groovy.util.logging.Log4j".equals(logAnnotation.getClassNode().getName());
   final boolean isCommonsLog="groovy.util.logging.CommonsLog".equals(logAnnotation.getClassNode().getName());
+  final String logFieldName=lookupLogFieldName(logAnnotation);
   if (!(targetClass instanceof ClassNode))   throw new GroovyBugError("Class annotation @Log annotated no Class, this must not happen.");
   final ClassNode classNode=(ClassNode)targetClass;
   ClassCodeExpressionTransformer transformer=new ClassCodeExpressionTransformer(){
@@ -23,22 +24,22 @@
       return super.transform(exp);
     }
     @Override public void visitClass(    ClassNode node){
-      FieldNode logField=node.getField("log");
+      FieldNode logField=node.getField(logFieldName);
       if (logField != null) {
         addError("Class annotated with Log annotation cannot have log field declared",logField);
       }
  else {
         if (isJUL) {
-          logNode=node.addField("log",Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("java.util.logging.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("java.util.logging.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ConstantExpression(node.getName())));
+          logNode=node.addField(logFieldName,Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("java.util.logging.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("java.util.logging.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ConstantExpression(node.getName())));
         }
  else         if (isLogBack) {
-          logNode=node.addField("log",Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.slf4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.slf4j.LoggerFactory",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ClassExpression(node)));
+          logNode=node.addField(logFieldName,Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.slf4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.slf4j.LoggerFactory",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ClassExpression(node)));
         }
  else         if (isLog4j) {
-          logNode=node.addField("log",Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.apache.log4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.apache.log4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ClassExpression(node)));
+          logNode=node.addField(logFieldName,Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.apache.log4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.apache.log4j.Logger",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLogger",new ClassExpression(node)));
         }
  else         if (isCommonsLog) {
-          logNode=node.addField("log",Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.apache.commons.logging.Log",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.apache.commons.logging.LogFactory",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLog",new ClassExpression(node)));
+          logNode=node.addField(logFieldName,Opcodes.ACC_FINAL | Opcodes.ACC_TRANSIENT | Opcodes.ACC_STATIC| Opcodes.ACC_PRIVATE,new ClassNode("org.apache.commons.logging.Log",Opcodes.ACC_PUBLIC,new ClassNode(Object.class)),new MethodCallExpression(new ClassExpression(new ClassNode("org.apache.commons.logging.LogFactory",Opcodes.ACC_PUBLIC,new ClassNode(Object.class))),"getLog",new ClassExpression(node)));
         }
       }
       super.visitClass(node);
@@ -49,7 +50,7 @@
         return exp;
       }
       VariableExpression variableExpression=(VariableExpression)mce.getObjectExpression();
-      if (!variableExpression.getName().equals("log") || !(variableExpression.getAccessedVariable() instanceof DynamicVariable)) {
+      if (!variableExpression.getName().equals(logFieldName) || !(variableExpression.getAccessedVariable() instanceof DynamicVariable)) {
         return exp;
       }
       String methodName=mce.getMethodAsString();
