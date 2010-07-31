@@ -1,6 +1,6 @@
 {
   TestSuite ts=new TestSuite("LineColumnCheckTestSuite");
-  String content="";
+  String content;
   try {
     content=getContent(new FileReader(TEST_FILE_PATH));
   }
@@ -10,9 +10,9 @@
   String[] tests=content.split("###");
   String testName="";
   String source="";
-  String expected="";
-  for (int i=0; i < tests.length; i++) {
-    String[] slicedTests=tests[i].split(":::");
+  String expected;
+  for (  String test : tests) {
+    String[] slicedTests=test.split(":::");
     for (int ii=0; ii < slicedTests.length; ii++) {
       if (ii % 3 == 0) {
         testName=slicedTests[ii];

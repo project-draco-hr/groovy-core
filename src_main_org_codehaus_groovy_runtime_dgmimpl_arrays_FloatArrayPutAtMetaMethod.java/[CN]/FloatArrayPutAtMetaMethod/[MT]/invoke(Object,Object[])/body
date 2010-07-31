@@ -1,17 +1,16 @@
 {
   final float[] objects=(float[])object;
-  final int index=normaliseIndex(((Integer)args[0]).intValue(),objects.length);
+  final int index=normaliseIndex((Integer)args[0],objects.length);
   Object newValue=args[1];
   if (!(newValue instanceof Float)) {
     if (newValue instanceof Character || newValue instanceof String || newValue instanceof GString) {
       Character ch=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
-      objects[index]=((Float)DefaultTypeTransformation.castToType(ch,Float.class)).floatValue();
+      objects[index]=(Float)DefaultTypeTransformation.castToType(ch,Float.class);
     }
  else {
-      Number n=(Number)newValue;
       objects[index]=((Number)newValue).floatValue();
     }
   }
- else   objects[index]=((Float)args[1]).floatValue();
+ else   objects[index]=(Float)args[1];
   return null;
 }

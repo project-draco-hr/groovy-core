@@ -1,17 +1,16 @@
 {
   final int[] objects=(int[])object;
-  final int index=normaliseIndex(((Integer)args[0]).intValue(),objects.length);
+  final int index=normaliseIndex((Integer)args[0],objects.length);
   Object newValue=args[1];
   if (!(newValue instanceof Integer)) {
     if (newValue instanceof Character || newValue instanceof String || newValue instanceof GString) {
       Character ch=DefaultTypeTransformation.getCharFromSizeOneString(newValue);
-      objects[index]=((Integer)DefaultTypeTransformation.castToType(ch,Integer.class)).intValue();
+      objects[index]=(Integer)DefaultTypeTransformation.castToType(ch,Integer.class);
     }
  else {
-      Number n=(Number)newValue;
       objects[index]=((Number)newValue).intValue();
     }
   }
- else   objects[index]=((Integer)args[1]).intValue();
+ else   objects[index]=(Integer)args[1];
   return null;
 }

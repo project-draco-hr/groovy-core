@@ -3,11 +3,10 @@
   boolean success=delegate.addAll(index,c);
   if (success && c != null) {
     List values=new ArrayList();
-    for (Iterator i=c.iterator(); i.hasNext(); ) {
-      Object element=i.next();
+    for (    Object element : c) {
       if (test != null) {
         Object result=test.call(element);
-        if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
+        if (result != null && result instanceof Boolean && (Boolean)result) {
           values.add(element);
         }
       }

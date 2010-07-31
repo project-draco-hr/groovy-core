@@ -3,8 +3,11 @@
   if (closureMap != null) {
     map=closureMap;
   }
-  List interfacesToImplement=new ArrayList();
-  if (interfaces != null) {
+  List<Class> interfacesToImplement;
+  if (interfaces == null) {
+    interfacesToImplement=new ArrayList<Class>();
+  }
+ else {
     interfacesToImplement=interfaces;
   }
   Class baseClass=GroovyObjectSupport.class;
@@ -19,7 +22,7 @@
     buffer.append(" extends ").append(baseClass.getName());
   }
   for (int i=0; i < interfacesToImplement.size(); i++) {
-    Class thisInterface=(Class)interfacesToImplement.get(i);
+    Class thisInterface=interfacesToImplement.get(i);
     if (i == 0) {
       buffer.append(" implements ");
     }
@@ -55,20 +58,18 @@
       addMapOrDummyCall(map,buffer,method);
     }
   }
-  List interfaceMethods=new ArrayList();
-  for (int i=0; i < interfacesToImplement.size(); i++) {
-    Class thisInterface=(Class)interfacesToImplement.get(i);
+  List<Method> interfaceMethods=new ArrayList<Method>();
+  for (  Class thisInterface : interfacesToImplement) {
     getInheritedMethods(thisInterface,interfaceMethods);
   }
-  for (int i=0; i < interfaceMethods.size(); i++) {
-    Method method=(Method)interfaceMethods.get(i);
+  for (  Method method : interfaceMethods) {
     if (!containsEquivalentMethod(publicAndProtectedMethods,method)) {
       selectedMethods.put(method.getName(),method);
       addMapOrDummyCall(map,buffer,method);
     }
   }
-  for (Iterator iterator=map.keySet().iterator(); iterator.hasNext(); ) {
-    String methodName=(String)iterator.next();
+  for (  Object o : map.keySet()) {
+    String methodName=(String)o;
     if (methodName.indexOf('$') != -1 || methodName.indexOf('*') != -1)     continue;
     if (selectedMethods.keySet().contains(methodName))     continue;
     addNewMapCall(buffer,methodName);
@@ -84,7 +85,7 @@
   binding.setVariable("constructorArgs",constructorArgs);
   ClassLoader cl=override != null ? override : baseClass.getClassLoader();
   if (clazz == null && interfacesToImplement.size() > 0) {
-    Class c=(Class)interfacesToImplement.get(0);
+    Class c=interfacesToImplement.get(0);
     cl=c.getClassLoader();
   }
   GroovyShell shell=new GroovyShell(cl,binding);

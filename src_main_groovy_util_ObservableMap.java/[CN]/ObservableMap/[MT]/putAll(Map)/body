@@ -2,8 +2,8 @@
   int oldSize=size();
   if (map != null) {
     List<PropertyEvent> events=new ArrayList<PropertyEvent>();
-    for (Iterator entries=map.entrySet().iterator(); entries.hasNext(); ) {
-      Map.Entry entry=(Map.Entry)entries.next();
+    for (    Object o : map.entrySet()) {
+      Entry entry=(Entry)o;
       String key=String.valueOf(entry.getKey());
       Object newValue=entry.getValue();
       Object oldValue=null;
@@ -17,7 +17,7 @@
  else {
           result=test.call(newValue);
         }
-        if (result != null && result instanceof Boolean && ((Boolean)result).booleanValue()) {
+        if (result != null && result instanceof Boolean && (Boolean)result) {
           if (newKey) {
             events.add(new PropertyAddedEvent(this,key,newValue));
           }

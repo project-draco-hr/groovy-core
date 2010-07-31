@@ -3,8 +3,7 @@
   Class currentClass=baseClass;
   while (currentClass != null) {
     Method[] protectedMethods=currentClass.getDeclaredMethods();
-    for (int i=0; i < protectedMethods.length; i++) {
-      Method method=protectedMethods[i];
+    for (    Method method : protectedMethods) {
       if (method.getName().indexOf('$') != -1)       continue;
       if (Modifier.isProtected(method.getModifiers()) && !containsEquivalentMethod(methods,method))       methods.add(method);
     }
