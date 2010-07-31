@@ -1,19 +1,19 @@
 {
   RankableConstructor[] rc=new RankableConstructor[candidates.length];
-  Class[] ta=new Class[arguments.length];
+  Class[] ta=new Class[original.length];
   Class nullC=NullObject.class;
-  for (int i=0; i < arguments.length; i++) {
-    ta[i]=arguments[i] == null ? nullC : arguments[i].getClass();
+  for (int i=0; i < original.length; i++) {
+    ta[i]=original[i] == null ? nullC : original[i].getClass();
   }
   for (int i=0; i < candidates.length; i++) {
     rc[i]=new RankableConstructor(ta,candidates[i]);
   }
   Arrays.sort(rc);
-  List l=new ArrayList();
+  List<Constructor> l=new ArrayList<Constructor>();
   int index=0;
   while (l.size() < MAX_RECOMENDATIONS && index < rc.length && rc[index].score < MAX_CONSTRUCTOR_SCORE) {
     l.add(rc[index].c);
     index++;
   }
-  return (Constructor[])l.toArray(new Constructor[0]);
+  return l.toArray(new Constructor[l.size()]);
 }

@@ -1,8 +1,8 @@
 {
-  ManagedConcurrentMap res=propName2Map.get(name);
+  ManagedConcurrentMap res=PROPNAME_TO_MAP.get(name);
   if (res == null) {
-    res=new ManagedConcurrentMap(softBundle);
-    ManagedConcurrentMap ores=propName2Map.putIfAbsent(name,res);
+    res=new ManagedConcurrentMap(SOFT_BUNDLE);
+    ManagedConcurrentMap ores=PROPNAME_TO_MAP.putIfAbsent(name,res);
     if (ores != null)     return ores;
   }
   return res;

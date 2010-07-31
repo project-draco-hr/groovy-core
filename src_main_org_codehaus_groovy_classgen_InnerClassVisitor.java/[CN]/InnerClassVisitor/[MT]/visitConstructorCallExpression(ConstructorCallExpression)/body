@@ -29,7 +29,7 @@
   ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic);
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
   parameters.add(pCount,thisParameter);
-  thisField=innerClass.addField("this$0",publicSynthetic,outerClassType,null);
+  thisField=innerClass.addField("this$0",PUBLIC_SYNTHETIC,outerClassType,null);
   addFieldInit(thisParameter,thisField,block);
   for (Iterator it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
     pCount++;
@@ -42,7 +42,7 @@
     parameters.add(pCount,p);
     final VariableExpression initial=new VariableExpression(p);
     initial.setUseReferenceDirectly(true);
-    final FieldNode pField=innerClass.addFieldFirst(ve.getName(),publicSynthetic,ClassHelper.REFERENCE_TYPE,initial);
+    final FieldNode pField=innerClass.addFieldFirst(ve.getName(),PUBLIC_SYNTHETIC,ClassHelper.REFERENCE_TYPE,initial);
     pField.setHolder(true);
   }
   innerClass.addConstructor(ACC_SYNTHETIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);

@@ -1,18 +1,18 @@
 {
   super(klazz,classInfo);
   CachedMethod methods[]=getMethods();
-  int _maximumNumberOfParameters=-1;
-  Class[] _parameterTypes=null;
-  for (int j=0; j < methods.length; j++) {
-    if ("doCall".equals(methods[j].getName())) {
-      final Class[] pt=methods[j].getNativeParameterTypes();
-      if (pt.length > _maximumNumberOfParameters) {
-        _parameterTypes=pt;
-        _maximumNumberOfParameters=_parameterTypes.length;
+  int maximumNumberOfParameters=-1;
+  Class[] parameterTypes=null;
+  for (  CachedMethod method : methods) {
+    if ("doCall".equals(method.getName())) {
+      final Class[] pt=method.getNativeParameterTypes();
+      if (pt.length > maximumNumberOfParameters) {
+        parameterTypes=pt;
+        maximumNumberOfParameters=parameterTypes.length;
       }
     }
   }
-  _maximumNumberOfParameters=Math.max(_maximumNumberOfParameters,0);
-  maximumNumberOfParameters=_maximumNumberOfParameters;
-  parameterTypes=_parameterTypes;
+  maximumNumberOfParameters=Math.max(maximumNumberOfParameters,0);
+  this.maximumNumberOfParameters=maximumNumberOfParameters;
+  this.parameterTypes=parameterTypes;
 }
