@@ -1,0 +1,15 @@
+{
+  if ("groovy.util.logging.Log".equals(logAnnotation.getClassNode().getName())) {
+    return new JavaUtilLoggingStrategy();
+  }
+  if ("groovy.util.logging.Slf4j".equals(logAnnotation.getClassNode().getName())) {
+    return new Slf4jLoggingStrategy();
+  }
+  if ("groovy.util.logging.Log4j".equals(logAnnotation.getClassNode().getName())) {
+    return new Log4jLoggingStrategy();
+  }
+  if ("groovy.util.logging.Commons".equals(logAnnotation.getClassNode().getName())) {
+    return new CommonsLoggingStrategy();
+  }
+  throw new GroovyBugError("Class annotation " + logAnnotation.getClassNode().getName() + " must map to a logging strategy.");
+}
