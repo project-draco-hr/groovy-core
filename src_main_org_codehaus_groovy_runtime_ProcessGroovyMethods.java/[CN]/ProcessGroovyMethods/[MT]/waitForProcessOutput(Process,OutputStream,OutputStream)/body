@@ -1,0 +1,19 @@
+{
+  Thread tout=consumeProcessOutputStream(self,output);
+  Thread terr=consumeProcessErrorStream(self,error);
+  try {
+    tout.join();
+  }
+ catch (  InterruptedException ignore) {
+  }
+  try {
+    terr.join();
+  }
+ catch (  InterruptedException ignore) {
+  }
+  try {
+    self.waitFor();
+  }
+ catch (  InterruptedException ignore) {
+  }
+}
