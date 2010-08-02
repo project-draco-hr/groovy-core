@@ -32,8 +32,8 @@
   msg+=".\nCannot resolve which method to invoke for ";
   msg+=InvokerHelper.toString(arguments);
   msg+=" due to overlapping prototypes between:";
-  for (Iterator iter=matches.iterator(); iter.hasNext(); ) {
-    CachedClass[] types=((ParameterTypes)iter.next()).getParameterTypes();
+  for (  Object match : matches) {
+    CachedClass[] types=((ParameterTypes)match).getParameterTypes();
     msg+="\n\t" + InvokerHelper.toString(types);
   }
   throw new GroovyRuntimeException(msg);
