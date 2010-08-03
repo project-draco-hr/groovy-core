@@ -28,10 +28,8 @@
     }
     if (method == null)     throw new MissingMethodException(methodName,theClass,arguments,false);
   }
- else   if (CLOSURE_CURRY_METHOD.equals(methodName)) {
-    return closure.curry(arguments);
-  }
- else {
+  boolean shouldDefer=closure.getResolveStrategy() == Closure.DELEGATE_ONLY && isInternalMethod(methodName);
+  if (method == null && !shouldDefer) {
     method=CLOSURE_METACLASS.pickMethod(methodName,argClasses);
   }
   if (method != null)   return method.doMethodInvoke(object,arguments);
