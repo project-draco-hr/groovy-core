@@ -24,7 +24,7 @@
   }
   final MetaClass filterMC=filterToUse == null ? null : InvokerHelper.getMetaClass(filterToUse);
   final MetaClass excludeMC=excludeFilterToUse == null ? null : InvokerHelper.getMetaClass(excludeFilterToUse);
-  boolean included=filterToUse == null || (filterToUse != null && DefaultTypeTransformation.castToBoolean(filterMC.invokeMethod(filterToUse,"isCase",filterParam)));
+  boolean included=filterToUse == null || DefaultTypeTransformation.castToBoolean(filterMC.invokeMethod(filterToUse,"isCase",filterParam));
   boolean excluded=excludeFilterToUse != null && DefaultTypeTransformation.castToBoolean(excludeMC.invokeMethod(excludeFilterToUse,"isCase",excludeParam));
   return included && !excluded;
 }

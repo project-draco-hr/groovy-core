@@ -1,0 +1,12 @@
+{
+  final Map<G,List<Map.Entry<K,V>>> initial=groupEntriesBy(self,closure);
+  final Map<G,Map<K,V>> answer=new LinkedHashMap<G,Map<K,V>>();
+  for (  Map.Entry<G,List<Map.Entry<K,V>>> outer : initial.entrySet()) {
+    G key=outer.getKey();
+    List<Map.Entry<K,V>> entries=outer.getValue();
+    Map<K,V> target=createSimilarMap(self);
+    putAll(target,entries);
+    answer.put(key,target);
+  }
+  return answer;
+}

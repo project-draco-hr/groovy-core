@@ -1,0 +1,33 @@
+{
+  if (col.getClass() == clazz) {
+    return (T)col;
+  }
+  if (clazz == List.class) {
+    return (T)asList(col);
+  }
+  if (clazz == Set.class) {
+    if (col instanceof Set)     return (T)col;
+    return (T)new HashSet(col);
+  }
+  if (clazz == SortedSet.class) {
+    if (col instanceof SortedSet)     return (T)col;
+    return (T)new TreeSet(col);
+  }
+  if (clazz == Queue.class) {
+    if (col instanceof Queue)     return (T)col;
+    return (T)new LinkedList(col);
+  }
+  if (clazz == Stack.class) {
+    if (col instanceof Stack)     return (T)col;
+    final Stack stack=new Stack();
+    stack.addAll(col);
+    return (T)stack;
+  }
+  Object[] args={col};
+  try {
+    return (T)InvokerHelper.invokeConstructorOf(clazz,args);
+  }
+ catch (  Exception e) {
+  }
+  return asType((Object)col,clazz);
+}
