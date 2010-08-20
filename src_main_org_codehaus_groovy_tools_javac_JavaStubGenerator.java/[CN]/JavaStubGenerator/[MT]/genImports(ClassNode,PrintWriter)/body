@@ -5,7 +5,7 @@
     imports.add(importNode.getPackageName());
   }
   for (  ImportNode imp : moduleNode.getImports()) {
-    imports.add(imp.getType().getName());
+    if (imp.getAlias() == null)     imports.add(imp.getType().getName());
   }
   imports.addAll(Arrays.asList(ResolveVisitor.DEFAULT_IMPORTS));
   for (  String imp : imports) {
