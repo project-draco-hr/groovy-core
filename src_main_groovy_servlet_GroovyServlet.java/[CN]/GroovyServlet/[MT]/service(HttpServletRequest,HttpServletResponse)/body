@@ -19,7 +19,6 @@ catch (        ScriptException e) {
     }
 ;
     GroovyCategorySupport.use(ServletCategory.class,closure);
-    response.setStatus(HttpServletResponse.SC_OK);
   }
  catch (  RuntimeException runtimeException) {
     StringBuffer error=new StringBuffer("GroovyServlet Error: ");
@@ -51,8 +50,5 @@ catch (        ScriptException e) {
     System.err.println(e.toString());
     runtimeException.printStackTrace(System.err);
     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
-  }
- finally {
-    response.flushBuffer();
   }
 }
