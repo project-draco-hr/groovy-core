@@ -1,9 +1,11 @@
 {
   final List<FieldNode> fList=cNode.getFields();
   for (  FieldNode fNode : fList) {
-    if (!fNode.isPublic() && !fNode.isFinal() && !fNode.getName().contains("$")&& (cNode.getProperty(fNode.getName()) == null)) {
-      body.addStatement(createConstructorStatementDefault(fNode));
-    }
+    if (fNode.isPublic())     continue;
+    if (cNode.getProperty(fNode.getName()) != null)     continue;
+    if (fNode.getName().contains("$"))     continue;
+    if (fNode.isFinal() && fNode.getInitialExpression() != null)     body.addStatement(checkFinalArgNotOverridden(cNode,fNode));
+    body.addStatement(createConstructorStatementDefault(fNode));
   }
   body.addStatement(assignStatement(constructorStyle,ConstantExpression.TRUE));
   final Parameter[] params=new Parameter[]{new Parameter(HASHMAP_TYPE,"args")};
