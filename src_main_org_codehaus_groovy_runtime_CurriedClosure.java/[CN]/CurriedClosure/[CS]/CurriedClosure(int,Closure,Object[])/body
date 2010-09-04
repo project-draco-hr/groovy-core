@@ -4,11 +4,28 @@
   this.index=index;
   final int origMaxLen=uncurriedClosure.getMaximumNumberOfParameters();
   maximumNumberOfParameters=origMaxLen - arguments.length;
-  if (index < 0) {
-    if (index < -origMaxLen || index > -arguments.length)     throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range "+ (-origMaxLen)+ ".."+ (-arguments.length)+ " but found "+ index);
-    this.index+=origMaxLen;
+  Class[] classes=uncurriedClosure.getParameterTypes();
+  Class lastType=classes.length == 0 ? null : classes[classes.length - 1];
+  if (lastType != null && lastType.isArray()) {
+    varargType=lastType;
   }
- else   if (index > maximumNumberOfParameters) {
-    throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range 0.."+ maximumNumberOfParameters+ " but found "+ index);
+  if (isVararg()) {
+    if (index < 0) {
+      numTrailingArgs=(-index) - arguments.length;
+    }
+  }
+ else {
+    if (index < 0) {
+      this.index+=origMaxLen;
+    }
+    if (maximumNumberOfParameters < 0) {
+      throw new IllegalArgumentException("Can't curry " + arguments.length + " arguments for a closure with "+ origMaxLen+ " parameters.");
+    }
+    if (index < 0) {
+      if (index < -origMaxLen || index > -arguments.length)       throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range "+ (-origMaxLen)+ ".."+ (-arguments.length)+ " but found "+ index);
+    }
+ else     if (index > maximumNumberOfParameters) {
+      throw new IllegalArgumentException("To curry " + arguments.length + " argument(s) expect index range 0.."+ maximumNumberOfParameters+ " but found "+ index);
+    }
   }
 }

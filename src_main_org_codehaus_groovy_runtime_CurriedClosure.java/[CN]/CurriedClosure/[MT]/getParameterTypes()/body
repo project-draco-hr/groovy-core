@@ -1,6 +1,31 @@
 {
   Class[] oldParams=((Closure)getOwner()).getParameterTypes();
-  Class[] newParams=new Class[oldParams.length - curriedParams.length];
+  int extraParams=0;
+  int gobbledParams=curriedParams.length;
+  if (isVararg()) {
+    int numNonVarargs=oldParams.length - 1;
+    if (index < 0) {
+      int absIndex=index < 0 ? -index : index;
+      if (absIndex > numNonVarargs)       gobbledParams=numNonVarargs;
+      int newNumNonVarargs=numNonVarargs - gobbledParams;
+      if (absIndex - gobbledParams > numNonVarargs)       extraParams=absIndex - gobbledParams - numNonVarargs;
+      int keptParams=Math.max(numNonVarargs - absIndex,0);
+      Class[] newParams=new Class[keptParams + newNumNonVarargs + extraParams+ 1];
+      System.arraycopy(oldParams,0,newParams,0,keptParams);
+      for (int i=0; i < newNumNonVarargs; i++)       newParams[keptParams + i]=Object.class;
+      for (int i=0; i < extraParams; i++)       newParams[keptParams + newNumNonVarargs + i]=varargType.getComponentType();
+      newParams[newParams.length - 1]=varargType;
+      return newParams;
+    }
+    int keptParams=Math.min(index,numNonVarargs);
+    if (index > numNonVarargs)     extraParams=index - numNonVarargs;
+    Class[] newParams=new Class[keptParams + extraParams + 1];
+    System.arraycopy(oldParams,0,newParams,0,keptParams);
+    for (int i=0; i < extraParams; i++)     newParams[keptParams + i]=varargType.getComponentType();
+    newParams[newParams.length - 1]=varargType;
+    return newParams;
+  }
+  Class[] newParams=new Class[oldParams.length - gobbledParams + extraParams];
   System.arraycopy(oldParams,0,newParams,0,index);
   if (newParams.length - index > 0)   System.arraycopy(oldParams,curriedParams.length + index,newParams,index,newParams.length - index);
   return newParams;

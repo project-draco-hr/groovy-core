@@ -1,7 +1,20 @@
 {
-  final Object newCurriedParams[]=new Object[curriedParams.length + arguments.length];
-  System.arraycopy(arguments,0,newCurriedParams,0,index);
-  System.arraycopy(curriedParams,0,newCurriedParams,index,curriedParams.length);
-  if (arguments.length - index > 0)   System.arraycopy(arguments,index,newCurriedParams,curriedParams.length + index,arguments.length - index);
-  return newCurriedParams;
+  if (isVararg()) {
+    int normalizedIndex=index < 0 ? index + arguments.length + curriedParams.length : index;
+    if (normalizedIndex < 0 || normalizedIndex > arguments.length) {
+      throw new IllegalArgumentException("When currying expected index range between " + (-arguments.length - curriedParams.length) + ".."+ (arguments.length + curriedParams.length)+ " but found "+ index);
+    }
+    final Object newCurriedParams[]=new Object[curriedParams.length + arguments.length];
+    System.arraycopy(arguments,0,newCurriedParams,0,normalizedIndex);
+    System.arraycopy(curriedParams,0,newCurriedParams,normalizedIndex,curriedParams.length);
+    if (arguments.length - normalizedIndex > 0)     System.arraycopy(arguments,normalizedIndex,newCurriedParams,curriedParams.length + normalizedIndex,arguments.length - normalizedIndex);
+    return newCurriedParams;
+  }
+ else {
+    final Object newCurriedParams[]=new Object[curriedParams.length + arguments.length];
+    System.arraycopy(arguments,0,newCurriedParams,0,index);
+    System.arraycopy(curriedParams,0,newCurriedParams,index,curriedParams.length);
+    if (arguments.length - index > 0)     System.arraycopy(arguments,index,newCurriedParams,curriedParams.length + index,arguments.length - index);
+    return newCurriedParams;
+  }
 }
