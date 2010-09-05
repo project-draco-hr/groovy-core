@@ -10,11 +10,9 @@
     if (arguments.length - normalizedIndex > 0)     System.arraycopy(arguments,normalizedIndex,newCurriedParams,curriedParams.length + normalizedIndex,arguments.length - normalizedIndex);
     return newCurriedParams;
   }
- else {
-    final Object newCurriedParams[]=new Object[curriedParams.length + arguments.length];
-    System.arraycopy(arguments,0,newCurriedParams,0,index);
-    System.arraycopy(curriedParams,0,newCurriedParams,index,curriedParams.length);
-    if (arguments.length - index > 0)     System.arraycopy(arguments,index,newCurriedParams,curriedParams.length + index,arguments.length - index);
-    return newCurriedParams;
-  }
+  final Object newCurriedParams[]=new Object[curriedParams.length + arguments.length];
+  System.arraycopy(arguments,0,newCurriedParams,0,index);
+  System.arraycopy(curriedParams,0,newCurriedParams,index,curriedParams.length);
+  if (arguments.length - index > 0)   System.arraycopy(arguments,index,newCurriedParams,curriedParams.length + index,arguments.length - index);
+  return newCurriedParams;
 }

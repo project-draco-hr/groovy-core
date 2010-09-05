@@ -8,7 +8,7 @@
       int absIndex=index < 0 ? -index : index;
       if (absIndex > numNonVarargs)       gobbledParams=numNonVarargs;
       int newNumNonVarargs=numNonVarargs - gobbledParams;
-      if (absIndex - gobbledParams > numNonVarargs)       extraParams=absIndex - gobbledParams - numNonVarargs;
+      if (absIndex - curriedParams.length > newNumNonVarargs)       extraParams=absIndex - curriedParams.length - newNumNonVarargs;
       int keptParams=Math.max(numNonVarargs - absIndex,0);
       Class[] newParams=new Class[keptParams + newNumNonVarargs + extraParams+ 1];
       System.arraycopy(oldParams,0,newParams,0,keptParams);
@@ -17,11 +17,13 @@
       newParams[newParams.length - 1]=varargType;
       return newParams;
     }
-    int keptParams=Math.min(index,numNonVarargs);
-    if (index > numNonVarargs)     extraParams=index - numNonVarargs;
-    Class[] newParams=new Class[keptParams + extraParams + 1];
-    System.arraycopy(oldParams,0,newParams,0,keptParams);
-    for (int i=0; i < extraParams; i++)     newParams[keptParams + i]=varargType.getComponentType();
+    int leadingKept=Math.min(index,numNonVarargs);
+    int trailingKept=Math.max(numNonVarargs - leadingKept - curriedParams.length,0);
+    if (index > leadingKept)     extraParams=index - leadingKept;
+    Class[] newParams=new Class[leadingKept + trailingKept + extraParams+ 1];
+    System.arraycopy(oldParams,0,newParams,0,leadingKept);
+    if (trailingKept > 0)     System.arraycopy(oldParams,leadingKept + curriedParams.length,newParams,leadingKept,trailingKept);
+    for (int i=0; i < extraParams; i++)     newParams[leadingKept + trailingKept + i]=varargType.getComponentType();
     newParams[newParams.length - 1]=varargType;
     return newParams;
   }
