@@ -1,0 +1,25 @@
+{
+  Set<String> extensions=new LinkedHashSet<String>();
+  extensions.add("groovy");
+  URL service=null;
+  try {
+    Enumeration<URL> globalServices=loader.getResources("META-INF/services/org.codehaus.groovy.source.Extensions");
+    while (globalServices.hasMoreElements()) {
+      service=globalServices.nextElement();
+      String extension;
+      BufferedReader svcIn=new BufferedReader(new InputStreamReader(service.openStream()));
+      extension=svcIn.readLine();
+      while (extension != null) {
+        extension=extension.trim();
+        if (!extension.startsWith("#") && extension.length() > 0) {
+          extensions.add(extension);
+        }
+        extension=svcIn.readLine();
+      }
+    }
+  }
+ catch (  IOException ex) {
+    throw new GroovyRuntimeException("IO Exception attempting to load source extension registerers. Exception: " + ex.toString() + (service == null ? "" : service.toExternalForm()));
+  }
+  return extensions;
+}

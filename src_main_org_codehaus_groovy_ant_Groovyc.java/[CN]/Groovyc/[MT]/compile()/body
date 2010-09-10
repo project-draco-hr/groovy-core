@@ -79,7 +79,7 @@
         if ((fileEncodingProp != null) && !fileEncodingProp.equals("")) {
           commandLineList.add("-Dfile.encoding=" + fileEncodingProp);
         }
-        if ((targetBytecode != null)) {
+        if (targetBytecode != null) {
           commandLineList.add("-Dgroovy.target.bytecode=" + targetBytecode);
         }
         if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
@@ -170,6 +170,7 @@
           CommandLine cli;
           cli=cliParser.parse(options,commandLine);
           configuration=FileSystemCompiler.generateCompilerConfigurationFromOptions(cli);
+          configuration.setScriptExtensions(getScriptExtensions());
           String[] filenames=FileSystemCompiler.generateFileNamesFromOptions(cli);
           boolean fileNameErrors=filenames == null;
           fileNameErrors=fileNameErrors && !FileSystemCompiler.validateFiles(filenames);
