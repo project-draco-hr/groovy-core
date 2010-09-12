@@ -1,0 +1,28 @@
+{
+  String val="null";
+  if (memberValue instanceof ListExpression) {
+    StringBuilder sb=new StringBuilder("{");
+    boolean first=true;
+    ListExpression le=(ListExpression)memberValue;
+    for (    Expression e : le.getExpressions()) {
+      if (first)       first=false;
+ else       sb.append(",");
+      sb.append(getAnnotationValue(e));
+    }
+    sb.append("}");
+    val=sb.toString();
+  }
+ else   if (memberValue instanceof ConstantExpression) {
+    ConstantExpression ce=(ConstantExpression)memberValue;
+    Object constValue=ce.getValue();
+    if (constValue instanceof Number || constValue instanceof Boolean)     val=constValue.toString();
+ else     val="\"" + constValue + "\"";
+  }
+ else   if (memberValue instanceof PropertyExpression || memberValue instanceof VariableExpression) {
+    val=((Expression)memberValue).getText();
+  }
+ else   if (memberValue instanceof ClosureExpression) {
+    val="groovy.lang.Closure.class";
+  }
+  return val;
+}

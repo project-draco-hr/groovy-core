@@ -5,27 +5,9 @@
     boolean first=true;
     Map<String,Expression> members=annotation.getMembers();
     for (    String key : members.keySet()) {
-      String val="null";
-      Object memberValue=members.get(key);
-      if (memberValue instanceof ConstantExpression) {
-        ConstantExpression ce=(ConstantExpression)memberValue;
-        Object constValue=ce.getValue();
-        if (constValue instanceof Number || constValue instanceof Boolean)         val=constValue.toString();
- else         val="\"" + constValue + "\"";
-      }
- else       if (memberValue instanceof PropertyExpression || memberValue instanceof VariableExpression) {
-        val=((Expression)memberValue).getText();
-      }
- else       if (memberValue instanceof ClosureExpression) {
-        val="groovy.lang.Closure.class";
-      }
-      if (first) {
-        first=false;
-      }
- else {
-        out.print(", ");
-      }
-      out.print(key + "=" + val);
+      if (first)       first=false;
+ else       out.print(", ");
+      out.print(key + "=" + getAnnotationValue(members.get(key)));
     }
     out.print(") ");
   }
