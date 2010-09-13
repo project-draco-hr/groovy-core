@@ -41,6 +41,10 @@
         otherStatements.remove(0);
         statements.add(0,firstStatement);
       }
+      Statement stmtThis$0=getImplicitThis$0StmtIfInnerClass(otherStatements);
+      if (stmtThis$0 != null) {
+        statements.add(1,stmtThis$0);
+      }
       statements.addAll(otherStatements);
     }
     BlockStatement newBlock=new BlockStatement(statements,block.getVariableScope());
