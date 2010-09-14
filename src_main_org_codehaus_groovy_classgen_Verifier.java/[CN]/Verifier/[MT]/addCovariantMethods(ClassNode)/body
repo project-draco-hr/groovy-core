@@ -4,14 +4,13 @@
   Map abstractMethods=new HashMap();
   Map<String,MethodNode> allInterfaceMethods=new HashMap<String,MethodNode>();
   ClassNode[] interfaces=classNode.getInterfaces();
-  for (int i=0; i < interfaces.length; i++) {
-    ClassNode iface=interfaces[i];
+  for (  ClassNode iface : interfaces) {
     Map ifaceMethodsMap=iface.getDeclaredMethodsMap();
     abstractMethods.putAll(ifaceMethodsMap);
     allInterfaceMethods.putAll(ifaceMethodsMap);
   }
   collectSuperInterfaceMethods(classNode,allInterfaceMethods);
-  List declaredMethods=new ArrayList(classNode.getMethods());
+  List<MethodNode> declaredMethods=new ArrayList<MethodNode>(classNode.getMethods());
   for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
     MethodNode m=(MethodNode)methodsIterator.next();
     abstractMethods.remove(m.getTypeDescriptor());
@@ -24,17 +23,16 @@
     }
   }
   addCovariantMethods(classNode,declaredMethods,abstractMethods,methodsToAdd,genericsSpec);
-  Map declaredMethodsMap=new HashMap();
+  Map<String,MethodNode> declaredMethodsMap=new HashMap<String,MethodNode>();
   if (methodsToAdd.size() > 0) {
-    for (Iterator methodsIterator=declaredMethods.iterator(); methodsIterator.hasNext(); ) {
-      MethodNode m=(MethodNode)methodsIterator.next();
-      declaredMethodsMap.put(m.getTypeDescriptor(),m);
+    for (    MethodNode mn : declaredMethods) {
+      declaredMethodsMap.put(mn.getTypeDescriptor(),mn);
     }
   }
-  for (Iterator it=methodsToAdd.entrySet().iterator(); it.hasNext(); ) {
-    Map.Entry entry=(Map.Entry)it.next();
+  for (  Object o : methodsToAdd.entrySet()) {
+    Map.Entry entry=(Map.Entry)o;
     MethodNode method=(MethodNode)entry.getValue();
-    MethodNode mn=(MethodNode)declaredMethodsMap.get(entry.getKey());
+    MethodNode mn=declaredMethodsMap.get(entry.getKey());
     if (mn != null && mn.getDeclaringClass().equals(classNode))     continue;
     addPropertyMethod(method);
   }

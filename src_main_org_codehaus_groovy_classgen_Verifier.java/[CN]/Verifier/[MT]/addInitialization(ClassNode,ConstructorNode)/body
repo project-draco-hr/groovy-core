@@ -3,14 +3,13 @@
   if (firstStatement instanceof BytecodeSequence)   return;
   ConstructorCallExpression first=getFirstIfSpecialConstructorCall(firstStatement);
   if (first != null && (first.isThisCall()))   return;
-  List statements=new ArrayList();
-  List staticStatements=new ArrayList();
+  List<Statement> statements=new ArrayList<Statement>();
+  List<Statement> staticStatements=new ArrayList<Statement>();
   final boolean isEnum=node.isEnum();
-  List<Statement> initStmtsAfterEnumValuesInit=new ArrayList();
-  Set explicitStaticPropsInEnum=new HashSet();
+  List<Statement> initStmtsAfterEnumValuesInit=new ArrayList<Statement>();
+  Set<String> explicitStaticPropsInEnum=new HashSet<String>();
   if (isEnum) {
-    for (Iterator iter=node.getProperties().iterator(); iter.hasNext(); ) {
-      PropertyNode propNode=(PropertyNode)iter.next();
+    for (    PropertyNode propNode : node.getProperties()) {
       if (!propNode.isSynthetic() && propNode.getField().isStatic()) {
         explicitStaticPropsInEnum.add(propNode.getField().getName());
       }
@@ -21,14 +20,14 @@
       }
     }
   }
-  for (Iterator iter=node.getFields().iterator(); iter.hasNext(); ) {
-    addFieldInitialization(statements,staticStatements,(FieldNode)iter.next(),isEnum,initStmtsAfterEnumValuesInit,explicitStaticPropsInEnum);
+  for (  FieldNode fn : node.getFields()) {
+    addFieldInitialization(statements,staticStatements,fn,isEnum,initStmtsAfterEnumValuesInit,explicitStaticPropsInEnum);
   }
   statements.addAll(node.getObjectInitializerStatements());
   if (!statements.isEmpty()) {
     Statement code=constructorNode.getCode();
     BlockStatement block=new BlockStatement();
-    List otherStatements=block.getStatements();
+    List<Statement> otherStatements=block.getStatements();
     if (code instanceof BlockStatement) {
       block=(BlockStatement)code;
       otherStatements=block.getStatements();

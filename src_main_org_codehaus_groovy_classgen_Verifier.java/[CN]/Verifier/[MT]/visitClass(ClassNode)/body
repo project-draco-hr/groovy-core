@@ -7,12 +7,11 @@
     return;
   }
   ClassNode[] classNodes=classNode.getInterfaces();
-  List interfaces=new ArrayList();
-  for (int i=0; i < classNodes.length; i++) {
-    ClassNode classNode=classNodes[i];
+  List<String> interfaces=new ArrayList<String>();
+  for (  ClassNode classNode : classNodes) {
     interfaces.add(classNode.getName());
   }
-  Set interfaceSet=new HashSet(interfaces);
+  Set<String> interfaceSet=new HashSet<String>(interfaces);
   if (interfaceSet.size() != interfaces.size()) {
     throw new RuntimeParserException("Duplicate interfaces in implements list: " + interfaces,classNode);
   }

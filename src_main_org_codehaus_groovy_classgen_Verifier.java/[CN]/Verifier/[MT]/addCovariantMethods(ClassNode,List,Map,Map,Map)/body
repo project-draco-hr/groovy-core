@@ -2,15 +2,15 @@
   ClassNode sn=classNode.getUnresolvedSuperClass(false);
   if (sn != null) {
     Map genericsSpec=createGenericsSpec(sn,oldGenericsSpec);
-    List classMethods=sn.getMethods();
-    for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
-      MethodNode method=(MethodNode)it.next();
+    List<MethodNode> classMethods=sn.getMethods();
+    for (    Object declaredMethod : declaredMethods) {
+      MethodNode method=(MethodNode)declaredMethod;
       if (method.isStatic())       continue;
       storeMissingCovariantMethods(classMethods,method,methodsToAdd,genericsSpec);
     }
     if (!abstractMethods.isEmpty()) {
-      for (Iterator it=classMethods.iterator(); it.hasNext(); ) {
-        MethodNode method=(MethodNode)it.next();
+      for (      Object classMethod : classMethods) {
+        MethodNode method=(MethodNode)classMethod;
         if (method.isStatic())         continue;
         storeMissingCovariantMethods(abstractMethods.values(),method,methodsToAdd,Collections.EMPTY_MAP);
       }
@@ -18,14 +18,14 @@
     addCovariantMethods(sn.redirect(),declaredMethods,abstractMethods,methodsToAdd,genericsSpec);
   }
   ClassNode[] interfaces=classNode.getInterfaces();
-  for (int i=0; i < interfaces.length; i++) {
-    List interfacesMethods=interfaces[i].getMethods();
-    Map genericsSpec=createGenericsSpec(interfaces[i],oldGenericsSpec);
-    for (Iterator it=declaredMethods.iterator(); it.hasNext(); ) {
-      MethodNode method=(MethodNode)it.next();
+  for (  ClassNode anInterface : interfaces) {
+    List interfacesMethods=anInterface.getMethods();
+    Map genericsSpec=createGenericsSpec(anInterface,oldGenericsSpec);
+    for (    Object declaredMethod : declaredMethods) {
+      MethodNode method=(MethodNode)declaredMethod;
       if (method.isStatic())       continue;
       storeMissingCovariantMethods(interfacesMethods,method,methodsToAdd,genericsSpec);
     }
-    addCovariantMethods(interfaces[i],declaredMethods,abstractMethods,methodsToAdd,genericsSpec);
+    addCovariantMethods(anInterface,declaredMethods,abstractMethods,methodsToAdd,genericsSpec);
   }
 }
