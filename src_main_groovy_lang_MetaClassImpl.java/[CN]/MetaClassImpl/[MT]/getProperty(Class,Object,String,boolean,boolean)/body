@@ -19,9 +19,11 @@
     }
   }
   if (!useSuper && !isStatic && GroovyCategorySupport.hasCategoryInCurrentThread()) {
-    String getterName="get" + MetaClassHelper.capitalize(name);
-    MetaMethod categoryMethod=getCategoryMethodGetter(sender,getterName,false);
-    if (categoryMethod != null)     method=categoryMethod;
+    String getterName=GroovyCategorySupport.getPropertyCategoryGetterName(name);
+    if (getterName != null) {
+      MetaMethod categoryMethod=getCategoryMethodGetter(sender,getterName,false);
+      if (categoryMethod != null)       method=categoryMethod;
+    }
   }
   if (method == null && mp != null) {
     try {
