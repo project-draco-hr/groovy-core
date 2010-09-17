@@ -5,6 +5,7 @@
   AnnotatedNode targetClass=(AnnotatedNode)nodes[1];
   AnnotationNode logAnnotation=(AnnotationNode)nodes[0];
   final LoggingStrategy loggingStrategy=createLoggingStrategy(logAnnotation);
+  if (loggingStrategy == null)   return;
   final String logFieldName=lookupLogFieldName(logAnnotation);
   if (!(targetClass instanceof ClassNode))   throw new GroovyBugError("Class annotation " + logAnnotation.getClassNode().getName() + " annotated no Class, this must not happen.");
   final ClassNode classNode=(ClassNode)targetClass;

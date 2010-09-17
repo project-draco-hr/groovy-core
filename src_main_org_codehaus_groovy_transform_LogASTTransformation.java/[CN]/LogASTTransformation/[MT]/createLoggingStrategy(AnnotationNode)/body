@@ -1,15 +1,34 @@
 {
-  if ("groovy.util.logging.Log".equals(logAnnotation.getClassNode().getName())) {
-    return new JavaUtilLoggingStrategy();
+  String annotationName=logAnnotation.getClassNode().getName();
+  Class annotationClass;
+  try {
+    annotationClass=Class.forName(annotationName);
   }
-  if ("groovy.util.logging.Slf4j".equals(logAnnotation.getClassNode().getName())) {
-    return new Slf4jLoggingStrategy();
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not resolve class named " + annotationName);
   }
-  if ("groovy.util.logging.Log4j".equals(logAnnotation.getClassNode().getName())) {
-    return new Log4jLoggingStrategy();
+  Method annotationMethod;
+  try {
+    annotationMethod=annotationClass.getDeclaredMethod("loggingStrategy",null);
   }
-  if ("groovy.util.logging.Commons".equals(logAnnotation.getClassNode().getName())) {
-    return new CommonsLoggingStrategy();
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not find method named loggingStrategy on class named " + annotationName);
   }
-  throw new GroovyBugError("Class annotation " + logAnnotation.getClassNode().getName() + " must map to a logging strategy.");
+  Object defaultValue;
+  try {
+    defaultValue=annotationMethod.getDefaultValue();
+  }
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not find default value of method named loggingStrategy on class named " + annotationName);
+  }
+  if (!LoggingStrategy.class.isAssignableFrom((Class)defaultValue)) {
+    throw new RuntimeException("Default loggingStrategy value on class named " + annotationName + " is not a LoggingStrategy");
+  }
+  try {
+    Class<? extends LoggingStrategy> strategyClass=(Class<? extends LoggingStrategy>)defaultValue;
+    return strategyClass.newInstance();
+  }
+ catch (  Exception e) {
+    return null;
+  }
 }
