@@ -1,0 +1,14 @@
+{
+  if (!hasGroup(matcher)) {
+    return InvokerHelper.toString(closure.call(matcher.group()));
+  }
+  int count=matcher.groupCount();
+  List<String> groups=new ArrayList<String>();
+  for (int i=0; i <= count; i++) {
+    groups.add(matcher.group(i));
+  }
+  if (closure.getParameterTypes().length == 1 && closure.getParameterTypes()[0] == Object[].class) {
+    return InvokerHelper.toString(closure.call(groups.toArray()));
+  }
+  return InvokerHelper.toString(closure.call(groups));
+}
