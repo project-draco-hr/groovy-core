@@ -1,9 +1,7 @@
 {
   super.gotoPhase(phase);
   if (phase == Phases.SEMANTIC_ANALYSIS && javaSources.size() > 0) {
-    Iterator modules=getAST().getModules().iterator();
-    while (modules.hasNext()) {
-      ModuleNode module=(ModuleNode)modules.next();
+    for (    ModuleNode module : getAST().getModules()) {
       module.setImportsResolved(false);
     }
     try {
