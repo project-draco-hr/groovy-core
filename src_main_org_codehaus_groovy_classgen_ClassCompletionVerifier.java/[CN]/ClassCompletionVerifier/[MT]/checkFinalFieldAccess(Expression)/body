@@ -1,7 +1,20 @@
 {
-  if (!(expression instanceof VariableExpression))   return;
-  VariableExpression ve=(VariableExpression)expression;
-  Variable v=ve.getAccessedVariable();
+  if (!(expression instanceof VariableExpression) && !(expression instanceof PropertyExpression))   return;
+  Variable v=null;
+  if (expression instanceof VariableExpression) {
+    VariableExpression ve=(VariableExpression)expression;
+    v=ve.getAccessedVariable();
+  }
+ else {
+    PropertyExpression propExp=((PropertyExpression)expression);
+    Expression objectExpression=propExp.getObjectExpression();
+    if (objectExpression instanceof VariableExpression) {
+      VariableExpression varExp=(VariableExpression)objectExpression;
+      if (varExp.isThisExpression()) {
+        v=currentClass.getDeclaredField(propExp.getPropertyAsString());
+      }
+    }
+  }
   if (v instanceof FieldNode) {
     FieldNode fn=(FieldNode)v;
     int modifiers=fn.getModifiers();
