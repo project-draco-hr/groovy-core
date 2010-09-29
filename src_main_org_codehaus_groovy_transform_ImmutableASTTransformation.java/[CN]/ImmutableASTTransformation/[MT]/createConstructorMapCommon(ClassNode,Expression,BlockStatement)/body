@@ -3,6 +3,7 @@
   for (  FieldNode fNode : fList) {
     if (fNode.isPublic())     continue;
     if (cNode.getProperty(fNode.getName()) != null)     continue;
+    if (fNode.isFinal() && fNode.isStatic())     continue;
     if (fNode.getName().contains("$"))     continue;
     if (fNode.isFinal() && fNode.getInitialExpression() != null)     body.addStatement(checkFinalArgNotOverridden(cNode,fNode));
     body.addStatement(createConstructorStatementDefault(fNode));
