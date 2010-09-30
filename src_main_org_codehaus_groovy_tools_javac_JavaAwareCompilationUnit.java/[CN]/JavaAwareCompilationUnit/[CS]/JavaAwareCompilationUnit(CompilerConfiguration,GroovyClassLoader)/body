@@ -8,7 +8,11 @@
   keepStubs=Boolean.TRUE.equals(options.get("keepStubs"));
   addPhaseOperation(new PrimaryClassNodeOperation(){
     public void call(    SourceUnit source,    GeneratorContext context,    ClassNode node) throws CompilationFailedException {
-      if (javaSources.size() != 0)       new JavaAwareResolveVisitor(JavaAwareCompilationUnit.this).startResolving(node,source);
+      if (javaSources.size() != 0) {
+        VariableScopeVisitor scopeVisitor=new VariableScopeVisitor(source);
+        scopeVisitor.visitClass(node);
+        new JavaAwareResolveVisitor(JavaAwareCompilationUnit.this).startResolving(node,source);
+      }
     }
   }
 ,Phases.CONVERSION);
