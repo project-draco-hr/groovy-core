@@ -21,7 +21,18 @@
  else {
     setTargetBytecode(getVMVersion());
   }
-  setDefaultScriptExtension(".groovy");
+  String tmpDefaultScriptExtension=null;
+  try {
+    tmpDefaultScriptExtension=System.getProperty("groovy.default.scriptExtension");
+  }
+ catch (  Exception e) {
+  }
+  if (tmpDefaultScriptExtension != null) {
+    setDefaultScriptExtension(tmpDefaultScriptExtension);
+  }
+ else {
+    setDefaultScriptExtension(".groovy");
+  }
   String encoding=null;
   try {
     encoding=System.getProperty("file.encoding","US-ASCII");

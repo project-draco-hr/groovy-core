@@ -88,6 +88,11 @@
         if ((memoryMaximumSize != null) && !memoryMaximumSize.equals("")) {
           commandLineList.add("-Xmx" + memoryMaximumSize);
         }
+        if (!"*.groovy".equals(getScriptExtension())) {
+          String tmpExtension=getScriptExtension();
+          if (tmpExtension.startsWith("*."))           tmpExtension=tmpExtension.substring(1);
+          commandLineList.add("-Dgroovy.default.scriptExtension=" + tmpExtension);
+        }
         commandLineList.add("org.codehaus.groovy.tools.FileSystemCompiler");
       }
       commandLineList.add("--classpath");
@@ -171,6 +176,9 @@
           cli=cliParser.parse(options,commandLine);
           configuration=FileSystemCompiler.generateCompilerConfigurationFromOptions(cli);
           configuration.setScriptExtensions(getScriptExtensions());
+          String tmpExtension=getScriptExtension();
+          if (tmpExtension.startsWith("*."))           tmpExtension=tmpExtension.substring(1);
+          configuration.setDefaultScriptExtension(tmpExtension);
           String[] filenames=FileSystemCompiler.generateFileNamesFromOptions(cli);
           boolean fileNameErrors=filenames == null;
           fileNameErrors=fileNameErrors && !FileSystemCompiler.validateFiles(filenames);
