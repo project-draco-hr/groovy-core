@@ -1,0 +1,45 @@
+{
+  List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
+  AST node=classDef.getFirstChild();
+  int modifiers=Opcodes.ACC_PUBLIC;
+  if (isType(MODIFIERS,node)) {
+    modifiers=modifiers(node,annotations,modifiers);
+    checkNoInvalidModifier(classDef,"Interface",modifiers,Opcodes.ACC_SYNCHRONIZED,"synchronized");
+    node=node.getNextSibling();
+  }
+  modifiers|=Opcodes.ACC_ABSTRACT | Opcodes.ACC_INTERFACE;
+  String name=identifier(node);
+  node=node.getNextSibling();
+  ClassNode superClass=ClassHelper.OBJECT_TYPE;
+  GenericsType[] genericsType=null;
+  if (isType(TYPE_PARAMETERS,node)) {
+    genericsType=makeGenericsType(node);
+    node=node.getNextSibling();
+  }
+  ClassNode[] interfaces=ClassNode.EMPTY_ARRAY;
+  if (isType(EXTENDS_CLAUSE,node)) {
+    interfaces=interfaces(node);
+    node=node.getNextSibling();
+  }
+  ClassNode outerClass=classNode;
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
+  if (classNode != null) {
+    name=classNode.getNameWithoutPackage() + "$" + name;
+    String fullName=dot(classNode.getPackageName(),name);
+    classNode=new InnerClassNode(classNode,fullName,modifiers,superClass,interfaces,null);
+  }
+ else {
+    classNode=new ClassNode(dot(getPackageName(),name),modifiers,superClass,interfaces,null);
+  }
+  classNode.setSyntheticPublic(syntheticPublic);
+  classNode.addAnnotations(annotations);
+  classNode.setGenericsTypes(genericsType);
+  configureAST(classNode,classDef);
+  int oldClassCount=innerClassCounter;
+  assertNodeType(OBJBLOCK,node);
+  objectBlock(node);
+  output.addClass(classNode);
+  classNode=outerClass;
+  innerClassCounter=oldClassCount;
+}
