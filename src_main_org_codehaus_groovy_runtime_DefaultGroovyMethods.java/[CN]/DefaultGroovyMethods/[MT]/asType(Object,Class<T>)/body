@@ -3,6 +3,13 @@
     return (T)InvokerHelper.toString(obj);
   }
   try {
+    if (ReflectionCache.isArray(type)) {
+      return (T)asArrayType(obj,type);
+    }
+  }
+ catch (  GroovyCastException e) {
+  }
+  try {
     return (T)DefaultTypeTransformation.castToType(obj,type);
   }
  catch (  GroovyCastException e) {
