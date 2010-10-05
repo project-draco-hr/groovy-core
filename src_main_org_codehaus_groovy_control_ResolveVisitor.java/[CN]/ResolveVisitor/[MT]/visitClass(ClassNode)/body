@@ -1,5 +1,7 @@
 {
   ClassNode oldNode=currentClass;
+  Map<String,GenericsType> oldPNames=genericParameterNames;
+  genericParameterNames=new HashMap<String,GenericsType>(genericParameterNames);
   currentClass=node;
   resolveGenericsHeader(node.getGenericsTypes());
   ModuleNode module=node.getModule();
@@ -45,5 +47,6 @@
   }
   checkCyclicInheritence(node,node.getUnresolvedSuperClass(),node.getInterfaces());
   super.visitClass(node);
+  genericParameterNames=oldPNames;
   currentClass=oldNode;
 }
