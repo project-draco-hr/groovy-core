@@ -7,6 +7,7 @@
   project.executeTarget("Groovyc_Joint_NoFork_NestedCompilerArg_WithGroovyClasspath");
   ensurePresent("IncorrectGenericsUsage");
   String antOutput=allOutput.toString();
+  antOutput=adjustOutputToHandleOpenJDKJavacOutputDifference(antOutput);
   System.setOut(origOut);
   Pattern p=Pattern.compile(".*?found[ ]*:[ ]*java.util.ArrayList.*",Pattern.DOTALL);
   assertTrue("Expected line 1 not found in ant output",p.matcher(antOutput).matches());
