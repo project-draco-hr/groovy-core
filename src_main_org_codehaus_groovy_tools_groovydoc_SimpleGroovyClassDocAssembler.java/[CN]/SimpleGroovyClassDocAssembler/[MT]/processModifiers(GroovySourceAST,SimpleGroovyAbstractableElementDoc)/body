@@ -35,7 +35,12 @@ if (!hasNonPublicVisibility && isGroovy && !(memberOrClass instanceof GroovyFiel
 memberOrClass.setPublic(true);
 }
  else if (!hasNonPublicVisibility && !hasPublicVisibility && !isGroovy) {
+if (insideInterface(memberOrClass)) {
+memberOrClass.setPublic(true);
+}
+ else {
 memberOrClass.setPackagePrivate(true);
+}
 }
 if (memberOrClass instanceof GroovyFieldDoc && !hasNonPublicVisibility && !hasPublicVisibility&& isGroovy) return true;
 }
@@ -43,7 +48,12 @@ if (memberOrClass instanceof GroovyFieldDoc && !hasNonPublicVisibility && !hasPu
 memberOrClass.setPublic(true);
 }
  else if (!isGroovy) {
+if (insideInterface(memberOrClass)) {
+memberOrClass.setPublic(true);
+}
+ else {
 memberOrClass.setPackagePrivate(true);
+}
 }
 return memberOrClass instanceof GroovyFieldDoc && isGroovy && !hasNonPublicVisibility & !hasPublicVisibility;
 }
