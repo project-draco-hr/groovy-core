@@ -1,6 +1,6 @@
 {
   try {
-    return usage.get() == 0 && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,args);
+    return !GroovyCategorySupport.hasCategoryInCurrentThread() && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params,args);
   }
  catch (  NullPointerException e) {
     if (receiver == null)     return false;

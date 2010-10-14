@@ -15,7 +15,8 @@
     }
   }
   level--;
-  categoriesInUse.getAndDecrement();
+  atomicCategoryUsageCounter.getAndDecrement();
+  categoriesInUse=atomicCategoryUsageCounter.get();
   if (level == 0) {
     THREAD_INFO.remove();
   }
