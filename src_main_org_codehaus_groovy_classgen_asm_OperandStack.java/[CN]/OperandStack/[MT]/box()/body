@@ -1,0 +1,11 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  int size=stack.size();
+  ClassNode type=stack.get(size - 1);
+  if (BytecodeHelper.box(mv,type)) {
+    type=ClassHelper.getWrapper(type);
+    BytecodeHelper.doCast(mv,type);
+  }
+  stack.set(size - 1,type);
+  return type;
+}

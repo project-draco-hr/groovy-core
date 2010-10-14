@@ -1,13 +1,12 @@
 {
   MethodVisitor mv;
   mv=cw.visitMethod(ACC_PUBLIC,"invoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
-  helper=new BytecodeHelper(mv);
   mv.visitCode();
   mv.visitVarInsn(ALOAD,1);
-  helper.doCast(method.getParameterTypes()[0].getTheClass());
+  BytecodeHelper.doCast(mv,method.getParameterTypes()[0].getTheClass());
   loadParameters(method,2,mv);
   mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(method.getDeclaringClass().getTheClass()),method.getName(),methodDescriptor);
-  helper.box(returnType);
+  BytecodeHelper.box(mv,returnType);
   if (method.getReturnType() == void.class) {
     mv.visitInsn(ACONST_NULL);
   }

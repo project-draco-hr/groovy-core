@@ -1,20 +1,23 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   ClassNode elementType=expression.getElementType();
   String arrayTypeName=BytecodeHelper.getClassInternalName(elementType);
-  List<Expression> sizeExpression=expression.getSizeExpression();
+  List sizeExpression=expression.getSizeExpression();
   int size=0;
   int dimensions=0;
   if (sizeExpression != null) {
-    for (    Expression element : sizeExpression) {
+    for (Iterator iter=sizeExpression.iterator(); iter.hasNext(); ) {
+      Expression element=(Expression)iter.next();
       if (element == ConstantExpression.EMPTY_EXPRESSION)       break;
       dimensions++;
-      visitAndAutoboxBoolean(element);
-      helper.unbox(int.class);
+      element.visit(this);
+      controller.getOperandStack().doGroovyCast(ClassHelper.int_TYPE);
     }
+    controller.getOperandStack().remove(dimensions);
   }
  else {
     size=expression.getExpressions().size();
-    helper.pushConstant(size);
+    BytecodeHelper.pushConstant(mv,size);
   }
   int storeIns=AASTORE;
   if (sizeExpression != null) {
@@ -62,7 +65,7 @@
   }
   for (int i=0; i < size; i++) {
     mv.visitInsn(DUP);
-    helper.pushConstant(i);
+    BytecodeHelper.pushConstant(mv,i);
     Expression elementExpression=expression.getExpression(i);
     if (elementExpression == null) {
       ConstantExpression.NULL.visit(this);
@@ -72,13 +75,11 @@
         visitCastExpression(new CastExpression(elementType,elementExpression,true));
       }
  else {
-        visitAndAutoboxBoolean(elementExpression);
+        elementExpression.visit(this);
       }
     }
     mv.visitInsn(storeIns);
+    controller.getOperandStack().remove(1);
   }
-  if (sizeExpression == null && ClassHelper.isPrimitiveType(elementType)) {
-    int par=compileStack.defineTemporaryVariable("par",true);
-    mv.visitVarInsn(ALOAD,par);
-  }
+  controller.getOperandStack().push(expression.getType());
 }

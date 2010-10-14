@@ -1,31 +1,25 @@
 {
-  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
+  MethodVisitor mv=controller.getMethodVisitor();
+  controller.getCompileStack().pushLoop(loop.getVariableScope(),loop.getStatementLabel());
   ClosureListExpression clExpr=(ClosureListExpression)loop.getCollectionExpression();
-  compileStack.pushVariableScope(clExpr.getVariableScope());
+  controller.getCompileStack().pushVariableScope(clExpr.getVariableScope());
   List expressions=clExpr.getExpressions();
   int size=expressions.size();
   int condIndex=(size - 1) / 2;
   for (int i=0; i < condIndex; i++) {
     visitExpressionOrStatement(expressions.get(i));
   }
-  Label continueLabel=compileStack.getContinueLabel();
-  Label breakLabel=compileStack.getBreakLabel();
+  Label continueLabel=controller.getCompileStack().getContinueLabel();
+  Label breakLabel=controller.getCompileStack().getBreakLabel();
   Label cond=new Label();
   mv.visitLabel(cond);
 {
     Expression condExpr=(Expression)expressions.get(condIndex);
-    if (condExpr == EmptyExpression.INSTANCE) {
-      mv.visitIntInsn(BIPUSH,1);
-    }
- else     if (isComparisonExpression(condExpr)) {
-      condExpr.visit(this);
-    }
- else {
-      visitAndAutoboxBoolean(condExpr);
-      helper.unbox(ClassHelper.boolean_TYPE);
-    }
+    int mark=controller.getOperandStack().getStackLength();
+    condExpr.visit(this);
+    controller.getOperandStack().castToBool(mark,true);
   }
-  mv.visitJumpInsn(IFEQ,breakLabel);
+  controller.getOperandStack().jump(IFEQ,breakLabel);
   loop.getLoopBlock().visit(this);
   mv.visitLabel(continueLabel);
   for (int i=condIndex + 1; i < size; i++) {
@@ -33,6 +27,6 @@
   }
   mv.visitJumpInsn(GOTO,cond);
   mv.visitLabel(breakLabel);
-  compileStack.pop();
-  compileStack.pop();
+  controller.getCompileStack().pop();
+  controller.getCompileStack().pop();
 }

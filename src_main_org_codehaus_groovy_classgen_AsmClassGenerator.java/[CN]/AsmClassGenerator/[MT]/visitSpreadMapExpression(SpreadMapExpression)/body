@@ -1,8 +1,9 @@
 {
   Expression subExpression=expression.getExpression();
-  AssertionTracker old=assertionTracker;
-  assertionTracker=null;
+  controller.getAssertionWriter().disableTracker();
   subExpression.visit(this);
-  spreadMap.call(mv);
-  assertionTracker=old;
+  controller.getOperandStack().box();
+  spreadMap.call(controller.getMethodVisitor());
+  controller.getAssertionWriter().reenableTracker();
+  controller.getOperandStack().replace(ClassHelper.OBJECT_TYPE);
 }

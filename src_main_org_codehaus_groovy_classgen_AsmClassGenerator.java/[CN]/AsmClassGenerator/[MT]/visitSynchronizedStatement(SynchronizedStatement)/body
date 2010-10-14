@@ -1,8 +1,11 @@
 {
   onLineNumber(statement,"visitSynchronizedStatement");
   visitStatement(statement);
+  final MethodVisitor mv=controller.getMethodVisitor();
+  CompileStack compileStack=controller.getCompileStack();
   statement.getExpression().visit(this);
-  final int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.Integer_TYPE,true);
+  controller.getOperandStack().box();
+  final int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.OBJECT_TYPE,true);
   final Label synchronizedStart=new Label();
   final Label synchronizedEnd=new Label();
   final Label catchAll=new Label();

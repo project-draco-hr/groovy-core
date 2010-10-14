@@ -1,0 +1,59 @@
+{
+  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod) && !spreadSafe) {
+    String methodName=getMethodName(message);
+    if (methodName != null) {
+      controller.getCallSiteWriter().makeCallSite(receiver,methodName,arguments,safe,implicitThis,adapter == invokeMethodOnCurrent,adapter == invokeStaticMethod);
+      return;
+    }
+  }
+  OperandStack operandStack=controller.getOperandStack();
+  CompileStack compileStack=controller.getCompileStack();
+  AsmClassGenerator acg=controller.getAcg();
+  compileStack.pushLHS(false);
+  sender.visit(acg);
+  compileStack.pushImplicitThis(implicitThis);
+  receiver.visit(acg);
+  operandStack.box();
+  compileStack.popImplicitThis();
+  int operandsToRemove=2;
+  if (message != null) {
+    message.visit(acg);
+    operandStack.box();
+    operandsToRemove++;
+  }
+  boolean containsSpreadExpression=AsmClassGenerator.containsSpreadExpression(arguments);
+  int numberOfArguments=containsSpreadExpression ? -1 : AsmClassGenerator.argumentSize(arguments);
+  if (numberOfArguments > MethodCallerMultiAdapter.MAX_ARGS || containsSpreadExpression) {
+    ArgumentListExpression ae;
+    if (arguments instanceof ArgumentListExpression) {
+      ae=(ArgumentListExpression)arguments;
+    }
+ else     if (arguments instanceof TupleExpression) {
+      TupleExpression te=(TupleExpression)arguments;
+      ae=new ArgumentListExpression(te.getExpressions());
+    }
+ else {
+      ae=new ArgumentListExpression();
+      ae.addExpression(arguments);
+    }
+    if (containsSpreadExpression) {
+      acg.despreadList(ae.getExpressions(),true);
+    }
+ else {
+      ae.visit(acg);
+    }
+  }
+ else   if (numberOfArguments > 0) {
+    operandsToRemove+=numberOfArguments;
+    TupleExpression te=(TupleExpression)arguments;
+    for (int i=0; i < numberOfArguments; i++) {
+      Expression argument=te.getExpression(i);
+      argument.visit(acg);
+      operandStack.box();
+      if (argument instanceof CastExpression)       acg.loadWrapper(argument);
+    }
+  }
+  adapter.call(controller.getMethodVisitor(),numberOfArguments,safe,spreadSafe);
+  compileStack.popLHS();
+  operandStack.replace(ClassHelper.OBJECT_TYPE,operandsToRemove);
+}

@@ -1,6 +1,8 @@
 {
   Expression subExpression=expression.getExpression();
   subExpression.visit(this);
-  loadDynamicName(expression.getMethodName());
-  getMethodPointer.call(mv);
+  controller.getOperandStack().box();
+  controller.getOperandStack().pushDynamicName(expression.getMethodName());
+  getMethodPointer.call(controller.getMethodVisitor());
+  controller.getOperandStack().replace(ClassHelper.CLOSURE_TYPE,2);
 }

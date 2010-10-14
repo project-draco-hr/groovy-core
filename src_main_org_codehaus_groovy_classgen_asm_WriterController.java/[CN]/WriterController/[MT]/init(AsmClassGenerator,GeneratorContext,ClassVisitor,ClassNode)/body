@@ -1,0 +1,17 @@
+{
+  this.classNode=cn;
+  this.outermostClass=null;
+  this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
+  this.callSiteWriter=new CallSiteWriter(this);
+  this.invocationWriter=new InvocationWriter(this);
+  this.binaryExpHelper=new BinaryExpressionHelper(this);
+  this.operandStack=new OperandStack(this);
+  this.assertionWriter=new AssertionWriter(this);
+  this.closureWriter=new ClosureWriter(this);
+  this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
+  this.acg=asmClassGenerator;
+  this.sourceUnit=acg.getSourceUnit();
+  this.context=gcon;
+  this.compileStack=new CompileStack(this);
+  this.cv=cv;
+}

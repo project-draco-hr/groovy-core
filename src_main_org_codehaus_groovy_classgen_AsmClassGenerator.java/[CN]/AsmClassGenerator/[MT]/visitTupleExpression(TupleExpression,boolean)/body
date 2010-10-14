@@ -1,13 +1,16 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   int size=expression.getExpressions().size();
-  helper.pushConstant(size);
+  BytecodeHelper.pushConstant(mv,size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   for (int i=0; i < size; i++) {
     mv.visitInsn(DUP);
-    helper.pushConstant(i);
+    BytecodeHelper.pushConstant(mv,i);
     Expression argument=expression.getExpression(i);
-    visitAndAutoboxBoolean(argument);
+    argument.visit(this);
+    controller.getOperandStack().box();
     if (useWrapper && argument instanceof CastExpression)     loadWrapper(argument);
     mv.visitInsn(AASTORE);
+    controller.getOperandStack().remove(1);
   }
 }

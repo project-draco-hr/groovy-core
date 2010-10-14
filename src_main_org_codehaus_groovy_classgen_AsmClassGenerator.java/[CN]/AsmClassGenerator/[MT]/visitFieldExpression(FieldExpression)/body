@@ -1,7 +1,7 @@
 {
   FieldNode field=expression.getField();
   if (field.isStatic()) {
-    if (leftHandExpression) {
+    if (controller.getCompileStack().isLHS()) {
       storeStaticField(expression);
     }
  else {
@@ -9,12 +9,12 @@
     }
   }
  else {
-    if (leftHandExpression) {
+    if (controller.getCompileStack().isLHS()) {
       storeThisInstanceField(expression);
     }
  else {
       loadInstanceField(expression);
     }
-    record(expression);
   }
+  if (controller.getCompileStack().isLHS())   controller.getAssertionWriter().record(expression);
 }

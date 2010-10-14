@@ -1,0 +1,45 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  MethodVisitor mv=controller.getMethodVisitor();
+  ClassNode classNode=controller.getClassNode();
+  AsmClassGenerator acg=controller.getAcg();
+  ClassNode closureClass=getOrAddClosureClass(expression,0);
+  String closureClassinternalName=BytecodeHelper.getClassInternalName(closureClass);
+  List constructors=closureClass.getDeclaredConstructors();
+  ConstructorNode node=(ConstructorNode)constructors.get(0);
+  Parameter[] localVariableParams=node.getParameters();
+  mv.visitTypeInsn(NEW,closureClassinternalName);
+  mv.visitInsn(DUP);
+  if (controller.isStaticMethod() || compileStack.isInSpecialConstructorCall()) {
+    (new ClassExpression(classNode)).visit(acg);
+    (new ClassExpression(controller.getOutermostClass())).visit(acg);
+  }
+ else {
+    mv.visitVarInsn(ALOAD,0);
+    controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
+    loadThis();
+  }
+  for (int i=2; i < localVariableParams.length; i++) {
+    Parameter param=localVariableParams[i];
+    String name=param.getName();
+    if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {
+      acg.visitFieldExpression(new FieldExpression(classNode.getDeclaredField(name)));
+    }
+ else {
+      Variable v=compileStack.getVariable(name,!classNodeUsesReferences());
+      if (v == null) {
+        FieldNode field=classNode.getDeclaredField(name);
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,controller.getInternalClassName(),name,BytecodeHelper.getTypeDescription(field.getType()));
+        param.setClosureSharedVariable(false);
+        v=compileStack.defineVariable(param,true);
+        param.setClosureSharedVariable(true);
+        v.setHolder(true);
+      }
+      mv.visitVarInsn(ALOAD,v.getIndex());
+      controller.getOperandStack().push(v.getType());
+    }
+  }
+  mv.visitMethodInsn(INVOKESPECIAL,closureClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));
+  controller.getOperandStack().replace(ClassHelper.CLOSURE_TYPE,localVariableParams.length);
+}

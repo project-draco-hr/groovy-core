@@ -22,18 +22,17 @@
   List instructions=new ArrayList(1);
   instructions.add(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
-      BytecodeHelper helper=new BytecodeHelper(mv);
       mv.visitVarInsn(ALOAD,0);
       Parameter[] para=oldMethod.getParameters();
       Parameter[] goal=overridingMethod.getParameters();
       for (int i=0; i < para.length; i++) {
-        helper.load(para[i].getType(),i + 1);
+        BytecodeHelper.load(mv,para[i].getType(),i + 1);
         if (!para[i].getType().equals(goal[i].getType())) {
-          helper.doCast(goal[i].getType());
+          BytecodeHelper.doCast(mv,goal[i].getType());
         }
       }
       mv.visitMethodInsn(INVOKEVIRTUAL,BytecodeHelper.getClassInternalName(classNode),overridingMethod.getName(),BytecodeHelper.getMethodDescriptor(overridingMethod.getReturnType(),overridingMethod.getParameters()));
-      helper.doReturn(oldMethod.getReturnType());
+      BytecodeHelper.doReturn(mv,oldMethod.getReturnType());
     }
   }
 );

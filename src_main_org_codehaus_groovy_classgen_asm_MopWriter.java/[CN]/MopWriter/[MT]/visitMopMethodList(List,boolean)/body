@@ -1,0 +1,24 @@
+{
+  HashMap<MopKey,MethodNode> mops=new HashMap<MopKey,MethodNode>();
+  LinkedList<MethodNode> mopCalls=new LinkedList<MethodNode>();
+  for (  Object method : methods) {
+    MethodNode mn=(MethodNode)method;
+    if ((mn.getModifiers() & ACC_ABSTRACT) != 0)     continue;
+    if (mn.isStatic())     continue;
+    if (isThis ^ (mn.getModifiers() & (ACC_PUBLIC | ACC_PROTECTED)) == 0)     continue;
+    String methodName=mn.getName();
+    if (isMopMethod(methodName)) {
+      mops.put(new MopKey(methodName,mn.getParameters()),mn);
+      continue;
+    }
+    if (methodName.startsWith("<"))     continue;
+    String name=getMopMethodName(mn,isThis);
+    MopKey key=new MopKey(name,mn.getParameters());
+    if (mops.containsKey(key))     continue;
+    mops.put(key,mn);
+    mopCalls.add(mn);
+  }
+  generateMopCalls(mopCalls,isThis);
+  mopCalls.clear();
+  mops.clear();
+}

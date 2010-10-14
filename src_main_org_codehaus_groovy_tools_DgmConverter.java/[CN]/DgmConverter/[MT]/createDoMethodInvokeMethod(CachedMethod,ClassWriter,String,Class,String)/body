@@ -1,11 +1,10 @@
 {
   MethodVisitor mv;
   mv=cw.visitMethod(ACC_PUBLIC + ACC_FINAL,"doMethodInvoke","(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",null,null);
-  helper=new BytecodeHelper(mv);
   mv.visitCode();
   if (method.getParamsCount() == 2 && method.getParameterTypes()[0].isNumber && method.getParameterTypes()[1].isNumber) {
     mv.visitVarInsn(ALOAD,1);
-    helper.doCast(method.getParameterTypes()[0].getTheClass());
+    BytecodeHelper.doCast(mv,method.getParameterTypes()[0].getTheClass());
     mv.visitVarInsn(ALOAD,0);
     mv.visitMethodInsn(INVOKEVIRTUAL,className,"getParameterTypes","()[Lorg/codehaus/groovy/reflection/CachedClass;");
     mv.visitInsn(ICONST_0);
@@ -15,12 +14,7 @@
     mv.visitInsn(AALOAD);
     mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/reflection/CachedClass","coerceArgument","(Ljava/lang/Object;)Ljava/lang/Object;");
     Class type=method.getParameterTypes()[1].getTheClass();
-    if (type.isPrimitive()) {
-      helper.unbox(type);
-    }
- else {
-      helper.doCast(type);
-    }
+    BytecodeHelper.doCast(mv,type);
   }
  else {
     mv.visitVarInsn(ALOAD,0);
@@ -28,11 +22,11 @@
     mv.visitMethodInsn(INVOKEVIRTUAL,className,"coerceArgumentsToClasses","([Ljava/lang/Object;)[Ljava/lang/Object;");
     mv.visitVarInsn(ASTORE,2);
     mv.visitVarInsn(ALOAD,1);
-    helper.doCast(method.getParameterTypes()[0].getTheClass());
+    BytecodeHelper.doCast(mv,method.getParameterTypes()[0].getTheClass());
     loadParameters(method,2,mv);
   }
   mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(method.getDeclaringClass().getTheClass()),method.getName(),methodDescriptor);
-  helper.box(returnType);
+  BytecodeHelper.box(mv,returnType);
   if (method.getReturnType() == void.class) {
     mv.visitInsn(ACONST_NULL);
   }

@@ -1,20 +1,25 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   List entries=expression.getMapEntryExpressions();
   int size=entries.size();
-  helper.pushConstant(size * 2);
+  BytecodeHelper.pushConstant(mv,size * 2);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   int i=0;
   for (Iterator iter=entries.iterator(); iter.hasNext(); ) {
     Object object=iter.next();
     MapEntryExpression entry=(MapEntryExpression)object;
     mv.visitInsn(DUP);
-    helper.pushConstant(i++);
-    visitAndAutoboxBoolean(entry.getKeyExpression());
+    BytecodeHelper.pushConstant(mv,i++);
+    entry.getKeyExpression().visit(this);
+    controller.getOperandStack().box();
     mv.visitInsn(AASTORE);
     mv.visitInsn(DUP);
-    helper.pushConstant(i++);
-    visitAndAutoboxBoolean(entry.getValueExpression());
+    BytecodeHelper.pushConstant(mv,i++);
+    entry.getValueExpression().visit(this);
+    controller.getOperandStack().box();
     mv.visitInsn(AASTORE);
+    controller.getOperandStack().remove(2);
   }
   createMapMethod.call(mv);
+  controller.getOperandStack().push(ClassHelper.MAP_TYPE);
 }

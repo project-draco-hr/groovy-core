@@ -1,0 +1,14 @@
+{
+  if (assertionTracker == null)   return;
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  operandStack.dup();
+  operandStack.box();
+  mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
+  operandStack.push(ClassHelper.OBJECT_TYPE);
+  operandStack.swap();
+  mv.visitLdcInsn(normalizedColumn);
+  mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","record","(Ljava/lang/Object;I)Ljava/lang/Object;");
+  mv.visitInsn(POP);
+  operandStack.remove(2);
+}

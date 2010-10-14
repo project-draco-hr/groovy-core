@@ -1,5 +1,5 @@
 {
-  List<Expression> args=null;
+  List args=null;
   if (arguments instanceof TupleExpression) {
     TupleExpression tupleExpression=(TupleExpression)arguments;
     args=tupleExpression.getExpressions();
@@ -11,8 +11,8 @@
  else {
     return arguments instanceof SpreadExpression;
   }
-  for (  Expression arg : args) {
-    if (arg instanceof SpreadExpression)     return true;
+  for (Iterator iter=args.iterator(); iter.hasNext(); ) {
+    if (iter.next() instanceof SpreadExpression)     return true;
   }
   return false;
 }

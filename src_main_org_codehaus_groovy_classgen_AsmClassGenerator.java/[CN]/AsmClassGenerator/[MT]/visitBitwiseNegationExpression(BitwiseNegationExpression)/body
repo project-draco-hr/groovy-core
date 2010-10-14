@@ -1,6 +1,7 @@
 {
   Expression subExpression=expression.getExpression();
   subExpression.visit(this);
-  bitwiseNegate.call(mv);
-  record(expression);
+  controller.getOperandStack().box();
+  bitwiseNegate.call(controller.getMethodVisitor());
+  controller.getAssertionWriter().record(expression);
 }

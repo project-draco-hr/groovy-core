@@ -1,15 +1,15 @@
 {
-  if (classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
-    addGeneratedClosureConstructorCall(call);
-    return;
-  }
-  ClassNode callNode=classNode;
+  if (controller.getClosureWriter().addGeneratedClosureConstructorCall(call))   return;
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  ClassNode callNode=controller.getClassNode();
   if (call.isSuperCall())   callNode=callNode.getSuperClass();
   List constructors=sortConstructors(call,callNode);
   call.getArguments().visit(this);
   mv.visitInsn(DUP);
-  helper.pushConstant(constructors.size());
+  BytecodeHelper.pushConstant(mv,constructors.size());
   visitClassExpression(new ClassExpression(callNode));
+  operandStack.remove(1);
   selectConstructorAndTransformArguments.call(mv);
   mv.visitInsn(DUP_X1);
   mv.visitInsn(ICONST_1);
@@ -21,7 +21,7 @@
   mv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
   mv.visitLabel(afterIf);
   mv.visitInsn(SWAP);
-  if (constructorNode != null) {
+  if (controller.isConstructor()) {
     mv.visitVarInsn(ALOAD,0);
   }
  else {
@@ -41,7 +41,7 @@
   mv.visitLookupSwitchInsn(defaultLabel,indices,targets);
   for (int i=0; i < targets.length; i++) {
     mv.visitLabel(targets[i]);
-    if (constructorNode != null) {
+    if (controller.isConstructor()) {
       mv.visitInsn(SWAP);
       mv.visitInsn(DUP_X1);
     }
@@ -54,17 +54,15 @@
     String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
     Parameter[] parameters=cn.getParameters();
     for (int p=0; p < parameters.length; p++) {
+      operandStack.push(ClassHelper.OBJECT_TYPE);
       mv.visitInsn(DUP);
-      helper.pushConstant(p);
+      BytecodeHelper.pushConstant(mv,p);
       mv.visitInsn(AALOAD);
+      operandStack.push(ClassHelper.OBJECT_TYPE);
       ClassNode type=parameters[p].getType();
-      if (ClassHelper.isPrimitiveType(type)) {
-        helper.unbox(type);
-      }
- else {
-        helper.doCast(type);
-      }
-      helper.swapWithObject(type);
+      operandStack.doGroovyCast(type);
+      operandStack.swap();
+      operandStack.remove(2);
     }
     mv.visitInsn(POP);
     mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
@@ -77,8 +75,9 @@
   mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
   mv.visitInsn(ATHROW);
   mv.visitLabel(afterSwitch);
-  if (constructorNode == null) {
+  if (!controller.isConstructor()) {
     mv.visitInsn(SWAP);
+    operandStack.push(callNode);
   }
   mv.visitInsn(POP);
 }

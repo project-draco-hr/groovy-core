@@ -1,0 +1,9 @@
+{
+  if (type == Object.class)   return;
+  if (type.isPrimitive() && type != Void.TYPE) {
+    unbox(mv,type);
+  }
+ else {
+    mv.visitTypeInsn(CHECKCAST,type.isArray() ? BytecodeHelper.getTypeDescription(type) : BytecodeHelper.getClassInternalName(type.getName()));
+  }
+}

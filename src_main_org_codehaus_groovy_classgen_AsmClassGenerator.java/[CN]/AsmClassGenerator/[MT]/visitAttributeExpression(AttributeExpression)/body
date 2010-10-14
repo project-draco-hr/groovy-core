@@ -1,7 +1,7 @@
 {
   Expression objectExpression=expression.getObjectExpression();
   MethodCallerMultiAdapter adapter;
-  if (leftHandExpression) {
+  if (controller.getCompileStack().isLHS()) {
     adapter=setField;
     if (isGroovyObject(objectExpression))     adapter=setGroovyObjectField;
     if (usesSuper(expression))     adapter=setFieldOnSuper;
@@ -12,5 +12,10 @@
     if (usesSuper(expression))     adapter=getFieldOnSuper;
   }
   visitAttributeOrProperty(expression,adapter);
-  if (!leftHandExpression)   record(expression.getProperty());
+  if (!controller.getCompileStack().isLHS()) {
+    controller.getAssertionWriter().record(expression.getProperty());
+  }
+ else {
+    controller.getOperandStack().remove(2);
+  }
 }

@@ -1,0 +1,52 @@
+{
+  int size=stack.size();
+  try {
+    if (size == 0)     throw new ArrayIndexOutOfBoundsException("size==0");
+  }
+ catch (  ArrayIndexOutOfBoundsException ai) {
+    SourceUnit source=controller.getSourceUnit();
+    String name;
+    if (source != null) {
+      name=source.getName();
+    }
+ else {
+      name="<null>";
+    }
+    System.err.println("index problem in " + name);
+    throw ai;
+  }
+  ClassNode top=stack.get(size - 1);
+  targetType=targetType.redirect();
+  if (targetType == top)   return;
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (coerce) {
+    if (top.isDerivedFrom(targetType))     return;
+    box();
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    remove(1);
+    asTypeMethod.call(mv);
+    BytecodeHelper.doCast(mv,targetType);
+    replace(targetType);
+    return;
+  }
+  boolean primTarget=ClassHelper.isPrimitiveType(targetType);
+  boolean primTop=ClassHelper.isPrimitiveType(top);
+  if (primTop && primTarget) {
+    box();
+  }
+ else   if (primTop) {
+    box();
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    remove(1);
+    castToTypeMethod.call(mv);
+  }
+ else   if (primTarget) {
+  }
+ else   if (!(top.isDerivedFrom(targetType))) {
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    remove(1);
+    castToTypeMethod.call(mv);
+  }
+  BytecodeHelper.doCast(mv,targetType);
+  replace(targetType);
+}

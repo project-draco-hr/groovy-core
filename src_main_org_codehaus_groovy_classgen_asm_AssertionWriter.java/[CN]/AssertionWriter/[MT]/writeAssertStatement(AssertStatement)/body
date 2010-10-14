@@ -1,0 +1,65 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  boolean rewriteAssert=true;
+  rewriteAssert=statement.getMessageExpression() == ConstantExpression.NULL;
+  AssertionTracker oldTracker=assertionTracker;
+  Janitor janitor=new Janitor();
+  final Label tryStart=new Label();
+  if (rewriteAssert) {
+    assertionTracker=new AssertionTracker();
+    try {
+      assertionTracker.sourceText=new SourceText(statement,controller.getSourceUnit(),janitor);
+      mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/powerassert/ValueRecorder");
+      mv.visitInsn(DUP);
+      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","<init>","()V");
+      controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
+      assertionTracker.recorderIndex=controller.getCompileStack().defineTemporaryVariable("recorder",true);
+      mv.visitLabel(tryStart);
+    }
+ catch (    SourceTextNotAvailableException e) {
+      rewriteAssert=false;
+    }
+  }
+  statement.getBooleanExpression().visit(controller.getAcg());
+  Label exceptionThrower=operandStack.jump(IFEQ);
+  if (rewriteAssert) {
+    mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V");
+  }
+  Label afterAssert=new Label();
+  mv.visitJumpInsn(GOTO,afterAssert);
+  mv.visitLabel(exceptionThrower);
+  if (rewriteAssert) {
+    mv.visitLdcInsn(assertionTracker.sourceText.getNormalizedText());
+    mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/powerassert/AssertionRenderer","render","(Ljava/lang/String;Lorg/codehaus/groovy/runtime/powerassert/ValueRecorder;)Ljava/lang/String;");
+  }
+ else {
+    writeSourcelessAssertText(statement);
+  }
+  operandStack.push(ClassHelper.STRING_TYPE);
+  AssertionTracker savedTracker=assertionTracker;
+  assertionTracker=null;
+  statement.getMessageExpression().visit(controller.getAcg());
+  operandStack.box();
+  assertFailedMethod.call(mv);
+  operandStack.remove(2);
+  if (rewriteAssert) {
+    final Label tryEnd=new Label();
+    mv.visitLabel(tryEnd);
+    mv.visitJumpInsn(GOTO,afterAssert);
+    final Label catchAny=new Label();
+    mv.visitLabel(catchAny);
+    mv.visitVarInsn(ALOAD,savedTracker.recorderIndex);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V");
+    mv.visitInsn(ATHROW);
+    controller.getCompileStack().addExceptionBlock(tryStart,tryEnd,catchAny,null);
+  }
+  mv.visitLabel(afterAssert);
+  if (rewriteAssert) {
+    controller.getCompileStack().removeVar(savedTracker.recorderIndex);
+  }
+  assertionTracker=oldTracker;
+  janitor.cleanup();
+}

@@ -1,0 +1,14 @@
+{
+  int last=stack.size();
+  MethodVisitor mv=controller.getMethodVisitor();
+  while (last > elements) {
+    last--;
+    ClassNode element=stack.remove(last);
+    if (isTwoSlotType(element)) {
+      mv.visitInsn(POP2);
+    }
+ else {
+      mv.visitInsn(POP);
+    }
+  }
+}

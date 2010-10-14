@@ -1,8 +1,8 @@
 {
-  compileStack.pushBooleanExpression();
-  expression.getExpression().visit(this);
-  if (!isComparisonExpression(expression.getExpression())) {
-    helper.unbox(boolean.class);
-  }
-  compileStack.pop();
+  controller.getCompileStack().pushBooleanExpression();
+  int mark=controller.getOperandStack().getStackLength();
+  Expression inner=expression.getExpression();
+  inner.visit(this);
+  controller.getOperandStack().castToBool(mark,true);
+  controller.getCompileStack().pop();
 }

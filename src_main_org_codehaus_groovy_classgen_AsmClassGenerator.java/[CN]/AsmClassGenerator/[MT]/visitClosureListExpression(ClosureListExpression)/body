@@ -1,5 +1,6 @@
 {
-  compileStack.pushVariableScope(expression.getVariableScope());
+  MethodVisitor mv=controller.getMethodVisitor();
+  controller.getCompileStack().pushVariableScope(expression.getVariableScope());
   List<Expression> expressions=expression.getExpressions();
   final int size=expressions.size();
   LinkedList<DeclarationExpression> declarations=new LinkedList<DeclarationExpression>();
@@ -72,9 +73,9 @@
   }
 );
   visitClosureExpression(ce);
-  helper.pushConstant(size);
+  BytecodeHelper.pushConstant(mv,size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
-  int listArrayVar=compileStack.defineTemporaryVariable("_listOfClosures",true);
+  int listArrayVar=controller.getCompileStack().defineTemporaryVariable("_listOfClosures",true);
   for (int i=0; i < size; i++) {
     mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/CurriedClosure");
     mv.visitInsn(DUP2);
@@ -89,13 +90,13 @@
     mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/CurriedClosure","<init>","(Lgroovy/lang/Closure;[Ljava/lang/Object;)V");
     mv.visitVarInsn(ALOAD,listArrayVar);
     mv.visitInsn(SWAP);
-    helper.pushConstant(i);
+    BytecodeHelper.pushConstant(mv,i);
     mv.visitInsn(SWAP);
     mv.visitInsn(AASTORE);
   }
   mv.visitInsn(POP);
   mv.visitVarInsn(ALOAD,listArrayVar);
   createListMethod.call(mv);
-  compileStack.removeVar(listArrayVar);
-  compileStack.pop();
+  controller.getCompileStack().removeVar(listArrayVar);
+  controller.getOperandStack().pop();
 }

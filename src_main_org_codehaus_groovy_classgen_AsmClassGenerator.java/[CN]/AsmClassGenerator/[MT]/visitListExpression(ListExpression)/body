@@ -2,18 +2,61 @@
   onLineNumber(expression,"ListExpression");
   int size=expression.getExpressions().size();
   boolean containsSpreadExpression=containsSpreadExpression(expression);
+  boolean containsOnlyConstants=!containsSpreadExpression && containsOnlyConstants(expression);
+  OperandStack operandStack=controller.getOperandStack();
   if (!containsSpreadExpression) {
-    helper.pushConstant(size);
+    MethodVisitor mv=controller.getMethodVisitor();
+    BytecodeHelper.pushConstant(mv,size);
     mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
-    for (int i=0; i < size; i++) {
-      mv.visitInsn(DUP);
-      helper.pushConstant(i);
-      visitAndAutoboxBoolean(expression.getExpression(i));
-      mv.visitInsn(AASTORE);
+    int maxInit=1000;
+    if (size < maxInit || !containsOnlyConstants) {
+      for (int i=0; i < size; i++) {
+        mv.visitInsn(DUP);
+        BytecodeHelper.pushConstant(mv,i);
+        expression.getExpression(i).visit(this);
+        operandStack.box();
+        mv.visitInsn(AASTORE);
+      }
+      controller.getOperandStack().remove(size);
+    }
+ else {
+      List<Expression> expressions=expression.getExpressions();
+      List<String> methods=new ArrayList();
+      MethodVisitor oldMv=mv;
+      int index=0;
+      int methodIndex=0;
+      while (index < size) {
+        methodIndex++;
+        String methodName="$createListEntry_" + methodIndex;
+        methods.add(methodName);
+        mv=controller.getClassVisitor().visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,methodName,"([Ljava/lang/Object;)V",null,null);
+        controller.setMethodVisitor(mv);
+        mv.visitCode();
+        int methodBlockSize=Math.min(size - index,maxInit);
+        int methodBlockEnd=index + methodBlockSize;
+        for (; index < methodBlockEnd; index++) {
+          mv.visitVarInsn(ALOAD,0);
+          mv.visitLdcInsn(index);
+          expressions.get(index).visit(this);
+          operandStack.box();
+          mv.visitInsn(AASTORE);
+        }
+        operandStack.remove(methodBlockSize);
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(0,0);
+        mv.visitEnd();
+      }
+      mv=oldMv;
+      controller.setMethodVisitor(mv);
+      for (      String methodName : methods) {
+        mv.visitInsn(DUP);
+        mv.visitMethodInsn(INVOKESTATIC,controller.getInternalClassName(),methodName,"([Ljava/lang/Object;)V");
+      }
     }
   }
  else {
     despreadList(expression.getExpressions(),false);
   }
-  createListMethod.call(mv);
+  createListMethod.call(controller.getMethodVisitor());
+  operandStack.push(ClassHelper.LIST_TYPE);
 }

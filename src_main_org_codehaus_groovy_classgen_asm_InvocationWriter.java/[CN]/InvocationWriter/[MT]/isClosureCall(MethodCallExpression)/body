@@ -1,0 +1,12 @@
+{
+  ClassNode classNode=controller.getClassNode();
+  String methodName=call.getMethodAsString();
+  if (methodName == null)   return false;
+  if (!call.isImplicitThis())   return false;
+  if (!AsmClassGenerator.isThisExpression(call.getObjectExpression()))   return false;
+  FieldNode field=classNode.getDeclaredField(methodName);
+  if (field == null)   return false;
+  if (isStaticInvocation(call) && !field.isStatic())   return false;
+  Expression arguments=call.getArguments();
+  return !classNode.hasPossibleMethod(methodName,arguments);
+}

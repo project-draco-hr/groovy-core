@@ -1,16 +1,12 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   if (isConstructor && (code == null || !((ConstructorNode)node).firstStatementIsSpecialConstructorCall())) {
     mv.visitVarInsn(ALOAD,0);
-    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(classNode.getSuperClass()),"<init>","()V");
+    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(controller.getClassNode().getSuperClass()),"<init>","()V");
   }
-  compileStack.init(node.getVariableScope(),parameters,mv,classNode);
-  if (isNotClinit()) {
-    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"$getCallSiteArray","()[Lorg/codehaus/groovy/runtime/callsite/CallSite;");
-    callSiteArrayVarIndex=compileStack.defineTemporaryVariable("$local$callSiteArray",ClassHelper.make(CallSite[].class),true);
-  }
+  controller.getCompileStack().init(node.getVariableScope(),parameters);
+  controller.getCallSiteWriter().makeSiteEntry();
   super.visitConstructorOrMethod(node,isConstructor);
-  if (!outputReturn || node.isVoidMethod()) {
-    mv.visitInsn(RETURN);
-  }
-  compileStack.clear();
+  if (node.isVoidMethod())   mv.visitInsn(RETURN);
+  controller.getCompileStack().clear();
 }

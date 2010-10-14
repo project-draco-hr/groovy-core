@@ -7,7 +7,6 @@
   mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,superClass,"checkCall","(Ljava/lang/Object;" + parameterDescription + ")Z");
   Label l0=new Label();
   mv.visitJumpInsn(Opcodes.IFEQ,l0);
-  BytecodeHelper helper=new BytecodeHelper(mv);
   Class callClass=cachedMethod.getDeclaringClass().getTheClass();
   boolean useInterface=callClass.isInterface();
   String type=BytecodeHelper.getClassInternalName(callClass.getName());
@@ -18,7 +17,7 @@
   }
  else {
     mv.visitVarInsn(Opcodes.ALOAD,1);
-    helper.doCast(callClass);
+    BytecodeHelper.doCast(mv,callClass);
     if (useInterface)     invokeMethodCode=Opcodes.INVOKEINTERFACE;
   }
   Method method=cachedMethod.setAccessible();
@@ -27,22 +26,16 @@
   for (int i=0; i < size; i++) {
     if (useArray) {
       mv.visitVarInsn(Opcodes.ALOAD,2);
-      helper.pushConstant(i);
+      BytecodeHelper.pushConstant(mv,i);
       mv.visitInsn(Opcodes.AALOAD);
     }
  else {
       mv.visitVarInsn(Opcodes.ALOAD,i + 2);
     }
-    Class parameterType=parameters[i];
-    if (parameterType.isPrimitive()) {
-      helper.unbox(parameterType);
-    }
- else {
-      helper.doCast(parameterType);
-    }
+    BytecodeHelper.doCast(mv,parameters[i]);
   }
   mv.visitMethodInsn(invokeMethodCode,type,cachedMethod.getName(),descriptor);
-  helper.box(cachedMethod.getReturnType());
+  BytecodeHelper.box(mv,cachedMethod.getReturnType());
   if (cachedMethod.getReturnType() == void.class) {
     mv.visitInsn(Opcodes.ACONST_NULL);
   }

@@ -1,0 +1,55 @@
+{
+  AsmClassGenerator acg=controller.getAcg();
+  CompileStack compileStack=controller.getCompileStack();
+  OperandStack operandStack=controller.getOperandStack();
+  Expression rightExpression=expression.getRightExpression();
+  rightExpression.visit(acg);
+  ClassNode rhsType=getCastType(rightExpression);
+  int rhsValueId=compileStack.defineTemporaryVariable("$rhs",rhsType,true);
+  BytecodeExpression rhsValueLoader=new VariableSlotLoader(rhsType,rhsValueId,operandStack);
+  Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof BinaryExpression) {
+    BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
+    if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+      assignArray(leftBinExpr.getLeftExpression(),leftBinExpr.getRightExpression(),rhsValueLoader);
+    }
+    compileStack.removeVar(rhsValueId);
+    return;
+  }
+  compileStack.pushLHS(true);
+  if (leftExpression instanceof TupleExpression) {
+    TupleExpression tuple=(TupleExpression)leftExpression;
+    int i=0;
+    for (    Expression e : tuple.getExpressions()) {
+      VariableExpression var=(VariableExpression)e;
+      MethodCallExpression call=new MethodCallExpression(rhsValueLoader,"getAt",new ArgumentListExpression(new ConstantExpression(i)));
+      call.visit(acg);
+      operandStack.doGroovyCast(var.getType());
+      i++;
+      if (defineVariable) {
+        compileStack.defineVariable(var,true);
+        operandStack.remove(1);
+      }
+ else {
+        acg.visitVariableExpression(var);
+      }
+    }
+  }
+ else   if (defineVariable) {
+    VariableExpression var=(VariableExpression)leftExpression;
+    rhsValueLoader.visit(acg);
+    operandStack.doGroovyCast(var.getType());
+    compileStack.defineVariable(var,true);
+    operandStack.remove(1);
+  }
+ else {
+    int mark=operandStack.getStackLength();
+    rhsValueLoader.visit(acg);
+    operandStack.doGroovyCast(leftExpression.getType());
+    leftExpression.visit(acg);
+    operandStack.remove(operandStack.getStackLength() - mark);
+  }
+  compileStack.popLHS();
+  rhsValueLoader.visit(acg);
+  compileStack.removeVar(rhsValueId);
+}

@@ -1,24 +1,23 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   FieldNode field=expression.getField();
-  boolean holder=field.isHolder() && !isInClosureConstructor() && !expression.isUseReferenceDirectly();
+  boolean holder=field.isHolder() && !controller.isInClosureConstructor() && !expression.isUseReferenceDirectly();
   ClassNode type=field.getType();
-  String ownerName=(field.getOwner().equals(classNode)) ? internalClassName : BytecodeHelper.getClassInternalName(field.getOwner());
+  String ownerName=(field.getOwner().equals(controller.getClassNode())) ? controller.getInternalClassName() : BytecodeHelper.getClassInternalName(field.getOwner());
+  OperandStack operandStack=controller.getOperandStack();
   if (holder) {
+    operandStack.box();
     mv.visitVarInsn(ALOAD,0);
     mv.visitFieldInsn(GETFIELD,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
     mv.visitInsn(SWAP);
     mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
+    operandStack.push(ClassHelper.OBJECT_TYPE);
   }
  else {
-    if (isInClosureConstructor()) {
-      helper.doCast(type);
-    }
- else     if (!ClassHelper.isPrimitiveType(type)) {
-      doConvertAndCast(type);
-    }
+    operandStack.doGroovyCast(type);
     mv.visitVarInsn(ALOAD,0);
-    mv.visitInsn(SWAP);
-    helper.unbox(type);
-    helper.putField(field,ownerName);
+    operandStack.push(controller.getClassNode());
+    operandStack.swap();
+    mv.visitFieldInsn(PUTFIELD,ownerName,field.getName(),BytecodeHelper.getTypeDescription(field.getType()));
   }
 }

@@ -1,7 +1,9 @@
 {
   onLineNumber(block,"visitBlockStatement");
   visitStatement(block);
-  compileStack.pushVariableScope(block.getVariableScope());
+  int mark=controller.getOperandStack().getStackLength();
+  controller.getCompileStack().pushVariableScope(block.getVariableScope());
   super.visitBlockStatement(block);
-  compileStack.pop();
+  controller.getCompileStack().pop();
+  controller.getOperandStack().popDownTo(mark);
 }

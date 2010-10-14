@@ -1,0 +1,24 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  if (compileStack.isLHS()) {
+    storeVar(variable);
+  }
+ else {
+    MethodVisitor mv=controller.getMethodVisitor();
+    int idx=variable.getIndex();
+    ClassNode type=variable.getType();
+    if (variable.isHolder()) {
+      mv.visitVarInsn(ALOAD,idx);
+      if (!useReferenceDirectly) {
+        mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+        push(ClassHelper.OBJECT_TYPE);
+      }
+ else {
+        push(ClassHelper.REFERENCE_TYPE);
+      }
+    }
+ else {
+      load(type,idx);
+    }
+  }
+}

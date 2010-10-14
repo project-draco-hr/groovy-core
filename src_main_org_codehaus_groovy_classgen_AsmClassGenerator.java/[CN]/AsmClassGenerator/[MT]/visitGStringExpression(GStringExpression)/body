@@ -1,24 +1,30 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/GStringImpl");
   mv.visitInsn(DUP);
   int size=expression.getValues().size();
-  helper.pushConstant(size);
+  BytecodeHelper.pushConstant(mv,size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   for (int i=0; i < size; i++) {
     mv.visitInsn(DUP);
-    helper.pushConstant(i);
-    visitAndAutoboxBoolean(expression.getValue(i));
+    BytecodeHelper.pushConstant(mv,i);
+    expression.getValue(i).visit(this);
+    controller.getOperandStack().box();
     mv.visitInsn(AASTORE);
   }
+  controller.getOperandStack().remove(size);
   List strings=expression.getStrings();
   size=strings.size();
-  helper.pushConstant(size);
+  BytecodeHelper.pushConstant(mv,size);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/String");
   for (int i=0; i < size; i++) {
     mv.visitInsn(DUP);
-    helper.pushConstant(i);
-    mv.visitLdcInsn(((ConstantExpression)strings.get(i)).getValue());
+    BytecodeHelper.pushConstant(mv,i);
+    controller.getOperandStack().pushConstant((ConstantExpression)strings.get(i));
+    controller.getOperandStack().box();
     mv.visitInsn(AASTORE);
   }
+  controller.getOperandStack().remove(size);
   mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/GStringImpl","<init>","([Ljava/lang/Object;[Ljava/lang/String;)V");
+  controller.getOperandStack().push(ClassHelper.GSTRING_TYPE);
 }

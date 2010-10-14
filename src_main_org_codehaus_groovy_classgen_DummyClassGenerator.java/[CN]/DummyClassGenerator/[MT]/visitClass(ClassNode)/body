@@ -3,7 +3,7 @@
     this.classNode=classNode;
     this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
     this.internalBaseClassName=BytecodeHelper.getClassInternalName(classNode.getSuperClass());
-    cv.visit(asmJDKVersion,classNode.getModifiers(),internalClassName,(String)null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visit(Opcodes.V1_3,classNode.getModifiers(),internalClassName,(String)null,internalBaseClassName,BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     classNode.visitContents(this);
     for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
       ClassNode innerClass=(ClassNode)iter.next();

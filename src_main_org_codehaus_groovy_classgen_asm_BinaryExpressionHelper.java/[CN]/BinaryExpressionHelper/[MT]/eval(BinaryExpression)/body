@@ -1,0 +1,134 @@
+{
+switch (expression.getOperation().getType()) {
+case EQUAL:
+    evaluateEqual(expression,false);
+  break;
+case COMPARE_EQUAL:
+evaluateBinaryExpression(compareEqualMethod,expression);
+break;
+case COMPARE_NOT_EQUAL:
+evaluateBinaryExpression(compareNotEqualMethod,expression);
+break;
+case COMPARE_TO:
+evaluateCompareTo(expression);
+break;
+case COMPARE_GREATER_THAN:
+evaluateBinaryExpression(compareGreaterThanMethod,expression);
+break;
+case COMPARE_GREATER_THAN_EQUAL:
+evaluateBinaryExpression(compareGreaterThanEqualMethod,expression);
+break;
+case COMPARE_LESS_THAN:
+evaluateBinaryExpression(compareLessThanMethod,expression);
+break;
+case COMPARE_LESS_THAN_EQUAL:
+evaluateBinaryExpression(compareLessThanEqualMethod,expression);
+break;
+case LOGICAL_AND:
+evaluateLogicalAndExpression(expression);
+break;
+case LOGICAL_OR:
+evaluateLogicalOrExpression(expression);
+break;
+case BITWISE_AND:
+evaluateBinaryExpression("and",expression);
+break;
+case BITWISE_AND_EQUAL:
+evaluateBinaryExpressionWithAssignment("and",expression);
+break;
+case BITWISE_OR:
+evaluateBinaryExpression("or",expression);
+break;
+case BITWISE_OR_EQUAL:
+evaluateBinaryExpressionWithAssignment("or",expression);
+break;
+case BITWISE_XOR:
+evaluateBinaryExpression("xor",expression);
+break;
+case BITWISE_XOR_EQUAL:
+evaluateBinaryExpressionWithAssignment("xor",expression);
+break;
+case PLUS:
+evaluateBinaryExpression("plus",expression);
+break;
+case PLUS_EQUAL:
+evaluateBinaryExpressionWithAssignment("plus",expression);
+break;
+case MINUS:
+evaluateBinaryExpression("minus",expression);
+break;
+case MINUS_EQUAL:
+evaluateBinaryExpressionWithAssignment("minus",expression);
+break;
+case MULTIPLY:
+evaluateBinaryExpression("multiply",expression);
+break;
+case MULTIPLY_EQUAL:
+evaluateBinaryExpressionWithAssignment("multiply",expression);
+break;
+case DIVIDE:
+evaluateBinaryExpression("div",expression);
+break;
+case DIVIDE_EQUAL:
+evaluateBinaryExpressionWithAssignment("div",expression);
+break;
+case INTDIV:
+evaluateBinaryExpression("intdiv",expression);
+break;
+case INTDIV_EQUAL:
+evaluateBinaryExpressionWithAssignment("intdiv",expression);
+break;
+case MOD:
+evaluateBinaryExpression("mod",expression);
+break;
+case MOD_EQUAL:
+evaluateBinaryExpressionWithAssignment("mod",expression);
+break;
+case POWER:
+evaluateBinaryExpression("power",expression);
+break;
+case POWER_EQUAL:
+evaluateBinaryExpressionWithAssignment("power",expression);
+break;
+case LEFT_SHIFT:
+evaluateBinaryExpression("leftShift",expression);
+break;
+case LEFT_SHIFT_EQUAL:
+evaluateBinaryExpressionWithAssignment("leftShift",expression);
+break;
+case RIGHT_SHIFT:
+evaluateBinaryExpression("rightShift",expression);
+break;
+case RIGHT_SHIFT_EQUAL:
+evaluateBinaryExpressionWithAssignment("rightShift",expression);
+break;
+case RIGHT_SHIFT_UNSIGNED:
+evaluateBinaryExpression("rightShiftUnsigned",expression);
+break;
+case RIGHT_SHIFT_UNSIGNED_EQUAL:
+evaluateBinaryExpressionWithAssignment("rightShiftUnsigned",expression);
+break;
+case KEYWORD_INSTANCEOF:
+evaluateInstanceof(expression);
+break;
+case FIND_REGEX:
+evaluateBinaryExpression(findRegexMethod,expression);
+break;
+case MATCH_REGEX:
+evaluateBinaryExpression(matchRegexMethod,expression);
+break;
+case LEFT_SQUARE_BRACKET:
+if (controller.getCompileStack().isLHS()) {
+evaluateEqual(expression,false);
+}
+ else {
+evaluateBinaryExpression("getAt",expression);
+}
+break;
+case KEYWORD_IN:
+evaluateBinaryExpression(isCaseMethod,expression);
+break;
+default :
+throw new GroovyBugError("Operation: " + expression.getOperation() + " not supported");
+}
+}

@@ -2,8 +2,9 @@
   if (o == EmptyExpression.INSTANCE)   return;
   if (o instanceof Expression) {
     Expression expr=(Expression)o;
-    visitAndAutoboxBoolean(expr);
-    if (isPopRequired(expr))     mv.visitInsn(POP);
+    int mark=controller.getOperandStack().getStackLength();
+    expr.visit(this);
+    controller.getOperandStack().popDownTo(mark);
   }
  else {
     ((Statement)o).visit(this);

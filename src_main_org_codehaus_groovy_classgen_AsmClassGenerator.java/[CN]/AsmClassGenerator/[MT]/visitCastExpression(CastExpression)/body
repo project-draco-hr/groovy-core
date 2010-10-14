@@ -1,8 +1,10 @@
 {
   ClassNode type=castExpression.getType();
-  visitAndAutoboxBoolean(castExpression.getExpression());
-  final ClassNode rht=rightHandType;
-  rightHandType=castExpression.getExpression().getType();
-  doConvertAndCast(type,castExpression.getExpression(),castExpression.isIgnoringAutoboxing(),false,castExpression.isCoerce());
-  rightHandType=rht;
+  castExpression.getExpression().visit(this);
+  if (castExpression.isCoerce()) {
+    controller.getOperandStack().doAsType(type);
+  }
+ else {
+    controller.getOperandStack().doGroovyCast(type);
+  }
 }

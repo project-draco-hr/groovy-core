@@ -1,0 +1,12 @@
+{
+  AsmClassGenerator acg=controller.getAcg();
+  acg.visitVariableExpression(new VariableExpression(methodName));
+  if (arguments instanceof TupleExpression) {
+    arguments.visit(acg);
+  }
+ else {
+    new TupleExpression(arguments).visit(acg);
+  }
+  invokeClosureMethod.call(controller.getMethodVisitor());
+  controller.getOperandStack().replace(ClassHelper.OBJECT_TYPE);
+}

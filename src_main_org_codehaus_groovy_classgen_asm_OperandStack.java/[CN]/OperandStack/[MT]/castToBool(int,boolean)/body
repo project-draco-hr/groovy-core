@@ -1,0 +1,27 @@
+{
+  int size=stack.size();
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (mark == size) {
+    if (emptyDefault) {
+      mv.visitIntInsn(BIPUSH,1);
+    }
+ else {
+      mv.visitIntInsn(BIPUSH,0);
+    }
+    stack.add(null);
+  }
+ else   if (mark == stack.size() - 1) {
+    ClassNode last=stack.get(size - 1);
+    if (last == ClassHelper.boolean_TYPE)     return;
+    if (!ClassHelper.isPrimitiveType(last)) {
+      BytecodeHelper.unbox(mv,ClassHelper.boolean_TYPE);
+    }
+ else {
+      primitive2b(mv,last);
+    }
+  }
+ else {
+    throw new GroovyBugError("operand stack contains " + stack.size() + " elements, but we expected only "+ mark);
+  }
+  stack.set(mark,ClassHelper.boolean_TYPE);
+}

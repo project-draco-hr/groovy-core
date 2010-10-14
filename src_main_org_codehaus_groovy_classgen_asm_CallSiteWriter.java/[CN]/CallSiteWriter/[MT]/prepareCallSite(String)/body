@@ -1,0 +1,12 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (controller.isNotClinit()) {
+    mv.visitVarInsn(ALOAD,callSiteArrayVarIndex);
+  }
+ else {
+    mv.visitMethodInsn(INVOKESTATIC,controller.getClassName(),GET_CALLSITE_METHOD,GET_CALLSITE_DESC);
+  }
+  final int index=allocateIndex(message);
+  mv.visitLdcInsn(index);
+  mv.visitInsn(AALOAD);
+}

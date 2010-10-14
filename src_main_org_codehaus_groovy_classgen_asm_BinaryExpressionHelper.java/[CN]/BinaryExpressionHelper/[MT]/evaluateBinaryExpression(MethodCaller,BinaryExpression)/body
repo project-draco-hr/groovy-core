@@ -1,0 +1,16 @@
+{
+  Expression leftExp=expression.getLeftExpression();
+  Expression rightExp=expression.getRightExpression();
+  AsmClassGenerator acg=controller.getAcg();
+  OperandStack operandStack=controller.getOperandStack();
+  leftExp.visit(acg);
+  operandStack.box();
+  rightExp.visit(acg);
+  operandStack.box();
+  compareMethod.call(controller.getMethodVisitor());
+  ClassNode resType=ClassHelper.boolean_TYPE;
+  if (compareMethod == findRegexMethod) {
+    resType=ClassHelper.OBJECT_TYPE;
+  }
+  operandStack.replace(resType,2);
+}

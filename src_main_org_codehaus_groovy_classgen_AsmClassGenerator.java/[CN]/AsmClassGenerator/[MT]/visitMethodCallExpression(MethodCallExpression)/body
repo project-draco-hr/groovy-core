@@ -1,16 +1,5 @@
 {
   onLineNumber(call,"visitMethodCallExpression: \"" + call.getMethod() + "\":");
-  if (isUnqualifiedClosureFieldCall(call)) {
-    invokeClosure(call.getArguments(),call.getMethodAsString());
-    record(call.getObjectExpression());
-  }
- else {
-    boolean isSuperMethodCall=usesSuper(call);
-    MethodCallerMultiAdapter adapter=invokeMethod;
-    if (isThisExpression(call.getObjectExpression()))     adapter=invokeMethodOnCurrent;
-    if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
-    if (isStaticInvocation(call))     adapter=invokeStaticMethod;
-    makeInvokeMethodCall(call,isSuperMethodCall,adapter);
-    record(call.getMethod());
-  }
+  controller.getInvocationWriter().writeInvokeMethod(call);
+  controller.getAssertionWriter().record(call.getMethod());
 }

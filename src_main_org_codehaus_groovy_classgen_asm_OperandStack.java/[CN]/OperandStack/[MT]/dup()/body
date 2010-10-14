@@ -1,0 +1,11 @@
+{
+  ClassNode type=getTopOperand();
+  stack.add(type);
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (type == ClassHelper.double_TYPE || type == ClassHelper.long_TYPE) {
+    mv.visitInsn(DUP2);
+  }
+ else {
+    mv.visitInsn(DUP);
+  }
+}

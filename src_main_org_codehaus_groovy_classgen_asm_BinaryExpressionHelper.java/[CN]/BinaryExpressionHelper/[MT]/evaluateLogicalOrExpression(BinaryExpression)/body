@@ -1,0 +1,18 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  AsmClassGenerator acg=controller.getAcg();
+  OperandStack operandStack=controller.getOperandStack();
+  Label end=new Label();
+  expression.getLeftExpression().visit(acg);
+  operandStack.doGroovyCast(ClassHelper.boolean_TYPE);
+  Label trueCase=operandStack.jump(IFNE);
+  expression.getRightExpression().visit(acg);
+  operandStack.doGroovyCast(ClassHelper.boolean_TYPE);
+  Label falseCase=operandStack.jump(IFEQ);
+  mv.visitLabel(trueCase);
+  ConstantExpression.PRIM_TRUE.visit(acg);
+  operandStack.jump(GOTO,end);
+  mv.visitLabel(falseCase);
+  ConstantExpression.PRIM_FALSE.visit(acg);
+  mv.visitLabel(end);
+}

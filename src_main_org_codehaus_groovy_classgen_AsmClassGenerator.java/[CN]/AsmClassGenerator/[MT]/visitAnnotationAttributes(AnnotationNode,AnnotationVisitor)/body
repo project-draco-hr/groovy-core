@@ -12,7 +12,7 @@
       constantAttrs.put(name,((ConstantExpression)expr).getValue());
     }
  else     if (expr instanceof ClassExpression) {
-      constantAttrs.put(name,Type.getType(BytecodeHelper.getTypeDescription(expr.getType())));
+      constantAttrs.put(name,Type.getType(BytecodeHelper.getTypeDescription((expr.getType()))));
     }
  else     if (expr instanceof PropertyExpression) {
       enumAttrs.put(name,(PropertyExpression)expr);
@@ -21,7 +21,7 @@
       arrayAttrs.put(name,(ListExpression)expr);
     }
  else     if (expr instanceof ClosureExpression) {
-      ClassNode closureClass=getOrAddClosureClass((ClosureExpression)expr,ACC_PUBLIC);
+      ClassNode closureClass=controller.getClosureWriter().getOrAddClosureClass((ClosureExpression)expr,ACC_PUBLIC);
       constantAttrs.put(name,Type.getType(BytecodeHelper.getTypeDescription(closureClass)));
     }
   }

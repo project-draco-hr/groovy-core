@@ -1,0 +1,17 @@
+{
+  OperandStack operandStack=controller.getOperandStack();
+  expression.getLeftExpression().visit(controller.getAcg());
+  operandStack.box();
+  Expression rightExp=expression.getRightExpression();
+  ClassNode classType;
+  if (rightExp instanceof ClassExpression) {
+    ClassExpression classExp=(ClassExpression)rightExp;
+    classType=classExp.getType();
+  }
+ else {
+    throw new RuntimeException("Right hand side of the instanceof keyword must be a class name, not: " + rightExp);
+  }
+  String classInternalName=BytecodeHelper.getClassInternalName(classType);
+  controller.getMethodVisitor().visitTypeInsn(INSTANCEOF,classInternalName);
+  operandStack.replace(ClassHelper.boolean_TYPE);
+}

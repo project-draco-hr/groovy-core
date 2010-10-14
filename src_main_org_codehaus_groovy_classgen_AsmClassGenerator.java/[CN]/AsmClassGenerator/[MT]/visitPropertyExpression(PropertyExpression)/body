@@ -1,16 +1,24 @@
 {
   Expression objectExpression=expression.getObjectExpression();
+  OperandStack operandStack=controller.getOperandStack();
+  int mark=operandStack.getStackLength() - 1;
   MethodCallerMultiAdapter adapter;
-  if (leftHandExpression) {
+  if (controller.getCompileStack().isLHS()) {
+    operandStack.box();
     adapter=setProperty;
     if (isGroovyObject(objectExpression))     adapter=setGroovyObjectProperty;
-    if (isStaticContext() && isThisOrSuper(objectExpression))     adapter=setProperty;
+    if (controller.isStaticContext() && isThisOrSuper(objectExpression))     adapter=setProperty;
   }
  else {
     adapter=getProperty;
     if (isGroovyObject(objectExpression))     adapter=getGroovyObjectProperty;
-    if (isStaticContext() && isThisOrSuper(objectExpression))     adapter=getProperty;
+    if (controller.isStaticContext() && isThisOrSuper(objectExpression))     adapter=getProperty;
   }
   visitAttributeOrProperty(expression,adapter);
-  record(expression.getProperty());
+  if (controller.getCompileStack().isLHS()) {
+    operandStack.remove(operandStack.getStackLength() - mark);
+  }
+ else {
+    controller.getAssertionWriter().record(expression.getProperty());
+  }
 }

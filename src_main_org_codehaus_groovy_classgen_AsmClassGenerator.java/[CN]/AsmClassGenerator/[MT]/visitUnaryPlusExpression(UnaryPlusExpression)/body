@@ -1,6 +1,8 @@
 {
   Expression subExpression=expression.getExpression();
   subExpression.visit(this);
-  unaryPlus.call(mv);
-  record(expression);
+  controller.getOperandStack().box();
+  unaryPlus.call(controller.getMethodVisitor());
+  controller.getOperandStack().replace(ClassHelper.OBJECT_TYPE);
+  controller.getAssertionWriter().record(expression);
 }

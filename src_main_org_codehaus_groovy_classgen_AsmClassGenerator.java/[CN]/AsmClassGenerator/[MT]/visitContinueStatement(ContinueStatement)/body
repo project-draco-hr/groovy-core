@@ -2,8 +2,8 @@
   onLineNumber(statement,"visitContinueStatement");
   visitStatement(statement);
   String name=statement.getLabel();
-  Label continueLabel=compileStack.getContinueLabel();
-  if (name != null)   continueLabel=compileStack.getNamedContinueLabel(name);
-  compileStack.applyFinallyBlocks(continueLabel,false);
-  mv.visitJumpInsn(GOTO,continueLabel);
+  Label continueLabel=controller.getCompileStack().getContinueLabel();
+  if (name != null)   continueLabel=controller.getCompileStack().getNamedContinueLabel(name);
+  controller.getCompileStack().applyFinallyBlocks(continueLabel,false);
+  controller.getMethodVisitor().visitJumpInsn(GOTO,continueLabel);
 }

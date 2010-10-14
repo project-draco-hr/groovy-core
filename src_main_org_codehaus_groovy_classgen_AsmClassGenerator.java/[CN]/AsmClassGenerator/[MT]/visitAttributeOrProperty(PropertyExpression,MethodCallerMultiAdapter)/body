@@ -1,15 +1,16 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   Expression objectExpression=expression.getObjectExpression();
   if (isThisOrSuper(objectExpression)) {
     String name=expression.getPropertyAsString();
     if (name != null) {
       FieldNode field=null;
       if (isSuperExpression(objectExpression)) {
-        field=classNode.getSuperClass().getDeclaredField(name);
+        field=controller.getClassNode().getSuperClass().getDeclaredField(name);
       }
  else {
-        if (isNotExplicitThisInClosure(expression.isImplicitThis())) {
-          field=classNode.getDeclaredField(name);
+        if (controller.isNotExplicitThisInClosure(expression.isImplicitThis())) {
+          field=controller.getClassNode().getDeclaredField(name);
         }
       }
       if (field != null) {
@@ -19,7 +20,7 @@
     }
     if (isSuperExpression(objectExpression)) {
       String prefix;
-      if (leftHandExpression) {
+      if (controller.getCompileStack().isLHS()) {
         prefix="set";
       }
  else {
@@ -32,8 +33,8 @@
   }
   final String propName=expression.getPropertyAsString();
   if (expression.getObjectExpression() instanceof ClassExpression && propName != null && propName.equals("this")) {
-    ClassNode type=expression.getObjectExpression().getType();
-    ClassNode iterType=classNode;
+    ClassNode type=objectExpression.getType();
+    ClassNode iterType=controller.getClassNode();
     mv.visitVarInsn(ALOAD,0);
     while (!iterType.equals(type)) {
       String ownerName=BytecodeHelper.getClassInternalName(iterType);
@@ -41,17 +42,16 @@
       String typeName=BytecodeHelper.getTypeDescription(iterType);
       mv.visitFieldInsn(GETFIELD,ownerName,"this$0",typeName);
     }
+    controller.getOperandStack().push(type);
     return;
   }
   if (adapter == getProperty && !expression.isSpreadSafe() && propName != null) {
-    makeGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
+    controller.getCallSiteWriter().makeGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
+  }
+ else   if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && propName != null) {
+    controller.getCallSiteWriter().makeGroovyObjectGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
   }
  else {
-    if (adapter == getGroovyObjectProperty && !expression.isSpreadSafe() && propName != null) {
-      makeGroovyObjectGetPropertySite(objectExpression,propName,expression.isSafe(),expression.isImplicitThis());
-    }
- else {
-      makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
-    }
+    controller.getInvocationWriter().makeCall(objectExpression,new CastExpression(ClassHelper.STRING_TYPE,expression.getProperty()),MethodCallExpression.NO_ARGUMENTS,adapter,expression.isSafe(),expression.isSpreadSafe(),expression.isImplicitThis());
   }
 }

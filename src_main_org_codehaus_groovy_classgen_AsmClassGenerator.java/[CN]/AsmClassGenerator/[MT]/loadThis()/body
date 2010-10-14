@@ -1,6 +1,11 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   mv.visitVarInsn(ALOAD,0);
-  if (!implicitThis && isInClosure()) {
+  if (controller.isInClosure() && !controller.getCompileStack().isImplicitThis()) {
     mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Closure","getThisObject","()Ljava/lang/Object;");
+    controller.getOperandStack().push(controller.getClassNode().getOuterClass());
+  }
+ else {
+    controller.getOperandStack().push(controller.getClassNode());
   }
 }

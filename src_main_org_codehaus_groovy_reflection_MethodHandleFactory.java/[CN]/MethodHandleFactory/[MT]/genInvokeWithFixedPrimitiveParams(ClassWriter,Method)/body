@@ -14,22 +14,21 @@
     String pdesc=pdescb.toString();
     mv=cw.visitMethod(Opcodes.ACC_PUBLIC,"invoke","(Ljava/lang/Object;" + pdesc + ")Ljava/lang/Object;",null,EXCEPTIONS);
     mv.visitCode();
-    BytecodeHelper helper=new BytecodeHelper(mv);
     Class callClass=method.getDeclaringClass();
     boolean useInterface=callClass.isInterface();
     String type=BytecodeHelper.getClassInternalName(callClass.getName());
     String descriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
     if (Modifier.isStatic(method.getModifiers())) {
-      MethodHandleFactory.genLoadParametersPrimitiveDirect(2,mv,helper,method);
+      MethodHandleFactory.genLoadParametersPrimitiveDirect(2,mv,method);
       mv.visitMethodInsn(Opcodes.INVOKESTATIC,type,method.getName(),descriptor);
     }
  else {
       mv.visitVarInsn(Opcodes.ALOAD,1);
-      helper.doCast(callClass);
-      MethodHandleFactory.genLoadParametersPrimitiveDirect(2,mv,helper,method);
+      BytecodeHelper.doCast(mv,callClass);
+      MethodHandleFactory.genLoadParametersPrimitiveDirect(2,mv,method);
       mv.visitMethodInsn((useInterface) ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,type,method.getName(),descriptor);
     }
-    helper.box(method.getReturnType());
+    BytecodeHelper.box(mv,method.getReturnType());
     if (method.getReturnType() == void.class) {
       mv.visitInsn(Opcodes.ACONST_NULL);
     }

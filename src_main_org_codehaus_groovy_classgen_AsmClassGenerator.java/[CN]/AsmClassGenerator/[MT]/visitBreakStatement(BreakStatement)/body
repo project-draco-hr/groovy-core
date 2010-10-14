@@ -2,7 +2,7 @@
   onLineNumber(statement,"visitBreakStatement");
   visitStatement(statement);
   String name=statement.getLabel();
-  Label breakLabel=compileStack.getNamedBreakLabel(name);
-  compileStack.applyFinallyBlocks(breakLabel,true);
-  mv.visitJumpInsn(GOTO,breakLabel);
+  Label breakLabel=controller.getCompileStack().getNamedBreakLabel(name);
+  controller.getCompileStack().applyFinallyBlocks(breakLabel,true);
+  controller.getMethodVisitor().visitJumpInsn(GOTO,breakLabel);
 }

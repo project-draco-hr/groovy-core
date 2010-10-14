@@ -2,9 +2,7 @@
   onLineNumber(statement,"visitExpressionStatement: " + statement.getExpression().getClass().getName());
   visitStatement(statement);
   Expression expression=statement.getExpression();
-  if (expression == EmptyExpression.INSTANCE)   return;
-  visitAndAutoboxBoolean(expression);
-  if (isPopRequired(expression)) {
-    mv.visitInsn(POP);
-  }
+  int mark=controller.getOperandStack().getStackLength();
+  expression.visit(this);
+  controller.getOperandStack().popDownTo(mark);
 }

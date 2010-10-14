@@ -1,0 +1,42 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  BooleanExpression booleanExpression=statement.getBooleanExpression();
+  String expressionText=booleanExpression.getText();
+  List<String> list=new ArrayList<String>();
+  addVariableNames(booleanExpression,list);
+  if (list.isEmpty()) {
+    mv.visitLdcInsn(expressionText);
+  }
+ else {
+    boolean first=true;
+    mv.visitTypeInsn(NEW,"java/lang/StringBuffer");
+    mv.visitInsn(DUP);
+    mv.visitLdcInsn(expressionText + ". Values: ");
+    mv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
+    operandStack.push(ClassHelper.OBJECT_TYPE);
+    int tempIndex=controller.getCompileStack().defineTemporaryVariable("assert",true);
+    for (    String name : list) {
+      String text=name + " = ";
+      if (first) {
+        first=false;
+      }
+ else {
+        text=", " + text;
+      }
+      mv.visitVarInsn(ALOAD,tempIndex);
+      mv.visitLdcInsn(text);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
+      mv.visitInsn(POP);
+      mv.visitVarInsn(ALOAD,tempIndex);
+      new VariableExpression(name).visit(controller.getAcg());
+      operandStack.box();
+      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","toString","(Ljava/lang/Object;)Ljava/lang/String;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+      mv.visitInsn(POP);
+      operandStack.remove(1);
+    }
+    mv.visitVarInsn(ALOAD,tempIndex);
+    controller.getCompileStack().removeVar(tempIndex);
+  }
+}

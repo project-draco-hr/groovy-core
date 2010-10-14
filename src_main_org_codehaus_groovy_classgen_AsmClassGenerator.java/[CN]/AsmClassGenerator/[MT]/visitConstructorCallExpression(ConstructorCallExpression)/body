@@ -1,9 +1,9 @@
 {
   onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
   if (call.isSpecialCall()) {
-    specialCallWithinConstructor=true;
+    controller.getCompileStack().pushInSpecialConstructorCall();
     visitSpecialConstructorCall(call);
-    specialCallWithinConstructor=false;
+    controller.getCompileStack().pop();
     return;
   }
   Expression arguments=call.getArguments();
@@ -15,6 +15,6 @@
     }
   }
   Expression receiverClass=new ClassExpression(call.getType());
-  makeCallSite(receiverClass,CONSTRUCTOR,arguments,false,false,false,false);
-  record(call);
+  controller.getCallSiteWriter().makeCallSite(receiverClass,CallSiteWriter.CONSTRUCTOR,arguments,false,false,false,false);
+  controller.getAssertionWriter().record(call);
 }

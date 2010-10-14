@@ -1,0 +1,24 @@
+{
+  for (  MethodNode method : mopCalls) {
+    String name=getMopMethodName(method,useThis);
+    Parameter[] parameters=method.getParameters();
+    String methodDescriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameters());
+    MethodVisitor mv=controller.getClassVisitor().visitMethod(ACC_PUBLIC | ACC_SYNTHETIC,name,methodDescriptor,null,null);
+    controller.setMethodVisitor(mv);
+    mv.visitVarInsn(ALOAD,0);
+    int newRegister=1;
+    OperandStack operandStack=controller.getOperandStack();
+    for (    Parameter parameter : parameters) {
+      ClassNode type=parameter.getType();
+      operandStack.load(parameter.getType(),newRegister);
+      newRegister++;
+      if (type == ClassHelper.double_TYPE || type == ClassHelper.long_TYPE)       newRegister++;
+    }
+    operandStack.remove(parameters.length);
+    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(method.getDeclaringClass()),method.getName(),methodDescriptor);
+    BytecodeHelper.doReturn(mv,method.getReturnType());
+    mv.visitMaxs(0,0);
+    mv.visitEnd();
+    controller.getClassNode().addMethod(name,ACC_PUBLIC | ACC_SYNTHETIC,method.getReturnType(),parameters,null,null);
+  }
+}

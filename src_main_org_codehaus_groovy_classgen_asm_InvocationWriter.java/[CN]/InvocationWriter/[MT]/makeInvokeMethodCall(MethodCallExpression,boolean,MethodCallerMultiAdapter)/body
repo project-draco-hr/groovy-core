@@ -1,0 +1,12 @@
+{
+  Expression objectExpression=call.getObjectExpression();
+  Expression messageName=new CastExpression(ClassHelper.STRING_TYPE,call.getMethod());
+  if (useSuper) {
+    ClassNode classNode=controller.isInClosure() ? controller.getOutermostClass() : controller.getClassNode();
+    ClassNode superClass=classNode.getSuperClass();
+    makeCall(new ClassExpression(superClass),objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe(),false);
+  }
+ else {
+    makeCall(objectExpression,messageName,call.getArguments(),adapter,call.isSafe(),call.isSpreadSafe(),call.isImplicitThis());
+  }
+}

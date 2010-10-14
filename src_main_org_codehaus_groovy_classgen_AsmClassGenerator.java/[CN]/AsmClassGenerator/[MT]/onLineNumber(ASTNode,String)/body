@@ -1,4 +1,5 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   if (statement == null)   return;
   int line=statement.getLineNumber();
   this.currentASTNode=statement;
@@ -9,8 +10,5 @@
     Label l=new Label();
     mv.visitLabel(l);
     mv.visitLineNumber(line,l);
-    if (ASM_DEBUG) {
-      helper.mark(message + "[" + statement.getLineNumber()+ ":"+ statement.getColumnNumber()+ "]");
-    }
   }
 }

@@ -1,0 +1,13 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  final OperandStack operandStack=controller.getOperandStack();
+  VariableSlotLoader usesSubscript=loadWithSubscript(expression);
+  operandStack.dup();
+  ClassNode expressionType=operandStack.getTopOperand();
+  int tempIdx=compileStack.defineTemporaryVariable("postfix_" + method,expressionType,true);
+  execMethodAndStoreForSubscriptOperator(method,expression,usesSubscript);
+  operandStack.pop();
+  operandStack.load(expressionType,tempIdx);
+  compileStack.removeVar(tempIdx);
+  if (usesSubscript != null)   compileStack.removeVar(usesSubscript.getIndex());
+}

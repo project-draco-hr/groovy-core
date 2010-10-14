@@ -1,6 +1,10 @@
 {
+  OperandStack operandStack=controller.getOperandStack();
   expression.getFrom().visit(this);
+  operandStack.box();
   expression.getTo().visit(this);
-  helper.pushConstant(expression.isInclusive());
-  createRangeMethod.call(mv);
+  operandStack.box();
+  operandStack.pushBool(expression.isInclusive());
+  createRangeMethod.call(controller.getMethodVisitor());
+  operandStack.replace(ClassHelper.RANGE_TYPE,3);
 }

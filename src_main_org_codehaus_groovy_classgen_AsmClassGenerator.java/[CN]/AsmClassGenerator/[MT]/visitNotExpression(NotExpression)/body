@@ -1,9 +1,8 @@
 {
   Expression subExpression=expression.getExpression();
+  int mark=controller.getOperandStack().getStackLength();
   subExpression.visit(this);
-  if (!isComparisonExpression(subExpression) && !(subExpression instanceof BooleanExpression)) {
-    helper.unbox(boolean.class);
-  }
-  helper.negateBoolean();
-  recordBool(expression);
+  controller.getOperandStack().castToBool(mark,true);
+  BytecodeHelper.negateBoolean(controller.getMethodVisitor());
+  controller.getAssertionWriter().record(expression);
 }

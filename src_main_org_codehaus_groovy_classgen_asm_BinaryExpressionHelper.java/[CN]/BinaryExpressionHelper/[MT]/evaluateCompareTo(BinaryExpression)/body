@@ -1,0 +1,12 @@
+{
+  Expression leftExpression=expression.getLeftExpression();
+  AsmClassGenerator acg=controller.getAcg();
+  OperandStack operandStack=controller.getOperandStack();
+  leftExpression.visit(acg);
+  operandStack.box();
+  Expression rightExpression=expression.getRightExpression();
+  rightExpression.visit(acg);
+  operandStack.box();
+  compareToMethod.call(controller.getMethodVisitor());
+  operandStack.replace(ClassHelper.Integer_TYPE,2);
+}

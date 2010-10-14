@@ -1,7 +1,9 @@
 {
   onLineNumber(statement,"visitThrowStatement");
   visitStatement(statement);
+  MethodVisitor mv=controller.getMethodVisitor();
   statement.getExpression().visit(this);
   mv.visitTypeInsn(CHECKCAST,"java/lang/Throwable");
   mv.visitInsn(ATHROW);
+  controller.getOperandStack().remove(1);
 }

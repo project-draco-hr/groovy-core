@@ -1,0 +1,27 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  int size=stack.size();
+  ClassNode b=stack.get(size - 1);
+  ClassNode a=stack.get(size - 2);
+  if (isTwoSlotType(a)) {
+    if (isTwoSlotType(b)) {
+      mv.visitInsn(DUP2_X2);
+      mv.visitInsn(POP2);
+    }
+ else {
+      mv.visitInsn(DUP_X2);
+      mv.visitInsn(POP);
+    }
+  }
+ else {
+    if (isTwoSlotType(b)) {
+      mv.visitInsn(DUP2_X1);
+      mv.visitInsn(POP2);
+    }
+ else {
+      mv.visitInsn(SWAP);
+    }
+  }
+  stack.set(size - 1,a);
+  stack.set(size - 2,b);
+}

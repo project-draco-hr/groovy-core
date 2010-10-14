@@ -1,6 +1,7 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   for (  String staticFieldName : referencedClasses.keySet()) {
-    FieldNode fn=classNode.getDeclaredField(staticFieldName);
+    FieldNode fn=controller.getClassNode().getDeclaredField(staticFieldName);
     if (fn != null) {
       boolean type=fn.getType() == ClassHelper.CLASS_Type;
       boolean modifiers=fn.getModifiers() == ACC_STATIC + ACC_SYNTHETIC;
@@ -8,7 +9,7 @@
         String text="";
         if (!type)         text=" with wrong type: " + fn.getType() + " (java.lang.Class needed)";
         if (!modifiers)         text=" with wrong modifiers: " + fn.getModifiers() + " ("+ (ACC_STATIC + ACC_SYNTHETIC)+ " needed)";
-        throwException("tried to set a static syntethic field " + staticFieldName + " in "+ classNode.getName()+ " for class resolving, but found alreeady a node of that"+ " name "+ text);
+        throwException("tried to set a static syntethic field " + staticFieldName + " in "+ controller.getClassNode().getName()+ " for class resolving, but found alreeady a node of that"+ " name "+ text);
       }
     }
  else {
@@ -16,15 +17,15 @@
     }
     mv=cv.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,"$get$" + staticFieldName,"()Ljava/lang/Class;",null,null);
     mv.visitCode();
-    mv.visitFieldInsn(GETSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+    mv.visitFieldInsn(GETSTATIC,controller.getInternalClassName(),staticFieldName,"Ljava/lang/Class;");
     mv.visitInsn(DUP);
     Label l0=new Label();
     mv.visitJumpInsn(IFNONNULL,l0);
     mv.visitInsn(POP);
     mv.visitLdcInsn(BytecodeHelper.getClassLoadingTypeDescription(referencedClasses.get(staticFieldName)));
-    mv.visitMethodInsn(INVOKESTATIC,internalClassName,"class$","(Ljava/lang/String;)Ljava/lang/Class;");
+    mv.visitMethodInsn(INVOKESTATIC,controller.getInternalClassName(),"class$","(Ljava/lang/String;)Ljava/lang/Class;");
     mv.visitInsn(DUP);
-    mv.visitFieldInsn(PUTSTATIC,internalClassName,staticFieldName,"Ljava/lang/Class;");
+    mv.visitFieldInsn(PUTSTATIC,controller.getInternalClassName(),staticFieldName,"Ljava/lang/Class;");
     mv.visitLabel(l0);
     mv.visitInsn(ARETURN);
     mv.visitMaxs(0,0);

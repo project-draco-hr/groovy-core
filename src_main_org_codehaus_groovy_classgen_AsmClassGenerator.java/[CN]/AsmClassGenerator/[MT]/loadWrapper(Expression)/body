@@ -1,4 +1,5 @@
 {
+  MethodVisitor mv=controller.getMethodVisitor();
   ClassNode goalClass=argument.getType();
   visitClassExpression(new ClassExpression(goalClass));
   if (goalClass.isDerivedFromGroovyObject()) {
@@ -7,4 +8,5 @@
  else {
     createPojoWrapperMethod.call(mv);
   }
+  controller.getOperandStack().remove(1);
 }
