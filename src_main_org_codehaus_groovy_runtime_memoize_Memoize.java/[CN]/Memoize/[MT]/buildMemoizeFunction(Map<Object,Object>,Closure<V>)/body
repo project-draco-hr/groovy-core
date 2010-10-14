@@ -1,0 +1,14 @@
+{
+  return new Closure<V>(closure.getOwner()){
+    @Override public V call(    final Object[] args){
+      final Object key=generateKey(args);
+      Object result=cache.get(key);
+      if (result == null) {
+        result=closure.call(args);
+        cache.put(key,result != null ? result : MEMOIZE_NULL);
+      }
+      return result == MEMOIZE_NULL ? null : (V)result;
+    }
+  }
+;
+}
