@@ -1,8 +1,6 @@
 {
   performOperationOnMetaClass(new Callable(){
     public void call(){
-      final MetaMethodIndex.Header header=metaMethodIndex.getHeader(theClass);
-      final MetaMethodIndex.Entry methods=metaMethodIndex.getOrPutMethods(metaMethodFromSuper.getName(),header);
       MetaMethod existing=null;
       try {
         existing=pickMethod(metaMethodFromSuper.getName(),metaMethodFromSuper.getNativeParameterTypes());
@@ -27,7 +25,6 @@
       inheritedMetaMethods.add(metaMethodFromSuper);
       if (metaMethodFromSuper instanceof ClosureMetaMethod) {
         ClosureMetaMethod closureMethod=(ClosureMetaMethod)metaMethodFromSuper;
-        Closure cloned=(Closure)closureMethod.getClosure().clone();
         String name=metaMethodFromSuper.getName();
         final Class declaringClass=metaMethodFromSuper.getDeclaringClass().getTheClass();
         ClosureMetaMethod localMethod=ClosureMetaMethod.copy(closureMethod);
