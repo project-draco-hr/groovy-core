@@ -33,6 +33,11 @@
     String p=line.getOptionValue('l',"1960");
     main.port=Integer.parseInt(p);
   }
+  String disabled=line.getOptionValue("disableopt",",");
+  String[] deopts=disabled.split(",");
+  for (  String deopt_i : deopts) {
+    main.conf.getOptimizationOptions().put(deopt_i,false);
+  }
   main.args=args;
   return main.run();
 }
