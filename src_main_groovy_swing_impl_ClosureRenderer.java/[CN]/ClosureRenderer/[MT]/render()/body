@@ -1,4 +1,30 @@
 {
+  if (children.isEmpty() || defaultRenderer) {
+    defaultRenderer=true;
+    children.clear();
+    if (table != null) {
+      TableCellRenderer tcr;
+      if (tableHeader) {
+        tcr=table.getTableHeader().getDefaultRenderer();
+      }
+ else {
+        tcr=table.getDefaultRenderer(table.getColumnClass(column));
+      }
+      children.add(tcr.getTableCellRendererComponent(table,value,selected,focused,row,column));
+    }
+ else     if (tree != null) {
+      TreeCellRenderer tcr;
+      tcr=new DefaultTreeCellRenderer();
+      children.add(tcr.getTreeCellRendererComponent(tree,value,selected,expanded,leaf,row,focused));
+    }
+ else     if (list != null) {
+      ListCellRenderer lcr=(ListCellRenderer)UIManager.get("List.cellRenderer");
+      if (lcr == null) {
+        lcr=new DefaultListCellRenderer();
+      }
+      children.add(lcr.getListCellRendererComponent(list,value,row,selected,focused));
+    }
+  }
   Object o=update.call();
   if (o instanceof Component) {
     return (Component)o;
