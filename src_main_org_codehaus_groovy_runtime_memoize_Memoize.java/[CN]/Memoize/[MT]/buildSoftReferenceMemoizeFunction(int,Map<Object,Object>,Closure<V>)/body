@@ -1,22 +1,5 @@
 {
   final ProtectionStorage lruProtectionStorage=protectedCacheSize > 0 ? new LRUProtectionStorage(protectedCacheSize) : new NullProtectionStorage();
   final ReferenceQueue queue=new ReferenceQueue();
-  return new Closure<V>(closure.getOwner()){
-    @Override public V call(    final Object[] args){
-      if (queue.poll() != null)       cleanUpNullReferences(cache,queue);
-      final Object key=generateKey(args);
-      final SoftReference reference=(SoftReference)cache.get(key);
-      Object result=reference != null ? reference.get() : null;
-      if (result == null) {
-        result=closure.call(args);
-        if (result == null) {
-          result=MEMOIZE_NULL;
-        }
-        cache.put(key,new SoftReference(result));
-      }
-      lruProtectionStorage.touch(key,result);
-      return result == MEMOIZE_NULL ? null : (V)result;
-    }
-  }
-;
+  return new SoftReferenceMemoizeFunction<V>(cache,closure,lruProtectionStorage,queue);
 }

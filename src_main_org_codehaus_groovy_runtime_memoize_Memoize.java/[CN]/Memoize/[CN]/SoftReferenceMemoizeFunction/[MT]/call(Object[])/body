@@ -1,0 +1,15 @@
+{
+  if (queue.poll() != null)   cleanUpNullReferences(cache,queue);
+  final Object key=generateKey(args);
+  final SoftReference reference=(SoftReference)cache.get(key);
+  Object result=reference != null ? reference.get() : null;
+  if (result == null) {
+    result=closure.call(args);
+    if (result == null) {
+      result=MEMOIZE_NULL;
+    }
+    cache.put(key,new SoftReference(result));
+  }
+  lruProtectionStorage.touch(key,result);
+  return result == MEMOIZE_NULL ? null : (V)result;
+}
