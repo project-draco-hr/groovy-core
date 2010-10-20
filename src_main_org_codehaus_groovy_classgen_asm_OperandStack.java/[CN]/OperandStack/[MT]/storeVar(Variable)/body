@@ -2,14 +2,15 @@
   MethodVisitor mv=controller.getMethodVisitor();
   int idx=variable.getIndex();
   ClassNode type=variable.getType();
-  doGroovyCast(type);
   if (variable.isHolder()) {
     box();
     mv.visitVarInsn(ALOAD,idx);
+    mv.visitTypeInsn(CHECKCAST,"groovy/lang/Reference");
     mv.visitInsn(SWAP);
     mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
   }
  else {
+    doGroovyCast(type);
     if (type == ClassHelper.double_TYPE) {
       mv.visitVarInsn(DSTORE,idx);
     }
