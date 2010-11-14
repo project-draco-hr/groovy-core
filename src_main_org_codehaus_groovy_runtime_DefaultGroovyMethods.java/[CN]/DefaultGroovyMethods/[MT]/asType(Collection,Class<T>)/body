@@ -29,5 +29,14 @@
   }
  catch (  Exception e) {
   }
+  if (Collection.class.isAssignableFrom(clazz)) {
+    try {
+      Collection result=(Collection)InvokerHelper.invokeConstructorOf(clazz,null);
+      result.addAll(col);
+      return (T)result;
+    }
+ catch (    Exception e) {
+    }
+  }
   return asType((Object)col,clazz);
 }
