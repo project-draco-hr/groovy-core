@@ -1,0 +1,13 @@
+{
+  List<GroovySourceAST> types=new ArrayList<GroovySourceAST>();
+  for (AST child=t.getFirstChild(); child != null; child=child.getNextSibling()) {
+    GroovySourceAST groovySourceAST=(GroovySourceAST)child;
+    if (groovySourceAST.getType() == IDENT) {
+      types.add(groovySourceAST);
+    }
+ else     if (groovySourceAST.getType() == TYPE) {
+      types.add(groovySourceAST.childOfType(IDENT));
+    }
+  }
+  return types;
+}
