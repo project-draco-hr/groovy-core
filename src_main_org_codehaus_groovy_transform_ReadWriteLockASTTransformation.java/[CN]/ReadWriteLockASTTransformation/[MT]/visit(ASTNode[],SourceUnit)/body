@@ -1,0 +1,39 @@
+{
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (!READ_LOCK_TYPE.equals(node.getClassNode()) && !WRITE_LOCK_TYPE.equals(node.getClassNode()))   return;
+  boolean isWriteLock=false;
+  if (READ_LOCK_TYPE.equals(node.getClassNode())) {
+    isWriteLock=true;
+  }
+  String myTypeName="@" + node.getClassNode().getNameWithoutPackage();
+  Expression valueExpr=node.getMember("value");
+  String value=null;
+  if (valueExpr instanceof ConstantExpression) {
+    ConstantExpression ce=(ConstantExpression)valueExpr;
+    Object valueObject=ce.getValue();
+    if (valueObject != null)     value=valueObject.toString();
+  }
+  if (parent instanceof MethodNode) {
+    MethodNode mNode=(MethodNode)parent;
+    ClassNode cNode=mNode.getDeclaringClass();
+    String lockExpr=determineLock(value,cNode,mNode.isStatic(),myTypeName);
+    final Expression lockType;
+    if (isWriteLock) {
+      lockType=new MethodCallExpression(new VariableExpression(lockExpr),"writeLock",ArgumentListExpression.EMPTY_ARGUMENTS);
+    }
+ else {
+      lockType=new MethodCallExpression(new VariableExpression(lockExpr),"readLock",ArgumentListExpression.EMPTY_ARGUMENTS);
+    }
+    MethodCallExpression acquireLock=new MethodCallExpression(lockType,"lock",ArgumentListExpression.EMPTY_ARGUMENTS);
+    MethodCallExpression releaseLock=new MethodCallExpression(lockType,"unlock",ArgumentListExpression.EMPTY_ARGUMENTS);
+    Statement originalCode=mNode.getCode();
+    BlockStatement body=new BlockStatement();
+    body.addStatement(new ExpressionStatement(acquireLock));
+    body.addStatement(new TryCatchStatement(originalCode,new ExpressionStatement(releaseLock)));
+    mNode.setCode(body);
+  }
+}

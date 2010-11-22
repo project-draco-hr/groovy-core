@@ -1,0 +1,31 @@
+{
+  if (value != null && value.length() > 0 && !value.equalsIgnoreCase("$reentrantlock")) {
+    if (targetClass.getDeclaredField(value) == null) {
+      throw new RuntimeException("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' not found in class "+ targetClass.getName());
+    }
+    if (targetClass.getDeclaredField(value).isStatic() != isStatic) {
+      throw new RuntimeException("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' should "+ (isStatic ? "" : "not ")+ "be static");
+    }
+    return value;
+  }
+  if (isStatic) {
+    FieldNode field=targetClass.getDeclaredField("$REENTRANTLOCK");
+    if (field == null) {
+      int visibility=ACC_PRIVATE | ACC_STATIC | ACC_FINAL;
+      targetClass.addField("$REENTRANTLOCK",visibility,LOCK_TYPE,createLockObject());
+    }
+ else     if (!field.isStatic()) {
+      throw new RuntimeException("Error during " + myTypeName + " processing: $REENTRANTLOCK field must be static");
+    }
+    return "$REENTRANTLOCK";
+  }
+  FieldNode field=targetClass.getDeclaredField("$reentrantlock");
+  if (field == null) {
+    int visibility=ACC_PRIVATE | ACC_FINAL;
+    targetClass.addField("$reentrantlock",visibility,LOCK_TYPE,createLockObject());
+  }
+ else   if (field.isStatic()) {
+    throw new RuntimeException("Error during " + myTypeName + " processing: $reentrantlock field must not be static");
+  }
+  return "$reentrantlock";
+}
