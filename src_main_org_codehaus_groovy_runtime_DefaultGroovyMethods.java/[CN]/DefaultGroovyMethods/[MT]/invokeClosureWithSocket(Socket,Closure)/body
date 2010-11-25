@@ -1,0 +1,15 @@
+{
+  try {
+    closure.call(socket);
+  }
+  finally {
+    if (socket != null) {
+      try {
+        socket.close();
+      }
+ catch (      IOException e) {
+        LOG.warning("Caught exception closing socket: " + e);
+      }
+    }
+  }
+}

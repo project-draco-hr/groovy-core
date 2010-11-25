@@ -1,22 +1,3 @@
 {
-  final Socket socket=serverSocket.accept();
-  new Thread(new Runnable(){
-    public void run(){
-      try {
-        closure.call(socket);
-      }
-  finally {
-        if (socket != null) {
-          try {
-            socket.close();
-          }
- catch (          IOException e) {
-            LOG.warning("Caught exception closing socket: " + e);
-          }
-        }
-      }
-    }
-  }
-).start();
-  return socket;
+  return accept(serverSocket,true,closure);
 }
