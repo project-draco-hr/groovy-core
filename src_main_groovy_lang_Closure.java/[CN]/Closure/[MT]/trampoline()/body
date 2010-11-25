@@ -1,10 +1,3 @@
 {
-  Closure currentFunction=this;
-  for (; ; ) {
-    final Object result=currentFunction.call();
-    if (result instanceof Closure) {
-      currentFunction=(Closure)result;
-    }
- else     return result;
-  }
+  return new TrampolineClosure(this);
 }
