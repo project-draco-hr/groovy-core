@@ -1,0 +1,13 @@
+{
+  if (t != null) {
+    if (t.getType() == DOT) {
+      GroovySourceAST firstChild=(GroovySourceAST)t.getFirstChild();
+      GroovySourceAST secondChild=(GroovySourceAST)firstChild.getNextSibling();
+      return (buildName(firstChild) + "/" + buildName(secondChild));
+    }
+    if (t.getType() == IDENT) {
+      return t.getText();
+    }
+  }
+  return "";
+}
