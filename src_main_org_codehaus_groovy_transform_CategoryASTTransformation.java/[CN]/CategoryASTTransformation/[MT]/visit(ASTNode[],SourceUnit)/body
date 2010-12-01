@@ -24,23 +24,40 @@
       }
       varStack.add(names);
     }
-    public void visitMethod(    MethodNode node){
+    @Override public void visitMethod(    MethodNode node){
       addVariablesToStack(node.getParameters());
       super.visitMethod(node);
       varStack.removeLast();
     }
-    public void visitBlockStatement(    BlockStatement block){
+    @Override public void visitBlockStatement(    BlockStatement block){
       Set<String> names=new HashSet<String>();
       names.addAll(varStack.getLast());
       varStack.add(names);
       super.visitBlockStatement(block);
       varStack.remove(names);
     }
-    public void visitDeclarationExpression(    DeclarationExpression expression){
-      varStack.getLast().add(expression.getVariableExpression().getName());
+    @Override public void visitClosureExpression(    ClosureExpression ce){
+      addVariablesToStack(ce.getParameters());
+      super.visitClosureExpression(ce);
+      varStack.removeLast();
+    }
+    @Override public void visitDeclarationExpression(    DeclarationExpression expression){
+      Expression left=expression.getLeftExpression();
+      if (left instanceof ArgumentListExpression) {
+        ArgumentListExpression ale=(ArgumentListExpression)left;
+        List<Expression> list=ale.getExpressions();
+        for (        Expression arg : list) {
+          VariableExpression ve=(VariableExpression)arg;
+          varStack.getLast().add(ve.getName());
+        }
+      }
+ else {
+        VariableExpression ve=(VariableExpression)left;
+        varStack.getLast().add(ve.getName());
+      }
       super.visitDeclarationExpression(expression);
     }
-    public void visitForLoop(    ForStatement forLoop){
+    @Override public void visitForLoop(    ForStatement forLoop){
       Expression exp=forLoop.getCollectionExpression();
       exp.visit(this);
       Parameter loopParam=forLoop.getVariable();
@@ -49,14 +66,14 @@
       }
       super.visitForLoop(forLoop);
     }
-    public void visitExpressionStatement(    ExpressionStatement es){
+    @Override public void visitExpressionStatement(    ExpressionStatement es){
       Expression exp=es.getExpression();
       if (exp instanceof DeclarationExpression) {
         exp.visit(this);
       }
       super.visitExpressionStatement(es);
     }
-    public Expression transform(    Expression exp){
+    @Override public Expression transform(    Expression exp){
       if (exp instanceof VariableExpression) {
         VariableExpression ve=(VariableExpression)exp;
         if (ve.getName().equals("this"))         return THIS_EXPRESSION;
@@ -88,6 +105,7 @@
         }
         addVariablesToStack(params);
         ce.getCode().visit(this);
+        varStack.removeLast();
       }
       return super.transform(exp);
     }
