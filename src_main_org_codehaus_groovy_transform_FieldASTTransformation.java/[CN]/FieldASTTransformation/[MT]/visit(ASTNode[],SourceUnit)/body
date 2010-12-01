@@ -11,10 +11,15 @@
     ClassNode cNode=de.getDeclaringClass();
     if (!cNode.isScript()) {
       addError("Error: annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
+      return;
     }
     candidate=de;
     super.visitClass(cNode);
-    VariableExpression ve=de.getVariableExpression();
+    if (de.getLeftExpression() instanceof ArgumentListExpression) {
+      addError("Error: annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
+      return;
+    }
+    VariableExpression ve=(VariableExpression)de.getLeftExpression();
     FieldNode fNode=new FieldNode(ve.getName(),ve.getModifiers(),ve.getType(),null,de.getRightExpression());
     fNode.setSourcePosition(de);
     cNode.addField(fNode);

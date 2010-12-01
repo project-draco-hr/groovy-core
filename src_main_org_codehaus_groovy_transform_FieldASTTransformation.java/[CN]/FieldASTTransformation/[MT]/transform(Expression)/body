@@ -2,11 +2,12 @@
   if (expr == null)   return null;
   if (expr instanceof DeclarationExpression) {
     DeclarationExpression de=(DeclarationExpression)expr;
-    if (de.getVariableExpression() == candidate.getVariableExpression()) {
+    if (de.getLeftExpression() == candidate.getLeftExpression()) {
       if (insideScriptBody) {
         return new ConstantExpression(null);
       }
       addError("Error: annotation " + MY_TYPE_NAME + " can only be used within a Script body.",expr);
+      return expr;
     }
   }
   return expr.transformExpression(this);
