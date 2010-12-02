@@ -15,11 +15,11 @@
     }
     candidate=de;
     super.visitClass(cNode);
-    if (de.getLeftExpression() instanceof ArgumentListExpression) {
+    if (de.isMultipleAssignmentDeclaration()) {
       addError("Error: annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
       return;
     }
-    VariableExpression ve=(VariableExpression)de.getLeftExpression();
+    VariableExpression ve=de.getVariableExpression();
     FieldNode fNode=new FieldNode(ve.getName(),ve.getModifiers(),ve.getType(),null,de.getRightExpression());
     fNode.setSourcePosition(de);
     cNode.addField(fNode);
