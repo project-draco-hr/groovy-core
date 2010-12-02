@@ -3,8 +3,10 @@
   Parameter[] ret=new Parameter[scope.getReferencedLocalVariablesCount()];
   int index=0;
   for (Iterator iter=scope.getReferencedLocalVariablesIterator(); iter.hasNext(); ) {
-    org.codehaus.groovy.ast.Variable element=(org.codehaus.groovy.ast.Variable)iter.next();
+    Variable element=(org.codehaus.groovy.ast.Variable)iter.next();
     Parameter p=new Parameter(element.getType(),element.getName());
+    p.setOriginType(element.getOriginType());
+    p.setClosureSharedVariable(element.isClosureSharedVariable());
     ret[index]=p;
     index++;
   }

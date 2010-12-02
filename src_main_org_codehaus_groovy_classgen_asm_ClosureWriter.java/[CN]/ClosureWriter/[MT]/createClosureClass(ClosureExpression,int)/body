@@ -11,7 +11,7 @@
  else   if (parameters.length == 0) {
     Parameter it=new Parameter(ClassHelper.OBJECT_TYPE,"it",ConstantExpression.NULL);
     parameters=new Parameter[]{it};
-    org.codehaus.groovy.ast.Variable ref=expression.getVariableScope().getDeclaredVariable("it");
+    Variable ref=expression.getVariableScope().getDeclaredVariable("it");
     if (ref != null)     it.setClosureSharedVariable(ref.isClosureSharedVariable());
   }
   Parameter[] localVariableParams=getClosureSharedVariables(expression);
@@ -59,6 +59,7 @@
       type=ClassHelper.makeReference();
       param.setType(ClassHelper.makeReference());
       paramField=answer.addField(paramName,ACC_PRIVATE,type,initialValue);
+      paramField.setOriginType(param.getOriginType());
       paramField.setHolder(true);
       String methodName=Verifier.capitalize(paramName);
       Expression fieldExp=new FieldExpression(paramField);

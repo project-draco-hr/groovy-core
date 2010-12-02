@@ -24,7 +24,7 @@
       VariableExpression var=(VariableExpression)e;
       MethodCallExpression call=new MethodCallExpression(rhsValueLoader,"getAt",new ArgumentListExpression(new ConstantExpression(i)));
       call.visit(acg);
-      operandStack.doGroovyCast(var.getType());
+      operandStack.doGroovyCast(var.getOriginType());
       i++;
       if (defineVariable) {
         compileStack.defineVariable(var,true);
@@ -38,7 +38,7 @@
  else   if (defineVariable) {
     VariableExpression var=(VariableExpression)leftExpression;
     rhsValueLoader.visit(acg);
-    operandStack.doGroovyCast(var.getType());
+    operandStack.doGroovyCast(var.getOriginType());
     compileStack.defineVariable(var,true);
     operandStack.remove(1);
   }

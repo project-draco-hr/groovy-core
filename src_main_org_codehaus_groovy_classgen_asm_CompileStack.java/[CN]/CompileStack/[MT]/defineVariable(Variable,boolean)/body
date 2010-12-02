@@ -1,0 +1,36 @@
+{
+  String name=v.getName();
+  BytecodeVariable answer=defineVar(name,v.getOriginType(),false);
+  if (v.isClosureSharedVariable())   answer.setHolder(true);
+  stackVariables.put(name,answer);
+  MethodVisitor mv=controller.getMethodVisitor();
+  Label startLabel=new Label();
+  answer.setStartLabel(startLabel);
+  if (answer.isHolder()) {
+    if (!initFromStack) {
+      mv.visitInsn(ACONST_NULL);
+    }
+ else {
+      OperandStack operandStack=controller.getOperandStack();
+      operandStack.push(answer.getType());
+      operandStack.box();
+      operandStack.remove(1);
+    }
+    createReference(answer);
+  }
+ else {
+    if (!initFromStack) {
+      if (ClassHelper.isPrimitiveType(answer.getType())) {
+        mv.visitLdcInsn(0);
+      }
+ else {
+        mv.visitInsn(ACONST_NULL);
+      }
+    }
+    OperandStack operandStack=controller.getOperandStack();
+    operandStack.push(answer.getType());
+    operandStack.storeVar(answer);
+  }
+  mv.visitLabel(startLabel);
+  return answer;
+}

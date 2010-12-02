@@ -9,11 +9,14 @@
     BytecodeVariable answer;
     ClassNode type=paras[i].getType();
     if (paras[i].isClosureSharedVariable()) {
-      answer=defineVar(name,type,true);
-      controller.getOperandStack().load(type,currentVariableIndex);
-      controller.getOperandStack().box();
-      createReference(answer);
-      hasHolder=true;
+      boolean useExistingReference=paras[i].getNodeMetaData(ClosureWriter.UseExistingReference.class) != null;
+      answer=defineVar(name,paras[i].getOriginType(),!useExistingReference);
+      if (!useExistingReference) {
+        controller.getOperandStack().load(type,currentVariableIndex);
+        controller.getOperandStack().box();
+        createReference(answer);
+        hasHolder=true;
+      }
     }
  else {
       answer=defineVar(name,type,false);
