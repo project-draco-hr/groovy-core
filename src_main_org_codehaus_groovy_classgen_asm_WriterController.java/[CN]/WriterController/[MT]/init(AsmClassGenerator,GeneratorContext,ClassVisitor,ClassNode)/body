@@ -1,4 +1,13 @@
 {
+  Map<String,Boolean> optOptions=cn.getCompileUnit().getConfig().getOptimizationOptions();
+  if (optOptions.isEmpty()) {
+  }
+ else   if (optOptions.get("all") == Boolean.FALSE) {
+    optimizeForInt=false;
+  }
+ else {
+    if (optOptions.get("int") == Boolean.FALSE)     optimizeForInt=false;
+  }
   this.classNode=cn;
   this.outermostClass=null;
   this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
@@ -14,13 +23,4 @@
   this.context=gcon;
   this.compileStack=new CompileStack(this);
   this.cv=cv;
-  Map<String,Boolean> optOptions=cn.getCompileUnit().getConfig().getOptimizationOptions();
-  if (optOptions.isEmpty()) {
-  }
- else   if (optOptions.get("all") == Boolean.FALSE) {
-    optimizeForInt=false;
-  }
- else {
-    if (optOptions.get("int") == Boolean.FALSE)     optimizeForInt=false;
-  }
 }
