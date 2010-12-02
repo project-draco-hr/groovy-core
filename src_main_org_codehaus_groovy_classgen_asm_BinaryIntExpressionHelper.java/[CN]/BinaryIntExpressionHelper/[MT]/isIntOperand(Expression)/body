@@ -1,8 +1,6 @@
 {
-  if (exp instanceof BinaryExpression || exp instanceof MethodCallExpression) {
-    StatementMeta meta=(StatementMeta)exp.getNodeMetaData(StatementMeta.class);
-    if (meta != null && meta.type == ClassHelper.int_TYPE)     return true;
-  }
+  StatementMeta meta=(StatementMeta)exp.getNodeMetaData(StatementMeta.class);
+  if (meta != null)   return meta.type == ClassHelper.int_TYPE;
   ClassNode type=exp.getType().redirect();
   return type == ClassHelper.int_TYPE;
 }

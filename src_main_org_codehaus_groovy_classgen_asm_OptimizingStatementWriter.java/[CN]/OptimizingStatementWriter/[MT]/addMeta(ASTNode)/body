@@ -1,7 +1,9 @@
 {
-  StatementMeta meta=new StatementMeta();
+  StatementMeta metaOld=(StatementMeta)node.getNodeMetaData(StatementMeta.class);
+  StatementMeta meta=metaOld;
+  if (meta == null)   meta=new StatementMeta();
   meta.optimize=true;
   meta.optimizeInt=true;
-  node.setNodeMetaData(StatementMeta.class,meta);
+  if (metaOld == null)   node.setNodeMetaData(StatementMeta.class,meta);
   return meta;
 }
