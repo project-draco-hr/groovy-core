@@ -1,0 +1,23 @@
+{
+  if (size < maxListFill) {
+    for (int i=0; i < listFill; i++) {
+      if (listKeys[i].equals(key)) {
+        V old=(V)listValues[i];
+        listFill--;
+        size--;
+        listValues[i]=listValues[listFill];
+        listKeys[i]=listValues[listFill];
+        return old;
+      }
+    }
+    return null;
+  }
+ else {
+    V old=innerMap.remove(key);
+    if (old != null)     size--;
+    if (size < maxListFill) {
+      mapToList();
+    }
+    return old;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  if (size + m.size() < maxListFill) {
+    for (    Entry<? extends K,? extends V> entry : m.entrySet()) {
+      listKeys[listFill]=entry.getKey();
+      listValues[listFill]=entry.getValue();
+      listFill++;
+    }
+    size+=m.size();
+    return;
+  }
+  if (size < maxListFill)   innerMap=makeMap();
+  innerMap.putAll(m);
+  size+=m.size();
+}
