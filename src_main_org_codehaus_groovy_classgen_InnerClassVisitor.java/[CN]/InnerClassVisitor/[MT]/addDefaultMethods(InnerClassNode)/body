@@ -1,2 +1,66 @@
 {
+  final boolean isStatic=isStatic(node);
+  final String classInternalName=BytecodeHelper.getClassInternalName(node);
+  final String outerClassInternalName=getInternalName(node.getOuterClass(),isStatic);
+  final String outerClassDescriptor=getTypeDescriptor(node.getOuterClass(),isStatic);
+  final int objectDistance=getObjectDistance(node.getOuterClass());
+  Parameter[] parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"args")};
+  MethodNode method=node.addSyntheticMethod("methodMissing",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  BlockStatement block=new BlockStatement();
+  if (isStatic) {
+    setMethodDispatcherCode(block,new ClassExpression(node.getOuterClass()),parameters);
+  }
+ else {
+    block.addStatement(new BytecodeSequence(new BytecodeInstruction(){
+      public void visit(      MethodVisitor mv){
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,classInternalName,"this$0",outerClassDescriptor);
+        mv.visitVarInsn(ALOAD,1);
+        mv.visitVarInsn(ALOAD,2);
+        mv.visitMethodInsn(INVOKEVIRTUAL,outerClassInternalName,"this$dist$invoke$" + objectDistance,"(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitInsn(ARETURN);
+      }
+    }
+));
+  }
+  method.setCode(block);
+  parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"val")};
+  method=node.addSyntheticMethod("propertyMissing",Opcodes.ACC_PUBLIC,ClassHelper.VOID_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  block=new BlockStatement();
+  if (isStatic) {
+    setPropertySetDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
+  }
+ else {
+    block.addStatement(new BytecodeSequence(new BytecodeInstruction(){
+      public void visit(      MethodVisitor mv){
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,classInternalName,"this$0",outerClassDescriptor);
+        mv.visitVarInsn(ALOAD,1);
+        mv.visitVarInsn(ALOAD,2);
+        mv.visitMethodInsn(INVOKEVIRTUAL,outerClassInternalName,"this$dist$set$" + objectDistance,"(Ljava/lang/String;Ljava/lang/Object;)V");
+        mv.visitInsn(RETURN);
+      }
+    }
+));
+  }
+  method.setCode(block);
+  parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name")};
+  method=node.addSyntheticMethod("propertyMissing",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  block=new BlockStatement();
+  if (isStatic) {
+    setPropertyGetterDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
+  }
+ else {
+    block.addStatement(new BytecodeSequence(new BytecodeInstruction(){
+      public void visit(      MethodVisitor mv){
+        mv.visitVarInsn(ALOAD,0);
+        mv.visitFieldInsn(GETFIELD,classInternalName,"this$0",outerClassDescriptor);
+        mv.visitVarInsn(ALOAD,1);
+        mv.visitMethodInsn(INVOKEVIRTUAL,outerClassInternalName,"this$dist$get$" + objectDistance,"(Ljava/lang/String;)Ljava/lang/Object;");
+        mv.visitInsn(ARETURN);
+      }
+    }
+));
+  }
+  method.setCode(block);
 }
