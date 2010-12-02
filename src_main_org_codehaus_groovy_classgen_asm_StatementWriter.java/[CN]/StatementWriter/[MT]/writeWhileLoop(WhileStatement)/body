@@ -1,0 +1,29 @@
+{
+  controller.getAcg().onLineNumber(loop,"visitWhileLoop");
+  writeStatementLabel(loop);
+  MethodVisitor mv=controller.getMethodVisitor();
+  controller.getCompileStack().pushLoop(loop.getStatementLabel());
+  Label continueLabel=controller.getCompileStack().getContinueLabel();
+  Label breakLabel=controller.getCompileStack().getBreakLabel();
+  mv.visitLabel(continueLabel);
+  Expression bool=loop.getBooleanExpression();
+  boolean boolHandled=false;
+  if (bool instanceof ConstantExpression) {
+    ConstantExpression constant=(ConstantExpression)bool;
+    if (constant.getValue() == Boolean.TRUE) {
+      boolHandled=true;
+    }
+ else     if (constant.getValue() == Boolean.FALSE) {
+      boolHandled=true;
+      mv.visitJumpInsn(GOTO,breakLabel);
+    }
+  }
+  if (!boolHandled) {
+    bool.visit(controller.getAcg());
+    controller.getOperandStack().jump(IFEQ,breakLabel);
+  }
+  loop.getLoopBlock().visit(controller.getAcg());
+  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitLabel(breakLabel);
+  controller.getCompileStack().pop();
+}

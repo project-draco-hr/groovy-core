@@ -1,0 +1,21 @@
+{
+  controller.getAcg().onLineNumber(statement,"visitSwitch");
+  writeStatementLabel(statement);
+  statement.getExpression().visit(controller.getAcg());
+  Label breakLabel=controller.getCompileStack().pushSwitch();
+  int switchVariableIndex=controller.getCompileStack().defineTemporaryVariable("switch",true);
+  List caseStatements=statement.getCaseStatements();
+  int caseCount=caseStatements.size();
+  Label[] labels=new Label[caseCount + 1];
+  for (int i=0; i < caseCount; i++) {
+    labels[i]=new Label();
+  }
+  int i=0;
+  for (Iterator iter=caseStatements.iterator(); iter.hasNext(); i++) {
+    CaseStatement caseStatement=(CaseStatement)iter.next();
+    writeCaseStatement(caseStatement,switchVariableIndex,labels[i],labels[i + 1]);
+  }
+  statement.getDefaultStatement().visit(controller.getAcg());
+  controller.getMethodVisitor().visitLabel(breakLabel);
+  controller.getCompileStack().pop();
+}

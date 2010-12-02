@@ -3,10 +3,10 @@
   if (o instanceof Expression) {
     Expression expr=(Expression)o;
     int mark=controller.getOperandStack().getStackLength();
-    expr.visit(this);
+    expr.visit(controller.getAcg());
     controller.getOperandStack().popDownTo(mark);
   }
  else {
-    ((Statement)o).visit(this);
+    ((Statement)o).visit(controller.getAcg());
   }
 }

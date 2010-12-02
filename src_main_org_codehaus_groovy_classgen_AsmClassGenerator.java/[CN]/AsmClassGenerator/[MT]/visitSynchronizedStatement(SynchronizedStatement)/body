@@ -1,36 +1,3 @@
 {
-  onLineNumber(statement,"visitSynchronizedStatement");
-  visitStatement(statement);
-  final MethodVisitor mv=controller.getMethodVisitor();
-  CompileStack compileStack=controller.getCompileStack();
-  statement.getExpression().visit(this);
-  controller.getOperandStack().box();
-  final int index=compileStack.defineTemporaryVariable("synchronized",ClassHelper.OBJECT_TYPE,true);
-  final Label synchronizedStart=new Label();
-  final Label synchronizedEnd=new Label();
-  final Label catchAll=new Label();
-  mv.visitVarInsn(ALOAD,index);
-  mv.visitInsn(MONITORENTER);
-  mv.visitLabel(synchronizedStart);
-  mv.visitInsn(NOP);
-  Runnable finallyPart=new Runnable(){
-    public void run(){
-      mv.visitVarInsn(ALOAD,index);
-      mv.visitInsn(MONITOREXIT);
-    }
-  }
-;
-  BlockRecorder fb=new BlockRecorder(finallyPart);
-  fb.startRange(synchronizedStart);
-  compileStack.pushBlockRecorder(fb);
-  statement.getCode().visit(this);
-  fb.closeRange(catchAll);
-  compileStack.writeExceptionTable(fb,catchAll,null);
-  compileStack.pop();
-  finallyPart.run();
-  mv.visitJumpInsn(GOTO,synchronizedEnd);
-  mv.visitLabel(catchAll);
-  finallyPart.run();
-  mv.visitInsn(ATHROW);
-  mv.visitLabel(synchronizedEnd);
+  controller.getStatementWriter().writeSynchronized(statement);
 }

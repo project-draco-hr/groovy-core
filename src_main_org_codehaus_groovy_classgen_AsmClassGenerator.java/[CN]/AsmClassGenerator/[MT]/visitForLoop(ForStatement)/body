@@ -1,32 +1,3 @@
 {
-  MethodVisitor mv=controller.getMethodVisitor();
-  OperandStack operandStack=controller.getOperandStack();
-  CompileStack compileStack=controller.getCompileStack();
-  onLineNumber(loop,"visitForLoop");
-  visitStatement(loop);
-  Parameter loopVar=loop.getVariable();
-  if (loopVar == ForStatement.FOR_LOOP_DUMMY) {
-    visitForLoopWithClosureList(loop);
-    return;
-  }
-  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
-  BytecodeVariable variable=compileStack.defineVariable(loop.getVariable(),false);
-  MethodCallExpression iterator=new MethodCallExpression(loop.getCollectionExpression(),"iterator",new ArgumentListExpression());
-  iterator.visit(this);
-  operandStack.doGroovyCast(ClassHelper.Iterator_TYPE);
-  final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.Iterator_TYPE,true);
-  Label continueLabel=compileStack.getContinueLabel();
-  Label breakLabel=compileStack.getBreakLabel();
-  mv.visitLabel(continueLabel);
-  mv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorHasNextMethod.call(mv);
-  mv.visitJumpInsn(IFEQ,breakLabel);
-  mv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorNextMethod.call(mv);
-  operandStack.push(ClassHelper.OBJECT_TYPE);
-  operandStack.storeVar(variable);
-  loop.getLoopBlock().visit(this);
-  mv.visitJumpInsn(GOTO,continueLabel);
-  mv.visitLabel(breakLabel);
-  compileStack.pop();
+  controller.getStatementWriter().writeForStatement(loop);
 }

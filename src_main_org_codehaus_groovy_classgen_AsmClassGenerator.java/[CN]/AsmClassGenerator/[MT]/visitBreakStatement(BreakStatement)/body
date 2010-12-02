@@ -1,8 +1,3 @@
 {
-  onLineNumber(statement,"visitBreakStatement");
-  visitStatement(statement);
-  String name=statement.getLabel();
-  Label breakLabel=controller.getCompileStack().getNamedBreakLabel(name);
-  controller.getCompileStack().applyFinallyBlocks(breakLabel,true);
-  controller.getMethodVisitor().visitJumpInsn(GOTO,breakLabel);
+  controller.getStatementWriter().writeBreak(statement);
 }

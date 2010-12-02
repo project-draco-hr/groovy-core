@@ -1,0 +1,9 @@
+{
+  controller.getAcg().onLineNumber(statement,"visitThrowStatement");
+  writeStatementLabel(statement);
+  MethodVisitor mv=controller.getMethodVisitor();
+  statement.getExpression().visit(controller.getAcg());
+  mv.visitTypeInsn(CHECKCAST,"java/lang/Throwable");
+  mv.visitInsn(ATHROW);
+  controller.getOperandStack().remove(1);
+}

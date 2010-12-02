@@ -1,0 +1,8 @@
+{
+  controller.getAcg().onLineNumber(statement,"visitExpressionStatement: " + statement.getExpression().getClass().getName());
+  writeStatementLabel(statement);
+  Expression expression=statement.getExpression();
+  int mark=controller.getOperandStack().getStackLength();
+  expression.visit(controller.getAcg());
+  controller.getOperandStack().popDownTo(mark);
+}

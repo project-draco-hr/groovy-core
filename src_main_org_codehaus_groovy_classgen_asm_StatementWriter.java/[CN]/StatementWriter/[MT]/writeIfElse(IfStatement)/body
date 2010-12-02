@@ -1,0 +1,17 @@
+{
+  controller.getAcg().onLineNumber(ifElse,"visitIfElse");
+  writeStatementLabel(ifElse);
+  MethodVisitor mv=controller.getMethodVisitor();
+  ifElse.getBooleanExpression().visit(controller.getAcg());
+  Label l0=controller.getOperandStack().jump(IFEQ);
+  controller.getCompileStack().pushBooleanExpression();
+  ifElse.getIfBlock().visit(controller.getAcg());
+  controller.getCompileStack().pop();
+  Label l1=new Label();
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
+  controller.getCompileStack().pushBooleanExpression();
+  ifElse.getElseBlock().visit(controller.getAcg());
+  controller.getCompileStack().pop();
+  mv.visitLabel(l1);
+}

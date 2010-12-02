@@ -1,4 +1,6 @@
 {
+  controller.getAcg().onLineNumber(loop,"visitForLoop");
+  writeStatementLabel(loop);
   MethodVisitor mv=controller.getMethodVisitor();
   controller.getCompileStack().pushLoop(loop.getVariableScope(),loop.getStatementLabel());
   ClosureListExpression clExpr=(ClosureListExpression)loop.getCollectionExpression();
@@ -16,11 +18,11 @@
 {
     Expression condExpr=(Expression)expressions.get(condIndex);
     int mark=controller.getOperandStack().getStackLength();
-    condExpr.visit(this);
+    condExpr.visit(controller.getAcg());
     controller.getOperandStack().castToBool(mark,true);
   }
   controller.getOperandStack().jump(IFEQ,breakLabel);
-  loop.getLoopBlock().visit(this);
+  loop.getLoopBlock().visit(controller.getAcg());
   mv.visitLabel(continueLabel);
   for (int i=condIndex + 1; i < size; i++) {
     visitExpressionOrStatement(expressions.get(i));

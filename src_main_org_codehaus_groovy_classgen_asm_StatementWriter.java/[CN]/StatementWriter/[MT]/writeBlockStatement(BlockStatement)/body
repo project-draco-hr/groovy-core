@@ -1,0 +1,11 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  writeStatementLabel(block);
+  int mark=controller.getOperandStack().getStackLength();
+  compileStack.pushVariableScope(block.getVariableScope());
+  for (  Statement statement : block.getStatements()) {
+    statement.visit(controller.getAcg());
+  }
+  compileStack.pop();
+  controller.getOperandStack().popDownTo(mark);
+}

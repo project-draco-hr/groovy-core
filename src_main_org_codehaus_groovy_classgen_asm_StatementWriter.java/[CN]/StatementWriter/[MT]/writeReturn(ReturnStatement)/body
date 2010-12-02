@@ -1,0 +1,26 @@
+{
+  controller.getAcg().onLineNumber(statement,"visitReturnStatement");
+  writeStatementLabel(statement);
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  ClassNode returnType=controller.getReturnType();
+  if (returnType == ClassHelper.VOID_TYPE) {
+    if (!(statement.isReturningNullOrVoid())) {
+      controller.getAcg().throwException("Cannot use return statement with an expression on a method that returns void");
+    }
+    controller.getCompileStack().applyBlockRecorder();
+    mv.visitInsn(RETURN);
+    return;
+  }
+  Expression expression=statement.getExpression();
+  expression.visit(controller.getAcg());
+  if (controller.getCompileStack().hasBlockRecorder()) {
+    ClassNode type=operandStack.getTopOperand();
+    int returnValueIdx=controller.getCompileStack().defineTemporaryVariable("returnValue",type,true);
+    controller.getCompileStack().applyBlockRecorder();
+    operandStack.load(type,returnValueIdx);
+  }
+  operandStack.doGroovyCast(returnType);
+  BytecodeHelper.doReturn(mv,returnType);
+  operandStack.remove(1);
+}
