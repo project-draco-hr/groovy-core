@@ -59,7 +59,7 @@
       type=ClassHelper.makeReference();
       param.setType(ClassHelper.makeReference());
       FieldNode paramField=answer.addField(paramName,ACC_PRIVATE | ACC_SYNTHETIC,type,initialValue);
-      paramField.setOriginType(param.getOriginType());
+      paramField.setOriginType(ClassHelper.getWrapper(param.getOriginType()));
       paramField.setHolder(true);
       String methodName=Verifier.capitalize(paramName);
       Expression fieldExp=new FieldExpression(paramField);
@@ -72,5 +72,6 @@
   System.arraycopy(localVariableParams,0,params,2,localVariableParams.length);
   ASTNode sn=answer.addConstructor(ACC_PUBLIC,params,ClassNode.EMPTY_ARRAY,block);
   sn.setSourcePosition(expression);
+  correctAccessedVariable(answer,expression);
   return answer;
 }

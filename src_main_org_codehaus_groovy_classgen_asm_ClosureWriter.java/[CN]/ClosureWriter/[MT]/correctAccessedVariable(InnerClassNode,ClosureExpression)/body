@@ -1,0 +1,14 @@
+{
+  CodeVisitorSupport visitor=new CodeVisitorSupport(){
+    @Override public void visitVariableExpression(    VariableExpression expression){
+      Variable v=expression.getAccessedVariable();
+      if (v == null)       return;
+      if (!(v instanceof FieldNode))       return;
+      String name=expression.getName();
+      FieldNode fn=closureClass.getDeclaredField(name);
+      expression.setAccessedVariable(fn);
+    }
+  }
+;
+  visitor.visitClosureExpression(ce);
+}
