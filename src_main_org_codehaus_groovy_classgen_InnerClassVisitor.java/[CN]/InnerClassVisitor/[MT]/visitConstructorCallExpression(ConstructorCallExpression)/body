@@ -40,10 +40,12 @@
     expressions.add(pCount,ve);
     Parameter p=new Parameter(ClassHelper.REFERENCE_TYPE,"p" + pCount);
     parameters.add(pCount,p);
+    p.setOriginType(var.getOriginType());
     final VariableExpression initial=new VariableExpression(p);
     initial.setUseReferenceDirectly(true);
     final FieldNode pField=innerClass.addFieldFirst(ve.getName(),PUBLIC_SYNTHETIC,ClassHelper.REFERENCE_TYPE,initial);
     pField.setHolder(true);
+    pField.setOriginType(var.getOriginType());
   }
   innerClass.addConstructor(ACC_SYNTHETIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
 }

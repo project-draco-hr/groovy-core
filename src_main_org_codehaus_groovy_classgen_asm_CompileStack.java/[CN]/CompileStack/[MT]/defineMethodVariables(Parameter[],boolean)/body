@@ -3,28 +3,24 @@
   thisStartLabel=startLabel;
   controller.getMethodVisitor().visitLabel(startLabel);
   makeLocalVariablesOffset(paras,isInStaticContext);
-  boolean hasHolder=false;
   for (int i=0; i < paras.length; i++) {
     String name=paras[i].getName();
     BytecodeVariable answer;
     ClassNode type=paras[i].getType();
     if (paras[i].isClosureSharedVariable()) {
       boolean useExistingReference=paras[i].getNodeMetaData(ClosureWriter.UseExistingReference.class) != null;
-      answer=defineVar(name,paras[i].getOriginType(),!useExistingReference);
+      answer=defineVar(name,paras[i].getOriginType(),true,useExistingReference);
       if (!useExistingReference) {
         controller.getOperandStack().load(type,currentVariableIndex);
         controller.getOperandStack().box();
         createReference(answer);
-        hasHolder=true;
       }
     }
  else {
-      answer=defineVar(name,type,false);
+      answer=defineVar(name,type,false,false);
     }
     answer.setStartLabel(startLabel);
     stackVariables.put(name,answer);
   }
-  if (hasHolder) {
-    nextVariableIndex=localVariableOffset;
-  }
+  nextVariableIndex=localVariableOffset;
 }

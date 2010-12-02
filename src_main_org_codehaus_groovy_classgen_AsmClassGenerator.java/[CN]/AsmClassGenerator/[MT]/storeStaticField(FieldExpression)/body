@@ -2,17 +2,16 @@
   MethodVisitor mv=controller.getMethodVisitor();
   FieldNode field=expression.getField();
   boolean holder=field.isHolder() && !controller.isInClosureConstructor();
-  ClassNode type=field.getType();
-  controller.getOperandStack().doGroovyCast(type);
+  controller.getOperandStack().doGroovyCast(field);
   String ownerName=(field.getOwner().equals(controller.getClassNode())) ? controller.getInternalClassName() : BytecodeHelper.getClassInternalName(field.getOwner());
   if (holder) {
     controller.getOperandStack().box();
-    mv.visitFieldInsn(GETSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    mv.visitFieldInsn(GETSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
     mv.visitInsn(SWAP);
     mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","set","(Ljava/lang/Object;)V");
   }
  else {
-    mv.visitFieldInsn(PUTSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(type));
+    mv.visitFieldInsn(PUTSTATIC,ownerName,expression.getFieldName(),BytecodeHelper.getTypeDescription(field.getType()));
   }
   controller.getOperandStack().remove(1);
 }

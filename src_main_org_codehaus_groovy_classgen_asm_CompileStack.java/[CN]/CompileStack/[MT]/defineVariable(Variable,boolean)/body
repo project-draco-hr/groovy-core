@@ -1,7 +1,6 @@
 {
   String name=v.getName();
-  BytecodeVariable answer=defineVar(name,v.getOriginType(),false);
-  if (v.isClosureSharedVariable())   answer.setHolder(true);
+  BytecodeVariable answer=defineVar(name,v.getOriginType(),v.isClosureSharedVariable(),v.isClosureSharedVariable());
   stackVariables.put(name,answer);
   MethodVisitor mv=controller.getMethodVisitor();
   Label startLabel=new Label();
