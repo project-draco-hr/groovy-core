@@ -4,25 +4,25 @@ case EQUAL:
     evaluateEqual(expression,false);
   break;
 case COMPARE_EQUAL:
-evaluateBinaryExpression(compareEqualMethod,expression);
+evaluateCompareExpression(compareEqualMethod,expression);
 break;
 case COMPARE_NOT_EQUAL:
-evaluateBinaryExpression(compareNotEqualMethod,expression);
+evaluateCompareExpression(compareNotEqualMethod,expression);
 break;
 case COMPARE_TO:
 evaluateCompareTo(expression);
 break;
 case COMPARE_GREATER_THAN:
-evaluateBinaryExpression(compareGreaterThanMethod,expression);
+evaluateCompareExpression(compareGreaterThanMethod,expression);
 break;
 case COMPARE_GREATER_THAN_EQUAL:
-evaluateBinaryExpression(compareGreaterThanEqualMethod,expression);
+evaluateCompareExpression(compareGreaterThanEqualMethod,expression);
 break;
 case COMPARE_LESS_THAN:
-evaluateBinaryExpression(compareLessThanMethod,expression);
+evaluateCompareExpression(compareLessThanMethod,expression);
 break;
 case COMPARE_LESS_THAN_EQUAL:
-evaluateBinaryExpression(compareLessThanEqualMethod,expression);
+evaluateCompareExpression(compareLessThanEqualMethod,expression);
 break;
 case LOGICAL_AND:
 evaluateLogicalAndExpression(expression);
@@ -112,10 +112,10 @@ case KEYWORD_INSTANCEOF:
 evaluateInstanceof(expression);
 break;
 case FIND_REGEX:
-evaluateBinaryExpression(findRegexMethod,expression);
+evaluateCompareExpression(findRegexMethod,expression);
 break;
 case MATCH_REGEX:
-evaluateBinaryExpression(matchRegexMethod,expression);
+evaluateCompareExpression(matchRegexMethod,expression);
 break;
 case LEFT_SQUARE_BRACKET:
 if (controller.getCompileStack().isLHS()) {
@@ -126,7 +126,7 @@ evaluateBinaryExpression("getAt",expression);
 }
 break;
 case KEYWORD_IN:
-evaluateBinaryExpression(isCaseMethod,expression);
+evaluateCompareExpression(isCaseMethod,expression);
 break;
 default :
 throw new GroovyBugError("Operation: " + expression.getOperation() + " not supported");

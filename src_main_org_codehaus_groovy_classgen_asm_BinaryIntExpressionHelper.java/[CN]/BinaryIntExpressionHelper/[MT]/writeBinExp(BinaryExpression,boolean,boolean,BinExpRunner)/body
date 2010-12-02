@@ -1,0 +1,51 @@
+{
+  OperandStack operandStack=controller.getOperandStack();
+  int type=binExp.getOperation().getType();
+  MethodVisitor mv=controller.getMethodVisitor();
+  CompileStack compileStack=controller.getCompileStack();
+  binExp.getLeftExpression().visit(controller.getAcg());
+  boolean leftIsInt=isIntOperand();
+  ClassNode lType=operandStack.getTopOperand();
+  binExp.getRightExpression().visit(controller.getAcg());
+  boolean rightIsInt=isIntOperand();
+  ClassNode rType=operandStack.getTopOperand();
+  Label slowPath=new Label(), endOfPath=new Label();
+  if (leftIsInt && rightIsInt) {
+    isOrigInt.call(mv);
+    mv.visitJumpInsn(IFNE,slowPath);
+    if (writeIntXInt(type)) {
+      if (boxFastPathResult)       operandStack.box();
+      operandStack.remove(1);
+      mv.visitJumpInsn(GOTO,endOfPath);
+    }
+ else {
+    }
+    operandStack.push(lType);
+    operandStack.push(rType);
+    mv.visitLabel(slowPath);
+  }
+  int rValueId=0, lValueId=0;
+  if (!keepArguments) {
+    rValueId=compileStack.defineTemporaryVariable("$intXint$r",rType,true);
+    BytecodeExpression rValueLoader=new VariableSlotLoader(rType,rValueId,operandStack);
+    lValueId=compileStack.defineTemporaryVariable("$intXint$l",lType,true);
+    BytecodeExpression lValueLoader=new VariableSlotLoader(lType,lValueId,operandStack);
+    binExp=new BinaryExpression(lValueLoader,binExp.getOperation(),rValueLoader);
+  }
+ else {
+    operandStack.box();
+    operandStack.swap();
+    operandStack.box();
+    operandStack.swap();
+    operandStack.remove(2);
+    binExp=new BinaryExpression(BytecodeExpression.NOP,binExp.getOperation(),BytecodeExpression.NOP);
+  }
+  superCall.run(binExp);
+  if (!keepArguments) {
+    compileStack.removeVar(lValueId);
+    compileStack.removeVar(rValueId);
+  }
+  if (leftIsInt && rightIsInt) {
+    mv.visitLabel(endOfPath);
+  }
+}

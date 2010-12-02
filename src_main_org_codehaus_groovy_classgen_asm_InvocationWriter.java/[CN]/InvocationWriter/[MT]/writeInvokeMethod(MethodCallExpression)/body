@@ -4,10 +4,10 @@
   }
  else {
     boolean isSuperMethodCall=usesSuper(call);
-    MethodCallerMultiAdapter adapter=InvocationWriter.invokeMethod;
-    if (AsmClassGenerator.isThisExpression(call.getObjectExpression()))     adapter=InvocationWriter.invokeMethodOnCurrent;
-    if (isSuperMethodCall)     adapter=InvocationWriter.invokeMethodOnSuper;
-    if (isStaticInvocation(call))     adapter=InvocationWriter.invokeStaticMethod;
+    MethodCallerMultiAdapter adapter=invokeMethod;
+    if (AsmClassGenerator.isThisExpression(call.getObjectExpression()))     adapter=invokeMethodOnCurrent;
+    if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
+    if (isStaticInvocation(call))     adapter=invokeStaticMethod;
     makeInvokeMethodCall(call,isSuperMethodCall,adapter);
   }
 }
