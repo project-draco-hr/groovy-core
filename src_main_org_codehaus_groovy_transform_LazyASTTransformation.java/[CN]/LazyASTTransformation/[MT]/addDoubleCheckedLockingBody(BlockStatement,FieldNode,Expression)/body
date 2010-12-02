@@ -1,6 +1,6 @@
 {
   final Expression fieldExpr=new VariableExpression(fieldNode);
-  final VariableExpression localVar=new VariableExpression(fieldNode.getName() + "_local",fieldNode.getType());
+  final VariableExpression localVar=new VariableExpression(fieldNode.getName() + "_local");
   body.addStatement(new ExpressionStatement(new DeclarationExpression(localVar,ASSIGN,fieldExpr)));
   body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(localVar,COMPARE_NOT_EQUAL,NULL_EXPR)),new ReturnStatement(localVar),new SynchronizedStatement(synchTarget(fieldNode),new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ReturnStatement(fieldExpr),new ReturnStatement(new BinaryExpression(fieldExpr,ASSIGN,initExpr))))));
 }

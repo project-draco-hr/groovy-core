@@ -4,7 +4,7 @@
   OperandStack operandStack=controller.getOperandStack();
   Expression rightExpression=expression.getRightExpression();
   Expression leftExpression=expression.getLeftExpression();
-  if (defineVariable && rightExpression == ConstantExpression.NULL && !(leftExpression instanceof TupleExpression)) {
+  if (defineVariable && rightExpression instanceof EmptyExpression && !(leftExpression instanceof TupleExpression)) {
     VariableExpression ve=(VariableExpression)leftExpression;
     BytecodeVariable var=compileStack.defineVariable(ve,false);
     operandStack.loadOrStoreVariable(var,false);
