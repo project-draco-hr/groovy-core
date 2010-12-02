@@ -1,0 +1,29 @@
+{
+  if (expression.getNodeMetaData(StatementMeta.class) != null)   return;
+  super.visitMethodCallExpression(expression);
+  if (!AsmClassGenerator.isThisExpression(expression.getObjectExpression()))   return;
+  String name=expression.getMethodAsString();
+  if (name == null)   return;
+  Expression callArgs=expression.getArguments();
+  Parameter[] paraTypes=null;
+  if (callArgs instanceof ArgumentListExpression) {
+    ArgumentListExpression args=(ArgumentListExpression)callArgs;
+    int size=args.getExpressions().size();
+    paraTypes=new Parameter[size];
+    int i=0;
+    for (    Expression exp : args.getExpressions()) {
+      ClassNode type=getType(exp);
+      paraTypes[i]=new Parameter(type,"");
+      i++;
+    }
+  }
+ else {
+    ClassNode type=getType(callArgs);
+    paraTypes=new Parameter[]{new Parameter(type,"")};
+  }
+  MethodNode target=node.getMethod(name,paraTypes);
+  StatementMeta meta=addMeta(expression);
+  meta.target=target;
+  if (target != null)   meta.type=target.getReturnType().redirect();
+  if (!optimizeInt)   meta.optimizeInt=false;
+}

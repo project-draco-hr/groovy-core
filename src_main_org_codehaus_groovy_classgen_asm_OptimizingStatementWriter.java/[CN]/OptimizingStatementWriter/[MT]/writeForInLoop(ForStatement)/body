@@ -1,0 +1,12 @@
+{
+  StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
+  FastPathData fastPathData=writeGuards(meta,statement);
+  boolean oldFastPathBlock=fastPathBlocked;
+  fastPathBlocked=true;
+  super.writeForInLoop(statement);
+  fastPathBlocked=oldFastPathBlock;
+  if (fastPathData == null)   return;
+  writeFastPathPrelude(fastPathData);
+  super.writeForInLoop(statement);
+  writeFastPathEpilogue(fastPathData);
+}

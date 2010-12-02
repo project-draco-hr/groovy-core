@@ -1,10 +1,12 @@
 {
   controller.getAcg().onLineNumber(statement,"visitCaseStatement");
   MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
   mv.visitVarInsn(ALOAD,switchVariableIndex);
   statement.getExpression().visit(controller.getAcg());
+  operandStack.box();
   controller.getBinaryExpHelper().getIsCaseMethod().call(mv);
-  controller.getOperandStack().replace(ClassHelper.boolean_TYPE);
+  operandStack.replace(ClassHelper.boolean_TYPE);
   Label l0=controller.getOperandStack().jump(IFEQ);
   mv.visitLabel(thisLabel);
   statement.getCode().visit(controller.getAcg());

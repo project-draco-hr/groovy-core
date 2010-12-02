@@ -1,3 +1,15 @@
 {
-  super.evaluateCompareExpression(compareMethod,binExp);
+  int type=binExp.getOperation().getType();
+  Expression left=binExp.getLeftExpression();
+  boolean leftIsInt=isIntOperand(left);
+  Expression right=binExp.getRightExpression();
+  boolean rightIsInt=isIntOperand(right);
+  if (leftIsInt && rightIsInt && writeIntXInt(type,true)) {
+    left.visit(controller.getAcg());
+    right.visit(controller.getAcg());
+    writeIntXInt(type,false);
+  }
+ else {
+    super.evaluateCompareExpression(compareMethod,binExp);
+  }
 }

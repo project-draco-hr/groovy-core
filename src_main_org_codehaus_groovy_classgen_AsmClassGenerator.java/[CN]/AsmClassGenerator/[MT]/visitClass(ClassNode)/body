@@ -2,6 +2,9 @@
   referencedClasses.clear();
   this.controller=new WriterController();
   this.controller.init(this,context,cv,classNode);
+  if (controller.shouldOptimizeForInt()) {
+    OptimizingStatementWriter.setNodeMeta(classNode);
+  }
   try {
     cv.visit(getBytecodeVersion(),adjustedModifiers(classNode.getModifiers()),controller.getInternalClassName(),BytecodeHelper.getGenericsSignature(classNode),controller.getInternalBaseClassName(),BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cv.visitSource(sourceFile,null);

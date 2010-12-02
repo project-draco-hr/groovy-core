@@ -1,0 +1,11 @@
+{
+  if (expression.getNodeMetaData(StatementMeta.class) != null)   return;
+  super.visitBinaryExpression(expression);
+  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression());
+  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression());
+  if (!optimizeInt)   optimizeInt=leftInt || rightInt;
+  if (optimizeInt) {
+    StatementMeta meta=addMeta(expression);
+    if (leftInt && rightInt)     meta.type=ClassHelper.int_TYPE;
+  }
+}

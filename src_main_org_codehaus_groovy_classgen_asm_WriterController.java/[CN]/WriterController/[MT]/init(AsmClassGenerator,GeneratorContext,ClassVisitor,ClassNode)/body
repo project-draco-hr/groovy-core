@@ -14,6 +14,12 @@
   this.callSiteWriter=new CallSiteWriter(this);
   this.invocationWriter=new InvocationWriter(this);
   this.binaryExpHelper=new BinaryExpressionHelper(this);
+  if (optimizeForInt) {
+    this.fastPathBinaryExpHelper=new BinaryIntExpressionHelper(this);
+  }
+ else {
+    this.fastPathBinaryExpHelper=this.binaryExpHelper;
+  }
   this.operandStack=new OperandStack(this);
   this.assertionWriter=new AssertionWriter(this);
   this.closureWriter=new ClosureWriter(this);

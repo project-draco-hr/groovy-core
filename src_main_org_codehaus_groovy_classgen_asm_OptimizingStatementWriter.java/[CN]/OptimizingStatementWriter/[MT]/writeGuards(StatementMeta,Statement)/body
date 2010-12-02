@@ -1,0 +1,10 @@
+{
+  if (fastPathBlocked || meta == null || !meta.optimize || controller.isFastPath())   return null;
+  MethodVisitor mv=controller.getMethodVisitor();
+  FastPathData fastPathData=new FastPathData();
+  if (meta.optimizeInt) {
+    isOrigInt.call(mv);
+    mv.visitJumpInsn(IFNE,fastPathData.pathStart);
+  }
+  return fastPathData;
+}

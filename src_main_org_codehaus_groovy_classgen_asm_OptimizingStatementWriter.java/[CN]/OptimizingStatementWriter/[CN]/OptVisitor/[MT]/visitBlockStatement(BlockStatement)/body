@@ -1,0 +1,10 @@
+{
+  boolean optAll=false;
+  for (  Statement statement : block.getStatements()) {
+    optimizeInt=false;
+    statement.visit(this);
+    optAll=optAll || optimizeInt;
+  }
+  if (optAll)   addMeta(block);
+  optimizeInt=optAll;
+}

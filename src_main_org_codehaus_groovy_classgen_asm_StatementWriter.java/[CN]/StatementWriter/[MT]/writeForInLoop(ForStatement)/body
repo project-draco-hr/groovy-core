@@ -14,10 +14,10 @@
   Label breakLabel=compileStack.getBreakLabel();
   mv.visitLabel(continueLabel);
   mv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorHasNextMethod.call(mv);
+  writeIteratorHasNext(mv);
   mv.visitJumpInsn(IFEQ,breakLabel);
   mv.visitVarInsn(ALOAD,iteratorIdx);
-  iteratorNextMethod.call(mv);
+  writeIteratorNext(mv);
   operandStack.push(ClassHelper.OBJECT_TYPE);
   operandStack.storeVar(variable);
   loop.getLoopBlock().visit(controller.getAcg());
