@@ -3,11 +3,17 @@
   CompileStack compileStack=controller.getCompileStack();
   OperandStack operandStack=controller.getOperandStack();
   Expression rightExpression=expression.getRightExpression();
+  Expression leftExpression=expression.getLeftExpression();
+  if (defineVariable && rightExpression == ConstantExpression.NULL && !(leftExpression instanceof TupleExpression)) {
+    VariableExpression ve=(VariableExpression)leftExpression;
+    BytecodeVariable var=compileStack.defineVariable(ve,false);
+    operandStack.loadOrStoreVariable(var,false);
+    return;
+  }
   rightExpression.visit(acg);
   ClassNode rhsType=getCastType(rightExpression);
   int rhsValueId=compileStack.defineTemporaryVariable("$rhs",rhsType,true);
   BytecodeExpression rhsValueLoader=new VariableSlotLoader(rhsType,rhsValueId,operandStack);
-  Expression leftExpression=expression.getLeftExpression();
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
