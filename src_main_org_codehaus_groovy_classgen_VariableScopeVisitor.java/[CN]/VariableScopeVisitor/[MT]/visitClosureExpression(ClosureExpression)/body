@@ -17,9 +17,6 @@
     currentScope.putDeclaredVariable(var);
   }
   super.visitClosureExpression(expression);
-  VariableScope scope=currentScope;
-  for (Iterator<Variable> it=scope.getReferencedLocalVariablesIterator(); it.hasNext(); ) {
-    it.next().setClosureSharedVariable(true);
-  }
+  markClosureSharedVariables();
   popState();
 }
