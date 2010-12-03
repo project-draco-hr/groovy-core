@@ -1,0 +1,27 @@
+{
+  List<List> numLists=new ArrayList<List>();
+  numLists.add(Arrays.asList(1,2,3));
+  numLists.add(Arrays.asList(10,20,30));
+  assertEquals(Arrays.asList(6,60),collect(numLists,new Closure<Integer>(){
+    public Integer doCall(    Integer a,    Integer b,    Integer c){
+      return a + b + c;
+    }
+  }
+));
+  Closure<Integer> arithmeticClosure=new Closure<Integer>(){
+    public Integer doCall(    Integer a,    Integer b,    Integer c){
+      return a * b + c;
+    }
+  }
+;
+  Closure<Integer> tensAndUnits=arithmeticClosure.curry(new Object[]{10});
+  assertEquals(35,(int)tensAndUnits.call(new Object[]{3,5}));
+  tensAndUnits=arithmeticClosure.ncurry(0,new Object[]{10});
+  assertEquals(35,(int)tensAndUnits.call(new Object[]{3,5}));
+  tensAndUnits=arithmeticClosure.ncurry(1,new Object[]{10});
+  assertEquals(35,(int)tensAndUnits.call(new Object[]{3,5}));
+  Closure<Integer> timesPlus5=arithmeticClosure.rcurry(new Object[]{5});
+  assertEquals(35,(int)timesPlus5.call(new Object[]{15,2}));
+  timesPlus5=arithmeticClosure.ncurry(2,new Object[]{5});
+  assertEquals(35,(int)timesPlus5.call(new Object[]{15,2}));
+}

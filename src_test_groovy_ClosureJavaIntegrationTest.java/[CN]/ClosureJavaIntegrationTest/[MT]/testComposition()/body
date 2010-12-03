@@ -1,0 +1,18 @@
+{
+  Closure<String> toUpperCase=new Closure<String>(){
+    public String doCall(    String s){
+      return s.toUpperCase();
+    }
+  }
+;
+  Closure<Boolean> hasCapitalA=new Closure<Boolean>(){
+    public Boolean doCall(    String s){
+      return s.contains("A");
+    }
+  }
+;
+  Closure<Boolean> hasA=toUpperCase.rightShift(hasCapitalA);
+  assertTrue(every(animals,hasA));
+  Closure<Boolean> alsoHasA=hasCapitalA.leftShift(toUpperCase);
+  assertTrue(every(animals,alsoHasA));
+}

@@ -1,0 +1,16 @@
+{
+  final Reference<Closure<BigInteger>> ref=new Reference<Closure<BigInteger>>();
+  ref.set(new Closure<BigInteger>(){
+    public Object doCall(    Integer n,    BigInteger total){
+      return n > 1 ? ref.get().trampoline(n - 1,total.multiply(BigInteger.valueOf(n))) : total;
+    }
+  }
+.trampoline());
+  Closure<BigInteger> factorial=new Closure<BigInteger>(){
+    public BigInteger doCall(    Integer n){
+      return ref.get().call(n,BigInteger.ONE);
+    }
+  }
+;
+  assertEquals(BigInteger.valueOf(479001600),factorial.call(12));
+}

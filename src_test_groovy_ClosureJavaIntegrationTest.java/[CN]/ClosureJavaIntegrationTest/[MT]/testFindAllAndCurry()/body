@@ -1,0 +1,12 @@
+{
+  Map<String,Integer> expected=new HashMap<String,Integer>(zoo);
+  expected.remove("Lions");
+  Closure<Boolean> keyBiggerThan=new Closure<Boolean>(){
+    public Boolean doCall(    Map.Entry<String,Integer> e,    Integer size){
+      return e.getKey().length() > size;
+    }
+  }
+;
+  Closure<Boolean> keyBiggerThan6=keyBiggerThan.rcurry(new Object[]{6});
+  assertEquals(expected,findAll(zoo,keyBiggerThan6));
+}
