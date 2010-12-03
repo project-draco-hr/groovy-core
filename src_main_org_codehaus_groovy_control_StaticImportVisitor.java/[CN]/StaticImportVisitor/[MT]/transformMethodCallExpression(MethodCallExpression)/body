@@ -11,7 +11,7 @@
     if (mce.isImplicitThis()) {
       Expression ret=findStaticMethodImportFromModule(method,args);
       if (ret != null) {
-        ret.setSourcePosition(mce);
+        setSourcePosition(ret,mce);
         return ret;
       }
       if (method instanceof ConstantExpression && !inLeftExpression) {
@@ -19,7 +19,7 @@
         ret=findStaticFieldOrPropAccessorImportFromModule(methodName);
         if (ret != null) {
           ret=new MethodCallExpression(ret,"call",args);
-          ret.setSourcePosition(mce);
+          setSourcePosition(ret,mce);
           return ret;
         }
       }
@@ -37,7 +37,7 @@
         }
         if (inSpecialConstructorCall || (lookForPossibleStaticMethod && currentClass.hasPossibleStaticMethod(methodName,args))) {
           StaticMethodCallExpression smce=new StaticMethodCallExpression(currentClass,methodName,args);
-          smce.setSourcePosition(mce);
+          setSourcePosition(smce,mce);
           return smce;
         }
       }
@@ -47,6 +47,6 @@
   result.setSafe(mce.isSafe());
   result.setImplicitThis(mce.isImplicitThis());
   result.setSpreadSafe(mce.isSpreadSafe());
-  result.setSourcePosition(mce);
+  setSourcePosition(result,mce);
   return result;
 }
