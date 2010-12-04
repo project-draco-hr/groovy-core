@@ -1,0 +1,13 @@
+{
+  Expression right=expression.getRightExpression();
+  right.visit(this);
+  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(right);
+  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression());
+  if (!optimizeInt) {
+    optimizeInt=(leftInt && rightInt) && !(right instanceof ConstantExpression);
+  }
+  if (optimizeInt) {
+    StatementMeta meta=addMeta(expression);
+    if (leftInt && rightInt)     meta.type=ClassHelper.int_TYPE;
+  }
+}

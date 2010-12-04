@@ -1,12 +1,25 @@
 {
   StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
-  FastPathData fastPathData=writeGuards(meta,statement);
-  boolean oldFastPathBlock=fastPathBlocked;
-  fastPathBlocked=true;
-  super.writeExpressionStatement(statement);
-  fastPathBlocked=oldFastPathBlock;
-  if (fastPathData == null)   return;
-  writeFastPathPrelude(fastPathData);
-  super.writeExpressionStatement(statement);
-  writeFastPathEpilogue(fastPathData);
+  if (isNewPathFork(meta)) {
+    DeclarationExpression declaration=getDeclaration(statement);
+    if (declaration != null) {
+      controller.getCompileStack().defineVariable(declaration.getVariableExpression(),false);
+      BinaryExpression assignment=new BinaryExpression(declaration.getLeftExpression(),declaration.getOperation(),declaration.getRightExpression());
+      assignment.setSourcePosition(declaration);
+      assignment.copyNodeMetaData(declaration);
+      statement.setExpression(assignment);
+    }
+    FastPathData fastPathData=writeGuards(meta,statement);
+    boolean oldFastPathBlock=fastPathBlocked;
+    fastPathBlocked=true;
+    super.writeExpressionStatement(statement);
+    fastPathBlocked=oldFastPathBlock;
+    if (fastPathData == null)     return;
+    writeFastPathPrelude(fastPathData);
+    super.writeExpressionStatement(statement);
+    writeFastPathEpilogue(fastPathData);
+  }
+ else {
+    super.writeExpressionStatement(statement);
+  }
 }

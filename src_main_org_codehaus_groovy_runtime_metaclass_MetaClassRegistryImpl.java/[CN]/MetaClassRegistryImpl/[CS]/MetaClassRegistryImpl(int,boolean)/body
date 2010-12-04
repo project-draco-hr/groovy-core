@@ -29,6 +29,14 @@
     public void updateConstantMetaClass(    MetaClassRegistryChangeEvent cmcu){
 synchronized (metaClassInfo) {
         metaClassInfo.add(cmcu.getNewMetaClass());
+        if (cmcu.getClassToUpdate() == Integer.class) {
+          if (cmcu.getNewMetaClass() == null) {
+            DefaultMetaClassInfo.setOrigInt(true);
+          }
+ else {
+            DefaultMetaClassInfo.setOrigInt(false);
+          }
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 {
-  if (fastPathBlocked || meta == null || !meta.optimize || controller.isFastPath())   return null;
+  if (canNotDoFastPath(meta))   return null;
   MethodVisitor mv=controller.getMethodVisitor();
   FastPathData fastPathData=new FastPathData();
   if (meta.optimizeInt) {
