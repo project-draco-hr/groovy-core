@@ -5,14 +5,14 @@
     FastPathData fastPathData=writeGuards(meta,statement);
     boolean oldFastPathBlock=fastPathBlocked;
     fastPathBlocked=true;
-    super.writeExpressionStatement(statement);
+    super.writeReturn(statement);
     fastPathBlocked=oldFastPathBlock;
     if (fastPathData == null)     return;
     writeFastPathPrelude(fastPathData);
-    super.writeExpressionStatement(statement);
+    super.writeReturn(statement);
     writeFastPathEpilogue(fastPathData);
   }
  else {
-    super.writeExpressionStatement(statement);
+    super.writeReturn(statement);
   }
 }

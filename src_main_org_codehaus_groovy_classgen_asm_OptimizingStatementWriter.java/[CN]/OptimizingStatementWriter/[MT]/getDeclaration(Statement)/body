@@ -1,0 +1,19 @@
+{
+  Expression ex=null;
+  if (statement instanceof ReturnStatement) {
+    ReturnStatement rs=(ReturnStatement)statement;
+    ex=rs.getExpression();
+  }
+ else   if (statement instanceof ExpressionStatement) {
+    ExpressionStatement es=(ExpressionStatement)statement;
+    ex=es.getExpression();
+  }
+ else {
+    throw new GroovyBugError("unknown statement type :" + statement.getClass());
+  }
+  if (!(ex instanceof DeclarationExpression))   return null;
+  DeclarationExpression de=(DeclarationExpression)ex;
+  ex=de.getLeftExpression();
+  if (ex instanceof TupleExpression)   return null;
+  return de;
+}

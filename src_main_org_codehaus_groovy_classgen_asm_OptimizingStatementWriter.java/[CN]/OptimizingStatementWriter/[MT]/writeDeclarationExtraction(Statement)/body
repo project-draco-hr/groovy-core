@@ -1,0 +1,19 @@
+{
+  DeclarationExpression declaration=getDeclaration(statement);
+  if (declaration == null)   return;
+  controller.getCompileStack().defineVariable(declaration.getVariableExpression(),false);
+  BinaryExpression assignment=new BinaryExpression(declaration.getLeftExpression(),declaration.getOperation(),declaration.getRightExpression());
+  assignment.setSourcePosition(declaration);
+  assignment.copyNodeMetaData(declaration);
+  if (statement instanceof ReturnStatement) {
+    ReturnStatement rs=(ReturnStatement)statement;
+    rs.setExpression(assignment);
+  }
+ else   if (statement instanceof ExpressionStatement) {
+    ExpressionStatement es=(ExpressionStatement)statement;
+    es.setExpression(assignment);
+  }
+ else {
+    throw new GroovyBugError("unknown statement type :" + statement.getClass());
+  }
+}
