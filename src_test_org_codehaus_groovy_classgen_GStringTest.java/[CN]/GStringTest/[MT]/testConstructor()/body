@@ -9,13 +9,12 @@
   block.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("str"),Token.newSymbol("=",-1,-1),compositeStringExpr)));
   block.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"println",new VariableExpression("str"))));
   block.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("text"),Token.newSymbol("=",-1,-1),new MethodCallExpression(new VariableExpression("str"),"toString",MethodCallExpression.NO_ARGUMENTS))));
-  block.addStatement(new AssertStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("text"),Token.newSymbol("==",-1,-1),new ConstantExpression("Hello World!")))));
+  block.addStatement(new AssertStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("text"),Token.newSymbol("==",-1,-1),new ConstantExpression("Hello World!"))),new ConstantExpression("Assertion failed")));
   classNode.addMethod(new MethodNode("stringDemo",ACC_PUBLIC,ClassHelper.VOID_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,block));
   Class fooClass=loadClass(classNode);
   assertTrue("Loaded a new class",fooClass != null);
   Object bean=fooClass.newInstance();
   assertTrue("Managed to create bean",bean != null);
-  System.out.println("################ Now about to invoke method");
   try {
     InvokerHelper.invokeMethod(bean,"stringDemo",null);
   }
@@ -24,5 +23,4 @@
     e.getCause().printStackTrace();
     fail("Should not have thrown an exception");
   }
-  System.out.println("################ Done");
 }
