@@ -1,6 +1,20 @@
 {
-  DeclarationExpression declaration=getDeclaration(statement);
-  if (declaration == null)   return;
+  Expression ex=null;
+  if (statement instanceof ReturnStatement) {
+    ReturnStatement rs=(ReturnStatement)statement;
+    ex=rs.getExpression();
+  }
+ else   if (statement instanceof ExpressionStatement) {
+    ExpressionStatement es=(ExpressionStatement)statement;
+    ex=es.getExpression();
+  }
+ else {
+    throw new GroovyBugError("unknown statement type :" + statement.getClass());
+  }
+  if (!(ex instanceof DeclarationExpression))   return true;
+  DeclarationExpression declaration=(DeclarationExpression)ex;
+  ex=declaration.getLeftExpression();
+  if (ex instanceof TupleExpression)   return false;
   controller.getCompileStack().defineVariable(declaration.getVariableExpression(),false);
   BinaryExpression assignment=new BinaryExpression(declaration.getLeftExpression(),declaration.getOperation(),declaration.getRightExpression());
   assignment.setSourcePosition(declaration);
@@ -16,4 +30,5 @@
  else {
     throw new GroovyBugError("unknown statement type :" + statement.getClass());
   }
+  return true;
 }

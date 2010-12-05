@@ -1,7 +1,6 @@
 {
   StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
-  if (isNewPathFork(meta)) {
-    writeDeclarationExtraction(statement);
+  if (isNewPathFork(meta) && writeDeclarationExtraction(statement)) {
     FastPathData fastPathData=writeGuards(meta,statement);
     boolean oldFastPathBlock=fastPathBlocked;
     fastPathBlocked=true;
