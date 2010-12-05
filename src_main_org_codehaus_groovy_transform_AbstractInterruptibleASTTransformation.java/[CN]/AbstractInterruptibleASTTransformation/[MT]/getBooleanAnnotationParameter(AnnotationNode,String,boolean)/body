@@ -1,0 +1,17 @@
+{
+  Expression member=node.getMember(parameterName);
+  if (member != null) {
+    if (member instanceof ConstantExpression) {
+      try {
+        return DefaultGroovyMethods.asType(((ConstantExpression)member).getValue(),Boolean.class);
+      }
+ catch (      Exception e) {
+        internalError("Expecting boolean value for " + parameterName + " annotation parameter. Found "+ member+ "member");
+      }
+    }
+ else {
+      internalError("Expecting boolean value for " + parameterName + " annotation parameter. Found "+ member+ "member");
+    }
+  }
+  return defaultValue;
+}

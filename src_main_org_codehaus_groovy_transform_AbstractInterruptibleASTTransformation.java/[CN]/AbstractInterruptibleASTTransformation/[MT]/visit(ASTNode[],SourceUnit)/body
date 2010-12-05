@@ -1,0 +1,34 @@
+{
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    internalError("Expecting [AnnotationNode, AnnotatedClass] but got: " + Arrays.asList(nodes));
+  }
+  this.source=source;
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  AnnotatedNode annotatedNode=(AnnotatedNode)nodes[1];
+  if (!type().equals(node.getClassNode())) {
+    internalError("Transformation called from wrong annotation: " + node.getClassNode().getName());
+  }
+  setupTransform(node);
+  final ModuleNode tree=source.getAST();
+  if (applyToAllClasses) {
+    if (tree != null) {
+      final List<ClassNode> classes=tree.getClasses();
+      for (      ClassNode classNode : classes) {
+        visitClass(classNode);
+      }
+    }
+  }
+ else   if (annotatedNode instanceof ClassNode) {
+    this.visitClass((ClassNode)annotatedNode);
+  }
+ else {
+    if (tree != null) {
+      final List<ClassNode> classes=tree.getClasses();
+      for (      ClassNode classNode : classes) {
+        if (classNode.isScript()) {
+          visitClass(classNode);
+        }
+      }
+    }
+  }
+}
