@@ -1,6 +1,6 @@
 {
   String fName=fNode.getName();
-  if (fNode.isPublic() && !fName.contains("$")) {
+  if (fNode.isPublic() && !fName.contains("$") && !(fNode.isStatic() && fNode.isFinal())) {
     addError("Public field '" + fName + "' not allowed for "+ MY_TYPE_NAME+ " class '"+ cNode+ "'.",fNode);
   }
 }
