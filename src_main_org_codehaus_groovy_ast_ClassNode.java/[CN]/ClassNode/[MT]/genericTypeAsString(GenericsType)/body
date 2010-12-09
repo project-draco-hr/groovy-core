@@ -1,0 +1,26 @@
+{
+  String ret=genericsType.getName();
+  if (genericsType.getUpperBounds() != null) {
+    ret+=" extends ";
+    for (int i=0; i < genericsType.getUpperBounds().length; i++) {
+      ClassNode classNode=genericsType.getUpperBounds()[i];
+      if (classNode.equals(this)) {
+        ret+=classNode.getName();
+      }
+ else {
+        ret+=classNode.toString();
+      }
+      if (i + 1 < genericsType.getUpperBounds().length)       ret+=" & ";
+    }
+  }
+ else   if (genericsType.getLowerBound() != null) {
+    ClassNode classNode=genericsType.getLowerBound();
+    if (classNode.equals(this)) {
+      ret+=" super " + classNode.getName();
+    }
+ else {
+      ret+=" super " + classNode;
+    }
+  }
+  return ret;
+}
