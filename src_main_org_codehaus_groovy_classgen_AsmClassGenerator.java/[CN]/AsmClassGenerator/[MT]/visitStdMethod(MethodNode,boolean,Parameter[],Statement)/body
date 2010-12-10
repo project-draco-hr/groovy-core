@@ -8,5 +8,21 @@
   controller.getCallSiteWriter().makeSiteEntry();
   super.visitConstructorOrMethod(node,isConstructor);
   controller.getCompileStack().clear();
-  if (node.isVoidMethod())   mv.visitInsn(RETURN);
+  if (node.isVoidMethod()) {
+    mv.visitInsn(RETURN);
+  }
+ else {
+    ClassNode type=node.getReturnType().redirect();
+    if (ClassHelper.isPrimitiveType(type)) {
+      mv.visitLdcInsn(0);
+      controller.getOperandStack().push(ClassHelper.int_TYPE);
+      controller.getOperandStack().doGroovyCast(type);
+      BytecodeHelper.doReturn(mv,type);
+      controller.getOperandStack().remove(1);
+    }
+ else {
+      mv.visitInsn(ACONST_NULL);
+      BytecodeHelper.doReturn(mv,type);
+    }
+  }
 }
