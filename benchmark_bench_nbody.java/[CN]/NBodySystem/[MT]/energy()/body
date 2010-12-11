@@ -1,0 +1,15 @@
+{
+  double dx, dy, dz, distance;
+  double e=0.0;
+  for (int i=0; i < bodies.length; ++i) {
+    e+=0.5 * bodies[i].mass * (bodies[i].vx * bodies[i].vx + bodies[i].vy * bodies[i].vy + bodies[i].vz * bodies[i].vz);
+    for (int j=i + 1; j < bodies.length; ++j) {
+      dx=bodies[i].x - bodies[j].x;
+      dy=bodies[i].y - bodies[j].y;
+      dz=bodies[i].z - bodies[j].z;
+      distance=Math.sqrt(dx * dx + dy * dy + dz * dz);
+      e-=(bodies[i].mass * bodies[j].mass) / distance;
+    }
+  }
+  return e;
+}

@@ -1,0 +1,22 @@
+{
+  String line;
+  BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
+  while ((line=in.readLine()) != null) {
+    if (line.startsWith(">THREE"))     break;
+  }
+  StringBuilder sbuilder=new StringBuilder();
+  while ((line=in.readLine()) != null) {
+    sbuilder.append(line);
+  }
+  ExecutorService pool=Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+  int[] fragmentLengths={1,2,3,4,6,12,18};
+  List<Future<Map<String,knucleotide>>> futures=pool.invokeAll(createFragmentTasks(sbuilder.toString(),fragmentLengths));
+  pool.shutdown();
+  System.out.println(writeFrequencies(futures.get(0).get()));
+  System.out.println(writeFrequencies(sumTwoMaps(futures.get(1).get(),futures.get(2).get())));
+  System.out.println(writeCount(futures,"ggt"));
+  System.out.println(writeCount(futures,"ggta"));
+  System.out.println(writeCount(futures,"ggtatt"));
+  System.out.println(writeCount(futures,"ggtattttaatt"));
+  System.out.println(writeCount(futures,"ggtattttaatttatagt"));
+}

@@ -1,0 +1,31 @@
+{
+  int result=0;
+  LinkedList Li1=new LinkedList();
+  for (int i=1; i < SIZE + 1; i++) {
+    Li1.addLast(new Integer(i));
+  }
+  LinkedList Li2=new LinkedList(Li1);
+  LinkedList Li3=new LinkedList();
+  while (!Li2.isEmpty()) {
+    Li3.addLast(Li2.removeFirst());
+  }
+  while (!Li3.isEmpty()) {
+    Li2.addLast(Li3.removeLast());
+  }
+  LinkedList tmp=new LinkedList();
+  while (!Li1.isEmpty()) {
+    tmp.addFirst(Li1.removeFirst());
+  }
+  Li1=tmp;
+  if (((Integer)Li1.getFirst()).intValue() != SIZE) {
+    System.err.println("first item of Li1 != SIZE");
+    return (0);
+  }
+  if (!Li1.equals(Li2)) {
+    System.err.println("Li1 and Li2 differ");
+    System.err.println("Li1:" + Li1);
+    System.err.println("Li2:" + Li2);
+    return (0);
+  }
+  return (Li1.size());
+}

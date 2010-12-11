@@ -1,0 +1,20 @@
+{
+  if (ffm != null)   return ffm;
+  int x, y, mx, my, ind;
+  int[] minmoves=(new int[]{});
+  int[] moves;
+  mx=my=-1;
+  for (y=0; y < n; y++)   for (x=0; x < n; x++) {
+    ind=x + y * n;
+    if (grid[ind] == 0) {
+      moves=possibleMoves(x,y);
+      if (mx == -1 || moves.length < minmoves.length) {
+        mx=x;
+        my=y;
+        minmoves=(int[])moves.clone();
+      }
+    }
+  }
+  ffm=new FfmResult(mx,my,minmoves);
+  return ffm;
+}

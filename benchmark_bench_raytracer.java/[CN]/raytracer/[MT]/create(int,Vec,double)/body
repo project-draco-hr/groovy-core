@@ -1,0 +1,12 @@
+{
+  Sphere sphere=new Sphere(c,r);
+  if (level == 1)   return sphere;
+  Group group=new Group(new Sphere(c,3 * r));
+  group.objs.addLast(sphere);
+  double rn=3 * r / Math.sqrt(12);
+  for (int dz=-1; dz <= 1; dz+=2)   for (int dx=-1; dx <= 1; dx+=2) {
+    Vec c2=new Vec(c.x + dx * rn,c.y + rn,c.z + dz * rn);
+    group.objs.addLast(create(level - 1,c2,r / 2));
+  }
+  return group;
+}

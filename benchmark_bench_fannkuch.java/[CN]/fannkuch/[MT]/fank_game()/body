@@ -1,0 +1,18 @@
+{
+  Thread[] th=new Thread[Runtime.getRuntime().availableProcessors()];
+  for (int i=0; i < th.length; i++) {
+    th[i]=new Thread(this);
+    th[i].start();
+  }
+  print_30_permut();
+  for (  Thread t : th) {
+    try {
+      t.join();
+    }
+ catch (    InterruptedException ie) {
+    }
+  }
+  int mx=0;
+  for (  int i : flip_max_arr)   if (mx < i)   mx=i;
+  return mx;
+}

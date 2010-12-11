@@ -1,0 +1,11 @@
+{
+  HashMap<String,knucleotide> map=new HashMap<String,knucleotide>();
+  int lastIndex=sequence.length() - fragmentLength + 1;
+  for (int index=offset; index < lastIndex; index+=fragmentLength) {
+    String temp=sequence.substring(index,index + fragmentLength);
+    knucleotide fragment=(knucleotide)map.get(temp);
+    if (fragment != null)     fragment.count++;
+ else     map.put(temp,new knucleotide(temp));
+  }
+  return map;
+}

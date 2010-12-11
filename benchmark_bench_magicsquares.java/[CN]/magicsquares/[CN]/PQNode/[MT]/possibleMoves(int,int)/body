@@ -1,0 +1,41 @@
+{
+  int zerocount, sum, highest, j, i;
+  if (grid[x + y * n] != 0)   return (new int[]{});
+  ArrayList<int[]> cellGroups=new ArrayList<int[]>();
+  cellGroups.add(gridCol(x));
+  cellGroups.add(gridRow(y));
+  if (x == y)   cellGroups.add(diagonal(1));
+  if (x + y == n - 1)   cellGroups.add(diagonal(2));
+  HashSet<Integer> usedNumbers=new HashSet<Integer>();
+  for (i=0; i < grid.length; i++)   usedNumbers.add(new Integer(grid[i]));
+  HashSet<Integer> onePossible=new HashSet<Integer>();
+  highest=n * n;
+  for (  int[] group : cellGroups) {
+    zerocount=0;
+    sum=0;
+    for (    int num : group) {
+      if (num == 0)       zerocount++;
+      sum+=num;
+    }
+    if (zerocount == 1)     onePossible.add(new Integer(mn - sum));
+    if (mn - sum < highest)     highest=mn - sum;
+  }
+  if (onePossible.size() == 1) {
+    Integer onlyPossibleMove=(Integer)onePossible.iterator().next();
+    int opmint=onlyPossibleMove.intValue();
+    if (opmint >= 1 && opmint <= n * n && !usedNumbers.contains(onlyPossibleMove))     return (new int[]{opmint});
+ else     return (new int[]{});
+  }
+ else   if (onePossible.size() > 1)   return (new int[]{});
+  ArrayList<Integer> moves=new ArrayList<Integer>();
+  for (i=1; i <= highest; i++) {
+    Integer ii=new Integer(i);
+    if (!usedNumbers.contains(ii))     moves.add(ii);
+  }
+  int[] r=new int[moves.size()];
+  i=0;
+  for (  Integer move : moves) {
+    r[i++]=move.intValue();
+  }
+  return r;
+}

@@ -1,0 +1,32 @@
+{
+  for (int ix=0; ix < pieces.length; ix++) {
+    Piece piece;
+    Shape[] list;
+    if ((piece=pieces[ix]) == null)     continue;
+ else     list=pieces[ix].shapes(row,col);
+    for (    Shape shape : list) {
+      if ((shape.bitmap & puzzle) != 0)       continue;
+      long clone=puzzle | shape.bitmap;
+      int irow=row;
+      int icol=col / 2 + 1;
+      next:       while (irow < 10) {
+        while (icol < 5) {
+          if ((clone & MASK[irow][icol]) == 0)           break next;
+          icol++;
+        }
+        irow++;
+        icol=0;
+      }
+      Entry entry;
+      pieces[ix]=null;
+      entry=solution[depth++];
+      entry.row=row;
+      entry.col=col;
+      entry.shape=shape;
+      if (depth == 10)       solutions.add(serialize(solution));
+ else       solve(clone,irow,2 * icol + (irow % 2));
+      depth--;
+      pieces[ix]=piece;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  numberOfMessagesToSend=Integer.parseInt(args[0]);
+  MessageThread chain=null;
+  for (int i=0; i < numberOfThreads; i++) {
+    chain=new MessageThread(chain);
+    new Thread(chain).start();
+  }
+  for (int i=0; i < numberOfMessagesToSend; i++) {
+    chain.enqueue(new MutableInteger(0));
+  }
+}

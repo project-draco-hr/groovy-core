@@ -1,0 +1,19 @@
+{
+  int n=Integer.parseInt(args[0]);
+  EndLink chainEnd=new EndLink(null,n);
+  chainEnd.start();
+  Link chain=chainEnd;
+  for (int i=2; i <= n; i++) {
+    Link link=new Link(chain);
+    link.start();
+    chain=link;
+  }
+  chain.put(0);
+  try {
+    chainEnd.join();
+  }
+ catch (  InterruptedException e) {
+  }
+  System.out.println(chainEnd.count);
+  System.exit(0);
+}

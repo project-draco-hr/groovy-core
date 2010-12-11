@@ -1,0 +1,20 @@
+{
+  int idxMin=task * CHUNKSZ;
+  int idxMax=Math.min(Fact[n],idxMin + CHUNKSZ);
+  firstPermutation(idxMin);
+  int maxflips=1;
+  int chksum=0;
+  for (int i=idxMin; ; ) {
+    if (p[0] != 0) {
+      int flips=countFlips();
+      maxflips=Math.max(maxflips,flips);
+      chksum+=i % 2 == 0 ? flips : -flips;
+    }
+    if (++i == idxMax) {
+      break;
+    }
+    nextPermutation();
+  }
+  maxFlips[task]=maxflips;
+  chkSums[task]=chksum;
+}

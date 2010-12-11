@@ -1,0 +1,38 @@
+{
+  int bits=0;
+  final double Ci=(y * fac - 1.0);
+  final byte[] bufLocal=buf;
+  for (int x=0; x < size; x++) {
+    double Zr=0.0;
+    double Zi=0.0;
+    double Cr=(x * fac - 1.5);
+    int i=50;
+    double ZrN=0;
+    double ZiN=0;
+    do {
+      Zi=2.0 * Zr * Zi + Ci;
+      Zr=ZrN - ZiN + Cr;
+      ZiN=Zi * Zi;
+      ZrN=Zr * Zr;
+    }
+ while (!(ZiN + ZrN > 4.0) && --i > 0);
+    bits=bits << 1;
+    if (i == 0)     bits++;
+    if (x % 8 == 7) {
+      bufLocal[bufLen++]=(byte)bits;
+      if (bufLen == BUFFER_SIZE) {
+        out.write(bufLocal,0,BUFFER_SIZE);
+        bufLen=0;
+      }
+      bits=0;
+    }
+  }
+  if (shift != 0) {
+    bits=bits << shift;
+    bufLocal[bufLen++]=(byte)bits;
+    if (bufLen == BUFFER_SIZE) {
+      out.write(bufLocal,0,BUFFER_SIZE);
+      bufLen=0;
+    }
+  }
+}

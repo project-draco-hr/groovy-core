@@ -1,0 +1,16 @@
+{
+  ArrayList<Callable<Map<String,knucleotide>>> tasks=new ArrayList<Callable<Map<String,knucleotide>>>();
+  for (  int fragmentLength : fragmentLengths) {
+    for (int index=0; index < fragmentLength; index++) {
+      final int offset=index;
+      final int finalFragmentLength=fragmentLength;
+      tasks.add(new Callable<Map<String,knucleotide>>(){
+        public Map<String,knucleotide> call(){
+          return createFragmentMap(sequence,offset,finalFragmentLength);
+        }
+      }
+);
+    }
+  }
+  return tasks;
+}

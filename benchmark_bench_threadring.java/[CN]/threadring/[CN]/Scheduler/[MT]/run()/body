@@ -1,0 +1,11 @@
+{
+  for (; ; ) {
+    CooperativeThread nextThread;
+synchronized (threads) {
+      rrIndex++;
+      if (rrIndex >= threads.size())       rrIndex=0;
+      nextThread=threads.get(rrIndex);
+    }
+    nextThread.handleMessage();
+  }
+}

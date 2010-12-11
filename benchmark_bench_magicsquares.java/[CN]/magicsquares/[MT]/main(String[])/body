@@ -1,0 +1,21 @@
+{
+  n=3;
+  if (args.length > 0)   n=Integer.parseInt(args[0]);
+  mn=n * (1 + n * n) / 2;
+  PriorityQueue<magicsquares.PQNode> pq=new PriorityQueue<magicsquares.PQNode>();
+  pq.offer(new magicsquares.PQNode());
+  while (!pq.isEmpty()) {
+    PQNode topSquare=pq.poll();
+    if (topSquare.getPriority() == 0) {
+      System.out.println(topSquare);
+      break;
+    }
+    magicsquares.FfmResult result=topSquare.findFewestMoves();
+    int ind=result.x + result.y * n;
+    for (    int move : result.moves) {
+      magicsquares.PQNode newSquare=new magicsquares.PQNode(topSquare);
+      newSquare.grid[ind]=move;
+      pq.offer(newSquare);
+    }
+  }
+}

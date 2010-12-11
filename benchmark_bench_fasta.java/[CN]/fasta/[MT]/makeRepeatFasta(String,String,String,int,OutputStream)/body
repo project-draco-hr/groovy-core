@@ -1,0 +1,24 @@
+{
+  index=0;
+  int m=0;
+  int k=0;
+  int kn=ALUB.length;
+  String descStr=">" + id + " "+ desc+ '\n';
+  writer.write(descStr.getBytes());
+  while (n > 0) {
+    if (n < LINE_LENGTH)     m=n;
+ else     m=LINE_LENGTH;
+    if (BUFFER_SIZE - index < m) {
+      writer.write(bbuffer,0,index);
+      index=0;
+    }
+    for (int i=0; i < m; i++) {
+      if (k == kn)       k=0;
+      bbuffer[index++]=ALUB[k];
+      k++;
+    }
+    bbuffer[index++]='\n';
+    n-=LINE_LENGTH;
+  }
+  if (index != 0)   writer.write(bbuffer,0,index);
+}

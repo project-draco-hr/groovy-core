@@ -1,0 +1,18 @@
+{
+  byte bytesIn[]=new byte[BUFFER_SIZE];
+  try {
+    Socket socketClient=ssAccepting.accept();
+    InputStream in=socketClient.getInputStream();
+    OutputStream out=socketClient.getOutputStream();
+    int iLength, iCount=0;
+    while ((iLength=in.read(bytesIn)) != -1) {
+      out.write(bytesIn,0,iLength);
+      out.flush();
+      iCount+=iLength;
+    }
+    System.out.println("server processed " + iCount + " bytes");
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+  }
+}

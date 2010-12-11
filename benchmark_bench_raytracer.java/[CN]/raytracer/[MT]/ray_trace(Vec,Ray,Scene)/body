@@ -1,0 +1,10 @@
+{
+  Hit i=scene.intersect(new Hit(infinity,new Vec(0,0,0)),ray);
+  if (i.lambda == infinity)   return 0;
+  Vec o=add(ray.orig,add(scale(i.lambda,ray.dir),scale(delta,i.normal)));
+  double g=dot(i.normal,light);
+  if (g >= 0)   return 0.;
+  Ray sray=new Ray(o,scale(-1,light));
+  Hit si=scene.intersect(new Hit(infinity,new Vec(0,0,0)),sray);
+  return (si.lambda == infinity ? -g : 0);
+}

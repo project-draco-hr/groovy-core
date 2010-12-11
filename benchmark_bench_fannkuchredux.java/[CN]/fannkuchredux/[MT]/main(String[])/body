@@ -1,0 +1,43 @@
+{
+  n=args.length > 0 ? Integer.parseInt(args[0]) : 12;
+  if (n < 0 || n > 12) {
+    printResult(n,-1,-1);
+    return;
+  }
+  if (n <= 1) {
+    printResult(n,0,0);
+    return;
+  }
+  Fact=new int[n + 1];
+  Fact[0]=1;
+  for (int i=1; i < Fact.length; ++i) {
+    Fact[i]=Fact[i - 1] * i;
+  }
+  CHUNKSZ=(Fact[n] + NCHUNKS - 1) / NCHUNKS;
+  NTASKS=(Fact[n] + CHUNKSZ - 1) / CHUNKSZ;
+  maxFlips=new int[NTASKS];
+  chkSums=new int[NTASKS];
+  taskId=new AtomicInteger(0);
+  int nthreads=Runtime.getRuntime().availableProcessors();
+  Thread[] threads=new Thread[nthreads];
+  for (int i=0; i < nthreads; ++i) {
+    threads[i]=new Thread(new fannkuchredux());
+    threads[i].start();
+  }
+  for (  Thread t : threads) {
+    try {
+      t.join();
+    }
+ catch (    InterruptedException e) {
+    }
+  }
+  int res=0;
+  for (  int v : maxFlips) {
+    res=Math.max(res,v);
+  }
+  int chk=0;
+  for (  int v : chkSums) {
+    chk+=v;
+  }
+  printResult(n,res,chk);
+}

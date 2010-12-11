@@ -1,0 +1,31 @@
+{
+  int N=2098;
+  if (args.length > 0)   if (args[0].matches("\\d+"))   N=Integer.parseInt(args[0]);
+  meteor puzzle=new meteor();
+  Date start;
+  Date end;
+  long time;
+  SortedSet<String> solutions;
+  start=new Date();
+  solutions=puzzle.solve();
+  end=new Date();
+  time=end.getTime() - start.getTime();
+  if (solutions.size() > N)   System.out.println("ERROR");
+ else   if (solutions.size() < N)   System.out.println("TIMEOUT");
+ else {
+    if (DEBUG) {
+      System.out.println("START    : " + start);
+      System.out.println("END      : " + end);
+      System.out.println("TIME     : " + time);
+      System.out.println("SOLUTIONS: " + solutions.size());
+      System.out.println("FIRST    : " + solutions.first());
+      System.out.println("LAST     : " + solutions.last());
+      System.out.println();
+    }
+    System.out.print(solutions.size() + " solutions found\n\n");
+    print(solutions.first());
+    System.out.print("\n");
+    print(solutions.last());
+    System.out.print("\n");
+  }
+}

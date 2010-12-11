@@ -1,0 +1,18 @@
+{
+  int v0=perm_flip[0];
+  int tmp;
+  int flip_count=0;
+  do {
+    for (int i=1, j=v0 - 1; i < j; ++i, --j) {
+      tmp=perm_flip[i];
+      perm_flip[i]=perm_flip[j];
+      perm_flip[j]=tmp;
+    }
+    tmp=perm_flip[v0];
+    perm_flip[v0]=v0;
+    v0=tmp;
+    flip_count++;
+  }
+ while (v0 != 0);
+  return flip_count;
+}

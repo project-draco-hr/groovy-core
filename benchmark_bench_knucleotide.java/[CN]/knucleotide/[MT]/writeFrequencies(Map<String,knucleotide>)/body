@@ -1,0 +1,21 @@
+{
+  ArrayList<knucleotide> list=new ArrayList<knucleotide>(frequencies.size());
+  int sum=0;
+  for (  knucleotide fragment : frequencies.values()) {
+    list.add(fragment);
+    sum+=fragment.count;
+  }
+  Collections.sort(list,new Comparator<knucleotide>(){
+    public int compare(    knucleotide o1,    knucleotide o2){
+      int c=o2.count - o1.count;
+      if (c == 0) {
+        c=o1.sequence.compareTo(o2.sequence);
+      }
+      return c;
+    }
+  }
+);
+  StringBuilder sb=new StringBuilder();
+  for (  knucleotide k : list)   sb.append(String.format("%s %.3f\n",k.sequence.toUpperCase(),(float)(k.count) * 100.0f / (double)sum));
+  return sb.toString();
+}

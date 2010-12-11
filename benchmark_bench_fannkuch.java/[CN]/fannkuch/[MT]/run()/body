@@ -1,0 +1,27 @@
+{
+  final int[] permutation=new int[n];
+  final int[] perm_remain=new int[n];
+  final int[] perm_flip=new int[n];
+  int pos_right;
+  while ((pos_right=remain_task.getAndIncrement()) < (n - 1)) {
+    int flip_max=0;
+    for (int i=0; i < n - 1; i++)     permutation[i]=i;
+    permutation[pos_right]=(n - 1);
+    permutation[n - 1]=(pos_right);
+    for (int i=1; i <= n; i++)     perm_remain[i - 1]=i;
+    int pos_left=n - 2;
+    while (pos_left < n - 1) {
+      next_perm(permutation,pos_left);
+      if (--perm_remain[pos_left] > 0) {
+        for (; pos_left != 1; --pos_left)         perm_remain[pos_left - 1]=pos_left;
+        if ((permutation[0] != 0) && (permutation[n - 1] != (n - 1))) {
+          System.arraycopy(permutation,0,perm_flip,0,n);
+          int flipcount=count_flip(perm_flip);
+          if (flip_max < flipcount)           flip_max=flipcount;
+        }
+      }
+ else       pos_left++;
+    }
+    flip_max_arr[pos_right]=flip_max;
+  }
+}

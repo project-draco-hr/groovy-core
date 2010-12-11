@@ -1,0 +1,27 @@
+{
+  final int[] permutation=new int[n];
+  for (int i=0; i < n; i++) {
+    permutation[i]=i;
+    System.out.print((1 + i));
+  }
+  System.out.println();
+  final int[] perm_remain=new int[n];
+  for (int i=1; i <= n; i++)   perm_remain[i - 1]=i;
+  int numPermutationsPrinted=1;
+  for (int pos_right=2; pos_right <= n; pos_right++) {
+    int pos_left=pos_right - 1;
+    do {
+      next_perm(permutation,pos_left);
+      if (--perm_remain[pos_left] > 0) {
+        if (numPermutationsPrinted++ < 30) {
+          for (int i=0; i < n; ++i)           System.out.print((1 + permutation[i]));
+          System.out.println();
+        }
+ else         return;
+        for (; pos_left != 1; --pos_left)         perm_remain[pos_left - 1]=pos_left;
+      }
+ else       ++pos_left;
+    }
+ while (pos_left < pos_right);
+  }
+}

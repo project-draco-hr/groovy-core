@@ -1,0 +1,17 @@
+{
+  while (busy)   try {
+    wait();
+  }
+ catch (  InterruptedException e) {
+  }
+  busy=true;
+  message=m;
+  notifyAll();
+  while (message != -1)   try {
+    wait();
+  }
+ catch (  InterruptedException e) {
+  }
+  busy=false;
+  notifyAll();
+}

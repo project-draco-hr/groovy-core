@@ -1,0 +1,19 @@
+{
+  int hopCount=Integer.parseInt(args[0]);
+  MessageThread thread=null;
+  MessageThread last=null;
+  for (int i=THREAD_COUNT; i >= 1; i--) {
+    thread=new MessageThread(thread,i);
+    if (i == THREAD_COUNT)     last=thread;
+  }
+  last.nextThread=thread;
+  Scheduler scheduler=new Scheduler();
+  MessageThread t=thread;
+  do {
+    scheduler.start(t);
+    t=t.nextThread;
+  }
+ while (t != thread);
+  scheduler.start();
+  thread.put(hopCount);
+}
