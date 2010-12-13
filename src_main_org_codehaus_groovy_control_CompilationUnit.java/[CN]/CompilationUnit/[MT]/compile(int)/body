@@ -2,6 +2,10 @@
   gotoPhase(Phases.INITIALIZATION);
   throughPhase=Math.min(throughPhase,Phases.ALL);
   while (throughPhase >= phase && phase <= Phases.ALL) {
+    if (phase == Phases.SEMANTIC_ANALYSIS) {
+      doPhaseOperation(resolve);
+      if (dequeued())       continue;
+    }
     processPhaseOperations(phase);
     processNewPhaseOperations(phase);
     if (progressCallback != null)     progressCallback.call(this,phase);
