@@ -10,16 +10,24 @@
     if (paras[i].isClosureSharedVariable()) {
       boolean useExistingReference=paras[i].getNodeMetaData(ClosureWriter.UseExistingReference.class) != null;
       answer=defineVar(name,paras[i].getOriginType(),true,useExistingReference);
+      answer.setStartLabel(startLabel);
       if (!useExistingReference) {
         controller.getOperandStack().load(type,currentVariableIndex);
         controller.getOperandStack().box();
+        Label newStart=new Label();
+        controller.getMethodVisitor().visitLabel(newStart);
+        BytecodeVariable var=new BytecodeVariable(currentVariableIndex,paras[i].getOriginType(),name,currentVariableIndex);
+        var.setStartLabel(startLabel);
+        var.setEndLabel(newStart);
+        usedVariables.add(var);
+        answer.setStartLabel(newStart);
         createReference(answer);
       }
     }
  else {
       answer=defineVar(name,type,false,false);
+      answer.setStartLabel(startLabel);
     }
-    answer.setStartLabel(startLabel);
     stackVariables.put(name,answer);
   }
   nextVariableIndex=localVariableOffset;
