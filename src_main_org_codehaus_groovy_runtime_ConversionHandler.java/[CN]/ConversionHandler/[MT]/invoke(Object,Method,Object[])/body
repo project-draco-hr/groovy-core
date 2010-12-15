@@ -1,6 +1,11 @@
 {
   if (!checkMethod(method)) {
-    return invokeCustom(proxy,method,args);
+    try {
+      return invokeCustom(proxy,method,args);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
   }
   try {
     return method.invoke(this,args);
