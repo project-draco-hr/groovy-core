@@ -1,8 +1,8 @@
 {
   if (expression.getNodeMetaData(StatementMeta.class) != null)   return;
   super.visitBinaryExpression(expression);
-  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression());
-  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression());
+  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
+  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression(),node);
   if (!optimizeInt)   optimizeInt=(leftInt && rightInt);
   if (optimizeInt) {
 switch (expression.getOperation().getType()) {

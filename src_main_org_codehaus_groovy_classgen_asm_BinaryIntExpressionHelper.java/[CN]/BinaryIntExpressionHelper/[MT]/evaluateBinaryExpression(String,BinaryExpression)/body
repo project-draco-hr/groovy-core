@@ -1,9 +1,9 @@
 {
   int type=binExp.getOperation().getType();
   Expression left=binExp.getLeftExpression();
-  boolean leftIsInt=isIntOperand(left);
+  boolean leftIsInt=isIntOperand(left,controller.getClassNode());
   Expression right=binExp.getRightExpression();
-  boolean rightIsInt=isIntOperand(right);
+  boolean rightIsInt=isIntOperand(right,controller.getClassNode());
   if (leftIsInt && rightIsInt && writeIntXInt(type,true)) {
     left.visit(controller.getAcg());
     right.visit(controller.getAcg());
