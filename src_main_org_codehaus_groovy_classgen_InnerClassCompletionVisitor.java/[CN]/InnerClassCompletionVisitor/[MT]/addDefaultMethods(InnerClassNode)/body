@@ -1,6 +1,6 @@
 {
   final boolean isStatic=isStatic(node);
-  final String classInternalName=BytecodeHelper.getClassInternalName(node);
+  final String classInternalName=org.codehaus.groovy.classgen.asm.BytecodeHelper.getClassInternalName(node);
   final String outerClassInternalName=getInternalName(node.getOuterClass(),isStatic);
   final String outerClassDescriptor=getTypeDescriptor(node.getOuterClass(),isStatic);
   final int objectDistance=getObjectDistance(node.getOuterClass());
@@ -28,7 +28,7 @@
   method=node.addSyntheticMethod("propertyMissing",Opcodes.ACC_PUBLIC,ClassHelper.VOID_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
   block=new BlockStatement();
   if (isStatic) {
-    setPropertySetDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
+    setPropertySetterDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
   }
  else {
     block.addStatement(new BytecodeSequence(new BytecodeInstruction(){

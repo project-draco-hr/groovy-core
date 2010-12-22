@@ -13,8 +13,8 @@
   List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
   BlockStatement block=new BlockStatement();
   final int additionalParamCount=1 + scope.getReferencedLocalVariablesCount();
-  List parameters=new ArrayList(expressions.size() + additionalParamCount);
-  List superCallArguments=new ArrayList(expressions.size());
+  List<Parameter> parameters=new ArrayList<Parameter>(expressions.size() + additionalParamCount);
+  List<Expression> superCallArguments=new ArrayList<Expression>(expressions.size());
   int pCount=additionalParamCount;
   for (  Expression expr : expressions) {
     pCount++;
@@ -47,5 +47,5 @@
     pField.setHolder(true);
     pField.setOriginType(ClassHelper.getWrapper(var.getOriginType()));
   }
-  innerClass.addConstructor(ACC_SYNTHETIC,(Parameter[])parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
+  innerClass.addConstructor(ACC_SYNTHETIC,parameters.toArray(new Parameter[0]),ClassNode.EMPTY_ARRAY,block);
 }

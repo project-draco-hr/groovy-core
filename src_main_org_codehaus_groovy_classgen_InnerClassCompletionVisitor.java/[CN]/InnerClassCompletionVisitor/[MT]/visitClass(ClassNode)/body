@@ -1,0 +1,10 @@
+{
+  InnerClassNode innerClass=null;
+  if (!node.isEnum() && !node.isInterface() && node instanceof InnerClassNode) {
+    innerClass=(InnerClassNode)node;
+  }
+  super.visitClass(node);
+  if (node.isEnum() || node.isInterface())   return;
+  if (innerClass == null)   return;
+  addDefaultMethods(innerClass);
+}
