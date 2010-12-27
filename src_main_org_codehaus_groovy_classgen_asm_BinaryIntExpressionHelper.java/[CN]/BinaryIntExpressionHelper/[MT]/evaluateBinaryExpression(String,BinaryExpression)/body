@@ -6,7 +6,9 @@
   boolean rightIsInt=isIntOperand(right,controller.getClassNode());
   if (leftIsInt && rightIsInt && writeIntXInt(type,true)) {
     left.visit(controller.getAcg());
+    controller.getOperandStack().doGroovyCast(ClassHelper.int_TYPE);
     right.visit(controller.getAcg());
+    controller.getOperandStack().doGroovyCast(ClassHelper.int_TYPE);
     writeIntXInt(type,false);
   }
  else {
