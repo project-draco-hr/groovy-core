@@ -16,7 +16,11 @@
     ConstantExpression ce=(ConstantExpression)memberValue;
     Object constValue=ce.getValue();
     if (constValue instanceof Number || constValue instanceof Boolean)     val=constValue.toString();
- else     val="\"" + constValue + "\"";
+ else {
+      String stringValue=constValue.toString();
+      stringValue=stringValue.replace("\n","\\n").replace("\r","\\r");
+      val="\"" + stringValue + "\"";
+    }
   }
  else   if (memberValue instanceof PropertyExpression || memberValue instanceof VariableExpression) {
     val=((Expression)memberValue).getText();
