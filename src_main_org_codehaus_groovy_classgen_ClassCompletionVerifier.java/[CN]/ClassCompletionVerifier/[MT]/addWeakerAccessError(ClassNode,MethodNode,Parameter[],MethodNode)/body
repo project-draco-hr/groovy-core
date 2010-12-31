@@ -1,0 +1,24 @@
+{
+  StringBuffer msg=new StringBuffer();
+  msg.append(method.getName());
+  msg.append("(");
+  boolean needsComma=false;
+  for (  Parameter parameter : parameters) {
+    if (needsComma) {
+      msg.append(",");
+    }
+ else {
+      needsComma=true;
+    }
+    msg.append(parameter.getType());
+  }
+  msg.append(") in ");
+  msg.append(cn.getName());
+  msg.append(" cannot override ");
+  msg.append(superMethod.getName());
+  msg.append(" in ");
+  msg.append(superMethod.getDeclaringClass().getName());
+  msg.append("; attempting to assign weaker access privileges; was ");
+  msg.append(isPublic(superMethod.getModifiers()) ? "public" : "protected");
+  addError(msg.toString(),method);
+}

@@ -1,10 +1,10 @@
 {
   if (!cn.isInterface())   return;
   for (  MethodNode method : cn.getMethods()) {
-    if (Modifier.isFinal(method.getModifiers())) {
+    if (isFinal(method.getModifiers())) {
       addError("The " + getDescription(method) + " from "+ getDescription(cn)+ " must not be final. It is by definition abstract.",method);
     }
-    if (Modifier.isStatic(method.getModifiers()) && !isConstructor(method)) {
+    if (isStatic(method.getModifiers()) && !isConstructor(method)) {
       addError("The " + getDescription(method) + " from "+ getDescription(cn)+ " must not be static. Only fields may be static in an interface.",method);
     }
   }
