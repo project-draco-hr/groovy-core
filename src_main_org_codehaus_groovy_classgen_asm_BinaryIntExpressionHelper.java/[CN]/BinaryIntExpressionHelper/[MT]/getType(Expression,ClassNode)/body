@@ -1,0 +1,21 @@
+{
+  StatementMeta meta=(StatementMeta)exp.getNodeMetaData(StatementMeta.class);
+  if (meta != null)   return meta.type;
+  ClassNode type=null;
+  if (exp instanceof VariableExpression) {
+    VariableExpression ve=(VariableExpression)exp;
+    type=ve.getOriginType();
+    if (ve.getAccessedVariable() instanceof FieldNode) {
+      FieldNode fn=(FieldNode)ve.getAccessedVariable();
+      if (!fn.getDeclaringClass().equals(current))       return ClassHelper.OBJECT_TYPE;
+    }
+  }
+ else   if (exp instanceof Variable) {
+    Variable v=(Variable)exp;
+    type=v.getOriginType();
+  }
+ else {
+    type=exp.getType();
+  }
+  return type.redirect();
+}

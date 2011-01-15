@@ -10,6 +10,16 @@
     right.visit(controller.getAcg());
     controller.getOperandStack().doGroovyCast(ClassHelper.int_TYPE);
     writeIntXInt(type,false);
+    return;
+  }
+ else   if (rightIsInt && type == LEFT_SQUARE_BRACKET && getType(left,controller.getClassNode()).getComponentType() == ClassHelper.int_TYPE) {
+    left.visit(controller.getAcg());
+    controller.getOperandStack().doGroovyCast(getType(left,controller.getClassNode()));
+    right.visit(controller.getAcg());
+    controller.getOperandStack().doGroovyCast(ClassHelper.int_TYPE);
+    MethodVisitor mv=controller.getMethodVisitor();
+    mv.visitInsn(IALOAD);
+    controller.getOperandStack().replace(ClassHelper.int_TYPE,2);
   }
  else {
     super.evaluateBinaryExpression(message,binExp);

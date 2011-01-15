@@ -1,22 +1,3 @@
 {
-  StatementMeta meta=(StatementMeta)exp.getNodeMetaData(StatementMeta.class);
-  if (meta != null)   return meta.type == ClassHelper.int_TYPE;
-  ClassNode type=null;
-  if (exp instanceof VariableExpression) {
-    VariableExpression ve=(VariableExpression)exp;
-    type=ve.getOriginType();
-    if (ve.getAccessedVariable() instanceof FieldNode) {
-      FieldNode fn=(FieldNode)ve.getAccessedVariable();
-      if (!fn.getDeclaringClass().equals(current))       return false;
-    }
-  }
- else   if (exp instanceof Variable) {
-    Variable v=(Variable)exp;
-    type=v.getOriginType();
-  }
- else {
-    type=exp.getType();
-  }
-  type=type.redirect();
-  return type == ClassHelper.int_TYPE;
+  return getType(exp,current) == ClassHelper.int_TYPE;
 }

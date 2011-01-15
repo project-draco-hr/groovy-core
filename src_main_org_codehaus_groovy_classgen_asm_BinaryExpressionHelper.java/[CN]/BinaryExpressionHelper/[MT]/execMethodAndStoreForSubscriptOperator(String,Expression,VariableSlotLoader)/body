@@ -16,7 +16,7 @@
     ClassNode methodResultType=operandStack.getTopOperand();
     final int resultIdx=compileStack.defineTemporaryVariable("postfix_" + method,methodResultType,true);
     BytecodeExpression methodResultLoader=new VariableSlotLoader(methodResultType,resultIdx,operandStack);
-    assignArray(be.getLeftExpression(),usesSubscript,methodResultLoader);
+    assignToArray(be,be.getLeftExpression(),usesSubscript,methodResultLoader);
     compileStack.removeVar(resultIdx);
   }
  else   if (expression instanceof VariableExpression || expression instanceof FieldExpression || expression instanceof PropertyExpression) {

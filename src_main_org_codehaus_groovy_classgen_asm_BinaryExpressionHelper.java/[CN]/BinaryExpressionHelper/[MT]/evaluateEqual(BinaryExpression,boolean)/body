@@ -17,14 +17,14 @@
   }
  else {
     rightExpression.visit(acg);
-    rhsType=getCastType(rightExpression);
+    rhsType=controller.getOperandStack().getTopOperand();
   }
   int rhsValueId=compileStack.defineTemporaryVariable("$rhs",rhsType,true);
   BytecodeExpression rhsValueLoader=new VariableSlotLoader(rhsType,rhsValueId,operandStack);
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-      assignArray(leftBinExpr.getLeftExpression(),leftBinExpr.getRightExpression(),rhsValueLoader);
+      assignToArray(expression,leftBinExpr.getLeftExpression(),leftBinExpr.getRightExpression(),rhsValueLoader);
     }
     compileStack.removeVar(rhsValueId);
     return;

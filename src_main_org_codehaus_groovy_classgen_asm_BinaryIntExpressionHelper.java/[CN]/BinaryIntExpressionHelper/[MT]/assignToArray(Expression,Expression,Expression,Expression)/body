@@ -1,0 +1,16 @@
+{
+  if (OptimizingStatementWriter.shouldOptimize(orig)) {
+    OperandStack operandStack=controller.getOperandStack();
+    receiver.visit(controller.getAcg());
+    index.visit(controller.getAcg());
+    operandStack.doGroovyCast(ClassHelper.int_TYPE);
+    rhsValueLoader.visit(controller.getAcg());
+    operandStack.doGroovyCast(ClassHelper.int_TYPE);
+    controller.getMethodVisitor().visitInsn(IASTORE);
+    operandStack.remove(3);
+    rhsValueLoader.visit(controller.getAcg());
+  }
+ else {
+    super.assignToArray(orig,receiver,index,rhsValueLoader);
+  }
+}

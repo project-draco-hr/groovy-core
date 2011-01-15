@@ -3,8 +3,10 @@
   super.visitBinaryExpression(expression);
   boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
   boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression(),node);
-  if (!optimizeInt)   optimizeInt=(leftInt && rightInt);
-  if (optimizeInt) {
+  boolean optimizeThisExpression=leftInt && rightInt;
+  ClassNode type=null;
+  optimizeInt=optimizeInt || optimizeThisExpression;
+  if (optimizeThisExpression) {
 switch (expression.getOperation().getType()) {
 case Types.DIVIDE:
 case Types.POWER:
@@ -30,9 +32,18 @@ expression.setType(ClassHelper.int_TYPE);
 break;
 default :
 }
+type=ClassHelper.int_TYPE;
 }
-if (optimizeInt) {
+ else if (rightInt && expression.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
+ClassNode ltype=BinaryIntExpressionHelper.getType(expression.getLeftExpression(),node);
+if (ltype.getComponentType() == ClassHelper.int_TYPE) {
+optimizeInt=true;
+optimizeThisExpression=true;
+type=ClassHelper.int_TYPE;
+}
+}
+if (optimizeThisExpression) {
 StatementMeta meta=addMeta(expression);
-if (leftInt && rightInt) meta.type=ClassHelper.int_TYPE;
+meta.type=type;
 }
 }
