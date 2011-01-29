@@ -19,7 +19,8 @@
   addDefaultParameterConstructors(node);
   final String classInternalName=BytecodeHelper.getClassInternalName(node);
   addStaticMetaClassField(node,classInternalName);
-  boolean knownSpecialCase=node.isDerivedFrom(ClassHelper.GSTRING_TYPE) || node.isDerivedFrom(ClassHelper.make(GroovyObjectSupport.class));
+  boolean knownSpecialCase=node.isDerivedFrom(ClassHelper.GSTRING_TYPE) || node.isDerivedFrom(ClassHelper.GROOVY_OBJECT_SUPPORT_TYPE);
+  addFastPathHelperFieldsAndHelperMethod(node,classInternalName,knownSpecialCase);
   if (!knownSpecialCase)   addGroovyObjectInterfaceAndMethods(node,classInternalName);
   addDefaultConstructor(node);
   if (!(node instanceof InnerClassNode))   addTimeStamp(node);

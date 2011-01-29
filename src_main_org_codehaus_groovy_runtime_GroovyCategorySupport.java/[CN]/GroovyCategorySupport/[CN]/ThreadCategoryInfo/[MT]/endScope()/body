@@ -17,6 +17,7 @@
   level--;
   atomicCategoryUsageCounter.getAndDecrement();
   categoriesInUse=atomicCategoryUsageCounter.get();
+  if (categoriesInUse == 0)   DefaultMetaClassInfo.setCategoryUsed(false);
   if (level == 0) {
     THREAD_INFO.remove();
   }

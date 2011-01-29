@@ -2,9 +2,20 @@
   if (canNotDoFastPath(meta))   return null;
   MethodVisitor mv=controller.getMethodVisitor();
   FastPathData fastPathData=new FastPathData();
+  Label slowPath=new Label();
   if (meta.optimizeInt) {
     isOrigInt.call(mv);
-    mv.visitJumpInsn(IFNE,fastPathData.pathStart);
+    mv.visitJumpInsn(IFEQ,slowPath);
   }
+  String owner=BytecodeHelper.getClassInternalName(controller.getClassNode());
+  MethodNode mn=controller.getMethodNode();
+  if (mn != null) {
+    mv.visitFieldInsn(GETSTATIC,owner,Verifier.STATIC_METACLASS_BOOL,"Z");
+    mv.visitJumpInsn(IFNE,slowPath);
+  }
+  disabledStandardMetaClass.call(mv);
+  mv.visitJumpInsn(IFNE,slowPath);
+  mv.visitJumpInsn(GOTO,fastPathData.pathStart);
+  mv.visitLabel(slowPath);
   return fastPathData;
 }

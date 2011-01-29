@@ -1,0 +1,11 @@
+{
+  for (ClassNode current=node; current != null; current=current.getSuperClass()) {
+    FieldNode ret=current.getDeclaredField(fieldName);
+    if (ret == null)     continue;
+    if (Modifier.isPublic(ret.getModifiers()) && ret.getType().redirect() == ClassHelper.boolean_TYPE) {
+      return ret;
+    }
+    throw new RuntimeParserException("The class " + node.getName() + " cannot declare field '"+ fieldName+ "' as this"+ " field is needed for internal groovy purposes",ret);
+  }
+  return null;
+}

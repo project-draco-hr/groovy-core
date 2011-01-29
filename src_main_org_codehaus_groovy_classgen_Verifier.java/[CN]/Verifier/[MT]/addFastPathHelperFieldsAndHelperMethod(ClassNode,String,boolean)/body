@@ -1,0 +1,8 @@
+{
+  if (node.getNodeMetaData(ClassNodeSkip.class) != null)   return;
+  FieldNode stMCB=checkFieldDoesNotExist(node,STATIC_METACLASS_BOOL);
+  if (stMCB == null) {
+    stMCB=node.addField(STATIC_METACLASS_BOOL,ACC_PUBLIC | ACC_STATIC | ACC_SYNTHETIC| ACC_TRANSIENT,ClassHelper.boolean_TYPE,null);
+    stMCB.setSynthetic(true);
+  }
+}

@@ -29,12 +29,30 @@
     public void updateConstantMetaClass(    MetaClassRegistryChangeEvent cmcu){
 synchronized (metaClassInfo) {
         metaClassInfo.add(cmcu.getNewMetaClass());
-        if (cmcu.getClassToUpdate() == Integer.class) {
+        Class c=cmcu.getClassToUpdate();
+        if (c == Integer.class) {
           if (cmcu.getNewMetaClass() == null) {
             DefaultMetaClassInfo.setOrigInt(true);
           }
  else {
             DefaultMetaClassInfo.setOrigInt(false);
+          }
+        }
+ else         if (c.getComponentType() == Integer.class) {
+          if (cmcu.getNewMetaClass() == null) {
+            DefaultMetaClassInfo.setOrigIntArray(true);
+          }
+ else {
+            DefaultMetaClassInfo.setOrigIntArray(false);
+          }
+        }
+ else {
+          Field sdyn;
+          try {
+            sdyn=c.getDeclaredField(Verifier.STATIC_METACLASS_BOOL);
+            sdyn.setBoolean(null,cmcu.getNewMetaClass() != null);
+          }
+ catch (          Throwable e) {
           }
         }
       }
