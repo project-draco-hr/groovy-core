@@ -1,0 +1,26 @@
+{
+  if (name == null)   return;
+  Parameter[] paraTypes=null;
+  if (callArgs instanceof ArgumentListExpression) {
+    ArgumentListExpression args=(ArgumentListExpression)callArgs;
+    int size=args.getExpressions().size();
+    paraTypes=new Parameter[size];
+    int i=0;
+    for (    Expression exp : args.getExpressions()) {
+      ClassNode type=BinaryIntExpressionHelper.getType(exp,node);
+      paraTypes[i]=new Parameter(type,"");
+      i++;
+    }
+  }
+ else {
+    ClassNode type=BinaryIntExpressionHelper.getType(callArgs,node);
+    paraTypes=new Parameter[]{new Parameter(type,"")};
+  }
+  MethodNode target=node.getMethod(name,paraTypes);
+  StatementMeta meta=addMeta(expression);
+  meta.target=target;
+  if (target != null) {
+    meta.type=target.getReturnType().redirect();
+    optimizeInt=true;
+  }
+}

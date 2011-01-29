@@ -1,6 +1,7 @@
 {
   final OperandStack operandStack=controller.getOperandStack();
-  Expression callSiteReceiverSwap=new BytecodeExpression(getType(expression)){
+  ClassNode BEType=BinaryIntExpressionHelper.getType(expression,controller.getClassNode());
+  Expression callSiteReceiverSwap=new BytecodeExpression(BEType){
     @Override public void visit(    MethodVisitor mv){
       operandStack.push(ClassHelper.OBJECT_TYPE);
       operandStack.swap();
