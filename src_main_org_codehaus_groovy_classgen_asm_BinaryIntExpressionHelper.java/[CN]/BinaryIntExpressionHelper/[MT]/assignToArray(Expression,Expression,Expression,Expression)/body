@@ -1,12 +1,13 @@
 {
   if (OptimizingStatementWriter.shouldOptimize(orig)) {
     OperandStack operandStack=controller.getOperandStack();
+    MethodVisitor mv=controller.getMethodVisitor();
     receiver.visit(controller.getAcg());
     index.visit(controller.getAcg());
     operandStack.doGroovyCast(ClassHelper.int_TYPE);
     rhsValueLoader.visit(controller.getAcg());
     operandStack.doGroovyCast(ClassHelper.int_TYPE);
-    controller.getMethodVisitor().visitInsn(IASTORE);
+    intArraySet.call(mv);
     operandStack.remove(3);
     rhsValueLoader.visit(controller.getAcg());
   }
