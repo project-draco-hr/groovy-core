@@ -8,6 +8,7 @@
     int i=0;
     for (    Expression exp : args.getExpressions()) {
       ClassNode type=BinaryIntExpressionHelper.getType(exp,node);
+      if (!validTypeForCall(type))       return;
       paraTypes[i]=new Parameter(type,"");
       i++;
     }
@@ -17,10 +18,10 @@
     paraTypes=new Parameter[]{new Parameter(type,"")};
   }
   MethodNode target=node.getMethod(name,paraTypes);
+  if (target == null)   return;
+  if (!target.getDeclaringClass().equals(node))   return;
   StatementMeta meta=addMeta(expression);
   meta.target=target;
-  if (target != null) {
-    meta.type=target.getReturnType().redirect();
-    optimizeInt=true;
-  }
+  meta.type=target.getReturnType().redirect();
+  optimizeInt=true;
 }
