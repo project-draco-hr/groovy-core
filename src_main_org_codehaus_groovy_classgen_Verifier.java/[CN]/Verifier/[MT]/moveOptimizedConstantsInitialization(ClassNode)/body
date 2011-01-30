@@ -1,0 +1,19 @@
+{
+  if (node.isInterface())   return false;
+  final int mods=Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_PUBLIC;
+  String name=SWAP_INIT;
+  BlockStatement methodCode=new BlockStatement();
+  node.addSyntheticMethod(name,mods,ClassHelper.VOID_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,methodCode);
+  for (  FieldNode fn : node.getFields()) {
+    if (!fn.isStatic() || !fn.isSynthetic() || !fn.getName().startsWith("$const$"))     continue;
+    if (fn.getInitialExpression() == null)     continue;
+    final FieldExpression fe=new FieldExpression(fn);
+    if (fn.getType().equals(ClassHelper.REFERENCE_TYPE))     fe.setUseReferenceDirectly(true);
+    ConstantExpression init=(ConstantExpression)fn.getInitialExpression();
+    ExpressionStatement statement=new ExpressionStatement(new BinaryExpression(fe,Token.newSymbol(Types.EQUAL,fn.getLineNumber(),fn.getColumnNumber()),init));
+    fn.setInitialValueExpression(null);
+    init.setConstantName(null);
+    methodCode.addStatement(statement);
+  }
+  return true;
+}

@@ -1,5 +1,17 @@
 {
+  boolean addSwapInit=moveOptimizedConstantsInitialization(node);
   for (  ConstructorNode cn : node.getDeclaredConstructors()) {
     addInitialization(node,cn);
+  }
+  if (addSwapInit) {
+    BytecodeSequence seq=new BytecodeSequence(new BytecodeInstruction(){
+      @Override public void visit(      MethodVisitor mv){
+        mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(node),SWAP_INIT,"()V");
+      }
+    }
+);
+    List<Statement> swapCall=new ArrayList<Statement>(1);
+    swapCall.add(seq);
+    node.addStaticInitializerStatements(swapCall,true);
   }
 }
