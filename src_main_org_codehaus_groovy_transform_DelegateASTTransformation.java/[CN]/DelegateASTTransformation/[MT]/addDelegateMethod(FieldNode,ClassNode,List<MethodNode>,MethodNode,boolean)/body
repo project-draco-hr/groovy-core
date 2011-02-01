@@ -6,6 +6,11 @@
       return;
     }
   }
+  for (  MethodNode mn : owner.getMethods()) {
+    if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor())) {
+      return;
+    }
+  }
   MethodNode existingNode=null;
   for (  MethodNode mn : ownMethods) {
     if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor()) && !mn.isAbstract() && !mn.isStatic()) {
