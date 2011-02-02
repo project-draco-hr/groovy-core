@@ -1,0 +1,20 @@
+{
+  try {
+    int numCharsToRead=((String)type.getValidator()).length();
+    char[] chars=new char[numCharsToRead];
+    reader.read(chars);
+    String stringRead=new String(chars);
+    if (stringRead.equals(type.getValidator())) {
+      token.setEndColumn(token.getStartColumn() + numCharsToRead);
+      token.setText(stringRead);
+      return token;
+    }
+ else {
+      throwJsonException(stringRead,type);
+    }
+  }
+ catch (  IOException ioe) {
+    throw new JsonException("An IO exception occurred while reading the JSON payload",ioe);
+  }
+  return null;
+}

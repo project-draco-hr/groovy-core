@@ -1,0 +1,47 @@
+{
+  Map content=new HashMap();
+  JsonToken previousToken=null;
+  JsonToken currentToken=null;
+  for (; ; ) {
+    previousToken=currentToken;
+    currentToken=lexer.nextToken();
+    if (currentToken.getType() == CLOSE_CURLY) {
+      return content;
+    }
+ else     if (currentToken.getType() != STRING) {
+      throw new JsonException("Expected " + STRING.getLabel() + " key on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '${currentToken.text}' instead.");
+    }
+    String mapKey=(String)currentToken.getValue();
+    previousToken=currentToken;
+    currentToken=lexer.nextToken();
+    if (currentToken.getType() != COLON) {
+      throw new JsonException("Expected " + COLON.getLabel() + " on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '"+ currentToken.getText()+ "' instead.");
+    }
+    previousToken=currentToken;
+    currentToken=lexer.nextToken();
+    if (currentToken.getType() == OPEN_CURLY) {
+      content.put(mapKey,parseObject(lexer));
+    }
+ else     if (currentToken.getType() == OPEN_BRACKET) {
+      content.put(mapKey,parseArray(lexer));
+    }
+ else     if (currentToken.getType().ordinal() >= NULL.ordinal()) {
+      content.put(mapKey,currentToken.getValue());
+    }
+ else {
+      throw new JsonException("Expected a value, an array, or an object " + "on line: " + currentToken.getStartLine() + ", column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
+    }
+    previousToken=currentToken;
+    currentToken=lexer.nextToken();
+    if (currentToken == null) {
+      throw new JsonException("Expected " + CLOSE_CURLY.getLabel() + " or "+ COMMA.getLabel()+ " "+ "on line: "+ previousToken.getEndLine()+ ", column: "+ previousToken.getEndColumn()+ ".\n"+ "But got an unterminated object.");
+    }
+    if (currentToken.getType() == CLOSE_CURLY) {
+      break;
+    }
+ else     if (currentToken.getType() != COMMA) {
+      throw new JsonException("Expected a value or " + CLOSE_CURLY.getLabel() + " "+ "on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
+    }
+  }
+  return content;
+}

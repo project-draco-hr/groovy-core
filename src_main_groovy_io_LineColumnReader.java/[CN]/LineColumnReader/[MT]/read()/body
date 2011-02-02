@@ -1,0 +1,25 @@
+{
+  if (newLineWasRead) {
+    line+=1;
+    column=1;
+    newLineWasRead=false;
+  }
+  int charRead=super.read();
+  if (charRead > -1) {
+    char c=(char)charRead;
+    if (c == '\r' || c == '\n') {
+      newLineWasRead=true;
+      if (c == '\r') {
+        mark(1);
+        c=(char)super.read();
+        if (c != '\n') {
+          reset();
+        }
+      }
+    }
+ else {
+      column+=1;
+    }
+  }
+  return charRead;
+}

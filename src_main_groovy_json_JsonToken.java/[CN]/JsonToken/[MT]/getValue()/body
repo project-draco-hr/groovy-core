@@ -1,0 +1,48 @@
+{
+  if (type == STRING) {
+    if (text.length() == 2) {
+      return "";
+    }
+ else {
+      return text.substring(1,text.length() - 1);
+    }
+  }
+ else   if (type == NUMBER) {
+    if (text.contains(".") || text.contains("e") || text.contains("E")) {
+      BigDecimal v=new BigDecimal(text);
+      if (v.compareTo(MAX_FLOAT) <= 0 && v.compareTo(MIN_FLOAT) >= 0) {
+        return new Float(text);
+      }
+ else       if (v.compareTo(MAX_DOUBLE) <= 0 && v.compareTo(MIN_DOUBLE) >= 0) {
+        return new Double(text);
+      }
+ else {
+        return v;
+      }
+    }
+ else {
+      BigInteger v=new BigInteger(text);
+      if (v.compareTo(MAX_INTEGER) <= 0 && v.compareTo(MIN_INTEGER) >= 0) {
+        return v.intValue();
+      }
+ else       if (v.compareTo(MAX_LONG) <= 0 && v.compareTo(MIN_LONG) >= 0) {
+        return v.longValue();
+      }
+ else {
+        return v;
+      }
+    }
+  }
+ else   if (type == TRUE) {
+    return true;
+  }
+ else   if (type == FALSE) {
+    return false;
+  }
+ else   if (type == NULL) {
+    return null;
+  }
+ else {
+    throw new JsonException("No appropriate value represented by '" + text + "' on line: "+ startLine+ ", column: "+ startColumn);
+  }
+}

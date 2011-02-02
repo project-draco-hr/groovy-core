@@ -1,0 +1,36 @@
+{
+  List content=new ArrayList();
+  JsonToken currentToken;
+  for (; ; ) {
+    currentToken=lexer.nextToken();
+    if (currentToken == null) {
+      throw new JsonException("Expected a value on line: ${lexer.reader.line}, column: ${lexer.reader.column}.\n" + "But got an unterminated array.");
+    }
+    if (currentToken.getType() == OPEN_CURLY) {
+      content.add(parseObject(lexer));
+    }
+ else     if (currentToken.getType() == OPEN_BRACKET) {
+      content.add(parseArray(lexer));
+    }
+ else     if (currentToken.getType().ordinal() >= NULL.ordinal()) {
+      content.add(currentToken.getValue());
+    }
+ else     if (currentToken.getType() == CLOSE_BRACKET) {
+      return content;
+    }
+ else {
+      throw new JsonException("Expected a value, an array, or an object on line: ${currentToken.startLine}, column: ${currentToken.startColumn}.\n" + "But got '${currentToken.text}' instead.");
+    }
+    currentToken=lexer.nextToken();
+    if (currentToken == null) {
+      throw new JsonException("Expected ${CLOSE_BRACKET.label} or ${COMMA.label} on line: ${lexer.reader.line}, column: ${lexer.reader.column}.\n" + "But got an unterminated array.");
+    }
+    if (currentToken.getType() == CLOSE_BRACKET) {
+      break;
+    }
+ else     if (currentToken.getType() != COMMA) {
+      throw new JsonException("Expected a value or ${CLOSE_BRACKET.label} on line: ${currentToken.startLine} column: ${currentToken.startColumn}.\n" + "But got '${currentToken.text}' instead.");
+    }
+  }
+  return content;
+}

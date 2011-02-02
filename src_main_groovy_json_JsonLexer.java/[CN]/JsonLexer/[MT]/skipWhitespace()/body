@@ -1,0 +1,16 @@
+{
+  try {
+    int readChar=20;
+    char c=SPACE;
+    while (Character.isWhitespace(c)) {
+      reader.mark(1);
+      readChar=reader.read();
+      c=(char)readChar;
+    }
+    reader.reset();
+    return readChar;
+  }
+ catch (  IOException ioe) {
+    throw new JsonException("An IO exception occurred while reading the JSON payload",ioe);
+  }
+}
