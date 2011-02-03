@@ -2,4 +2,7 @@
   checkClassForModifier(node,isTransient(node.getModifiers()),"transient");
   checkClassForModifier(node,isVolatile(node.getModifiers()),"volatile");
   checkClassForModifier(node,isNative(node.getModifiers()),"native");
+  if (!(node instanceof InnerClassNode)) {
+    checkClassForModifier(node,isStatic(node.getModifiers()),"static");
+  }
 }
