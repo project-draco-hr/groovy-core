@@ -1,12 +1,15 @@
 {
   String name=type.getName();
-  if (type instanceof LowerCaseClass) {
-    cachedClasses.put(name,NO_CLASS);
-  }
   Object cached=cachedClasses.get(name);
   if (cached == NO_CLASS)   return false;
-  if (cached == SCRIPT)   throw new GroovyBugError("name " + name + " was marked as script, but was not resolved as such");
-  if (cached != null)   return true;
+  if (cached != null) {
+    type.setRedirect((ClassNode)cached);
+    return true;
+  }
+  if (type instanceof LowerCaseClass) {
+    cachedClasses.put(name,NO_CLASS);
+    return false;
+  }
   if (currentClass.getModule().hasPackageName() && name.indexOf('.') == -1)   return false;
   GroovyClassLoader loader=compilationUnit.getClassLoader();
   Class cls;
@@ -14,16 +17,16 @@
     cls=loader.loadClass(name,false,true);
   }
  catch (  ClassNotFoundException cnfe) {
-    cachedClasses.put(name,SCRIPT);
-    return false;
+    cachedClasses.put(name,NO_CLASS);
+    return resolveToScript(type);
   }
 catch (  CompilationFailedException cfe) {
     compilationUnit.getErrorCollector().addErrorAndContinue(new ExceptionMessage(cfe,true,source));
-    return false;
+    return resolveToScript(type);
   }
   if (cls == null)   return false;
   ClassNode cn=ClassHelper.make(cls);
   cachedClasses.put(name,cn);
   type.setRedirect(cn);
-  return cls.getClassLoader() == loader;
+  return cls.getClassLoader() == loader || resolveToScript(type);
 }
