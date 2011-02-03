@@ -15,5 +15,12 @@
       if (!found && new File(cpEntry).exists())       antLoader.addPathElement(cpEntry);
     }
   }
-  return new GroovyClassLoader(parent,configuration);
+  GroovyClassLoader loader=new GroovyClassLoader(parent,configuration);
+  loader.setResourceLoader(new GroovyResourceLoader(){
+    public URL loadGroovySource(    String filename) throws MalformedURLException {
+      return null;
+    }
+  }
+);
+  return loader;
 }

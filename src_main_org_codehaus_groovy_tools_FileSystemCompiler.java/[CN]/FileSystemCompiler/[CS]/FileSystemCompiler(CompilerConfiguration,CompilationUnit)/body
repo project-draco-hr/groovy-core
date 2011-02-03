@@ -3,9 +3,15 @@
     unit=cu;
   }
  else   if (configuration.getJointCompilationOptions() != null) {
-    this.unit=new JavaAwareCompilationUnit(configuration);
+    unit=new JavaAwareCompilationUnit(configuration);
   }
  else {
-    this.unit=new CompilationUnit(configuration);
+    unit=new CompilationUnit(configuration);
   }
+  unit.getClassLoader().setResourceLoader(new GroovyResourceLoader(){
+    public URL loadGroovySource(    String filename) throws MalformedURLException {
+      return null;
+    }
+  }
+);
 }
