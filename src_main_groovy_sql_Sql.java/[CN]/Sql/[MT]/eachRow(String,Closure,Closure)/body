@@ -1,18 +1,3 @@
 {
-  Connection connection=createConnection();
-  Statement statement=getStatement(connection,sql);
-  ResultSet results=null;
-  try {
-    results=statement.executeQuery(sql);
-    if (metaClosure != null)     metaClosure.call(results.getMetaData());
-    GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();
-    groovyRS.eachRow(rowClosure);
-  }
- catch (  SQLException e) {
-    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
-    throw e;
-  }
- finally {
-    closeResources(connection,statement,results);
-  }
+  eachRow(sql,metaClosure,0,0,rowClosure);
 }

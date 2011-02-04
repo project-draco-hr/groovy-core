@@ -1,0 +1,24 @@
+{
+  Connection connection=createConnection();
+  PreparedStatement statement=null;
+  ResultSet results=null;
+  try {
+    statement=getPreparedStatement(connection,sql,params);
+    results=statement.executeQuery();
+    if (metaClosure != null)     metaClosure.call(results.getMetaData());
+    boolean cursorAtRow=moveCursor(results,offset);
+    if (!cursorAtRow)     return;
+    GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();
+    int i=0;
+    while (groovyRS.next() && (maxRows <= 0 || i++ < maxRows)) {
+      closure.call(groovyRS);
+    }
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement,results);
+  }
+}

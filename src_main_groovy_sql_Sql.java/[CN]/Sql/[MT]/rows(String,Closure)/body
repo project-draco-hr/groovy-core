@@ -1,13 +1,3 @@
 {
-  AbstractQueryCommand command=createQueryCommand(sql);
-  ResultSet rs=null;
-  try {
-    rs=command.execute();
-    List<GroovyRowResult> result=asList(sql,rs,metaClosure);
-    rs=null;
-    return result;
-  }
-  finally {
-    command.closeResources(rs);
-  }
+  return rows(sql,0,0,metaClosure);
 }

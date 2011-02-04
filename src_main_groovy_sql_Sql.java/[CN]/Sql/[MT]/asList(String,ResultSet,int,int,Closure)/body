@@ -1,0 +1,22 @@
+{
+  List<GroovyRowResult> results=new ArrayList<GroovyRowResult>();
+  try {
+    if (metaClosure != null) {
+      metaClosure.call(rs.getMetaData());
+    }
+    boolean cursorAtRow=moveCursor(rs,offset);
+    if (!cursorAtRow)     return null;
+    int i=0;
+    while (rs.next() && (maxRows <= 0 || i++ < maxRows)) {
+      results.add(SqlGroovyMethods.toRowResult(rs));
+    }
+    return (results);
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to retrieve row from ResultSet for: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    rs.close();
+  }
+}

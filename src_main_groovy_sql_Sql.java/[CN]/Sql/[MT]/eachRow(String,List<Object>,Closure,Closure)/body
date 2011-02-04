@@ -1,21 +1,3 @@
 {
-  Connection connection=createConnection();
-  PreparedStatement statement=null;
-  ResultSet results=null;
-  try {
-    statement=getPreparedStatement(connection,sql,params);
-    results=statement.executeQuery();
-    if (metaClosure != null)     metaClosure.call(results.getMetaData());
-    GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();
-    while (groovyRS.next()) {
-      closure.call(groovyRS);
-    }
-  }
- catch (  SQLException e) {
-    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
-    throw e;
-  }
- finally {
-    closeResources(connection,statement,results);
-  }
+  eachRow(sql,params,metaClosure,0,0,closure);
 }

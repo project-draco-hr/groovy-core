@@ -1,0 +1,13 @@
+{
+  boolean cursorAtRow=true;
+  if (results.getType() == ResultSet.TYPE_FORWARD_ONLY) {
+    int i=1;
+    while (i++ < offset && cursorAtRow) {
+      cursorAtRow=results.next();
+    }
+  }
+ else   if (offset > 1) {
+    cursorAtRow=results.absolute(offset - 1);
+  }
+  return cursorAtRow;
+}
