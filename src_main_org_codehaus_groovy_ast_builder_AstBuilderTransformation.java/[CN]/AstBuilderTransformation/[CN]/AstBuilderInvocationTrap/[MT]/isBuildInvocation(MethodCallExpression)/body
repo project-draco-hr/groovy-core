@@ -1,0 +1,20 @@
+{
+  if (call == null)   throw new IllegalArgumentException("Null: call");
+  if (call.getMethod() instanceof ConstantExpression && "buildFromCode".equals(((ConstantExpression)call.getMethod()).getValue())) {
+    if (call.getObjectExpression() != null && call.getObjectExpression().getType() != null) {
+      String name=call.getObjectExpression().getType().getName();
+      if (name != null && !"".equals(name) && factoryTargets.contains(name)) {
+        if (call.getArguments() != null && call.getArguments() instanceof TupleExpression) {
+          if (((TupleExpression)call.getArguments()).getExpressions() != null) {
+            for (            ASTNode node : ((TupleExpression)call.getArguments()).getExpressions()) {
+              if (node instanceof ClosureExpression) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}

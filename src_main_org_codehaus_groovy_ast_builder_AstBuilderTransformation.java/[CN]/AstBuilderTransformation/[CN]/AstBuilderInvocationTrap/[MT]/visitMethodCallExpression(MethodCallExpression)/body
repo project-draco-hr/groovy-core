@@ -1,0 +1,18 @@
+{
+  if (isBuildInvocation(call)) {
+    ClosureExpression closureExpression=getClosureArgument(call);
+    List<Expression> otherArgs=getNonClosureArguments(call);
+    String source=convertClosureToSource(closureExpression);
+    otherArgs.add(new ConstantExpression(source));
+    call.setArguments(new ArgumentListExpression(otherArgs));
+    call.setMethod(new ConstantExpression("buildFromBlock"));
+    call.setSpreadSafe(false);
+    call.setSafe(false);
+    call.setImplicitThis(false);
+  }
+ else {
+    call.getObjectExpression().visit(this);
+    call.getMethod().visit(this);
+    call.getArguments().visit(this);
+  }
+}

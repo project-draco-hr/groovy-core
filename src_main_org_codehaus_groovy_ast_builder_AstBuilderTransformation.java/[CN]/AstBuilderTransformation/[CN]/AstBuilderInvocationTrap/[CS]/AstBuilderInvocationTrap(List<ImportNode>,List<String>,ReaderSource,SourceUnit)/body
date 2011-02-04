@@ -1,0 +1,17 @@
+{
+  if (source == null)   throw new IllegalArgumentException("Null: source");
+  if (sourceUnit == null)   throw new IllegalArgumentException("Null: sourceUnit");
+  this.source=source;
+  this.sourceUnit=sourceUnit;
+  factoryTargets.add("org.codehaus.groovy.ast.builder.AstBuilder");
+  if (imports != null) {
+    for (    ImportNode importStatement : imports) {
+      if ("org.codehaus.groovy.ast.builder.AstBuilder".equals(importStatement.getType().getName())) {
+        factoryTargets.add(importStatement.getAlias());
+      }
+    }
+  }
+  if (importPackages.contains("org.codehaus.groovy.ast.builder.")) {
+    factoryTargets.add("AstBuilder");
+  }
+}

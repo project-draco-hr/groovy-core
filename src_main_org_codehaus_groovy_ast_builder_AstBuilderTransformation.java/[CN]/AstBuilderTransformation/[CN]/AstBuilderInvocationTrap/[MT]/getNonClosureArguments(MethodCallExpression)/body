@@ -1,0 +1,11 @@
+{
+  List<Expression> result=new ArrayList<Expression>();
+  if (call.getArguments() instanceof TupleExpression) {
+    for (    ASTNode node : ((TupleExpression)call.getArguments()).getExpressions()) {
+      if (!(node instanceof ClosureExpression)) {
+        result.add((Expression)node);
+      }
+    }
+  }
+  return result;
+}

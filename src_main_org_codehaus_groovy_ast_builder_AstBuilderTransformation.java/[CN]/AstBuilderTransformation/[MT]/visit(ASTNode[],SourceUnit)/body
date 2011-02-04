@@ -1,0 +1,72 @@
+{
+  AstBuilderInvocationTrap transformer=new AstBuilderInvocationTrap(sourceUnit.getAST().getImports(),sourceUnit.getAST().getImportPackages(),sourceUnit.getSource(),sourceUnit);
+  if (nodes != null) {
+    for (    ASTNode it : nodes) {
+      if (!(it instanceof AnnotationNode) && !(it instanceof ClassNode)) {
+        it.visit(transformer);
+      }
+    }
+  }
+  if (sourceUnit.getAST() != null) {
+    sourceUnit.getAST().visit(transformer);
+    if (sourceUnit.getAST().getStatementBlock() != null) {
+      sourceUnit.getAST().getStatementBlock().visit(transformer);
+    }
+    if (sourceUnit.getAST().getClasses() != null) {
+      for (      ClassNode classNode : sourceUnit.getAST().getClasses()) {
+        if (classNode.getMethods() != null) {
+          for (          MethodNode node : classNode.getMethods()) {
+            if (node != null && node.getCode() != null) {
+              node.getCode().visit(transformer);
+            }
+          }
+        }
+        try {
+          if (classNode.getDeclaredConstructors() != null) {
+            for (            MethodNode node : classNode.getDeclaredConstructors()) {
+              if (node != null && node.getCode() != null) {
+                node.getCode().visit(transformer);
+              }
+            }
+          }
+        }
+ catch (        MissingPropertyException ignored) {
+        }
+        if (classNode.getFields() != null) {
+          for (          FieldNode node : classNode.getFields()) {
+            if (node.getInitialValueExpression() != null) {
+              node.getInitialValueExpression().visit(transformer);
+            }
+          }
+        }
+        try {
+          if (classNode.getObjectInitializerStatements() != null) {
+            for (            Statement node : classNode.getObjectInitializerStatements()) {
+              if (node != null) {
+                node.visit(transformer);
+              }
+            }
+          }
+        }
+ catch (        MissingPropertyException ignored) {
+        }
+      }
+    }
+    if (sourceUnit.getAST().getMethods() != null) {
+      for (      MethodNode node : sourceUnit.getAST().getMethods()) {
+        if (node != null) {
+          if (node.getParameters() != null) {
+            for (            Parameter parameter : node.getParameters()) {
+              if (parameter != null && parameter.getInitialExpression() != null) {
+                parameter.getInitialExpression().visit(transformer);
+              }
+            }
+          }
+          if (node.getCode() != null) {
+            node.getCode().visit(transformer);
+          }
+        }
+      }
+    }
+  }
+}
