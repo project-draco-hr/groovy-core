@@ -1,6 +1,6 @@
 {
   MethodVisitor mv;
-  mv=cw.visitMethod(Opcodes.ACC_PUBLIC,"<init>","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Lgroovy/lang/MetaClassImpl;Lgroovy/lang/MetaMethod;[Ljava/lang/Class;)V",null,null);
+  mv=cw.visitMethod(Opcodes.ACC_PUBLIC,"<init>","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Lgroovy/lang/MetaClassImpl;Lgroovy/lang/MetaMethod;[Ljava/lang/Class;Ljava/lang/reflect/Constructor;)V",null,null);
   mv.visitCode();
   mv.visitVarInsn(Opcodes.ALOAD,0);
   mv.visitVarInsn(Opcodes.ALOAD,1);
@@ -8,6 +8,8 @@
   mv.visitVarInsn(Opcodes.ALOAD,3);
   mv.visitVarInsn(Opcodes.ALOAD,4);
   mv.visitMethodInsn(Opcodes.INVOKESPECIAL,superClass,"<init>","(Lorg/codehaus/groovy/runtime/callsite/CallSite;Lgroovy/lang/MetaClassImpl;Lgroovy/lang/MetaMethod;[Ljava/lang/Class;)V");
+  mv.visitVarInsn(Opcodes.ALOAD,5);
+  mv.visitFieldInsn(Opcodes.PUTSTATIC,internalName,"__constructor__","Ljava/lang/reflect/Constructor;");
   mv.visitInsn(Opcodes.RETURN);
   mv.visitMaxs(0,0);
   mv.visitEnd();
