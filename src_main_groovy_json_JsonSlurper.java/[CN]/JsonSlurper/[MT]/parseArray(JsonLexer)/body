@@ -4,7 +4,7 @@
   for (; ; ) {
     currentToken=lexer.nextToken();
     if (currentToken == null) {
-      throw new JsonException("Expected a value on line: ${lexer.reader.line}, column: ${lexer.reader.column}.\n" + "But got an unterminated array.");
+      throw new JsonException("Expected a value on line: " + lexer.getReader().getLine() + ", "+ "column: "+ lexer.getReader().getColumn()+ ".\n"+ "But got an unterminated array.");
     }
     if (currentToken.getType() == OPEN_CURLY) {
       content.add(parseObject(lexer));
@@ -19,17 +19,17 @@
       return content;
     }
  else {
-      throw new JsonException("Expected a value, an array, or an object on line: ${currentToken.startLine}, column: ${currentToken.startColumn}.\n" + "But got '${currentToken.text}' instead.");
+      throw new JsonException("Expected a value, an array, or an object " + "on line: " + currentToken.getStartLine() + ", "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
     }
     currentToken=lexer.nextToken();
     if (currentToken == null) {
-      throw new JsonException("Expected ${CLOSE_BRACKET.label} or ${COMMA.label} on line: ${lexer.reader.line}, column: ${lexer.reader.column}.\n" + "But got an unterminated array.");
+      throw new JsonException("Expected " + CLOSE_BRACKET.getLabel() + " "+ "or "+ COMMA.getLabel()+ " "+ "on line: "+ lexer.getReader().getLine()+ ", "+ "column: "+ lexer.getReader().getColumn()+ ".\n"+ "But got an unterminated array.");
     }
     if (currentToken.getType() == CLOSE_BRACKET) {
       break;
     }
  else     if (currentToken.getType() != COMMA) {
-      throw new JsonException("Expected a value or ${CLOSE_BRACKET.label} on line: ${currentToken.startLine} column: ${currentToken.startColumn}.\n" + "But got '${currentToken.text}' instead.");
+      throw new JsonException("Expected a value or " + CLOSE_BRACKET.getLabel() + " "+ "on line: "+ currentToken.getStartLine()+ " "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
     }
   }
   return content;

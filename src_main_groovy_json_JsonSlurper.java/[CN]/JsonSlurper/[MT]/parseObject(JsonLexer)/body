@@ -3,22 +3,28 @@
   JsonToken previousToken=null;
   JsonToken currentToken=null;
   for (; ; ) {
-    previousToken=currentToken;
     currentToken=lexer.nextToken();
+    if (currentToken == null) {
+      throw new JsonException("Expected a String key on line: " + lexer.getReader().getLine() + ", "+ "column: "+ lexer.getReader().getColumn()+ ".\n"+ "But got an unterminated object.");
+    }
     if (currentToken.getType() == CLOSE_CURLY) {
       return content;
     }
  else     if (currentToken.getType() != STRING) {
-      throw new JsonException("Expected " + STRING.getLabel() + " key on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '${currentToken.text}' instead.");
+      throw new JsonException("Expected " + STRING.getLabel() + " key "+ "on line: "+ currentToken.getStartLine()+ ", "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '"+ currentToken.getText()+ "' instead.");
     }
     String mapKey=(String)currentToken.getValue();
-    previousToken=currentToken;
     currentToken=lexer.nextToken();
-    if (currentToken.getType() != COLON) {
-      throw new JsonException("Expected " + COLON.getLabel() + " on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '"+ currentToken.getText()+ "' instead.");
+    if (currentToken == null) {
+      throw new JsonException("Expected a " + COLON.getLabel() + " "+ "on line: "+ lexer.getReader().getLine()+ ", "+ "column: "+ lexer.getReader().getColumn()+ ".\n"+ "But got an unterminated object.");
     }
-    previousToken=currentToken;
+    if (currentToken.getType() != COLON) {
+      throw new JsonException("Expected " + COLON.getLabel() + " "+ "on line: "+ currentToken.getStartLine()+ ", "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "Bug got '"+ currentToken.getText()+ "' instead.");
+    }
     currentToken=lexer.nextToken();
+    if (currentToken == null) {
+      throw new JsonException("Expected a value " + "on line: " + lexer.getReader().getLine() + ", "+ "column: "+ lexer.getReader().getColumn()+ ".\n"+ "But got an unterminated object.");
+    }
     if (currentToken.getType() == OPEN_CURLY) {
       content.put(mapKey,parseObject(lexer));
     }
@@ -29,18 +35,18 @@
       content.put(mapKey,currentToken.getValue());
     }
  else {
-      throw new JsonException("Expected a value, an array, or an object " + "on line: " + currentToken.getStartLine() + ", column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
+      throw new JsonException("Expected a value, an array, or an object " + "on line: " + currentToken.getStartLine() + ", "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
     }
     previousToken=currentToken;
     currentToken=lexer.nextToken();
     if (currentToken == null) {
-      throw new JsonException("Expected " + CLOSE_CURLY.getLabel() + " or "+ COMMA.getLabel()+ " "+ "on line: "+ previousToken.getEndLine()+ ", column: "+ previousToken.getEndColumn()+ ".\n"+ "But got an unterminated object.");
+      throw new JsonException("Expected " + CLOSE_CURLY.getLabel() + " or "+ COMMA.getLabel()+ " "+ "on line: "+ previousToken.getEndLine()+ ", "+ "column: "+ previousToken.getEndColumn()+ ".\n"+ "But got an unterminated object.");
     }
     if (currentToken.getType() == CLOSE_CURLY) {
       break;
     }
  else     if (currentToken.getType() != COMMA) {
-      throw new JsonException("Expected a value or " + CLOSE_CURLY.getLabel() + " "+ "on line: "+ currentToken.getStartLine()+ ", column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
+      throw new JsonException("Expected a value or " + CLOSE_CURLY.getLabel() + " "+ "on line: "+ currentToken.getStartLine()+ ", "+ "column: "+ currentToken.getStartColumn()+ ".\n"+ "But got '"+ currentToken.getText()+ "' instead.");
     }
   }
   return content;
