@@ -23,6 +23,13 @@
     stack.addAll(col);
     return (T)stack;
   }
+  if (clazz != String[].class && ReflectionCache.isArray(clazz)) {
+    try {
+      return (T)asArrayType(col,clazz);
+    }
+ catch (    GroovyCastException e) {
+    }
+  }
   Object[] args={col};
   try {
     return (T)InvokerHelper.invokeConstructorOf(clazz,args);
