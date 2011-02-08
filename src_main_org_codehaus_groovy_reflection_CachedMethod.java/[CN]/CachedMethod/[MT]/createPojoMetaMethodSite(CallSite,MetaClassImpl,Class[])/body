@@ -1,18 +1,27 @@
 {
-  if (!hasPojoCallSiteConstructor()) {
-    Constructor constr=null;
-    if (CallSiteGenerator.isCompilable(this)) {
-      constr=CallSiteGenerator.compilePojoMethod(this);
-      if (constr != null)       pojoCallSiteConstructor=new SoftReference<Constructor>(constr);
-    }
-  }
-  if (hasPogoCallSiteConstructor()) {
-    final Constructor constructor=pojoCallSiteConstructor.get();
-    if (constructor != null) {
-      try {
-        return (CallSite)constructor.newInstance(site,metaClass,this,params,constructor);
+  if (!skipCompiled) {
+    Constructor constr=getConstrcutor(pojoCallSiteConstructor);
+    if (constr == null) {
+      if (CallSiteGenerator.isCompilable(this)) {
+        constr=CallSiteGenerator.compilePojoMethod(this);
       }
- catch (      Throwable e) {
+      if (constr != null) {
+        pojoCallSiteConstructor=new SoftReference<Constructor>(constr);
+      }
+ else {
+        skipCompiled=true;
+      }
+    }
+    if (constr != null) {
+      try {
+        return (CallSite)constr.newInstance(site,metaClass,this,params,constr);
+      }
+ catch (      Error e) {
+        skipCompiled=true;
+        throw e;
+      }
+catch (      Throwable e) {
+        skipCompiled=true;
       }
     }
   }

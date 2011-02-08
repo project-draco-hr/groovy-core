@@ -1,18 +1,27 @@
 {
-  if (!hasStaticCallSiteConstructor()) {
-    Constructor constr=null;
-    if (CallSiteGenerator.isCompilable(this)) {
-      constr=CallSiteGenerator.compileStaticMethod(this);
-      if (constr != null)       staticCallSiteConstructor=new SoftReference<Constructor>(constr);
-    }
-  }
-  if (hasStaticCallSiteConstructor()) {
-    final Constructor constructor=staticCallSiteConstructor.get();
-    if (constructor != null) {
-      try {
-        return (CallSite)constructor.newInstance(site,metaClass,this,params,constructor);
+  if (!skipCompiled) {
+    Constructor constr=getConstrcutor(staticCallSiteConstructor);
+    if (constr == null) {
+      if (CallSiteGenerator.isCompilable(this)) {
+        constr=CallSiteGenerator.compileStaticMethod(this);
       }
- catch (      Throwable e) {
+      if (constr != null) {
+        staticCallSiteConstructor=new SoftReference<Constructor>(constr);
+      }
+ else {
+        skipCompiled=true;
+      }
+    }
+    if (constr != null) {
+      try {
+        return (CallSite)constr.newInstance(site,metaClass,this,params,constr);
+      }
+ catch (      Error e) {
+        skipCompiled=true;
+        throw e;
+      }
+catch (      Throwable e) {
+        skipCompiled=true;
       }
     }
   }
