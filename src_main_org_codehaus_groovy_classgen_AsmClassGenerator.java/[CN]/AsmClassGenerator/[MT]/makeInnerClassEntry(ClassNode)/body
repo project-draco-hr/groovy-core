@@ -1,0 +1,17 @@
+{
+  if (!(innerClass instanceof InnerClassNode))   return;
+  String innerClassName=innerClass.getName();
+  String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
+{
+    int index=innerClassName.lastIndexOf('$');
+    if (index >= 0)     innerClassName=innerClassName.substring(index + 1);
+  }
+  String outerClassName=controller.getInternalClassName();
+  MethodNode enclosingMethod=innerClass.getEnclosingMethod();
+  if (enclosingMethod != null) {
+    outerClassName=null;
+    innerClassName=null;
+  }
+  int mods=innerClass.getModifiers();
+  cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,mods);
+}

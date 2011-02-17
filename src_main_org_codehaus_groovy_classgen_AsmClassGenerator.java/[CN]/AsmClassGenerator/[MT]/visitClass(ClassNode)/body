@@ -43,23 +43,11 @@
       controller.getCallSiteWriter().generateCallSiteArray();
       createSyntheticStaticFields();
     }
-    for (Iterator iter=innerClasses.iterator(); iter.hasNext(); ) {
-      ClassNode innerClass=(ClassNode)iter.next();
-      String innerClassName=innerClass.getName();
-      String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
-{
-        int index=innerClassName.lastIndexOf('$');
-        if (index >= 0)         innerClassName=innerClassName.substring(index + 1);
-      }
-      String outerClassName=controller.getInternalClassName();
-      MethodNode enclosingMethod=innerClass.getEnclosingMethod();
-      if (enclosingMethod != null) {
-        outerClassName=null;
-        innerClassName=null;
-      }
-      int mods=innerClass.getModifiers();
-      cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,mods);
+    for (Iterator<InnerClassNode> iter=classNode.getInnerClasses(); iter.hasNext(); ) {
+      InnerClassNode innerClass=iter.next();
+      makeInnerClassEntry(innerClass);
     }
+    makeInnerClassEntry(classNode);
     cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {
