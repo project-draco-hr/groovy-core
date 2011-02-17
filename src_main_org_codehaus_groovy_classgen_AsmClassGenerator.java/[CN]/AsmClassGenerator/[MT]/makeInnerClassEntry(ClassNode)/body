@@ -1,12 +1,13 @@
 {
-  if (!(innerClass instanceof InnerClassNode))   return;
+  if (!(cn instanceof InnerClassNode))   return;
+  InnerClassNode innerClass=(InnerClassNode)cn;
   String innerClassName=innerClass.getName();
   String innerClassInternalName=BytecodeHelper.getClassInternalName(innerClassName);
 {
     int index=innerClassName.lastIndexOf('$');
     if (index >= 0)     innerClassName=innerClassName.substring(index + 1);
   }
-  String outerClassName=controller.getInternalClassName();
+  String outerClassName=BytecodeHelper.getClassInternalName(innerClass.getOuterClass().getName());
   MethodNode enclosingMethod=innerClass.getEnclosingMethod();
   if (enclosingMethod != null) {
     outerClassName=null;
