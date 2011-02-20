@@ -1,0 +1,11 @@
+{
+  Collection<Integer> c=Arrays.asList(2,4,5,20);
+  Number initial=BigDecimal.ZERO;
+  Closure<? extends Number> closure=new Closure<BigDecimal>(c){
+    BigDecimal doCall(    BigDecimal total,    Integer next){
+      return total.add(BigDecimal.ONE.divide(new BigDecimal(next)));
+    }
+  }
+;
+  assertTrue(DefaultTypeTransformation.compareEqual(BigDecimal.ONE,inject(c,initial,closure)));
+}
