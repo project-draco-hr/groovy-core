@@ -2,7 +2,8 @@
   ast=null;
   setController(sourceUnit);
   UnicodeEscapingReader unicodeReader=new UnicodeEscapingReader(reader,sourceBuffer);
-  GroovyLexer lexer=new GroovyLexer(unicodeReader);
+  UnicodeLexerSharedInputState inputState=new UnicodeLexerSharedInputState(unicodeReader);
+  GroovyLexer lexer=new GroovyLexer(inputState);
   unicodeReader.setLexer(lexer);
   GroovyRecognizer parser=GroovyRecognizer.make(lexer);
   parser.setSourceBuffer(sourceBuffer);

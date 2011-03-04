@@ -4,6 +4,10 @@
     write(nextChar);
     return nextChar;
   }
+  if (previousLine != lexer.getLine()) {
+    numUnicodeEscapesFoundOnCurrentLine=0;
+    previousLine=lexer.getLine();
+  }
   int c=reader.read();
   if (c != '\\') {
     write(c);
@@ -16,7 +20,9 @@
     write('\\');
     return '\\';
   }
+  int numberOfUChars=0;
   do {
+    numberOfUChars++;
     c=reader.read();
   }
  while (c == 'u');
@@ -30,5 +36,7 @@
   }
   int rv=Integer.parseInt(charNum.toString(),16);
   write(rv);
+  numUnicodeEscapesFound+=4 + numberOfUChars;
+  numUnicodeEscapesFoundOnCurrentLine+=4 + numberOfUChars;
   return rv;
 }
