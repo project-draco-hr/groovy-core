@@ -1,0 +1,14 @@
+{
+  final Class<? extends Statement> clazz=statement.getClass();
+  if (statementsBlacklist != null && statementsBlacklist.contains(clazz)) {
+    throw new SecurityException(clazz.getSimpleName() + "s are not allowed");
+  }
+ else   if (statementsWhitelist != null && !statementsWhitelist.contains(clazz)) {
+    throw new SecurityException(clazz.getSimpleName() + "s are not allowed");
+  }
+  for (  StatementChecker statementChecker : statementCheckers) {
+    if (!statementChecker.isAuthorized(statement)) {
+      throw new SecurityException("Statement [" + clazz.getSimpleName() + "] is not allowed");
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  final ModuleNode ast=source.getAST();
+  for (  Import anImport : imports) {
+switch (anImport.type) {
+case regular:
+      ast.addImport(anImport.alias,anImport.classNode);
+    break;
+case staticImport:
+  ast.addStaticImport(anImport.classNode,anImport.field,anImport.alias);
+break;
+case staticStar:
+ast.addStaticStarImport(anImport.alias,anImport.classNode);
+break;
+case star:
+ast.addStarImport(anImport.star);
+break;
+}
+}
+}

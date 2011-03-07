@@ -1,0 +1,15 @@
+{
+  assertExpressionAuthorized(call);
+  Expression receiver=call.getObjectExpression();
+  final String typeName=receiver.getType().getName();
+  if (receiversWhiteList != null && !receiversWhiteList.contains(typeName)) {
+    throw new SecurityException("Method calls not allowed on [" + typeName + "]");
+  }
+ else   if (receiversBlackList != null && receiversBlackList.contains(typeName)) {
+    throw new SecurityException("Method calls not allowed on [" + typeName + "]");
+  }
+  receiver.visit(this);
+  final Expression method=call.getMethod();
+  checkConstantTypeIfNotMethodNameOrProperty(method);
+  call.getArguments().visit(this);
+}

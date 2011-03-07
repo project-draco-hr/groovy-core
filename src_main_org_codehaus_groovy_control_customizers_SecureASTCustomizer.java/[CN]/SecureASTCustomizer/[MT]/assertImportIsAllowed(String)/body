@@ -1,0 +1,24 @@
+{
+  if (importsWhitelist != null && !importsWhitelist.contains(className)) {
+    if (starImportsWhitelist != null) {
+      ClassNode node=ClassHelper.make(className);
+      final String packageName=node.getPackageName();
+      if (!starImportsWhitelist.contains(packageName + ".*")) {
+        throw new SecurityException("Importing [" + className + "] is not allowed");
+      }
+    }
+ else {
+      throw new SecurityException("Importing [" + className + "] is not allowed");
+    }
+  }
+  if (importsBlacklist != null && importsBlacklist.contains(className)) {
+    throw new SecurityException("Importing [" + className + "] is not allowed");
+  }
+  if (starImportsBlacklist != null) {
+    ClassNode node=ClassHelper.make(className);
+    final String packageName=node.getPackageName();
+    if (starImportsBlacklist.contains(packageName + ".*")) {
+      throw new SecurityException("Importing [" + className + "] is not allowed");
+    }
+  }
+}

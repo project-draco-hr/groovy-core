@@ -60,5 +60,11 @@
     }
   }
 ,Phases.CANONICALIZATION);
+  if (configuration != null) {
+    final List<CompilationCustomizer> customizers=configuration.getCompilationCustomizers();
+    for (    CompilationCustomizer customizer : customizers) {
+      addPhaseOperation(customizer,customizer.getPhase().getPhaseNumber());
+    }
+  }
   this.classgenCallback=null;
 }

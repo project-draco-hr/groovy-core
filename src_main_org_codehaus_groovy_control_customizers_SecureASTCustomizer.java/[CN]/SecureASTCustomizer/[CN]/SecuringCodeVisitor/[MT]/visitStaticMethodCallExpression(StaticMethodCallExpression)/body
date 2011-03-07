@@ -1,0 +1,11 @@
+{
+  assertExpressionAuthorized(call);
+  final String typeName=call.getOwnerType().getName();
+  if (receiversWhiteList != null && !receiversWhiteList.contains(typeName)) {
+    throw new SecurityException("Method calls not allowed on [" + typeName + "]");
+  }
+ else   if (receiversBlackList != null && receiversBlackList.contains(typeName)) {
+    throw new SecurityException("Method calls not allowed on [" + typeName + "]");
+  }
+  call.getArguments().visit(this);
+}

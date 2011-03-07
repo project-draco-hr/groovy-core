@@ -1,0 +1,15 @@
+{
+  List<String> result=new ArrayList<String>(starImports.size());
+  for (  String starImport : starImports) {
+    if (starImport.endsWith(".*")) {
+      result.add(starImport);
+    }
+ else     if (starImport.endsWith(".")) {
+      result.add(starImport + "*");
+    }
+ else {
+      result.add(starImport + ".*");
+    }
+  }
+  return Collections.unmodifiableList(result);
+}

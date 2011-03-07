@@ -1,0 +1,12 @@
+{
+  assertStatementAuthorized(ifElse);
+  ifElse.getBooleanExpression().visit(this);
+  ifElse.getIfBlock().visit(this);
+  Statement elseBlock=ifElse.getElseBlock();
+  if (elseBlock instanceof EmptyStatement) {
+    visitEmptyStatement((EmptyStatement)elseBlock);
+  }
+ else {
+    elseBlock.visit(this);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  assertStatementAuthorized(statement);
+  statement.getTryStatement().visit(this);
+  for (  CatchStatement catchStatement : statement.getCatchStatements()) {
+    catchStatement.visit(this);
+  }
+  Statement finallyStatement=statement.getFinallyStatement();
+  if (finallyStatement instanceof EmptyStatement) {
+    visitEmptyStatement((EmptyStatement)finallyStatement);
+  }
+ else {
+    finallyStatement.visit(this);
+  }
+}

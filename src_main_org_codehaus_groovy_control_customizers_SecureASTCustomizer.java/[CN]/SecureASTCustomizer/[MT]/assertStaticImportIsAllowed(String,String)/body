@@ -1,0 +1,21 @@
+{
+  final String fqn=member.equals(className) ? member : className + "." + member;
+  if (staticImportsWhitelist != null && !staticImportsWhitelist.contains(fqn)) {
+    if (staticStarImportsWhitelist != null) {
+      if (!staticStarImportsWhitelist.contains(className + ".*")) {
+        throw new SecurityException("Importing [" + fqn + "] is not allowed");
+      }
+    }
+ else {
+      throw new SecurityException("Importing [" + fqn + "] is not allowed");
+    }
+  }
+  if (staticImportsBlacklist != null && staticImportsBlacklist.contains(fqn)) {
+    throw new SecurityException("Importing [" + fqn + "] is not allowed");
+  }
+  if (staticStarImportsBlacklist != null) {
+    if (staticStarImportsBlacklist.contains(className + ".*")) {
+      throw new SecurityException("Importing [" + fqn + "] is not allowed");
+    }
+  }
+}

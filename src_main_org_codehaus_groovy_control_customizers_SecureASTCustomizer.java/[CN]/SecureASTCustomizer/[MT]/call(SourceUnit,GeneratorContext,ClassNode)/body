@@ -1,0 +1,30 @@
+{
+  final ModuleNode ast=source.getAST();
+  if (!isPackageAllowed && ast.getPackage() != null) {
+    throw new SecurityException("Package definitions are not allowed");
+  }
+  if (!isMethodDefinitionAllowed && ast.getMethods() != null && ast.getMethods().size() > 0) {
+    throw new SecurityException("Method definitions are not allowed");
+  }
+  if (importsBlacklist != null || importsWhitelist != null || starImportsBlacklist != null || starImportsWhitelist != null) {
+    for (    ImportNode importNode : ast.getImports()) {
+      final String className=importNode.getClassName();
+      assertImportIsAllowed(className);
+    }
+    for (    ImportNode importNode : ast.getStarImports()) {
+      final String className=importNode.getPackageName();
+      assertStarImportIsAllowed(className + "*");
+    }
+  }
+  if (staticImportsBlacklist != null || staticImportsWhitelist != null || staticStarImportsBlacklist != null || staticStarImportsWhitelist != null) {
+    for (    Map.Entry<String,ImportNode> entry : ast.getStaticImports().entrySet()) {
+      final String className=entry.getValue().getClassName();
+      assertStaticImportIsAllowed(entry.getKey(),className);
+    }
+    for (    Map.Entry<String,ImportNode> entry : ast.getStaticStarImports().entrySet()) {
+      final String className=entry.getValue().getClassName();
+      assertStaticImportIsAllowed(entry.getKey(),className);
+    }
+  }
+  ast.getStatementBlock().visit(new SecuringCodeVisitor());
+}
