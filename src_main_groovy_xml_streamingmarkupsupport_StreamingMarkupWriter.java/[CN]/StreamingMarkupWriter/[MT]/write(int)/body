@@ -27,8 +27,11 @@
       this.writer.write(Integer.toHexString(c));
       this.writer.write(';');
     }
- else     if (c == '\'' && this.writingAttribute) {
+ else     if (c == '\'' && this.writingAttribute && !useDoubleQuotes) {
       this.writer.write("&apos;");
+    }
+ else     if (c == '"' && this.writingAttribute && useDoubleQuotes) {
+      this.writer.write("&quot;");
     }
  else {
       this.writer.write(c);
