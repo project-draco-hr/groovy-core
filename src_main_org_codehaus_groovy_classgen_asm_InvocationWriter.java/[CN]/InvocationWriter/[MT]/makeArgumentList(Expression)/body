@@ -1,0 +1,15 @@
+{
+  ArgumentListExpression ae;
+  if (arguments instanceof ArgumentListExpression) {
+    ae=(ArgumentListExpression)arguments;
+  }
+ else   if (arguments instanceof TupleExpression) {
+    TupleExpression te=(TupleExpression)arguments;
+    ae=new ArgumentListExpression(te.getExpressions());
+  }
+ else {
+    ae=new ArgumentListExpression();
+    ae.addExpression(arguments);
+  }
+  return ae;
+}

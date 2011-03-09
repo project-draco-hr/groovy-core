@@ -1,0 +1,44 @@
+{
+  if (target == null)   return false;
+  String methodName=target.getName();
+  CompileStack compileStack=controller.getCompileStack();
+  OperandStack operandStack=controller.getOperandStack();
+  MethodVisitor mv=controller.getMethodVisitor();
+  int opcode=INVOKEVIRTUAL;
+  if (target.isStatic()) {
+    opcode=INVOKESTATIC;
+  }
+ else   if (target.isPrivate()) {
+    opcode=INVOKESPECIAL;
+  }
+  int argumentsToRemove=0;
+  if (opcode != INVOKESTATIC) {
+    if (receiver != null) {
+      compileStack.pushImplicitThis(implicitThis);
+      receiver.visit(controller.getAcg());
+      operandStack.doGroovyCast(target.getDeclaringClass());
+      compileStack.popImplicitThis();
+      argumentsToRemove++;
+    }
+ else {
+      mv.visitIntInsn(ALOAD,0);
+    }
+  }
+  Parameter[] para=target.getParameters();
+  List<Expression> argumentList=args.getExpressions();
+  for (int i=0; i < argumentList.size(); i++) {
+    argumentList.get(i).visit(controller.getAcg());
+    controller.getOperandStack().doGroovyCast(para[i].getType());
+  }
+  String owner=BytecodeHelper.getClassInternalName(target.getDeclaringClass());
+  String desc=BytecodeHelper.getMethodDescriptor(target.getReturnType(),target.getParameters());
+  mv.visitMethodInsn(opcode,owner,methodName,desc);
+  ClassNode ret=target.getReturnType().redirect();
+  if (ret == ClassHelper.VOID_TYPE) {
+    ret=ClassHelper.OBJECT_TYPE;
+    mv.visitInsn(ACONST_NULL);
+  }
+  argumentsToRemove+=args.getExpressions().size();
+  controller.getOperandStack().replace(ret,argumentsToRemove);
+  return true;
+}
