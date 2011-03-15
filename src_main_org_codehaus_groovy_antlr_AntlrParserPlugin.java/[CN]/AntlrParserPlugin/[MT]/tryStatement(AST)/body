@@ -5,7 +5,8 @@
   AST node=tryNode.getNextSibling();
   List<CatchStatement> catches=new ArrayList<CatchStatement>();
   for (; node != null && isType(LITERAL_catch,node); node=node.getNextSibling()) {
-    catches.add(catchStatement(node));
+    final List<CatchStatement> catchStatements=catchStatement(node);
+    catches.addAll(catchStatements);
   }
   if (isType(LITERAL_finally,node)) {
     finallyStatement=statement(node);

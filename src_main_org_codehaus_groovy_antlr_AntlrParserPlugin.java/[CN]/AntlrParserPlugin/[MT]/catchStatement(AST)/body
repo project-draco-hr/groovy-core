@@ -1,12 +1,29 @@
 {
   AST node=catchNode.getFirstChild();
-  Parameter parameter=parameter(node);
-  ClassNode exceptionType=parameter.getType();
-  String variable=parameter.getName();
-  node=node.getNextSibling();
-  Statement code=statement(node);
-  Parameter catchParameter=new Parameter(exceptionType,variable);
-  CatchStatement answer=new CatchStatement(catchParameter,code);
-  configureAST(answer,catchNode);
-  return answer;
+  List<CatchStatement> catches=new LinkedList<CatchStatement>();
+  Statement code=statement(node.getNextSibling());
+  if (MULTICATCH == node.getType()) {
+    AST variableNode=node.getNextSibling();
+    final AST multicatches=node.getFirstChild();
+    if (multicatches.getType() != MULTICATCH_TYPES) {
+      String variable=identifier(multicatches);
+      Parameter catchParameter=new Parameter(ClassHelper.DYNAMIC_TYPE,variable);
+      CatchStatement answer=new CatchStatement(catchParameter,code);
+      configureAST(answer,catchNode);
+      catches.add(answer);
+    }
+ else {
+      AST exceptionNodes=multicatches.getFirstChild();
+      String variable=identifier(multicatches.getNextSibling());
+      while (exceptionNodes != null) {
+        ClassNode exceptionType=buildName(exceptionNodes);
+        Parameter catchParameter=new Parameter(exceptionType,variable);
+        CatchStatement answer=new CatchStatement(catchParameter,code);
+        configureAST(answer,catchNode);
+        catches.add(answer);
+        exceptionNodes=exceptionNodes.getNextSibling();
+      }
+    }
+  }
+  return catches;
 }
