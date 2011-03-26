@@ -1,0 +1,18 @@
+{
+  List<T> answer=new ArrayList<T>();
+  for (  T t : self) {
+    boolean duplicated=false;
+    for (    T t2 : answer) {
+      if (comparator.compare(t,t2) == 0) {
+        duplicated=true;
+        break;
+      }
+    }
+    if (!duplicated)     answer.add(t);
+  }
+  if (mutate) {
+    self.clear();
+    self.addAll(answer);
+  }
+  return mutate ? self : answer;
+}
