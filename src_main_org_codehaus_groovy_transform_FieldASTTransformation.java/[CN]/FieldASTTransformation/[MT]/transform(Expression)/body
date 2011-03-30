@@ -10,5 +10,19 @@
       return expr;
     }
   }
+ else   if (insideScriptBody && expr instanceof VariableExpression && currentClosure != null) {
+    VariableExpression ve=(VariableExpression)expr;
+    if (ve.getName().equals(variableName)) {
+      ve.setAccessedVariable(fieldNode);
+      final VariableScope variableScope=currentClosure.getVariableScope();
+      final Iterator<Variable> iterator=variableScope.getReferencedLocalVariablesIterator();
+      while (iterator.hasNext()) {
+        Variable next=iterator.next();
+        if (next.getName().equals(variableName))         iterator.remove();
+      }
+      variableScope.putReferencedClassVariable(fieldNode);
+      return ve;
+    }
+  }
   return expr.transformExpression(this);
 }
