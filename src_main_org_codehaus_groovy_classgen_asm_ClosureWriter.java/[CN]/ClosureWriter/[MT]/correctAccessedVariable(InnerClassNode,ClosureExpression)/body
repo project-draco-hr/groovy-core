@@ -6,7 +6,9 @@
       if (!(v instanceof FieldNode))       return;
       String name=expression.getName();
       FieldNode fn=closureClass.getDeclaredField(name);
-      expression.setAccessedVariable(fn);
+      if (fn != null) {
+        expression.setAccessedVariable(fn);
+      }
     }
   }
 ;
