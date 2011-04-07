@@ -4,6 +4,14 @@
   String name=SWAP_INIT;
   BlockStatement methodCode=new BlockStatement();
   node.addSyntheticMethod(name,mods,ClassHelper.VOID_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,methodCode);
+  methodCode.addStatement(new BytecodeSequence(new BytecodeInstruction(){
+    @Override public void visit(    MethodVisitor mv){
+      final String classInternalName=BytecodeHelper.getClassInternalName(node);
+      mv.visitInsn(ACONST_NULL);
+      mv.visitFieldInsn(PUTSTATIC,classInternalName,"$callSiteArray","Ljava/lang/ref/SoftReference;");
+    }
+  }
+));
   for (  FieldNode fn : node.getFields()) {
     if (!fn.isStatic() || !fn.isSynthetic() || !fn.getName().startsWith("$const$"))     continue;
     if (fn.getInitialExpression() == null)     continue;
