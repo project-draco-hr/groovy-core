@@ -3,8 +3,8 @@
   if (!node.isEnum() && !node.isInterface() && node instanceof InnerClassNode) {
     innerClass=(InnerClassNode)node;
   }
-  super.visitClass(node);
   if (node.isEnum() || node.isInterface())   return;
+  addDispatcherMethods(node);
   if (innerClass == null)   return;
   addDefaultMethods(innerClass);
 }

@@ -1,14 +1,15 @@
 {
   final boolean isStatic=isStatic(node);
+  ClassNode outerClass=node.getOuterClass();
   final String classInternalName=org.codehaus.groovy.classgen.asm.BytecodeHelper.getClassInternalName(node);
-  final String outerClassInternalName=getInternalName(node.getOuterClass(),isStatic);
-  final String outerClassDescriptor=getTypeDescriptor(node.getOuterClass(),isStatic);
-  final int objectDistance=getObjectDistance(node.getOuterClass());
+  final String outerClassInternalName=getInternalName(outerClass,isStatic);
+  final String outerClassDescriptor=getTypeDescriptor(outerClass,isStatic);
+  final int objectDistance=getObjectDistance(outerClass);
   Parameter[] parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"args")};
   MethodNode method=node.addSyntheticMethod("methodMissing",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
   BlockStatement block=new BlockStatement();
   if (isStatic) {
-    setMethodDispatcherCode(block,new ClassExpression(node.getOuterClass()),parameters);
+    setMethodDispatcherCode(block,new ClassExpression(outerClass),parameters);
   }
  else {
     block.addStatement(new BytecodeSequence(new BytecodeInstruction(){
