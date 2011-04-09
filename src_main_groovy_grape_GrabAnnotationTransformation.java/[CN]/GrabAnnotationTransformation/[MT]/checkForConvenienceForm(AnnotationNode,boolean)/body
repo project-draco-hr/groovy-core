@@ -4,6 +4,23 @@
   Object allParts=((ConstantExpression)val).getValue();
   if (!(allParts instanceof String))   return;
   String allstr=(String)allParts;
+  boolean done=false;
+  while (!done) {
+    Matcher attrs=ATTRIBUTES_PATTERN.matcher(allstr);
+    if (attrs.find()) {
+      if (attrs.group(2) == null || attrs.group(3) == null)       continue;
+      node.addMember(attrs.group(2),new ConstantExpression(attrs.group(3)));
+      int lastSemi=allstr.lastIndexOf(';');
+      if (lastSemi == -1) {
+        allstr="";
+        break;
+      }
+      allstr=allstr.substring(0,lastSemi);
+    }
+ else {
+      done=true;
+    }
+  }
   if (allstr.contains("#")) {
     Matcher m=IVY_PATTERN.matcher(allstr);
     if (!m.find())     return;
@@ -12,7 +29,7 @@
     node.addMember("group",new ConstantExpression(m.group(1)));
     if (m.group(6) != null)     node.addMember("conf",new ConstantExpression(m.group(6)));
     if (m.group(4) != null)     node.addMember("version",new ConstantExpression(m.group(4)));
- else     if (!exclude)     node.addMember("version",new ConstantExpression("*"));
+ else     if (!exclude && node.getMember("version") == null)     node.addMember("version",new ConstantExpression("*"));
     node.getMembers().remove("value");
   }
  else   if (allstr.contains(":")) {
@@ -28,7 +45,7 @@
     if (parts.length > 4)     return;
     if (parts.length > 3)     node.addMember("classifier",new ConstantExpression(parts[3]));
     if (parts.length > 2)     node.addMember("version",new ConstantExpression(parts[2]));
- else     if (!exclude)     node.addMember("version",new ConstantExpression("*"));
+ else     if (!exclude && node.getMember("version") == null)     node.addMember("version",new ConstantExpression("*"));
     if (ext.length() > 0)     node.addMember("ext",new ConstantExpression(ext));
     node.addMember("module",new ConstantExpression(parts[1]));
     node.addMember("group",new ConstantExpression(parts[0]));
