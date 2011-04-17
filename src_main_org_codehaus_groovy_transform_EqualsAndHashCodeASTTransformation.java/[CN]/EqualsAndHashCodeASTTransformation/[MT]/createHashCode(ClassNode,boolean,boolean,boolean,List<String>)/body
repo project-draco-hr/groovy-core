@@ -9,11 +9,11 @@
   if (cacheResult) {
     final FieldNode hashField=cNode.addField("$hash$code",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.int_TYPE,null);
     final Expression hash=new VariableExpression(hashField);
-    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(hash,list,callSuper),new EmptyStatement()));
+    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(hash,list,callSuper,excludes),new EmptyStatement()));
     body.addStatement(new ReturnStatement(hash));
   }
  else {
-    body.addStatement(calculateHashStatements(null,list,callSuper));
+    body.addStatement(calculateHashStatements(null,list,callSuper,excludes));
   }
   cNode.addMethod(new MethodNode(hasExistingHashCode ? "_hashCode" : "hashCode",hasExistingHashCode ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.int_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
 }
