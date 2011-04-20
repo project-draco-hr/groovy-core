@@ -4,6 +4,11 @@
   s.setProperty(lineCountName,BigInteger.ZERO);
   String autoSplitName="split";
   s.setProperty("out",pw);
+  try {
+    InvokerHelper.invokeMethod(s,"begin",null);
+  }
+ catch (  MissingMethodException mme) {
+  }
   while ((line=reader.readLine()) != null) {
     s.setProperty("line",line);
     s.setProperty(lineCountName,((BigInteger)s.getProperty(lineCountName)).add(BigInteger.ONE));
@@ -14,5 +19,10 @@
     if (autoOutput && o != null) {
       pw.println(o);
     }
+  }
+  try {
+    InvokerHelper.invokeMethod(s,"end",null);
+  }
+ catch (  MissingMethodException mme) {
   }
 }
