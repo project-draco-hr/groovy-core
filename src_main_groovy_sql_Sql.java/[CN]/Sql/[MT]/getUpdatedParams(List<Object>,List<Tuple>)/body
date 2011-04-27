@@ -1,0 +1,10 @@
+{
+  List<Object> updatedParams=new ArrayList<Object>();
+  for (  Tuple tuple : indexPropList) {
+    int index=(Integer)tuple.get(0);
+    String prop=(String)tuple.get(1);
+    if (index < 0 || index >= params.size())     throw new IllegalArgumentException("Invalid index " + index + " should be in range 1.."+ params.size());
+    updatedParams.add(prop.equals("<this>") ? params.get(index) : InvokerHelper.getProperty(params.get(index),prop));
+  }
+  return updatedParams;
+}

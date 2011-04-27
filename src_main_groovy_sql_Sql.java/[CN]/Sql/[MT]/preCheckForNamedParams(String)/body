@@ -1,0 +1,12 @@
+{
+  if (!enableNamedQueries || !NAMED_QUERY_PATTERN.matcher(sql).find()) {
+    return null;
+  }
+  ExtractIndexAndSql extractIndexAndSql=new ExtractIndexAndSql(sql).invoke();
+  String newSql=extractIndexAndSql.getNewSql();
+  if (sql.equals(newSql)) {
+    return null;
+  }
+  List<Object> indexPropList=new ArrayList<Object>(extractIndexAndSql.getIndexPropList());
+  return new SqlWithParams(newSql,indexPropList);
+}

@@ -1,0 +1,17 @@
+{
+  if (indexPropList != null) {
+    sql.setParameters(sql.getUpdatedParams(parameters,indexPropList),delegate);
+  }
+ else {
+    sql.setParameters(parameters,delegate);
+  }
+  delegate.addBatch();
+  batchCount++;
+  if (batchSize != 0 && (batchCount % batchSize) == 0) {
+    int[] result=delegate.executeBatch();
+    for (    int i : result) {
+      results.add(i);
+    }
+    log.fine("Successfully executed batch with " + result.length + " command(s)");
+  }
+}
