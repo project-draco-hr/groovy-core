@@ -1,7 +1,10 @@
 {
+  final Object[] args=new Object[2];
   int counter=0;
   for (Iterator iter=InvokerHelper.asIterator(self); iter.hasNext(); ) {
-    closure.call(new Object[]{iter.next(),counter++});
+    args[0]=iter.next();
+    args[1]=counter++;
+    closure.call(args);
   }
   return self;
 }
