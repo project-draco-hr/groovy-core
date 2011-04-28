@@ -24,6 +24,11 @@
       }
       varStack.add(names);
     }
+    @Override public void visitCatchStatement(    CatchStatement statement){
+      varStack.getLast().add(statement.getVariable().getName());
+      super.visitCatchStatement(statement);
+      varStack.getLast().remove(statement.getVariable().getName());
+    }
     @Override public void visitMethod(    MethodNode node){
       addVariablesToStack(node.getParameters());
       super.visitMethod(node);
