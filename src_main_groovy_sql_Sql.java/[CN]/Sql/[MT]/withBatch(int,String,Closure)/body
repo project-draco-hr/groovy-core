@@ -1,10 +1,7 @@
 {
-  boolean savedCacheConnection=cacheConnection;
-  cacheConnection=true;
-  Connection connection=null;
+  Connection connection=createConnection();
   List<Tuple> indexPropList=null;
   SqlWithParams preCheck=preCheckForNamedParams(sql);
-  boolean savedAutoCommit=true;
   boolean savedWithinBatch=withinBatch;
   BatchingPreparedStatementWrapper psWrapper=null;
   if (preCheck != null) {
@@ -16,38 +13,19 @@
   }
   try {
     withinBatch=true;
-    connection=createConnection();
-    savedAutoCommit=connection.getAutoCommit();
-    connection.setAutoCommit(false);
     PreparedStatement statement=(PreparedStatement)getAbstractStatement(new CreatePreparedStatementCommand(0),connection,sql);
     configure(statement);
     psWrapper=new BatchingPreparedStatementWrapper(statement,indexPropList,batchSize,LOG,this);
     closure.call(psWrapper);
-    int[] result=psWrapper.executeBatch();
-    connection.commit();
-    return result;
+    return psWrapper.executeBatch();
   }
  catch (  SQLException e) {
-    handleError(connection,e);
-    throw e;
-  }
-catch (  RuntimeException e) {
-    handleError(connection,e);
-    throw e;
-  }
-catch (  Error e) {
-    handleError(connection,e);
+    LOG.warning("Error during batch execution of '" + sql + "' with message: "+ e.getMessage());
     throw e;
   }
  finally {
-    if (connection != null)     connection.setAutoCommit(savedAutoCommit);
-    cacheConnection=false;
     closeResources(psWrapper);
     closeResources(connection);
-    cacheConnection=savedCacheConnection;
     withinBatch=savedWithinBatch;
-    if (dataSource != null && !cacheConnection) {
-      useConnection=null;
-    }
   }
 }

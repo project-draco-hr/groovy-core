@@ -1,0 +1,16 @@
+{
+  boolean foundError=false;
+  for (  int i : lastResult) {
+    if (i == Statement.EXECUTE_FAILED)     foundError=true;
+    results.add(i);
+  }
+  if (batchCount != lastResult.length) {
+    log.warning("Problem executing batch - expected result length of " + batchCount + " but got "+ lastResult.length);
+  }
+ else   if (foundError) {
+    log.warning("Problem executing batch - at least one result failed in: " + DefaultGroovyMethods.toList(lastResult));
+  }
+ else {
+    log.fine("Successfully executed batch with " + lastResult.length + " command(s)");
+  }
+}

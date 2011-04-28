@@ -1,42 +1,20 @@
 {
-  boolean savedCacheConnection=cacheConnection;
-  cacheConnection=true;
-  Connection connection=null;
+  Connection connection=createConnection();
   BatchingStatementWrapper statement=null;
-  boolean savedAutoCommit=true;
   boolean savedWithinBatch=withinBatch;
   try {
     withinBatch=true;
-    connection=createConnection();
-    savedAutoCommit=connection.getAutoCommit();
-    connection.setAutoCommit(false);
-    statement=new BatchingStatementWrapper(createStatement(connection),batchSize,LOG,connection);
+    statement=new BatchingStatementWrapper(createStatement(connection),batchSize,LOG);
     closure.call(statement);
-    int[] result=statement.executeBatch();
-    connection.commit();
-    return result;
+    return statement.executeBatch();
   }
  catch (  SQLException e) {
-    handleError(connection,e);
-    throw e;
-  }
-catch (  RuntimeException e) {
-    handleError(connection,e);
-    throw e;
-  }
-catch (  Error e) {
-    handleError(connection,e);
+    LOG.warning("Error during batch execution: " + e.getMessage());
     throw e;
   }
  finally {
-    if (connection != null)     connection.setAutoCommit(savedAutoCommit);
-    cacheConnection=false;
     closeResources(statement);
     closeResources(connection);
-    cacheConnection=savedCacheConnection;
     withinBatch=savedWithinBatch;
-    if (dataSource != null && !cacheConnection) {
-      useConnection=null;
-    }
   }
 }
