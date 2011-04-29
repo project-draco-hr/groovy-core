@@ -7,14 +7,14 @@
     paraTypes=new Parameter[size];
     int i=0;
     for (    Expression exp : args.getExpressions()) {
-      ClassNode type=BinaryIntExpressionHelper.getType(exp,node);
+      ClassNode type=BinaryExpressionMultiTypeDispatcher.getType(exp,node);
       if (!validTypeForCall(type))       return;
       paraTypes[i]=new Parameter(type,"");
       i++;
     }
   }
  else {
-    ClassNode type=BinaryIntExpressionHelper.getType(callArgs,node);
+    ClassNode type=BinaryExpressionMultiTypeDispatcher.getType(callArgs,node);
     paraTypes=new Parameter[]{new Parameter(type,"")};
   }
   MethodNode target=node.getMethod(name,paraTypes);

@@ -1,0 +1,21 @@
+{
+  ClassNode current=getController().getClassNode();
+  ClassNode arrayType=getType(receiver,current);
+  int operationType=getOperandType(arrayType);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  AsmClassGenerator acg=getController().getAcg();
+  if (bew.arraySet(true)) {
+    OperandStack operandStack=getController().getOperandStack();
+    receiver.visit(acg);
+    index.visit(acg);
+    operandStack.doGroovyCast(int_TYPE);
+    rhsValueLoader.visit(acg);
+    operandStack.doGroovyCast(arrayType);
+    bew.arraySet(false);
+    operandStack.remove(3);
+    rhsValueLoader.visit(acg);
+  }
+ else {
+    super.assignToArray(orig,receiver,index,rhsValueLoader);
+  }
+}

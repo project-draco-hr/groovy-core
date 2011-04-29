@@ -1,0 +1,22 @@
+{
+  ClassNode current=getController().getClassNode();
+  int operation=binExp.getOperation().getType();
+  Expression leftExp=binExp.getLeftExpression();
+  ClassNode leftType=getType(leftExp,current);
+  Expression rightExp=binExp.getRightExpression();
+  ClassNode rightType=getType(rightExp,current);
+  int operationType=getOperandConversionType(leftType,rightType);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  if (bew.write(operation,true)) {
+    AsmClassGenerator acg=getController().getAcg();
+    OperandStack os=getController().getOperandStack();
+    leftExp.visit(acg);
+    os.doGroovyCast(int_TYPE);
+    rightExp.visit(acg);
+    os.doGroovyCast(int_TYPE);
+    bew.write(operation,false);
+  }
+ else {
+    super.evaluateCompareExpression(compareMethod,binExp);
+  }
+}
