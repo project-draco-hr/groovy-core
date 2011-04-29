@@ -1,0 +1,10 @@
+{
+  type=type - PLUS;
+  if (type < 0 || type > 5 || type == 3)   return false;
+  if (!simulate) {
+    int bytecode=getStandardOperationBytecode(type);
+    controller.getMethodVisitor().visitInsn(bytecode);
+    controller.getOperandStack().replace(getNormalOpResultType(),2);
+  }
+  return true;
+}
