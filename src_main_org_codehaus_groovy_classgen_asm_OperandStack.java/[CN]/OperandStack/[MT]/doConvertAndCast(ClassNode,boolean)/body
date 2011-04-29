@@ -23,6 +23,10 @@
   boolean primTarget=ClassHelper.isPrimitiveType(targetType);
   boolean primTop=ClassHelper.isPrimitiveType(top);
   if (primTop && primTarget) {
+    if (convertPrimitive(top,targetType)) {
+      replace(targetType);
+      return;
+    }
     box();
   }
  else   if (primTop) {

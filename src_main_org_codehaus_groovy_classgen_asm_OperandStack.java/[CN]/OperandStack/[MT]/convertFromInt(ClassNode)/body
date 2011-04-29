@@ -1,0 +1,26 @@
+{
+  int convertCode=0;
+  if (target == ClassHelper.char_TYPE) {
+    convertCode=I2C;
+  }
+ else   if (target == ClassHelper.byte_TYPE) {
+    convertCode=I2B;
+  }
+ else   if (target == ClassHelper.short_TYPE) {
+    convertCode=I2S;
+  }
+ else   if (target == ClassHelper.long_TYPE) {
+    convertCode=I2L;
+  }
+ else   if (target == ClassHelper.float_TYPE) {
+    convertCode=I2F;
+  }
+ else   if (target == ClassHelper.double_TYPE) {
+    convertCode=I2D;
+  }
+ else {
+    return false;
+  }
+  controller.getMethodVisitor().visitInsn(convertCode);
+  return true;
+}
