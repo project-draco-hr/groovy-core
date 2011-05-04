@@ -1,0 +1,15 @@
+{
+  try {
+    return stack.remove(last);
+  }
+ catch (  ArrayIndexOutOfBoundsException ai) {
+    String method="";
+    if (controller.getMethodNode() != null) {
+      method=controller.getMethodNode().getTypeDescriptor();
+    }
+ else {
+      method=controller.getConstructorNode().getTypeDescriptor();
+    }
+    throw new GroovyBugError("Error while poping argument from operand stack tracker in" + " class " + controller.getClassName() + " method "+ method+ ".");
+  }
+}
