@@ -10,6 +10,9 @@
     this.ast.setDescription(this.name);
   }
  catch (  SyntaxException e) {
+    if (this.ast == null) {
+      this.ast=new ModuleNode(this);
+    }
     getErrorCollector().addError(new SyntaxErrorMessage(e,this));
   }
   String property=(String)AccessController.doPrivileged(new PrivilegedAction(){
