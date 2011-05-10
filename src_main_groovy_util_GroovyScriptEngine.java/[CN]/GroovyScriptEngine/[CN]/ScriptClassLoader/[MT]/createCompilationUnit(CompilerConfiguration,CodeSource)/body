@@ -1,5 +1,5 @@
 {
-  CompilationUnit cu=super.createCompilationUnit(config,source);
+  CompilationUnit cu=super.createCompilationUnit(configuration,source);
   getLocalCompilationUnit().set(cu);
   final StringSetMap cache=getDepCache().get();
   for (  String depSourcePath : cache.get(".")) {
@@ -18,5 +18,11 @@
     }
   }
 ,Phases.CLASS_GENERATION);
+  final List<CompilationCustomizer> customizers=config.getCompilationCustomizers();
+  if (customizers != null) {
+    for (    CompilationCustomizer customizer : customizers) {
+      cu.addPhaseOperation(customizer,customizer.getPhase().getPhaseNumber());
+    }
+  }
   return cu;
 }
