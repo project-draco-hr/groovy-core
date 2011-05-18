@@ -23,6 +23,13 @@
     fieldNode=new FieldNode(variableName,ve.getModifiers(),ve.getType(),null,de.getRightExpression());
     fieldNode.setSourcePosition(de);
     cNode.addField(fieldNode);
+    final List<AnnotationNode> annotations=de.getAnnotations();
+    for (    AnnotationNode annotation : annotations) {
+      final ClassNode annotationClassNode=annotation.getClassNode();
+      if (annotationClassNode.getAnnotations(ASTTRANSFORM_TYPE).isEmpty()) {
+        fieldNode.addAnnotation(annotation);
+      }
+    }
     super.visitClass(cNode);
   }
 }
