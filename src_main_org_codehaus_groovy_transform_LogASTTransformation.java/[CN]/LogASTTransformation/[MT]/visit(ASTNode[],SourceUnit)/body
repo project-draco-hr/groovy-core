@@ -23,8 +23,11 @@
     }
     @Override public void visitClass(    ClassNode node){
       FieldNode logField=node.getField(logFieldName);
-      if (logField != null) {
+      if (logField != null && logField.getOwner().equals(node)) {
         addError("Class annotated with Log annotation cannot have log field declared",logField);
+      }
+ else       if (logField != null && !Modifier.isPrivate(logField.getModifiers())) {
+        addError("Class annotated with Log annotation cannot have log field declared because the field exists in the parent class: " + logField.getOwner().getName(),logField);
       }
  else {
         logNode=loggingStrategy.addLoggerFieldToClass(node,logFieldName);
