@@ -1,5 +1,6 @@
 {
-  final Expression fieldExpr=new VariableExpression(pNode);
-  final Expression otherExpr=new PropertyExpression(other,pNode.getName());
-  return new BooleanExpression(new BinaryExpression(fieldExpr,COMPARE_NOT_EQUAL,otherExpr));
+  String getterName="get" + Verifier.capitalize(pNode.getName());
+  Expression selfGetter=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,MethodCallExpression.NO_ARGUMENTS);
+  Expression otherGetter=new MethodCallExpression(other,getterName,MethodCallExpression.NO_ARGUMENTS);
+  return new BooleanExpression(new BinaryExpression(selfGetter,COMPARE_NOT_EQUAL,otherGetter));
 }

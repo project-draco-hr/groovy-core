@@ -7,12 +7,13 @@
     ClassNode cNode=(ClassNode)parent;
     checkNotInterface(cNode,MY_TYPE_NAME);
     boolean callSuper=memberHasValue(anno,"callSuper",true);
+    boolean useCanEqual=!memberHasValue(anno,"useCanEqual",false);
     if (callSuper && cNode.getSuperClass().getName().equals("java.lang.Object")) {
       addError("Error during " + MY_TYPE_NAME + " processing: callSuper=true but '"+ cNode.getName()+ "' has no super class.",anno);
     }
     boolean includeFields=memberHasValue(anno,"includeFields",true);
     List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
     createHashCode(cNode,false,includeFields,callSuper,excludes);
-    createEquals(cNode,includeFields,callSuper,excludes);
+    createEquals(cNode,includeFields,callSuper,useCanEqual,excludes);
   }
 }

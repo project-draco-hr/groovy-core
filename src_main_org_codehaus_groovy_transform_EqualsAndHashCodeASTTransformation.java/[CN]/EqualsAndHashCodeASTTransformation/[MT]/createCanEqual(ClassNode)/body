@@ -1,0 +1,9 @@
+{
+  boolean hasExistingCanEqual=hasDeclaredMethod(cNode,"canEqual",1);
+  if (hasExistingCanEqual && hasDeclaredMethod(cNode,"_canEqual",1))   return;
+  final BlockStatement body=new BlockStatement();
+  VariableExpression other=new VariableExpression("other");
+  body.addStatement(new ReturnStatement(isInstanceof(cNode,other)));
+  Parameter[] params={new Parameter(OBJECT_TYPE,other.getName())};
+  cNode.addMethod(new MethodNode(hasExistingCanEqual ? "_canEqual" : "canEqual",hasExistingCanEqual ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.boolean_TYPE,params,ClassNode.EMPTY_ARRAY,body));
+}

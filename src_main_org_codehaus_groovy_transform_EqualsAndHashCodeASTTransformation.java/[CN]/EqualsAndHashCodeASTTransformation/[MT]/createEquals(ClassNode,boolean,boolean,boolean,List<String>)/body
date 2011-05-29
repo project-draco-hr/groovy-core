@@ -1,0 +1,35 @@
+{
+  if (useCanEqual)   createCanEqual(cNode);
+  boolean hasExistingEquals=hasDeclaredMethod(cNode,"equals",1);
+  if (hasExistingEquals && hasDeclaredMethod(cNode,"_equals",1))   return;
+  final BlockStatement body=new BlockStatement();
+  VariableExpression other=new VariableExpression("other");
+  body.addStatement(returnFalseIfNull(other));
+  body.addStatement(returnTrueIfIdentical(VariableExpression.THIS_EXPRESSION,other));
+  if (useCanEqual) {
+    body.addStatement(returnFalseIfNotInstanceof(cNode,other));
+    body.addStatement(new IfStatement(new BooleanExpression(new MethodCallExpression(other,"canEqual",VariableExpression.THIS_EXPRESSION)),new EmptyStatement(),new ReturnStatement(ConstantExpression.FALSE)));
+  }
+ else {
+    body.addStatement(returnFalseIfWrongType(cNode,other));
+  }
+  List<PropertyNode> pList=getInstanceProperties(cNode);
+  for (  PropertyNode pNode : pList) {
+    if (excludes.contains(pNode.getName()) || pNode.getName().contains("$"))     continue;
+    body.addStatement(returnFalseIfPropertyNotEqual(pNode,other));
+  }
+  List<FieldNode> fList=new ArrayList<FieldNode>();
+  if (includeFields) {
+    fList.addAll(getInstanceNonPropertyFields(cNode));
+  }
+  for (  FieldNode fNode : fList) {
+    if (excludes.contains(fNode.getName()) || fNode.getName().contains("$"))     continue;
+    body.addStatement(returnFalseIfFieldNotEqual(fNode,other));
+  }
+  if (callSuper) {
+    body.addStatement(new IfStatement(isTrueExpr(new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"equals",other)),new EmptyStatement(),new ReturnStatement(ConstantExpression.FALSE)));
+  }
+  body.addStatement(new ReturnStatement(ConstantExpression.TRUE));
+  Parameter[] params={new Parameter(OBJECT_TYPE,other.getName())};
+  cNode.addMethod(new MethodNode(hasExistingEquals ? "_equals" : "equals",hasExistingEquals ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.boolean_TYPE,params,ClassNode.EMPTY_ARRAY,body));
+}
