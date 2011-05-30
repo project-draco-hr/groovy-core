@@ -1,0 +1,17 @@
+{
+  Expression member=node.getMember(parameterName);
+  if (member != null) {
+    if (member instanceof ClassExpression) {
+      try {
+        return member.getType();
+      }
+ catch (      Exception e) {
+        internalError("Expecting class value for " + parameterName + " annotation parameter. Found "+ member+ "member");
+      }
+    }
+ else {
+      internalError("Expecting class value for " + parameterName + " annotation parameter. Found "+ member+ "member");
+    }
+  }
+  return defaultValue;
+}
