@@ -3,10 +3,13 @@
   initialized=true;
   HttpServletResponse response=(HttpServletResponse)super.getVariable("response");
   ServletContext context=(ServletContext)super.getVariable("context");
+  super.setVariable("context",context);
   ServletOutput output=new ServletOutput(response);
   super.setVariable("out",output.getWriter());
   super.setVariable("sout",output.getOutputStream());
-  super.setVariable("html",new MarkupBuilder(output.getWriter()));
+  MarkupBuilder builder=new MarkupBuilder(output.getWriter());
+  builder.setExpandEmptyElements(true);
+  super.setVariable("html",builder);
   MethodClosure c=new MethodClosure(this,"forward");
   super.setVariable("forward",c);
   c=new MethodClosure(this,"include");
