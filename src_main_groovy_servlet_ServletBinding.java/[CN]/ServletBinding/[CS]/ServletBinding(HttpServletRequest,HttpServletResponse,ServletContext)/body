@@ -4,19 +4,7 @@
   super.setVariable("context",context);
   super.setVariable("application",context);
   super.setVariable("session",request.getSession(false));
-  Map params=new LinkedHashMap();
-  for (Enumeration names=request.getParameterNames(); names.hasMoreElements(); ) {
-    String name=(String)names.nextElement();
-    if (!super.getVariables().containsKey(name)) {
-      String[] values=request.getParameterValues(name);
-      if (values.length == 1) {
-        params.put(name,values[0]);
-      }
- else {
-        params.put(name,values);
-      }
-    }
-  }
+  Map params=collectParams(request);
   super.setVariable("params",params);
   Map<String,String> headers=new LinkedHashMap<String,String>();
   for (Enumeration names=request.getHeaderNames(); names.hasMoreElements(); ) {
