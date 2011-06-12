@@ -9,11 +9,14 @@
     internalError("Transformation called from wrong annotation: " + node.getClassNode().getName());
   }
   boolean autoFlag=determineAutoFlag(node.getMember("auto"));
-  ListExpression list=determineClassesToNewify(node.getMember("value"));
+  Expression value=node.getMember("value");
   if (parent instanceof ClassNode) {
-    newifyClass(parent,autoFlag,list);
+    newifyClass((ClassNode)parent,autoFlag,determineClasses(value,false));
   }
  else   if (parent instanceof MethodNode || parent instanceof FieldNode) {
-    newifyMethodOrField(parent,autoFlag,list);
+    newifyMethodOrField(parent,autoFlag,determineClasses(value,false));
+  }
+ else   if (parent instanceof DeclarationExpression) {
+    newifyDeclaration((DeclarationExpression)parent,autoFlag,determineClasses(value,true));
   }
 }

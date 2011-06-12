@@ -1,0 +1,13 @@
+{
+  String cName=cNode.getName();
+  if (cNode.isInterface()) {
+    addError("Error processing interface '" + cName + "'. @"+ MY_NAME+ " not allowed for interfaces.",cNode);
+  }
+  final ListExpression oldClassesToNewify=classesToNewify;
+  final boolean oldAuto=auto;
+  classesToNewify=list;
+  auto=autoFlag;
+  super.visitClass(cNode);
+  classesToNewify=oldClassesToNewify;
+  auto=oldAuto;
+}

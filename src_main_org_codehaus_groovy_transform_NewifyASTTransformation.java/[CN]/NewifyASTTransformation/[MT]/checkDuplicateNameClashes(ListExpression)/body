@@ -4,7 +4,7 @@
   for (  ClassExpression ce : classes) {
     final String name=ce.getType().getNameWithoutPackage();
     if (seen.contains(name)) {
-      throw new RuntimeException("Duplicate name '" + name + "' found during @"+ MY_NAME+ " processing.");
+      addError("Duplicate name '" + name + "' found during @"+ MY_NAME+ " processing.",ce);
     }
     seen.add(name);
   }

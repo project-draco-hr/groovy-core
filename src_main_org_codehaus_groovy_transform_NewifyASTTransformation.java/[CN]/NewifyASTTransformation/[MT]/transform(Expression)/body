@@ -1,14 +1,30 @@
 {
   if (expr == null)   return null;
-  if (expr instanceof MethodCallExpression) {
+  if (expr instanceof MethodCallExpression && candidate == null) {
     MethodCallExpression mce=(MethodCallExpression)expr;
     Expression args=transform(mce.getArguments());
+    if (isNewifyCandidate(mce)) {
+      Expression transformed=transformMethodCall(mce,args);
+      transformed.setSourcePosition(mce);
+      return transformed;
+    }
     Expression method=transform(mce.getMethod());
     Expression object=transform(mce.getObjectExpression());
-    if (isNewifyCandidate(mce)) {
-      return transformMethodCall(mce,args);
+    MethodCallExpression transformed=new MethodCallExpression(object,method,args);
+    transformed.setSourcePosition(mce);
+    return transformed;
+  }
+ else   if (expr instanceof DeclarationExpression) {
+    DeclarationExpression de=(DeclarationExpression)expr;
+    if (de == candidate) {
+      candidate=null;
+      Expression left=de.getLeftExpression();
+      Expression right=transform(de.getRightExpression());
+      DeclarationExpression newDecl=new DeclarationExpression(left,de.getOperation(),right);
+      newDecl.addAnnotations(de.getAnnotations());
+      return newDecl;
     }
-    return new MethodCallExpression(object,method,args);
+    return de;
   }
   return expr.transformExpression(this);
 }

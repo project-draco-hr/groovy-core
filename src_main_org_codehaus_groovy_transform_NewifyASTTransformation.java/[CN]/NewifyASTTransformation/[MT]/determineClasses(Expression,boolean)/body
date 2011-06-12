@@ -1,0 +1,45 @@
+{
+  ListExpression list=new ListExpression();
+  if (expr instanceof ClassExpression) {
+    list.addExpression(expr);
+  }
+ else   if (expr instanceof VariableExpression && searchSourceUnit) {
+    VariableExpression ve=(VariableExpression)expr;
+    ClassNode fromSourceUnit=getSourceUnitClass(ve);
+    if (fromSourceUnit != null) {
+      ClassExpression found=new ClassExpression(fromSourceUnit);
+      found.setSourcePosition(ve);
+      list.addExpression(found);
+    }
+ else {
+      addError(BASE_BAD_PARAM_ERROR + "an unresolvable reference to '" + ve.getName()+ "'.",expr);
+    }
+  }
+ else   if (expr instanceof ListExpression) {
+    list=(ListExpression)expr;
+    final List<Expression> expressions=list.getExpressions();
+    for (int i=0; i < expressions.size(); i++) {
+      Expression next=expressions.get(i);
+      if (next instanceof VariableExpression && searchSourceUnit) {
+        VariableExpression ve=(VariableExpression)next;
+        ClassNode fromSourceUnit=getSourceUnitClass(ve);
+        if (fromSourceUnit != null) {
+          ClassExpression found=new ClassExpression(fromSourceUnit);
+          found.setSourcePosition(ve);
+          expressions.set(i,found);
+        }
+ else {
+          addError(BASE_BAD_PARAM_ERROR + "a list containing an unresolvable reference to '" + ve.getName()+ "'.",next);
+        }
+      }
+ else       if (!(next instanceof ClassExpression)) {
+        addError(BASE_BAD_PARAM_ERROR + "a list containing type: " + next.getType().getName()+ ".",next);
+      }
+    }
+    checkDuplicateNameClashes(list);
+  }
+ else   if (expr != null) {
+    addError(BASE_BAD_PARAM_ERROR + "a type: " + expr.getType().getName()+ ".",expr);
+  }
+  return list;
+}
