@@ -21,19 +21,10 @@ catch (  Throwable e) {
       e=iie.getCause();
     }
     System.err.println("Caught: " + e);
-    if (debug) {
-      e.printStackTrace();
+    if (!debug) {
+      StackTraceUtils.deepSanitize(e);
     }
- else {
-      StackTraceElement[] stackTrace=e.getStackTrace();
-      for (int i=0; i < stackTrace.length; i++) {
-        StackTraceElement element=stackTrace[i];
-        String fileName=element.getFileName();
-        if (fileName != null && !fileName.endsWith(".java")) {
-          System.err.println("\tat " + element);
-        }
-      }
-    }
+    e.printStackTrace();
     return false;
   }
 }
