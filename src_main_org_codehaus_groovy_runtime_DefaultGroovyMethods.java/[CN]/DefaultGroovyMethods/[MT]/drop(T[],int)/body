@@ -1,0 +1,14 @@
+{
+  Class<T> componentType=(Class<T>)self.getClass().getComponentType();
+  if (self.length <= num) {
+    return (T[])Array.newInstance(componentType,0);
+  }
+  if (num <= 0) {
+    T[] ret=(T[])Array.newInstance(componentType,self.length);
+    System.arraycopy(self,0,ret,0,self.length);
+    return ret;
+  }
+  T[] ret=(T[])Array.newInstance(componentType,self.length - num);
+  System.arraycopy(self,num,ret,0,self.length - num);
+  return ret;
+}

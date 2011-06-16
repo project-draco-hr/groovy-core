@@ -1,0 +1,15 @@
+{
+  if (self.size() <= num) {
+    return createSimilarMap(self);
+  }
+  if (num == 0) {
+    return cloneSimilarMap(self);
+  }
+  Map<K,V> ret=createSimilarMap(self);
+  for (  K key : self.keySet()) {
+    if (num-- <= 0) {
+      ret.put(key,self.get(key));
+    }
+  }
+  return ret;
+}
