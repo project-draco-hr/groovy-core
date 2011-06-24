@@ -5,11 +5,11 @@
   if (cacheResult) {
     final FieldNode hashField=cNode.addField("$hash$code",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.int_TYPE,null);
     final Expression hash=new VariableExpression(hashField);
-    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(cNode,hash,includeFields,callSuper,excludes),new EmptyStatement()));
+    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(cNode,hash,includeFields,callSuper,excludes,includes),new EmptyStatement()));
     body.addStatement(new ReturnStatement(hash));
   }
  else {
-    body.addStatement(calculateHashStatements(cNode,null,includeFields,callSuper,excludes));
+    body.addStatement(calculateHashStatements(cNode,null,includeFields,callSuper,excludes,includes));
   }
   cNode.addMethod(new MethodNode(hasExistingHashCode ? "_hashCode" : "hashCode",hasExistingHashCode ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.int_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
 }

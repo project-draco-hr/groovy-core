@@ -13,7 +13,11 @@
     }
     boolean includeFields=memberHasValue(anno,"includeFields",true);
     List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
-    createHashCode(cNode,false,includeFields,callSuper,excludes);
-    createEquals(cNode,includeFields,callSuper,useCanEqual,excludes);
+    List<String> includes=tokenize((String)getMemberValue(anno,"includes"));
+    if (includes != null && !includes.isEmpty() && excludes != null && !excludes.isEmpty()) {
+      addError("Error during " + MY_TYPE_NAME + " processing: Only one of 'includes' and 'excludes' should be supplied not both.",anno);
+    }
+    createHashCode(cNode,false,includeFields,callSuper,excludes,includes);
+    createEquals(cNode,includeFields,callSuper,useCanEqual,excludes,includes);
   }
 }

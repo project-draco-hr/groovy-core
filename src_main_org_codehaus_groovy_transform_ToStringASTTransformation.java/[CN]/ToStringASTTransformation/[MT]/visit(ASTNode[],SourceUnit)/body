@@ -13,7 +13,11 @@
     boolean includeNames=memberHasValue(anno,"includeNames",true);
     boolean includeFields=memberHasValue(anno,"includeFields",true);
     List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    List<String> includes=tokenize((String)getMemberValue(anno,"includes"));
+    if (includes != null && !includes.isEmpty() && excludes != null && !excludes.isEmpty()) {
+      addError("Error during " + MY_TYPE_NAME + " processing: Only one of 'includes' and 'excludes' should be supplied not both.",anno);
+    }
     toStringInit(cNode,new ConstantExpression(includeNames));
-    createToString(cNode,includeSuper,includeFields,excludes);
+    createToString(cNode,includeSuper,includeFields,excludes,includes);
   }
 }

@@ -15,7 +15,7 @@
   }
   List<PropertyNode> pList=getInstanceProperties(cNode);
   for (  PropertyNode pNode : pList) {
-    if (excludes.contains(pNode.getName()) || pNode.getName().contains("$"))     continue;
+    if (shouldSkip(pNode.getName(),excludes,includes))     continue;
     body.addStatement(returnFalseIfPropertyNotEqual(pNode,other));
   }
   List<FieldNode> fList=new ArrayList<FieldNode>();
@@ -23,7 +23,7 @@
     fList.addAll(getInstanceNonPropertyFields(cNode));
   }
   for (  FieldNode fNode : fList) {
-    if (excludes.contains(fNode.getName()) || fNode.getName().contains("$"))     continue;
+    if (shouldSkip(fNode.getName(),excludes,includes))     continue;
     body.addStatement(returnFalseIfFieldNotEqual(fNode,other));
   }
   if (callSuper) {

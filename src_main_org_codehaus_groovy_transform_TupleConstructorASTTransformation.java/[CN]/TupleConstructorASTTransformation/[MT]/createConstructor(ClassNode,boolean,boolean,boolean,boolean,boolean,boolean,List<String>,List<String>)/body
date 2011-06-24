@@ -23,7 +23,7 @@
   final BlockStatement body=new BlockStatement();
   for (  FieldNode fNode : superList) {
     String name=fNode.getName();
-    if (excludes.contains(name) || name.contains("$"))     continue;
+    if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
     if (callSuper) {
       superParams.add(new VariableExpression(name));
@@ -37,7 +37,7 @@
   }
   for (  FieldNode fNode : list) {
     String name=fNode.getName();
-    if (excludes.contains(name) || name.contains("$"))     continue;
+    if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
     body.addStatement(assignStatement(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),new VariableExpression(name)));
   }

@@ -10,7 +10,7 @@
   boolean first=true;
   List<PropertyNode> pList=getInstanceProperties(cNode);
   for (  PropertyNode pNode : pList) {
-    if (excludes.contains(pNode.getName()) || pNode.getName().contains("$"))     continue;
+    if (shouldSkip(pNode.getName(),excludes,includes))     continue;
     first=appendPrefix(cNode,body,result,first,pNode.getName());
     String getterName="get" + Verifier.capitalize(pNode.getName());
     Expression getter=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,MethodCallExpression.NO_ARGUMENTS);
@@ -21,7 +21,7 @@
     fList.addAll(getInstanceNonPropertyFields(cNode));
   }
   for (  FieldNode fNode : fList) {
-    if (excludes.contains(fNode.getName()) || fNode.getName().contains("$"))     continue;
+    if (shouldSkip(fNode.getName(),excludes,includes))     continue;
     first=appendPrefix(cNode,body,result,first,fNode.getName());
     body.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",new VariableExpression(fNode))));
   }
