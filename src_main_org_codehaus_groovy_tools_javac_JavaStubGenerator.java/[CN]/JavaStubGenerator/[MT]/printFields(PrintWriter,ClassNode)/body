@@ -1,0 +1,20 @@
+{
+  boolean isInterface=classNode.isInterface();
+  List<FieldNode> fields=classNode.getFields();
+  if (fields == null)   return;
+  List<FieldNode> enumFields=new ArrayList<FieldNode>(fields.size());
+  List<FieldNode> normalFields=new ArrayList<FieldNode>(fields.size());
+  for (  FieldNode field : fields) {
+    boolean isSynthetic=(field.getModifiers() & Opcodes.ACC_SYNTHETIC) != 0;
+    if (field.isEnum()) {
+      enumFields.add(field);
+    }
+ else     if (!isSynthetic) {
+      normalFields.add(field);
+    }
+  }
+  printEnumFields(out,enumFields);
+  for (  FieldNode normalField : normalFields) {
+    printField(out,normalField,isInterface);
+  }
+}

@@ -1,0 +1,33 @@
+{
+  if (methodNode.getName().equals("<clinit>"))   return;
+  if (methodNode.isPrivate() || !Utilities.isJavaIdentifier(methodNode.getName()))   return;
+  if (methodNode.isSynthetic() && methodNode.getName().equals("$getStaticMetaClass"))   return;
+  printAnnotations(out,methodNode);
+  if (!clazz.isInterface())   printModifiers(out,methodNode.getModifiers());
+  printGenericsBounds(out,methodNode.getGenericsTypes());
+  out.print(" ");
+  printType(out,methodNode.getReturnType());
+  out.print(" ");
+  out.print(methodNode.getName());
+  printParams(out,methodNode);
+  ClassNode[] exceptions=methodNode.getExceptions();
+  for (int i=0; i < exceptions.length; i++) {
+    ClassNode exception=exceptions[i];
+    if (i == 0) {
+      out.print("throws ");
+    }
+ else {
+      out.print(", ");
+    }
+    printType(out,exception);
+  }
+  if ((methodNode.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
+    out.println(";");
+  }
+ else {
+    out.print(" { ");
+    ClassNode retType=methodNode.getReturnType();
+    printReturn(out,retType);
+    out.println("}");
+  }
+}

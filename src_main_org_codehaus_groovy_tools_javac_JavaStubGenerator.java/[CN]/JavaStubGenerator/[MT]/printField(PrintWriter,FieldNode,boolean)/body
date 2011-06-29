@@ -1,0 +1,22 @@
+{
+  if ((fieldNode.getModifiers() & Opcodes.ACC_PRIVATE) != 0)   return;
+  printAnnotations(out,fieldNode);
+  if (!isInterface) {
+    printModifiers(out,fieldNode.getModifiers());
+  }
+  ClassNode type=fieldNode.getType();
+  printType(out,type);
+  out.print(" ");
+  out.print(fieldNode.getName());
+  if (isInterface) {
+    out.print(" = ");
+    if (ClassHelper.isPrimitiveType(type)) {
+      String val=type == ClassHelper.boolean_TYPE ? "false" : "0";
+      out.print("new " + ClassHelper.getWrapper(type) + "(("+ type+ ")"+ val+ ")");
+    }
+ else {
+      out.print("null");
+    }
+  }
+  out.println(";");
+}

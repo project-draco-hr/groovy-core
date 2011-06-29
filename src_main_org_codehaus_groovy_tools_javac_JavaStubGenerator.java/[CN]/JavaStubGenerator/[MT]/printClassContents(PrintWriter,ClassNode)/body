@@ -1,0 +1,111 @@
+{
+  if (classNode instanceof InnerClassNode && ((InnerClassNode)classNode).isAnonymous()) {
+    return;
+  }
+  try {
+    Verifier verifier=new Verifier(){
+      public void addCovariantMethods(      ClassNode cn){
+      }
+      protected void addTimeStamp(      ClassNode node){
+      }
+      protected void addInitialization(      ClassNode node){
+      }
+      protected void addPropertyMethod(      MethodNode method){
+        doAddMethod(method);
+      }
+      protected void addReturnIfNeeded(      MethodNode node){
+      }
+      protected void addMethod(      ClassNode node,      boolean shouldBeSynthetic,      String name,      int modifiers,      ClassNode returnType,      Parameter[] parameters,      ClassNode[] exceptions,      Statement code){
+        doAddMethod(new MethodNode(name,modifiers,returnType,parameters,exceptions,code));
+      }
+      protected void addConstructor(      Parameter[] newParams,      ConstructorNode ctor,      Statement code,      ClassNode node){
+        if (code instanceof ExpressionStatement) {
+          Statement temp=code;
+          code=new BlockStatement();
+          ((BlockStatement)code).addStatement(temp);
+        }
+        ConstructorNode ctrNode=new ConstructorNode(ctor.getModifiers(),newParams,ctor.getExceptions(),code);
+        ctrNode.setDeclaringClass(node);
+        constructors.add(ctrNode);
+      }
+      protected void addDefaultParameters(      DefaultArgsAction action,      MethodNode method){
+        final Parameter[] parameters=method.getParameters();
+        final Expression[] saved=new Expression[parameters.length];
+        for (int i=0; i < parameters.length; i++) {
+          if (parameters[i].hasInitialExpression())           saved[i]=parameters[i].getInitialExpression();
+        }
+        super.addDefaultParameters(action,method);
+        for (int i=0; i < parameters.length; i++) {
+          if (saved[i] != null)           parameters[i].setInitialExpression(saved[i]);
+        }
+      }
+      private void doAddMethod(      MethodNode method){
+        String sig=method.getTypeDescriptor();
+        if (propertyMethodsWithSigs.containsKey(sig))         return;
+        propertyMethods.add(method);
+        propertyMethodsWithSigs.put(sig,method);
+      }
+    }
+;
+    verifier.visitClass(classNode);
+    currentModule=classNode.getModule();
+    boolean isInterface=classNode.isInterface();
+    boolean isEnum=(classNode.getModifiers() & Opcodes.ACC_ENUM) != 0;
+    boolean isAnnotationDefinition=classNode.isAnnotationDefinition();
+    printAnnotations(out,classNode);
+    printModifiers(out,classNode.getModifiers() & ~(isInterface ? Opcodes.ACC_ABSTRACT : 0));
+    if (isInterface) {
+      if (isAnnotationDefinition) {
+        out.print("@");
+      }
+      out.print("interface ");
+    }
+ else     if (isEnum) {
+      out.print("enum ");
+    }
+ else {
+      out.print("class ");
+    }
+    String className=classNode.getNameWithoutPackage();
+    if (classNode instanceof InnerClassNode)     className=className.substring(className.lastIndexOf("$") + 1);
+    out.println(className);
+    printGenericsBounds(out,classNode,true);
+    ClassNode superClass=classNode.getUnresolvedSuperClass(false);
+    if (!isInterface && !isEnum) {
+      out.print("  extends ");
+      printType(out,superClass);
+    }
+    ClassNode[] interfaces=classNode.getInterfaces();
+    if (interfaces != null && interfaces.length > 0 && !isAnnotationDefinition) {
+      if (isInterface) {
+        out.println("  extends");
+      }
+ else {
+        out.println("  implements");
+      }
+      for (int i=0; i < interfaces.length - 1; ++i) {
+        out.print("    ");
+        printType(out,interfaces[i]);
+        out.print(",");
+      }
+      out.print("    ");
+      printType(out,interfaces[interfaces.length - 1]);
+    }
+    out.println(" {");
+    printFields(out,classNode);
+    printMethods(out,classNode,isEnum);
+    for (Iterator<InnerClassNode> inner=classNode.getInnerClasses(); inner.hasNext(); ) {
+      propertyMethods.clear();
+      propertyMethodsWithSigs.clear();
+      constructors.clear();
+      printClassContents(out,inner.next());
+    }
+    out.println("}");
+  }
+  finally {
+    propertyMethods.clear();
+    propertyMethodsWithSigs.clear();
+    constructors.clear();
+    currentModule=null;
+  }
+}

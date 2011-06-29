@@ -1,14 +1,6 @@
 {
   if (!java5)   return;
   for (  AnnotationNode annotation : annotated.getAnnotations()) {
-    out.print("@" + annotation.getClassNode().getName() + "(");
-    boolean first=true;
-    Map<String,Expression> members=annotation.getMembers();
-    for (    String key : members.keySet()) {
-      if (first)       first=false;
- else       out.print(", ");
-      out.print(key + "=" + getAnnotationValue(members.get(key)));
-    }
-    out.print(") ");
+    printAnnotation(out,annotation);
   }
 }

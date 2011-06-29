@@ -1,0 +1,17 @@
+{
+  printAnnotations(out,constructorNode);
+  out.print("public ");
+  String className=clazz.getNameWithoutPackage();
+  if (clazz instanceof InnerClassNode)   className=className.substring(className.lastIndexOf("$") + 1);
+  out.println(className);
+  printParams(out,constructorNode);
+  ConstructorCallExpression constrCall=getConstructorCallExpression(constructorNode);
+  if (constrCall == null || !constrCall.isSpecialCall()) {
+    out.println(" {}");
+  }
+ else {
+    out.println(" {");
+    printSpecialConstructorArgs(out,constructorNode,constrCall);
+    out.println("}");
+  }
+}

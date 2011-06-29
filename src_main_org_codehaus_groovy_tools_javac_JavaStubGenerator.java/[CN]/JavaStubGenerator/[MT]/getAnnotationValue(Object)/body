@@ -15,7 +15,13 @@
  else   if (memberValue instanceof ConstantExpression) {
     ConstantExpression ce=(ConstantExpression)memberValue;
     Object constValue=ce.getValue();
-    if (constValue instanceof Number || constValue instanceof Boolean)     val=constValue.toString();
+    if (constValue instanceof AnnotationNode) {
+      StringWriter writer=new StringWriter();
+      PrintWriter out=new PrintWriter(writer);
+      printAnnotation(out,(AnnotationNode)constValue);
+      val=writer.toString();
+    }
+ else     if (constValue instanceof Number || constValue instanceof Boolean)     val=constValue.toString();
  else     val="\"" + escapeStringAnnotationValue(constValue.toString()) + "\"";
   }
  else   if (memberValue instanceof PropertyExpression || memberValue instanceof VariableExpression) {

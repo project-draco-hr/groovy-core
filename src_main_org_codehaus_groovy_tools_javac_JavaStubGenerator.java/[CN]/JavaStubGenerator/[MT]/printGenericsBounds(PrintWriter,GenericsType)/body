@@ -1,0 +1,21 @@
+{
+  if (genericsType.isPlaceholder()) {
+    out.print(genericsType.getName());
+  }
+ else {
+    printType(out,genericsType.getType());
+  }
+  ClassNode[] upperBounds=genericsType.getUpperBounds();
+  ClassNode lowerBound=genericsType.getLowerBound();
+  if (upperBounds != null) {
+    out.print(" extends ");
+    for (int i=0; i < upperBounds.length; i++) {
+      printType(out,upperBounds[i]);
+      if (i + 1 < upperBounds.length)       out.print(" & ");
+    }
+  }
+ else   if (lowerBound != null) {
+    out.print(" super ");
+    printType(out,lowerBound);
+  }
+}
