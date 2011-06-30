@@ -1,0 +1,10 @@
+{
+  for (  MethodNode method : getDeclaredMethods(setterName)) {
+    if (setterName.equals(method.getName()) && (!voidOnly || ClassHelper.VOID_TYPE == method.getReturnType()) && method.getParameters().length == 1) {
+      return method;
+    }
+  }
+  ClassNode parent=getSuperClass();
+  if (parent != null)   return parent.getSetterMethod(setterName,voidOnly);
+  return null;
+}
