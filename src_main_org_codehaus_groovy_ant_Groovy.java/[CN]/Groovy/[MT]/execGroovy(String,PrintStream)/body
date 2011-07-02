@@ -61,6 +61,8 @@
     parseAndRunScript(groovy,txt,mavenPom,scriptName,null,new AntBuilder(this));
   }
   finally {
+    groovy.resetLoadedClasses();
+    groovy.getClassLoader().clearCache();
     if (contextClassLoader || maven)     thread.setContextClassLoader(savedLoader);
   }
 }
