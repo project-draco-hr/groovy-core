@@ -1,0 +1,11 @@
+{
+  if (!node.isInterface())   return;
+  for (  MethodNode method : node.getMethods()) {
+    if (method.isPrivate()) {
+      addError("Method '" + method.getName() + "' is private but should be public in "+ getDescription(currentClass)+ ".",method);
+    }
+ else     if (method.isProtected()) {
+      addError("Method '" + method.getName() + "' is protected but should be public in "+ getDescription(currentClass)+ ".",method);
+    }
+  }
+}
