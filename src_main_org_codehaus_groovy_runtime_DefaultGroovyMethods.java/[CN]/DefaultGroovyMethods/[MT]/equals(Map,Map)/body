@@ -5,15 +5,16 @@
   if (other == null) {
     return false;
   }
+  if (self == other) {
+    return true;
+  }
   if (self.size() != other.size()) {
     return false;
   }
   if (!self.keySet().equals(other.keySet())) {
     return false;
   }
-  final Iterator it=self.keySet().iterator();
-  while (it.hasNext()) {
-    final Object key=it.next();
+  for (  Object key : self.keySet()) {
     if (!coercedEquals(self.get(key),other.get(key))) {
       return false;
     }
