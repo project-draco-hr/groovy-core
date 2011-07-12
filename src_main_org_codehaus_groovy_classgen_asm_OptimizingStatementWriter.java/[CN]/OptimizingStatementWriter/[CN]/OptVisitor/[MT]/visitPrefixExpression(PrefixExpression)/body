@@ -1,5 +1,9 @@
 {
   super.visitPrefixExpression(expression);
-  StatementMeta meta=addMeta(expression);
-  meta.type=ClassHelper.OBJECT_TYPE;
+  boolean isInt=BinaryIntExpressionHelper.isIntOperand(expression.getExpression(),node);
+  if (isInt) {
+    StatementMeta meta=addMeta(expression);
+    meta.type=ClassHelper.int_TYPE;
+    opt.chainCanOptimize(true);
+  }
 }

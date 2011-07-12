@@ -5,7 +5,7 @@
   operandStack.dup();
   ClassNode expressionType=operandStack.getTopOperand();
   int tempIdx=compileStack.defineTemporaryVariable("postfix_" + method,expressionType,true);
-  execMethodAndStoreForSubscriptOperator(method,expression,usesSubscript);
+  execMethodAndStoreForSubscriptOperator(op,method,expression,usesSubscript,orig);
   operandStack.pop();
   operandStack.load(expressionType,tempIdx);
   compileStack.removeVar(tempIdx);

@@ -1,0 +1,14 @@
+{
+  ClassNode type=getType(orig,getController().getClassNode());
+  int operationType=getOperandType(type);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  if (bew.writePostOrPrefixMethod(op,true)) {
+    OperandStack operandStack=getController().getOperandStack();
+    operandStack.doGroovyCast(type);
+    bew.writePostOrPrefixMethod(op,false);
+    operandStack.replace(bew.getNormalOpResultType());
+  }
+ else {
+    super.writePostOrPrefixMethod(op,method,expression,orig);
+  }
+}
