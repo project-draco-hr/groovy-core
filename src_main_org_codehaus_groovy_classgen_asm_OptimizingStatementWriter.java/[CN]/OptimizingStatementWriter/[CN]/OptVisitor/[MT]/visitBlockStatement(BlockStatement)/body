@@ -3,7 +3,7 @@
   for (  Statement statement : block.getStatements()) {
     opt.reset();
     statement.visit(this);
-    optAll=optAll && opt.shouldOptimize();
+    optAll=optAll && opt.canOptimize();
   }
   if (optAll && !block.isEmpty())   addMeta(block);
   opt.shouldOptimize=optAll;

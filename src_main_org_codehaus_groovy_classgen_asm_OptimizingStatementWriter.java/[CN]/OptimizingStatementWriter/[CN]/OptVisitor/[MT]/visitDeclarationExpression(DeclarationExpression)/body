@@ -3,7 +3,15 @@
   right.visit(this);
   boolean rightInt=BinaryIntExpressionHelper.isIntOperand(right,node);
   boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
-  opt.chainShouldOptimize((leftInt && rightInt) && !(right instanceof ConstantExpression));
+  boolean maybeOptimize=leftInt && rightInt;
+  if (maybeOptimize) {
+    if (right instanceof ConstantExpression) {
+      opt.chainMaybeOptimize(maybeOptimize);
+    }
+ else {
+      opt.chainShouldOptimize(maybeOptimize);
+    }
+  }
   if (opt.shouldOptimize()) {
     StatementMeta meta=addMeta(expression);
     if (leftInt && rightInt)     meta.type=ClassHelper.int_TYPE;
