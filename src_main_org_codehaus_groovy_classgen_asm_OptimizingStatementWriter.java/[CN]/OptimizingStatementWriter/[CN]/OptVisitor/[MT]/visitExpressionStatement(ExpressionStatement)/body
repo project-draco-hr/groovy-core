@@ -1,5 +1,7 @@
 {
   if (statement.getNodeMetaData(StatementMeta.class) != null)   return;
+  opt.push();
   super.visitExpressionStatement(statement);
-  if (opt.shouldOptimize())   addMeta(statement);
+  if (opt.shouldOptimize())   addMeta(statement,opt);
+  opt.pop(opt.shouldOptimize());
 }

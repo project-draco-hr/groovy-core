@@ -1,15 +1,19 @@
 {
+  opt.push();
   boolean optAll=true;
   for (  Statement statement : block.getStatements()) {
-    opt.reset();
+    opt.push();
     statement.visit(this);
     optAll=optAll && opt.canOptimize();
+    opt.pop(true);
   }
   if (block.isEmpty()) {
-    opt.canOptimize=true;
+    opt.chainCanOptimize(true);
+    opt.pop(true);
   }
  else {
-    opt.shouldOptimize=optAll;
-    if (optAll)     addMeta(block);
+    opt.chainShouldOptimize(optAll);
+    if (optAll)     addMeta(block,opt);
+    opt.pop(optAll);
   }
 }

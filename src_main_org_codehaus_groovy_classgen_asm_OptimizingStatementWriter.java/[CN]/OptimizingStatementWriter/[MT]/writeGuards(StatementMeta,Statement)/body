@@ -3,9 +3,11 @@
   MethodVisitor mv=controller.getMethodVisitor();
   FastPathData fastPathData=new FastPathData();
   Label slowPath=new Label();
-  if (meta.optimizeInt) {
-    isOrigInt.call(mv);
-    mv.visitJumpInsn(IFEQ,slowPath);
+  for (int i=0; i < guards.length; i++) {
+    if (meta.involvedTypes[i]) {
+      guards[i].call(mv);
+      mv.visitJumpInsn(IFEQ,slowPath);
+    }
   }
   String owner=BytecodeHelper.getClassInternalName(controller.getClassNode());
   MethodNode mn=controller.getMethodNode();

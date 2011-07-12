@@ -1,19 +1,18 @@
 {
   Expression right=expression.getRightExpression();
   right.visit(this);
-  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(right,node);
-  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
-  boolean maybeOptimize=leftInt && rightInt;
-  if (maybeOptimize) {
+  ClassNode leftType=getType(expression.getLeftExpression(),node);
+  ClassNode rightType=getType(expression.getRightExpression(),node);
+  if (isPrimitiveType(leftType) && isPrimitiveType(rightType)) {
     if (right instanceof ConstantExpression) {
-      opt.chainCanOptimize(maybeOptimize);
+      opt.chainCanOptimize(true);
     }
  else {
-      opt.chainShouldOptimize(maybeOptimize);
+      opt.chainShouldOptimize(true);
     }
-  }
-  if (opt.shouldOptimize()) {
     StatementMeta meta=addMeta(expression);
-    if (leftInt && rightInt)     meta.type=ClassHelper.int_TYPE;
+    meta.type=leftType;
+    opt.chainInvolvedType(leftType);
+    opt.chainInvolvedType(rightType);
   }
 }

@@ -1,5 +1,6 @@
 {
-  opt.reset();
+  opt.push();
   super.visitForLoop(statement);
-  if (opt.shouldOptimize())   addMeta(statement);
+  if (opt.shouldOptimize())   addMeta(statement,opt);
+  opt.pop(opt.shouldOptimize());
 }

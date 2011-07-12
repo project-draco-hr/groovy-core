@@ -1,20 +1,16 @@
 {
   if (expression.getNodeMetaData(StatementMeta.class) != null)   return;
   super.visitBinaryExpression(expression);
-  boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
-  boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression(),node);
-  boolean optimizeThisExpression=leftInt && rightInt;
-  ClassNode type=null;
-  opt.chainShouldOptimize(optimizeThisExpression);
-  if (optimizeThisExpression) {
-switch (expression.getOperation().getType()) {
-case Types.DIVIDE:
-case Types.POWER:
-case Types.MULTIPLY:
-case Types.PLUS_PLUS:
-case Types.MINUS_MINUS:
-      opt.reset();
-    break;
+  ClassNode leftType=getType(expression.getLeftExpression(),node);
+  ClassNode rightType=getType(expression.getRightExpression(),node);
+  ClassNode resultType=null;
+  int operation=expression.getOperation().getType();
+  if (operation == Types.LEFT_SQUARE_BRACKET && leftType.isArray()) {
+    opt.chainShouldOptimize(true);
+    resultType=leftType.getComponentType();
+  }
+ else {
+switch (operation) {
 case Types.COMPARE_EQUAL:
 case Types.COMPARE_LESS_THAN:
 case Types.COMPARE_LESS_THAN_EQUAL:
@@ -22,28 +18,44 @@ case Types.COMPARE_GREATER_THAN:
 case Types.COMPARE_GREATER_THAN_EQUAL:
 case Types.COMPARE_NOT_EQUAL:
 case Types.LOGICAL_AND:
+case Types.LOGICAL_AND_EQUAL:
 case Types.LOGICAL_OR:
-  expression.setType(ClassHelper.boolean_TYPE);
+case Types.LOGICAL_OR_EQUAL:
+      expression.setType(boolean_TYPE);
+    resultType=boolean_TYPE;
+  break;
+case Types.DIVIDE:
+case Types.DIVIDE_EQUAL:
+if (isLongCategory(leftType) && isLongCategory(rightType)) {
+}
+ else if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
+  resultType=double_TYPE;
+}
 break;
-case Types.BITWISE_AND:
-case Types.BITWISE_OR:
-case Types.BITWISE_XOR:
-expression.setType(ClassHelper.int_TYPE);
+case Types.POWER:
+case Types.POWER_EQUAL:
+break;
+case Types.ASSIGN:
+opt.chainCanOptimize(true);
 break;
 default :
+if (isIntCategory(leftType) && isIntCategory(rightType)) {
+resultType=int_TYPE;
 }
-type=ClassHelper.int_TYPE;
+ else if (isLongCategory(leftType) && isLongCategory(rightType)) {
+resultType=long_TYPE;
 }
- else if (rightInt && expression.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-ClassNode ltype=BinaryExpressionMultiTypeDispatcher.getType(expression.getLeftExpression(),node);
-if (ltype.getComponentType() == ClassHelper.int_TYPE) {
-opt.shouldOptimize=true;
-optimizeThisExpression=true;
-type=ClassHelper.int_TYPE;
+ else if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
+resultType=double_TYPE;
 }
 }
-if (optimizeThisExpression) {
+}
+if (resultType != null) {
 StatementMeta meta=addMeta(expression);
-meta.type=type;
+meta.type=resultType;
+opt.chainShouldOptimize(true);
+opt.chainInvolvedType(resultType);
+opt.chainInvolvedType(leftType);
+opt.chainInvolvedType(rightType);
 }
 }

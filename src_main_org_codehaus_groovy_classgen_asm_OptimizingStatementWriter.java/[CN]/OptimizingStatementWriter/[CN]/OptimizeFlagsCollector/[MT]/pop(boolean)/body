@@ -1,0 +1,9 @@
+{
+  OptimizeFlagsEntry old=current;
+  current=olderEntries.removeLast();
+  if (propagateFlags) {
+    chainCanOptimize(old.canOptimize);
+    chainShouldOptimize(old.shouldOptimize);
+    for (int i=0; i < typeMapKeyNames.length; i++)     current.involvedTypes[i]|=old.involvedTypes[i];
+  }
+}
