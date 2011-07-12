@@ -5,7 +5,7 @@
   boolean rightInt=BinaryIntExpressionHelper.isIntOperand(expression.getRightExpression(),node);
   boolean optimizeThisExpression=leftInt && rightInt;
   ClassNode type=null;
-  optimizeInt=optimizeInt || optimizeThisExpression;
+  opt.chainShouldOptimize(optimizeThisExpression);
   if (optimizeThisExpression) {
 switch (expression.getOperation().getType()) {
 case Types.DIVIDE:
@@ -13,7 +13,7 @@ case Types.POWER:
 case Types.MULTIPLY:
 case Types.PLUS_PLUS:
 case Types.MINUS_MINUS:
-      optimizeInt=false;
+      opt.reset();
     break;
 case Types.COMPARE_EQUAL:
 case Types.COMPARE_LESS_THAN:
@@ -37,7 +37,7 @@ type=ClassHelper.int_TYPE;
  else if (rightInt && expression.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
 ClassNode ltype=BinaryExpressionMultiTypeDispatcher.getType(expression.getLeftExpression(),node);
 if (ltype.getComponentType() == ClassHelper.int_TYPE) {
-optimizeInt=true;
+opt.shouldOptimize=true;
 optimizeThisExpression=true;
 type=ClassHelper.int_TYPE;
 }

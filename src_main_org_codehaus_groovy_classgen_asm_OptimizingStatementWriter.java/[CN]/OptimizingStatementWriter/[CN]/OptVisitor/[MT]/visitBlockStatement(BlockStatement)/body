@@ -1,11 +1,10 @@
 {
   boolean optAll=true;
   for (  Statement statement : block.getStatements()) {
-    optimizeInt=false;
+    opt.reset();
     statement.visit(this);
-    optAll=optAll && optimizeInt;
+    optAll=optAll && opt.canOptimize();
   }
-  optAll=optAll && !block.isEmpty();
-  if (optAll)   addMeta(block);
-  optimizeInt=optAll;
+  if (optAll && !block.isEmpty())   addMeta(block);
+  opt.shouldOptimize=optAll;
 }
