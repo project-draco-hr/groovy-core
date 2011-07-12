@@ -4,7 +4,7 @@
   boolean rightInt=BinaryIntExpressionHelper.isIntOperand(right,node);
   boolean leftInt=BinaryIntExpressionHelper.isIntOperand(expression.getLeftExpression(),node);
   opt.chainShouldOptimize((leftInt && rightInt) && !(right instanceof ConstantExpression));
-  if (opt.canOptimize()) {
+  if (opt.shouldOptimize()) {
     StatementMeta meta=addMeta(expression);
     if (leftInt && rightInt)     meta.type=ClassHelper.int_TYPE;
   }
