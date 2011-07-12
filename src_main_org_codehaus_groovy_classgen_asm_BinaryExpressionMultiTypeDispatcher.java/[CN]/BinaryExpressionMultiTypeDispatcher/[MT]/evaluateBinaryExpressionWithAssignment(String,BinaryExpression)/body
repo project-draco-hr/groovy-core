@@ -1,0 +1,46 @@
+{
+  if (!isAssignmentToArray(binExp)) {
+    super.evaluateBinaryExpressionWithAssignment(method,binExp);
+    return;
+  }
+  ClassNode current=getController().getClassNode();
+  int operation=removeAssignment(binExp.getOperation().getType());
+  Expression leftExp=binExp.getLeftExpression();
+  ClassNode leftType=getType(leftExp,current);
+  Expression rightExp=binExp.getRightExpression();
+  ClassNode rightType=getType(rightExp,current);
+  int operationType=getOperandConversionType(leftType,rightType);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  boolean simulationSuccess=bew.arrayGet(LEFT_SQUARE_BRACKET,true);
+  simulationSuccess=simulationSuccess && bew.write(operation,true);
+  simulationSuccess=simulationSuccess && bew.arraySet(true);
+  if (!simulationSuccess) {
+    super.evaluateBinaryExpressionWithAssignment(method,binExp);
+    return;
+  }
+  AsmClassGenerator acg=getController().getAcg();
+  OperandStack operandStack=getController().getOperandStack();
+  CompileStack compileStack=getController().getCompileStack();
+  BinaryExpression arrayWithSubscript=(BinaryExpression)leftExp;
+  Expression subscript=arrayWithSubscript.getRightExpression();
+  subscript.visit(acg);
+  operandStack.doGroovyCast(int_TYPE);
+  int subscriptValueId=compileStack.defineTemporaryVariable("$sub",ClassHelper.int_TYPE,true);
+  operandStack.remove(1);
+  arrayWithSubscript.getLeftExpression().visit(acg);
+  operandStack.dup();
+  operandStack.load(ClassHelper.int_TYPE,subscriptValueId);
+  bew.arrayGet(LEFT_SQUARE_BRACKET,false);
+  operandStack.replace(leftType,2);
+  binExp.getRightExpression().visit(acg);
+  bew.write(operation,false);
+  operandStack.dup();
+  int resultValueId=compileStack.defineTemporaryVariable("$result",rightType,true);
+  operandStack.remove(1);
+  operandStack.load(ClassHelper.int_TYPE,subscriptValueId);
+  bew.arraySet(false);
+  operandStack.remove(2);
+  operandStack.load(rightType,resultValueId);
+  compileStack.removeVar(resultValueId);
+  compileStack.removeVar(subscriptValueId);
+}

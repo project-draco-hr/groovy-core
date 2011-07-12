@@ -1,12 +1,14 @@
 {
   ClassNode current=getController().getClassNode();
-  ClassNode arrayComponentType=getType(receiver,current).getComponentType();
+  ClassNode arrayType=getType(receiver,current);
+  ClassNode arrayComponentType=arrayType.getComponentType();
   int operationType=getOperandType(arrayComponentType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   AsmClassGenerator acg=getController().getAcg();
   if (bew.arraySet(true)) {
     OperandStack operandStack=getController().getOperandStack();
     receiver.visit(acg);
+    operandStack.doGroovyCast(arrayType);
     index.visit(acg);
     operandStack.doGroovyCast(int_TYPE);
     rhsValueLoader.visit(acg);
