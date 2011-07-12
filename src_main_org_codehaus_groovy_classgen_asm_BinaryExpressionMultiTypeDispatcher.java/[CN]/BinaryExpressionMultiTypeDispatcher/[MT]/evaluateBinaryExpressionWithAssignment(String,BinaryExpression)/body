@@ -26,7 +26,6 @@
   subscript.visit(acg);
   operandStack.doGroovyCast(int_TYPE);
   int subscriptValueId=compileStack.defineTemporaryVariable("$sub",ClassHelper.int_TYPE,true);
-  operandStack.remove(1);
   arrayWithSubscript.getLeftExpression().visit(acg);
   operandStack.dup();
   operandStack.load(ClassHelper.int_TYPE,subscriptValueId);
@@ -36,7 +35,6 @@
   bew.write(operation,false);
   operandStack.dup();
   int resultValueId=compileStack.defineTemporaryVariable("$result",rightType,true);
-  operandStack.remove(1);
   operandStack.load(ClassHelper.int_TYPE,subscriptValueId);
   bew.arraySet(false);
   operandStack.remove(2);
