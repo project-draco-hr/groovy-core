@@ -12,18 +12,24 @@
     if ("antcall".equals(taskName) && parent == null) {
       throw new BuildException("antcall not supported within AntBuilder, consider using 'ant.project.executeTarget('targetName')' instead.");
     }
-    InputStream savedIn=System.in;
     InputStream savedProjectInputStream=project.getDefaultInputStream();
+    InputStream savedIn=System.in;
+    PrintStream savedErr=System.err;
+    PrintStream savedOut=System.out;
     if (!(savedIn instanceof DemuxInputStream)) {
       project.setDefaultInputStream(savedIn);
       System.setIn(new DemuxInputStream(project));
     }
+    System.setOut(new PrintStream(new DemuxOutputStream(project,false)));
+    System.setErr(new PrintStream(new DemuxOutputStream(project,true)));
     try {
       lastCompletedNode=performTask(task);
     }
   finally {
       project.setDefaultInputStream(savedProjectInputStream);
       System.setIn(savedIn);
+      System.setOut(savedOut);
+      System.setErr(savedErr);
     }
     if ("import".equals(taskName)) {
       antXmlContext.setCurrentTarget(collectorTarget);
