@@ -2,16 +2,20 @@
   int operation=binExp.getOperation().getType();
   ClassNode current=getController().getClassNode();
   Expression leftExp=binExp.getLeftExpression();
-  ClassNode leftType=getType(leftExp,current);
+  ClassNode leftTypeOrig=getType(leftExp,current);
+  ClassNode leftType=leftTypeOrig;
   Expression rightExp=binExp.getRightExpression();
   ClassNode rightType=getType(rightExp,current);
+  if (operation == LEFT_SQUARE_BRACKET) {
+    leftType=leftTypeOrig.getComponentType();
+  }
   int operationType=getOperandConversionType(leftType,rightType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   AsmClassGenerator acg=getController().getAcg();
   OperandStack os=getController().getOperandStack();
   if (bew.arrayGet(operation,true)) {
     leftExp.visit(acg);
-    os.doGroovyCast(leftType);
+    os.doGroovyCast(leftTypeOrig);
     rightExp.visit(acg);
     os.doGroovyCast(int_TYPE);
     bew.arrayGet(operation,false);
