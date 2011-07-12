@@ -1,12 +1,17 @@
 {
-  StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
-  FastPathData fastPathData=writeGuards(meta,statement);
-  boolean oldFastPathBlock=fastPathBlocked;
-  fastPathBlocked=true;
-  super.writeForLoopWithClosureList(statement);
-  fastPathBlocked=oldFastPathBlock;
-  if (fastPathData == null)   return;
-  writeFastPathPrelude(fastPathData);
-  super.writeForLoopWithClosureList(statement);
-  writeFastPathEpilogue(fastPathData);
+  if (controller.isFastPath()) {
+    super.writeForLoopWithClosureList(statement);
+  }
+ else {
+    StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
+    FastPathData fastPathData=writeGuards(meta,statement);
+    boolean oldFastPathBlock=fastPathBlocked;
+    fastPathBlocked=true;
+    super.writeForLoopWithClosureList(statement);
+    fastPathBlocked=oldFastPathBlock;
+    if (fastPathData == null)     return;
+    writeFastPathPrelude(fastPathData);
+    super.writeForLoopWithClosureList(statement);
+    writeFastPathEpilogue(fastPathData);
+  }
 }

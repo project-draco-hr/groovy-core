@@ -5,6 +5,11 @@
     statement.visit(this);
     optAll=optAll && opt.canOptimize();
   }
-  if (optAll && !block.isEmpty())   addMeta(block);
-  opt.shouldOptimize=optAll;
+  if (block.isEmpty()) {
+    opt.canOptimize=true;
+  }
+ else {
+    opt.shouldOptimize=optAll;
+    if (optAll)     addMeta(block);
+  }
 }

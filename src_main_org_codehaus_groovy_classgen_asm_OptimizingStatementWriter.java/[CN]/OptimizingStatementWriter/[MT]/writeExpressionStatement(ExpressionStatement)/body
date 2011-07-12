@@ -1,17 +1,22 @@
 {
-  StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
-  if (isNewPathFork(meta) && writeDeclarationExtraction(statement)) {
-    FastPathData fastPathData=writeGuards(meta,statement);
-    boolean oldFastPathBlock=fastPathBlocked;
-    fastPathBlocked=true;
+  if (controller.isFastPath()) {
     super.writeExpressionStatement(statement);
-    fastPathBlocked=oldFastPathBlock;
-    if (fastPathData == null)     return;
-    writeFastPathPrelude(fastPathData);
-    super.writeExpressionStatement(statement);
-    writeFastPathEpilogue(fastPathData);
   }
  else {
-    super.writeExpressionStatement(statement);
+    StatementMeta meta=(StatementMeta)statement.getNodeMetaData(StatementMeta.class);
+    if (isNewPathFork(meta) && writeDeclarationExtraction(statement)) {
+      FastPathData fastPathData=writeGuards(meta,statement);
+      boolean oldFastPathBlock=fastPathBlocked;
+      fastPathBlocked=true;
+      super.writeExpressionStatement(statement);
+      fastPathBlocked=oldFastPathBlock;
+      if (fastPathData == null)       return;
+      writeFastPathPrelude(fastPathData);
+      super.writeExpressionStatement(statement);
+      writeFastPathEpilogue(fastPathData);
+    }
+ else {
+      super.writeExpressionStatement(statement);
+    }
   }
 }
