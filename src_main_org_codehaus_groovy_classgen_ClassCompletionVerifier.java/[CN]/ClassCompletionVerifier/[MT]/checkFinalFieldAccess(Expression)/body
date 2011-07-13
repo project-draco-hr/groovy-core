@@ -17,9 +17,8 @@
   }
   if (v instanceof FieldNode) {
     FieldNode fn=(FieldNode)v;
-    int modifiers=fn.getModifiers();
-    boolean isFinal=(modifiers & Opcodes.ACC_FINAL) != 0;
-    boolean isStatic=(modifiers & Opcodes.ACC_STATIC) != 0;
+    boolean isFinal=fn.isFinal();
+    boolean isStatic=fn.isStatic();
     boolean error=isFinal && ((isStatic && !inStaticConstructor) || (!isStatic && !inConstructor));
     if (error)     addError("cannot modify" + (isStatic ? " static" : "") + " final field '"+ fn.getName()+ "' outside of "+ (isStatic ? "static initialization block." : "constructor."),expression);
   }

@@ -3,7 +3,7 @@
   for (  MethodNode superMethod : cn.getSuperClass().getMethods(mn.getName())) {
     Parameter[] superParams=superMethod.getParameters();
     if (!hasEqualParameterTypes(params,superParams))     continue;
-    if ((isPrivate(mn.getModifiers()) && !isPrivate(superMethod.getModifiers())) || (isProtected(mn.getModifiers()) && isPublic(superMethod.getModifiers()))) {
+    if ((mn.isPrivate() && !superMethod.isPrivate()) || (mn.isProtected() && superMethod.isPublic())) {
       addWeakerAccessError(cn,mn,params,superMethod);
       return;
     }

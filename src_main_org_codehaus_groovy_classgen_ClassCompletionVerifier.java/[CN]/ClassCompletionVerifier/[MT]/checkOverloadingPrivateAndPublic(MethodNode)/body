@@ -5,8 +5,7 @@
   for (  MethodNode method : currentClass.getMethods(node.getName())) {
     if (method == node)     continue;
     if (!method.getDeclaringClass().equals(node.getDeclaringClass()))     continue;
-    int modifiers=method.getModifiers();
-    if (isPublic(modifiers) || isProtected(modifiers)) {
+    if (method.isPublic() || method.isProtected()) {
       hasPublic=true;
     }
  else {
