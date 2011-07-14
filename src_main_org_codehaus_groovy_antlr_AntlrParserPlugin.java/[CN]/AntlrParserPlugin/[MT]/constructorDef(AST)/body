@@ -13,9 +13,9 @@
   ClassNode[] exceptions=ClassNode.EMPTY_ARRAY;
   if (isType(LITERAL_throws,node)) {
     AST throwsNode=node.getFirstChild();
-    List exceptionList=new ArrayList();
+    List<ClassNode> exceptionList=new ArrayList<ClassNode>();
     throwsList(throwsNode,exceptionList);
-    exceptions=(ClassNode[])exceptionList.toArray(exceptions);
+    exceptions=exceptionList.toArray(exceptions);
     node=node.getNextSibling();
   }
   assertNodeType(SLIST,node);

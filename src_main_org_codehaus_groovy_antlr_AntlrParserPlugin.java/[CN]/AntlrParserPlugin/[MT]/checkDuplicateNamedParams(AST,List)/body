@@ -1,11 +1,10 @@
 {
   if (expressionList.isEmpty())   return;
   Set<String> namedArgumentNames=new HashSet<String>();
-  MapEntryExpression meExp;
-  for (Iterator iter=expressionList.iterator(); iter.hasNext(); ) {
-    meExp=(MapEntryExpression)iter.next();
+  for (  Object expression : expressionList) {
+    MapEntryExpression meExp=(MapEntryExpression)expression;
     if (meExp.getKeyExpression() instanceof ConstantExpression) {
-      String argName=((ConstantExpression)meExp.getKeyExpression()).getText();
+      String argName=meExp.getKeyExpression().getText();
       if (!namedArgumentNames.contains(argName)) {
         namedArgumentNames.add(argName);
       }
