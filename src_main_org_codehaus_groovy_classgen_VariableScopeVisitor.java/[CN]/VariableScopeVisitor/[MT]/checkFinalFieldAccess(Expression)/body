@@ -1,0 +1,12 @@
+{
+  if (!(expression instanceof VariableExpression) && !(expression instanceof TupleExpression))   return;
+  if (expression instanceof TupleExpression) {
+    TupleExpression list=(TupleExpression)expression;
+    for (    Expression e : list.getExpressions()) {
+      checkForFinal(expression,(VariableExpression)e);
+    }
+  }
+ else {
+    checkForFinal(expression,(VariableExpression)expression);
+  }
+}
