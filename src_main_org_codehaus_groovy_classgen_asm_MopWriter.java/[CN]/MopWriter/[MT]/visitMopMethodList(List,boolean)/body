@@ -5,7 +5,8 @@
     MethodNode mn=(MethodNode)method;
     if ((mn.getModifiers() & ACC_ABSTRACT) != 0)     continue;
     if (mn.isStatic())     continue;
-    if (isThis ^ (mn.getModifiers() & (ACC_PUBLIC | ACC_PROTECTED)) == 0)     continue;
+    boolean isPrivate=Modifier.isPrivate(mn.getModifiers());
+    if (isThis ^ isPrivate)     continue;
     String methodName=mn.getName();
     if (isMopMethod(methodName)) {
       mops.put(new MopKey(methodName,mn.getParameters()),mn);
