@@ -1,5 +1,13 @@
 {
   if (isPrimitiveType(name))   return null;
+  if (name.endsWith("[]")) {
+    GroovyClassDoc componentClass=resolveClass(rootDoc,name.substring(0,name.length() - 2));
+    if (componentClass != null)     return new ArrayClassDocWrapper(componentClass);
+    return null;
+  }
+  if (name.equals("T") || name.equals("U") || name.equals("K")|| name.equals("V")|| name.equals("G")) {
+    name="java/lang/Object";
+  }
   GroovyClassDoc doc=((SimpleGroovyRootDoc)rootDoc).classNamedExact(name);
   if (doc != null)   return doc;
   int slashIndex=name.lastIndexOf("/");
@@ -21,8 +29,27 @@
  else {
     c=resolveExternalClassFromImport(name);
   }
+  if (c == null) {
+    c=resolveFromJavaLang(name);
+  }
   if (c != null) {
     return new ExternalGroovyClassDoc(c);
+  }
+  if (name.contains("/")) {
+    if (slashIndex > 0) {
+      String outerName=name.substring(0,slashIndex);
+      GroovyClassDoc gcd=resolveClass(rootDoc,outerName);
+      if (gcd instanceof ExternalGroovyClassDoc) {
+        ExternalGroovyClassDoc egcd=(ExternalGroovyClassDoc)gcd;
+        String innerName=name.substring(slashIndex + 1);
+        Class outerClass=egcd.externalClass();
+        for (        Class inner : outerClass.getDeclaredClasses()) {
+          if (inner.getName().equals(outerClass.getName() + "$" + innerName)) {
+            return new ExternalGroovyClassDoc(inner);
+          }
+        }
+      }
+    }
   }
   SimpleGroovyClassDoc placeholder=new SimpleGroovyClassDoc(null,shortname);
   placeholder.setFullPathName(name);

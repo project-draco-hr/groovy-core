@@ -1,0 +1,42 @@
+{
+switch (node.getType()) {
+case LITERAL_boolean:
+    return "boolean";
+case LITERAL_byte:
+  return "byte";
+case LITERAL_char:
+return "char";
+case LITERAL_double:
+return "double";
+case LITERAL_float:
+return "float";
+case LITERAL_int:
+return "int";
+case LITERAL_long:
+return "long";
+case LITERAL_short:
+return "short";
+case LITERAL_void:
+return "void";
+case ARRAY_DECLARATOR:
+String componentType=getAsText(node,defaultText);
+if (!componentType.equals("def")) return componentType + "[]";
+return "java/lang/Object[]";
+case IDENT:
+return node.getText();
+case DOT:
+List<String> result=new ArrayList<String>();
+GroovySourceAST child=(GroovySourceAST)node.getFirstChild();
+while (child != null) {
+if (child.getType() == IDENT) {
+result.add(child.getText());
+}
+ else if (child.getType() == DOT) {
+result.add(getAsTextCurrent(child,defaultText));
+}
+child=(GroovySourceAST)child.getNextSibling();
+}
+return DefaultGroovyMethods.join(result,"/");
+}
+return defaultText;
+}

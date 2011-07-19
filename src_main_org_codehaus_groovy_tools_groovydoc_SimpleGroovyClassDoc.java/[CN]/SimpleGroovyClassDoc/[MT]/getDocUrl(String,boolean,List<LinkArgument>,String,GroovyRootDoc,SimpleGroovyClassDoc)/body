@@ -26,7 +26,7 @@
   final String[] target=type.split("#");
   String shortClassName=target[0].replaceAll(".*\\.","");
   shortClassName+=(target.length > 1 ? "#" + target[1].split("\\(")[0] : "");
-  String name=(full ? target[0] : shortClassName).replaceAll("#",".");
+  String name=(full ? target[0] : shortClassName).replaceAll("#",".").replace('$','.');
   if (rootDoc != null) {
     String slashedName=target[0].replaceAll("\\.","/");
     GroovyClassDoc doc=rootDoc.classNamed(slashedName);

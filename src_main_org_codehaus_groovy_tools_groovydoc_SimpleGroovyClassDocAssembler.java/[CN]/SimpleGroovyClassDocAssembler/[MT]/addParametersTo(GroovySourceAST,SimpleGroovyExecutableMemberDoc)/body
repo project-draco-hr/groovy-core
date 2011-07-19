@@ -6,6 +6,7 @@
       String parameterTypeName=getTypeOrDefault(currentNode);
       String parameterName=getText(currentNode.childOfType(IDENT));
       SimpleGroovyParameter parameter=new SimpleGroovyParameter(parameterName);
+      parameter.setVararg(currentNode.getType() == VARIABLE_PARAMETER_DEF);
       parameter.setTypeName(parameterTypeName);
       GroovySourceAST modifiers=currentNode.childOfType(MODIFIERS);
       if (modifiers != null) {
