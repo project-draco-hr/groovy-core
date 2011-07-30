@@ -1,18 +1,18 @@
 {
-  Class[] classes=new Class[]{DefaultGroovyMethods.class,SwingGroovyMethods.class,SqlGroovyMethods.class,XmlGroovyMethods.class,EncodingGroovyMethods.class,DateGroovyMethods.class,ProcessGroovyMethods.class};
+  boolean info=args.length == 1 && args[0].equals("--info");
   List<CachedMethod> cachedMethodsList=new ArrayList<CachedMethod>();
-  for (  Class aClass : classes) {
+  for (  Class aClass : CLASSES) {
     Collections.addAll(cachedMethodsList,ReflectionCache.getCachedClass(aClass).getMethods());
   }
   final CachedMethod[] cachedMethods=cachedMethodsList.toArray(new CachedMethod[cachedMethodsList.size()]);
   List<GeneratedMetaMethod.DgmMethodRecord> records=new ArrayList<GeneratedMetaMethod.DgmMethodRecord>();
-  for (int i=0, cur=0; i < cachedMethods.length; i++) {
-    CachedMethod method=cachedMethods[i];
+  int cur=0;
+  for (  CachedMethod method : cachedMethods) {
     if (!method.isStatic() || !method.isPublic())     continue;
     if (method.getCachedMethod().getAnnotation(Deprecated.class) != null)     continue;
     if (method.getParameterTypes().length == 0)     continue;
     final Class returnType=method.getReturnType();
-    final String className="org/codehaus/groovy/runtime/dgm$" + cur;
+    final String className="org/codehaus/groovy/runtime/dgm$" + cur++;
     GeneratedMetaMethod.DgmMethodRecord record=new GeneratedMetaMethod.DgmMethodRecord();
     records.add(record);
     record.methodName=method.getName();
@@ -32,7 +32,7 @@
     fileOutputStream.write(bytes);
     fileOutputStream.flush();
     fileOutputStream.close();
-    cur++;
   }
   GeneratedMetaMethod.DgmMethodRecord.saveDgmInfo(records,"target/classes/META-INF/dgminfo");
+  if (info)   System.out.println("Saved " + cur + " dgm records to: target/classes/META-INF/dgminfo");
 }
