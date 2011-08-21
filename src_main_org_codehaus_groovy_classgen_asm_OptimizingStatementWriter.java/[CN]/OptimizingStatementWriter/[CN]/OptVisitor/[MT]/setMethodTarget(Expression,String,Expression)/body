@@ -16,6 +16,7 @@
   }
  else {
     ClassNode type=BinaryExpressionMultiTypeDispatcher.getType(callArgs,node);
+    if (!validTypeForCall(type))     return;
     paraTypes=new Parameter[]{new Parameter(type,"")};
   }
   MethodNode target=node.getMethod(name,paraTypes);
