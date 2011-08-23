@@ -2,5 +2,17 @@
   MetaClass scriptMetaClass=script.getMetaClass();
   script.setMetaClass(new FactoryInterceptorMetaClass(scriptMetaClass,this));
   script.setBinding(this);
-  return script.run();
+  Object oldScriptName=getVariable(SCRIPT_CLASS_NAME);
+  try {
+    setVariable(SCRIPT_CLASS_NAME,script.getClass().getName());
+    return script.run();
+  }
+  finally {
+    if (oldScriptName != null) {
+      setVariable(SCRIPT_CLASS_NAME,oldScriptName);
+    }
+ else {
+      getVariables().remove(SCRIPT_CLASS_NAME);
+    }
+  }
 }
