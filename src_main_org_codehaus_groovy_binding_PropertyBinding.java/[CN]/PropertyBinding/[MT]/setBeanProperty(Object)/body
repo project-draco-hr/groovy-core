@@ -1,0 +1,10 @@
+{
+  try {
+    InvokerHelper.setProperty(bean,propertyName,newValue);
+  }
+ catch (  InvokerInvocationException iie) {
+    if (!(iie.getCause() instanceof PropertyVetoException)) {
+      throw iie;
+    }
+  }
+}

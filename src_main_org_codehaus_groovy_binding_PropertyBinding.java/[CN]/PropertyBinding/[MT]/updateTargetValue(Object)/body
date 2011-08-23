@@ -4,12 +4,54 @@
       return;
     }
   }
-  try {
-    InvokerHelper.setProperty(bean,propertyName,newValue);
-  }
- catch (  InvokerInvocationException iie) {
-    if (!(iie.getCause() instanceof PropertyVetoException)) {
-      throw iie;
+  Runnable runnable=new Runnable(){
+    public void run(){
+      setBeanProperty(newValue);
     }
   }
+;
+switch (updateStrategy) {
+case MIXED:
+    if (SwingUtilities.isEventDispatchThread()) {
+      runnable.run();
+    }
+ else {
+      SwingUtilities.invokeLater(runnable);
+    }
+  break;
+case ASYNC:
+SwingUtilities.invokeLater(runnable);
+break;
+case SYNC:
+if (SwingUtilities.isEventDispatchThread()) {
+runnable.run();
+}
+ else {
+try {
+SwingUtilities.invokeAndWait(runnable);
+}
+ catch (InterruptedException e) {
+LOG.log(Level.WARNING,"Error notifying propertyChangeListener",e);
+throw new GroovyRuntimeException(e);
+}
+catch (InvocationTargetException e) {
+LOG.log(Level.WARNING,"Error notifying propertyChangeListener",e.getTargetException());
+throw new GroovyRuntimeException(e.getTargetException());
+}
+}
+break;
+case SAME:
+runnable.run();
+break;
+case OUTSIDE:
+if (SwingUtilities.isEventDispatchThread()) {
+DEFAULT_EXECUTOR_SERVICE.submit(runnable);
+}
+ else {
+runnable.run();
+}
+break;
+case DEFER:
+DEFAULT_EXECUTOR_SERVICE.submit(runnable);
+}
 }
