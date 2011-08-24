@@ -1,11 +1,10 @@
 {
-  if (nonChangeCheck) {
-    if (DefaultTypeTransformation.compareEqual(getSourceValue(),newValue)) {
-      return;
-    }
-  }
   Runnable runnable=new Runnable(){
     public void run(){
+      Object sourceValue=getSourceValue();
+      if ((sourceValue == null && newValue == null) || DefaultTypeTransformation.compareEqual(sourceValue,newValue)) {
+        return;
+      }
       setBeanProperty(newValue);
     }
   }
