@@ -1,83 +1,9 @@
 {
   if (controller.getClosureWriter().addGeneratedClosureConstructorCall(call))   return;
-  MethodVisitor mv=controller.getMethodVisitor();
-  OperandStack operandStack=controller.getOperandStack();
   ClassNode callNode=controller.getClassNode();
   if (call.isSuperCall())   callNode=callNode.getSuperClass();
-  List constructors=sortConstructors(call,callNode);
-  call.getArguments().visit(this);
-  mv.visitInsn(DUP);
-  BytecodeHelper.pushConstant(mv,constructors.size());
-  visitClassExpression(new ClassExpression(callNode));
-  operandStack.remove(1);
-  selectConstructorAndTransformArguments.call(mv);
-  mv.visitInsn(DUP_X1);
-  mv.visitInsn(ICONST_1);
-  mv.visitInsn(IAND);
-  Label afterIf=new Label();
-  mv.visitJumpInsn(IFEQ,afterIf);
-  mv.visitInsn(ICONST_0);
-  mv.visitInsn(AALOAD);
-  mv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
-  mv.visitLabel(afterIf);
-  mv.visitInsn(SWAP);
-  if (controller.isConstructor()) {
-    mv.visitVarInsn(ALOAD,0);
+  List<ConstructorNode> constructors=sortConstructors(call,callNode);
+  if (!makeDirectConstructorCall(constructors,call,callNode)) {
+    makeMOPBasedConstructorCall(constructors,call,callNode);
   }
- else {
-    mv.visitTypeInsn(NEW,BytecodeHelper.getClassInternalName(callNode));
-  }
-  mv.visitInsn(SWAP);
-  mv.visitIntInsn(BIPUSH,8);
-  mv.visitInsn(ISHR);
-  Label[] targets=new Label[constructors.size()];
-  int[] indices=new int[constructors.size()];
-  for (int i=0; i < targets.length; i++) {
-    targets[i]=new Label();
-    indices[i]=i;
-  }
-  Label defaultLabel=new Label();
-  Label afterSwitch=new Label();
-  mv.visitLookupSwitchInsn(defaultLabel,indices,targets);
-  for (int i=0; i < targets.length; i++) {
-    mv.visitLabel(targets[i]);
-    if (controller.isConstructor()) {
-      mv.visitInsn(SWAP);
-      mv.visitInsn(DUP_X1);
-    }
- else {
-      mv.visitInsn(DUP_X1);
-      mv.visitInsn(DUP2_X1);
-      mv.visitInsn(POP);
-    }
-    ConstructorNode cn=(ConstructorNode)constructors.get(i);
-    String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
-    Parameter[] parameters=cn.getParameters();
-    for (int p=0; p < parameters.length; p++) {
-      operandStack.push(ClassHelper.OBJECT_TYPE);
-      mv.visitInsn(DUP);
-      BytecodeHelper.pushConstant(mv,p);
-      mv.visitInsn(AALOAD);
-      operandStack.push(ClassHelper.OBJECT_TYPE);
-      ClassNode type=parameters[p].getType();
-      operandStack.doGroovyCast(type);
-      operandStack.swap();
-      operandStack.remove(2);
-    }
-    mv.visitInsn(POP);
-    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
-    mv.visitJumpInsn(GOTO,afterSwitch);
-  }
-  mv.visitLabel(defaultLabel);
-  mv.visitTypeInsn(NEW,"java/lang/IllegalArgumentException");
-  mv.visitInsn(DUP);
-  mv.visitLdcInsn("illegal constructor number");
-  mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
-  mv.visitInsn(ATHROW);
-  mv.visitLabel(afterSwitch);
-  if (!controller.isConstructor()) {
-    mv.visitInsn(SWAP);
-    operandStack.push(callNode);
-  }
-  mv.visitInsn(POP);
 }
