@@ -6,10 +6,15 @@
   foundArgs=null;
   foundConstant=null;
   Expression objectExpression=transform(pe.getObjectExpression());
-  if (foundArgs != null && foundConstant != null) {
+  boolean candidate=false;
+  if (objectExpression instanceof MethodCallExpression) {
+    candidate=((MethodCallExpression)objectExpression).isImplicitThis();
+  }
+  if (foundArgs != null && foundConstant != null && candidate) {
     Expression result=findStaticMethodImportFromModule(foundConstant,foundArgs);
     if (result != null) {
       objectExpression=result;
+      objectExpression.setSourcePosition(pe);
     }
   }
   inPropertyExpression=oldInPropertyExpression;
