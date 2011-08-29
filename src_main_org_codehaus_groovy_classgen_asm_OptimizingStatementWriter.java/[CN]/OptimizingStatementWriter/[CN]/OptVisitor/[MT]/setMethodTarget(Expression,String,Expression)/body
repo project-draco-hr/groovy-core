@@ -22,6 +22,7 @@
   MethodNode target=node.getMethod(name,paraTypes);
   if (target == null)   return;
   if (!target.getDeclaringClass().equals(node))   return;
+  if (scope.isInStaticContext() && !target.isStatic())   return;
   StatementMeta meta=addMeta(expression);
   meta.target=target;
   meta.type=target.getReturnType().redirect();
