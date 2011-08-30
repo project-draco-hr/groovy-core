@@ -1,0 +1,41 @@
+{
+  ClassNode leftRedirect=left.redirect();
+  ClassNode rightRedirect=right.redirect();
+  if (op == ASSIGN) {
+    checkCompatibleAssignmenTypes(leftRedirect,rightRedirect,expr);
+    return left;
+  }
+ else   if (isBoolIntrinsicOp(op)) {
+    return boolean_TYPE;
+  }
+ else   if (isArrayOp(op)) {
+  }
+ else   if (op == FIND_REGEX) {
+    return Matcher_TYPE;
+  }
+ else   if (isNumberType(leftRedirect) && isNumberType(rightRedirect)) {
+    if (isOperationInGroup(op)) {
+      if (isClassInt(leftRedirect) && isClassInt(rightRedirect))       return int_TYPE;
+      if (isClassLong(leftRedirect) && isClassLong(rightRedirect))       return Long_TYPE;
+      if (isClassBigInt(leftRedirect) && isClassBigInt(rightRedirect))       return BigInteger_TYPE;
+      if (isClassBigDec(leftRedirect) && isClassBigDec(rightRedirect))       return BigDecimal_TYPE;
+      if (isClassDouble(leftRedirect) && isClassDouble(rightRedirect))       return double_TYPE;
+    }
+ else     if (isPowerOperator(op)) {
+      return Number_TYPE;
+    }
+ else     if (isBitOperator(op)) {
+      if (isClassInt(leftRedirect) && isClassInt(rightRedirect))       return int_TYPE;
+      if (isClassLong(leftRedirect) && isClassLong(rightRedirect))       return Long_TYPE;
+      if (isClassBigInt(leftRedirect) && isClassBigInt(rightRedirect))       return BigInteger_TYPE;
+    }
+  }
+  String operationName=getOperationName(op);
+  MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,leftRedirect,rightRedirect);
+  if (method != null) {
+    if (isCompareToBoolean(op))     return boolean_TYPE;
+    if (op == COMPARE_TO)     return int_TYPE;
+    return method.getReturnType();
+  }
+  return null;
+}

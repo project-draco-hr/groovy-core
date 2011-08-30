@@ -1,0 +1,16 @@
+{
+  ClassNode type=getType(expression);
+  ClassNode typeRe=type.redirect();
+  ClassNode resultType;
+  if (isClassBigDec(typeRe)) {
+    resultType=type;
+  }
+ else   if (typeRe == ArrayList_TYPE) {
+    resultType=ArrayList_TYPE;
+  }
+ else {
+    MethodNode mn=findMethodOrFail(expression,type,name);
+    resultType=mn.getReturnType();
+  }
+  storeType(expression,resultType);
+}
