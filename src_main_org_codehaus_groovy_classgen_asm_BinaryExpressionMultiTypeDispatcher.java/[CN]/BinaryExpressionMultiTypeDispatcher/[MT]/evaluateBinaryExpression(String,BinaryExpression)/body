@@ -34,6 +34,13 @@
       os.doGroovyCast(int_TYPE);
       bew.write(operation,false);
     }
+ else     if (operation == DIVIDE && bew.writeDivision(true)) {
+      leftExp.visit(acg);
+      os.doGroovyCast(bew.getDevisionOpResultType());
+      rightExp.visit(acg);
+      os.doGroovyCast(bew.getDevisionOpResultType());
+      bew.writeDivision(false);
+    }
  else     if (bew.write(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(bew.getNormalOpResultType());
