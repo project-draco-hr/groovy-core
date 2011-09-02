@@ -27,6 +27,7 @@ case Types.LOGICAL_OR_EQUAL:
 case Types.DIVIDE:
 case Types.DIVIDE_EQUAL:
 if (isLongCategory(leftType) && isLongCategory(rightType)) {
+  resultType=BigDecimal_TYPE;
 }
  else if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
   resultType=double_TYPE;
@@ -37,6 +38,7 @@ case Types.POWER_EQUAL:
 break;
 case Types.ASSIGN:
 opt.chainCanOptimize(true);
+optimizeDevisionForAssignment(expression,rightType);
 break;
 default :
 if (isIntCategory(leftType) && isIntCategory(rightType)) {
