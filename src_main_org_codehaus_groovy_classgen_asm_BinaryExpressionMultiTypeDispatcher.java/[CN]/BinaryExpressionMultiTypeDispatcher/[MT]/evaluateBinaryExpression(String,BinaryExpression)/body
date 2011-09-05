@@ -27,7 +27,7 @@
  else {
     int operationType=getOperandConversionType(leftType,rightType);
     BinaryExpressionWriter bew=binExpWriter[operationType];
-    if ((operation == LEFT_SHIFT || operation == RIGHT_SHIFT) && bew.write(operation,true)) {
+    if (isShiftOperation(operation) && bew.write(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(bew.getNormalOpResultType());
       rightExp.visit(acg);
