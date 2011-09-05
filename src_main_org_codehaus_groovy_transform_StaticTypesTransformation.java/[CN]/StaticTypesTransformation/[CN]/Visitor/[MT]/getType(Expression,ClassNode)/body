@@ -1,0 +1,10 @@
+{
+  ClassNode cn=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.class);
+  if (cn != null)   return cn;
+  if (exp instanceof VariableExpression) {
+    VariableExpression vexp=(VariableExpression)exp;
+    if (vexp == VariableExpression.THIS_EXPRESSION)     return current;
+    if (vexp == VariableExpression.SUPER_EXPRESSION)     return current.getSuperClass();
+  }
+  return exp.getType();
+}

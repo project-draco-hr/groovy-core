@@ -4,8 +4,8 @@
     addError("cannot resolve dynamic method name at compile time.",call.getMethod());
   }
  else {
-    ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()));
-    MethodNode mn=findMethodOrFail(call,classNode,call.getMethodAsString(),args);
+    ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()),classNode);
+    MethodNode mn=findMethodOrFail(call,getType(call.getObjectExpression(),classNode),call.getMethodAsString(),args);
     if (mn == null)     return;
     storeType(call,mn.getReturnType());
   }

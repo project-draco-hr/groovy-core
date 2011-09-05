@@ -1,0 +1,7 @@
+{
+  super.visitVariableExpression(vexp);
+  if (vexp != VariableExpression.THIS_EXPRESSION && vexp != VariableExpression.SUPER_EXPRESSION) {
+    if (vexp.getName().equals("this"))     storeType(vexp,classNode);
+    if (vexp.getName().equals("super"))     storeType(vexp,classNode.getSuperClass());
+  }
+}
