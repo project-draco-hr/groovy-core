@@ -20,12 +20,22 @@
     if (!validTypeForCall(type))     return;
     paraTypes=new Parameter[]{new Parameter(type,"")};
   }
-  MethodNode target=node.getMethod(name,paraTypes);
-  if (target == null)   return;
-  if (!target.getDeclaringClass().equals(node))   return;
-  if (scope.isInStaticContext() && !target.isStatic())   return;
+  MethodNode target;
+  ClassNode type;
+  if (isMethod) {
+    target=node.getMethod(name,paraTypes);
+    if (target == null)     return;
+    if (!target.getDeclaringClass().equals(node))     return;
+    if (scope.isInStaticContext() && !target.isStatic())     return;
+    type=target.getReturnType().redirect();
+  }
+ else {
+    type=expression.getType();
+    target=selectConstructor(type,paraTypes);
+    if (target == null)     return;
+  }
   StatementMeta meta=addMeta(expression);
   meta.target=target;
-  meta.type=target.getReturnType().redirect();
+  meta.type=type;
   opt.chainShouldOptimize(true);
 }
