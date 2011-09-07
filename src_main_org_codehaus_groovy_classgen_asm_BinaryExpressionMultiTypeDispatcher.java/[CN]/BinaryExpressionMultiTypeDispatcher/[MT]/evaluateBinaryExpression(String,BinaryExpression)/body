@@ -12,7 +12,7 @@
     leftType=leftTypeOrig.getComponentType();
     int operationType=getOperandType(leftType);
     BinaryExpressionWriter bew=binExpWriter[operationType];
-    if (bew.arrayGet(operation,true)) {
+    if (leftTypeOrig.isArray() && isIntCastableType(rightExp) && bew.arrayGet(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(leftTypeOrig);
       rightExp.visit(acg);
@@ -27,7 +27,7 @@
  else {
     int operationType=getOperandConversionType(leftType,rightType);
     BinaryExpressionWriter bew=binExpWriter[operationType];
-    if (isShiftOperation(operation) && bew.write(operation,true)) {
+    if (isShiftOperation(operation) && isIntCastableType(rightExp) && bew.write(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(bew.getNormalOpResultType());
       rightExp.visit(acg);
