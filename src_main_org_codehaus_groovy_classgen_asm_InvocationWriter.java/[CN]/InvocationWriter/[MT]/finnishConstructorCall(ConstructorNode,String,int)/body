@@ -1,0 +1,7 @@
+{
+  String desc=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
+  MethodVisitor mv=controller.getMethodVisitor();
+  mv.visitMethodInsn(INVOKESPECIAL,ownerDescriptor,"<init>",desc);
+  controller.getOperandStack().remove(argsToRemove);
+  controller.getOperandStack().push(cn.getDeclaringClass());
+}

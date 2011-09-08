@@ -4,15 +4,9 @@
   ConstructorNode cn=null;
   if (meta != null)   cn=(ConstructorNode)meta.target;
   if (cn == null)   return false;
-  String owner=BytecodeHelper.getClassInternalName(cn.getDeclaringClass());
-  String desc=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
-  MethodVisitor mv=controller.getMethodVisitor();
-  mv.visitTypeInsn(NEW,owner);
-  mv.visitInsn(DUP);
+  String ownerDescriptor=prepareConstructorCall(cn);
   TupleExpression args=makeArgumentList(call.getArguments());
   loadArguments(args.getExpressions(),cn.getParameters());
-  mv.visitMethodInsn(INVOKESPECIAL,owner,"<init>",desc);
-  controller.getOperandStack().remove(args.getExpressions().size());
-  controller.getOperandStack().push(cn.getDeclaringClass());
+  finnishConstructorCall(cn,ownerDescriptor,args.getExpressions().size());
   return true;
 }
