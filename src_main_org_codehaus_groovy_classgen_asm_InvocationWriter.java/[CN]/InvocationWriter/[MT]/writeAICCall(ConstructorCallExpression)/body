@@ -1,0 +1,22 @@
+{
+  if (!call.isUsingAnonymousInnerClass())   return false;
+  ConstructorNode cn=call.getType().getDeclaredConstructors().get(0);
+  OperandStack os=controller.getOperandStack();
+  String ownerDescriptor=prepareConstructorCall(cn);
+  List<Expression> args=makeArgumentList(call.getArguments()).getExpressions();
+  Parameter[] params=cn.getParameters();
+  for (int i=0; i < params.length; i++) {
+    Parameter p=params[i];
+    Expression arg=args.get(i);
+    if (arg instanceof VariableExpression) {
+      VariableExpression var=(VariableExpression)arg;
+      loadVariableWithReference(var);
+    }
+ else {
+      arg.visit(controller.getAcg());
+    }
+    os.doGroovyCast(p.getType());
+  }
+  finnishConstructorCall(cn,ownerDescriptor,args.size());
+  return true;
+}

@@ -1,0 +1,12 @@
+{
+  List<ConstructorNode> cl=node.getDeclaredConstructors();
+  MethodNode res=null;
+  for (  ConstructorNode cn : cl) {
+    if (parametersEqual(cn.getParameters(),paraTypes)) {
+      res=cn;
+      break;
+    }
+  }
+  if (res != null && res.isPublic())   return res;
+  return null;
+}

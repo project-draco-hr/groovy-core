@@ -1,0 +1,15 @@
+{
+  ConstructorNode lastMatch=null;
+  for (int i=0; i < constructors.size(); i++) {
+    ConstructorNode cn=constructors.get(i);
+    Parameter[] params=cn.getParameters();
+    if (argumentList.size() != params.length)     continue;
+    if (lastMatch == null) {
+      lastMatch=cn;
+    }
+ else {
+      return null;
+    }
+  }
+  return lastMatch;
+}

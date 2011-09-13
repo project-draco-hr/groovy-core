@@ -1,0 +1,17 @@
+{
+  ClassNode leftRedirect=left.redirect();
+  ClassNode rightRedirect=right.redirect();
+  if (leftRedirect == OBJECT_TYPE || leftRedirect == STRING_TYPE || leftRedirect == boolean_TYPE || leftRedirect == Boolean_TYPE || leftRedirect == CLASS_Type) {
+    return;
+  }
+  if (leftRedirect.isDerivedFrom(Enum_Type) && (rightRedirect == GSTRING_TYPE || rightRedirect == STRING_TYPE)) {
+    return;
+  }
+  if (rightRedirect.implementsInterface(MAP_TYPE) || rightRedirect.implementsInterface(Collection_TYPE) || rightRedirect.isArray()) {
+    return;
+  }
+  if (right.isDerivedFrom(left) || left.implementsInterface(right))   return;
+  if (isPrimitiveType(leftRedirect) && isPrimitiveType(rightRedirect))   return;
+  if (isNumberType(leftRedirect) && isNumberType(rightRedirect))   return;
+  addError("Cannot assign value of type " + right + " to variable of type "+ left,expr);
+}

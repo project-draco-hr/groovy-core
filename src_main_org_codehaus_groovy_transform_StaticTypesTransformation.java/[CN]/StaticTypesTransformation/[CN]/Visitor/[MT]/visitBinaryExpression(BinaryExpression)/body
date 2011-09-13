@@ -1,0 +1,14 @@
+{
+  super.visitBinaryExpression(expression);
+  ClassNode lType=getType(expression.getLeftExpression(),classNode);
+  ClassNode rType=getType(expression.getRightExpression(),classNode);
+  int op=expression.getOperation().getType();
+  ClassNode resultType=getResultType(lType,op,rType,expression);
+  if (resultType == null) {
+    addError("tbd...",expression);
+    resultType=lType;
+  }
+  storeType(expression,resultType);
+  if (!isAssignment(op))   return;
+  checkCompatibleAssignmenTypes(lType,resultType,expression);
+}

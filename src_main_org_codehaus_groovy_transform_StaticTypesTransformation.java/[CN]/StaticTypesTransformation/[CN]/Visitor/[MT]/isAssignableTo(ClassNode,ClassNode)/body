@@ -1,0 +1,15 @@
+{
+  if (toBeAssignedTo.isDerivedFrom(type))   return true;
+  if (toBeAssignedTo.redirect() == STRING_TYPE && type.redirect() == GSTRING_TYPE) {
+    return true;
+  }
+  toBeAssignedTo=getWrapper(toBeAssignedTo);
+  type=getWrapper(type);
+  if (toBeAssignedTo.isDerivedFrom(Number_TYPE) && type.isDerivedFrom(Number_TYPE)) {
+    return true;
+  }
+  if (toBeAssignedTo.isInterface() && type.implementsInterface(toBeAssignedTo)) {
+    return true;
+  }
+  return false;
+}

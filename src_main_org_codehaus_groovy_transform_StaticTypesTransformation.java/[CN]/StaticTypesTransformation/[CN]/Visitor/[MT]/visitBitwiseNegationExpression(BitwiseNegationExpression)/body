@@ -1,0 +1,20 @@
+{
+  super.visitBitwiseNegationExpression(expression);
+  ClassNode type=getType(expression,classNode);
+  ClassNode typeRe=type.redirect();
+  ClassNode resultType;
+  if (isBigIntCategory(typeRe)) {
+    resultType=type;
+  }
+ else   if (typeRe == STRING_TYPE || typeRe == GSTRING_TYPE) {
+    resultType=PATTERN_TYPE;
+  }
+ else   if (typeRe == ArrayList_TYPE) {
+    resultType=ArrayList_TYPE;
+  }
+ else {
+    MethodNode mn=findMethodOrFail(expression,type,"bitwiseNegate");
+    resultType=mn.getReturnType();
+  }
+  storeType(expression,resultType);
+}

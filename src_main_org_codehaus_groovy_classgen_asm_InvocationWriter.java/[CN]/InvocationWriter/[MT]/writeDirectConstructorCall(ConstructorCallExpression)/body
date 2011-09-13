@@ -1,0 +1,12 @@
+{
+  if (!controller.isFastPath())   return false;
+  StatementMeta meta=(StatementMeta)call.getNodeMetaData(StatementMeta.class);
+  ConstructorNode cn=null;
+  if (meta != null)   cn=(ConstructorNode)meta.target;
+  if (cn == null)   return false;
+  String ownerDescriptor=prepareConstructorCall(cn);
+  TupleExpression args=makeArgumentList(call.getArguments());
+  loadArguments(args.getExpressions(),cn.getParameters());
+  finnishConstructorCall(cn,ownerDescriptor,args.getExpressions().size());
+  return true;
+}

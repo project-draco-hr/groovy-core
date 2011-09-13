@@ -24,12 +24,7 @@
       mv.visitIntInsn(ALOAD,0);
     }
   }
-  Parameter[] para=target.getParameters();
-  List<Expression> argumentList=args.getExpressions();
-  for (int i=0; i < argumentList.size(); i++) {
-    argumentList.get(i).visit(controller.getAcg());
-    controller.getOperandStack().doGroovyCast(para[i].getType());
-  }
+  loadArguments(args.getExpressions(),target.getParameters());
   String owner=BytecodeHelper.getClassInternalName(target.getDeclaringClass());
   String desc=BytecodeHelper.getMethodDescriptor(target.getReturnType(),target.getParameters());
   mv.visitMethodInsn(opcode,owner,methodName,desc);

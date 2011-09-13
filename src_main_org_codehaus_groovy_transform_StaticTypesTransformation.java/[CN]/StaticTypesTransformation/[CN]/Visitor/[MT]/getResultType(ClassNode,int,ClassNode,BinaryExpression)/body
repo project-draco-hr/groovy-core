@@ -1,0 +1,41 @@
+{
+  ClassNode leftRedirect=left.redirect();
+  ClassNode rightRedirect=right.redirect();
+  if (op == ASSIGN) {
+    checkCompatibleAssignmenTypes(leftRedirect,rightRedirect,expr);
+    return left;
+  }
+ else   if (isBoolIntrinsicOp(op)) {
+    return boolean_TYPE;
+  }
+ else   if (isArrayOp(op)) {
+  }
+ else   if (op == FIND_REGEX) {
+    return Matcher_TYPE;
+  }
+ else   if (isNumberType(leftRedirect) && isNumberType(rightRedirect)) {
+    if (isOperationInGroup(op)) {
+      if (isIntCategory(leftRedirect) && isIntCategory(rightRedirect))       return int_TYPE;
+      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return Long_TYPE;
+      if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
+      if (isBigDecCategory(leftRedirect) && isBigDecCategory(rightRedirect))       return BigDecimal_TYPE;
+      if (isDoubleCategory(leftRedirect) && isDoubleCategory(rightRedirect))       return double_TYPE;
+    }
+ else     if (isPowerOperator(op)) {
+      return Number_TYPE;
+    }
+ else     if (isBitOperator(op)) {
+      if (isIntCategory(leftRedirect) && isIntCategory(rightRedirect))       return int_TYPE;
+      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return Long_TYPE;
+      if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
+    }
+  }
+  String operationName=getOperationName(op);
+  MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,leftRedirect,rightRedirect);
+  if (method != null) {
+    if (isCompareToBoolean(op))     return boolean_TYPE;
+    if (op == COMPARE_TO)     return int_TYPE;
+    return method.getReturnType();
+  }
+  return null;
+}

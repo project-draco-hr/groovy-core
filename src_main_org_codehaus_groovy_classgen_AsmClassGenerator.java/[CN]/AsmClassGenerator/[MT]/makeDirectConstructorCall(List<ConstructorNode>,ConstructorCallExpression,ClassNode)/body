@@ -1,0 +1,26 @@
+{
+  if (!controller.isConstructor())   return false;
+  Expression arguments=call.getArguments();
+  List<Expression> argumentList;
+  if (arguments instanceof TupleExpression) {
+    argumentList=((TupleExpression)arguments).getExpressions();
+  }
+ else {
+    argumentList=new ArrayList();
+    argumentList.add(arguments);
+  }
+  ConstructorNode cn=getMatchingConstructor(constructors,argumentList);
+  if (cn == null)   return false;
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  Parameter[] params=cn.getParameters();
+  mv.visitVarInsn(ALOAD,0);
+  for (int i=0; i < params.length; i++) {
+    argumentList.get(i).visit(this);
+    operandStack.doGroovyCast(params[i].getType());
+    operandStack.remove(1);
+  }
+  String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,params);
+  mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
+  return true;
+}

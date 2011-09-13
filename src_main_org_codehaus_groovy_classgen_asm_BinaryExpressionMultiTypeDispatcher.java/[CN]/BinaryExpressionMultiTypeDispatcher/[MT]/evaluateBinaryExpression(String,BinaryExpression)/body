@@ -1,5 +1,5 @@
 {
-  int operation=binExp.getOperation().getType();
+  int operation=removeAssignment(binExp.getOperation().getType());
   ClassNode current=getController().getClassNode();
   Expression leftExp=binExp.getLeftExpression();
   ClassNode leftTypeOrig=getType(leftExp,current);
@@ -12,7 +12,7 @@
     leftType=leftTypeOrig.getComponentType();
     int operationType=getOperandType(leftType);
     BinaryExpressionWriter bew=binExpWriter[operationType];
-    if (bew.arrayGet(operation,true)) {
+    if (leftTypeOrig.isArray() && isIntCastableType(rightExp) && bew.arrayGet(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(leftTypeOrig);
       rightExp.visit(acg);
@@ -27,7 +27,21 @@
  else {
     int operationType=getOperandConversionType(leftType,rightType);
     BinaryExpressionWriter bew=binExpWriter[operationType];
-    if (bew.write(operation,true)) {
+    if (isShiftOperation(operation) && isIntCastableType(rightExp) && bew.write(operation,true)) {
+      leftExp.visit(acg);
+      os.doGroovyCast(bew.getNormalOpResultType());
+      rightExp.visit(acg);
+      os.doGroovyCast(int_TYPE);
+      bew.write(operation,false);
+    }
+ else     if (operation == DIVIDE && bew.writeDivision(true)) {
+      leftExp.visit(acg);
+      os.doGroovyCast(bew.getDevisionOpResultType());
+      rightExp.visit(acg);
+      os.doGroovyCast(bew.getDevisionOpResultType());
+      bew.writeDivision(false);
+    }
+ else     if (bew.write(operation,true)) {
       leftExp.visit(acg);
       os.doGroovyCast(bew.getNormalOpResultType());
       rightExp.visit(acg);

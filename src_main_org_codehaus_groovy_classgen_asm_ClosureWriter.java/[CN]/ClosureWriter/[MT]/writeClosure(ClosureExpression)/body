@@ -22,23 +22,9 @@
   for (int i=2; i < localVariableParams.length; i++) {
     Parameter param=localVariableParams[i];
     String name=param.getName();
-    if (!compileStack.containsVariable(name) && compileStack.getScope().isReferencedClassVariable(name)) {
-      acg.visitFieldExpression(new FieldExpression(classNode.getDeclaredField(name)));
-    }
- else {
-      BytecodeVariable v=compileStack.getVariable(name,!classNodeUsesReferences());
-      if (v == null) {
-        FieldNode field=classNode.getDeclaredField(name);
-        mv.visitVarInsn(ALOAD,0);
-        mv.visitFieldInsn(GETFIELD,controller.getInternalClassName(),name,BytecodeHelper.getTypeDescription(field.getType()));
-      }
- else {
-        mv.visitVarInsn(ALOAD,v.getIndex());
-      }
-      if (param.getNodeMetaData(ClosureWriter.UseExistingReference.class) == null) {
-        param.setNodeMetaData(ClosureWriter.UseExistingReference.class,Boolean.TRUE);
-      }
-      controller.getOperandStack().push(ClassHelper.REFERENCE_TYPE);
+    loadReference(name,controller);
+    if (param.getNodeMetaData(ClosureWriter.UseExistingReference.class) == null) {
+      param.setNodeMetaData(ClosureWriter.UseExistingReference.class,Boolean.TRUE);
     }
   }
   mv.visitMethodInsn(INVOKESPECIAL,closureClassinternalName,"<init>",BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,localVariableParams));

@@ -1,0 +1,41 @@
+{
+  if (name == null)   return;
+  if (!optimizeMethodCall)   return;
+  if (AsmClassGenerator.containsSpreadExpression(callArgs))   return;
+  Parameter[] paraTypes=null;
+  if (callArgs instanceof ArgumentListExpression) {
+    ArgumentListExpression args=(ArgumentListExpression)callArgs;
+    int size=args.getExpressions().size();
+    paraTypes=new Parameter[size];
+    int i=0;
+    for (    Expression exp : args.getExpressions()) {
+      ClassNode type=BinaryExpressionMultiTypeDispatcher.getType(exp,node);
+      if (!validTypeForCall(type))       return;
+      paraTypes[i]=new Parameter(type,"");
+      i++;
+    }
+  }
+ else {
+    ClassNode type=BinaryExpressionMultiTypeDispatcher.getType(callArgs,node);
+    if (!validTypeForCall(type))     return;
+    paraTypes=new Parameter[]{new Parameter(type,"")};
+  }
+  MethodNode target;
+  ClassNode type;
+  if (isMethod) {
+    target=node.getMethod(name,paraTypes);
+    if (target == null)     return;
+    if (!target.getDeclaringClass().equals(node))     return;
+    if (scope.isInStaticContext() && !target.isStatic())     return;
+    type=target.getReturnType().redirect();
+  }
+ else {
+    type=expression.getType();
+    target=selectConstructor(type,paraTypes);
+    if (target == null)     return;
+  }
+  StatementMeta meta=addMeta(expression);
+  meta.target=target;
+  meta.type=type;
+  opt.chainShouldOptimize(true);
+}

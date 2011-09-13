@@ -1,0 +1,20 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (target == ClassHelper.int_TYPE) {
+    mv.visitInsn(L2I);
+    return true;
+  }
+ else   if (target == ClassHelper.char_TYPE || target == ClassHelper.byte_TYPE || target == ClassHelper.short_TYPE) {
+    mv.visitInsn(L2I);
+    return convertFromInt(target);
+  }
+ else   if (target == ClassHelper.double_TYPE) {
+    mv.visitInsn(L2D);
+    return true;
+  }
+ else   if (target == ClassHelper.float_TYPE) {
+    mv.visitInsn(L2F);
+    return true;
+  }
+  return false;
+}

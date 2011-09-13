@@ -5,7 +5,7 @@
   int operationType=getOperandType(arrayComponentType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   AsmClassGenerator acg=getController().getAcg();
-  if (bew.arraySet(true)) {
+  if (bew.arraySet(true) && arrayType.isArray()) {
     OperandStack operandStack=getController().getOperandStack();
     receiver.visit(acg);
     operandStack.doGroovyCast(arrayType);

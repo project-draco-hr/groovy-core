@@ -1,0 +1,19 @@
+{
+  List<MethodNode> methods=receiver.getMethods(name);
+  for (  MethodNode m : methods) {
+    Parameter[] params=m.getParameters();
+    if (params.length == args.length) {
+      if (allParametersAndArgumentsMatch(params,args) || lastArgMatchesVarg(params,args)) {
+        return m;
+      }
+    }
+ else     if (isVargs(params)) {
+      if (params.length == args.length + 1)       return m;
+      if (params.length < args.length && excessArgumentsMatchesVargsParameter(params,args)) {
+        return m;
+      }
+    }
+  }
+  addError("Cannot find matching method " + name,expr);
+  return null;
+}
