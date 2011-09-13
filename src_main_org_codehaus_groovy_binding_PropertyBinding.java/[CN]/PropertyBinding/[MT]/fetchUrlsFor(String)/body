@@ -1,0 +1,16 @@
+{
+  try {
+    return Thread.currentThread().getContextClassLoader().getResources(path);
+  }
+ catch (  IOException e) {
+    return new Enumeration<URL>(){
+      public boolean hasMoreElements(){
+        return false;
+      }
+      public URL nextElement(){
+        return null;
+      }
+    }
+;
+  }
+}
