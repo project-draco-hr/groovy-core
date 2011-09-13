@@ -1,0 +1,14 @@
+{
+  if (checkCall(receiver,args)) {
+    final Object[] newArgs=new Object[]{args[0]};
+    final Object bean=constructor.invoke(newArgs);
+    try {
+      ((MetaClassImpl)metaClass).setProperties(bean,(Map)args[1]);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+    return bean;
+  }
+ else   return CallSiteArray.defaultCallConstructor(this,receiver,args);
+}
