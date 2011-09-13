@@ -1,0 +1,16 @@
+{
+  ClassLoader cl=Thread.currentThread().getContextClassLoader();
+  for (  String line : lines) {
+    line=line.trim();
+    if (line.startsWith("#"))     return;
+    String[] parts=line.split("=");
+    if (parts.length == 2) {
+      try {
+        ACCESSORS.put(cl.loadClass(parts[0].trim()),(Class<? extends PropertyAccessor>)cl.loadClass(parts[1].trim()));
+      }
+ catch (      ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+}
