@@ -1,0 +1,24 @@
+{
+  if (klass == null) {
+    return DefaultPropertyAccessor.INSTANCE;
+  }
+  Class<? extends PropertyAccessor> accessorClass=ACCESSORS.get(klass);
+  if (accessorClass == null) {
+    for (    Class c : klass.getInterfaces()) {
+      PropertyAccessor propertyAccessor=fetchPropertyAccessor(c);
+      if (propertyAccessor != DefaultPropertyAccessor.INSTANCE) {
+        return propertyAccessor;
+      }
+    }
+    return fetchPropertyAccessor(klass.getSuperclass());
+  }
+  try {
+    return accessorClass.newInstance();
+  }
+ catch (  InstantiationException e) {
+    return DefaultPropertyAccessor.INSTANCE;
+  }
+catch (  IllegalAccessException e) {
+    return DefaultPropertyAccessor.INSTANCE;
+  }
+}
