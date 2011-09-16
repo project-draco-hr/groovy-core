@@ -7,7 +7,14 @@
       printNamespace(node,ctx);
     }
     printNameAttributes(node.attributes(),ctx);
-    out.print("/>");
+    if (expandEmptyElements) {
+      out.print("></");
+      out.print(getName(node));
+      out.print(">");
+    }
+ else {
+      out.print("/>");
+    }
     printLineEnd();
     out.flush();
     return;
