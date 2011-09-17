@@ -1,7 +1,7 @@
 {
   addCdata();
-  final Map attributes=new HashMap();
-  final Map attributeNamespaces=new HashMap();
+  final Map<String,String> attributes=new HashMap<String,String>();
+  final Map<String,String> attributeNamespaces=new HashMap<String,String>();
   for (int i=atts.getLength() - 1; i != -1; i--) {
     if (atts.getURI(i).length() == 0) {
       attributes.put(atts.getQName(i),atts.getValue(i));
@@ -13,14 +13,14 @@
   }
   final Node newElement;
   if (namespaceURI.length() == 0) {
-    newElement=new Node(this.currentNode,qName,attributes,attributeNamespaces,namespaceURI);
+    newElement=new Node(currentNode,qName,attributes,attributeNamespaces,namespaceURI);
   }
  else {
-    newElement=new Node(this.currentNode,localName,attributes,attributeNamespaces,namespaceURI);
+    newElement=new Node(currentNode,localName,attributes,attributeNamespaces,namespaceURI);
   }
-  if (this.currentNode != null) {
-    this.currentNode.addChild(newElement);
+  if (currentNode != null) {
+    currentNode.addChild(newElement);
   }
-  this.stack.push(this.currentNode);
-  this.currentNode=newElement;
+  stack.push(currentNode);
+  currentNode=newElement;
 }
