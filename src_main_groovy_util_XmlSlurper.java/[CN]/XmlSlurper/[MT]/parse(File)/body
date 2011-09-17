@@ -2,5 +2,10 @@
   final FileInputStream fis=new FileInputStream(file);
   final InputSource input=new InputSource(fis);
   input.setSystemId("file://" + file.getAbsolutePath());
-  return parse(input);
+  try {
+    return parse(input);
+  }
+  finally {
+    fis.close();
+  }
 }
