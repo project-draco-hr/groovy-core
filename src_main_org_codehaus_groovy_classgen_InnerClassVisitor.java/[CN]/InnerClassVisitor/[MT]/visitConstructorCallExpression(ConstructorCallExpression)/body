@@ -26,7 +26,7 @@
   block.addStatement(new ExpressionStatement(cce));
   pCount=0;
   expressions.add(pCount,VariableExpression.THIS_EXPRESSION);
-  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic);
+  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic).getPlainNodeReference();
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
   parameters.add(pCount,thisParameter);
   thisField=innerClass.addField("this$0",PUBLIC_SYNTHETIC,outerClassType,null);

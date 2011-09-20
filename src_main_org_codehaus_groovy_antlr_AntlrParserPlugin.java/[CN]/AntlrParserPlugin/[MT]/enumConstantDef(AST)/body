@@ -12,7 +12,7 @@
     init=expression(element);
     ClassNode innerClass=getAnonymousInnerClassNode(init);
     if (innerClass != null) {
-      innerClass.setSuperClass(classNode);
+      innerClass.setSuperClass(classNode.getPlainNodeReference());
       innerClass.setModifiers(classNode.getModifiers() | Opcodes.ACC_FINAL);
       init=new ClassExpression(innerClass);
       classNode.setModifiers(classNode.getModifiers() & ~Opcodes.ACC_FINAL);

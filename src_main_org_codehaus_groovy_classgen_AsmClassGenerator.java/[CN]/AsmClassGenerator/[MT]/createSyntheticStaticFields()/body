@@ -3,7 +3,7 @@
   for (  String staticFieldName : referencedClasses.keySet()) {
     FieldNode fn=controller.getClassNode().getDeclaredField(staticFieldName);
     if (fn != null) {
-      boolean type=fn.getType() == ClassHelper.CLASS_Type;
+      boolean type=fn.getType().redirect() == ClassHelper.CLASS_Type;
       boolean modifiers=fn.getModifiers() == ACC_STATIC + ACC_SYNTHETIC;
       if (!type || !modifiers) {
         String text="";

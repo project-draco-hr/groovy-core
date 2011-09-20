@@ -2,11 +2,12 @@
   boolean isAic=isAnonymousInnerClass(enumClass);
   FieldNode minValue=null, maxValue=null, values=null;
   if (!isAic) {
-    values=new FieldNode("$VALUES",PRIVATE_FS | Opcodes.ACC_SYNTHETIC,enumClass.makeArray(),enumClass,null);
+    ClassNode enumRef=enumClass.getPlainNodeReference();
+    values=new FieldNode("$VALUES",PRIVATE_FS | Opcodes.ACC_SYNTHETIC,enumRef.makeArray(),enumClass,null);
     values.setSynthetic(true);
     addMethods(enumClass,values);
-    minValue=new FieldNode("MIN_VALUE",PUBLIC_FS,enumClass,enumClass,null);
-    maxValue=new FieldNode("MAX_VALUE",PUBLIC_FS,enumClass,enumClass,null);
+    minValue=new FieldNode("MIN_VALUE",PUBLIC_FS,enumRef,enumClass,null);
+    maxValue=new FieldNode("MAX_VALUE",PUBLIC_FS,enumRef,enumClass,null);
   }
   addInit(enumClass,minValue,maxValue,values,isAic);
 }

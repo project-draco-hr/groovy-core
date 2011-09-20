@@ -3,6 +3,6 @@
   ClassNode icl=controller.getInterfaceClassLoadingClass();
   addInnerClass(icl);
   for (  String staticFieldName : referencedClasses.keySet()) {
-    icl.addField(staticFieldName,ACC_STATIC + ACC_SYNTHETIC,ClassHelper.CLASS_Type,new ClassExpression(referencedClasses.get(staticFieldName)));
+    icl.addField(staticFieldName,ACC_STATIC + ACC_SYNTHETIC,ClassHelper.CLASS_Type.getPlainNodeReference(),new ClassExpression(referencedClasses.get(staticFieldName)));
   }
 }

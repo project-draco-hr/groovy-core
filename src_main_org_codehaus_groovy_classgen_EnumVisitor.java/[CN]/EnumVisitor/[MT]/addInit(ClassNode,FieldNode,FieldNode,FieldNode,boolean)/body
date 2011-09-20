@@ -1,7 +1,8 @@
 {
   addConstructor(enumClass);
+  ClassNode enumRef=enumClass.getPlainNodeReference();
   Parameter[] parameter=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE.makeArray(),"para")};
-  MethodNode initMethod=new MethodNode("$INIT",PUBLIC_FS | Opcodes.ACC_SYNTHETIC,enumClass,parameter,ClassNode.EMPTY_ARRAY,null);
+  MethodNode initMethod=new MethodNode("$INIT",PUBLIC_FS | Opcodes.ACC_SYNTHETIC,enumRef,parameter,ClassNode.EMPTY_ARRAY,null);
   initMethod.setSynthetic(true);
   ConstructorCallExpression cce=new ConstructorCallExpression(ClassNode.THIS,new ArgumentListExpression(new SpreadExpression(new VariableExpression("para"))));
   BlockStatement code=new BlockStatement();

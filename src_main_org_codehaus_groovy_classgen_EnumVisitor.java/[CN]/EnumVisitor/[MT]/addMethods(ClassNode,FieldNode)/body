@@ -8,8 +8,9 @@
     if (m.getName().equals("previous") && m.getParameters().length == 0)     hasPrevious=true;
     if (hasNext && hasPrevious)     break;
   }
+  ClassNode enumRef=enumClass.getPlainNodeReference();
 {
-    MethodNode valuesMethod=new MethodNode("values",PUBLIC_FS,enumClass.makeArray(),new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    MethodNode valuesMethod=new MethodNode("values",PUBLIC_FS,enumRef.makeArray(),new Parameter[0],ClassNode.EMPTY_ARRAY,null);
     valuesMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     MethodCallExpression cloneCall=new MethodCallExpression(new FieldExpression(values),"clone",MethodCallExpression.NO_ARGUMENTS);
@@ -21,7 +22,7 @@
   if (!hasNext) {
     Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
     Token ge=Token.newSymbol(Types.COMPARE_GREATER_THAN_EQUAL,-1,-1);
-    MethodNode nextMethod=new MethodNode("next",Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,enumClass,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    MethodNode nextMethod=new MethodNode("next",Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,enumRef,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
@@ -35,7 +36,7 @@
   if (!hasPrevious) {
     Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
     Token lt=Token.newSymbol(Types.COMPARE_LESS_THAN,-1,-1);
-    MethodNode nextMethod=new MethodNode("previous",Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,enumClass,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
+    MethodNode nextMethod=new MethodNode("previous",Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,enumRef,new Parameter[0],ClassNode.EMPTY_ARRAY,null);
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
@@ -48,7 +49,7 @@
   }
 {
     Parameter stringParameter=new Parameter(ClassHelper.STRING_TYPE,"name");
-    MethodNode valueOfMethod=new MethodNode("valueOf",PS,enumClass,new Parameter[]{stringParameter},ClassNode.EMPTY_ARRAY,null);
+    MethodNode valueOfMethod=new MethodNode("valueOf",PS,enumRef,new Parameter[]{stringParameter},ClassNode.EMPTY_ARRAY,null);
     ArgumentListExpression callArguments=new ArgumentListExpression();
     callArguments.addExpression(new ClassExpression(enumClass));
     callArguments.addExpression(new VariableExpression("name"));

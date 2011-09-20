@@ -1,8 +1,8 @@
 {
-  final FieldNode fieldNode=classNode.addField("instance",ACC_PRIVATE | ACC_STATIC | ACC_VOLATILE,classNode,null);
+  final FieldNode fieldNode=classNode.addField("instance",ACC_PRIVATE | ACC_STATIC | ACC_VOLATILE,classNode.getPlainNodeReference(),null);
   createConstructor(classNode,fieldNode);
   final BlockStatement body=new BlockStatement();
   final Expression instanceExpression=new VariableExpression(fieldNode);
   body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(instanceExpression,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(instanceExpression),new SynchronizedStatement(new ClassExpression(classNode),new IfStatement(new BooleanExpression(new BinaryExpression(instanceExpression,Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ReturnStatement(instanceExpression),new ReturnStatement(new BinaryExpression(instanceExpression,Token.newSymbol("=",-1,-1),new ConstructorCallExpression(classNode,new ArgumentListExpression())))))));
-  classNode.addMethod("getInstance",ACC_STATIC | ACC_PUBLIC,classNode,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
+  classNode.addMethod("getInstance",ACC_STATIC | ACC_PUBLIC,classNode.getPlainNodeReference(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);
 }
