@@ -12,6 +12,10 @@
         code=new ReturnStatement(expression);
       }
       MethodNode newMethod=new MethodNode(method.getName(),method.getModifiers(),method.getReturnType(),newParams,method.getExceptions(),code);
+      List<AnnotationNode> annotations=method.getAnnotations();
+      if (annotations != null) {
+        newMethod.addAnnotations(annotations);
+      }
       MethodNode oldMethod=node.getDeclaredMethod(method.getName(),newParams);
       if (oldMethod != null) {
         throw new RuntimeParserException("The method with default parameters \"" + method.getTypeDescriptor() + "\" defines a method \""+ newMethod.getTypeDescriptor()+ "\" that is already defined.",method);
