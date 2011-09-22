@@ -1,7 +1,12 @@
 {
   GroovyShell groovy=new GroovyShell(conf);
   if (isScriptFile) {
-    groovy.run(huntForTheScriptFile(script),args);
+    if (isScriptUrl(script)) {
+      groovy.run(getText(script),script.substring(script.lastIndexOf("/") + 1),args);
+    }
+ else {
+      groovy.run(huntForTheScriptFile(script),args);
+    }
   }
  else {
     groovy.run(script,"script_from_command_line",args);
