@@ -3,19 +3,15 @@
   if (object == null) {
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
-  String correctedMethodName=methodName;
-  if (object instanceof GeneratedClosure && CLOSURE_CALL_METHOD.equals(methodName)) {
-    correctedMethodName=CLOSURE_DO_CALL_METHOD;
-  }
   final Object[] arguments=originalArguments == null ? EMPTY_ARGUMENTS : originalArguments;
-  MetaMethod method=getMethodWithCaching(sender,correctedMethodName,arguments,isCallToSuper);
+  MetaMethod method=getMethodWithCaching(sender,methodName,arguments,isCallToSuper);
   MetaClassHelper.unwrap(arguments);
-  if (method == null)   method=tryListParamMetaMethod(sender,correctedMethodName,isCallToSuper,arguments);
+  if (method == null)   method=tryListParamMetaMethod(sender,methodName,isCallToSuper,arguments);
   final boolean isClosure=object instanceof Closure;
   if (isClosure) {
     final Closure closure=(Closure)object;
     final Object owner=closure.getOwner();
-    if (CLOSURE_DO_CALL_METHOD.equals(methodName) || CLOSURE_CALL_METHOD.equals(methodName)) {
+    if (CLOSURE_CALL_METHOD.equals(methodName) || CLOSURE_DO_CALL_METHOD.equals(methodName)) {
       final Class objectClass=object.getClass();
       if (objectClass == MethodClosure.class) {
         final MethodClosure mc=(MethodClosure)object;
