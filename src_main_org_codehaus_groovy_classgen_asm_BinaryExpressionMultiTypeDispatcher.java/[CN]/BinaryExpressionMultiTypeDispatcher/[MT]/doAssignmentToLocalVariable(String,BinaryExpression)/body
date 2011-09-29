@@ -1,0 +1,18 @@
+{
+  Expression left=binExp.getLeftExpression();
+  if (left instanceof VariableExpression) {
+    VariableExpression ve=(VariableExpression)left;
+    Variable v=ve.getAccessedVariable();
+    if (v instanceof DynamicVariable)     return false;
+    if (v instanceof PropertyExpression)     return false;
+  }
+ else {
+    return false;
+  }
+  evaluateBinaryExpression(method,binExp);
+  getController().getOperandStack().dup();
+  getController().getCompileStack().pushLHS(true);
+  binExp.getLeftExpression().visit(getController().getAcg());
+  getController().getCompileStack().popLHS();
+  return true;
+}

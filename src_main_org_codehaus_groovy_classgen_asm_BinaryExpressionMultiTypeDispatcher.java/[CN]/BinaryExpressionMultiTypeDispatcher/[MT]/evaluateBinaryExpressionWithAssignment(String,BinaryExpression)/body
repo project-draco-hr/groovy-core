@@ -1,8 +1,5 @@
 {
   if (doAssignmentToArray(binExp))   return;
-  evaluateBinaryExpression(method,binExp);
-  getController().getOperandStack().dup();
-  getController().getCompileStack().pushLHS(true);
-  binExp.getLeftExpression().visit(getController().getAcg());
-  getController().getCompileStack().popLHS();
+  if (doAssignmentToLocalVariable(method,binExp))   return;
+  super.evaluateBinaryExpressionWithAssignment(method,binExp);
 }
