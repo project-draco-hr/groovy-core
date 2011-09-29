@@ -2,11 +2,12 @@
   pushState(node.isStatic());
   inConstructor=isConstructor;
   node.setVariableScope(currentScope);
+  visitAnnotations(node);
   Parameter[] parameters=node.getParameters();
   for (  Parameter parameter : parameters) {
     visitAnnotations(parameter);
   }
   declare(node.getParameters(),node);
-  super.visitConstructorOrMethod(node,isConstructor);
+  visitClassCodeContainer(node.getCode());
   popState();
 }
