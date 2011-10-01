@@ -1,7 +1,9 @@
 {
+  Comparator comparator=(self instanceof SortedSet) ? ((SortedSet)self).comparator() : null;
   final Set<T> ansSet=createSimilarSet(self);
   for (  T t : self) {
-    if (!coercedEquals(t,operand))     ansSet.add(t);
+    boolean areEqual=(comparator != null) ? (comparator.compare(t,operand) == 0) : coercedEquals(t,operand);
+    if (!areEqual)     ansSet.add(t);
   }
   return ansSet;
 }
