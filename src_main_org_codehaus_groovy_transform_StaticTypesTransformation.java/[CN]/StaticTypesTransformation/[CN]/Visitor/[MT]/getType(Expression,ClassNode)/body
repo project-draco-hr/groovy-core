@@ -6,5 +6,9 @@
     if (vexp == VariableExpression.THIS_EXPRESSION)     return current;
     if (vexp == VariableExpression.SUPER_EXPRESSION)     return current.getSuperClass();
   }
+ else   if (exp instanceof PropertyExpression) {
+    PropertyExpression pexp=(PropertyExpression)exp;
+    if (pexp.getObjectExpression().getType().isEnum())     return pexp.getObjectExpression().getType();
+  }
   return exp.getType();
 }

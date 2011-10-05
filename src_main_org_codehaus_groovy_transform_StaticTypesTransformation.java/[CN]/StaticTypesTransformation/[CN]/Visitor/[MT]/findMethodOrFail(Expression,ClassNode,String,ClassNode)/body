@@ -1,5 +1,6 @@
 {
   List<MethodNode> methods=receiver.getMethods(name);
+  methods.addAll(receiver.getDeclaredConstructors());
   for (  MethodNode m : methods) {
     Parameter[] params=m.getParameters();
     if (params.length == args.length) {
@@ -14,6 +15,6 @@
       }
     }
   }
-  addError("Cannot find matching method " + name,expr);
+  addStaticTypeError("Cannot find matching method " + toMethodParametersString(name,args),expr);
   return null;
 }
