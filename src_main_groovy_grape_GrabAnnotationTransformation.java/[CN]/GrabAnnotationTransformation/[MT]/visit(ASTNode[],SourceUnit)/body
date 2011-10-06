@@ -154,7 +154,9 @@
     if (!grabExcludeMaps.isEmpty())     basicArgs.put("excludes",grabExcludeMaps);
     try {
       Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
-      ASTTransformationVisitor.addGlobalTransformsAfterGrab();
+      if (compilationUnit != null) {
+        ASTTransformationVisitor.addGlobalTransformsAfterGrab(compilationUnit.getASTTransformationsContext());
+      }
     }
  catch (    RuntimeException re) {
       source.addException(re);

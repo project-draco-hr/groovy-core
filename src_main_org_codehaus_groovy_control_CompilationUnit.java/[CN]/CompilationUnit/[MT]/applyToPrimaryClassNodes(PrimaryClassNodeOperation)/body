@@ -6,6 +6,9 @@
       ClassNode classNode=(ClassNode)classNodes.next();
       context=classNode.getModule().getContext();
       if (context == null || context.phase < phase || (context.phase == phase && !context.phaseComplete)) {
+        if (body instanceof CompilationUnitAware) {
+          ((CompilationUnitAware)body).setCompilationUnit(this);
+        }
         body.call(context,new GeneratorContext(this.ast),classNode);
       }
     }

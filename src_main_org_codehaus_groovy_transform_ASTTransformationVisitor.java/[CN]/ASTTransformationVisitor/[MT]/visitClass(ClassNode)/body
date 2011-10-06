@@ -1,7 +1,7 @@
 {
   Map<Class<? extends ASTTransformation>,Set<ASTNode>> baseTransforms=classNode.getTransforms(phase);
   if (!baseTransforms.isEmpty()) {
-    transformInstances=new HashMap<Class<? extends ASTTransformation>,ASTTransformation>();
+    final Map<Class<? extends ASTTransformation>,ASTTransformation> transformInstances=new HashMap<Class<? extends ASTTransformation>,ASTTransformation>();
     for (    Class<? extends ASTTransformation> transformClass : baseTransforms.keySet()) {
       try {
         transformInstances.put(transformClass,transformClass.newInstance());
@@ -28,6 +28,9 @@ catch (      IllegalAccessException e) {
     super.visitClass(classNode);
     for (    ASTNode[] node : targetNodes) {
       for (      ASTTransformation snt : transforms.get(node[0])) {
+        if (snt instanceof CompilationUnitAware) {
+          ((CompilationUnitAware)snt).setCompilationUnit(context.getCompilationUnit());
+        }
         snt.visit(node,source);
       }
     }

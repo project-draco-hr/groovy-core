@@ -1,4 +1,5 @@
 {
+  final CompilationUnit compilationUnit=context.getCompilationUnit();
   GroovyClassLoader transformLoader=compilationUnit.getTransformLoader();
   Map<String,URL> transformNames=new LinkedHashMap<String,URL>();
   try {
@@ -55,18 +56,18 @@
   }
   if (isFirstScan) {
     for (    Map.Entry<String,URL> entry : transformNames.entrySet()) {
-      globalTransformNames.add(entry.getKey());
+      context.getGlobalTransformNames().add(entry.getKey());
     }
-    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+    addPhaseOperationsForGlobalTransforms(context.getCompilationUnit(),transformNames,isFirstScan);
   }
  else {
     Iterator<Map.Entry<String,URL>> it=transformNames.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<String,URL> entry=it.next();
-      if (!globalTransformNames.add(entry.getKey())) {
+      if (!context.getGlobalTransformNames().add(entry.getKey())) {
         it.remove();
       }
     }
-    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+    addPhaseOperationsForGlobalTransforms(context.getCompilationUnit(),transformNames,isFirstScan);
   }
 }
