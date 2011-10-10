@@ -48,7 +48,7 @@
   List<Method> publicAndProtectedMethods=getInheritedMethods(baseClass,new ArrayList<Method>());
   boolean closureIndicator=map.containsKey("*");
   for (  Method method : publicAndProtectedMethods) {
-    if (method.getName().indexOf('$') != -1 || Modifier.isFinal(method.getModifiers()) || ConversionHandler.isCoreObjectMethod(method) || containsEquivalentMethod(selectedMethods.values(),method))     continue;
+    if (method.getName().indexOf('$') != -1 || Modifier.isFinal(method.getModifiers()) || (!"toString".equals(method.getName()) && ConversionHandler.isCoreObjectMethod(method)) || containsEquivalentMethod(selectedMethods.values(),method))     continue;
     if (map.containsKey(method.getName()) || closureIndicator) {
       selectedMethods.put(method.getName(),method);
       addOverridingMapCall(buffer,method,closureIndicator);
