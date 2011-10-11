@@ -24,32 +24,30 @@
     addFieldInitialization(statements,staticStatements,fn,isEnum,initStmtsAfterEnumValuesInit,explicitStaticPropsInEnum);
   }
   statements.addAll(node.getObjectInitializerStatements());
-  if (!statements.isEmpty()) {
-    Statement code=constructorNode.getCode();
-    BlockStatement block=new BlockStatement();
-    List<Statement> otherStatements=block.getStatements();
-    if (code instanceof BlockStatement) {
-      block=(BlockStatement)code;
-      otherStatements=block.getStatements();
-    }
- else     if (code != null) {
-      otherStatements.add(code);
-    }
-    if (!otherStatements.isEmpty()) {
-      if (first != null) {
-        otherStatements.remove(0);
-        statements.add(0,firstStatement);
-      }
-      Statement stmtThis$0=getImplicitThis$0StmtIfInnerClass(otherStatements);
-      if (stmtThis$0 != null) {
-        statements.add(1,stmtThis$0);
-      }
-      statements.addAll(otherStatements);
-    }
-    BlockStatement newBlock=new BlockStatement(statements,block.getVariableScope());
-    newBlock.setSourcePosition(block);
-    constructorNode.setCode(newBlock);
+  Statement code=constructorNode.getCode();
+  BlockStatement block=new BlockStatement();
+  List<Statement> otherStatements=block.getStatements();
+  if (code instanceof BlockStatement) {
+    block=(BlockStatement)code;
+    otherStatements=block.getStatements();
   }
+ else   if (code != null) {
+    otherStatements.add(code);
+  }
+  if (!otherStatements.isEmpty()) {
+    if (first != null) {
+      otherStatements.remove(0);
+      statements.add(0,firstStatement);
+    }
+    Statement stmtThis$0=getImplicitThis$0StmtIfInnerClass(otherStatements);
+    if (stmtThis$0 != null) {
+      statements.add(0,stmtThis$0);
+    }
+    statements.addAll(otherStatements);
+  }
+  BlockStatement newBlock=new BlockStatement(statements,block.getVariableScope());
+  newBlock.setSourcePosition(block);
+  constructorNode.setCode(newBlock);
   if (!staticStatements.isEmpty()) {
     if (isEnum) {
       staticStatements.removeAll(initStmtsAfterEnumValuesInit);
