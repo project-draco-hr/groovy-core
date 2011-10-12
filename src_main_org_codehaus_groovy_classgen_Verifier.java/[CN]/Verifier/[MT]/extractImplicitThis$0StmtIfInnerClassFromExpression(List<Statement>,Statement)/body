@@ -1,0 +1,13 @@
+{
+  Expression expr=((ExpressionStatement)bstmt).getExpression();
+  if (expr instanceof BinaryExpression) {
+    Expression lExpr=((BinaryExpression)expr).getLeftExpression();
+    if (lExpr instanceof FieldExpression) {
+      if ("this$0".equals(((FieldExpression)lExpr).getFieldName())) {
+        stmts.remove(bstmt);
+        return true;
+      }
+    }
+  }
+  return false;
+}

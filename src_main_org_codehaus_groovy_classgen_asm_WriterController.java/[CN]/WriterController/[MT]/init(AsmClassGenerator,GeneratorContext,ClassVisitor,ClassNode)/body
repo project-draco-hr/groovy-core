@@ -1,18 +1,25 @@
 {
   Map<String,Boolean> optOptions=cn.getCompileUnit().getConfig().getOptimizationOptions();
+  boolean invokedynamic=false;
   if (optOptions.isEmpty()) {
   }
  else   if (optOptions.get("all") == Boolean.FALSE) {
     optimizeForInt=false;
   }
  else {
+    if (optOptions.get("indy") == Boolean.TRUE)     invokedynamic=true;
     if (optOptions.get("int") == Boolean.FALSE)     optimizeForInt=false;
   }
   this.classNode=cn;
   this.outermostClass=null;
   this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
   this.callSiteWriter=new CallSiteWriter(this);
-  this.invocationWriter=new InvocationWriter(this);
+  if (invokedynamic) {
+    this.invocationWriter=new InvokeDynamicWriter(this);
+  }
+ else {
+    this.invocationWriter=new InvocationWriter(this);
+  }
   this.binaryExpHelper=new BinaryExpressionHelper(this);
   if (optimizeForInt) {
     this.fastPathBinaryExpHelper=new BinaryExpressionMultiTypeDispatcher(this);

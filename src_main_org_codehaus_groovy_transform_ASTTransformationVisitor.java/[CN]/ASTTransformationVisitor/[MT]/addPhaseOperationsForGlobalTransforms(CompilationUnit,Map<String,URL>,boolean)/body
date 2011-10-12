@@ -10,6 +10,9 @@
       }
       if (ASTTransformation.class.isAssignableFrom(gTransClass)) {
         final ASTTransformation instance=(ASTTransformation)gTransClass.newInstance();
+        if (instance instanceof CompilationUnitAware) {
+          ((CompilationUnitAware)instance).setCompilationUnit(compilationUnit);
+        }
         CompilationUnit.SourceUnitOperation suOp=new CompilationUnit.SourceUnitOperation(){
           public void call(          SourceUnit source) throws CompilationFailedException {
             instance.visit(new ASTNode[]{source.getAST()},source);

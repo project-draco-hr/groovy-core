@@ -1,4 +1,5 @@
 {
+  final CompilationUnit compilationUnit=context.getCompilationUnit();
   GroovyClassLoader transformLoader=compilationUnit.getTransformLoader();
   Map<String,URL> transformNames=new LinkedHashMap<String,URL>();
   try {
@@ -14,15 +15,19 @@
         compilationUnit.getErrorCollector().addError(new SimpleMessage("IOException reading the service definition at " + service.toExternalForm() + " because of exception "+ ioe.toString(),null));
         continue;
       }
+      Set<String> disabledGlobalTransforms=compilationUnit.getConfiguration().getDisabledGlobalASTTransformations();
+      if (disabledGlobalTransforms == null)       disabledGlobalTransforms=Collections.emptySet();
       while (className != null) {
         if (!className.startsWith("#") && className.length() > 0) {
-          if (transformNames.containsKey(className)) {
-            if (!service.equals(transformNames.get(className))) {
-              compilationUnit.getErrorCollector().addWarning(WarningMessage.POSSIBLE_ERRORS,"The global transform for class " + className + " is defined in both "+ transformNames.get(className).toExternalForm()+ " and "+ service.toExternalForm()+ " - the former definition will be used and the latter ignored.",null,null);
+          if (!disabledGlobalTransforms.contains(className)) {
+            if (transformNames.containsKey(className)) {
+              if (!service.equals(transformNames.get(className))) {
+                compilationUnit.getErrorCollector().addWarning(WarningMessage.POSSIBLE_ERRORS,"The global transform for class " + className + " is defined in both "+ transformNames.get(className).toExternalForm()+ " and "+ service.toExternalForm()+ " - the former definition will be used and the latter ignored.",null,null);
+              }
             }
-          }
  else {
-            transformNames.put(className,service);
+              transformNames.put(className,service);
+            }
           }
         }
         try {
@@ -55,18 +60,18 @@
   }
   if (isFirstScan) {
     for (    Map.Entry<String,URL> entry : transformNames.entrySet()) {
-      globalTransformNames.add(entry.getKey());
+      context.getGlobalTransformNames().add(entry.getKey());
     }
-    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+    addPhaseOperationsForGlobalTransforms(context.getCompilationUnit(),transformNames,isFirstScan);
   }
  else {
     Iterator<Map.Entry<String,URL>> it=transformNames.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<String,URL> entry=it.next();
-      if (!globalTransformNames.add(entry.getKey())) {
+      if (!context.getGlobalTransformNames().add(entry.getKey())) {
         it.remove();
       }
     }
-    addPhaseOperationsForGlobalTransforms(compilationUnit,transformNames,isFirstScan);
+    addPhaseOperationsForGlobalTransforms(context.getCompilationUnit(),transformNames,isFirstScan);
   }
 }

@@ -5,18 +5,12 @@
       List<Statement> stmts=((BlockStatement)stmt).getStatements();
       for (      Statement bstmt : stmts) {
         if (bstmt instanceof ExpressionStatement) {
-          Expression expr=((ExpressionStatement)bstmt).getExpression();
-          if (expr instanceof BinaryExpression) {
-            Expression lExpr=((BinaryExpression)expr).getLeftExpression();
-            if (lExpr instanceof FieldExpression) {
-              if ("this$0".equals(((FieldExpression)lExpr).getFieldName())) {
-                stmts.remove(bstmt);
-                return bstmt;
-              }
-            }
-          }
+          if (extractImplicitThis$0StmtIfInnerClassFromExpression(stmts,bstmt))           return bstmt;
         }
       }
+    }
+ else     if (stmt instanceof ExpressionStatement) {
+      if (extractImplicitThis$0StmtIfInnerClassFromExpression(otherStatements,stmt))       return stmt;
     }
   }
   return null;
