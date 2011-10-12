@@ -3,7 +3,7 @@
   ClassNode rightRedirect=right.redirect();
   if (op == ASSIGN) {
     checkCompatibleAssignmenTypes(leftRedirect,rightRedirect,expr);
-    return left;
+    return rightRedirect;
   }
  else   if (isBoolIntrinsicOp(op)) {
     return boolean_TYPE;
@@ -31,7 +31,7 @@
     }
   }
   String operationName=getOperationName(op);
-  MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,leftRedirect,rightRedirect);
+  MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
     if (isCompareToBoolean(op))     return boolean_TYPE;
     if (op == COMPARE_TO)     return int_TYPE;

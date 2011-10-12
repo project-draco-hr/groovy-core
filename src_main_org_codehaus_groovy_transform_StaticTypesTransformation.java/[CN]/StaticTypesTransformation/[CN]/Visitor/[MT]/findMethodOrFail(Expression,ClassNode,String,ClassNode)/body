@@ -1,6 +1,9 @@
 {
-  List<MethodNode> methods=receiver.getMethods(name);
-  methods.addAll(receiver.getDeclaredConstructors());
+  List<MethodNode> methods="<init>".equals(name) ? new ArrayList<MethodNode>(receiver.getDeclaredConstructors()) : receiver.getMethods(name);
+  Set<MethodNode> fromDGM=findDGMMethodsForClassNode(receiver);
+  for (  MethodNode methodNode : fromDGM) {
+    if (methodNode.getName().equals(name))     methods.add(methodNode);
+  }
   for (  MethodNode m : methods) {
     Parameter[] params=m.getParameters();
     if (params.length == args.length) {
@@ -15,6 +18,6 @@
       }
     }
   }
-  addStaticTypeError("Cannot find matching method " + toMethodParametersString(name,args),expr);
+  addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),expr);
   return null;
 }
