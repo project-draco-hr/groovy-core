@@ -1,0 +1,23 @@
+{
+  Map<String,List<MethodNode>> methods=new HashMap<String,List<MethodNode>>();
+  final CachedClass cachedClass=ReflectionCache.getCachedClass(DefaultGroovyMethods.class);
+  for (  MetaMethod metaMethod : cachedClass.getMethods()) {
+    final CachedClass[] types=metaMethod.getParameterTypes();
+    if (metaMethod.isStatic() && metaMethod.isPublic() && types.length > 0) {
+      Parameter[] parameters=new Parameter[types.length - 1];
+      for (int i=1; i < types.length; i++) {
+        CachedClass type=types[i];
+        parameters[i - 1]=new Parameter(ClassHelper.make(type.getName()),"p" + i);
+      }
+      MethodNode node=new MethodNode(metaMethod.getName(),metaMethod.getModifiers(),ClassHelper.make(metaMethod.getReturnType()),parameters,new ClassNode[0],null);
+      final ClassNode clazz=ClassHelper.make(types[0].getName());
+      List<MethodNode> nodes=methods.get(clazz.getName());
+      if (nodes == null) {
+        nodes=new LinkedList<MethodNode>();
+        methods.put(clazz.getName(),nodes);
+      }
+      nodes.add(node);
+    }
+  }
+  return methods;
+}

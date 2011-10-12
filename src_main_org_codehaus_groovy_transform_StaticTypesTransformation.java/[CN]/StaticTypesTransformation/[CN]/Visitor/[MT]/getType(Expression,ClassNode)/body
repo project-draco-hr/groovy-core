@@ -5,6 +5,10 @@
     VariableExpression vexp=(VariableExpression)exp;
     if (vexp == VariableExpression.THIS_EXPRESSION)     return current;
     if (vexp == VariableExpression.SUPER_EXPRESSION)     return current.getSuperClass();
+    final Variable variable=vexp.getAccessedVariable();
+    if (variable != null && variable != vexp && variable instanceof VariableExpression) {
+      return getType((Expression)variable,current);
+    }
   }
  else   if (exp instanceof PropertyExpression) {
     PropertyExpression pexp=(PropertyExpression)exp;
