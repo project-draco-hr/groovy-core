@@ -2,6 +2,8 @@
   super.visitReturnStatement(statement);
   ClassNode type=getType(statement.getExpression(),classNode);
   if (methodNode != null) {
-    checkCompatibleAssignmenTypes(methodNode.getReturnType(),type,statement.getExpression());
+    if (!checkCompatibleAssignmentTypes(methodNode.getReturnType(),type,statement.getExpression())) {
+      addStaticTypeError("Cannot return value of type " + type + " on method returning type "+ methodNode.getReturnType(),statement.getExpression());
+    }
   }
 }
