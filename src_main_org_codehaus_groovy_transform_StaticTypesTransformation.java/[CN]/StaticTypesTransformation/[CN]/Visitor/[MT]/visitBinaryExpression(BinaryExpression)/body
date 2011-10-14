@@ -9,4 +9,12 @@
     resultType=lType;
   }
   storeType(expression,resultType);
+  if (isAssignment(op)) {
+    ClassNode leftRedirect=expression.getLeftExpression().getType().redirect();
+    final boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,resultType,expression);
+    if (!compatible) {
+      addStaticTypeError("Cannot assign value of type " + resultType + " to variable of type "+ leftRedirect,expression);
+    }
+    storeType(expression.getLeftExpression(),resultType);
+  }
 }

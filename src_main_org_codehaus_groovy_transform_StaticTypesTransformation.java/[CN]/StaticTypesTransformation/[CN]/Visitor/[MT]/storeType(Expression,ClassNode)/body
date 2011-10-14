@@ -1,6 +1,9 @@
 {
-  exp.setNodeMetaData(StaticTypesMarker.class,cn);
-  if (exp instanceof DeclarationExpression) {
-    storeType(((DeclarationExpression)exp).getLeftExpression(),cn);
+  exp.putNodeMetaData(StaticTypesMarker.class,cn);
+  if (exp instanceof VariableExpression) {
+    final Variable accessedVariable=((VariableExpression)exp).getAccessedVariable();
+    if (accessedVariable != null && accessedVariable != exp && accessedVariable instanceof VariableExpression) {
+      storeType((Expression)accessedVariable,cn);
+    }
   }
 }
