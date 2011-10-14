@@ -1,5 +1,6 @@
 {
   try {
+    writeLock.lock();
     if (allowChangesAfterInit) {
       setInitialized(false);
     }
@@ -9,5 +10,8 @@
     if (initCalled) {
       setInitialized(true);
     }
+    readLock.lock();
+    writeLock.unlock();
+    readLock.unlock();
   }
 }

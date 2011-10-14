@@ -8,8 +8,13 @@
   while (!done) {
     Matcher attrs=ATTRIBUTES_PATTERN.matcher(allstr);
     if (attrs.find()) {
-      if (attrs.group(2) == null || attrs.group(3) == null)       continue;
-      node.addMember(attrs.group(2),new ConstantExpression(attrs.group(3)));
+      String attrName=attrs.group(2);
+      String attrValue=attrs.group(3);
+      if (attrName == null || attrValue == null)       continue;
+      boolean isBool=GRAB_BOOLEAN.contains(attrName);
+      ConstantExpression value=new ConstantExpression(isBool ? Boolean.valueOf(attrValue) : attrValue);
+      value.setSourcePosition(node);
+      node.addMember(attrName,value);
       int lastSemi=allstr.lastIndexOf(';');
       if (lastSemi == -1) {
         allstr="";

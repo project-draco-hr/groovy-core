@@ -3,7 +3,14 @@
     if ((oldClass != null && isSourceNewer(source,oldClass)) || (oldClass == null)) {
 synchronized (sourceCache) {
         sourceCache.remove(className);
-        return parseClass(source.openStream(),className);
+        if (isFile(source)) {
+          try {
+            return doParseClass(new GroovyCodeSource(new File(source.toURI()),config.getSourceEncoding()));
+          }
+ catch (          URISyntaxException e) {
+          }
+        }
+        return parseClass(source.openStream(),makeFileName(className));
       }
     }
   }

@@ -1,7 +1,15 @@
 {
-  if (!isInitialized()) {
-    super.initialize();
-    setInitialized(true);
-    this.initCalled=true;
+  try {
+    writeLock.lock();
+    if (!isInitialized()) {
+      super.initialize();
+      setInitialized(true);
+      this.initCalled=true;
+    }
+  }
+  finally {
+    readLock.lock();
+    writeLock.unlock();
+    readLock.unlock();
   }
 }
