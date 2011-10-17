@@ -3,7 +3,9 @@
     return statement;
   }
   if (statement instanceof EmptyStatement) {
-    return new ReturnStatement(ConstantExpression.NULL);
+    final ReturnStatement returnStatement=new ReturnStatement(ConstantExpression.NULL);
+    listener.returnStatementAdded(returnStatement);
+    return returnStatement;
   }
   if (statement instanceof ExpressionStatement) {
     ExpressionStatement expStmt=(ExpressionStatement)statement;
@@ -11,34 +13,44 @@
     ReturnStatement ret=new ReturnStatement(expr);
     ret.setSourcePosition(expr);
     ret.setStatementLabel(statement.getStatementLabel());
+    listener.returnStatementAdded(ret);
     return ret;
   }
   if (statement instanceof SynchronizedStatement) {
     SynchronizedStatement sync=(SynchronizedStatement)statement;
-    sync.setCode(addReturnsIfNeeded(sync.getCode(),scope));
+    final Statement code=addReturnsIfNeeded(sync.getCode(),scope);
+    if (doAdd)     sync.setCode(code);
     return sync;
   }
   if (statement instanceof IfStatement) {
     IfStatement ifs=(IfStatement)statement;
-    ifs.setIfBlock(addReturnsIfNeeded(ifs.getIfBlock(),scope));
-    ifs.setElseBlock(addReturnsIfNeeded(ifs.getElseBlock(),scope));
+    final Statement ifBlock=addReturnsIfNeeded(ifs.getIfBlock(),scope);
+    final Statement elseBlock=addReturnsIfNeeded(ifs.getElseBlock(),scope);
+    if (doAdd) {
+      ifs.setIfBlock(ifBlock);
+      ifs.setElseBlock(elseBlock);
+    }
     return ifs;
   }
   if (statement instanceof SwitchStatement) {
     SwitchStatement swi=(SwitchStatement)statement;
     for (    CaseStatement caseStatement : swi.getCaseStatements()) {
-      caseStatement.setCode(adjustSwitchCaseCode(caseStatement.getCode(),scope,false));
+      final Statement code=adjustSwitchCaseCode(caseStatement.getCode(),scope,false);
+      if (doAdd)       caseStatement.setCode(code);
     }
-    swi.setDefaultStatement(adjustSwitchCaseCode(swi.getDefaultStatement(),scope,true));
+    final Statement defaultStatement=adjustSwitchCaseCode(swi.getDefaultStatement(),scope,true);
+    if (doAdd)     swi.setDefaultStatement(defaultStatement);
     return swi;
   }
   if (statement instanceof TryCatchStatement) {
     TryCatchStatement trys=(TryCatchStatement)statement;
-    trys.setTryStatement(addReturnsIfNeeded(trys.getTryStatement(),scope));
+    final Statement tryStatement=addReturnsIfNeeded(trys.getTryStatement(),scope);
+    if (doAdd)     trys.setTryStatement(tryStatement);
     final int len=trys.getCatchStatements().size();
     for (int i=0; i != len; ++i) {
       final CatchStatement catchStatement=trys.getCatchStatement(i);
-      catchStatement.setCode(addReturnsIfNeeded(catchStatement.getCode(),scope));
+      final Statement code=addReturnsIfNeeded(catchStatement.getCode(),scope);
+      if (doAdd)       catchStatement.setCode(code);
     }
     return trys;
   }
@@ -48,14 +60,17 @@
     if (!list.isEmpty()) {
       int idx=list.size() - 1;
       Statement last=addReturnsIfNeeded((Statement)list.get(idx),block.getVariableScope());
-      list.set(idx,last);
+      if (doAdd)       list.set(idx,last);
       if (!statementReturns(last)) {
-        list.add(new ReturnStatement(ConstantExpression.NULL));
+        final ReturnStatement returnStatement=new ReturnStatement(ConstantExpression.NULL);
+        listener.returnStatementAdded(returnStatement);
+        if (doAdd)         list.add(returnStatement);
       }
     }
  else {
       ReturnStatement ret=new ReturnStatement(ConstantExpression.NULL);
       ret.setSourcePosition(block);
+      listener.returnStatementAdded(ret);
       return ret;
     }
     BlockStatement newBlock=new BlockStatement(list,block.getVariableScope());
@@ -63,12 +78,16 @@
     return newBlock;
   }
   if (statement == null) {
-    return new ReturnStatement(ConstantExpression.NULL);
+    final ReturnStatement returnStatement=new ReturnStatement(ConstantExpression.NULL);
+    listener.returnStatementAdded(returnStatement);
+    return returnStatement;
   }
  else {
     final List list=new ArrayList();
     list.add(statement);
-    list.add(new ReturnStatement(ConstantExpression.NULL));
+    final ReturnStatement returnStatement=new ReturnStatement(ConstantExpression.NULL);
+    listener.returnStatementAdded(returnStatement);
+    list.add(returnStatement);
     BlockStatement newBlock=new BlockStatement(list,new VariableScope(scope));
     newBlock.setSourcePosition(statement);
     return newBlock;
