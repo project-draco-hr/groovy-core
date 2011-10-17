@@ -1,24 +1,4 @@
 {
-  Statement statement=node.getCode();
-  if (!node.isVoidMethod()) {
-    if (statement != null)     node.setCode(addReturnsIfNeeded(statement,node.getVariableScope()));
-  }
- else   if (!node.isAbstract() && node.getReturnType().redirect() != ClassHelper.VOID_TYPE) {
-    if (!(statement instanceof BytecodeSequence)) {
-      BlockStatement newBlock=new BlockStatement();
-      Statement code=node.getCode();
-      if (code instanceof BlockStatement) {
-        newBlock.setVariableScope(((BlockStatement)code).getVariableScope());
-      }
-      if (statement instanceof BlockStatement) {
-        newBlock.addStatements(((BlockStatement)statement).getStatements());
-      }
- else {
-        newBlock.addStatement(statement);
-      }
-      newBlock.addStatement(ReturnStatement.RETURN_NULL_OR_VOID);
-      newBlock.setSourcePosition(statement);
-      node.setCode(newBlock);
-    }
-  }
+  ReturnAdder adder=new ReturnAdder();
+  adder.visitMethod(node);
 }
