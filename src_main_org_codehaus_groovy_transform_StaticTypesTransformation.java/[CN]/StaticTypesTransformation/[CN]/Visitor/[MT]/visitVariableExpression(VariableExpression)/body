@@ -4,4 +4,7 @@
     if (vexp.getName().equals("this"))     storeType(vexp,classNode);
     if (vexp.getName().equals("super"))     storeType(vexp,classNode.getSuperClass());
   }
+  if (vexp.getAccessedVariable() instanceof DynamicVariable) {
+    addStaticTypeError("The variable " + vexp.getName() + " is undeclared.",vexp);
+  }
 }
