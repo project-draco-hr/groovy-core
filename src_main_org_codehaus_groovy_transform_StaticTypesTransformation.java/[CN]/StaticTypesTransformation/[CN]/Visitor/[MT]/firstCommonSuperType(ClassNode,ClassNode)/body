@@ -1,0 +1,9 @@
+{
+  if (a == null || b == null)   return ClassHelper.OBJECT_TYPE;
+  if (a == b || a.equals(b))   return a;
+  ClassNode superA=a.getSuperClass();
+  ClassNode superB=b.getSuperClass();
+  if (a == superB || a.equals(superB))   return superB;
+  if (b == superA || b.equals(superA))   return superA;
+  return firstCommonSuperType(superA,superB);
+}

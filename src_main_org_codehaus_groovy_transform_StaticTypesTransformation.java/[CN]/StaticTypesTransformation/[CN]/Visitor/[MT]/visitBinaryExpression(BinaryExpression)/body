@@ -44,4 +44,17 @@
     }
     storeType(expression.getLeftExpression(),resultType);
   }
+ else   if (op == KEYWORD_INSTANCEOF) {
+    Expression left=expression.getLeftExpression();
+    if (left instanceof VariableExpression && rightExpression instanceof ClassExpression) {
+      final Map<Expression,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
+      VariableExpression target=findTargetVariable((VariableExpression)left);
+      List<ClassNode> potentialTypes=tempo.get(target);
+      if (potentialTypes == null) {
+        potentialTypes=new LinkedList<ClassNode>();
+        tempo.put(target,potentialTypes);
+      }
+      potentialTypes.add(rightExpression.getType());
+    }
+  }
 }

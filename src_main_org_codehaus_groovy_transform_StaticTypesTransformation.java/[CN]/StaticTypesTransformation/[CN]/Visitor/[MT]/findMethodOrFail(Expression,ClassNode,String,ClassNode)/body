@@ -1,33 +1,7 @@
 {
-  List<MethodNode> methods;
-  if ("<init>".equals(name)) {
-    methods=new ArrayList<MethodNode>(receiver.getDeclaredConstructors());
-    if (methods.isEmpty()) {
-      return new MethodNode("<init>",Opcodes.ACC_PUBLIC,receiver,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
-    }
+  final MethodNode method=findMethod(expr,receiver,name,args);
+  if (method == null) {
+    addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),expr);
   }
- else {
-    methods=receiver.getMethods(name);
-  }
-  Set<MethodNode> fromDGM=findDGMMethodsForClassNode(receiver);
-  for (  MethodNode methodNode : fromDGM) {
-    if (methodNode.getName().equals(name))     methods.add(methodNode);
-  }
-  for (  MethodNode m : methods) {
-    Parameter[] params=m.getParameters();
-    if (params.length == args.length) {
-      if (allParametersAndArgumentsMatch(params,args) || lastArgMatchesVarg(params,args)) {
-        return m;
-      }
-    }
- else     if (isVargs(params)) {
-      if (params.length == args.length + 1)       return m;
-      if (params.length < args.length && excessArgumentsMatchesVargsParameter(params,args)) {
-        return m;
-      }
-    }
-  }
-  if (receiver == ClassHelper.GSTRING_TYPE)   return findMethodOrFail(expr,ClassHelper.STRING_TYPE,name,args);
-  addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),expr);
-  return null;
+  return method;
 }

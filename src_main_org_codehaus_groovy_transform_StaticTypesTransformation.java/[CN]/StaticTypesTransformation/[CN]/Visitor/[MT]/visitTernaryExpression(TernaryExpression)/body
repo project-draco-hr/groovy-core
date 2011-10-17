@@ -1,0 +1,10 @@
+{
+  pushTemporaryTypeInfo();
+  expression.getBooleanExpression().visit(this);
+  expression.getTrueExpression().visit(this);
+  temporaryIfBranchTypeInformation.pop();
+  expression.getFalseExpression().visit(this);
+  final ClassNode typeOfTrue=getType(expression.getTrueExpression(),classNode);
+  final ClassNode typeOfFalse=getType(expression.getFalseExpression(),classNode);
+  storeType(expression,firstCommonSuperType(typeOfTrue,typeOfFalse));
+}
