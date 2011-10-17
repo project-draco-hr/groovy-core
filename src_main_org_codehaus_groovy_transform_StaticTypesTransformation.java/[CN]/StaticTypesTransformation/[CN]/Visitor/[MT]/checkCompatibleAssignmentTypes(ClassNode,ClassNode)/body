@@ -8,6 +8,9 @@
     return true;
   }
   if (rightRedirect.implementsInterface(MAP_TYPE) || rightRedirect.implementsInterface(Collection_TYPE) || rightRedirect.isArray()) {
+    if (leftRedirect.isArray() && rightRedirect.isArray()) {
+      return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType());
+    }
     return true;
   }
   if (right.isDerivedFrom(left) || left.implementsInterface(right))   return true;
