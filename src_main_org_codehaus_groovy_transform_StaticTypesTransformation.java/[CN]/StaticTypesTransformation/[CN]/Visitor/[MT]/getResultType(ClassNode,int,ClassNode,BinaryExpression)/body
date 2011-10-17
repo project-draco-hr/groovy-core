@@ -2,12 +2,14 @@
   ClassNode leftRedirect=left.redirect();
   ClassNode rightRedirect=right.redirect();
   if (op == ASSIGN) {
-    return rightRedirect;
+    return leftRedirect.isArray() && !rightRedirect.isArray() ? leftRedirect : rightRedirect;
   }
  else   if (isBoolIntrinsicOp(op)) {
     return boolean_TYPE;
   }
  else   if (isArrayOp(op)) {
+    ClassNode arrayType=getType(expr.getLeftExpression(),classNode);
+    return arrayType.getComponentType();
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;
