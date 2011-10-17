@@ -1,12 +1,33 @@
 {
   super.visitMethodCallExpression(call);
-  if (call.getMethodAsString() == null) {
+  final String name=call.getMethodAsString();
+  if (name == null) {
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call.getMethod());
   }
  else {
     ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()),classNode);
-    MethodNode mn=findMethodOrFail(call,getType(call.getObjectExpression(),classNode),call.getMethodAsString(),args);
-    if (mn == null)     return;
+    final Expression objectExpression=call.getObjectExpression();
+    final ClassNode receiver=getType(objectExpression,classNode);
+    MethodNode mn=findMethod(call,receiver,name,args);
+    if (mn == null) {
+      if (objectExpression instanceof VariableExpression) {
+        VariableExpression variableExpression=(VariableExpression)objectExpression;
+        if (!temporaryIfBranchTypeInformation.isEmpty()) {
+          final Map<Expression,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
+          List<ClassNode> potentialReceiverType=tempo.get(findTargetVariable(variableExpression));
+          if (potentialReceiverType != null) {
+            for (            ClassNode potentialReceiver : potentialReceiverType) {
+              mn=findMethod(call,potentialReceiver,name,args);
+              if (mn != null)               break;
+            }
+          }
+        }
+      }
+      if (mn == null) {
+        addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
+        return;
+      }
+    }
     storeType(call,mn.getReturnType());
   }
 }
