@@ -19,12 +19,19 @@
  else {
       leftRedirect=leftExpression.getType().redirect();
     }
-    final boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,resultType);
+    boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,resultType);
     if (!compatible) {
       addStaticTypeError("Cannot assign value of type " + resultType + " to variable of type "+ lType,expression);
     }
  else {
-      if (lType.isArray()) {
+      boolean possibleLooseOfPrecision=false;
+      if (isNumberType(leftRedirect) && isNumberType(resultType)) {
+        possibleLooseOfPrecision=checkPossibleLooseOfPrecision(leftRedirect,resultType,rightExpression);
+        if (possibleLooseOfPrecision) {
+          addStaticTypeError("Possible loose of precision from " + resultType + " to "+ leftRedirect,rightExpression);
+        }
+      }
+      if (!possibleLooseOfPrecision && lType.isArray()) {
         ClassNode leftComponentType=lType.getComponentType();
         ClassNode rightRedirect=rightExpression.getType().redirect();
         if (rightRedirect.isArray()) {

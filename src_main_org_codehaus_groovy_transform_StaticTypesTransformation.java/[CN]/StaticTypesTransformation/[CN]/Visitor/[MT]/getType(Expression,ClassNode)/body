@@ -17,8 +17,11 @@
     }
  else {
       ClassNode clazz=pexp.getObjectExpression().getType().redirect();
-      final PropertyNode propertyNode=clazz.getProperty(pexp.getPropertyAsString());
+      String propertyName=pexp.getPropertyAsString();
+      PropertyNode propertyNode=clazz.getProperty(propertyName);
       if (propertyNode == null) {
+        FieldNode field=clazz.getDeclaredField(propertyName);
+        if (field != null)         return field.getType();
         return ClassHelper.OBJECT_TYPE;
       }
       return propertyNode.getType();
