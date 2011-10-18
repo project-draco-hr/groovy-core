@@ -9,6 +9,9 @@
     List<ClassNode> classNodes=info.get(key);
     if (classNodes != null)     tests.addAll(classNodes);
   }
+  if (lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
+    tests.add(lastImplicitItType);
+  }
   boolean hasProperty=false;
   for (  ClassNode testClass : tests) {
     if (!testClass.implementsInterface(ClassHelper.MAP_TYPE)) {

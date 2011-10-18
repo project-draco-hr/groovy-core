@@ -21,7 +21,7 @@
   storeType(expression,resultType);
   if (isAssignment(op)) {
     ClassNode leftRedirect;
-    if (isArrayAccessExpression(leftExpression) || leftExpression instanceof PropertyExpression) {
+    if (isArrayAccessExpression(leftExpression) || leftExpression instanceof PropertyExpression || (leftExpression instanceof VariableExpression && ((VariableExpression)leftExpression).getAccessedVariable() instanceof DynamicVariable)) {
       leftRedirect=lType;
     }
  else {

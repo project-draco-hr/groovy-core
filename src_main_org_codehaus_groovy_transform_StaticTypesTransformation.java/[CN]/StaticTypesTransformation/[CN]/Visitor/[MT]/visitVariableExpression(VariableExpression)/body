@@ -5,6 +5,18 @@
     if (vexp.getName().equals("super"))     storeType(vexp,classNode.getSuperClass());
   }
   if (vexp.getAccessedVariable() instanceof DynamicVariable) {
+    DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
+    String dynName=dyn.getName();
+    for (    ClassNode node : withReceiverList) {
+      if (node.getProperty(dynName) != null) {
+        storeType(vexp,node.getProperty(dynName).getType());
+        return;
+      }
+      if (node.getField(dynName) != null) {
+        storeType(vexp,node.getField(dynName).getType());
+        return;
+      }
+    }
     addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
   }
 }
