@@ -9,7 +9,8 @@
   }
  else   if (isArrayOp(op)) {
     ClassNode arrayType=getType(expr.getLeftExpression(),classNode);
-    return arrayType.getComponentType();
+    final ClassNode componentType=arrayType.getComponentType();
+    return componentType == null ? ClassHelper.OBJECT_TYPE : componentType;
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;
