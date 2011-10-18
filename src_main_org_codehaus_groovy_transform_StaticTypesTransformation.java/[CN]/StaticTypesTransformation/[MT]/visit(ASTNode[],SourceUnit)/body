@@ -1,12 +1,12 @@
 {
   AnnotatedNode node=(AnnotatedNode)nodes[1];
   if (node instanceof ClassNode) {
-    Visitor visitor=new Visitor(source,(ClassNode)node);
+    StaticTypeCheckingVisitor visitor=new StaticTypeCheckingVisitor(source,(ClassNode)node);
     visitor.visitClass((ClassNode)node);
   }
  else   if (node instanceof MethodNode) {
     MethodNode methodNode=(MethodNode)node;
-    Visitor visitor=new Visitor(source,methodNode.getDeclaringClass());
+    StaticTypeCheckingVisitor visitor=new StaticTypeCheckingVisitor(source,methodNode.getDeclaringClass());
     visitor.visitMethod(methodNode);
   }
  else {
