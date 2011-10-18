@@ -1,0 +1,9 @@
+{
+  boolean isWithCall="with".equals(name) && callArguments instanceof ArgumentListExpression;
+  if (isWithCall) {
+    ArgumentListExpression argList=(ArgumentListExpression)callArguments;
+    List<Expression> expressions=argList.getExpressions();
+    isWithCall=expressions.size() == 1 && expressions.get(0) instanceof ClosureExpression;
+  }
+  return isWithCall;
+}

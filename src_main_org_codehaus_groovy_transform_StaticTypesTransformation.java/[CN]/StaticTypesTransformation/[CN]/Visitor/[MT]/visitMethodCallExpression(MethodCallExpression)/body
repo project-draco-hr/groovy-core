@@ -1,13 +1,42 @@
 {
-  super.visitMethodCallExpression(call);
   final String name=call.getMethodAsString();
   if (name == null) {
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call.getMethod());
+    return;
   }
- else {
-    ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()),classNode);
-    final Expression objectExpression=call.getObjectExpression();
-    final ClassNode receiver=getType(objectExpression,classNode);
+  final Expression objectExpression=call.getObjectExpression();
+  objectExpression.visit(this);
+  call.getMethod().visit(this);
+  final ClassNode rememberLastItType=lastImplicitItType;
+  Expression callArguments=call.getArguments();
+  boolean isWithCall=isWithCall(name,callArguments);
+  if (!isWithCall) {
+    callArguments.visit(this);
+  }
+  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments),classNode);
+  final ClassNode receiver=getType(objectExpression,classNode);
+  if (isWithCall) {
+    withReceiverList.add(0,receiver);
+    lastImplicitItType=receiver;
+    if (callArguments instanceof ArgumentListExpression) {
+      ArgumentListExpression argList=(ArgumentListExpression)callArguments;
+      ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
+      Parameter[] parameters=closure.getParameters();
+      if (parameters.length > 1) {
+        addStaticTypeError("Unexpected number of parameters for a with call",argList);
+      }
+ else       if (parameters.length == 1) {
+        Parameter param=parameters[0];
+        if (!param.isDynamicTyped() && !isAssignableTo(param.getType().redirect(),receiver)) {
+          addStaticTypeError("Expected parameter type: " + receiver + " but was: "+ param.getType().redirect(),param);
+        }
+      }
+    }
+  }
+  try {
+    if (isWithCall) {
+      callArguments.visit(this);
+    }
     MethodNode mn=findMethod(call,receiver,name,args);
     if (mn == null && !temporaryIfBranchTypeInformation.isEmpty()) {
       Object key=extractTemporaryTypeInfoKey(objectExpression);
@@ -24,6 +53,12 @@
         return;
       }
     }
-    storeType(call,mn.getReturnType());
+    if (mn != null)     storeType(call,mn.getReturnType());
+  }
+  finally {
+    if (isWithCall) {
+      lastImplicitItType=rememberLastItType;
+      withReceiverList.removeFirst();
+    }
   }
 }
