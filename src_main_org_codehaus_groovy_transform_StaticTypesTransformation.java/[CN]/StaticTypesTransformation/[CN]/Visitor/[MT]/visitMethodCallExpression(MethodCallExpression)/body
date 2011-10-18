@@ -9,18 +9,18 @@
     final Expression objectExpression=call.getObjectExpression();
     final ClassNode receiver=getType(objectExpression,classNode);
     MethodNode mn=findMethod(call,receiver,name,args);
-    if (mn == null) {
+    if (mn == null && !temporaryIfBranchTypeInformation.isEmpty()) {
+      Object key=objectExpression.getText();
+      final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
       if (objectExpression instanceof VariableExpression) {
         VariableExpression variableExpression=(VariableExpression)objectExpression;
-        if (!temporaryIfBranchTypeInformation.isEmpty()) {
-          final Map<Expression,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-          List<ClassNode> potentialReceiverType=tempo.get(findTargetVariable(variableExpression));
-          if (potentialReceiverType != null) {
-            for (            ClassNode potentialReceiver : potentialReceiverType) {
-              mn=findMethod(call,potentialReceiver,name,args);
-              if (mn != null)               break;
-            }
-          }
+        key=findTargetVariable(variableExpression);
+      }
+      List<ClassNode> potentialReceiverType=tempo.get(key);
+      if (potentialReceiverType != null) {
+        for (        ClassNode potentialReceiver : potentialReceiverType) {
+          mn=findMethod(call,potentialReceiver,name,args);
+          if (mn != null)           break;
         }
       }
       if (mn == null) {
