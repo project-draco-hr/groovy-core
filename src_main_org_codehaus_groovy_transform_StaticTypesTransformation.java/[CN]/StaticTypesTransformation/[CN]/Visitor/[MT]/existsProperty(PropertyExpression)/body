@@ -1,0 +1,34 @@
+{
+  Expression objectExpression=pexp.getObjectExpression();
+  ClassNode clazz=objectExpression.getType().redirect();
+  List<ClassNode> tests=new LinkedList<ClassNode>();
+  tests.add(clazz);
+  if (!temporaryIfBranchTypeInformation.empty()) {
+    Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.peek();
+    Object key=extractTemporaryTypeInfoKey(objectExpression);
+    List<ClassNode> classNodes=info.get(key);
+    if (classNodes != null)     tests.addAll(classNodes);
+  }
+  boolean hasProperty=false;
+  for (  ClassNode testClass : tests) {
+    if (!testClass.implementsInterface(ClassHelper.MAP_TYPE)) {
+      String propertyName=pexp.getPropertyAsString();
+      PropertyNode propertyNode=testClass.getProperty(propertyName);
+      if (propertyNode == null) {
+        FieldNode field=testClass.getDeclaredField(propertyName);
+        if (field != null) {
+          hasProperty=true;
+          break;
+        }
+      }
+ else {
+        hasProperty=true;
+        break;
+      }
+    }
+ else {
+      hasProperty=true;
+    }
+  }
+  return hasProperty;
+}

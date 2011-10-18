@@ -1,6 +1,14 @@
 {
   super.visitBinaryExpression(expression);
   final Expression leftExpression=expression.getLeftExpression();
+  if (leftExpression instanceof PropertyExpression) {
+    PropertyExpression pexp=(PropertyExpression)leftExpression;
+    if (!existsProperty(pexp)) {
+      Expression objectExpression=pexp.getObjectExpression();
+      addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,objectExpression.getType()),leftExpression);
+      return;
+    }
+  }
   ClassNode lType=getType(leftExpression,classNode);
   final Expression rightExpression=expression.getRightExpression();
   ClassNode rType=getType(rightExpression,classNode);
@@ -54,10 +62,7 @@
   }
  else   if (op == KEYWORD_INSTANCEOF) {
     final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-    Object key=leftExpression.getText();
-    if (leftExpression instanceof VariableExpression && rightExpression instanceof ClassExpression) {
-      key=findTargetVariable((VariableExpression)leftExpression);
-    }
+    Object key=extractTemporaryTypeInfoKey(leftExpression);
     List<ClassNode> potentialTypes=tempo.get(key);
     if (potentialTypes == null) {
       potentialTypes=new LinkedList<ClassNode>();
