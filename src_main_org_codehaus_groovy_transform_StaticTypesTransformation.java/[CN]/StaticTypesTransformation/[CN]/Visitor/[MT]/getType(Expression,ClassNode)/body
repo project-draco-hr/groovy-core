@@ -17,14 +17,20 @@
     }
  else {
       ClassNode clazz=pexp.getObjectExpression().getType().redirect();
-      String propertyName=pexp.getPropertyAsString();
-      PropertyNode propertyNode=clazz.getProperty(propertyName);
-      if (propertyNode == null) {
-        FieldNode field=clazz.getDeclaredField(propertyName);
-        if (field != null)         return field.getType();
-        return ClassHelper.OBJECT_TYPE;
+      List<ClassNode> candidates=new LinkedList<ClassNode>();
+      candidates.add(clazz);
+      if (!temporaryIfBranchTypeInformation.empty()) {
+        List<ClassNode> classNodes=temporaryIfBranchTypeInformation.peek().get(extractTemporaryTypeInfoKey(pexp.getObjectExpression()));
+        if (classNodes != null && !classNodes.isEmpty())         candidates.addAll(classNodes);
       }
-      return propertyNode.getType();
+      String propertyName=pexp.getPropertyAsString();
+      for (      ClassNode candidate : candidates) {
+        PropertyNode propertyNode=candidate.getProperty(propertyName);
+        if (propertyNode != null)         return propertyNode.getType();
+        FieldNode field=candidate.getDeclaredField(propertyName);
+        if (field != null)         return field.getType();
+      }
+      return ClassHelper.OBJECT_TYPE;
     }
   }
   return exp.getType();

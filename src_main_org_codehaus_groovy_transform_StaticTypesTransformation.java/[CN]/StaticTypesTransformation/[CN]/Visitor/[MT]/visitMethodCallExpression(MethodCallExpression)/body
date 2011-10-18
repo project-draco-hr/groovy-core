@@ -10,12 +10,8 @@
     final ClassNode receiver=getType(objectExpression,classNode);
     MethodNode mn=findMethod(call,receiver,name,args);
     if (mn == null && !temporaryIfBranchTypeInformation.isEmpty()) {
-      Object key=objectExpression.getText();
+      Object key=extractTemporaryTypeInfoKey(objectExpression);
       final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-      if (objectExpression instanceof VariableExpression) {
-        VariableExpression variableExpression=(VariableExpression)objectExpression;
-        key=findTargetVariable(variableExpression);
-      }
       List<ClassNode> potentialReceiverType=tempo.get(key);
       if (potentialReceiverType != null) {
         for (        ClassNode potentialReceiver : potentialReceiverType) {
