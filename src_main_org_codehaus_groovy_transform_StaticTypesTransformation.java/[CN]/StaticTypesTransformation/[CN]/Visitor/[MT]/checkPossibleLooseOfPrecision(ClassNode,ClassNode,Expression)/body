@@ -1,0 +1,71 @@
+{
+  if (left == right || left.equals(right))   return false;
+  int leftIndex=NUMBER_TYPES.get(left);
+  int rightIndex=NUMBER_TYPES.get(right);
+  if (leftIndex >= rightIndex)   return false;
+  if (rightExpr instanceof ConstantExpression) {
+    Object value=((ConstantExpression)rightExpr).getValue();
+    if (!(value instanceof Number))     return true;
+    Number number=(Number)value;
+switch (leftIndex) {
+case 0:
+{
+        byte val=number.byteValue();
+        if (number instanceof Short) {
+          return !Short.valueOf(val).equals(number);
+        }
+        if (number instanceof Integer) {
+          return !Integer.valueOf(val).equals(number);
+        }
+        if (number instanceof Long) {
+          return !Long.valueOf(val).equals(number);
+        }
+        if (number instanceof Float) {
+          return !Float.valueOf(val).equals(number);
+        }
+        return !Double.valueOf(val).equals(number);
+      }
+case 1:
+{
+      short val=number.shortValue();
+      if (number instanceof Integer) {
+        return !Integer.valueOf(val).equals(number);
+      }
+      if (number instanceof Long) {
+        return !Long.valueOf(val).equals(number);
+      }
+      if (number instanceof Float) {
+        return !Float.valueOf(val).equals(number);
+      }
+      return !Double.valueOf(val).equals(number);
+    }
+case 2:
+{
+    int val=number.intValue();
+    if (number instanceof Long) {
+      return !Long.valueOf(val).equals(number);
+    }
+    if (number instanceof Float) {
+      return !Float.valueOf(val).equals(number);
+    }
+    return !Double.valueOf(val).equals(number);
+  }
+case 3:
+{
+  long val=number.longValue();
+  if (number instanceof Float) {
+    return !Float.valueOf(val).equals(number);
+  }
+  return !Double.valueOf(val).equals(number);
+}
+case 4:
+{
+float val=number.floatValue();
+return !Double.valueOf(val).equals(number);
+}
+default :
+return false;
+}
+}
+return true;
+}
