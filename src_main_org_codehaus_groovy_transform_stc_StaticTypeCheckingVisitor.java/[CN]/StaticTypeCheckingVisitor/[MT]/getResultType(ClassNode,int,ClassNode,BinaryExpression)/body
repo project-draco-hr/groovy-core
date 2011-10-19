@@ -31,6 +31,9 @@
       if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return Long_TYPE;
       if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
     }
+ else     if (isCompareToBoolean(op) || op == COMPARE_EQUAL) {
+      return boolean_TYPE;
+    }
   }
   String operationName=getOperationName(op);
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
