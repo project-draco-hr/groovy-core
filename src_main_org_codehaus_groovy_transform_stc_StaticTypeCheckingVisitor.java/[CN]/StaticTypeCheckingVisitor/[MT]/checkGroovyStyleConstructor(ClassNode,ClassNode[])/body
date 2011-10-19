@@ -1,0 +1,11 @@
+{
+  if (node.equals(ClassHelper.OBJECT_TYPE) || node.equals(ClassHelper.DYNAMIC_TYPE)) {
+    return;
+  }
+  List<ConstructorNode> constructors=node.getDeclaredConstructors();
+  if (constructors.isEmpty() && arguments.length == 0)   return;
+  MethodNode constructor=findMethod(node,"<init>",arguments);
+  if (constructor == null) {
+    addStaticTypeError("No matching constructor found: " + node + toMethodParametersString("<init>",arguments),classNode);
+  }
+}
