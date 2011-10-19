@@ -1,0 +1,12 @@
+{
+  if (!allParametersAndArgumentsMatch(parameters,args) && !lastArgMatchesVarg(parameters,args)) {
+    StringBuilder sb=new StringBuilder("[");
+    for (int i=0, parametersLength=parameters.length; i < parametersLength; i++) {
+      final Parameter parameter=parameters[i];
+      sb.append(parameter.getType().getName());
+      if (i < parametersLength - 1)       sb.append(", ");
+    }
+    sb.append("]");
+    addStaticTypeError("Closure argument types: " + sb + " do not match with parameter types: "+ Arrays.toString(args),callArguments);
+  }
+}
