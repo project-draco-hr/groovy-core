@@ -1,0 +1,10 @@
+{
+  final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
+  Object key=extractTemporaryTypeInfoKey(objectOfInstanceOf);
+  List<ClassNode> potentialTypes=tempo.get(key);
+  if (potentialTypes == null) {
+    potentialTypes=new LinkedList<ClassNode>();
+    tempo.put(key,potentialTypes);
+  }
+  potentialTypes.add(typeExpression.getType());
+}
