@@ -22,6 +22,10 @@
   if (isAssignment(op)) {
     typeCheckAssignment(expression,leftExpression,lType,rightExpression,resultType);
     storeType(leftExpression,resultType);
+    if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
+      Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();
+      leftExpression.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_ARGUMENTS,parameters);
+    }
   }
  else   if (op == KEYWORD_INSTANCEOF) {
     pushInstanceOfTypeInfo(leftExpression,rightExpression);

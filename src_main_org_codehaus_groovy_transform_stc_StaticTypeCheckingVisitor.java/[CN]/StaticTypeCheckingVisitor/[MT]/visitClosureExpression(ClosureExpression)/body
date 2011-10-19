@@ -1,0 +1,13 @@
+{
+  ClosureExpression oldClosureExpr=closureExpression;
+  List<ClassNode> oldClosureReturnTypes=closureReturnTypes;
+  closureExpression=expression;
+  super.visitClosureExpression(expression);
+  MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,expression.getCode());
+  returnAdder.visitMethod(node);
+  if (closureReturnTypes != null) {
+    expression.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE,firstCommonSuperType(closureReturnTypes));
+  }
+  closureExpression=oldClosureExpr;
+  closureReturnTypes=oldClosureReturnTypes;
+}

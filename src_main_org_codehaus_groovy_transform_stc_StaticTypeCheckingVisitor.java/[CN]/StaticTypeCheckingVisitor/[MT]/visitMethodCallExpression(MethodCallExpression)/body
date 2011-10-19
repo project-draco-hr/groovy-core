@@ -14,6 +14,7 @@
     callArguments.visit(this);
   }
   ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments),classNode);
+  final boolean isCallOnClosure=isClosureCall(name,objectExpression);
   final ClassNode receiver=getType(objectExpression,classNode);
   if (isWithCall) {
     withReceiverList.add(0,receiver);
@@ -55,7 +56,33 @@
       addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
     }
  else {
-      storeType(call,mn.getReturnType());
+      if (isCallOnClosure) {
+        if (objectExpression instanceof VariableExpression) {
+          Variable variable=findTargetVariable((VariableExpression)objectExpression);
+          if (variable instanceof Expression) {
+            Object data=((Expression)variable).getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_ARGUMENTS);
+            if (data != null) {
+              Parameter[] parameters=(Parameter[])data;
+              typeCheckClosureCall(callArguments,args,parameters);
+            }
+            Object type=((Expression)variable).getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+            if (type != null) {
+              storeType(call,(ClassNode)type);
+            }
+          }
+        }
+ else         if (objectExpression instanceof ClosureExpression) {
+          Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
+          typeCheckClosureCall(callArguments,args,parameters);
+          Object data=objectExpression.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+          if (data != null) {
+            storeType(call,(ClassNode)data);
+          }
+        }
+      }
+ else {
+        storeType(call,mn.getReturnType());
+      }
     }
   }
   finally {

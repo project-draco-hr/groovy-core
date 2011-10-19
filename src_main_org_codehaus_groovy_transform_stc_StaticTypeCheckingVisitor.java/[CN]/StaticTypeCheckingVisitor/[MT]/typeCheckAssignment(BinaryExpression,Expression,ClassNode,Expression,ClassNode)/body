@@ -11,6 +11,12 @@
     addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
   }
  else {
+    if (rightExpression instanceof ClosureExpression) {
+      Object type=rightExpression.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+      if (type != null) {
+        leftExpression.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE,type);
+      }
+    }
     boolean possibleLooseOfPrecision=false;
     if (isNumberType(leftRedirect) && isNumberType(inferredRightExpressionType)) {
       possibleLooseOfPrecision=checkPossibleLooseOfPrecision(leftRedirect,inferredRightExpressionType,rightExpression);

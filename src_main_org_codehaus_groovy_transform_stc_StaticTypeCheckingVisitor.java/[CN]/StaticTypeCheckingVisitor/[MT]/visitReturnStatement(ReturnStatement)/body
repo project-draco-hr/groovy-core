@@ -1,4 +1,7 @@
 {
   super.visitReturnStatement(statement);
   checkReturnType(statement);
+  if (closureExpression != null) {
+    addClosureReturnType(getType(statement.getExpression(),classNode));
+  }
 }
