@@ -24,11 +24,19 @@
         if (classNodes != null && !classNodes.isEmpty())         candidates.addAll(classNodes);
       }
       String propertyName=pexp.getPropertyAsString();
+      boolean isAttributeExpression=pexp instanceof AttributeExpression;
       for (      ClassNode candidate : candidates) {
-        PropertyNode propertyNode=candidate.getProperty(propertyName);
-        if (propertyNode != null)         return propertyNode.getType();
-        FieldNode field=candidate.getDeclaredField(propertyName);
-        if (field != null)         return field.getType();
+        ClassNode parent=candidate;
+        while (parent != null) {
+          parent=parent.redirect();
+          PropertyNode propertyNode=parent.getProperty(propertyName);
+          if (propertyNode != null)           return propertyNode.getType();
+          if (!isAttributeExpression) {
+            FieldNode field=parent.getDeclaredField(propertyName);
+            if (field != null)             return field.getType();
+          }
+          parent=isAttributeExpression ? null : parent.getSuperClass();
+        }
       }
       return ClassHelper.OBJECT_TYPE;
     }

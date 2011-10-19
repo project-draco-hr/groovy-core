@@ -13,20 +13,26 @@
     tests.add(lastImplicitItType);
   }
   boolean hasProperty=false;
+  String propertyName=pexp.getPropertyAsString();
+  boolean isAttributeExpression=pexp instanceof AttributeExpression;
   for (  ClassNode testClass : tests) {
     if (!testClass.implementsInterface(ClassHelper.MAP_TYPE)) {
-      String propertyName=pexp.getPropertyAsString();
-      PropertyNode propertyNode=testClass.getProperty(propertyName);
-      if (propertyNode == null) {
-        FieldNode field=testClass.getDeclaredField(propertyName);
-        if (field != null) {
+      ClassNode current=testClass;
+      while (current != null && !hasProperty) {
+        current=current.redirect();
+        PropertyNode propertyNode=current.getProperty(propertyName);
+        if (propertyNode != null) {
           hasProperty=true;
           break;
         }
-      }
- else {
-        hasProperty=true;
-        break;
+        if (!isAttributeExpression) {
+          FieldNode field=current.getDeclaredField(propertyName);
+          if (field != null) {
+            hasProperty=true;
+            break;
+          }
+        }
+        current=isAttributeExpression ? null : current.getSuperClass();
       }
     }
  else {
