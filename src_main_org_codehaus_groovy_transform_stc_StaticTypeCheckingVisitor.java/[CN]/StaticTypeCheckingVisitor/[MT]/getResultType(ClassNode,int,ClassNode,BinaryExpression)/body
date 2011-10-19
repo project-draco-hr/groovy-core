@@ -9,6 +9,9 @@
   }
  else   if (isArrayOp(op)) {
     ClassNode arrayType=getType(expr.getLeftExpression(),classNode);
+    if (ClassHelper.STRING_TYPE.equals(arrayType)) {
+      return ClassHelper.STRING_TYPE;
+    }
     final ClassNode componentType=arrayType.getComponentType();
     return componentType == null ? ClassHelper.OBJECT_TYPE : componentType;
   }
