@@ -2,7 +2,7 @@
   super.visitCastExpression(expression);
   if (!expression.isCoerce()) {
     ClassNode targetType=expression.getType();
-    ClassNode expressionType=getType(expression.getExpression(),classNode);
+    ClassNode expressionType=getType(expression.getExpression());
     if (!isAssignableTo(expressionType,targetType)) {
       addStaticTypeError("Inconvertible types: cannot cast " + expressionType.getName() + " to "+ targetType.getName(),expression);
     }
