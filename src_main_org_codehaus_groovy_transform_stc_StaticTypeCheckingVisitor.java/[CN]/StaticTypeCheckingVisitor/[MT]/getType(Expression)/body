@@ -3,11 +3,11 @@
   if (cn != null)   return cn;
   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
-    if (vexp == VariableExpression.THIS_EXPRESSION)     return current;
-    if (vexp == VariableExpression.SUPER_EXPRESSION)     return current.getSuperClass();
+    if (vexp == VariableExpression.THIS_EXPRESSION)     return classNode;
+    if (vexp == VariableExpression.SUPER_EXPRESSION)     return classNode.getSuperClass();
     final Variable variable=vexp.getAccessedVariable();
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
-      return getType((Expression)variable,current);
+      return getType((Expression)variable);
     }
   }
  else   if (exp instanceof PropertyExpression) {
