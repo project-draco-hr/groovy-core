@@ -1,12 +1,14 @@
 {
   Class theClass=obj.getClass();
   final ClassInfo info=ClassInfo.getClassInfo(theClass);
+  MetaClass oldMC=null;
   info.lock();
   try {
+    oldMC=info.getPerInstanceMetaClass(obj);
     info.setPerInstanceMetaClass(obj,theMetaClass);
   }
   finally {
     info.unlock();
   }
-  fireConstantMetaClassUpdate(theClass,theMetaClass);
+  fireConstantMetaClassUpdate(obj,theClass,oldMC,theMetaClass);
 }
