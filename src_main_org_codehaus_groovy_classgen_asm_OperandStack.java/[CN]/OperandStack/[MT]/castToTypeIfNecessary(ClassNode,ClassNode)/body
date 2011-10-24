@@ -1,0 +1,8 @@
+{
+  if (!sourceType.isDerivedFrom(targetType) && !sourceType.implementsInterface(targetType)) {
+    MethodVisitor mv=controller.getMethodVisitor();
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    remove(1);
+    castToTypeMethod.call(mv);
+  }
+}
