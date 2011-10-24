@@ -30,17 +30,13 @@
     box();
   }
  else   if (primTop) {
-    box();
-    (new ClassExpression(targetType)).visit(controller.getAcg());
-    remove(1);
-    castToTypeMethod.call(mv);
+    ClassNode boxedType=box();
+    castToTypeIfNecessary(boxedType,targetType);
   }
  else   if (primTarget) {
   }
- else   if (!(top.isDerivedFrom(targetType))) {
-    (new ClassExpression(targetType)).visit(controller.getAcg());
-    remove(1);
-    castToTypeMethod.call(mv);
+ else {
+    castToTypeIfNecessary(top,targetType);
   }
   BytecodeHelper.doCast(mv,targetType);
   replace(targetType);
