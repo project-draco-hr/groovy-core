@@ -47,12 +47,12 @@
       List<ClassNode> potentialReceiverType=tempo.get(key);
       if (potentialReceiverType != null)       receivers.addAll(potentialReceiverType);
     }
-    MethodNode mn=null;
+    List<MethodNode> mn=null;
     for (    ClassNode currentReceiver : receivers) {
       mn=findMethod(currentReceiver,name,args);
-      if (mn != null)       break;
+      if (!mn.isEmpty())       break;
     }
-    if (mn == null) {
+    if (mn.isEmpty()) {
       addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
     }
  else {
@@ -81,7 +81,15 @@
         }
       }
  else {
-        storeType(call,mn.getReturnType());
+        if (mn.size() == 1) {
+          MethodNode directMethodCallCandidate=mn.get(0);
+          ClassNode returnType=directMethodCallCandidate.getReturnType();
+          storeType(call,returnType);
+          call.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,directMethodCallCandidate);
+        }
+ else {
+          addStaticTypeError("Reference to method is ambiguous. Cannot choose between " + mn,call);
+        }
       }
     }
   }

@@ -3,30 +3,23 @@
   if ("<init>".equals(name)) {
     methods=new ArrayList<MethodNode>(receiver.getDeclaredConstructors());
     if (methods.isEmpty()) {
-      return new MethodNode("<init>",Opcodes.ACC_PUBLIC,receiver,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+      return Collections.singletonList(new MethodNode("<init>",Opcodes.ACC_PUBLIC,receiver,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE));
     }
   }
  else {
     methods=receiver.getMethods(name);
   }
+  List<MethodNode> chosen=chooseBestBethod(receiver,methods,args);
+  if (!chosen.isEmpty())   return chosen;
+  methods.clear();
   Set<MethodNode> fromDGM=findDGMMethodsForClassNode(receiver);
   for (  MethodNode methodNode : fromDGM) {
     if (methodNode.getName().equals(name))     methods.add(methodNode);
   }
-  for (  MethodNode m : methods) {
-    Parameter[] params=m.getParameters();
-    if (params.length == args.length) {
-      if (allParametersAndArgumentsMatch(params,args) || lastArgMatchesVarg(params,args)) {
-        return m;
-      }
-    }
- else     if (isVargs(params)) {
-      if (params.length == args.length + 1)       return m;
-      if (params.length < args.length && excessArgumentsMatchesVargsParameter(params,args)) {
-        return m;
-      }
-    }
+  chosen=chooseBestBethod(receiver,methods,args);
+  if (!chosen.isEmpty()) {
+    return chosen;
   }
   if (receiver == ClassHelper.GSTRING_TYPE)   return findMethod(ClassHelper.STRING_TYPE,name,args);
-  return null;
+  return EMPTY_METHODNODE_LIST;
 }

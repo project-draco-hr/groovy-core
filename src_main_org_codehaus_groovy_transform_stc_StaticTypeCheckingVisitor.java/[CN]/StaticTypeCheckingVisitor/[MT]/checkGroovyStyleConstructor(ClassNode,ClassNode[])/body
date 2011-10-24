@@ -4,8 +4,8 @@
   }
   List<ConstructorNode> constructors=node.getDeclaredConstructors();
   if (constructors.isEmpty() && arguments.length == 0)   return;
-  MethodNode constructor=findMethod(node,"<init>",arguments);
-  if (constructor == null) {
+  List<MethodNode> constructorList=findMethod(node,"<init>",arguments);
+  if (constructorList.isEmpty()) {
     addStaticTypeError("No matching constructor found: " + node + toMethodParametersString("<init>",arguments),classNode);
   }
 }
