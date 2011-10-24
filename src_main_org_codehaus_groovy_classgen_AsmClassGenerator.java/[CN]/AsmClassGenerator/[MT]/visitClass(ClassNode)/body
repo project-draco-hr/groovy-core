@@ -10,7 +10,7 @@
   }
   this.controller.init(this,context,cv,classNode);
   if (controller.shouldOptimizeForInt()) {
-    OptimizingStatementWriter.setNodeMeta(classNode);
+    OptimizingStatementWriter.setNodeMeta(controller.getTypeChooser(),classNode);
   }
   try {
     cv.visit(getBytecodeVersion(),adjustedClassModifiers(classNode.getModifiers()),controller.getInternalClassName(),BytecodeHelper.getGenericsSignature(classNode),controller.getInternalBaseClassName(),BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));

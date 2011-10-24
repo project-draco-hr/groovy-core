@@ -1,0 +1,22 @@
+{
+  String name=v.getName();
+  BytecodeVariable answer=defineVar(name,variableType,v.isClosureSharedVariable(),v.isClosureSharedVariable());
+  stackVariables.put(name,answer);
+  MethodVisitor mv=controller.getMethodVisitor();
+  Label startLabel=new Label();
+  answer.setStartLabel(startLabel);
+  ClassNode type=answer.getType().redirect();
+  OperandStack operandStack=controller.getOperandStack();
+  if (!initFromStack)   pushInitValue(type,mv);
+  operandStack.push(answer.getType());
+  if (answer.isHolder()) {
+    operandStack.box();
+    operandStack.remove(1);
+    createReference(answer);
+  }
+ else {
+    operandStack.storeVar(answer);
+  }
+  mv.visitLabel(startLabel);
+  return answer;
+}

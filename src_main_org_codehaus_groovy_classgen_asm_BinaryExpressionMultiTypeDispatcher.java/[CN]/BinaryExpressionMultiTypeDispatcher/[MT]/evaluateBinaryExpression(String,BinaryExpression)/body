@@ -2,10 +2,10 @@
   int operation=removeAssignment(binExp.getOperation().getType());
   ClassNode current=getController().getClassNode();
   Expression leftExp=binExp.getLeftExpression();
-  ClassNode leftTypeOrig=getType(leftExp,current);
+  ClassNode leftTypeOrig=getController().getTypeChooser().resolveType(leftExp,current);
   ClassNode leftType=leftTypeOrig;
   Expression rightExp=binExp.getRightExpression();
-  ClassNode rightType=getType(rightExp,current);
+  ClassNode rightType=getController().getTypeChooser().resolveType(rightExp,current);
   AsmClassGenerator acg=getController().getAcg();
   OperandStack os=getController().getOperandStack();
   if (operation == LEFT_SQUARE_BRACKET) {

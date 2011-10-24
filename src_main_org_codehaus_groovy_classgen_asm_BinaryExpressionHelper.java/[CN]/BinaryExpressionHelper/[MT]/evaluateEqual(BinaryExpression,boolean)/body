@@ -50,9 +50,10 @@
   }
  else   if (defineVariable) {
     VariableExpression var=(VariableExpression)leftExpression;
+    ClassNode type=controller.getTypeChooser().resolveType(var,controller.getClassNode());
     rhsValueLoader.visit(acg);
-    operandStack.doGroovyCast(var);
-    compileStack.defineVariable(var,true);
+    operandStack.doGroovyCast(type);
+    compileStack.defineVariable(var,type,true);
     operandStack.remove(1);
   }
  else {
