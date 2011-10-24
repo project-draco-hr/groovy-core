@@ -1,7 +1,13 @@
 {
-  final MethodNode method=findMethod(receiver,name,args);
-  if (method == null) {
-    addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),expr);
+  final List<MethodNode> methods=findMethod(receiver,name,args);
+  if (methods.isEmpty()) {
+    addStaticTypeError("Cannot find matching methods " + receiver.getName() + "#"+ toMethodParametersString(name,args),expr);
   }
-  return method;
+ else   if (methods.size() == 1) {
+    return methods.get(0);
+  }
+ else {
+    addStaticTypeError("Reference to method is ambiguous. Cannot choose between " + methods,expr);
+  }
+  return null;
 }

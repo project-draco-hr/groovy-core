@@ -1,7 +1,9 @@
 {
+  int dist=0;
   ClassNode vargsBase=params[params.length - 1].getType().getComponentType();
   for (int i=params.length; i < args.length; i++) {
-    if (!isAssignableTo(vargsBase,args[i]))     return false;
+    if (!isAssignableTo(vargsBase,args[i]))     return -1;
+ else     if (!args[i].equals(vargsBase))     dist++;
   }
-  return true;
+  return dist;
 }
