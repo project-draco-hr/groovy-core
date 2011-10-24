@@ -18,8 +18,9 @@
     addStaticTypeError("tbd...",expression);
     resultType=lType;
   }
-  storeType(expression,resultType);
-  if (isAssignment(op)) {
+  boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
+  if (!isEmptyDeclaration)   storeType(expression,resultType);
+  if (!isEmptyDeclaration && isAssignment(op)) {
     typeCheckAssignment(expression,leftExpression,lType,rightExpression,resultType);
     storeType(leftExpression,resultType);
     if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
