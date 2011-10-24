@@ -1,5 +1,14 @@
 {
-  exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.INFERRED_TYPE,cn);
+  ClassNode oldValue=(ClassNode)exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.INFERRED_TYPE,cn);
+  if (oldValue != null) {
+    ClassNode oldDIT=(ClassNode)exp.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE);
+    if (oldDIT != null) {
+      exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldDIT,cn));
+    }
+ else {
+      exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldValue,cn));
+    }
+  }
   if (exp instanceof VariableExpression) {
     final Variable accessedVariable=((VariableExpression)exp).getAccessedVariable();
     if (accessedVariable != null && accessedVariable != exp && accessedVariable instanceof VariableExpression) {
