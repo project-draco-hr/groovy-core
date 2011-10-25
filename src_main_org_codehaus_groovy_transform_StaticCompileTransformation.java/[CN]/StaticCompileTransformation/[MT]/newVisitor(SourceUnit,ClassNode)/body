@@ -1,0 +1,20 @@
+{
+  return new StaticTypeCheckingVisitor(unit,node){
+    @Override public void visitMethodCallExpression(    final MethodCallExpression call){
+      super.visitMethodCallExpression(call);
+      MethodNode target=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+      if (target != null)       call.setMethodTarget(target);
+      if (call.getMethodTarget() == null) {
+        addError("Target method for method call expression hasn't been set",call);
+      }
+    }
+    @Override public void visitConstructorCallExpression(    final ConstructorCallExpression call){
+      super.visitConstructorCallExpression(call);
+      MethodNode target=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+      if (target == null) {
+        addError("Target constructor for constructor call expression hasn't been set",call);
+      }
+    }
+  }
+;
+}
