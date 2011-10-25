@@ -1,0 +1,11 @@
+{
+  ConstructorNode cn=(ConstructorNode)call.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  if (cn == null) {
+    super.writeInvokeConstructor(call);
+    return;
+  }
+  String ownerDescriptor=prepareConstructorCall(cn);
+  TupleExpression args=makeArgumentList(call.getArguments());
+  loadArguments(args.getExpressions(),cn.getParameters());
+  finnishConstructorCall(cn,ownerDescriptor,args.getExpressions().size());
+}
