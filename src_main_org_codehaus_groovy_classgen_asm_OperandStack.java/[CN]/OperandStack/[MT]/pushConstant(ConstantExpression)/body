@@ -7,7 +7,7 @@
     mv.visitInsn(ACONST_NULL);
   }
  else   if (asPrimitive) {
-    mv.visitLdcInsn(value);
+    pushPrimitiveConstant(mv,value,type);
   }
  else   if (value instanceof Character) {
     mv.visitLdcInsn(value);
@@ -28,18 +28,10 @@
       mv.visitLdcInsn(value.toString());
       mv.visitMethodInsn(INVOKESPECIAL,className,"<init>","(Ljava/lang/String;)V");
     }
- else     if (value instanceof Long) {
-      long l=(Long)value;
-      if (l == 0) {
-        mv.visitInsn(LCONST_0);
-      }
- else       if (l == 1) {
-        mv.visitInsn(LCONST_1);
-      }
- else {
-        mv.visitLdcInsn(value);
-      }
-      BytecodeHelper.box(mv,ClassHelper.getUnwrapper(type));
+ else     if (value instanceof Integer || value instanceof Byte || value instanceof Short|| value instanceof Long|| value instanceof Float|| value instanceof Double) {
+      ClassNode primType=ClassHelper.getUnwrapper(type);
+      pushPrimitiveConstant(mv,value,primType);
+      BytecodeHelper.box(mv,primType);
       BytecodeHelper.doCast(mv,type);
     }
  else {
