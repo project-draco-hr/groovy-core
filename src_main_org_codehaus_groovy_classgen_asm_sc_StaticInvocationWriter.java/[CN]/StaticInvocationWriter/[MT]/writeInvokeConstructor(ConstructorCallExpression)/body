@@ -1,8 +1,16 @@
 {
-  ConstructorNode cn=(ConstructorNode)call.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
-  if (cn == null) {
+  MethodNode mn=(MethodNode)call.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  if (mn == null) {
     super.writeInvokeConstructor(call);
     return;
+  }
+  ConstructorNode cn;
+  if (mn instanceof ConstructorNode) {
+    cn=(ConstructorNode)mn;
+  }
+ else {
+    cn=new ConstructorNode(mn.getModifiers(),mn.getParameters(),mn.getExceptions(),mn.getCode());
+    cn.setDeclaringClass(mn.getDeclaringClass());
   }
   String ownerDescriptor=prepareConstructorCall(cn);
   TupleExpression args=makeArgumentList(call.getArguments());
