@@ -39,6 +39,9 @@
     }
   }
   String operationName=getOperationName(op);
+  if (isShiftOperation(operationName) && isNumberCategory(leftRedirect) && (isIntCategory(rightRedirect) || isLongCategory(rightRedirect))) {
+    return leftRedirect;
+  }
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
     if (isCompareToBoolean(op))     return boolean_TYPE;
