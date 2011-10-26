@@ -1,8 +1,8 @@
 {
   if (expression.getNodeMetaData(StatementMeta.class) != null)   return;
   super.visitBinaryExpression(expression);
-  ClassNode leftType=getType(expression.getLeftExpression(),node);
-  ClassNode rightType=getType(expression.getRightExpression(),node);
+  ClassNode leftType=typeChooser.resolveType(expression.getLeftExpression(),node);
+  ClassNode rightType=typeChooser.resolveType(expression.getRightExpression(),node);
   ClassNode resultType=null;
   int operation=expression.getOperation().getType();
   if (operation == Types.LEFT_SQUARE_BRACKET && leftType.isArray()) {

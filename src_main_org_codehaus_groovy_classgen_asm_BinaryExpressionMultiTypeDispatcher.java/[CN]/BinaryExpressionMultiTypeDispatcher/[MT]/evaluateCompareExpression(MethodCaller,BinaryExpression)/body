@@ -2,9 +2,9 @@
   ClassNode current=getController().getClassNode();
   int operation=binExp.getOperation().getType();
   Expression leftExp=binExp.getLeftExpression();
-  ClassNode leftType=getType(leftExp,current);
+  ClassNode leftType=getController().getTypeChooser().resolveType(leftExp,current);
   Expression rightExp=binExp.getRightExpression();
-  ClassNode rightType=getType(rightExp,current);
+  ClassNode rightType=getController().getTypeChooser().resolveType(rightExp,current);
   int operationType=getOperandConversionType(leftType,rightType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   if (bew.write(operation,true)) {

@@ -3,9 +3,9 @@
   int operation=removeAssignment(binExp.getOperation().getType());
   ClassNode current=getController().getClassNode();
   Expression leftExp=binExp.getLeftExpression();
-  ClassNode leftType=getType(leftExp,current);
+  ClassNode leftType=getController().getTypeChooser().resolveType(leftExp,current);
   Expression rightExp=binExp.getRightExpression();
-  ClassNode rightType=getType(rightExp,current);
+  ClassNode rightType=getController().getTypeChooser().resolveType(rightExp,current);
   int operationType=getOperandConversionType(leftType,rightType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   boolean simulationSuccess=bew.arrayGet(LEFT_SQUARE_BRACKET,true);

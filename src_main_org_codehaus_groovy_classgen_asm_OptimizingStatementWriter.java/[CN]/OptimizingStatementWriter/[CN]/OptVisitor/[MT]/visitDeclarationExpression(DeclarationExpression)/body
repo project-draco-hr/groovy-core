@@ -1,8 +1,8 @@
 {
   Expression right=expression.getRightExpression();
   right.visit(this);
-  ClassNode leftType=getType(expression.getLeftExpression(),node);
-  ClassNode rightType=getType(expression.getRightExpression(),node);
+  ClassNode leftType=typeChooser.resolveType(expression.getLeftExpression(),node);
+  ClassNode rightType=typeChooser.resolveType(expression.getRightExpression(),node);
   if (isPrimitiveType(leftType) && isPrimitiveType(rightType)) {
     if (right instanceof ConstantExpression) {
       opt.chainCanOptimize(true);
@@ -11,7 +11,8 @@
       opt.chainShouldOptimize(true);
     }
     StatementMeta meta=addMeta(expression);
-    meta.type=leftType;
+    ClassNode declarationType=typeChooser.resolveType(expression,node);
+    meta.type=declarationType != null ? declarationType : leftType;
     opt.chainInvolvedType(leftType);
     opt.chainInvolvedType(rightType);
   }
