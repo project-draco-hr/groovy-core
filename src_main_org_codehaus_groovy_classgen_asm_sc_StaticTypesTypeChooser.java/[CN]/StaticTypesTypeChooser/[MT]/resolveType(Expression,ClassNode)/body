@@ -1,11 +1,9 @@
 {
   Expression target=exp instanceof VariableExpression ? getTarget((VariableExpression)exp) : exp;
+  ClassNode dif=(ClassNode)exp.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE);
+  if (dif != null)   return dif;
   ClassNode inferredType=(ClassNode)target.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.INFERRED_TYPE);
   if (inferredType != null) {
-    if (exp instanceof DeclarationExpression) {
-      ClassNode dif=(ClassNode)target.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE);
-      if (dif != null)       return dif;
-    }
     return inferredType;
   }
   return super.resolveType(exp,current);
