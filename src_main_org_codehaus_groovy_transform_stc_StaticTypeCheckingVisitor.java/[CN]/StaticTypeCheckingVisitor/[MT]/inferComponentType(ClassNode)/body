@@ -1,0 +1,14 @@
+{
+  ClassNode redirect=containerType.redirect();
+  final ClassNode componentType=redirect.getComponentType();
+  if (componentType == null) {
+    GenericsType[] types=redirect.getGenericsTypes();
+    if (types != null && types.length == 1) {
+      return types[0].getType();
+    }
+    return OBJECT_TYPE;
+  }
+ else {
+    return componentType;
+  }
+}

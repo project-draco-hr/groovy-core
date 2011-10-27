@@ -4,7 +4,7 @@
   if (op == ASSIGN) {
     if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
-      return left;
+      return right;
     }
     if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
       return right;
@@ -19,17 +19,7 @@
     if (ClassHelper.STRING_TYPE.equals(arrayType)) {
       return ClassHelper.STRING_TYPE;
     }
-    final ClassNode componentType=arrayType.getComponentType();
-    if (componentType == null) {
-      GenericsType[] types=arrayType.getGenericsTypes();
-      if (types != null && types.length == 1) {
-        return types[0].getType();
-      }
-      return OBJECT_TYPE;
-    }
- else {
-      return componentType;
-    }
+    return inferComponentType(arrayType);
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;

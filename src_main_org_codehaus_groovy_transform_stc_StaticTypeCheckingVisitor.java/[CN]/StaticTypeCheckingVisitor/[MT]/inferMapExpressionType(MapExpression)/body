@@ -1,0 +1,22 @@
+{
+  ClassNode mapType=map.getType();
+  List<MapEntryExpression> entryExpressions=map.getMapEntryExpressions();
+  if (entryExpressions.isEmpty())   return mapType;
+  GenericsType[] genericsTypes=mapType.getGenericsTypes();
+  if (genericsTypes == null || genericsTypes.length < 2 || (genericsTypes.length == 2 && OBJECT_TYPE.equals(genericsTypes[0].getType()) && OBJECT_TYPE.equals(genericsTypes[1].getType()))) {
+    List<ClassNode> keyTypes=new LinkedList<ClassNode>();
+    List<ClassNode> valueTypes=new LinkedList<ClassNode>();
+    for (    MapEntryExpression entryExpression : entryExpressions) {
+      keyTypes.add(getType(entryExpression.getKeyExpression()));
+      valueTypes.add(getType(entryExpression.getValueExpression()));
+    }
+    ClassNode keyType=getWrapper(firstCommonSuperType(keyTypes));
+    ClassNode valueType=getWrapper(firstCommonSuperType(valueTypes));
+    if (!OBJECT_TYPE.equals(keyType) || !OBJECT_TYPE.equals(valueType)) {
+      ClassNode inferred=new ClassNode(mapType.getName(),mapType.getModifiers(),mapType.getSuperClass(),mapType.getInterfaces(),mapType.getMixins());
+      inferred.setGenericsTypes(new GenericsType[]{new GenericsType(keyType),new GenericsType(valueType)});
+      return inferred;
+    }
+  }
+  return mapType;
+}

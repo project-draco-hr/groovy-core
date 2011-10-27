@@ -1,0 +1,18 @@
+{
+  List<Expression> expressions=list.getExpressions();
+  ClassNode listType=list.getType();
+  GenericsType[] genericsTypes=listType.getGenericsTypes();
+  if ((genericsTypes == null || genericsTypes.length == 0 || (genericsTypes.length == 1 && OBJECT_TYPE.equals(genericsTypes[0].getType()))) && (!expressions.isEmpty())) {
+    List<ClassNode> nodes=new LinkedList<ClassNode>();
+    for (    Expression expression : expressions) {
+      nodes.add(getType(expression));
+    }
+    ClassNode superType=getWrapper(firstCommonSuperType(nodes));
+    if (!OBJECT_TYPE.equals(superType)) {
+      ClassNode inferred=new ClassNode(listType.getName(),listType.getModifiers(),listType.getSuperClass(),listType.getInterfaces(),listType.getMixins());
+      inferred.setGenericsTypes(new GenericsType[]{new GenericsType(superType)});
+      return inferred;
+    }
+  }
+  return listType;
+}

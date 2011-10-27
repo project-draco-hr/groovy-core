@@ -7,6 +7,25 @@
   final Expression objectExpression=call.getObjectExpression();
   objectExpression.visit(this);
   call.getMethod().visit(this);
+  if (call.isSpreadSafe()) {
+    ClassNode expressionType=getType(objectExpression);
+    if (!(expressionType.equals(Collection_TYPE) || expressionType.implementsInterface(Collection_TYPE))) {
+      addStaticTypeError("Spread operator can only be used on collection types",expressionType);
+      return;
+    }
+ else {
+      ClassNode componentType=inferComponentType(expressionType);
+      MethodCallExpression subcall=new MethodCallExpression(new CastExpression(componentType,EmptyExpression.INSTANCE),name,call.getArguments());
+      subcall.setLineNumber(call.getLineNumber());
+      subcall.setColumnNumber(call.getColumnNumber());
+      visitMethodCallExpression(subcall);
+      ClassNode subcallReturnType=getType(subcall);
+      ClassNode listNode=new ClassNode(List.class);
+      listNode.setGenericsTypes(new GenericsType[]{new GenericsType(subcallReturnType)});
+      storeType(call,listNode);
+      return;
+    }
+  }
   final ClassNode rememberLastItType=lastImplicitItType;
   Expression callArguments=call.getArguments();
   boolean isWithCall=isWithCall(name,callArguments);
