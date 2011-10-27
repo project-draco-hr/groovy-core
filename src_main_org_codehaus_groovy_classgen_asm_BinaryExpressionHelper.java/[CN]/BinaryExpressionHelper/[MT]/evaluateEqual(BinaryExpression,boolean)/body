@@ -67,7 +67,8 @@
  else {
     int mark=operandStack.getStackLength();
     rhsValueLoader.visit(acg);
-    operandStack.doGroovyCast(leftExpression.getType());
+    ClassNode type=controller.getTypeChooser().resolveType(leftExpression,controller.getClassNode());
+    operandStack.doGroovyCast(type);
     leftExpression.visit(acg);
     operandStack.remove(operandStack.getStackLength() - mark);
   }
