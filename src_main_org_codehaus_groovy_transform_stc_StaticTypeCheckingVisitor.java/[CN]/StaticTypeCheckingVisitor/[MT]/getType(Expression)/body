@@ -41,5 +41,23 @@
       return ClassHelper.OBJECT_TYPE;
     }
   }
+  if (exp instanceof ListExpression) {
+    ListExpression list=(ListExpression)exp;
+    List<Expression> expressions=list.getExpressions();
+    GenericsType[] genericsTypes=exp.getType().getGenericsTypes();
+    if ((genericsTypes == null || genericsTypes.length == 0 || (genericsTypes.length == 1 && OBJECT_TYPE.equals(genericsTypes[0].getType()))) && (!expressions.isEmpty())) {
+      List<ClassNode> nodes=new LinkedList<ClassNode>();
+      for (      Expression expression : expressions) {
+        nodes.add(getType(expression));
+      }
+      ClassNode superType=firstCommonSuperType(nodes);
+      if (!OBJECT_TYPE.equals(superType)) {
+        ClassNode orig=exp.getType();
+        ClassNode inferred=new ClassNode(orig.getName(),orig.getModifiers(),orig.getSuperClass(),orig.getInterfaces(),orig.getMixins());
+        inferred.setGenericsTypes(new GenericsType[]{new GenericsType(superType)});
+        return inferred;
+      }
+    }
+  }
   return exp.getType();
 }

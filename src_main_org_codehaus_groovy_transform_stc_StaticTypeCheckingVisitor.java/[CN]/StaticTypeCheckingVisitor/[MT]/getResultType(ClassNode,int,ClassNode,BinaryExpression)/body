@@ -2,7 +2,14 @@
   ClassNode leftRedirect=left.redirect();
   ClassNode rightRedirect=right.redirect();
   if (op == ASSIGN) {
-    return leftRedirect.isArray() && !rightRedirect.isArray() ? leftRedirect : rightRedirect;
+    if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
+    if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
+      return left;
+    }
+    if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
+      return right;
+    }
+    return rightRedirect;
   }
  else   if (isBoolIntrinsicOp(op)) {
     return boolean_TYPE;
@@ -13,7 +20,16 @@
       return ClassHelper.STRING_TYPE;
     }
     final ClassNode componentType=arrayType.getComponentType();
-    return componentType == null ? ClassHelper.OBJECT_TYPE : componentType;
+    if (componentType == null) {
+      GenericsType[] types=arrayType.getGenericsTypes();
+      if (types != null && types.length == 1) {
+        return types[0].getType();
+      }
+      return OBJECT_TYPE;
+    }
+ else {
+      return componentType;
+    }
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;
