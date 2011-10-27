@@ -1,0 +1,24 @@
+{
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack operandStack=controller.getOperandStack();
+  TypeChooser typeChooser=controller.getTypeChooser();
+  Expression boolPart=expression.getBooleanExpression();
+  Expression truePart=expression.getTrueExpression();
+  Expression falsePart=expression.getFalseExpression();
+  ClassNode truePartType=typeChooser.resolveType(truePart,controller.getClassNode());
+  ClassNode falsePartType=typeChooser.resolveType(falsePart,controller.getClassNode());
+  ClassNode common=WideningCategories.firstCommonSuperType(truePartType,falsePartType);
+  int mark=operandStack.getStackLength();
+  boolPart.visit(controller.getAcg());
+  operandStack.castToBool(mark,true);
+  Label l0=operandStack.jump(IFEQ);
+  truePart.visit(controller.getAcg());
+  operandStack.doGroovyCast(common);
+  Label l1=new Label();
+  mv.visitJumpInsn(GOTO,l1);
+  mv.visitLabel(l0);
+  falsePart.visit(controller.getAcg());
+  operandStack.doGroovyCast(common);
+  mv.visitLabel(l1);
+  controller.getOperandStack().replace(common,2);
+}
