@@ -1,6 +1,7 @@
 {
   ClassNode leftRedirect=left.redirect();
   ClassNode rightRedirect=right.redirect();
+  Expression leftExpression=expr.getLeftExpression();
   if (op == ASSIGN) {
     if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
@@ -9,13 +10,23 @@
     if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
       return right;
     }
+    if (leftExpression instanceof VariableExpression) {
+      VariableExpression target=(VariableExpression)leftExpression;
+      if (target.getAccessedVariable() instanceof VariableExpression && target.getAccessedVariable() != leftExpression) {
+        target=(VariableExpression)target.getAccessedVariable();
+      }
+      ClassNode initialType=target.getType().redirect();
+      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| isPrimitiveType(initialType)) {
+        return initialType;
+      }
+    }
     return rightRedirect;
   }
  else   if (isBoolIntrinsicOp(op)) {
     return boolean_TYPE;
   }
  else   if (isArrayOp(op)) {
-    ClassNode arrayType=getType(expr.getLeftExpression());
+    ClassNode arrayType=getType(leftExpression);
     if (ClassHelper.STRING_TYPE.equals(arrayType)) {
       return ClassHelper.STRING_TYPE;
     }
