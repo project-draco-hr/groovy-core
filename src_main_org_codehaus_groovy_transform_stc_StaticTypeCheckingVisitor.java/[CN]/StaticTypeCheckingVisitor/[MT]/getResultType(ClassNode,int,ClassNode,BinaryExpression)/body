@@ -5,6 +5,10 @@
   if (op == ASSIGN) {
     if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
+      if (expr.getRightExpression() instanceof ListExpression) {
+        List<Expression> list=((ListExpression)expr.getRightExpression()).getExpressions();
+        if (list.isEmpty())         return left;
+      }
       return right;
     }
     if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
@@ -20,7 +24,7 @@
         return initialType;
       }
     }
-    return rightRedirect;
+    return right;
   }
  else   if (isBoolIntrinsicOp(op)) {
     return boolean_TYPE;

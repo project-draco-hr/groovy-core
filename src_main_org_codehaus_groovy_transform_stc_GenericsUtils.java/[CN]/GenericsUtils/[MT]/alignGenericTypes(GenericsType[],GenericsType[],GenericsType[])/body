@@ -1,0 +1,21 @@
+{
+  if (alignmentTarget == null)   return EMPTY_GENERICS_ARRAY;
+  GenericsType[] generics=new GenericsType[alignmentTarget.length];
+  for (int i=0, scgtLength=alignmentTarget.length; i < scgtLength; i++) {
+    final GenericsType superGenericType=alignmentTarget[i];
+    GenericsType match=null;
+    if (redirectGenericTypes != null) {
+      for (int j=0; j < redirectGenericTypes.length && match == null; j++) {
+        GenericsType redirectGenericType=redirectGenericTypes[j];
+        if (redirectGenericType.getName().equals(superGenericType.getName())) {
+          match=parameterizedTypes[j];
+        }
+      }
+    }
+    if (match == null) {
+      match=superGenericType;
+    }
+    generics[i]=match;
+  }
+  return generics;
+}

@@ -48,7 +48,7 @@
  else       if (parameters.length == 1) {
         Parameter param=parameters[0];
         if (!param.isDynamicTyped() && !isAssignableTo(param.getType().redirect(),receiver)) {
-          addStaticTypeError("Expected parameter type: " + receiver + " but was: "+ param.getType().redirect(),param);
+          addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
         }
       }
     }
@@ -69,7 +69,10 @@
     List<MethodNode> mn=null;
     for (    ClassNode currentReceiver : receivers) {
       mn=findMethod(currentReceiver,name,args);
-      if (!mn.isEmpty())       break;
+      if (!mn.isEmpty()) {
+        typeCheckMethodsWithGenerics(currentReceiver,args,mn,call);
+        break;
+      }
     }
     if (mn.isEmpty()) {
       addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);

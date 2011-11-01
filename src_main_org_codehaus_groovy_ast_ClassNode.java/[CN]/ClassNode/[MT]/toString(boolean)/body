@@ -1,0 +1,16 @@
+{
+  String ret=getName();
+  if (genericsTypes != null) {
+    ret+=" <";
+    for (int i=0; i < genericsTypes.length; i++) {
+      if (i != 0)       ret+=", ";
+      GenericsType genericsType=genericsTypes[i];
+      ret+=genericTypeAsString(genericsType,showRedirect);
+    }
+    ret+=">";
+  }
+  if (redirect != null && showRedirect) {
+    ret+=" -> " + redirect().toString();
+  }
+  return ret;
+}

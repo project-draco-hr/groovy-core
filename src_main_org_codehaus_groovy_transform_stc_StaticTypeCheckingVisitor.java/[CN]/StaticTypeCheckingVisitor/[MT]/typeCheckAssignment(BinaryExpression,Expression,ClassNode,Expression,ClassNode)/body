@@ -42,12 +42,12 @@
         }
       }
     }
-    if (!leftRedirect.implementsInterface(ClassHelper.LIST_TYPE) && rightExpression instanceof ListExpression) {
+    if (!implementsInterfaceOrIsSubclassOf(leftRedirect,LIST_TYPE) && rightExpression instanceof ListExpression) {
       ArgumentListExpression argList=new ArgumentListExpression(((ListExpression)rightExpression).getExpressions());
       ClassNode[] args=getArgumentTypes(argList,classNode);
       checkGroovyStyleConstructor(leftRedirect,args);
     }
- else     if (inferredRightExpressionType.implementsInterface(Collection_TYPE) && !isAssignableTo(leftRedirect,inferredRightExpressionType)) {
+ else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
       addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
     }
     if (!leftRedirect.implementsInterface(ClassHelper.MAP_TYPE) && rightExpression instanceof MapExpression) {
@@ -78,6 +78,35 @@
             }
           }
         }
+      }
+    }
+    if (leftExpressionType.isUsingGenerics() && !leftExpressionType.isEnum()) {
+      final AtomicBoolean ok=new AtomicBoolean(false);
+      GenericsUtils.ClassNodeCollector collector=new GenericsUtils.ClassNodeCollector(){
+        public boolean collect(        final ClassNode node){
+          if (node.equals(leftExpressionType)) {
+            boolean check=true;
+            GenericsType[] nodeGenericsTypes=node.getGenericsTypes();
+            GenericsType[] genericsTypes=leftExpressionType.getGenericsTypes();
+            if (nodeGenericsTypes == null || genericsTypes == null)             return true;
+            if (nodeGenericsTypes.length != genericsTypes.length)             return true;
+            for (int i=0; i < genericsTypes.length; i++) {
+              ClassNode genericsType=getWrapper(genericsTypes[i].getType());
+              ClassNode nodeType=getWrapper(nodeGenericsTypes[i].getType());
+              check=check && (genericsType.equals(nodeType) || nodeType.isDerivedFrom(genericsType));
+            }
+            if (check) {
+              ok.set(true);
+              return false;
+            }
+          }
+          return true;
+        }
+      }
+;
+      GenericsUtils.collectParameterizedClassInfo(inferredRightExpressionType,collector);
+      if (!ok.get()) {
+        addStaticTypeError("Incompatible generic argument types. Cannot assign " + inferredRightExpressionType.toString(false) + " to: "+ leftExpressionType.toString(false),assignmentExpression);
       }
     }
   }

@@ -1,5 +1,8 @@
 {
   List<Expression> expressions=list.getExpressions();
+  if (expressions.isEmpty()) {
+    return list.getType();
+  }
   ClassNode listType=list.getType();
   GenericsType[] genericsTypes=listType.getGenericsTypes();
   if ((genericsTypes == null || genericsTypes.length == 0 || (genericsTypes.length == 1 && OBJECT_TYPE.equals(genericsTypes[0].getType()))) && (!expressions.isEmpty())) {
