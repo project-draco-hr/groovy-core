@@ -6,6 +6,9 @@
     nonGen.setUsingGenerics(false);
     return nonGen;
   }
+ else   if (type.isArray() && type.getComponentType().isUsingGenerics()) {
+    return ClassHelper.makeWithoutCaching(type.getTypeClass(),false);
+  }
  else {
     return type;
   }
