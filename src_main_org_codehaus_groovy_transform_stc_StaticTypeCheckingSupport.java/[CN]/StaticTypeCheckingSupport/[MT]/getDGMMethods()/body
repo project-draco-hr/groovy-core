@@ -7,8 +7,10 @@
       Parameter[] parameters=new Parameter[types.length - 1];
       System.arraycopy(types,1,parameters,0,parameters.length);
       MethodNode node=new MethodNode(metaMethod.getName(),metaMethod.getModifiers(),metaMethod.getReturnType(),parameters,ClassNode.EMPTY_ARRAY,null);
-      String declaringClassName=types[0].getType().getName();
-      node.setDeclaringClass(ClassHelper.make(declaringClassName));
+      node.setGenericsTypes(metaMethod.getGenericsTypes());
+      ClassNode declaringClass=types[0].getType();
+      String declaringClassName=declaringClass.getName();
+      node.setDeclaringClass(declaringClass);
       List<MethodNode> nodes=methods.get(declaringClassName);
       if (nodes == null) {
         nodes=new LinkedList<MethodNode>();
