@@ -5,7 +5,7 @@
     Parameter[] params=m.getParameters();
     if (params.length == args.length) {
       int dist=Math.max(allParametersAndArgumentsMatch(params,args),lastArgMatchesVarg(params,args));
-      if (!receiver.equals(m.getDeclaringClass()))       dist++;
+      if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist++;
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
         bestChoices.add(m);
@@ -25,7 +25,7 @@
         }
       }
       int dist=excessArgumentsMatchesVargsParameter(params,args);
-      if (!receiver.equals(m.getDeclaringClass()))       dist++;
+      if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist++;
       if (params.length < args.length && dist >= 0) {
         if (dist >= 0 && dist < bestDist) {
           bestChoices.clear();

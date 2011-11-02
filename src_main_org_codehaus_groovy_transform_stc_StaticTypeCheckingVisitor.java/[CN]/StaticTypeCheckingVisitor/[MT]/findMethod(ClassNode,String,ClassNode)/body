@@ -14,11 +14,7 @@
   List<MethodNode> chosen=chooseBestBethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
   methods.clear();
-  Set<MethodNode> fromDGM=findDGMMethodsForClassNode(receiver);
-  for (  MethodNode methodNode : fromDGM) {
-    if (methodNode.getName().equals(name))     methods.add(methodNode);
-  }
-  chosen=chooseBestBethod(receiver,methods,args);
+  chosen=findDGMMethodsByNameAndArguments(receiver,name,args,methods);
   if (!chosen.isEmpty()) {
     return chosen;
   }
