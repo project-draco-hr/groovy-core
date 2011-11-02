@@ -44,7 +44,7 @@
     }
     if (!implementsInterfaceOrIsSubclassOf(leftRedirect,LIST_TYPE) && rightExpression instanceof ListExpression) {
       ArgumentListExpression argList=new ArgumentListExpression(((ListExpression)rightExpression).getExpressions());
-      ClassNode[] args=getArgumentTypes(argList,classNode);
+      ClassNode[] args=getArgumentTypes(argList);
       checkGroovyStyleConstructor(leftRedirect,args);
     }
  else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
@@ -52,7 +52,7 @@
     }
     if (!leftRedirect.implementsInterface(ClassHelper.MAP_TYPE) && rightExpression instanceof MapExpression) {
       ArgumentListExpression argList=new ArgumentListExpression(rightExpression);
-      ClassNode[] args=getArgumentTypes(argList,classNode);
+      ClassNode[] args=getArgumentTypes(argList);
       checkGroovyStyleConstructor(leftRedirect,args);
       MapExpression mapExpression=(MapExpression)rightExpression;
       for (      MapEntryExpression entryExpression : mapExpression.getMapEntryExpressions()) {

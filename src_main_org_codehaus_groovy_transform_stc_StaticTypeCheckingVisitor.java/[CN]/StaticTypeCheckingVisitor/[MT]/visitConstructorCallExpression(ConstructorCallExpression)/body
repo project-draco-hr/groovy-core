@@ -1,7 +1,7 @@
 {
   super.visitConstructorCallExpression(call);
   ClassNode receiver=call.getType();
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()),receiver);
+  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(call.getArguments()));
   MethodNode node=findMethodOrFail(call,receiver,"<init>",args);
   if (node != null) {
     storeTargetMethod(call,node);
