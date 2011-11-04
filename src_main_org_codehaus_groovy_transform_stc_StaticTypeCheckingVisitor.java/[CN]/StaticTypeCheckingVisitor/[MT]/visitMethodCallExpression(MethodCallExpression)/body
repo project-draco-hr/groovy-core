@@ -67,10 +67,12 @@
       if (potentialReceiverType != null)       receivers.addAll(potentialReceiverType);
     }
     List<MethodNode> mn=null;
+    ClassNode chosenReceiver=null;
     for (    ClassNode currentReceiver : receivers) {
       mn=findMethod(currentReceiver,name,args);
       if (!mn.isEmpty()) {
         typeCheckMethodsWithGenerics(currentReceiver,args,mn,call);
+        chosenReceiver=currentReceiver;
         break;
       }
     }
@@ -106,6 +108,9 @@
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
           ClassNode returnType=directMethodCallCandidate.getReturnType();
+          if (returnType.isUsingGenerics()) {
+            returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+          }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
         }

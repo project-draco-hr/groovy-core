@@ -1,0 +1,27 @@
+{
+  ClassNode node=cce.getType();
+  if (node.isUsingGenerics() && node.getGenericsTypes().length == 0) {
+    ArgumentListExpression argumentListExpression=InvocationWriter.makeArgumentList(cce.getArguments());
+    if (argumentListExpression.getExpressions().isEmpty()) {
+      GenericsType[] genericsTypes=lType.getGenericsTypes();
+      GenericsType[] copy=new GenericsType[genericsTypes.length];
+      for (int i=0; i < genericsTypes.length; i++) {
+        GenericsType genericsType=genericsTypes[i];
+        copy[i]=new GenericsType(genericsType.getType(),genericsType.getUpperBounds(),genericsType.getLowerBound());
+      }
+      node.setGenericsTypes(copy);
+    }
+ else {
+      ClassNode type=getType(argumentListExpression.getExpression(0));
+      if (type.isUsingGenerics()) {
+        GenericsType[] genericsTypes=type.getGenericsTypes();
+        GenericsType[] copy=new GenericsType[genericsTypes.length];
+        for (int i=0; i < genericsTypes.length; i++) {
+          GenericsType genericsType=genericsTypes[i];
+          copy[i]=new GenericsType(genericsType.getType(),genericsType.getUpperBounds(),genericsType.getLowerBound());
+        }
+        node.setGenericsTypes(copy);
+      }
+    }
+  }
+}

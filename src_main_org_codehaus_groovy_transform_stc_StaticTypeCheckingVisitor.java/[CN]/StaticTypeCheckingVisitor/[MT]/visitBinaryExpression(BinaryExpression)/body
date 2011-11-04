@@ -20,6 +20,9 @@
   boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
   if (!isEmptyDeclaration)   storeType(expression,resultType);
   if (!isEmptyDeclaration && isAssignment(op)) {
+    if (rightExpression instanceof ConstructorCallExpression) {
+      inferDiamondType((ConstructorCallExpression)rightExpression,lType);
+    }
     typeCheckAssignment(expression,leftExpression,lType,rightExpression,resultType);
     storeType(leftExpression,resultType);
     if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
