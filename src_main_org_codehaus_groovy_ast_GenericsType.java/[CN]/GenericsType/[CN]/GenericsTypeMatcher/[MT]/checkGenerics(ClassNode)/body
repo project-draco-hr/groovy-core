@@ -1,0 +1,13 @@
+{
+  if (upperBounds != null) {
+    for (    ClassNode upperBound : upperBounds) {
+      if (!compareGenericsWithBound(classNode,upperBound))       return false;
+    }
+  }
+  if (lowerBound != null) {
+    if (!lowerBound.redirect().isUsingGenerics()) {
+      if (!compareGenericsWithBound(classNode,lowerBound))       return false;
+    }
+  }
+  return true;
+}

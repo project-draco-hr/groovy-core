@@ -1,14 +1,4 @@
 {
-  String ret=(type == null || placeholder || wildcard) ? name : genericsBounds(type);
-  if (upperBounds != null) {
-    ret+=" extends ";
-    for (int i=0; i < upperBounds.length; i++) {
-      ret+=genericsBounds(upperBounds[i]);
-      if (i + 1 < upperBounds.length)       ret+=" & ";
-    }
-  }
- else   if (lowerBound != null) {
-    ret+=" super " + genericsBounds(lowerBound);
-  }
-  return ret;
+  Set<Integer> visited=new HashSet<Integer>();
+  return toString(visited);
 }
