@@ -8,6 +8,9 @@
     long pd=getPrimitiveDistance(parameter.getTheClass(),argument);
     if (pd != -1)     return pd << PRIMITIVE_SHIFT;
     objectDistance+=PRIMITIVES.length + 1;
+    if (argument.isArray() && !parameter.isArray) {
+      objectDistance+=4;
+    }
     Class clazz=ReflectionCache.autoboxType(argument);
     while (clazz != null) {
       if (clazz == parameter.getTheClass())       break;
