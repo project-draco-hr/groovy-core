@@ -7,9 +7,7 @@
   if (implementsInterfaceOrIsSubclassOf(type,toBeAssignedTo)) {
     if (OBJECT_TYPE.equals(toBeAssignedTo))     return true;
     if (toBeAssignedTo.isUsingGenerics()) {
-      ClassNode base=ClassHelper.makeWithoutCaching("?");
-      GenericsType gt=new GenericsType(base,new ClassNode[]{toBeAssignedTo},null);
-      gt.setWildcard(true);
+      GenericsType gt=GenericsUtils.buildWildcardType(toBeAssignedTo);
       return gt.isCompatibleWith(type);
     }
     return true;

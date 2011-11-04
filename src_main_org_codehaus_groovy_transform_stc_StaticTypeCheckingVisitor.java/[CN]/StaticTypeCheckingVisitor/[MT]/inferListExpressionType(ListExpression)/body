@@ -11,11 +11,9 @@
       nodes.add(getType(expression));
     }
     ClassNode superType=getWrapper(firstCommonSuperType(nodes));
-    if (!OBJECT_TYPE.equals(superType)) {
-      ClassNode inferred=listType.getPlainNodeReference();
-      inferred.setGenericsTypes(new GenericsType[]{new GenericsType(superType)});
-      return inferred;
-    }
+    ClassNode inferred=listType.getPlainNodeReference();
+    inferred.setGenericsTypes(new GenericsType[]{new GenericsType(superType)});
+    return inferred;
   }
   return listType;
 }
