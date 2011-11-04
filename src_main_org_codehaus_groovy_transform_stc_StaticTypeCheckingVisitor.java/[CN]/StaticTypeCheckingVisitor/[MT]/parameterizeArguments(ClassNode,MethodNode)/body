@@ -1,0 +1,39 @@
+{
+  GenericsType[] redirectReceiverTypes=receiver.redirect().getGenericsTypes();
+  if (redirectReceiverTypes == null) {
+    redirectReceiverTypes=m.getGenericsTypes();
+  }
+  if (redirectReceiverTypes == null)   return m.getParameters();
+  Parameter[] methodParameters=m.getParameters();
+  Parameter[] params=new Parameter[methodParameters.length];
+  GenericsType[] receiverParameterizedTypes=receiver.getGenericsTypes();
+  if (receiverParameterizedTypes == null) {
+    receiverParameterizedTypes=redirectReceiverTypes;
+  }
+  for (int i=0; i < methodParameters.length; i++) {
+    Parameter methodParameter=methodParameters[i];
+    ClassNode paramType=methodParameter.getType();
+    if (paramType.isUsingGenerics()) {
+      GenericsType[] alignmentTypes=paramType.getGenericsTypes();
+      GenericsType[] genericsTypes=GenericsUtils.alignGenericTypes(redirectReceiverTypes,receiverParameterizedTypes,alignmentTypes);
+      if (genericsTypes.length == 1) {
+        ClassNode parameterizedCN;
+        if (paramType.equals(OBJECT_TYPE)) {
+          parameterizedCN=genericsTypes[0].getType();
+        }
+ else {
+          parameterizedCN=paramType.getPlainNodeReference();
+          parameterizedCN.setGenericsTypes(genericsTypes);
+        }
+        params[i]=new Parameter(parameterizedCN,methodParameter.getName());
+      }
+ else {
+        params[i]=methodParameter;
+      }
+    }
+ else {
+      params[i]=methodParameter;
+    }
+  }
+  return params;
+}

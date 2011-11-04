@@ -2,7 +2,7 @@
   List<MethodNode> bestChoices=new LinkedList<MethodNode>();
   int bestDist=Integer.MAX_VALUE;
   for (  MethodNode m : methods) {
-    Parameter[] params=m.getParameters();
+    Parameter[] params=parameterizeArguments(receiver,m);
     if (params.length == args.length) {
       int dist=Math.max(allParametersAndArgumentsMatch(params,args),lastArgMatchesVarg(params,args));
       if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist++;

@@ -1,15 +1,20 @@
 {
-  if (toBeAssignedTo.isDerivedFrom(type))   return true;
   if (toBeAssignedTo.redirect() == STRING_TYPE && type.redirect() == GSTRING_TYPE) {
     return true;
   }
-  toBeAssignedTo=getWrapper(toBeAssignedTo);
-  type=getWrapper(type);
-  if (toBeAssignedTo.isDerivedFrom(ClassHelper.Number_TYPE) && type.isDerivedFrom(ClassHelper.Number_TYPE)) {
+  if (isPrimitiveType(toBeAssignedTo))   toBeAssignedTo=getWrapper(toBeAssignedTo);
+  if (isPrimitiveType(type))   type=getWrapper(type);
+  if (implementsInterfaceOrIsSubclassOf(type,toBeAssignedTo)) {
+    if (OBJECT_TYPE.equals(toBeAssignedTo))     return true;
+    if (toBeAssignedTo.isUsingGenerics()) {
+      ClassNode base=ClassHelper.makeWithoutCaching("?");
+      GenericsType gt=new GenericsType(base,new ClassNode[]{toBeAssignedTo},null);
+      gt.setWildcard(true);
+      return gt.isCompatibleWith(type);
+    }
     return true;
   }
-  if (toBeAssignedTo.isInterface() && type.implementsInterface(toBeAssignedTo)) {
-    return true;
+ else {
+    return false;
   }
-  return false;
 }

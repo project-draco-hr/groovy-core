@@ -30,11 +30,10 @@
     return boolean_TYPE;
   }
  else   if (isArrayOp(op)) {
-    ClassNode arrayType=getType(leftExpression);
-    if (ClassHelper.STRING_TYPE.equals(arrayType)) {
+    if (ClassHelper.STRING_TYPE.equals(left)) {
       return ClassHelper.STRING_TYPE;
     }
-    return inferComponentType(arrayType);
+    return inferComponentType(left);
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;

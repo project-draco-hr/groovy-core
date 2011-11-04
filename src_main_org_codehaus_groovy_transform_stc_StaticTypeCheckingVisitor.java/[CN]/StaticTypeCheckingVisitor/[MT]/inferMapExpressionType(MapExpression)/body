@@ -13,7 +13,7 @@
     ClassNode keyType=getWrapper(firstCommonSuperType(keyTypes));
     ClassNode valueType=getWrapper(firstCommonSuperType(valueTypes));
     if (!OBJECT_TYPE.equals(keyType) || !OBJECT_TYPE.equals(valueType)) {
-      ClassNode inferred=new ClassNode(mapType.getName(),mapType.getModifiers(),mapType.getSuperClass(),mapType.getInterfaces(),mapType.getMixins());
+      ClassNode inferred=mapType.getPlainNodeReference();
       inferred.setGenericsTypes(new GenericsType[]{new GenericsType(keyType),new GenericsType(valueType)});
       return inferred;
     }
