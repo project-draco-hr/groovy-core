@@ -52,6 +52,7 @@
       String propertyName=pexp.getPropertyAsString();
       boolean isAttributeExpression=pexp instanceof AttributeExpression;
       for (      ClassNode candidate : candidates) {
+        if ("length".equals(propertyName) && candidate.isArray())         return int_TYPE;
         ClassNode parent=candidate;
         while (parent != null) {
           parent=parent.redirect();

@@ -1,14 +1,6 @@
 {
   super.visitBinaryExpression(expression);
   final Expression leftExpression=expression.getLeftExpression();
-  if (leftExpression instanceof PropertyExpression) {
-    PropertyExpression pexp=(PropertyExpression)leftExpression;
-    if (!existsProperty(pexp)) {
-      Expression objectExpression=pexp.getObjectExpression();
-      addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,objectExpression.getType()),leftExpression);
-      return;
-    }
-  }
   ClassNode lType=getType(leftExpression);
   final Expression rightExpression=expression.getRightExpression();
   ClassNode rType=getType(rightExpression);

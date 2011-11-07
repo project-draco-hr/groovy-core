@@ -1,0 +1,7 @@
+{
+  super.visitPropertyExpression(pexp);
+  if (!existsProperty(pexp)) {
+    Expression objectExpression=pexp.getObjectExpression();
+    addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,objectExpression.getType()),pexp);
+  }
+}
