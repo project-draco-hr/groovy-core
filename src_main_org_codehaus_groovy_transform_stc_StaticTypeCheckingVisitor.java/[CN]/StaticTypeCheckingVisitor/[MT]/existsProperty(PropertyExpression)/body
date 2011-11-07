@@ -42,5 +42,8 @@
       hasProperty=true;
     }
   }
+  if (!hasProperty && pexp.getObjectExpression() instanceof ClassExpression) {
+    return CLASS_Type.getProperty(propertyName) != null || CLASS_Type.getDeclaredField(propertyName) != null;
+  }
   return hasProperty;
 }

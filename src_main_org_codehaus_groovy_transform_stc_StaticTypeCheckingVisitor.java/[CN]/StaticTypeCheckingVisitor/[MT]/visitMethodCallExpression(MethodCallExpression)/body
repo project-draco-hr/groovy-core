@@ -60,6 +60,9 @@
     List<ClassNode> receivers=new LinkedList<ClassNode>();
     if (!withReceiverList.isEmpty())     receivers.addAll(withReceiverList);
     receivers.add(receiver);
+    if (objectExpression instanceof ClassExpression) {
+      receivers.add(CLASS_Type);
+    }
     if (!temporaryIfBranchTypeInformation.empty()) {
       final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
       Object key=extractTemporaryTypeInfoKey(objectExpression);
