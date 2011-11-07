@@ -4,6 +4,9 @@
   }
   if (isPrimitiveType(toBeAssignedTo))   toBeAssignedTo=getWrapper(toBeAssignedTo);
   if (isPrimitiveType(type))   type=getWrapper(type);
+  if (type.isArray() && toBeAssignedTo.isArray()) {
+    return type.getComponentType().equals(toBeAssignedTo.getComponentType());
+  }
   if (implementsInterfaceOrIsSubclassOf(type,toBeAssignedTo)) {
     if (OBJECT_TYPE.equals(toBeAssignedTo))     return true;
     if (toBeAssignedTo.isUsingGenerics()) {
