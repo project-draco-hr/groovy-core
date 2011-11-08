@@ -1,0 +1,26 @@
+{
+  Options options=createCompilationOptions();
+  PosixParser cliParser=new PosixParser();
+  CommandLine cli;
+  cli=cliParser.parse(options,args);
+  if (cli.hasOption('h')) {
+    displayHelp(options);
+    return;
+  }
+  if (cli.hasOption('v')) {
+    displayVersion();
+    return;
+  }
+  displayStackTraceOnError=cli.hasOption('e');
+  CompilerConfiguration configuration=generateCompilerConfigurationFromOptions(cli);
+  String[] filenames=generateFileNamesFromOptions(cli);
+  boolean fileNameErrors=filenames == null;
+  if (!fileNameErrors && (filenames.length == 0)) {
+    displayHelp(options);
+    return;
+  }
+  fileNameErrors=fileNameErrors && !validateFiles(filenames);
+  if (!fileNameErrors) {
+    doCompilation(configuration,null,filenames,lookupUnnamedFiles);
+  }
+}

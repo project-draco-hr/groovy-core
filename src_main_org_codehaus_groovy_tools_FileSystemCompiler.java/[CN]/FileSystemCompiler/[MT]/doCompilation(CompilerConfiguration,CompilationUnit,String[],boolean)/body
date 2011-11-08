@@ -1,0 +1,36 @@
+{
+  File tmpDir=null;
+  try {
+    if ((configuration.getJointCompilationOptions() != null) && !configuration.getJointCompilationOptions().containsKey("stubDir")) {
+      tmpDir=createTempDir();
+      configuration.getJointCompilationOptions().put("stubDir",tmpDir);
+    }
+    FileSystemCompiler compiler=new FileSystemCompiler(configuration,unit);
+    if (lookupUnnamedFiles) {
+      for (      String filename : filenames) {
+        File file=new File(filename);
+        if (file.isFile()) {
+          URL url=file.getAbsoluteFile().getParentFile().toURI().toURL();
+          compiler.unit.getClassLoader().addURL(url);
+        }
+      }
+    }
+ else {
+      compiler.unit.getClassLoader().setResourceLoader(new GroovyResourceLoader(){
+        public URL loadGroovySource(        String filename) throws MalformedURLException {
+          return null;
+        }
+      }
+);
+    }
+    compiler.compile(filenames);
+  }
+  finally {
+    try {
+      if (tmpDir != null)       deleteRecursive(tmpDir);
+    }
+ catch (    Throwable t) {
+      System.err.println("error: could not delete temp files - " + tmpDir.getPath());
+    }
+  }
+}
