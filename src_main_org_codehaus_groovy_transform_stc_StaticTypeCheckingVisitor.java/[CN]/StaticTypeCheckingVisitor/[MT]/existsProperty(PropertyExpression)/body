@@ -6,6 +6,7 @@
   }
   List<ClassNode> tests=new LinkedList<ClassNode>();
   tests.add(clazz);
+  if (objectExpression instanceof ClassExpression)   tests.add(CLASS_Type);
   if (!temporaryIfBranchTypeInformation.empty()) {
     Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.peek();
     Object key=extractTemporaryTypeInfoKey(objectExpression);
@@ -17,6 +18,7 @@
   }
   boolean hasProperty=false;
   String propertyName=pexp.getPropertyAsString();
+  if (propertyName == null)   return false;
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
   for (  ClassNode testClass : tests) {
     if (!implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE) && !implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE)) {
@@ -33,6 +35,19 @@
           if (field != null) {
             hasProperty=true;
             break;
+          }
+        }
+{
+          String pname=MetaClassHelper.capitalize(propertyName);
+          List<MethodNode> nodes=current.getMethods("get" + pname);
+          if (nodes.isEmpty())           nodes=current.getMethods("is" + pname);
+          if (!nodes.isEmpty()) {
+            for (            MethodNode node : nodes) {
+              Parameter[] parameters=node.getParameters();
+              if (node.getReturnType() != VOID_TYPE && (parameters == null || parameters.length == 0)) {
+                return true;
+              }
+            }
           }
         }
         current=isAttributeExpression ? null : current.getSuperClass();
