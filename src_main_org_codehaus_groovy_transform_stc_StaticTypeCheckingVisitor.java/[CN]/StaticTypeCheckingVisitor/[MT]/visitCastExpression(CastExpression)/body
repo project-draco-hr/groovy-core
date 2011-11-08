@@ -3,7 +3,9 @@
   if (!expression.isCoerce()) {
     ClassNode targetType=expression.getType();
     ClassNode expressionType=getType(expression.getExpression());
-    if (!isAssignableTo(expressionType,targetType)) {
+    if (isNumberCategory(targetType) && isNumberCategory(expressionType)) {
+    }
+ else     if (!isAssignableTo(expressionType,targetType)) {
       addStaticTypeError("Inconvertible types: cannot cast " + expressionType.getName() + " to "+ targetType.getName(),expression);
     }
   }
