@@ -110,7 +110,10 @@
  else {
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
+          ClassNode currentClassNode=classNode;
+          classNode=directMethodCallCandidate.getDeclaringClass();
           visitMethod(directMethodCallCandidate);
+          classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
           if (returnType.isUsingGenerics()) {
             returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
