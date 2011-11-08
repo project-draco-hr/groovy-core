@@ -1,6 +1,6 @@
 {
   super.visitAttributeExpression(expression);
-  if (!existsProperty(expression)) {
+  if (!existsProperty(expression,true)) {
     Expression objectExpression=expression.getObjectExpression();
     addStaticTypeError("No such property: " + expression.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,objectExpression.getType()),expression);
   }

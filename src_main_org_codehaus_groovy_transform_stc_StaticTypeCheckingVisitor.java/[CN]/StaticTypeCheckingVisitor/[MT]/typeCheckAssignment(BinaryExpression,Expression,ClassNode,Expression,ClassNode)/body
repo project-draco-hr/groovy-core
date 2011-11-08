@@ -33,7 +33,12 @@
   }
   boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,inferredRightExpressionType);
   if (!compatible) {
-    addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
+    if ((leftRedirect == VOID_TYPE) && (leftExpression instanceof PropertyExpression)) {
+      addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
+    }
+ else {
+      addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
+    }
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
