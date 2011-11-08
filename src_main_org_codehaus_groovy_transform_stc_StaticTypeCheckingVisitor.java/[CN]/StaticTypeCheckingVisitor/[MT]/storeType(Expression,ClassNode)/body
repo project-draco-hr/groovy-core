@@ -1,12 +1,12 @@
 {
-  ClassNode oldValue=(ClassNode)exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.INFERRED_TYPE,cn);
+  ClassNode oldValue=(ClassNode)exp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,cn);
   if (oldValue != null) {
-    ClassNode oldDIT=(ClassNode)exp.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE);
+    ClassNode oldDIT=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE);
     if (oldDIT != null) {
-      exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldDIT,cn));
+      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldDIT,cn));
     }
  else {
-      exp.putNodeMetaData(StaticTypesTransformation.StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldValue,cn));
+      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldValue,cn));
     }
   }
   if (exp instanceof VariableExpression) {

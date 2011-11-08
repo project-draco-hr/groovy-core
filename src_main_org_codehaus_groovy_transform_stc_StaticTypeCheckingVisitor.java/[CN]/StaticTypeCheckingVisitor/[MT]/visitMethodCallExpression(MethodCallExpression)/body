@@ -87,12 +87,12 @@
         if (objectExpression instanceof VariableExpression) {
           Variable variable=findTargetVariable((VariableExpression)objectExpression);
           if (variable instanceof Expression) {
-            Object data=((Expression)variable).getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_ARGUMENTS);
+            Object data=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
             if (data != null) {
               Parameter[] parameters=(Parameter[])data;
               typeCheckClosureCall(callArguments,args,parameters);
             }
-            Object type=((Expression)variable).getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+            Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
             if (type != null) {
               storeType(call,(ClassNode)type);
             }
@@ -101,7 +101,7 @@
  else         if (objectExpression instanceof ClosureExpression) {
           Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
           typeCheckClosureCall(callArguments,args,parameters);
-          Object data=objectExpression.getNodeMetaData(StaticTypesTransformation.StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+          Object data=objectExpression.getNodeMetaData(StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
           if (data != null) {
             storeType(call,(ClassNode)data);
           }
