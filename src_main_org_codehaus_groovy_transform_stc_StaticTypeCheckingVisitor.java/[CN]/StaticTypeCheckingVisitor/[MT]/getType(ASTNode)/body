@@ -53,5 +53,9 @@
  else   if (exp instanceof MapExpression) {
     return inferMapExpressionType((MapExpression)exp);
   }
-  return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : exp.getType();
+  if (exp instanceof MethodNode) {
+    ClassNode ret=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    return ret != null ? ret : ((MethodNode)exp).getReturnType();
+  }
+  return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }

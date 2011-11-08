@@ -92,7 +92,7 @@
               Parameter[] parameters=(Parameter[])data;
               typeCheckClosureCall(callArguments,args,parameters);
             }
-            Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+            Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
             if (type != null) {
               storeType(call,(ClassNode)type);
             }
@@ -101,7 +101,7 @@
  else         if (objectExpression instanceof ClosureExpression) {
           Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
           typeCheckClosureCall(callArguments,args,parameters);
-          Object data=objectExpression.getNodeMetaData(StaticTypesMarker.CLOSURE_INFERRED_RETURN_TYPE);
+          Object data=objectExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
           if (data != null) {
             storeType(call,(ClassNode)data);
           }
@@ -110,7 +110,8 @@
  else {
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
-          ClassNode returnType=directMethodCallCandidate.getReturnType();
+          visitMethod(directMethodCallCandidate);
+          ClassNode returnType=getType(directMethodCallCandidate);
           if (returnType.isUsingGenerics()) {
             returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
           }
