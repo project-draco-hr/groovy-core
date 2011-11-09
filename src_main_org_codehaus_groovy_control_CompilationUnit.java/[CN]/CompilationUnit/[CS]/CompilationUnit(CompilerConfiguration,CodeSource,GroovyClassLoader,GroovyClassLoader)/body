@@ -60,6 +60,13 @@
     }
   }
 ,Phases.CANONICALIZATION);
+  addPhaseOperation(new PrimaryClassNodeOperation(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      EnumCompletionVisitor ecv=new EnumCompletionVisitor(CompilationUnit.this,source);
+      ecv.visitClass(classNode);
+    }
+  }
+,Phases.CANONICALIZATION);
   if (configuration != null) {
     final List<CompilationCustomizer> customizers=configuration.getCompilationCustomizers();
     for (    CompilationCustomizer customizer : customizers) {
