@@ -1,5 +1,4 @@
 {
-  addConstructor(enumClass);
   ClassNode enumRef=enumClass.getPlainNodeReference();
   Parameter[] parameter=new Parameter[]{new Parameter(ClassHelper.OBJECT_TYPE.makeArray(),"para")};
   MethodNode initMethod=new MethodNode("$INIT",PUBLIC_FS | Opcodes.ACC_SYNTHETIC,enumRef,parameter,ClassNode.EMPTY_ARRAY,null);
@@ -9,15 +8,14 @@
   code.addStatement(new ReturnStatement(cce));
   initMethod.setCode(code);
   enumClass.addMethod(initMethod);
-  List fields=enumClass.getFields();
-  List arrayInit=new ArrayList();
+  List<FieldNode> fields=enumClass.getFields();
+  List<Expression> arrayInit=new ArrayList<Expression>();
   int value=-1;
   Token assign=Token.newSymbol(Types.ASSIGN,-1,-1);
-  List block=new ArrayList();
+  List<Statement> block=new ArrayList<Statement>();
   FieldNode tempMin=null;
   FieldNode tempMax=null;
-  for (Iterator iterator=fields.iterator(); iterator.hasNext(); ) {
-    FieldNode field=(FieldNode)iterator.next();
+  for (  FieldNode field : fields) {
     if ((field.getModifiers() & Opcodes.ACC_ENUM) == 0)     continue;
     value++;
     if (tempMin == null)     tempMin=field;
@@ -25,11 +23,10 @@
     ClassNode enumBase=enumClass;
     ArgumentListExpression args=new ArgumentListExpression();
     args.addExpression(new ConstantExpression(field.getName()));
-    args.addExpression(new ConstantExpression(Integer.valueOf(value)));
+    args.addExpression(new ConstantExpression(value));
     if (field.getInitialExpression() != null) {
       ListExpression oldArgs=(ListExpression)field.getInitialExpression();
-      for (Iterator oldArgsIterator=oldArgs.getExpressions().iterator(); oldArgsIterator.hasNext(); ) {
-        Expression exp=(Expression)oldArgsIterator.next();
+      for (      Expression exp : oldArgs.getExpressions()) {
         if (exp instanceof MapEntryExpression) {
           String msg="The usage of a map entry expression to initialize an Enum is currently not supported, please use an explicit map instead.";
           sourceUnit.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException(msg + '\n',exp.getLineNumber(),exp.getColumnNumber()),sourceUnit));

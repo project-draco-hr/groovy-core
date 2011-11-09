@@ -1,9 +1,8 @@
 {
-  List methods=enumClass.getMethods();
+  List<MethodNode> methods=enumClass.getMethods();
   boolean hasNext=false;
   boolean hasPrevious=false;
-  for (int i=0; i < methods.size(); i++) {
-    MethodNode m=(MethodNode)methods.get(i);
+  for (  MethodNode m : methods) {
     if (m.getName().equals("next") && m.getParameters().length == 0)     hasNext=true;
     if (m.getName().equals("previous") && m.getParameters().length == 0)     hasPrevious=true;
     if (hasNext && hasPrevious)     break;
@@ -26,7 +25,7 @@
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
-    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new ConstantExpression(Integer.valueOf(0)))));
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new ConstantExpression(0))));
     code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"next",MethodCallExpression.NO_ARGUMENTS))));
     code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),ge,new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS))),ifStatement,EmptyStatement.INSTANCE));
     code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
@@ -40,9 +39,9 @@
     nextMethod.setSynthetic(true);
     BlockStatement code=new BlockStatement();
     BlockStatement ifStatement=new BlockStatement();
-    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS),"minus",new ConstantExpression(Integer.valueOf(1))))));
+    ifStatement.addStatement(new ExpressionStatement(new BinaryExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(new FieldExpression(values),"size",MethodCallExpression.NO_ARGUMENTS),"minus",new ConstantExpression(1)))));
     code.addStatement(new ExpressionStatement(new DeclarationExpression(new VariableExpression("ordinal"),assign,new MethodCallExpression(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"ordinal",MethodCallExpression.NO_ARGUMENTS),"previous",MethodCallExpression.NO_ARGUMENTS))));
-    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),lt,new ConstantExpression(Integer.valueOf(0)))),ifStatement,EmptyStatement.INSTANCE));
+    code.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression("ordinal"),lt,new ConstantExpression(0))),ifStatement,EmptyStatement.INSTANCE));
     code.addStatement(new ReturnStatement(new MethodCallExpression(new FieldExpression(values),"getAt",new VariableExpression("ordinal"))));
     nextMethod.setCode(code);
     enumClass.addMethod(nextMethod);
