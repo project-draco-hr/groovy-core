@@ -21,12 +21,15 @@
       numeric=WarningMessage.PARANOIA;
     }
  else {
-      throw new ConfigurationException("unrecogized groovy.warnings: " + text);
+      throw new ConfigurationException("unrecognized groovy.warnings: " + text);
     }
   }
   setWarningLevel(numeric);
   text=configuration.getProperty("groovy.source.encoding");
-  if (text != null)   setSourceEncoding(text);
+  if (text == null) {
+    text=configuration.getProperty("file.encoding","US-ASCII");
+  }
+  setSourceEncoding(text);
   text=configuration.getProperty("groovy.target.directory");
   if (text != null)   setTargetDirectory(text);
   text=configuration.getProperty("groovy.target.bytecode");
