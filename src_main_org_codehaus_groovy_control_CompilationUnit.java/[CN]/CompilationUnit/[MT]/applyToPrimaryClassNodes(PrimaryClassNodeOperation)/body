@@ -6,10 +6,13 @@
       ClassNode classNode=(ClassNode)classNodes.next();
       context=classNode.getModule().getContext();
       if (context == null || context.phase < phase || (context.phase == phase && !context.phaseComplete)) {
-        if (body instanceof CompilationUnitAware) {
-          ((CompilationUnitAware)body).setCompilationUnit(this);
+        int offset=1;
+        Iterator<InnerClassNode> iterator=classNode.getInnerClasses();
+        while (iterator.hasNext()) {
+          iterator.next();
+          offset++;
         }
-        body.call(context,new GeneratorContext(this.ast),classNode);
+        body.call(context,new GeneratorContext(this.ast,offset),classNode);
       }
     }
  catch (    CompilationFailedException e) {
