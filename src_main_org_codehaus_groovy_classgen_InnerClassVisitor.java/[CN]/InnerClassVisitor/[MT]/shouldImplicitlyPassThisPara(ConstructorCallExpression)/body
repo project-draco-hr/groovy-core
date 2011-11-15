@@ -7,7 +7,7 @@
  else   if (cce.isSuperCall()) {
     if (!superCN.isEnum() && !superCN.isInterface() && superCN instanceof InnerClassNode) {
       InnerClassNode superInnerCN=(InnerClassNode)superCN;
-      if (!isStatic(superInnerCN) && superCN.getOuterClass().equals(classNode.getOuterClass())) {
+      if (!isStatic(superInnerCN) && classNode.getOuterClass().isDerivedFrom(superCN.getOuterClass())) {
         pass=true;
       }
     }
