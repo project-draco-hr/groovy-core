@@ -3,18 +3,30 @@
   if (parameterizedTypes == null || parameterizedTypes.length == 0)   return alignmentTarget;
   GenericsType[] generics=new GenericsType[alignmentTarget.length];
   for (int i=0, scgtLength=alignmentTarget.length; i < scgtLength; i++) {
-    final GenericsType superGenericType=alignmentTarget[i];
+    final GenericsType currentTarget=alignmentTarget[i];
     GenericsType match=null;
     if (redirectGenericTypes != null) {
       for (int j=0; j < redirectGenericTypes.length && match == null; j++) {
         GenericsType redirectGenericType=redirectGenericTypes[j];
-        if (redirectGenericType.isCompatibleWith(superGenericType.getType())) {
+        if (redirectGenericType.isCompatibleWith(currentTarget.getType())) {
           match=parameterizedTypes[j];
+          if (currentTarget.isWildcard()) {
+            ClassNode lower=currentTarget.getLowerBound() != null ? match.getType() : null;
+            ClassNode[] currentUpper=currentTarget.getUpperBounds();
+            ClassNode[] upper=currentUpper != null ? new ClassNode[currentUpper.length] : null;
+            if (upper != null) {
+              for (int k=0; k < upper.length; k++) {
+                upper[k]=currentUpper[k].isGenericsPlaceHolder() ? match.getType() : currentUpper[k];
+              }
+            }
+            match=new GenericsType(ClassHelper.makeWithoutCaching("?"),upper,lower);
+            match.setWildcard(true);
+          }
         }
       }
     }
     if (match == null) {
-      match=superGenericType;
+      match=currentTarget;
     }
     generics[i]=match;
   }

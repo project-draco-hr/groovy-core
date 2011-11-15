@@ -8,9 +8,9 @@
       Set<ClassNode> interfaces=classNode.getAllInterfaces();
       for (      ClassNode anInterface : interfaces) {
         if (anInterface.equals(bound)) {
-          Map<String,ClassNode> parameters=new HashMap<String,ClassNode>();
-          collectParameter(classNode,parameters);
-          ClassNode node=ClassHelper.makeWithoutCaching(anInterface.getTypeClass(),false);
+          Map<String,GenericsType> parameters=new HashMap<String,GenericsType>();
+          GenericsUtils.extractPlaceholders(classNode,parameters);
+          ClassNode node=anInterface.getPlainNodeReference();
           GenericsType[] interfaceGTs=anInterface.getGenericsTypes();
           GenericsType[] types=new GenericsType[interfaceGTs.length];
           for (int i=0; i < interfaceGTs.length; i++) {
@@ -19,7 +19,7 @@
             if (interfaceGT.isPlaceholder()) {
               String name=interfaceGT.getName();
               if (parameters.containsKey(name)) {
-                types[i]=new GenericsType(parameters.get(name));
+                types[i]=parameters.get(name);
               }
             }
           }
@@ -35,17 +35,73 @@
   if (cnTypes == null) {
     return false;
   }
-  GenericsType[] uBTypes=bound.getGenericsTypes();
-  Map<String,ClassNode> resolvedPlaceholders=placeholderToParameterizedType();
+  GenericsType[] redirectBoundGenericTypes=bound.redirect().getGenericsTypes();
+  Map<String,GenericsType> classNodePlaceholders=GenericsUtils.extractPlaceholders(classNode);
+  Map<String,GenericsType> boundPlaceHolders=GenericsUtils.extractPlaceholders(bound);
   boolean match=true;
-  for (int i=0; i < uBTypes.length && match; i++) {
-    GenericsType uBType=uBTypes[i];
-    GenericsType cnType=cnTypes[i];
-    if (cnType.isPlaceholder()) {
-      String name=cnType.getName();
-      if (resolvedPlaceholders.containsKey(name))       cnType=new GenericsType(resolvedPlaceholders.get(name));
+  for (int i=0; i < redirectBoundGenericTypes.length && match; i++) {
+    GenericsType redirectBoundType=redirectBoundGenericTypes[i];
+    GenericsType classNodeType=cnTypes[i];
+    if (classNodeType.isWildcard()) {
+      match=true;
     }
-    match=uBType.isWildcard() || uBType.isPlaceholder() || cnType.isCompatibleWith(uBType.getType());
+ else     if (classNodeType.isPlaceholder()) {
+      if (redirectBoundType.isPlaceholder()) {
+        match=classNodeType.getName().equals(redirectBoundType.getName());
+      }
+ else {
+        String name=classNodeType.getName();
+        if (classNodePlaceholders.containsKey(name))         classNodeType=classNodePlaceholders.get(name);
+        match=classNodeType.isCompatibleWith(redirectBoundType.getType());
+      }
+    }
+ else {
+      if (redirectBoundType.isPlaceholder()) {
+        if (classNodeType.isPlaceholder()) {
+          match=classNodeType.getName().equals(redirectBoundType.getName());
+        }
+ else {
+          String name=redirectBoundType.getName();
+          if (boundPlaceHolders.containsKey(name)) {
+            redirectBoundType=boundPlaceHolders.get(name);
+            boolean wildcard=redirectBoundType.isWildcard();
+            boolean placeholder=redirectBoundType.isPlaceholder();
+            if (placeholder || wildcard) {
+              if (wildcard) {
+                if (redirectBoundType.lowerBound != null) {
+                  GenericsType gt=new GenericsType(redirectBoundType.lowerBound);
+                  if (gt.isPlaceholder()) {
+                    if (classNodePlaceholders.containsKey(gt.getName())) {
+                      gt=classNodePlaceholders.get(gt.getName());
+                    }
+                  }
+                  match=gt.getType().isDerivedFrom(classNodeType.getType());
+                }
+                if (match && redirectBoundType.upperBounds != null) {
+                  for (                  ClassNode upperBound : redirectBoundType.upperBounds) {
+                    GenericsType gt=new GenericsType(upperBound);
+                    if (gt.isPlaceholder()) {
+                      if (classNodePlaceholders.containsKey(gt.getName())) {
+                        gt=classNodePlaceholders.get(gt.getName());
+                      }
+                    }
+                    match=match && classNodeType.getType().isDerivedFrom(gt.getType());
+                  }
+                }
+                return match;
+              }
+ else {
+                redirectBoundType=classNodePlaceholders.get(name);
+              }
+            }
+          }
+          match=redirectBoundType.isCompatibleWith(classNodeType.getType());
+        }
+      }
+ else {
+        match=classNodeType.isCompatibleWith(redirectBoundType.getType());
+      }
+    }
   }
   if (!match)   return false;
   return true;
