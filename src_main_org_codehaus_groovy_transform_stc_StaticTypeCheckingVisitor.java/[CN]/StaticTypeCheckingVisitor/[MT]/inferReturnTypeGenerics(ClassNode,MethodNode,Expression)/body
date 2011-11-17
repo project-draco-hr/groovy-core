@@ -37,6 +37,9 @@
           if (isVargs && lastArg && actualType.isArray()) {
             actualType=actualType.getComponentType();
           }
+          if (isPrimitiveType(actualType)) {
+            actualType=ClassHelper.getWrapper(actualType);
+          }
           resolvedPlaceholders.put(genericsType.getName(),actualType);
         }
       }
