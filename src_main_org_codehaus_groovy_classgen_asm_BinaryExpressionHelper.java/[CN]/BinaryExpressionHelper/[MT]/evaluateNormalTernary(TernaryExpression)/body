@@ -7,7 +7,7 @@
   Expression falsePart=expression.getFalseExpression();
   ClassNode truePartType=typeChooser.resolveType(truePart,controller.getClassNode());
   ClassNode falsePartType=typeChooser.resolveType(falsePart,controller.getClassNode());
-  ClassNode common=WideningCategories.firstCommonSuperType(truePartType,falsePartType);
+  ClassNode common=WideningCategories.lowestUpperBound(truePartType,falsePartType);
   int mark=operandStack.getStackLength();
   boolPart.visit(controller.getAcg());
   operandStack.castToBool(mark,true);

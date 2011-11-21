@@ -1,0 +1,86 @@
+{
+  if (a == null || b == null) {
+    return null;
+  }
+  if (a.equals(OBJECT_TYPE) || b.equals(OBJECT_TYPE)) {
+    return OBJECT_TYPE;
+  }
+  if (a.equals(VOID_TYPE) || b.equals(VOID_TYPE)) {
+    if (!b.equals(a)) {
+      return OBJECT_TYPE;
+    }
+    return VOID_TYPE;
+  }
+  boolean isPrimitiveA=isPrimitiveType(a);
+  boolean isPrimitiveB=isPrimitiveType(b);
+  if (isPrimitiveA && !isPrimitiveB) {
+    return lowestUpperBound(getWrapper(a),b,null,null);
+  }
+  if (isPrimitiveB && !isPrimitiveA) {
+    return lowestUpperBound(a,getWrapper(b),null,null);
+  }
+  boolean isInterfaceA=a.isInterface();
+  boolean isInterfaceB=b.isInterface();
+  if (isInterfaceA && isInterfaceB) {
+    if (a.equals(b))     return a;
+    if (b.implementsInterface(a)) {
+      return a;
+    }
+    if (a.implementsInterface(b)) {
+      return b;
+    }
+    ClassNode[] interfacesFromA=a.getInterfaces();
+    ClassNode[] interfacesFromB=b.getInterfaces();
+    Set<ClassNode> common=new HashSet<ClassNode>();
+    Collections.addAll(common,interfacesFromA);
+    Set<ClassNode> fromB=new HashSet<ClassNode>();
+    Collections.addAll(fromB,interfacesFromB);
+    common.retainAll(fromB);
+    if (common.size() == 1) {
+      return common.iterator().next();
+    }
+ else     if (common.size() > 1) {
+      return buildTypeWithInterfaces(a,b,common);
+    }
+    return OBJECT_TYPE;
+  }
+ else   if (isInterfaceB) {
+    return lowestUpperBound(b,a,null,null);
+  }
+ else   if (isInterfaceA) {
+    List<ClassNode> matchingInterfaces=new LinkedList<ClassNode>();
+    extractMostSpecificImplementedInterfaces(b,a,matchingInterfaces);
+    if (matchingInterfaces.isEmpty()) {
+      return OBJECT_TYPE;
+    }
+    if (matchingInterfaces.size() == 1) {
+      return matchingInterfaces.get(0);
+    }
+    return buildTypeWithInterfaces(a,b,matchingInterfaces);
+  }
+  if (a.equals(b)) {
+    return buildTypeWithInterfaces(a,b,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));
+  }
+  if (a.isDerivedFrom(b) || b.isDerivedFrom(a)) {
+    return buildTypeWithInterfaces(a,b,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));
+  }
+  ClassNode sa=a.getUnresolvedSuperClass();
+  ClassNode sb=b.getUnresolvedSuperClass();
+  ClassNode[] interfacesFromA=a.getInterfaces();
+  ClassNode[] interfacesFromB=b.getInterfaces();
+  if (interfacesFromA.length > 0 || interfacesFromB.length > 0) {
+    if (interfacesImplementedByA == null) {
+      interfacesImplementedByA=new ArrayList<ClassNode>();
+    }
+    if (interfacesImplementedByB == null) {
+      interfacesImplementedByB=new ArrayList<ClassNode>();
+    }
+    Collections.addAll(interfacesImplementedByA,interfacesFromA);
+    Collections.addAll(interfacesImplementedByB,interfacesFromB);
+  }
+  if (sa == null || sb == null)   return buildTypeWithInterfaces(OBJECT_TYPE,OBJECT_TYPE,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));
+  if (sa.isDerivedFrom(sb) || sb.isDerivedFrom(sa)) {
+    return buildTypeWithInterfaces(sa,sb,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));
+  }
+  return lowestUpperBound(sa,sb,interfacesImplementedByA,interfacesImplementedByB);
+}

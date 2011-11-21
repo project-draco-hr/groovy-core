@@ -1,0 +1,14 @@
+{
+  if (nodes.isEmpty())   nodes.add(interfaceNode);
+  for (int i=0, nodesSize=nodes.size(); i < nodesSize; i++) {
+    final ClassNode node=nodes.get(i);
+    if (node.equals(interfaceNode) || node.implementsInterface(interfaceNode)) {
+      return;
+    }
+    if (interfaceNode.implementsInterface(node)) {
+      nodes.set(i,interfaceNode);
+      return;
+    }
+  }
+  nodes.add(interfaceNode);
+}

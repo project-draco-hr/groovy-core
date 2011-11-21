@@ -10,7 +10,7 @@
     for (    Expression expression : expressions) {
       nodes.add(getType(expression));
     }
-    ClassNode superType=getWrapper(firstCommonSuperType(nodes));
+    ClassNode superType=getWrapper(lowestUpperBound(nodes));
     ClassNode inferred=listType.getPlainNodeReference();
     inferred.setGenericsTypes(new GenericsType[]{new GenericsType(superType)});
     return inferred;

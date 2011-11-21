@@ -3,10 +3,10 @@
   if (oldValue != null) {
     ClassNode oldDIT=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE);
     if (oldDIT != null) {
-      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldDIT,cn));
+      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,lowestUpperBound(oldDIT,cn));
     }
  else {
-      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,firstCommonSuperType(oldValue,cn));
+      exp.putNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE,lowestUpperBound(oldValue,cn));
     }
   }
   if (exp instanceof VariableExpression) {

@@ -1,0 +1,29 @@
+{
+  boolean noInterface=interfaces.isEmpty();
+  if (noInterface) {
+    if (baseType1.equals(baseType2))     return baseType1;
+    if (baseType1.isDerivedFrom(baseType2))     return baseType2;
+    if (baseType2.isDerivedFrom(baseType1))     return baseType1;
+  }
+  if (OBJECT_TYPE.equals(baseType1) && OBJECT_TYPE.equals(baseType2) && interfaces.size() == 1) {
+    if (interfaces instanceof List) {
+      return ((List<ClassNode>)interfaces).get(0);
+    }
+    return interfaces.iterator().next();
+  }
+  LowestUpperBoundClassNode type;
+  ClassNode[] interfaceArray=interfaces.toArray(new ClassNode[interfaces.size()]);
+  Arrays.sort(interfaceArray,INTERFACE_CLASSNODE_COMPARATOR);
+  if (baseType1.equals(baseType2)) {
+    if (OBJECT_TYPE.equals(baseType1)) {
+      type=new LowestUpperBoundClassNode("Virtual$Object",OBJECT_TYPE,interfaceArray);
+    }
+ else {
+      type=new LowestUpperBoundClassNode("Virtual$" + baseType1.getName(),baseType1,interfaceArray);
+    }
+  }
+ else {
+    type=new LowestUpperBoundClassNode("CommonAssignOf$" + baseType1.getName() + "$"+ baseType2.getName(),OBJECT_TYPE,interfaceArray);
+  }
+  return type;
+}
