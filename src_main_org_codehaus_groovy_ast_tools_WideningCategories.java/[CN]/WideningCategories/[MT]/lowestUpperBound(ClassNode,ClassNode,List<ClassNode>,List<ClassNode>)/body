@@ -19,6 +19,9 @@
   if (isPrimitiveB && !isPrimitiveA) {
     return lowestUpperBound(a,getWrapper(b),null,null);
   }
+  if (isPrimitiveA && isPrimitiveB) {
+    return a.equals(b) ? a : lowestUpperBound(getWrapper(a),getWrapper(b),null,null);
+  }
   boolean isInterfaceA=a.isInterface();
   boolean isInterfaceB=b.isInterface();
   if (isInterfaceA && isInterfaceB) {
