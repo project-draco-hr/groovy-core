@@ -1,0 +1,31 @@
+{
+  if (!lub.isUsingGenerics())   return lub;
+  ClassNode holderForA=findGenericsTypeHolderForClass(a,lub);
+  ClassNode holderForB=findGenericsTypeHolderForClass(b,lub);
+  GenericsType[] agt=holderForA.getGenericsTypes();
+  GenericsType[] bgt=holderForB.getGenericsTypes();
+  if (agt == null || bgt == null || agt.length != bgt.length) {
+    return lub;
+  }
+  GenericsType[] lubgt=new GenericsType[agt.length];
+  for (int i=0; i < agt.length; i++) {
+    ClassNode t1=agt[i].getType();
+    ClassNode t2=bgt[i].getType();
+    ClassNode basicType;
+    if (areEqualWithGenerics(t1,a) && areEqualWithGenerics(t2,b)) {
+      basicType=fallback;
+    }
+ else {
+      basicType=lowestUpperBound(t1,t2);
+    }
+    if (t1.equals(t2)) {
+      lubgt[i]=new GenericsType(basicType);
+    }
+ else {
+      lubgt[i]=GenericsUtils.buildWildcardType(basicType);
+    }
+  }
+  ClassNode plain=lub.getPlainNodeReference();
+  plain.setGenericsTypes(lubgt);
+  return plain;
+}
