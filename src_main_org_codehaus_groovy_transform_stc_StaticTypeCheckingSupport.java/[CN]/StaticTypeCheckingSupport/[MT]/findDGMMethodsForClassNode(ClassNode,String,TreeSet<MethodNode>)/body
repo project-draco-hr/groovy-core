@@ -1,0 +1,17 @@
+{
+  List<MethodNode> fromDGM=VIRTUAL_DGM_METHODS.get(clazz.getName());
+  if (fromDGM != null) {
+    for (    MethodNode node : fromDGM) {
+      if (node.getName().equals(name))       accumulator.add(node);
+    }
+  }
+  for (  ClassNode node : clazz.getInterfaces()) {
+    findDGMMethodsForClassNode(node,name,accumulator);
+  }
+  if (clazz.getSuperClass() != null) {
+    findDGMMethodsForClassNode(clazz.getSuperClass(),name,accumulator);
+  }
+ else   if (!clazz.equals(ClassHelper.OBJECT_TYPE)) {
+    findDGMMethodsForClassNode(ClassHelper.OBJECT_TYPE,name,accumulator);
+  }
+}
