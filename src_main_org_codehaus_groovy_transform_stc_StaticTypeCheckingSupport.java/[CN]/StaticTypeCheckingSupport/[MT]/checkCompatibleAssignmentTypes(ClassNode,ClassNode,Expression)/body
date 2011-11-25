@@ -1,0 +1,36 @@
+{
+  ClassNode leftRedirect=left.redirect();
+  ClassNode rightRedirect=right.redirect();
+  if (right == VOID_TYPE || right == void_WRAPPER_TYPE) {
+    return left == VOID_TYPE || left == void_WRAPPER_TYPE;
+  }
+  boolean rightExpressionIsNull=rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null;
+  if (rightExpressionIsNull && !isPrimitiveType(left)) {
+    return true;
+  }
+  if (leftRedirect == OBJECT_TYPE || leftRedirect == STRING_TYPE || leftRedirect == boolean_TYPE || leftRedirect == Boolean_TYPE || leftRedirect == CLASS_Type) {
+    return true;
+  }
+  if (leftRedirect == char_TYPE && rightRedirect == STRING_TYPE) {
+    if (rightExpression != null && rightExpression instanceof ConstantExpression) {
+      String value=rightExpression.getText();
+      return value.length() == 1;
+    }
+  }
+  if (leftRedirect == Character_TYPE && (rightRedirect == STRING_TYPE || rightExpressionIsNull)) {
+    return rightExpressionIsNull || (rightExpression instanceof ConstantExpression && rightExpression.getText().length() == 1);
+  }
+  if (leftRedirect.isDerivedFrom(Enum_Type) && (rightRedirect == GSTRING_TYPE || rightRedirect == STRING_TYPE)) {
+    return true;
+  }
+  if (rightRedirect.implementsInterface(MAP_TYPE) || rightRedirect.implementsInterface(Collection_TYPE) || rightRedirect.equals(MAP_TYPE)|| rightRedirect.equals(Collection_TYPE)|| rightRedirect.isArray()) {
+    if (leftRedirect.isArray() && rightRedirect.isArray()) {
+      return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType());
+    }
+    return true;
+  }
+  if (right.isDerivedFrom(left) || (left.isInterface() && right.implementsInterface(left)))   return true;
+  if (isPrimitiveType(leftRedirect) && isPrimitiveType(rightRedirect))   return true;
+  if (isNumberType(leftRedirect) && isNumberType(rightRedirect))   return true;
+  return false;
+}
