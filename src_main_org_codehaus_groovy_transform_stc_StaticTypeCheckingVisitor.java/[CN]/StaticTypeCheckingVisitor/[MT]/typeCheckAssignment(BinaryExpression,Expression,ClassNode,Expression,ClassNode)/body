@@ -4,7 +4,12 @@
     leftRedirect=leftExpressionType;
   }
  else {
-    leftRedirect=leftExpression.getType().redirect();
+    if (leftExpression instanceof VariableExpression && isPrimitiveType(((VariableExpression)leftExpression).getOriginType())) {
+      leftRedirect=leftExpressionType;
+    }
+ else {
+      leftRedirect=leftExpression.getType().redirect();
+    }
   }
   if (leftExpression instanceof TupleExpression) {
     if (!(rightExpression instanceof ListExpression)) {
@@ -31,9 +36,9 @@
     }
     return;
   }
-  boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,inferredRightExpressionType);
+  boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,inferredRightExpressionType,rightExpression);
   if (!compatible) {
-    if ((leftRedirect == VOID_TYPE) && (leftExpression instanceof PropertyExpression)) {
+    if ((leftRedirect == READONLY_PROPERTY_RETURN) && (leftExpression instanceof PropertyExpression)) {
       addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
     }
  else {
