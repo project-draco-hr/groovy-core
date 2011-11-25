@@ -1,0 +1,20 @@
+{
+  if (info.method instanceof CachedMethod) {
+    CachedMethod cm=(CachedMethod)info.method;
+    try {
+      info.handle=LOOKUP.unreflect(cm.getCachedMethod());
+    }
+ catch (    IllegalAccessException e) {
+      throw new GroovyBugError(e);
+    }
+  }
+ else {
+    try {
+      info.handle=LOOKUP.findVirtual(info.method.getClass(),"invoke",GENERAL_INVOKER_SIGNATURE);
+    }
+ catch (    Exception e) {
+      throw new GroovyBugError(e);
+    }
+    info.handle=info.handle.bindTo(info.method).asCollector(Object[].class,info.targetType.parameterCount() - 1);
+  }
+}

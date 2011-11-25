@@ -1,0 +1,8 @@
+{
+  if (ci.useMetaClass)   return;
+  for (int i=0; i < ci.args.length; i++) {
+    if (ci.args[i] instanceof Wrapper) {
+      ci.handle=MethodHandles.filterArguments(ci.handle,i + 1,UNWRAP_METHOD);
+    }
+  }
+}

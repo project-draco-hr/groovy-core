@@ -1,34 +1,17 @@
 {
-  MetaClassImpl mc=null;
-  if (receiver instanceof GroovyObject) {
-    mc=(MetaClassImpl)((GroovyObject)receiver).getMetaClass();
-  }
- else {
-    mc=(MetaClassImpl)InvokerHelper.getMetaClass(receiver);
-  }
-  MetaMethod m=mc.getMethodWithCaching(receiver.getClass(),methodName,arguments,false);
-  MethodType targetType=callSite.type();
-  if (m instanceof CachedMethod) {
-    CachedMethod cm=(CachedMethod)m;
-    MethodHandle mh;
-    try {
-      mh=LOOKUP.unreflect(cm.getCachedMethod()).asType(targetType);
-    }
- catch (    IllegalAccessException e) {
-      throw new GroovyBugError(e);
-    }
-    callSite.setTarget(mh);
-  }
- else {
-    MethodHandle mh;
-    try {
-      mh=LOOKUP.findVirtual(m.getClass(),"invoke",GENERAL_INVOKER_SIGNATURE);
-    }
- catch (    Exception e) {
-      throw new GroovyBugError(e);
-    }
-    mh=mh.bindTo(m).asCollector(Object[].class,targetType.parameterCount() - 1).asType(targetType);
-    callSite.setTarget(mh);
-  }
-  return m.invoke(receiver,arguments);
+  CallInfo callInfo=new CallInfo();
+  callInfo.targetType=callSite.type();
+  callInfo.methodName=methodName;
+  callInfo.receiver=receiver;
+  callInfo.args=arguments;
+  MetaClass mc=getMetaClass(receiver);
+  chooseMethod(mc,callInfo);
+  setHandleForMetaMethod(callInfo);
+  setMetaClassCallHandleIfNedded(mc,callInfo);
+  correctWrapping(callInfo);
+  correctCoerce(callInfo);
+  callInfo.handle=callInfo.handle.asType(callInfo.targetType);
+  callSite.setTarget(callInfo.handle);
+  MetaClassHelper.unwrap(arguments);
+  return callInfo.handle.invokeWithArguments(repack(receiver,arguments));
 }

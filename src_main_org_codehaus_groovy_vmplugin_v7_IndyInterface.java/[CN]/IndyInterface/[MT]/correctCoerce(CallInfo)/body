@@ -1,0 +1,16 @@
+{
+  if (ci.useMetaClass)   return;
+  Class[] parameters=ci.targetType.parameterArray();
+  for (int i=0; i < ci.args.length; i++) {
+    Class got=ci.args[i].getClass();
+    if (got == GString.class && parameters[i + 1] == String.class) {
+      ci.handle=MethodHandles.filterArguments(ci.handle,i + 1,TO_STRING);
+    }
+ else     if (parameters[i + 1] == Byte.class && got != Byte.class) {
+      ci.handle=MethodHandles.filterArguments(ci.handle,i + 1,TO_BYTE);
+    }
+ else     if (parameters[i + 1] == BigInteger.class && got != BigInteger.class) {
+      ci.handle=MethodHandles.filterArguments(ci.handle,i + 1,TO_BIGINT);
+    }
+  }
+}

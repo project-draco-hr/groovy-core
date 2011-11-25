@@ -1,0 +1,11 @@
+{
+  if (ci.handle != null)   return;
+  try {
+    ci.useMetaClass=true;
+    ci.handle=LOOKUP.findVirtual(mc.getClass(),"invokeMethod",INVOKE_METHOD_SIGNATURE);
+  }
+ catch (  Exception e) {
+    throw new GroovyBugError(e);
+  }
+  ci.handle=ci.handle.bindTo(mc).asCollector(Object[].class,ci.targetType.parameterCount() - 1);
+}
