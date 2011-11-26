@@ -2,14 +2,14 @@
   for (  Object item : self) {
     if (item instanceof Collection) {
       Collection c=(Collection)item;
-      collection.add(collectNested(c,createSimilarCollection(collection,c.size()),closure));
+      collector.add(collectNested(c,createSimilarCollection(collector,c.size()),transform));
     }
  else {
-      collection.add(closure.call(item));
+      collector.add(transform.call(item));
     }
-    if (closure.getDirective() == Closure.DONE) {
+    if (transform.getDirective() == Closure.DONE) {
       break;
     }
   }
-  return collection;
+  return collector;
 }
