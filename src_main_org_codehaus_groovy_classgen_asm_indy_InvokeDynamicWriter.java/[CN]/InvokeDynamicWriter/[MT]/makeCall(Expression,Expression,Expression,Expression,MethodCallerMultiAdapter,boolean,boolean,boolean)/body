@@ -23,7 +23,14 @@
       ArgumentListExpression ae=makeArgumentList(arguments);
       for (      Expression arg : ae.getExpressions()) {
         arg.visit(controller.getAcg());
-        sig+=getTypeDescription(operandStack.getTopOperand());
+        if (arg instanceof CastExpression) {
+          operandStack.box();
+          acg.loadWrapper(arg);
+          sig+=getTypeDescription(Wrapper.class);
+        }
+ else {
+          sig+=getTypeDescription(operandStack.getTopOperand());
+        }
         numberOfArguments++;
       }
       sig+=")Ljava/lang/Object;";
