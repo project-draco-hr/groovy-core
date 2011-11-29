@@ -1,6 +1,8 @@
 {
   if (mc instanceof MetaClassImpl) {
     MetaClassImpl mci=(MetaClassImpl)mc;
-    ci.method=mci.getMethodWithCaching(ci.receiver.getClass(),ci.methodName,ci.args,false);
+    Object receiver=ci.args[0];
+    if (receiver == null)     receiver=NullObject.getNullObject();
+    ci.method=mci.getMethodWithCaching(receiver.getClass(),ci.methodName,removeRealReceiver(ci.args),false);
   }
 }

@@ -1,9 +1,9 @@
 {
   if (ci.useMetaClass)   return;
-  for (int i=0; i < ci.args.length; i++) {
+  for (int i=1; i < ci.args.length; i++) {
     if (ci.args[i] instanceof Wrapper) {
-      MethodType mt=MethodType.methodType(ci.handle.type().parameterType(i + 1),ci.targetType.parameterType(i + 1));
-      ci.handle=MethodHandles.filterArguments(ci.handle,i + 1,UNWRAP_METHOD.asType(mt));
+      MethodType mt=MethodType.methodType(ci.handle.type().parameterType(i),ci.targetType.parameterType(i));
+      ci.handle=MethodHandles.filterArguments(ci.handle,i,UNWRAP_METHOD.asType(mt));
     }
   }
 }

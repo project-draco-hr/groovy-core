@@ -2,15 +2,16 @@
   CallInfo callInfo=new CallInfo();
   callInfo.targetType=callSite.type();
   callInfo.methodName=methodName;
-  callInfo.receiver=receiver;
   callInfo.args=arguments;
-  MetaClass mc=getMetaClass(receiver);
+  MetaClass mc=getMetaClass(callInfo.args[0]);
   chooseMethod(mc,callInfo);
   setHandleForMetaMethod(callInfo);
   setMetaClassCallHandleIfNedded(mc,callInfo);
   correctWrapping(callInfo);
   correctCoerce(callInfo);
+  correctNullReceiver(callInfo);
+  dropDummyReceiver(callInfo);
   callInfo.handle=callInfo.handle.asType(callInfo.targetType);
   callSite.setTarget(callInfo.handle);
-  return callInfo.handle.invokeWithArguments(repack(receiver,arguments));
+  return callInfo.handle.invokeWithArguments(repack(dummyReceiver,callInfo.args));
 }
