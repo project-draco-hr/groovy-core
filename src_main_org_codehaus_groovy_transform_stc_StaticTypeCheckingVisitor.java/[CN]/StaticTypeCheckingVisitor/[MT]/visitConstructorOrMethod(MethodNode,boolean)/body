@@ -1,6 +1,9 @@
 {
+  MethodNode old=this.methodNode;
   this.methodNode=node;
   super.visitConstructorOrMethod(node,isConstructor);
-  if (!isConstructor)   returnAdder.visitMethod(node);
-  this.methodNode=null;
+  if (!isConstructor) {
+    returnAdder.visitMethod(node);
+  }
+  this.methodNode=old;
 }
