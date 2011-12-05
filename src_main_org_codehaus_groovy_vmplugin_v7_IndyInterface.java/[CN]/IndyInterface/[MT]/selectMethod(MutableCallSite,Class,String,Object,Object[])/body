@@ -3,6 +3,8 @@
   callInfo.targetType=callSite.type();
   callInfo.methodName=methodName;
   callInfo.args=arguments;
+  callInfo.callSite=callSite;
+  callInfo.sender=sender;
   MetaClass mc=getMetaClass(callInfo.args[0]);
   chooseMethod(mc,callInfo);
   setHandleForMetaMethod(callInfo);
@@ -12,6 +14,7 @@
   correctNullReceiver(callInfo);
   dropDummyReceiver(callInfo);
   callInfo.handle=callInfo.handle.asType(callInfo.targetType);
+  setGuards(callInfo,callInfo.args[0]);
   callSite.setTarget(callInfo.handle);
   return callInfo.handle.invokeWithArguments(repack(dummyReceiver,callInfo.args));
 }

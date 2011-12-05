@@ -1,6 +1,6 @@
 {
   MutableCallSite mc=new MutableCallSite(type);
-  MethodHandle mh=SELECT_METHOD.bindTo(mc).bindTo(caller.lookupClass()).bindTo(name).asCollector(Object[].class,type.parameterCount() - 1).asType(type);
+  MethodHandle mh=makeFallBack(mc,caller.lookupClass(),name,type);
   mc.setTarget(mh);
   return mc;
 }

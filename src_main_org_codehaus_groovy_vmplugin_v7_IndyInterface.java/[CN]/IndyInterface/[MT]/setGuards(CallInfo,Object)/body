@@ -1,0 +1,9 @@
+{
+  if (ci.handle == null)   return;
+  if (receiver == null)   return;
+  if (receiver instanceof GroovyObject)   return;
+  ConstantMetaClassVersioning mcv=DefaultMetaClassInfo.getCurrentConstantMetaClassVersioning();
+  MethodHandle test=VALID_MC_VERSION.bindTo(mcv);
+  MethodHandle fallback=makeFallBack(ci.callSite,ci.sender,ci.methodName,ci.targetType);
+  ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
+}
