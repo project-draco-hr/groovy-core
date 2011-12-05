@@ -10,9 +10,18 @@
     }
   }
   if (exp instanceof VariableExpression) {
-    final Variable accessedVariable=((VariableExpression)exp).getAccessedVariable();
+    VariableExpression var=(VariableExpression)exp;
+    final Variable accessedVariable=var.getAccessedVariable();
     if (accessedVariable != null && accessedVariable != exp && accessedVariable instanceof VariableExpression) {
       storeType((Expression)accessedVariable,cn);
+    }
+    if (var.isClosureSharedVariable()) {
+      List<ClassNode> assignedTypes=closureSharedVariablesAssignmentTypes.get(var);
+      if (assignedTypes == null) {
+        assignedTypes=new LinkedList<ClassNode>();
+        closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
+      }
+      assignedTypes.add(cn);
     }
   }
 }
