@@ -1,0 +1,27 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  OperandStack operandStack=controller.getOperandStack();
+  compileStack.pushLHS(false);
+  new ConstantExpression(0,false).visit(controller.getAcg());
+  String sig="(Ljava/lang/Integer;";
+  receiver.visit(controller.getAcg());
+  sig+=getTypeDescription(operandStack.getTopOperand());
+  int numberOfArguments=1;
+  ArgumentListExpression ae=makeArgumentList(arguments);
+  for (  Expression arg : ae.getExpressions()) {
+    arg.visit(controller.getAcg());
+    if (arg instanceof CastExpression) {
+      operandStack.box();
+      controller.getAcg().loadWrapper(arg);
+      sig+=getTypeDescription(Wrapper.class);
+    }
+ else {
+      sig+=getTypeDescription(operandStack.getTopOperand());
+    }
+    numberOfArguments++;
+  }
+  sig+=")Ljava/lang/Object;";
+  controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,BSM);
+  operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments + 1);
+  compileStack.popLHS();
+}
