@@ -1,0 +1,13 @@
+{
+  if (typesBeforeVisit != null) {
+    for (    Map.Entry<VariableExpression,ListHashMap> entry : typesBeforeVisit.entrySet()) {
+      VariableExpression ve=entry.getKey();
+      ListHashMap metadata=entry.getValue();
+      for (      StaticTypesMarker marker : StaticTypesMarker.values()) {
+        ve.removeNodeMetaData(marker);
+        Object value=metadata.get(marker);
+        if (value != null)         ve.setNodeMetaData(marker,value);
+      }
+    }
+  }
+}

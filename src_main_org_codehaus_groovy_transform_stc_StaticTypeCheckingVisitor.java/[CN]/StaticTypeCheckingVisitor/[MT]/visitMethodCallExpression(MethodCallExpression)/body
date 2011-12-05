@@ -120,6 +120,10 @@
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
+          if (objectExpression instanceof VariableExpression) {
+            VariableExpression var=(VariableExpression)objectExpression;
+            if (var.isClosureSharedVariable())             secondPassExpressions.add(call);
+          }
         }
  else {
           addStaticTypeError("Reference to method is ambiguous. Cannot choose between " + mn,call);

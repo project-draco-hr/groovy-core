@@ -5,4 +5,9 @@
   if (upper.isUsingGenerics()) {
     setGenericsTypes(upper.getGenericsTypes());
   }
+  for (  ClassNode anInterface : interfaces) {
+    for (    MethodNode methodNode : anInterface.getMethods()) {
+      addMethod(methodNode.getName(),methodNode.getModifiers(),methodNode.getReturnType(),methodNode.getParameters(),methodNode.getExceptions(),methodNode.getCode());
+    }
+  }
 }

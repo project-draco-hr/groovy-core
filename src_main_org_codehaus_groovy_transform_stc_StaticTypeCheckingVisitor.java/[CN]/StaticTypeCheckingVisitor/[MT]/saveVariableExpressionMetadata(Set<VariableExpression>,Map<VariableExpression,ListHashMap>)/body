@@ -1,0 +1,16 @@
+{
+  for (  VariableExpression ve : closureSharedExpressions) {
+    ListHashMap<StaticTypesMarker,Object> metadata=new ListHashMap<StaticTypesMarker,Object>();
+    for (    StaticTypesMarker marker : StaticTypesMarker.values()) {
+      Object value=ve.getNodeMetaData(marker);
+      if (value != null) {
+        metadata.put(marker,value);
+      }
+    }
+    typesBeforeVisit.put(ve,metadata);
+    Variable accessedVariable=ve.getAccessedVariable();
+    if (accessedVariable != ve && accessedVariable instanceof VariableExpression) {
+      saveVariableExpressionMetadata(Collections.singleton((VariableExpression)accessedVariable),typesBeforeVisit);
+    }
+  }
+}
