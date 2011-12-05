@@ -151,6 +151,22 @@
  catch (    InvokerInvocationException iie) {
       throw iie;
     }
+catch (    GroovyRuntimeException e) {
+      if (e.getMessage().contains("Could not find matching constructor for")) {
+        try {
+          return InvokerHelper.invokeConstructorOf(type,object);
+        }
+ catch (        InvokerInvocationException iie) {
+          throw iie;
+        }
+catch (        Exception ex) {
+          nested=e;
+        }
+      }
+ else {
+        nested=e;
+      }
+    }
 catch (    Exception e) {
       nested=e;
     }

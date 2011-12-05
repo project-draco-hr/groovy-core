@@ -1,14 +1,20 @@
 {
-  pushTemporaryTypeInfo();
-  visitStatement(ifElse);
-  ifElse.getBooleanExpression().visit(this);
-  ifElse.getIfBlock().visit(this);
-  temporaryIfBranchTypeInformation.pop();
-  Statement elseBlock=ifElse.getElseBlock();
-  if (elseBlock instanceof EmptyStatement) {
-    visitEmptyStatement((EmptyStatement)elseBlock);
-  }
+  Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
+  try {
+    pushTemporaryTypeInfo();
+    visitStatement(ifElse);
+    ifElse.getBooleanExpression().visit(this);
+    ifElse.getIfBlock().visit(this);
+    temporaryIfBranchTypeInformation.pop();
+    Statement elseBlock=ifElse.getElseBlock();
+    if (elseBlock instanceof EmptyStatement) {
+      visitEmptyStatement((EmptyStatement)elseBlock);
+    }
  else {
-    elseBlock.visit(this);
+      elseBlock.visit(this);
+    }
+  }
+  finally {
+    popAssignmentTracking(oldTracker);
   }
 }

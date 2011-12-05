@@ -4,6 +4,9 @@
   ClassNode lType=getType(leftExpression);
   final Expression rightExpression=expression.getRightExpression();
   ClassNode rType=getType(rightExpression);
+  if (rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null) {
+    if (!isPrimitiveType(lType))     rType=lType;
+  }
   int op=expression.getOperation().getType();
   ClassNode resultType=getResultType(lType,op,rType,expression);
   if (resultType == null) {
@@ -16,6 +19,20 @@
       inferDiamondType((ConstructorCallExpression)rightExpression,lType);
     }
     typeCheckAssignment(expression,leftExpression,lType,rightExpression,resultType);
+    if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
+      Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
+      if (accessedVariable instanceof VariableExpression) {
+        VariableExpression var=(VariableExpression)accessedVariable;
+        List<ClassNode> types=ifElseForWhileAssignmentTracker.get(var);
+        if (types == null) {
+          types=new LinkedList<ClassNode>();
+          ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+          if (type != null)           types.add(type);
+          ifElseForWhileAssignmentTracker.put(var,types);
+        }
+        types.add(resultType);
+      }
+    }
     storeType(leftExpression,resultType);
     if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
       Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();

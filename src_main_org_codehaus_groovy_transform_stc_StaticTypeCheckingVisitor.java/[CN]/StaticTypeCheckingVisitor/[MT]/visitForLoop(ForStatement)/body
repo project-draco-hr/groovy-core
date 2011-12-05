@@ -1,5 +1,7 @@
 {
+  Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
   super.visitForLoop(forLoop);
+  popAssignmentTracking(oldTracker);
   final ClassNode collectionType=getType(forLoop.getCollectionExpression());
   ClassNode componentType=collectionType.getComponentType();
   if (componentType == null) {
