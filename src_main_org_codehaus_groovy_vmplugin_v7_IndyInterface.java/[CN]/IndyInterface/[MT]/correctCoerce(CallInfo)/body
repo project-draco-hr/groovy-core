@@ -2,7 +2,9 @@
   if (ci.useMetaClass)   return;
   Class[] parameters=ci.targetType.parameterArray();
   for (int i=1; i < ci.args.length; i++) {
-    Class got=ci.args[i].getClass();
+    Object arg=ci.args[i];
+    if (arg == null)     continue;
+    Class got=arg.getClass();
     if (got == GString.class && parameters[i + 1] == String.class) {
       ci.handle=MethodHandles.filterArguments(ci.handle,i,TO_STRING);
     }
