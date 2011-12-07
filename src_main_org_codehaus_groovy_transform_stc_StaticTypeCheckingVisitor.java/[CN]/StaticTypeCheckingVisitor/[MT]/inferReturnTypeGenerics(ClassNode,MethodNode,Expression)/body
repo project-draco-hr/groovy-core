@@ -25,9 +25,7 @@
       if (isVargs && lastArg && actualType.isArray()) {
         actualType=actualType.getComponentType();
       }
-      if (isPrimitiveType(actualType)) {
-        actualType=ClassHelper.getWrapper(actualType);
-      }
+      actualType=wrapTypeIfNecessary(actualType);
       Map<String,GenericsType> typePlaceholders=GenericsUtils.extractPlaceholders(type.isArray() ? type.getComponentType() : type);
       if (OBJECT_TYPE.equals(type)) {
         for (        String key : typePlaceholders.keySet()) {

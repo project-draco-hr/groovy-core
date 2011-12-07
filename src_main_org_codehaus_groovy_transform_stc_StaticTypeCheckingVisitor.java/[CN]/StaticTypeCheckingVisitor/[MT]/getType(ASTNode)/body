@@ -60,6 +60,7 @@
   if (exp instanceof ClosureExpression) {
     ClassNode irt=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
     if (irt != null) {
+      irt=wrapTypeIfNecessary(irt);
       ClassNode result=CLOSURE_TYPE.getPlainNodeReference();
       result.setGenericsTypes(new GenericsType[]{new GenericsType(irt)});
       return result;
