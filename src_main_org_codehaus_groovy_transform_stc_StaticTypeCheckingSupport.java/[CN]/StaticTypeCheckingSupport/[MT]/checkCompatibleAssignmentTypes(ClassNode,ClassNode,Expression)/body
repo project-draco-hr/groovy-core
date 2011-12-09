@@ -27,6 +27,9 @@
     if (leftRedirect.isArray() && rightRedirect.isArray()) {
       return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType());
     }
+ else     if (rightRedirect.isArray() && !leftRedirect.isArray()) {
+      return false;
+    }
     return true;
   }
   if (right.isDerivedFrom(left) || (left.isInterface() && right.implementsInterface(left)))   return true;

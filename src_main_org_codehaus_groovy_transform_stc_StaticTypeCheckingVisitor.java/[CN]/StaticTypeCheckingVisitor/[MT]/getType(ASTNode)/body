@@ -9,6 +9,11 @@
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
       return getType((Expression)variable);
     }
+    if (variable instanceof Parameter) {
+      Parameter parameter=(Parameter)variable;
+      ClassNode type=forLoopVariableTypes.get(parameter);
+      if (type != null)       return type;
+    }
   }
  else   if (exp instanceof PropertyExpression) {
     PropertyExpression pexp=(PropertyExpression)exp;
