@@ -3,7 +3,12 @@
   ClassNode[] ret=new ClassNode[arglist.size()];
   int i=0;
   for (  Expression exp : arglist) {
-    ret[i]=getType(exp);
+    if (exp instanceof ConstantExpression && ((ConstantExpression)exp).getValue() == null) {
+      ret[i]=UNKNOWN_PARAMETER_TYPE;
+    }
+ else {
+      ret[i]=getType(exp);
+    }
     i++;
   }
   return ret;

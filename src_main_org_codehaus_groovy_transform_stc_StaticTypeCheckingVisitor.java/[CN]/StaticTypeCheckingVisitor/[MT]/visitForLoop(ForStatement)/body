@@ -1,18 +1,36 @@
 {
   Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
-  super.visitForLoop(forLoop);
-  popAssignmentTracking(oldTracker);
   final ClassNode collectionType=getType(forLoop.getCollectionExpression());
   ClassNode componentType=collectionType.getComponentType();
   if (componentType == null) {
-    if (componentType == ClassHelper.STRING_TYPE) {
+    if (collectionType.implementsInterface(ITERABLE_TYPE)) {
+      ClassNode intf=ITERABLE_TYPE;
+      for (      ClassNode node : collectionType.getAllInterfaces()) {
+        if (ITERABLE_TYPE.equals(node)) {
+          intf=node;
+          break;
+        }
+      }
+      intf=GenericsUtils.parameterizeInterfaceGenerics(collectionType,intf);
+      GenericsType[] genericsTypes=intf.getGenericsTypes();
+      componentType=genericsTypes[0].getType();
+    }
+ else     if (collectionType == ClassHelper.STRING_TYPE) {
       componentType=ClassHelper.Character_TYPE;
     }
  else {
       componentType=ClassHelper.OBJECT_TYPE;
     }
   }
+  forLoopVariableTypes.put(forLoop.getVariable(),componentType);
   if (!checkCompatibleAssignmentTypes(forLoop.getVariableType(),componentType)) {
     addStaticTypeError("Cannot loop with element of type " + forLoop.getVariableType() + " with collection of type "+ collectionType,forLoop);
   }
+  try {
+    super.visitForLoop(forLoop);
+  }
+  finally {
+    forLoopVariableTypes.remove(forLoop.getVariable());
+  }
+  popAssignmentTracking(oldTracker);
 }
