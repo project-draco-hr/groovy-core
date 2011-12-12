@@ -62,6 +62,11 @@
   if (isShiftOperation(operationName) && isNumberCategory(leftRedirect) && (isIntCategory(rightRedirect) || isLongCategory(rightRedirect))) {
     return leftRedirect;
   }
+  if (DIVIDE == op || DIVIDE_EQUAL == op) {
+    if (isFloatingCategory(leftRedirect) || isFloatingCategory(rightRedirect)) {
+      return Double_TYPE;
+    }
+  }
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
     if (isCompareToBoolean(op))     return boolean_TYPE;
