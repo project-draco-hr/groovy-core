@@ -66,6 +66,12 @@
     if (isFloatingCategory(leftRedirect) || isFloatingCategory(rightRedirect)) {
       return Double_TYPE;
     }
+ else     if (BigDecimal_TYPE.equals(leftRedirect) || BigDecimal_TYPE.equals(rightRedirect)) {
+      return BigDecimal_TYPE;
+    }
+  }
+ else   if (isOperationInGroup(op) && isNumberCategory(leftRedirect) && isNumberCategory(rightRedirect)) {
+    return getGroupOperationResultType(leftRedirect,rightRedirect);
   }
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
