@@ -20,7 +20,7 @@
         target=(VariableExpression)target.getAccessedVariable();
       }
       ClassNode initialType=target.getType().redirect();
-      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| isPrimitiveType(initialType)) {
+      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| isPrimitiveType(initialType)|| BigDecimal_TYPE == initialType || BigInteger_TYPE == initialType) {
         return initialType;
       }
     }
@@ -44,8 +44,6 @@
       if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return long_TYPE;
       if (isFloat(leftRedirect) && isFloat(rightRedirect))       return float_TYPE;
       if (isDouble(leftRedirect) && isDouble(rightRedirect))       return double_TYPE;
-      if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
-      if (isBigDecCategory(leftRedirect) && isBigDecCategory(rightRedirect))       return BigDecimal_TYPE;
     }
  else     if (isPowerOperator(op)) {
       return Number_TYPE;
@@ -71,8 +69,10 @@
       return BigDecimal_TYPE;
     }
   }
- else   if (isOperationInGroup(op) && isNumberCategory(leftRedirect) && isNumberCategory(rightRedirect)) {
-    return getGroupOperationResultType(leftRedirect,rightRedirect);
+ else   if (isOperationInGroup(op)) {
+    if (isNumberCategory(getWrapper(leftRedirect)) && isNumberCategory(getWrapper(rightRedirect))) {
+      return getGroupOperationResultType(leftRedirect,rightRedirect);
+    }
   }
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
