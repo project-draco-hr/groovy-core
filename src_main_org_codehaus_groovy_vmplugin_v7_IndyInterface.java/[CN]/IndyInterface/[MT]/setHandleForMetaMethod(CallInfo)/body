@@ -2,13 +2,17 @@
   if (info.method instanceof CachedMethod) {
     CachedMethod cm=(CachedMethod)info.method;
     try {
-      info.handle=LOOKUP.unreflect(cm.getCachedMethod());
+      Method m=cm.getCachedMethod();
+      info.handle=LOOKUP.unreflect(m);
+      if (isStatic(m)) {
+        info.handle=MethodHandles.dropArguments(info.handle,0,Class.class);
+      }
     }
  catch (    IllegalAccessException e) {
       throw new GroovyBugError(e);
     }
   }
- else {
+ else   if (info.method != null) {
     try {
       info.handle=LOOKUP.findVirtual(info.method.getClass(),"invoke",GENERAL_INVOKER_SIGNATURE);
     }

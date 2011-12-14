@@ -13,7 +13,13 @@
   correctCoerce(callInfo);
   correctNullReceiver(callInfo);
   dropDummyReceiver(callInfo);
-  callInfo.handle=callInfo.handle.asType(callInfo.targetType);
+  try {
+    callInfo.handle=callInfo.handle.asType(callInfo.targetType);
+  }
+ catch (  Exception e) {
+    System.err.println("ERROR while processing " + methodName);
+    throw e;
+  }
   setGuards(callInfo,callInfo.args[0]);
   callSite.setTarget(callInfo.handle);
   return callInfo.handle.invokeWithArguments(repack(dummyReceiver,callInfo.args));
