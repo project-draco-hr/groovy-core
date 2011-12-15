@@ -1,4 +1,5 @@
 {
+  Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
   pushTemporaryTypeInfo();
   expression.getBooleanExpression().visit(this);
   expression.getTrueExpression().visit(this);
@@ -6,5 +7,6 @@
   expression.getFalseExpression().visit(this);
   final ClassNode typeOfTrue=getType(expression.getTrueExpression());
   final ClassNode typeOfFalse=getType(expression.getFalseExpression());
-  storeType(expression,firstCommonSuperType(typeOfTrue,typeOfFalse));
+  storeType(expression,lowestUpperBound(typeOfTrue,typeOfFalse));
+  popAssignmentTracking(oldTracker);
 }

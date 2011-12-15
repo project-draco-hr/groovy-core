@@ -1,0 +1,21 @@
+{
+  String ret=theType.isArray() ? theType.getComponentType().getName() + "[]" : theType.getName();
+  GenericsType[] genericsTypes=theType.getGenericsTypes();
+  if (genericsTypes == null || genericsTypes.length == 0)   return ret;
+  if (genericsTypes.length == 1 && genericsTypes[0].isPlaceholder() && theType.getName().equals("java.lang.Object")) {
+    return genericsTypes[0].getName();
+  }
+  ret+="<";
+  for (int i=0; i < genericsTypes.length; i++) {
+    if (i != 0)     ret+=", ";
+    GenericsType type=genericsTypes[i];
+    if (type.isPlaceholder() && visited.contains(type.getName())) {
+      ret+=type.getName();
+    }
+ else {
+      ret+=type.toString(visited);
+    }
+  }
+  ret+=">";
+  return ret;
+}

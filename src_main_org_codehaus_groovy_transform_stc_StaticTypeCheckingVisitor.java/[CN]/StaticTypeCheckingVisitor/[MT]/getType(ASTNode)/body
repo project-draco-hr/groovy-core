@@ -9,6 +9,11 @@
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
       return getType((Expression)variable);
     }
+    if (variable instanceof Parameter) {
+      Parameter parameter=(Parameter)variable;
+      ClassNode type=forLoopVariableTypes.get(parameter);
+      if (type != null)       return type;
+    }
   }
  else   if (exp instanceof PropertyExpression) {
     PropertyExpression pexp=(PropertyExpression)exp;
@@ -56,6 +61,28 @@
   if (exp instanceof MethodNode) {
     ClassNode ret=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
     return ret != null ? ret : ((MethodNode)exp).getReturnType();
+  }
+  if (exp instanceof ClosureExpression) {
+    ClassNode irt=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    if (irt != null) {
+      irt=wrapTypeIfNecessary(irt);
+      ClassNode result=CLOSURE_TYPE.getPlainNodeReference();
+      result.setGenericsTypes(new GenericsType[]{new GenericsType(irt)});
+      return result;
+    }
+  }
+  if (exp instanceof RangeExpression) {
+    ClassNode plain=ClassHelper.RANGE_TYPE.getPlainNodeReference();
+    RangeExpression re=(RangeExpression)exp;
+    ClassNode fromType=getType(re.getFrom());
+    ClassNode toType=getType(re.getTo());
+    if (fromType.equals(toType)) {
+      plain.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(fromType))});
+    }
+ else {
+      plain.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(lowestUpperBound(fromType,toType)))});
+    }
+    return plain;
   }
   return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }

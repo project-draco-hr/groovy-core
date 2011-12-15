@@ -1,0 +1,17 @@
+{
+  Object value=constantExpression.getValue();
+  if (value == null)   return constantExpression;
+  ConstantExpression result;
+  ClassNode type=constantExpression.getType();
+  if (ClassHelper.isPrimitiveType(type))   return constantExpression;
+  if (value instanceof String && ((String)value).length() == 1) {
+    result=new ConstantExpression(((String)value).charAt(0));
+    result.setType(ClassHelper.char_TYPE);
+  }
+ else {
+    type=ClassHelper.getUnwrapper(type);
+    result=new ConstantExpression(value,true);
+    result.setType(type);
+  }
+  return result;
+}

@@ -1,0 +1,15 @@
+{
+  if (isPrimitiveType(source))   source=getWrapper(source);
+  if (source.equals(type))   return source;
+  if (type.isInterface()) {
+    for (    ClassNode interfaceNode : source.getAllInterfaces()) {
+      if (interfaceNode.equals(type)) {
+        ClassNode parameterizedInterface=GenericsUtils.parameterizeInterfaceGenerics(source,interfaceNode);
+        return parameterizedInterface;
+      }
+    }
+  }
+  ClassNode superClass=source.getUnresolvedSuperClass();
+  if (superClass != null)   return findGenericsTypeHolderForClass(superClass,type);
+  return null;
+}

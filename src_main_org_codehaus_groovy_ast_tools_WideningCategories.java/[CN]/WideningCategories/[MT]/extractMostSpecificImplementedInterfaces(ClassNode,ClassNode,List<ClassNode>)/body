@@ -1,0 +1,14 @@
+{
+  if (type.implementsInterface(inode))   result.add(inode);
+ else {
+    ClassNode[] interfaces=inode.getInterfaces();
+    for (    ClassNode interfaceNode : interfaces) {
+      if (type.implementsInterface(interfaceNode))       result.add(interfaceNode);
+    }
+    if (result.isEmpty() && interfaces.length > 0) {
+      for (      ClassNode interfaceNode : interfaces) {
+        extractMostSpecificImplementedInterfaces(type,interfaceNode,result);
+      }
+    }
+  }
+}

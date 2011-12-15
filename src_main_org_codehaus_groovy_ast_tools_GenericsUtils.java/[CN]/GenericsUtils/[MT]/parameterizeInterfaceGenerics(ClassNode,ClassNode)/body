@@ -1,0 +1,36 @@
+{
+  ClassNode interfaceFromClassNode=null;
+  ClassNode[] interfaces=classNode.getInterfaces();
+  for (  ClassNode node : interfaces) {
+    if (node.equals(anInterface)) {
+      interfaceFromClassNode=node;
+      break;
+    }
+ else     if (node.implementsInterface(anInterface)) {
+      return parameterizeInterfaceGenerics(parameterizeInterfaceGenerics(classNode,node),anInterface);
+    }
+  }
+  if (interfaceFromClassNode == null && classNode.getUnresolvedSuperClass() != null) {
+    return parameterizeInterfaceGenerics(classNode.getUnresolvedSuperClass(),anInterface);
+  }
+  if (interfaceFromClassNode == null) {
+    return anInterface;
+  }
+  Map<String,GenericsType> parameters=new HashMap<String,GenericsType>();
+  extractPlaceholders(classNode,parameters);
+  ClassNode node=interfaceFromClassNode.getPlainNodeReference();
+  GenericsType[] interfaceGTs=interfaceFromClassNode.getGenericsTypes();
+  GenericsType[] types=new GenericsType[interfaceGTs.length];
+  for (int i=0; i < interfaceGTs.length; i++) {
+    GenericsType interfaceGT=interfaceGTs[i];
+    types[i]=interfaceGT;
+    if (interfaceGT.isPlaceholder()) {
+      String name=interfaceGT.getName();
+      if (parameters.containsKey(name)) {
+        types[i]=parameters.get(name);
+      }
+    }
+  }
+  node.setGenericsTypes(types);
+  return node;
+}

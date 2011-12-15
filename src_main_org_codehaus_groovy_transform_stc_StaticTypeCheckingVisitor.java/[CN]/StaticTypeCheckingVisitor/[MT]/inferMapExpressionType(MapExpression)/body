@@ -10,11 +10,11 @@
       keyTypes.add(getType(entryExpression.getKeyExpression()));
       valueTypes.add(getType(entryExpression.getValueExpression()));
     }
-    ClassNode keyType=getWrapper(firstCommonSuperType(keyTypes));
-    ClassNode valueType=getWrapper(firstCommonSuperType(valueTypes));
+    ClassNode keyType=getWrapper(lowestUpperBound(keyTypes));
+    ClassNode valueType=getWrapper(lowestUpperBound(valueTypes));
     if (!OBJECT_TYPE.equals(keyType) || !OBJECT_TYPE.equals(valueType)) {
       ClassNode inferred=mapType.getPlainNodeReference();
-      inferred.setGenericsTypes(new GenericsType[]{new GenericsType(keyType),new GenericsType(valueType)});
+      inferred.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(keyType)),new GenericsType(wrapTypeIfNecessary(valueType))});
       return inferred;
     }
   }

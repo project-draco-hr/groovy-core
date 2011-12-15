@@ -7,7 +7,13 @@
     }
     ExpressionStatement statement=new ExpressionStatement(new BinaryExpression(fe,Token.newSymbol(Types.EQUAL,fieldNode.getLineNumber(),fieldNode.getColumnNumber()),expression));
     if (fieldNode.isStatic()) {
-      if (expression instanceof ConstantExpression) {
+      Expression initialValueExpression=fieldNode.getInitialValueExpression();
+      if (initialValueExpression instanceof ConstantExpression) {
+        ConstantExpression cexp=(ConstantExpression)initialValueExpression;
+        cexp=transformToPrimitiveConstantIfPossible(cexp);
+        if (ClassHelper.isStaticConstantInitializerType(cexp.getType()) && cexp.getType().equals(fieldNode.getType())) {
+          return;
+        }
         staticList.add(0,statement);
       }
  else {

@@ -2,8 +2,16 @@
   super.visitCastExpression(expression);
   if (!expression.isCoerce()) {
     ClassNode targetType=expression.getType();
-    ClassNode expressionType=getType(expression.getExpression());
-    if (isNumberCategory(getWrapper(targetType)) && isNumberCategory(getWrapper(expressionType))) {
+    Expression source=expression.getExpression();
+    boolean sourceIsNull=source instanceof ConstantExpression && ((ConstantExpression)source).getValue() == null;
+    ClassNode expressionType=getType(source);
+    if (targetType.equals(char_TYPE) && expressionType == STRING_TYPE && source instanceof ConstantExpression && source.getText().length() == 1) {
+    }
+ else     if (targetType.equals(Character_TYPE) && (expressionType == STRING_TYPE || sourceIsNull) && (sourceIsNull || source instanceof ConstantExpression && source.getText().length() == 1)) {
+    }
+ else     if (isNumberCategory(getWrapper(targetType)) && isNumberCategory(getWrapper(expressionType))) {
+    }
+ else     if (sourceIsNull && !isPrimitiveType(targetType)) {
     }
  else     if (!isAssignableTo(expressionType,targetType)) {
       addStaticTypeError("Inconvertible types: cannot cast " + expressionType.getName() + " to "+ targetType.getName(),expression);

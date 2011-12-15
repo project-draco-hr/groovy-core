@@ -21,7 +21,7 @@
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
       ClassNode listNode=new ClassNode(List.class);
-      listNode.setGenericsTypes(new GenericsType[]{new GenericsType(subcallReturnType)});
+      listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
       return;
     }
@@ -120,6 +120,10 @@
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
+          if (objectExpression instanceof VariableExpression) {
+            VariableExpression var=(VariableExpression)objectExpression;
+            if (var.isClosureSharedVariable())             secondPassExpressions.add(call);
+          }
         }
  else {
           addStaticTypeError("Reference to method is ambiguous. Cannot choose between " + mn,call);

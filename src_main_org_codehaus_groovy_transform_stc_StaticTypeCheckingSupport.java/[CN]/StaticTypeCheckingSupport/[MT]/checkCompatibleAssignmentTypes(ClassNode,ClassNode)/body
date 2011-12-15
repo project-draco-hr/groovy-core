@@ -1,20 +1,3 @@
 {
-  ClassNode leftRedirect=left.redirect();
-  ClassNode rightRedirect=right.redirect();
-  if (leftRedirect == OBJECT_TYPE || leftRedirect == STRING_TYPE || leftRedirect == boolean_TYPE || leftRedirect == Boolean_TYPE || leftRedirect == CLASS_Type) {
-    return true;
-  }
-  if (leftRedirect.isDerivedFrom(Enum_Type) && (rightRedirect == GSTRING_TYPE || rightRedirect == STRING_TYPE)) {
-    return true;
-  }
-  if (rightRedirect.implementsInterface(MAP_TYPE) || rightRedirect.implementsInterface(Collection_TYPE) || rightRedirect.equals(MAP_TYPE)|| rightRedirect.equals(Collection_TYPE)|| rightRedirect.isArray()) {
-    if (leftRedirect.isArray() && rightRedirect.isArray()) {
-      return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType());
-    }
-    return true;
-  }
-  if (right.isDerivedFrom(left) || left.implementsInterface(right))   return true;
-  if (isPrimitiveType(leftRedirect) && isPrimitiveType(rightRedirect))   return true;
-  if (isNumberType(leftRedirect) && isNumberType(rightRedirect))   return true;
-  return false;
+  return checkCompatibleAssignmentTypes(left,right,null);
 }

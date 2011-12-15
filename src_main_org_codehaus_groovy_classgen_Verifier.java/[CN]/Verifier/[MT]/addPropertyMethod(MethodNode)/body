@@ -1,3 +1,25 @@
 {
   classNode.addMethod(method);
+  List<MethodNode> abstractMethods=classNode.getAbstractMethods();
+  if (abstractMethods == null)   return;
+  String methodName=method.getName();
+  Parameter[] parameters=method.getParameters();
+  ClassNode methodReturnType=method.getReturnType();
+  for (  MethodNode node : abstractMethods) {
+    if (node.getName().equals(methodName) && node.getParameters().length == parameters.length) {
+      if (parameters.length == 1) {
+        ClassNode abstractMethodParameterType=node.getParameters()[0].getType();
+        ClassNode methodParameterType=parameters[0].getType();
+        if (!methodParameterType.isDerivedFrom(abstractMethodParameterType) && !methodParameterType.implementsInterface(abstractMethodParameterType)) {
+          continue;
+        }
+      }
+      ClassNode nodeReturnType=node.getReturnType();
+      if (!methodReturnType.isDerivedFrom(nodeReturnType) && !methodReturnType.implementsInterface(nodeReturnType)) {
+        continue;
+      }
+      node.setModifiers(node.getModifiers() ^ ACC_ABSTRACT);
+      node.setCode(method.getCode());
+    }
+  }
 }

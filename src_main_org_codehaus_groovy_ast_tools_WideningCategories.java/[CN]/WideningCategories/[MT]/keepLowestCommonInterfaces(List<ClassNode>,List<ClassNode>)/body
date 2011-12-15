@@ -1,0 +1,10 @@
+{
+  if (fromA == null || fromB == null)   return EMPTY_CLASSNODE_LIST;
+  HashSet<ClassNode> common=new HashSet<ClassNode>(fromA);
+  common.retainAll(fromB);
+  List<ClassNode> result=new ArrayList<ClassNode>(common.size());
+  for (  ClassNode classNode : common) {
+    addMostSpecificInterface(classNode,result);
+  }
+  return result;
+}
