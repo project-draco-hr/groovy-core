@@ -1,17 +1,20 @@
 {
   TypeChooser typeChooser=controller.getTypeChooser();
   ClassNode classNode=controller.getClassNode();
-  ClassNode rType=ClassHelper.getWrapper(typeChooser.resolveType(receiver,classNode));
-  ClassNode aType=ClassHelper.getWrapper(typeChooser.resolveType(arguments,classNode));
-  if (rType.isDerivedFrom(ClassHelper.Number_TYPE) && aType.isDerivedFrom(ClassHelper.Number_TYPE)) {
-    OperandStack operandStack=controller.getOperandStack();
-    int m1=operandStack.getStackLength();
-    prepareSiteAndReceiver(receiver,message,false,controller.getCompileStack().isLHS());
-    visitBoxedArgument(arguments);
-    int m2=operandStack.getStackLength();
-    MethodVisitor mv=controller.getMethodVisitor();
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/dgmimpl/NumberNumber" + MetaClassHelper.capitalize(message),message,"(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-    controller.getOperandStack().replace(ClassHelper.Number_TYPE,m2 - m1);
+  ClassNode rType=typeChooser.resolveType(receiver,classNode);
+  ClassNode aType=typeChooser.resolveType(arguments,classNode);
+  if (ClassHelper.getWrapper(rType).isDerivedFrom(ClassHelper.Number_TYPE) && ClassHelper.getWrapper(aType).isDerivedFrom(ClassHelper.Number_TYPE)) {
+    if ("plus".equals(message) || "minus".equals(message) || "multiply".equals(message)|| "div".equals(message)) {
+      writeNumberNumberCall(receiver,message,arguments);
+      return;
+    }
+ else     if ("power".equals(message)) {
+      writePowerCall(receiver,arguments,rType,aType);
+      return;
+    }
+  }
+ else   if (ClassHelper.STRING_TYPE.equals(rType) && "plus".equals(message)) {
+    writeStringPlusCall(receiver,message,arguments);
     return;
   }
   throw new GroovyBugError("This method should not have been called. Please try to create a simple example reproducing this error and file" + "a bug report at http://jira.codehaus.org/browse/GROOVY");
