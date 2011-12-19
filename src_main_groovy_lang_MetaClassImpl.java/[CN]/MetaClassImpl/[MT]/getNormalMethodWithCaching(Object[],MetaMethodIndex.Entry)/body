@@ -7,10 +7,8 @@
     MetaMethod method=cacheEntry.method;
     if (method != null)     return method;
   }
-  cacheEntry=new MetaMethodIndex.CacheEntry();
   final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
-  cacheEntry.params=classes;
-  cacheEntry.method=(MetaMethod)chooseMethod(e.name,methods,classes);
+  cacheEntry=new MetaMethodIndex.CacheEntry(classes,(MetaMethod)chooseMethod(e.name,methods,classes));
   e.cachedMethod=cacheEntry;
   return cacheEntry.method;
 }
