@@ -1,0 +1,11 @@
+{
+  super.visitRangeExpression(expression);
+  ClassNode fromType=getWrapper(getType(expression.getFrom()));
+  ClassNode toType=getWrapper(getType(expression.getTo()));
+  if (Integer_TYPE.equals(fromType) && Integer_TYPE.equals(toType)) {
+    storeType(expression,ClassHelper.make(IntRange.class));
+  }
+ else {
+    storeType(expression,ClassHelper.make(ObjectRange.class));
+  }
+}
