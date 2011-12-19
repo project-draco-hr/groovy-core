@@ -11,9 +11,7 @@
   if (cacheEntry != null && (sameClasses(cacheEntry.params,params))) {
     return cacheEntry.method;
   }
-  cacheEntry=new MetaMethodIndex.CacheEntry();
-  cacheEntry.params=params;
-  cacheEntry.method=(MetaMethod)chooseMethod(e.name,methods,params);
+  cacheEntry=new MetaMethodIndex.CacheEntry(params,(MetaMethod)chooseMethod(e.name,methods,params));
   e.cachedMethod=cacheEntry;
   return cacheEntry.method;
 }
