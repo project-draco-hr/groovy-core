@@ -6,10 +6,8 @@
     if (cacheEntry != null && MetaClassHelper.sameClasses(cacheEntry.params,arguments,e.staticMethods instanceof MetaMethod)) {
       return cacheEntry.method;
     }
-    cacheEntry=new MetaMethodIndex.CacheEntry();
     final Class[] classes=MetaClassHelper.convertToTypeArray(arguments);
-    cacheEntry.params=classes;
-    cacheEntry.method=pickStaticMethod(methodName,classes);
+    cacheEntry=new MetaMethodIndex.CacheEntry(classes,pickStaticMethod(methodName,classes));
     e.cachedStaticMethod=cacheEntry;
     return cacheEntry.method;
   }
