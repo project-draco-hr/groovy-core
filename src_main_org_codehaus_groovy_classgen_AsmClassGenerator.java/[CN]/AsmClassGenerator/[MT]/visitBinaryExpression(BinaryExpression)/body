@@ -1,5 +1,11 @@
 {
   onLineNumber(expression,"visitBinaryExpression: \"" + expression.getOperation().getText() + "\" ");
-  controller.getBinaryExpHelper().eval(expression);
-  controller.getAssertionWriter().record(expression.getOperation());
+  try {
+    controller.getBinaryExpHelper().eval(expression);
+    controller.getAssertionWriter().record(expression.getOperation());
+  }
+ catch (  Throwable e) {
+    e.printStackTrace();
+    System.out.println("expression = " + expression.getText());
+  }
 }

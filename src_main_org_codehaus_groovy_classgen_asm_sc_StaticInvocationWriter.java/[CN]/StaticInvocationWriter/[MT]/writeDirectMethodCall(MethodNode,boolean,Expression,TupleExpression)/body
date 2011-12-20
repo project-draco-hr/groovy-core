@@ -1,0 +1,27 @@
+{
+  if (target instanceof ExtensionMethodNode) {
+    MethodNode node=((ExtensionMethodNode)target).getExtensionMethodNode();
+    String methodName=target.getName();
+    MethodVisitor mv=controller.getMethodVisitor();
+    int argumentsToRemove=0;
+    List<Expression> argumentList=new LinkedList<Expression>(args.getExpressions());
+    argumentList.add(0,receiver);
+    Parameter[] parameters=node.getParameters();
+    loadArguments(argumentList,parameters);
+    String owner=BytecodeHelper.getClassInternalName(node.getDeclaringClass());
+    String desc=BytecodeHelper.getMethodDescriptor(target.getReturnType(),parameters);
+    mv.visitMethodInsn(INVOKESTATIC,owner,methodName,desc);
+    ClassNode ret=target.getReturnType().redirect();
+    if (ret == ClassHelper.VOID_TYPE) {
+      ret=ClassHelper.OBJECT_TYPE;
+      mv.visitInsn(ACONST_NULL);
+    }
+    argumentsToRemove+=argumentList.size();
+    controller.getOperandStack().remove(argumentsToRemove);
+    controller.getOperandStack().push(ret);
+    return true;
+  }
+ else {
+    return super.writeDirectMethodCall(target,implicitThis,receiver,args);
+  }
+}
