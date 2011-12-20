@@ -17,5 +17,9 @@
     writeStringPlusCall(receiver,message,arguments);
     return;
   }
+ else   if (rType.isArray() && "getAt".equals(message)) {
+    writeArrayGet(receiver,arguments,rType,aType);
+    return;
+  }
   throw new GroovyBugError("This method should not have been called. Please try to create a simple example reproducing this error and file" + "a bug report at http://jira.codehaus.org/browse/GROOVY");
 }
