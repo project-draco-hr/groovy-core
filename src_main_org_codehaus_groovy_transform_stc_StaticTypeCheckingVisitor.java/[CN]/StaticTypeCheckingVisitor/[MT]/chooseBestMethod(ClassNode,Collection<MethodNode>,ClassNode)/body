@@ -9,7 +9,7 @@
       int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
       if (lastArgMatch >= 0)       lastArgMatch++;
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
-      if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist++;
+      if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist+=getDistance(receiver,m.getDeclaringClass());
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
         bestChoices.add(m);
