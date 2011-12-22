@@ -9,5 +9,7 @@
     controller.getOperandStack().replace(ClassHelper.int_TYPE);
     return;
   }
-  throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText());
+  if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
+  throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText() + "."+ methodName);
 }

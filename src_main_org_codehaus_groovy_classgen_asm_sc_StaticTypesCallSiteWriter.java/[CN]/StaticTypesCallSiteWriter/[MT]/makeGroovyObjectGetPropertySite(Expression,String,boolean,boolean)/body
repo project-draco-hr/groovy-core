@@ -1,2 +1,11 @@
 {
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode classNode=controller.getClassNode();
+  ClassNode receiverType=typeChooser.resolveType(receiver,classNode);
+  if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
+  MethodCallExpression call=new MethodCallExpression(receiver,"getProperty",new ArgumentListExpression(new ConstantExpression(methodName)));
+  call.setMethodTarget(GROOVYOBJECT_GETPROPERTY_METHOD);
+  call.visit(controller.getAcg());
+  return;
 }
