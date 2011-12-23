@@ -1,5 +1,5 @@
 {
-  if (receiver.equals(compare))   return 0;
+  if (receiver.equals(compare) || compare.isInterface() && receiver.implementsInterface(compare))   return 0;
   ClassNode superClass=compare.getSuperClass();
   if (superClass == null)   return 1;
   return 1 + getDistance(receiver,superClass);

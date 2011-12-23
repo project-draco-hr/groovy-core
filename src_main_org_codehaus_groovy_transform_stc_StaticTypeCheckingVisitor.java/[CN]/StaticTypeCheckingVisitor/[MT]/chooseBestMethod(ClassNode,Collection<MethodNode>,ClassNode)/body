@@ -20,25 +20,33 @@
       }
     }
  else     if (isVargs(params)) {
-      if (params.length == args.length + 1) {
-        if (bestDist > 1) {
-          bestChoices.clear();
-          bestChoices.add(m);
-          bestDist=1;
-        }
+      boolean firstParamMatches=true;
+      if (args.length > 0) {
+        Parameter[] firstParams=new Parameter[params.length - 1];
+        System.arraycopy(params,0,firstParams,0,firstParams.length);
+        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
       }
- else {
-        int dist=excessArgumentsMatchesVargsParameter(params,args);
-        if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))         dist++;
-        dist++;
-        if (params.length < args.length && dist >= 0) {
-          if (dist >= 0 && dist < bestDist) {
+      if (firstParamMatches) {
+        if (params.length == args.length + 1) {
+          if (bestDist > 1) {
             bestChoices.clear();
             bestChoices.add(m);
-            bestDist=dist;
+            bestDist=1;
           }
- else           if (dist >= 0 && dist == bestDist) {
-            bestChoices.add(m);
+        }
+ else {
+          int dist=excessArgumentsMatchesVargsParameter(params,args);
+          if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))           dist++;
+          dist++;
+          if (params.length < args.length && dist >= 0) {
+            if (dist >= 0 && dist < bestDist) {
+              bestChoices.clear();
+              bestChoices.add(m);
+              bestDist=dist;
+            }
+ else             if (dist >= 0 && dist == bestDist) {
+              bestChoices.add(m);
+            }
           }
         }
       }
