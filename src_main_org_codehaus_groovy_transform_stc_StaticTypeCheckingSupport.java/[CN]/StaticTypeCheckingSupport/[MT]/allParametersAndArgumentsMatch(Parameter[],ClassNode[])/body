@@ -2,9 +2,10 @@
   if (params == null)   return args.length == 0 ? 0 : -1;
   int dist=0;
   for (int i=0; i < params.length; i++) {
-    if (!isAssignableTo(args[i],params[i].getType()))     return -1;
+    ClassNode paramType=params[i].getType();
+    if (!isAssignableTo(args[i],paramType))     return -1;
  else {
-      if (!params[i].getType().equals(args[i]))       dist++;
+      if (!paramType.equals(args[i]))       dist+=getDistance(args[i],paramType);
     }
   }
   return dist;

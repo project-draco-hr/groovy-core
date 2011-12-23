@@ -1,0 +1,11 @@
+{
+  if (lhs instanceof VariableExpression) {
+    Variable var=findTargetVariable((VariableExpression)lhs);
+    if (var instanceof DynamicVariable)     return getType(lhs);
+    return var.getOriginType();
+  }
+  if (lhs instanceof FieldExpression) {
+    return ((FieldExpression)lhs).getField().getOriginType();
+  }
+  return getType(lhs);
+}
