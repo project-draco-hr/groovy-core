@@ -71,5 +71,18 @@
       return result;
     }
   }
+  if (exp instanceof RangeExpression) {
+    ClassNode plain=ClassHelper.RANGE_TYPE.getPlainNodeReference();
+    RangeExpression re=(RangeExpression)exp;
+    ClassNode fromType=getType(re.getFrom());
+    ClassNode toType=getType(re.getTo());
+    if (fromType.equals(toType)) {
+      plain.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(fromType))});
+    }
+ else {
+      plain.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(lowestUpperBound(fromType,toType)))});
+    }
+    return plain;
+  }
   return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }

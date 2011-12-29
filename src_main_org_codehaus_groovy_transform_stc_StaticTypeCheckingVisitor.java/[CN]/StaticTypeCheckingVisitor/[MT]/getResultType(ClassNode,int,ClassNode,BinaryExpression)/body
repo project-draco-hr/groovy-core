@@ -15,12 +15,8 @@
       return right;
     }
     if (leftExpression instanceof VariableExpression) {
-      VariableExpression target=(VariableExpression)leftExpression;
-      if (target.getAccessedVariable() instanceof VariableExpression && target.getAccessedVariable() != leftExpression) {
-        target=(VariableExpression)target.getAccessedVariable();
-      }
-      ClassNode initialType=target.getType().redirect();
-      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| isPrimitiveType(initialType)) {
+      ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
+      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)) {
         return initialType;
       }
     }
@@ -41,10 +37,9 @@
  else   if (isNumberType(leftRedirect) && isNumberType(rightRedirect)) {
     if (isOperationInGroup(op)) {
       if (isIntCategory(leftRedirect) && isIntCategory(rightRedirect))       return int_TYPE;
-      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return Long_TYPE;
-      if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
-      if (isBigDecCategory(leftRedirect) && isBigDecCategory(rightRedirect))       return BigDecimal_TYPE;
-      if (isDoubleCategory(leftRedirect) && isDoubleCategory(rightRedirect))       return double_TYPE;
+      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return long_TYPE;
+      if (isFloat(leftRedirect) && isFloat(rightRedirect))       return float_TYPE;
+      if (isDouble(leftRedirect) && isDouble(rightRedirect))       return double_TYPE;
     }
  else     if (isPowerOperator(op)) {
       return Number_TYPE;
@@ -62,11 +57,26 @@
   if (isShiftOperation(operationName) && isNumberCategory(leftRedirect) && (isIntCategory(rightRedirect) || isLongCategory(rightRedirect))) {
     return leftRedirect;
   }
+  if (DIVIDE == op || DIVIDE_EQUAL == op) {
+    if (isFloatingCategory(leftRedirect) || isFloatingCategory(rightRedirect)) {
+      return Double_TYPE;
+    }
+ else     if (BigDecimal_TYPE.equals(leftRedirect) || BigDecimal_TYPE.equals(rightRedirect)) {
+      return BigDecimal_TYPE;
+    }
+  }
+ else   if (isOperationInGroup(op)) {
+    if (isNumberCategory(getWrapper(leftRedirect)) && isNumberCategory(getWrapper(rightRedirect))) {
+      return getGroupOperationResultType(leftRedirect,rightRedirect);
+    }
+  }
   MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
   if (method != null) {
+    typeCheckMethodsWithGenerics(left,new ClassNode[]{right},Collections.singletonList(method),expr);
+    if (isAssignment(op))     return left;
     if (isCompareToBoolean(op))     return boolean_TYPE;
     if (op == COMPARE_TO)     return int_TYPE;
-    return getType(method);
+    return inferReturnTypeGenerics(left,method,new ArgumentListExpression(expr.getRightExpression()));
   }
   return null;
 }

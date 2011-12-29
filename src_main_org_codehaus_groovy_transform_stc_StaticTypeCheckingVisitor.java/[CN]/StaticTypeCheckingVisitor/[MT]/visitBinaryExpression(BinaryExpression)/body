@@ -18,7 +18,11 @@
     if (rightExpression instanceof ConstructorCallExpression) {
       inferDiamondType((ConstructorCallExpression)rightExpression,lType);
     }
-    typeCheckAssignment(expression,leftExpression,lType,rightExpression,resultType);
+    ClassNode originType=getOriginalDeclarationType(leftExpression);
+    typeCheckAssignment(expression,leftExpression,originType,rightExpression,resultType);
+    if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
+      resultType=originType;
+    }
     if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
       Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
       if (accessedVariable instanceof VariableExpression) {
