@@ -1,10 +1,7 @@
 {
-  ClassNode classNode=mn != null ? mn.getDeclaringClass() : null;
+  ClassNode classNode=getClassNode();
+  if (classNode.implementsInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
+    classNode=classNode.getOuterClass();
+  }
   isInStaticallyCheckedMethod=mn != null && (!mn.getAnnotations(COMPILE_STATIC_ANNOTATION).isEmpty() || !classNode.getAnnotations(COMPILE_STATIC_ANNOTATION).isEmpty() || classNode.getNodeMetaData(STATIC_COMPILE_NODE) != null);
-  if (isInStaticallyCheckedMethod) {
-    System.out.println("Entering statically compiled method: " + mn.getDeclaringClass() + "#"+ mn);
-  }
- else   if (mn != null) {
-    System.out.println("Entering dynamically compiled method: " + mn.getDeclaringClass() + "#"+ mn);
-  }
 }
