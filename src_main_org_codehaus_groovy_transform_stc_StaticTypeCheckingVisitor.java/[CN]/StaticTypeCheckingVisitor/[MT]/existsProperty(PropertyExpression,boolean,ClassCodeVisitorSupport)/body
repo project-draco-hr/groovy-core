@@ -13,9 +13,7 @@
   tests.add(clazz);
   if (objectExpression instanceof ClassExpression)   tests.add(CLASS_Type);
   if (!temporaryIfBranchTypeInformation.empty()) {
-    Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.peek();
-    Object key=extractTemporaryTypeInfoKey(objectExpression);
-    List<ClassNode> classNodes=info.get(key);
+    List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
     if (classNodes != null)     tests.addAll(classNodes);
   }
   if (lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
