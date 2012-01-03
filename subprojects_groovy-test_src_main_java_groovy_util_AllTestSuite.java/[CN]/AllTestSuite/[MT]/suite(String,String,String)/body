@@ -1,0 +1,18 @@
+{
+  AllTestSuite suite=new AllTestSuite();
+  List<String> filenames=excludesPattern.length() > 0 ? finder.getFileNames(basedir,pattern,excludesPattern) : finder.getFileNames(basedir,pattern);
+  for (  String filename : filenames) {
+    LOG.finest("trying to load " + filename);
+    try {
+      suite.loadTest(filename);
+    }
+ catch (    CompilationFailedException cfe) {
+      cfe.printStackTrace();
+      throw new RuntimeException("CompilationFailedException when loading " + filename,cfe);
+    }
+catch (    IOException ioe) {
+      throw new RuntimeException("IOException when loading " + filename,ioe);
+    }
+  }
+  return suite;
+}

@@ -1,8 +1,8 @@
 {
   if (descriptor == null)   return;
-  for (  Map.Entry<String,Map> item : descriptor.entrySet()) {
+  for (  Map.Entry<String,Map<String,Map<String,Object>>> item : descriptor.entrySet()) {
     if (item.getValue().containsKey("methodListener")) {
-      Map listener=(Map)item.getValue().get("methodListener");
+      Map<String,Object> listener=item.getValue().get("methodListener");
       String target=(String)listener.get("target");
       methodListeners.add(target);
       String listenerType=(String)listener.get("type");
