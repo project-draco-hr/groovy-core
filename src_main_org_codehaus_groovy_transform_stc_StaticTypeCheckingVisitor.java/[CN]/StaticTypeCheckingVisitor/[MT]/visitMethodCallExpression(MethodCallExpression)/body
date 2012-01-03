@@ -113,9 +113,7 @@
         receivers.add(CLASS_Type);
       }
       if (!temporaryIfBranchTypeInformation.empty()) {
-        final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-        Object key=extractTemporaryTypeInfoKey(objectExpression);
-        List<ClassNode> potentialReceiverType=tempo.get(key);
+        List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
         if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
       }
       List<MethodNode> mn=null;
