@@ -1,0 +1,38 @@
+{
+  try {
+    Options options=FileSystemCompiler.createCompilationOptions();
+    PosixParser cliParser=new PosixParser();
+    CommandLine cli;
+    cli=cliParser.parse(options,commandLine);
+    configuration=FileSystemCompiler.generateCompilerConfigurationFromOptions(cli);
+    configuration.setScriptExtensions(getScriptExtensions());
+    String tmpExtension=getScriptExtension();
+    if (tmpExtension.startsWith("*."))     tmpExtension=tmpExtension.substring(1);
+    configuration.setDefaultScriptExtension(tmpExtension);
+    String[] filenames=FileSystemCompiler.generateFileNamesFromOptions(cli);
+    boolean fileNameErrors=filenames == null;
+    fileNameErrors=fileNameErrors && !FileSystemCompiler.validateFiles(filenames);
+    if (targetBytecode != null) {
+      configuration.setTargetBytecode(targetBytecode);
+    }
+    if (!fileNameErrors) {
+      FileSystemCompiler.doCompilation(configuration,makeCompileUnit(),filenames,false);
+    }
+  }
+ catch (  Exception re) {
+    Throwable t=re;
+    if ((re.getClass() == RuntimeException.class) && (re.getCause() != null)) {
+      t=re.getCause();
+    }
+    StringWriter writer=new StringWriter();
+    new ErrorReporter(t,false).write(new PrintWriter(writer));
+    String message=writer.toString();
+    if (failOnError) {
+      log(message,Project.MSG_INFO);
+      throw new BuildException("Compilation Failed",t,getLocation());
+    }
+ else {
+      log(message,Project.MSG_ERR);
+    }
+  }
+}

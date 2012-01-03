@@ -1,0 +1,33 @@
+{
+  int count=0;
+  if (fork) {
+    for (    File srcFile : compileList) {
+      count+=srcFile.getPath().length();
+    }
+    for (    Object commandLineArg : commandLineList) {
+      count+=commandLineArg.toString().length();
+    }
+    count+=compileList.length;
+    count+=commandLineList.size();
+  }
+  if (fork && (count > 32767)) {
+    try {
+      File tempFile=File.createTempFile("groovyc-files-",".txt");
+      temporaryFiles.add(tempFile);
+      PrintWriter pw=new PrintWriter(new FileWriter(tempFile));
+      for (      File srcFile : compileList) {
+        pw.println(srcFile.getPath());
+      }
+      pw.close();
+      commandLineList.add("@" + tempFile.getPath());
+    }
+ catch (    IOException e) {
+      log("Error creating file list",e,Project.MSG_ERR);
+    }
+  }
+ else {
+    for (    File srcFile : compileList) {
+      commandLineList.add(srcFile.getPath());
+    }
+  }
+}

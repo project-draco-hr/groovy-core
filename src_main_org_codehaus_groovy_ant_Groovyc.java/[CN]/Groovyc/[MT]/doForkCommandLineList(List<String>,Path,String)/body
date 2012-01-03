@@ -1,0 +1,38 @@
+{
+  if (!fork)   return;
+  String javaHome;
+  if (forkJDK != null) {
+    javaHome=forkJDK.getPath();
+  }
+ else {
+    javaHome=System.getProperty("java.home");
+  }
+  if (includeAntRuntime) {
+    classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
+  }
+  if (includeJavaRuntime) {
+    classpath.addJavaRuntime();
+  }
+  commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+  commandLineList.add("-classpath");
+  commandLineList.add(classpath.toString());
+  final String fileEncodingProp=System.getProperty("file.encoding");
+  if ((fileEncodingProp != null) && !fileEncodingProp.equals("")) {
+    commandLineList.add("-Dfile.encoding=" + fileEncodingProp);
+  }
+  if (targetBytecode != null) {
+    commandLineList.add("-Dgroovy.target.bytecode=" + targetBytecode);
+  }
+  if ((memoryInitialSize != null) && !memoryInitialSize.equals("")) {
+    commandLineList.add("-Xms" + memoryInitialSize);
+  }
+  if ((memoryMaximumSize != null) && !memoryMaximumSize.equals("")) {
+    commandLineList.add("-Xmx" + memoryMaximumSize);
+  }
+  if (!"*.groovy".equals(getScriptExtension())) {
+    String tmpExtension=getScriptExtension();
+    if (tmpExtension.startsWith("*."))     tmpExtension=tmpExtension.substring(1);
+    commandLineList.add("-Dgroovy.default.scriptExtension=" + tmpExtension);
+  }
+  commandLineList.add(FileSystemCompilerFacade.class.getName());
+}
