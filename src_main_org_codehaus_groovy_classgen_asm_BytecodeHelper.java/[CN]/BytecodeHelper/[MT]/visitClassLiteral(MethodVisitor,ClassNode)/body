@@ -1,0 +1,8 @@
+{
+  if (ClassHelper.isPrimitiveType(classNode)) {
+    mv.visitFieldInsn(GETSTATIC,getClassInternalName(ClassHelper.getWrapper(classNode)),"TYPE","Ljava/lang/Class;");
+  }
+ else {
+    mv.visitLdcInsn(org.objectweb.asm.Type.getType(getTypeDescription(classNode)));
+  }
+}
