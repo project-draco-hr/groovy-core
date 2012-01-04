@@ -37,13 +37,11 @@
     return;
   }
   boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,inferredRightExpressionType,rightExpression);
+  if (leftExpression.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY) != null && (leftExpression instanceof PropertyExpression)) {
+    addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
+  }
   if (!compatible) {
-    if ((leftRedirect == READONLY_PROPERTY_RETURN) && (leftExpression instanceof PropertyExpression)) {
-      addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
-    }
- else {
-      addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
-    }
+    addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
