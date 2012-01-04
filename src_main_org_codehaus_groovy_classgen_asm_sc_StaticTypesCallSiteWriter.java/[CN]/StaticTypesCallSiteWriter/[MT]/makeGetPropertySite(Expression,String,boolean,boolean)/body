@@ -1,0 +1,15 @@
+{
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode classNode=controller.getClassNode();
+  ClassNode receiverType=typeChooser.resolveType(receiver,classNode);
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (receiverType.isArray() && methodName.equals("length")) {
+    receiver.visit(controller.getAcg());
+    mv.visitInsn(ARRAYLENGTH);
+    controller.getOperandStack().replace(ClassHelper.int_TYPE);
+    return;
+  }
+  if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
+  throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText() + "."+ methodName);
+}

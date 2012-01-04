@@ -1,0 +1,15 @@
+{
+  String getterName="get" + MetaClassHelper.capitalize(methodName);
+  MethodNode getterNode=receiverType.getGetterMethod(getterName);
+  if (getterNode == null) {
+    getterName="is" + MetaClassHelper.capitalize(methodName);
+    getterNode=receiverType.getGetterMethod(getterName);
+  }
+  if (getterNode != null) {
+    MethodCallExpression call=new MethodCallExpression(receiver,getterName,new ArgumentListExpression());
+    call.setMethodTarget(getterNode);
+    call.visit(controller.getAcg());
+    return true;
+  }
+  return false;
+}

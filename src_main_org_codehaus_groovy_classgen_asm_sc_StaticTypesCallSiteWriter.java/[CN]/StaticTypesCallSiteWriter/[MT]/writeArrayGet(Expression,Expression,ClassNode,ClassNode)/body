@@ -1,0 +1,10 @@
+{
+  OperandStack operandStack=controller.getOperandStack();
+  int m1=operandStack.getStackLength();
+  receiver.visit(controller.getAcg());
+  arguments.visit(controller.getAcg());
+  operandStack.doGroovyCast(ClassHelper.int_TYPE);
+  int m2=operandStack.getStackLength();
+  controller.getMethodVisitor().visitInsn(AALOAD);
+  operandStack.replace(rType.getComponentType(),m2 - m1);
+}

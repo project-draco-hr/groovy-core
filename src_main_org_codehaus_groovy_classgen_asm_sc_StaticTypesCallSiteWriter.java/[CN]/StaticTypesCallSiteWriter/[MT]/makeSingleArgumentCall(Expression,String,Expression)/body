@@ -1,0 +1,25 @@
+{
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode classNode=controller.getClassNode();
+  ClassNode rType=typeChooser.resolveType(receiver,classNode);
+  ClassNode aType=typeChooser.resolveType(arguments,classNode);
+  if (ClassHelper.getWrapper(rType).isDerivedFrom(ClassHelper.Number_TYPE) && ClassHelper.getWrapper(aType).isDerivedFrom(ClassHelper.Number_TYPE)) {
+    if ("plus".equals(message) || "minus".equals(message) || "multiply".equals(message)|| "div".equals(message)) {
+      writeNumberNumberCall(receiver,message,arguments);
+      return;
+    }
+ else     if ("power".equals(message)) {
+      writePowerCall(receiver,arguments,rType,aType);
+      return;
+    }
+  }
+ else   if (ClassHelper.STRING_TYPE.equals(rType) && "plus".equals(message)) {
+    writeStringPlusCall(receiver,message,arguments);
+    return;
+  }
+ else   if (rType.isArray() && "getAt".equals(message)) {
+    writeArrayGet(receiver,arguments,rType,aType);
+    return;
+  }
+  throw new GroovyBugError("This method should not have been called. Please try to create a simple example reproducing this error and file" + "a bug report at http://jira.codehaus.org/browse/GROOVY");
+}
