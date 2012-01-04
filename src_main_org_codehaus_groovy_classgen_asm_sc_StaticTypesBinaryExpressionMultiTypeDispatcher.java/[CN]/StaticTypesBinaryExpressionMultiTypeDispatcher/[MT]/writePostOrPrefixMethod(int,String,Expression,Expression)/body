@@ -1,0 +1,13 @@
+{
+  MethodNode mn=(MethodNode)orig.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  if (mn != null) {
+    WriterController controller=getController();
+    controller.getOperandStack().pop();
+    MethodCallExpression call=new MethodCallExpression(expression,method,ArgumentListExpression.EMPTY_ARGUMENTS);
+    call.setMethodTarget(mn);
+    call.visit(controller.getAcg());
+  }
+ else {
+    super.writePostOrPrefixMethod(op,method,expression,orig);
+  }
+}
