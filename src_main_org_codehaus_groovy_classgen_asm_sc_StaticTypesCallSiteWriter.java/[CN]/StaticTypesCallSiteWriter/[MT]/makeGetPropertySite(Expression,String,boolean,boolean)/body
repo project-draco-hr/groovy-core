@@ -9,6 +9,12 @@
     controller.getOperandStack().replace(ClassHelper.int_TYPE);
     return;
   }
+ else   if (receiverType.implementsInterface(COLLECTION_TYPE) && ("size".equals(methodName) || "length".equals(methodName))) {
+    MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
+    expr.setMethodTarget(COLLECTION_SIZE_METHOD);
+    expr.visit(controller.getAcg());
+    return;
+  }
   if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
   throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText() + "."+ methodName);

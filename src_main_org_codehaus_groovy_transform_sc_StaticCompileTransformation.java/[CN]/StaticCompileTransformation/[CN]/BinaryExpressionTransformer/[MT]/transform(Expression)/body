@@ -1,0 +1,28 @@
+{
+  if (expr instanceof StaticMethodCallExpression) {
+    StaticMethodCallExpression orig=(StaticMethodCallExpression)expr;
+    MethodNode target=(MethodNode)orig.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+    if (target != null) {
+      MethodCallExpression call=new MethodCallExpression(new ClassExpression(orig.getOwnerType()),orig.getMethod(),orig.getArguments());
+      call.setMethodTarget(target);
+      return call;
+    }
+  }
+  if (expr instanceof BinaryExpression) {
+    Object[] list=(Object[])expr.getNodeMetaData(BINARY_EXP_TARGET);
+    if (list != null) {
+      BinaryExpression bin=(BinaryExpression)expr;
+      Token operation=bin.getOperation();
+      boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operation.getType());
+      MethodNode node=(MethodNode)list[0];
+      String name=(String)list[1];
+      Expression left=transform(bin.getLeftExpression());
+      Expression right=transform(bin.getRightExpression());
+      MethodCallExpression call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
+      call.setMethodTarget(node);
+      if (!isAssignment)       return call;
+      return new BinaryExpression(left,Token.newSymbol("=",operation.getStartLine(),operation.getStartColumn()),call);
+    }
+  }
+  return super.transform(expr);
+}

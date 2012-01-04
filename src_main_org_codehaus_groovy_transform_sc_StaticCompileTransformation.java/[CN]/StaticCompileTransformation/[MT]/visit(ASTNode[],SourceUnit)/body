@@ -1,6 +1,11 @@
 {
-  for (  ClassNode classNode : source.getAST().getClasses()) {
+  BinaryExpressionTransformer transformer=new BinaryExpressionTransformer(source);
+  List<ClassNode> classes=source.getAST().getClasses();
+  for (  ClassNode classNode : classes) {
     classNode.putNodeMetaData(WriterControllerFactory.class,factory);
   }
   super.visit(nodes,source);
+  for (  ClassNode classNode : classes) {
+    transformer.visitClass(classNode);
+  }
 }
