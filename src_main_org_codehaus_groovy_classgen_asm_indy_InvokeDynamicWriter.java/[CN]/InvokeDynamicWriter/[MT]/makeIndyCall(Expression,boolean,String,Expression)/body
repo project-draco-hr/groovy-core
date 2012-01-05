@@ -4,7 +4,9 @@
   compileStack.pushLHS(false);
   new ConstantExpression(0,false).visit(controller.getAcg());
   String sig="(Ljava/lang/Integer;";
+  compileStack.pushImplicitThis(implicitThis);
   receiver.visit(controller.getAcg());
+  compileStack.popImplicitThis();
   sig+=getTypeDescription(operandStack.getTopOperand());
   int numberOfArguments=1;
   ArgumentListExpression ae=makeArgumentList(arguments);
