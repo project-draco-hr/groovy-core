@@ -1,0 +1,13 @@
+{
+  ClassNode closureClass=super.createClosureClass(expression,mods);
+  List<MethodNode> methods=closureClass.getMethods("call");
+  List<MethodNode> doCall=closureClass.getMethods("doCall");
+  if (doCall.size() != 1) {
+    throw new GroovyBugError("Expected to find one (1) doCall method on generated closure, but found " + doCall.size());
+  }
+  MethodTargetCompletionVisitor visitor=new MethodTargetCompletionVisitor(doCall.get(0));
+  for (  MethodNode method : methods) {
+    visitor.visitMethod(method);
+  }
+  return closureClass;
+}

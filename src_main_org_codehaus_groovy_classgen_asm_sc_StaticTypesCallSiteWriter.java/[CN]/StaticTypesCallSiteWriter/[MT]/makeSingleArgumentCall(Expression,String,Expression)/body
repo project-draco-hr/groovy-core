@@ -21,5 +21,13 @@
     writeArrayGet(receiver,arguments,rType,aType);
     return;
   }
+  List<MethodNode> nodes=StaticTypeCheckingSupport.findDGMMethodsByNameAndArguments(rType,message,new ClassNode[]{aType});
+  if (nodes.size() == 1) {
+    MethodNode methodNode=nodes.get(0);
+    MethodCallExpression call=new MethodCallExpression(receiver,message,arguments);
+    call.setMethodTarget(methodNode);
+    call.visit(controller.getAcg());
+    return;
+  }
   throw new GroovyBugError("This method should not have been called. Please try to create a simple example reproducing this error and file" + "a bug report at http://jira.codehaus.org/browse/GROOVY");
 }
