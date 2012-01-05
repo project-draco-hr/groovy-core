@@ -4,7 +4,19 @@
   int bestDist=Integer.MAX_VALUE;
   for (  MethodNode m : methods) {
     Parameter[] params=parameterizeArguments(receiver,m);
-    if (params.length == args.length) {
+    if (params.length > args.length && !isVargs(params)) {
+      int dist=allParametersAndArgumentsMatchWithDefaultParams(params,args);
+      if (dist >= 0 && !receiver.equals(m.getDeclaringClass()))       dist+=getDistance(receiver,m.getDeclaringClass());
+      if (dist >= 0 && dist < bestDist) {
+        bestChoices.clear();
+        bestChoices.add(m);
+        bestDist=dist;
+      }
+ else       if (dist >= 0 && dist == bestDist) {
+        bestChoices.add(m);
+      }
+    }
+ else     if (params.length == args.length) {
       int allPMatch=allParametersAndArgumentsMatch(params,args);
       int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
       if (lastArgMatch >= 0)       lastArgMatch++;
