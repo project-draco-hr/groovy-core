@@ -1,6 +1,9 @@
 {
   if (ci.useMetaClass)   return;
   Class[] parameters=ci.handle.type().parameterArray();
+  if (ci.args.length != parameters.length) {
+    throw new GroovyBugError("at this point argument array length and parameter array length should be the same");
+  }
   for (int i=1; i < ci.args.length; i++) {
     Object arg=ci.args[i];
     if (arg == null)     continue;
