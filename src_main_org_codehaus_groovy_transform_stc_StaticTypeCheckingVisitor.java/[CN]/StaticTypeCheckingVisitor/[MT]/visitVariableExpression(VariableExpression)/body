@@ -17,6 +17,16 @@
         return;
       }
     }
+    if (pluginFactory != null) {
+      TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
+      if (plugin != null) {
+        ClassNode type=plugin.resolveDynamicVariableType(dyn);
+        if (type != null) {
+          storeType(vexp,type);
+          return;
+        }
+      }
+    }
     addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
   }
 }
