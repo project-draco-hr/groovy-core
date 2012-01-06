@@ -21,4 +21,19 @@
     test=MethodHandles.dropArguments(test,0,ci.targetType.parameterType(0));
   }
   ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
+  Class[] pt=ci.handle.type().parameterArray();
+  for (int i=1; i < ci.args.length; i++) {
+    Object arg=ci.args[i];
+    if (arg == null) {
+      test=IS_NULL.asType(MethodType.methodType(boolean.class,pt[i + 1]));
+    }
+ else {
+      Class argClass=arg.getClass();
+      test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i + 1]));
+      Class[] drops=new Class[i + 1];
+      for (int j=0; j < drops.length; j++)       drops[j]=pt[j];
+      test=MethodHandles.dropArguments(test,0,drops);
+    }
+    ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
+  }
 }
