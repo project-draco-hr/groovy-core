@@ -55,7 +55,12 @@
         MethodNode directMethodCallCandidate=mn.get(0);
         ClassNode currentClassNode=classNode;
         classNode=directMethodCallCandidate.getDeclaringClass();
-        visitMethod(directMethodCallCandidate);
+        for (        ClassNode node : source.getAST().getClasses()) {
+          if (isClassInnerClassOrEqualTo(classNode,node)) {
+            visitMethod(directMethodCallCandidate);
+            break;
+          }
+        }
         classNode=currentClassNode;
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
