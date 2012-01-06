@@ -1,0 +1,5 @@
+{
+  if (info.handle == null)   return;
+  MethodType returnType=MethodType.methodType(info.handle.type().returnType(),GroovyRuntimeException.class);
+  info.handle=MethodHandles.catchException(info.handle,GroovyRuntimeException.class,UNWRAP_EXCEPTION.asType(returnType));
+}
