@@ -1,0 +1,31 @@
+{
+  CallInfo callInfo=new CallInfo();
+  callInfo.targetType=callSite.type();
+  callInfo.methodName=methodName;
+  callInfo.args=arguments;
+  callInfo.callSite=callSite;
+  callInfo.sender=sender;
+  callInfo.safeNavigation=safeNavigation && arguments[0] == null;
+  if (!setNullForSafeNavigation(callInfo)) {
+    MetaClass mc=getMetaClass(callInfo.args[0]);
+    chooseMethod(mc,callInfo);
+    setHandleForMetaMethod(callInfo);
+    setMetaClassCallHandleIfNedded(mc,callInfo);
+    correctWrapping(callInfo);
+    correctParameterLenth(callInfo);
+    correctCoerce(callInfo);
+    correctNullReceiver(callInfo);
+    dropDummyReceiver(callInfo);
+    try {
+      callInfo.handle=callInfo.handle.asType(callInfo.targetType);
+    }
+ catch (    Exception e) {
+      System.err.println("ERROR while processing " + methodName);
+      throw e;
+    }
+    addExceptionHandler(callInfo);
+  }
+  setGuards(callInfo,callInfo.args[0]);
+  callSite.setTarget(callInfo.handle);
+  return callInfo.handle.invokeWithArguments(repack(dummyReceiver,callInfo.args));
+}
