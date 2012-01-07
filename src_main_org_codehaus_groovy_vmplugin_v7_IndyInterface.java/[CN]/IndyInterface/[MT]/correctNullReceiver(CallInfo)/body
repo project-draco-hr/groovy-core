@@ -1,5 +1,5 @@
 {
   if (ci.args[0] != null || ci.useMetaClass)   return;
-  MethodHandle nullReceiverDroppingHandle=MethodHandles.dropArguments(NULLOBJECT_REF,0,ci.handle.type().parameterType(0));
-  ci.handle=MethodHandles.filterArguments(ci.handle,0,nullReceiverDroppingHandle);
+  ci.handle=ci.handle.bindTo(NullObject.getNullObject());
+  ci.handle=MethodHandles.dropArguments(ci.handle,0,ci.targetType.parameterType(1));
 }
