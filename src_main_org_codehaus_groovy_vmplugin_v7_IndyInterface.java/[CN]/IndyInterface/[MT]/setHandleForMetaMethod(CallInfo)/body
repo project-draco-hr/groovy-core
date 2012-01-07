@@ -21,6 +21,12 @@
   }
  else   if (info.method != null) {
     info.handle=META_METHOD_INVOKER;
-    info.handle=info.handle.bindTo(info.method).asCollector(Object[].class,info.targetType.parameterCount() - 2);
+    info.handle=info.handle.bindTo(info.method);
+    if (info.method.getNativeParameterTypes().length == 1 && info.args.length == 1) {
+      info.handle=MethodHandles.insertArguments(info.handle,1,new Object[]{new Object[]{null}});
+    }
+ else {
+      info.handle=info.handle.asCollector(Object[].class,info.targetType.parameterCount() - 2);
+    }
   }
 }

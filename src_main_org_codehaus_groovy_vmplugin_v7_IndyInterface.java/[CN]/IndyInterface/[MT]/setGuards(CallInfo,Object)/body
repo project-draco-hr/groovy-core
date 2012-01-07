@@ -30,10 +30,10 @@
  else {
       Class argClass=arg.getClass();
       test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i + 1]));
-      Class[] drops=new Class[i + 1];
-      for (int j=0; j < drops.length; j++)       drops[j]=pt[j];
-      test=MethodHandles.dropArguments(test,0,drops);
     }
+    Class[] drops=new Class[i + 1];
+    for (int j=0; j < drops.length; j++)     drops[j]=pt[j];
+    test=MethodHandles.dropArguments(test,0,drops);
     ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
   }
 }
