@@ -4,7 +4,7 @@
   MethodHandle test=null;
   if (receiver instanceof GroovyObject) {
     GroovyObject go=(GroovyObject)receiver;
-    MetaClassImpl mc=(MetaClassImpl)go.getMetaClass();
+    MetaClass mc=(MetaClass)go.getMetaClass();
     test=SAME_MC.bindTo(mc);
     test=test.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(1)));
     test=MethodHandles.dropArguments(test,0,ci.targetType.parameterType(0));
