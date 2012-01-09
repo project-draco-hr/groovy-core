@@ -14,7 +14,7 @@
         if (methodGenericTypes.length == 1) {
           ClassNode nodeType=getWrapper(methodGenericTypes[0].getType());
           ClassNode actualType=getWrapper(arguments[argNum]);
-          if (!actualType.isDerivedFrom(nodeType)) {
+          if (!implementsInterfaceOrIsSubclassOf(actualType,nodeType)) {
             failure++;
           }
         }
@@ -27,8 +27,10 @@
         if (methodGenericTypes.length == 1) {
           ClassNode nodeType=getWrapper(methodGenericTypes[0].getType());
           ClassNode actualType=getWrapper(arguments[argNum].getComponentType());
-          if (!actualType.equals(nodeType)) {
+          if (!implementsInterfaceOrIsSubclassOf(actualType,nodeType)) {
             failure++;
+            GenericsType baseGT=methodGenericTypes[0];
+            methodGenericTypes[0]=new GenericsType(baseGT.getType(),baseGT.getUpperBounds(),baseGT.getLowerBound());
             methodGenericTypes[0].setType(methodGenericTypes[0].getType().makeArray());
           }
         }

@@ -1,0 +1,7 @@
+{
+  super.visitClassExpression(expression);
+  ClassNode cn=(ClassNode)expression.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  if (cn == null) {
+    storeType(expression,getType(expression));
+  }
+}

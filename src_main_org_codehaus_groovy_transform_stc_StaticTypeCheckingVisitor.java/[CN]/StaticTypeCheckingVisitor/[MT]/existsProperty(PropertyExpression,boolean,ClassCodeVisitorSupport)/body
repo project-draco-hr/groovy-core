@@ -11,7 +11,9 @@
   }
   List<ClassNode> tests=new LinkedList<ClassNode>();
   tests.add(clazz);
-  if (objectExpression instanceof ClassExpression)   tests.add(CLASS_Type);
+  if (clazz.equals(CLASS_Type) && clazz.getGenericsTypes() != null) {
+    tests.add(clazz.getGenericsTypes()[0].getType());
+  }
   if (!temporaryIfBranchTypeInformation.empty()) {
     List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
     if (classNodes != null)     tests.addAll(classNodes);
