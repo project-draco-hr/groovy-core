@@ -20,7 +20,7 @@
       subcall.setColumnNumber(call.getColumnNumber());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
-      ClassNode listNode=new ClassNode(List.class);
+      ClassNode listNode=LIST_TYPE.getPlainNodeReference();
       listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
       return;
@@ -109,8 +109,9 @@
       List<ClassNode> receivers=new LinkedList<ClassNode>();
       if (!withReceiverList.isEmpty())       receivers.addAll(withReceiverList);
       receivers.add(receiver);
-      if (objectExpression instanceof ClassExpression) {
-        receivers.add(CLASS_Type);
+      if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
+        GenericsType clazzGT=receiver.getGenericsTypes()[0];
+        receivers.add(clazzGT.getType());
       }
       if (!temporaryIfBranchTypeInformation.empty()) {
         List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
