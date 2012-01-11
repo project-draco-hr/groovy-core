@@ -1,3 +1,10 @@
 {
-  return type.equals(superOrInterface) || type.isDerivedFrom(superOrInterface) || type.implementsInterface(superOrInterface);
+  boolean result=type.equals(superOrInterface) || type.isDerivedFrom(superOrInterface) || type.implementsInterface(superOrInterface)|| type == UNKNOWN_PARAMETER_TYPE;
+  if (result) {
+    return true;
+  }
+  if (type.isArray() && superOrInterface.isArray()) {
+    return implementsInterfaceOrIsSubclassOf(type.getComponentType(),superOrInterface.getComponentType());
+  }
+  return false;
 }
