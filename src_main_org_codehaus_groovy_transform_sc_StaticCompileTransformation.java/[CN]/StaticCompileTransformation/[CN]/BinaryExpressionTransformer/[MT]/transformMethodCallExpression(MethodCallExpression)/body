@@ -1,0 +1,40 @@
+{
+  Expression objectExpression=expr.getObjectExpression();
+  ClassNode type=typeChooser.resolveType(objectExpression,classNode);
+  if (type != null && type.isArray()) {
+    String method=expr.getMethodAsString();
+    if ("getAt".equals(method)) {
+      Expression arguments=expr.getArguments();
+      if (arguments instanceof TupleExpression) {
+        List<Expression> argList=((TupleExpression)arguments).getExpressions();
+        if (argList.size() == 1) {
+          Expression indexExpr=argList.get(0);
+          ClassNode argType=typeChooser.resolveType(indexExpr,classNode);
+          if (argType != null && ClassHelper.Integer_TYPE == ClassHelper.getWrapper(argType)) {
+            BinaryExpression binaryExpression=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
+            binaryExpression.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,type.getComponentType());
+            return binaryExpression;
+          }
+        }
+      }
+    }
+    if ("putAt".equals(method)) {
+      Expression arguments=expr.getArguments();
+      if (arguments instanceof TupleExpression) {
+        List<Expression> argList=((TupleExpression)arguments).getExpressions();
+        if (argList.size() == 2) {
+          Expression indexExpr=argList.get(0);
+          Expression objExpr=argList.get(1);
+          ClassNode argType=typeChooser.resolveType(indexExpr,classNode);
+          if (argType != null && ClassHelper.Integer_TYPE == ClassHelper.getWrapper(argType)) {
+            BinaryExpression arrayGet=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
+            arrayGet.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,type.getComponentType());
+            BinaryExpression assignment=new BinaryExpression(arrayGet,Token.newSymbol("=",objExpr.getLineNumber(),objExpr.getColumnNumber()),objExpr);
+            return assignment;
+          }
+        }
+      }
+    }
+  }
+  return super.transform(expr);
+}
