@@ -42,7 +42,7 @@
     for (    ClassNode currentReceiver : receivers) {
       mn=findMethod(currentReceiver,name,args);
       if (!mn.isEmpty()) {
-        typeCheckMethodsWithGenerics(currentReceiver,args,mn,call);
+        if (mn.size() == 1)         typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
         chosenReceiver=currentReceiver;
         break;
       }
