@@ -3,6 +3,7 @@
   ClassNode type=typeChooser.resolveType(objectExpression,classNode);
   if (type != null && type.isArray()) {
     String method=expr.getMethodAsString();
+    ClassNode componentType=type.getComponentType();
     if ("getAt".equals(method)) {
       Expression arguments=expr.getArguments();
       if (arguments instanceof TupleExpression) {
@@ -10,9 +11,13 @@
         if (argList.size() == 1) {
           Expression indexExpr=argList.get(0);
           ClassNode argType=typeChooser.resolveType(indexExpr,classNode);
-          if (argType != null && ClassHelper.Integer_TYPE == ClassHelper.getWrapper(argType)) {
+          ClassNode indexType=ClassHelper.getWrapper(argType);
+          if (componentType.isEnum() && ClassHelper.Number_TYPE == indexType) {
+            indexType=ClassHelper.Integer_TYPE;
+          }
+          if (argType != null && ClassHelper.Integer_TYPE == indexType) {
             BinaryExpression binaryExpression=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
-            binaryExpression.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,type.getComponentType());
+            binaryExpression.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,componentType);
             return binaryExpression;
           }
         }
@@ -28,7 +33,7 @@
           ClassNode argType=typeChooser.resolveType(indexExpr,classNode);
           if (argType != null && ClassHelper.Integer_TYPE == ClassHelper.getWrapper(argType)) {
             BinaryExpression arrayGet=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
-            arrayGet.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,type.getComponentType());
+            arrayGet.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,componentType);
             BinaryExpression assignment=new BinaryExpression(arrayGet,Token.newSymbol("=",objExpr.getLineNumber(),objExpr.getColumnNumber()),objExpr);
             return assignment;
           }
