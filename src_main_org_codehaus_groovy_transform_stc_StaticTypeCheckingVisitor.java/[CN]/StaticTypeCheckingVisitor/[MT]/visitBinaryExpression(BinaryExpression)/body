@@ -5,7 +5,7 @@
   final Expression rightExpression=expression.getRightExpression();
   ClassNode rType=getType(rightExpression);
   if (rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null) {
-    if (!isPrimitiveType(lType))     rType=lType;
+    if (!isPrimitiveType(lType))     rType=UNKNOWN_PARAMETER_TYPE;
   }
   int op=expression.getOperation().getType();
   ClassNode resultType=getResultType(lType,op,rType,expression);
