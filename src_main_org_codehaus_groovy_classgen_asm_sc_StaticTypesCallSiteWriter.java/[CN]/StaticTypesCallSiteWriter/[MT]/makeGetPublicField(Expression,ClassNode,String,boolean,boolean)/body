@@ -8,7 +8,8 @@
     receiver.visit(controller.getAcg());
     if (implicitThis)     compileStack.popImplicitThis();
     MethodVisitor mv=controller.getMethodVisitor();
-    mv.visitFieldInsn(GETFIELD,BytecodeHelper.getClassInternalName(receiverType),fieldName,BytecodeHelper.getTypeDescription(field.getOriginType()));
+    int opcode=field.isStatic() ? GETSTATIC : GETFIELD;
+    mv.visitFieldInsn(opcode,BytecodeHelper.getClassInternalName(receiverType),fieldName,BytecodeHelper.getTypeDescription(field.getOriginType()));
     controller.getOperandStack().replace(field.getOriginType());
     return true;
   }

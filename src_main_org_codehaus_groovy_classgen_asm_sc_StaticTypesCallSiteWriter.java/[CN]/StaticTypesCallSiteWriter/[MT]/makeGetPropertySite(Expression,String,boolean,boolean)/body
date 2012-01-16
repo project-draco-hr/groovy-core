@@ -2,6 +2,11 @@
   TypeChooser typeChooser=controller.getTypeChooser();
   ClassNode classNode=controller.getClassNode();
   ClassNode receiverType=typeChooser.resolveType(receiver,classNode);
+  boolean isClassReceiver=false;
+  if (receiverType.equals(ClassHelper.CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
+    isClassReceiver=true;
+    receiverType=receiverType.getGenericsTypes()[0].getType();
+  }
   MethodVisitor mv=controller.getMethodVisitor();
   if (receiverType.isArray() && methodName.equals("length")) {
     receiver.visit(controller.getAcg());
@@ -17,15 +22,14 @@
   }
   if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
-  if (receiver instanceof ClassExpression) {
-    if (receiverType.isEnum() || ClassHelper.CLASS_Type.equals(receiverType) && receiverType.getGenericsTypes() != null && receiverType.getGenericsTypes()[0].getType().isEnum()) {
-      if (ClassHelper.CLASS_Type.equals(receiverType)) {
-        receiverType=receiverType.getGenericsTypes()[0].getType();
-      }
-      mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
-      controller.getOperandStack().push(receiverType);
-      return;
-    }
+  if (receiverType.isEnum()) {
+    mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
+    controller.getOperandStack().push(receiverType);
+    return;
+  }
+  if (isClassReceiver) {
+    if (makeGetPublicField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
+    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
   }
   throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText() + "."+ methodName);
 }
