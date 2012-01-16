@@ -2,5 +2,10 @@
   ClassNode prec=classNode;
   classNode=node;
   super.visitClass(node);
+  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
+  while (innerClasses.hasNext()) {
+    InnerClassNode innerClassNode=innerClasses.next();
+    visitClass(innerClassNode);
+  }
   classNode=prec;
 }
