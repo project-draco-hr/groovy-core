@@ -23,11 +23,14 @@
  else     if (possibleTokenType == STRING) {
       StringBuilder currentContent=new StringBuilder("\"");
       reader.read();
+      boolean isEscaped=false;
       for (; ; ) {
         int read=reader.read();
         if (read == -1)         return null;
-        currentContent.append((char)read);
-        if (currentContent.charAt(currentContent.length() - 1) == '"' && currentContent.charAt(currentContent.length() - 2) != '\\' && possibleTokenType.matching(currentContent.toString())) {
+        isEscaped=(!isEscaped && currentContent.charAt(currentContent.length() - 1) == '\\');
+        char charRead=(char)read;
+        currentContent.append(charRead);
+        if (charRead == '"' && !isEscaped && possibleTokenType.matching(currentContent.toString())) {
           token.setEndLine(reader.getLine());
           token.setEndColumn(reader.getColumn());
           token.setText(unescape(currentContent.toString()));
