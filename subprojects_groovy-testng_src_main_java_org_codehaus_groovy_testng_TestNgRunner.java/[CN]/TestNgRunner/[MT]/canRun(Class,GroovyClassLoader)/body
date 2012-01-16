@@ -1,4 +1,8 @@
 {
+  char version=System.getProperty("java.version").charAt(2);
+  if (version < '5') {
+    return false;
+  }
   boolean isTest=false;
   try {
     try {
@@ -9,8 +13,7 @@
       }
  else {
         Method[] methods=scriptClass.getMethods();
-        for (int i=0; i < methods.length; i++) {
-          Method method=methods[i];
+        for (        Method method : methods) {
           annotation=method.getAnnotation(testAnnotationClass);
           if (annotation != null) {
             isTest=true;

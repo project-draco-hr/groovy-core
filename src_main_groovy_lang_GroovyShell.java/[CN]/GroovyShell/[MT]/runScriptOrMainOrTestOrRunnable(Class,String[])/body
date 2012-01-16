@@ -34,9 +34,12 @@ catch (    IllegalAccessException e) {
     if (isJUnit4Test(scriptClass)) {
       return runJUnit4Test(scriptClass);
     }
-    if (isTestNgTest(scriptClass)) {
-      return runTestNgTest(scriptClass);
+    for (    Map.Entry<String,GroovyRunner> entry : GroovySystem.RUNNER_REGISTRY.entrySet()) {
+      GroovyRunner runner=entry.getValue();
+      if (runner != null && runner.canRun(scriptClass,this.loader)) {
+        return runner.run(scriptClass,this.loader);
+      }
     }
-    throw new GroovyRuntimeException("This script or class could not be run.\n" + "It should either: \n" + "- have a main method, \n"+ "- be a JUnit test, TestNG test or extend GroovyTestCase, \n"+ "- or implement the Runnable interface.");
+    throw new GroovyRuntimeException("This script or class could not be run.\n" + "It should either:\n" + "- have a main method,\n"+ "- be a JUnit test or extend GroovyTestCase\n"+ "- be compatible with a registered script runner\n"+ "- or implement the Runnable interface.");
   }
 }
