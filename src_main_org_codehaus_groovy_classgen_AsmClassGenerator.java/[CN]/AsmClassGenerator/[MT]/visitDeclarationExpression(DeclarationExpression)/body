@@ -1,4 +1,10 @@
 {
   onLineNumber(expression,"visitDeclarationExpression: \"" + expression.getText() + "\"");
-  controller.getBinaryExpHelper().evaluateEqual(expression,true);
+  try {
+    controller.getBinaryExpHelper().evaluateEqual(expression,true);
+  }
+ catch (  Throwable e) {
+    System.err.println("expression = " + expression.getText());
+    e.printStackTrace();
+  }
 }

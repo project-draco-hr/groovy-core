@@ -17,9 +17,24 @@
   int argumentsToRemove=0;
   if (opcode != INVOKESTATIC) {
     if (receiver != null) {
-      compileStack.pushImplicitThis(implicitThis);
-      receiver.visit(controller.getAcg());
-      operandStack.doGroovyCast(target.getDeclaringClass());
+      ClassNode declaringClass=target.getDeclaringClass();
+      ClassNode classNode=controller.getClassNode();
+      if (implicitThis && !classNode.isDerivedFrom(declaringClass) && !classNode.implementsInterface(declaringClass)&& classNode instanceof InnerClassNode) {
+        compileStack.pushImplicitThis(false);
+        if (controller.isInClosure()) {
+          Expression expr=new PropertyExpression(VariableExpression.THIS_EXPRESSION,"owner");
+          expr.visit(controller.getAcg());
+        }
+ else {
+          Expression expr=new PropertyExpression(new ClassExpression(declaringClass),"this");
+          expr.visit(controller.getAcg());
+        }
+      }
+ else {
+        compileStack.pushImplicitThis(implicitThis);
+        receiver.visit(controller.getAcg());
+      }
+      operandStack.doGroovyCast(declaringClass);
       compileStack.popImplicitThis();
       argumentsToRemove++;
     }
