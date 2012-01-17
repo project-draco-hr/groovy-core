@@ -33,7 +33,7 @@
     callArguments.visit(this);
   }
   ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
-  final boolean isCallOnClosure=isClosureCall(name,objectExpression);
+  final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
     withReceiverList.add(0,receiver);
@@ -79,7 +79,13 @@
           Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
           if (type == null) {
             if (variable.getType().equals(CLOSURE_TYPE)) {
-              type=variable.getType().getGenericsTypes()[0].getType();
+              GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
+              if (genericsTypes != null && !genericsTypes[0].isPlaceholder()) {
+                type=genericsTypes[0].getType();
+              }
+ else {
+                type=OBJECT_TYPE;
+              }
             }
           }
           if (type != null) {
