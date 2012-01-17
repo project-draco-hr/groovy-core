@@ -1,4 +1,9 @@
 {
+  FieldNode field=classNode.getDeclaredField(name);
+  if (field != null) {
+    if (!classNode.hasPossibleMethod(name,arguments))     return true;
+  }
+  if (!"call".equals(name) && !"doCall".equals(name))   return false;
   if (objectExpression instanceof ClosureExpression)   return true;
   if (objectExpression == VariableExpression.THIS_EXPRESSION) {
     FieldNode fieldNode=classNode.getDeclaredField(name);
