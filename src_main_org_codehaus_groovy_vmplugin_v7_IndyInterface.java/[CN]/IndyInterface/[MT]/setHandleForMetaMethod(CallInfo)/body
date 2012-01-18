@@ -25,6 +25,10 @@
     if (info.method.getNativeParameterTypes().length == 1 && info.args.length == 1) {
       info.handle=MethodHandles.insertArguments(info.handle,1,new Object[]{new Object[]{null}});
     }
+ else     if (info.method.isVargsMethod()) {
+      info.handle=info.handle.asCollector(Object[].class,info.targetType.parameterCount() - 2);
+      info.handle=info.handle.asCollector(Object[].class,info.targetType.parameterCount() - 2);
+    }
  else {
       info.handle=info.handle.asCollector(Object[].class,info.targetType.parameterCount() - 2);
     }
