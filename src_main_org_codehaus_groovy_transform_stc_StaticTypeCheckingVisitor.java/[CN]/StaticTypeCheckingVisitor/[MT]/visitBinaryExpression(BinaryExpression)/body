@@ -23,6 +23,9 @@
     if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
       resultType=originType;
     }
+ else     if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
+      resultType=lType;
+    }
     if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
       Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
       if (accessedVariable instanceof VariableExpression) {
