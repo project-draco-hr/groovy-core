@@ -1,0 +1,57 @@
+{
+  if (para.length == 0)   return;
+  ClassNode lastParaType=para[para.length - 1].getOriginType();
+  AsmClassGenerator acg=controller.getAcg();
+  OperandStack operandStack=controller.getOperandStack();
+  if (lastParaType.isArray() && (argumentList.size() > para.length || argumentList.size() == para.length - 1 || !argumentList.get(para.length - 1).getType().isArray())) {
+    int stackLen=operandStack.getStackLength() + argumentList.size();
+    MethodVisitor mv=controller.getMethodVisitor();
+    MethodVisitor orig=mv;
+    controller.setMethodVisitor(mv);
+    for (int i=0; i < para.length - 1; i++) {
+      argumentList.get(i).visit(acg);
+      operandStack.doGroovyCast(para[i].getType());
+    }
+    List<Expression> lastParams=new LinkedList<Expression>();
+    for (int i=para.length - 1; i < argumentList.size(); i++) {
+      lastParams.add(argumentList.get(i));
+    }
+    ArrayExpression array=new ArrayExpression(lastParaType.getComponentType(),lastParams);
+    array.visit(acg);
+    while (operandStack.getStackLength() < stackLen) {
+      operandStack.push(ClassHelper.OBJECT_TYPE);
+    }
+    if (argumentList.size() == para.length - 1) {
+      operandStack.remove(1);
+    }
+  }
+ else   if (argumentList.size() == para.length) {
+    for (int i=0; i < argumentList.size(); i++) {
+      argumentList.get(i).visit(acg);
+      operandStack.doGroovyCast(para[i].getType());
+    }
+  }
+ else {
+    TypeChooser typeChooser=controller.getTypeChooser();
+    ClassNode classNode=controller.getClassNode();
+    Expression[] arguments=new Expression[para.length];
+    for (int i=para.length - 1, j=argumentList.size() - 1; i >= 0; i--) {
+      Parameter curParam=para[i];
+      ClassNode curParamType=curParam.getType();
+      Expression curArg=argumentList.get(j);
+      Expression initialExpression=(Expression)curParam.getNodeMetaData(StaticTypesMarker.INITIAL_EXPRESSION);
+      ClassNode curArgType=typeChooser.resolveType(curArg,classNode);
+      if (initialExpression != null && !compatibleArgumentType(curArgType,curParamType)) {
+        arguments[i]=initialExpression;
+      }
+ else {
+        arguments[i]=curArg;
+        j--;
+      }
+    }
+    for (int i=0; i < arguments.length; i++) {
+      arguments[i].visit(acg);
+      operandStack.doGroovyCast(para[i].getType());
+    }
+  }
+}
