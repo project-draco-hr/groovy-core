@@ -6,8 +6,10 @@
   callInfo.callSite=callSite;
   callInfo.sender=sender;
   callInfo.safeNavigation=safeNavigation && arguments[0] == null;
+  callInfo.thisCall=thisCall;
   if (!setNullForSafeNavigation(callInfo)) {
     MetaClass mc=getMetaClass(callInfo.args[0]);
+    setMethodSelectionBase(callInfo,mc);
     chooseMethod(mc,callInfo);
     setHandleForMetaMethod(callInfo);
     setMetaClassCallHandleIfNedded(mc,callInfo);

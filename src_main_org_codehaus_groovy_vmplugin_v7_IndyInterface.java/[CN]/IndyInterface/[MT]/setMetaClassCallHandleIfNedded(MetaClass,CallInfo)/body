@@ -18,12 +18,7 @@
       }
       ci.handle=ci.handle.bindTo(mc);
       if (!useShortForm) {
-        if (receiver == null) {
-          ci.handle=ci.handle.bindTo(NullObject.class);
-        }
- else {
-          ci.handle=ci.handle.bindTo(receiver.getClass());
-        }
+        ci.handle=ci.handle.bindTo(ci.methodSelectionBase);
       }
       if (receiver instanceof GroovyObject) {
         ci.handle=MethodHandles.catchException(ci.handle,MissingMethodException.class,GROOVY_OBJECT_INVOKER);

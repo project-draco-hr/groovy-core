@@ -23,7 +23,8 @@
     numberOfArguments++;
   }
   sig+=")Ljava/lang/Object;";
-  controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,safe ? BSM_SAFE : BSM);
+  Handle bsmHandle=getBsmHandle(adapter,safe);
+  controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,bsmHandle);
   operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments + 1);
   compileStack.popLHS();
 }
