@@ -2,12 +2,22 @@
   List<Expression> arglist=args.getExpressions();
   ClassNode[] ret=new ClassNode[arglist.size()];
   int i=0;
+  Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.empty() ? null : temporaryIfBranchTypeInformation.peek();
   for (  Expression exp : arglist) {
     if (exp instanceof ConstantExpression && ((ConstantExpression)exp).getValue() == null) {
       ret[i]=UNKNOWN_PARAMETER_TYPE;
     }
  else {
       ret[i]=getType(exp);
+      if (exp instanceof VariableExpression && info != null) {
+        List<ClassNode> classNodes=getTemporaryTypesForExpression(exp);
+        if (classNodes != null && !classNodes.isEmpty()) {
+          ArrayList<ClassNode> arr=new ArrayList<ClassNode>(classNodes.size() + 1);
+          arr.add(ret[i]);
+          arr.addAll(classNodes);
+          ret[i]=new UnionTypeClassNode(arr.toArray(new ClassNode[arr.size()]));
+        }
+      }
     }
     i++;
   }

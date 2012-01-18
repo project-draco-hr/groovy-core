@@ -20,7 +20,7 @@
       subcall.setColumnNumber(call.getColumnNumber());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
-      ClassNode listNode=new ClassNode(List.class);
+      ClassNode listNode=LIST_TYPE.getPlainNodeReference();
       listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
       return;
@@ -57,62 +57,81 @@
     if (isWithCall) {
       callArguments.visit(this);
     }
-    List<ClassNode> receivers=new LinkedList<ClassNode>();
-    if (!withReceiverList.isEmpty())     receivers.addAll(withReceiverList);
-    receivers.add(receiver);
-    if (objectExpression instanceof ClassExpression) {
-      receivers.add(CLASS_Type);
-    }
-    if (!temporaryIfBranchTypeInformation.empty()) {
-      final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-      Object key=extractTemporaryTypeInfoKey(objectExpression);
-      List<ClassNode> potentialReceiverType=tempo.get(key);
-      if (potentialReceiverType != null)       receivers.addAll(potentialReceiverType);
-    }
-    List<MethodNode> mn=null;
-    ClassNode chosenReceiver=null;
-    for (    ClassNode currentReceiver : receivers) {
-      mn=findMethod(currentReceiver,name,args);
-      if (!mn.isEmpty()) {
-        typeCheckMethodsWithGenerics(currentReceiver,args,mn,call);
-        chosenReceiver=currentReceiver;
-        break;
+    if (isCallOnClosure) {
+      if (objectExpression == VariableExpression.THIS_EXPRESSION) {
+        FieldNode field=classNode.getDeclaredField(name);
+        ClassNode closureReturnType=field.getType().getGenericsTypes()[0].getType();
+        Object data=field.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+        if (data != null) {
+          Parameter[] parameters=(Parameter[])data;
+          typeCheckClosureCall(callArguments,args,parameters);
+        }
+        storeType(call,closureReturnType);
+      }
+ else       if (objectExpression instanceof VariableExpression) {
+        Variable variable=findTargetVariable((VariableExpression)objectExpression);
+        if (variable instanceof Expression) {
+          Object data=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+          if (data != null) {
+            Parameter[] parameters=(Parameter[])data;
+            typeCheckClosureCall(callArguments,args,parameters);
+          }
+          Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+          if (type == null) {
+            if (variable.getType().equals(CLOSURE_TYPE)) {
+              type=variable.getType().getGenericsTypes()[0].getType();
+            }
+          }
+          if (type != null) {
+            storeType(call,(ClassNode)type);
+          }
+        }
+      }
+ else       if (objectExpression instanceof ClosureExpression) {
+        Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
+        typeCheckClosureCall(callArguments,args,parameters);
+        Object data=objectExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+        if (data != null) {
+          storeType(call,(ClassNode)data);
+        }
       }
     }
-    if (mn.isEmpty()) {
-      addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
-    }
  else {
-      if (isCallOnClosure) {
-        if (objectExpression instanceof VariableExpression) {
-          Variable variable=findTargetVariable((VariableExpression)objectExpression);
-          if (variable instanceof Expression) {
-            Object data=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
-            if (data != null) {
-              Parameter[] parameters=(Parameter[])data;
-              typeCheckClosureCall(callArguments,args,parameters);
-            }
-            Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
-            if (type != null) {
-              storeType(call,(ClassNode)type);
-            }
-          }
+      List<ClassNode> receivers=new LinkedList<ClassNode>();
+      if (!withReceiverList.isEmpty())       receivers.addAll(withReceiverList);
+      receivers.add(receiver);
+      if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
+        GenericsType clazzGT=receiver.getGenericsTypes()[0];
+        receivers.add(clazzGT.getType());
+      }
+      if (!temporaryIfBranchTypeInformation.empty()) {
+        List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
+        if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
+      }
+      List<MethodNode> mn=null;
+      ClassNode chosenReceiver=null;
+      for (      ClassNode currentReceiver : receivers) {
+        mn=findMethod(currentReceiver,name,args);
+        if (!mn.isEmpty()) {
+          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
+          chosenReceiver=currentReceiver;
+          break;
         }
- else         if (objectExpression instanceof ClosureExpression) {
-          Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
-          typeCheckClosureCall(callArguments,args,parameters);
-          Object data=objectExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
-          if (data != null) {
-            storeType(call,(ClassNode)data);
-          }
-        }
+      }
+      if (mn.isEmpty()) {
+        addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
       }
  else {
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
           ClassNode currentClassNode=classNode;
           classNode=directMethodCallCandidate.getDeclaringClass();
-          visitMethod(directMethodCallCandidate);
+          for (          ClassNode node : source.getAST().getClasses()) {
+            if (isClassInnerClassOrEqualTo(classNode,node)) {
+              visitMethod(directMethodCallCandidate);
+              break;
+            }
+          }
           classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
           if (returnType.isUsingGenerics()) {

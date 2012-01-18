@@ -15,12 +15,8 @@
       return right;
     }
     if (leftExpression instanceof VariableExpression) {
-      VariableExpression target=(VariableExpression)leftExpression;
-      if (target.getAccessedVariable() instanceof VariableExpression && target.getAccessedVariable() != leftExpression) {
-        target=(VariableExpression)target.getAccessedVariable();
-      }
-      ClassNode initialType=target.getType().redirect();
-      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| isPrimitiveType(initialType)|| BigDecimal_TYPE == initialType || BigInteger_TYPE == initialType) {
+      ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
+      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)) {
         return initialType;
       }
     }
@@ -74,11 +70,13 @@
       return getGroupOperationResultType(leftRedirect,rightRedirect);
     }
   }
-  MethodNode method=findMethodOrFail(expr,leftRedirect,operationName,rightRedirect);
+  MethodNode method=findMethodOrFail(expr,left,operationName,right);
   if (method != null) {
+    typeCheckMethodsWithGenerics(left,new ClassNode[]{right},method,expr);
+    if (isAssignment(op))     return left;
     if (isCompareToBoolean(op))     return boolean_TYPE;
     if (op == COMPARE_TO)     return int_TYPE;
-    return getType(method);
+    return inferReturnTypeGenerics(left,method,new ArgumentListExpression(expr.getRightExpression()));
   }
   return null;
 }

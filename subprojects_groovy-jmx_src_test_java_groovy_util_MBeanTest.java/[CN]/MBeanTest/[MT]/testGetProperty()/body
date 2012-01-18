@@ -1,7 +1,7 @@
 {
   MBeanServer mbeanServer=MBeanServerFactory.createMBeanServer();
   ObjectName name=new ObjectName("groovy.test:role=TestMBean,type=Dummy");
-  mbeanServer.registerMBean(new Dummy(),name);
+  mbeanServer.registerMBean(Class.forName("groovy.util.Dummy").newInstance(),name);
   assertEquals("JMX value of Name","James",mbeanServer.getAttribute(name,"Name"));
   GroovyObject object=new GroovyMBean(mbeanServer,name);
   Object value=object.getProperty("Name");

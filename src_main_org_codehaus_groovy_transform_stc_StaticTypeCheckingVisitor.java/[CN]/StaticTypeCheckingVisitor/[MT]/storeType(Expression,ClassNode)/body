@@ -1,4 +1,8 @@
 {
+  if (cn == UNKNOWN_PARAMETER_TYPE) {
+    storeType(exp,getOriginalDeclarationType(exp));
+    return;
+  }
   ClassNode oldValue=(ClassNode)exp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,cn);
   if (oldValue != null) {
     ClassNode oldDIT=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE);
@@ -22,6 +26,12 @@
         closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
       }
       assignedTypes.add(cn);
+    }
+    if (!temporaryIfBranchTypeInformation.empty()) {
+      List<ClassNode> temporaryTypesForExpression=getTemporaryTypesForExpression(exp);
+      if (temporaryTypesForExpression != null && !temporaryTypesForExpression.isEmpty()) {
+        temporaryTypesForExpression.clear();
+      }
     }
   }
 }

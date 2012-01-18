@@ -1,0 +1,83 @@
+{
+  final String name=call.getMethod();
+  if (name == null) {
+    addStaticTypeError("cannot resolve dynamic method name at compile time.",call);
+    return;
+  }
+  final ClassNode rememberLastItType=lastImplicitItType;
+  Expression callArguments=call.getArguments();
+  boolean isWithCall=isWithCall(name,callArguments);
+  if (!isWithCall) {
+    callArguments.visit(this);
+  }
+  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
+  final ClassNode receiver=call.getOwnerType();
+  if (isWithCall) {
+    withReceiverList.add(0,receiver);
+    lastImplicitItType=receiver;
+    if (callArguments instanceof ArgumentListExpression) {
+      ArgumentListExpression argList=(ArgumentListExpression)callArguments;
+      ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
+      Parameter[] parameters=closure.getParameters();
+      if (parameters.length > 1) {
+        addStaticTypeError("Unexpected number of parameters for a with call",argList);
+      }
+ else       if (parameters.length == 1) {
+        Parameter param=parameters[0];
+        if (!param.isDynamicTyped() && !isAssignableTo(receiver,param.getType().redirect())) {
+          addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
+        }
+      }
+    }
+  }
+  try {
+    if (isWithCall) {
+      callArguments.visit(this);
+    }
+    List<ClassNode> receivers=new LinkedList<ClassNode>();
+    if (!withReceiverList.isEmpty())     receivers.addAll(withReceiverList);
+    receivers.add(receiver);
+    List<MethodNode> mn=null;
+    ClassNode chosenReceiver=null;
+    for (    ClassNode currentReceiver : receivers) {
+      mn=findMethod(currentReceiver,name,args);
+      if (!mn.isEmpty()) {
+        if (mn.size() == 1)         typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
+        chosenReceiver=currentReceiver;
+        break;
+      }
+    }
+    if (mn.isEmpty()) {
+      addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
+    }
+ else {
+      if (mn.size() == 1) {
+        MethodNode directMethodCallCandidate=mn.get(0);
+        ClassNode currentClassNode=classNode;
+        classNode=directMethodCallCandidate.getDeclaringClass();
+        for (        ClassNode node : source.getAST().getClasses()) {
+          if (isClassInnerClassOrEqualTo(classNode,node)) {
+            visitMethod(directMethodCallCandidate);
+            break;
+          }
+        }
+        classNode=currentClassNode;
+        ClassNode returnType=getType(directMethodCallCandidate);
+        if (returnType.isUsingGenerics() && !returnType.isEnum()) {
+          returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+        }
+        storeType(call,returnType);
+        storeTargetMethod(call,directMethodCallCandidate);
+      }
+ else {
+        addStaticTypeError("Reference to method is ambiguous. Cannot choose between " + mn,call);
+      }
+    }
+  }
+  finally {
+    if (isWithCall) {
+      lastImplicitItType=rememberLastItType;
+      withReceiverList.removeFirst();
+    }
+  }
+}

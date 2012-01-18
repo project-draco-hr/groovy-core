@@ -1,7 +1,12 @@
 {
   ClassNode cn=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
   if (cn != null)   return cn;
-  if (exp instanceof VariableExpression) {
+  if (exp instanceof ClassExpression) {
+    ClassNode node=CLASS_Type.getPlainNodeReference();
+    node.setGenericsTypes(new GenericsType[]{new GenericsType(((ClassExpression)exp).getType())});
+    return node;
+  }
+ else   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
     if (vexp == VariableExpression.THIS_EXPRESSION)     return classNode;
     if (vexp == VariableExpression.SUPER_EXPRESSION)     return classNode.getSuperClass();
@@ -26,14 +31,14 @@
       GenericsType[] types=objectExpType.getGenericsTypes();
       if ("key".equals(propertyName)) {
         if (types.length == 2) {
-          ClassNode listKey=new ClassNode(List.class);
+          ClassNode listKey=LIST_TYPE.getPlainNodeReference();
           listKey.setGenericsTypes(new GenericsType[]{types[0]});
           return listKey;
         }
       }
  else       if ("value".equals(propertyName)) {
         if (types.length == 2) {
-          ClassNode listValue=new ClassNode(List.class);
+          ClassNode listValue=LIST_TYPE.getPlainNodeReference();
           listValue.setGenericsTypes(new GenericsType[]{types[1]});
           return listValue;
         }

@@ -3,18 +3,19 @@
   ClassNode clazz=getType(objectExpression);
   if (clazz.isArray() && "length".equals(pexp.getPropertyAsString())) {
     if (visitor != null) {
-      PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,ClassHelper.int_TYPE,clazz,null,null,null);
+      PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,int_TYPE,clazz,null,null,null);
+      storeType(pexp,int_TYPE);
       visitor.visitProperty(node);
     }
     return true;
   }
   List<ClassNode> tests=new LinkedList<ClassNode>();
   tests.add(clazz);
-  if (objectExpression instanceof ClassExpression)   tests.add(CLASS_Type);
+  if (clazz.equals(CLASS_Type) && clazz.getGenericsTypes() != null) {
+    tests.add(clazz.getGenericsTypes()[0].getType());
+  }
   if (!temporaryIfBranchTypeInformation.empty()) {
-    Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.peek();
-    Object key=extractTemporaryTypeInfoKey(objectExpression);
-    List<ClassNode> classNodes=info.get(key);
+    List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
     if (classNodes != null)     tests.addAll(classNodes);
   }
   if (lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
@@ -22,6 +23,7 @@
   }
   String propertyName=pexp.getPropertyAsString();
   if (propertyName == null)   return false;
+  String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
   for (  ClassNode testClass : tests) {
     if (!implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE) && !implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE)) {
@@ -31,12 +33,24 @@
         PropertyNode propertyNode=current.getProperty(propertyName);
         if (propertyNode != null) {
           if (visitor != null)           visitor.visitProperty(propertyNode);
+          storeType(pexp,propertyNode.getOriginType());
           return true;
+        }
+        MethodNode getter=current.getGetterMethod("get" + capName);
+        if (getter == null)         getter=current.getGetterMethod("is" + capName);
+        if (getter != null) {
+          MethodNode setterMethod=current.getSetterMethod("set" + capName);
+          if (setterMethod != null) {
+            if (visitor != null)             visitor.visitMethod(getter);
+            storeType(pexp,getter.getReturnType());
+            return true;
+          }
         }
         if (!isAttributeExpression) {
           FieldNode field=current.getDeclaredField(propertyName);
           if (field != null) {
             if (visitor != null)             visitor.visitField(field);
+            storeType(pexp,field.getOriginType());
             return true;
           }
         }
@@ -46,18 +60,13 @@
         current=testClass;
         while (current != null) {
           current=current.redirect();
-          String pname=MetaClassHelper.capitalize(propertyName);
-          List<MethodNode> nodes=current.getMethods("get" + pname);
-          if (nodes.isEmpty())           nodes=current.getMethods("is" + pname);
-          if (!nodes.isEmpty()) {
-            for (            MethodNode node : nodes) {
-              Parameter[] parameters=node.getParameters();
-              if (node.getReturnType() != VOID_TYPE && (parameters == null || parameters.length == 0)) {
-                if (visitor != null)                 visitor.visitMethod(node);
-                storeType(pexp,READONLY_PROPERTY_RETURN);
-                return true;
-              }
-            }
+          MethodNode getter=current.getGetterMethod("get" + capName);
+          if (getter == null)           getter=current.getGetterMethod("is" + capName);
+          if (getter != null) {
+            if (visitor != null)             visitor.visitMethod(getter);
+            pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,Boolean.TRUE);
+            storeType(pexp,getter.getReturnType());
+            return true;
           }
           current=isAttributeExpression ? null : current.getSuperClass();
         }

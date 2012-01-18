@@ -1,0 +1,12 @@
+{
+  Class type=compile(filename);
+  if (TestCase.class.isAssignableFrom(type)) {
+    addTestSuite((Class<? extends TestCase>)type);
+  }
+ else   if (Script.class.isAssignableFrom(type)) {
+    addTest(new ScriptTestAdapter(type,EMPTY_ARGS));
+  }
+ else {
+    throw new RuntimeException("Don't know how to treat " + filename + " as a JUnit test");
+  }
+}

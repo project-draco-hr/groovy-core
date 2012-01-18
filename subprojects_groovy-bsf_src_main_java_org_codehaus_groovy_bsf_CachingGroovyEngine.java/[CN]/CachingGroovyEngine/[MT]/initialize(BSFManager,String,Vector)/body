@@ -2,17 +2,9 @@
   super.initialize(mgr,lang,declaredBeans);
   ClassLoader parent=mgr.getClassLoader();
   if (parent == null)   parent=GroovyShell.class.getClassLoader();
-  final ClassLoader finalParent=parent;
-  this.loader=(GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
-    public Object run(){
-      CompilerConfiguration configuration=new CompilerConfiguration();
-      configuration.setClasspath(mgr.getClassPath());
-      return new GroovyClassLoader(finalParent,configuration);
-    }
-  }
-);
-  execScripts=new HashMap();
-  evalScripts=new HashMap();
+  setLoader(mgr,parent);
+  execScripts=new HashMap<Object,Class>();
+  evalScripts=new HashMap<Object,Class>();
   context=shell.getContext();
   context.setVariable("bsf",new BSFFunctions(mgr,this));
   int size=declaredBeans.size();

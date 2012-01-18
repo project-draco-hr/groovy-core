@@ -3,7 +3,9 @@
     return;
   }
   callAutoRegisterMethods(declaredClass.getSuperclass());
-  for (  Method method : declaredClass.getDeclaredMethods()) {
+  Method[] declaredMethods=declaredClass.getDeclaredMethods();
+  Arrays.sort(declaredMethods,METHOD_COMPARATOR);
+  for (  Method method : declaredMethods) {
     if (method.getName().startsWith("register") && method.getParameterTypes().length == 0) {
       registrationGroupName=method.getName().substring("register".length());
       registrationGroup.put(registrationGroupName,new TreeSet<String>());
