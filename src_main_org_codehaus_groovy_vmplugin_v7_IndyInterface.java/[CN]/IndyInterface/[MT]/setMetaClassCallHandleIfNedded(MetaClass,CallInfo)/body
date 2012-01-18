@@ -8,15 +8,23 @@
       ci.handle=ci.handle.bindTo(mc);
     }
  else {
-      ci.handle=LOOKUP.findVirtual(MetaClass.class,"invokeMethod",INVOKE_METHOD_SIGNATURE);
-      ci.handle=ci.handle.bindTo(mc);
-      if (receiver == null) {
-        ci.handle=ci.handle.bindTo(NullObject.class);
+      boolean useShortForm=mc instanceof AdaptingMetaClass;
+      if (useShortForm) {
+        ci.handle=LOOKUP.findVirtual(MetaObjectProtocol.class,"invokeMethod",MethodType.methodType(Object.class,Object.class,String.class,Object[].class));
       }
  else {
-        ci.handle=ci.handle.bindTo(receiver.getClass());
+        ci.handle=LOOKUP.findVirtual(MetaClass.class,"invokeMethod",INVOKE_METHOD_SIGNATURE);
+        ci.handle=MethodHandles.insertArguments(ci.handle,ci.handle.type().parameterCount() - 2,false,true);
       }
-      ci.handle=MethodHandles.insertArguments(ci.handle,ci.handle.type().parameterCount() - 2,false,true);
+      ci.handle=ci.handle.bindTo(mc);
+      if (!useShortForm) {
+        if (receiver == null) {
+          ci.handle=ci.handle.bindTo(NullObject.class);
+        }
+ else {
+          ci.handle=ci.handle.bindTo(receiver.getClass());
+        }
+      }
       if (receiver instanceof GroovyObject) {
         ci.handle=MethodHandles.catchException(ci.handle,MissingMethodException.class,GROOVY_OBJECT_INVOKER);
       }
