@@ -13,10 +13,8 @@
       loadFilteredPath(loadPath);
     }
  else     if (line.startsWith(GRAB_PREFIX)) {
-      String grabParams=line.substring(LOAD_PREFIX.length()).trim();
-      grabParams=assignProperties(grabParams);
-      Map<String,Object> parts=GrapeUtil.getIvyParts(grabParams);
-      Grape.grab(parts);
+      String grabParams=line.substring(GRAB_PREFIX.length()).trim();
+      grabList.add(assignProperties(grabParams));
     }
  else     if (line.startsWith(MAIN_PREFIX)) {
       if (main != null)       throw new IOException("duplicate definition of main in line " + lineNumber + " : "+ line);
