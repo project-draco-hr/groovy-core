@@ -1,4 +1,8 @@
 {
+  final Map<VariableExpression,ClassNode> varOrigType=new HashMap<VariableExpression,ClassNode>();
+  Statement code=expression.getCode();
+  code.visit(new VariableExpressionTypeMemoizer(varOrigType));
+  Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
   SharedVariableCollector collector=new SharedVariableCollector(getSourceUnit());
   collector.visitClosureExpression(expression);
   Set<VariableExpression> closureSharedExpressions=collector.getClosureSharedExpressions();
@@ -11,12 +15,14 @@
   List<ClassNode> oldClosureReturnTypes=closureReturnTypes;
   closureExpression=expression;
   super.visitClosureExpression(expression);
-  MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,expression.getCode());
+  MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
   closureReturnAdder.visitMethod(node);
   if (closureReturnTypes != null) {
     expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(closureReturnTypes));
   }
   closureExpression=oldClosureExpr;
   closureReturnTypes=oldClosureReturnTypes;
+  boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);
+  if (typeChanged)   visitClosureExpression(expression);
   restoreVariableExpressionMetadata(typesBeforeVisit);
 }

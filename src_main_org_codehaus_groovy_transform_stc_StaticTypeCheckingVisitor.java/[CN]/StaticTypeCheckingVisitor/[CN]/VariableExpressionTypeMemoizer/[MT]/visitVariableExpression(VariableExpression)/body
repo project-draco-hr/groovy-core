@@ -1,0 +1,8 @@
+{
+  super.visitVariableExpression(expression);
+  Variable var=findTargetVariable(expression);
+  if (var instanceof VariableExpression) {
+    VariableExpression ve=(VariableExpression)var;
+    varOrigType.put(ve,(ClassNode)ve.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE));
+  }
+}
