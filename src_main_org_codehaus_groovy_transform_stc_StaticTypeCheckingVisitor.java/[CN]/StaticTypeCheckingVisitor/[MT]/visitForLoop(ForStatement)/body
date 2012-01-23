@@ -1,4 +1,6 @@
 {
+  final Map<VariableExpression,ClassNode> varOrigType=new HashMap<VariableExpression,ClassNode>();
+  forLoop.getLoopBlock().visit(new VariableExpressionTypeMemoizer(varOrigType));
   Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
   final ClassNode collectionType=getType(forLoop.getCollectionExpression());
   ClassNode componentType=collectionType.getComponentType();
@@ -25,5 +27,6 @@
   finally {
     forLoopVariableTypes.remove(forLoop.getVariable());
   }
-  popAssignmentTracking(oldTracker);
+  boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);
+  if (typeChanged)   visitForLoop(forLoop);
 }
