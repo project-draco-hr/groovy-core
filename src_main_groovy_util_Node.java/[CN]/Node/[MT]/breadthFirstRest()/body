@@ -2,10 +2,9 @@
   List answer=new NodeList();
   List nextLevelChildren=getDirectChildren();
   while (!nextLevelChildren.isEmpty()) {
-    List working=new NodeList(nextLevelChildren);
+    List<Node> working=new NodeList(nextLevelChildren);
     nextLevelChildren=new NodeList();
-    for (Iterator iter=working.iterator(); iter.hasNext(); ) {
-      Node childNode=(Node)iter.next();
+    for (    Node childNode : working) {
       answer.add(childNode);
       List children=childNode.getDirectChildren();
       nextLevelChildren.addAll(children);

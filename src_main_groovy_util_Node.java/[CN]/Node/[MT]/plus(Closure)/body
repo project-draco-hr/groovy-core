@@ -1,15 +1,6 @@
 {
-  List<Node> list=this.parent().children();
-  int afterIndex=list.indexOf(this);
-  List<Node> leftOvers=new ArrayList<Node>(list.subList(afterIndex + 1,list.size()));
-  list.subList(afterIndex + 1,list.size()).clear();
-  NodeBuilder b=new NodeBuilder();
-  Node newNode=(Node)b.invokeMethod("dummyNode",c);
-  List<Node> children=newNode.children();
-  for (  Node child : children) {
-    parent.appendNode(child.name(),child.attributes(),child.value());
+  if (parent() == null) {
+    throw new UnsupportedOperationException("Adding sibling nodes to the root node is not supported");
   }
-  for (  Node child : leftOvers) {
-    this.parent().children().add(child);
-  }
+  appendNodes(c);
 }

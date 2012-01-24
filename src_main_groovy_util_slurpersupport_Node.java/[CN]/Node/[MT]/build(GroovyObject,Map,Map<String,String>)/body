@@ -22,9 +22,7 @@
       }
  else {
         final Map attributesWithNamespaces=new HashMap(this.attributes);
-        final Iterator attrs=this.attributes.keySet().iterator();
-        while (attrs.hasNext()) {
-          final Object key=attrs.next();
+        for (        Object key : this.attributes.keySet()) {
           final Object attributeNamespaceURI=this.attributeNamespaces.get(key);
           if (attributeNamespaceURI != null) {
             attributesWithNamespaces.put(getTagFor(attributeNamespaceURI,current,pending,namespaceMap,namespaceTagHints,newTags,builder) + "$" + key,attributesWithNamespaces.remove(key));
