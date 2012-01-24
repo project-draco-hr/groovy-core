@@ -1,0 +1,45 @@
+{
+  ConstructorNode node=(ConstructorNode)expr.getNodeMetaData(DIRECT_METHOD_CALL_TARGET);
+  if (node == null)   return expr;
+  if (node.getParameters().length == 1 && StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(node.getParameters()[0].getType(),ClassHelper.MAP_TYPE)) {
+    Expression arguments=expr.getArguments();
+    if (arguments instanceof TupleExpression) {
+      TupleExpression tupleExpression=(TupleExpression)arguments;
+      List<Expression> expressions=tupleExpression.getExpressions();
+      if (expressions.size() == 1) {
+        Expression expression=expressions.get(0);
+        if (expression instanceof MapExpression) {
+          MapExpression map=(MapExpression)expression;
+          ClassNode declaringClass=node.getDeclaringClass();
+          for (          ConstructorNode constructorNode : declaringClass.getDeclaredConstructors()) {
+            if (constructorNode == node) {
+              return expr;
+            }
+          }
+          VariableExpression vexp=new VariableExpression("obj" + System.currentTimeMillis(),declaringClass);
+          ConstructorNode cn=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+          cn.setDeclaringClass(declaringClass);
+          ConstructorCallExpression call=new ConstructorCallExpression(declaringClass,new ArgumentListExpression());
+          call.putNodeMetaData(DIRECT_METHOD_CALL_TARGET,cn);
+          DeclarationExpression declaration=new DeclarationExpression(vexp,Token.newSymbol("=",expr.getLineNumber(),expr.getColumnNumber()),call);
+          BlockStatement stmt=new BlockStatement();
+          stmt.addStatement(new ExpressionStatement(declaration));
+          for (          MapEntryExpression entryExpression : map.getMapEntryExpressions()) {
+            int line=entryExpression.getLineNumber();
+            int col=entryExpression.getColumnNumber();
+            BinaryExpression bexp=new BinaryExpression(new PropertyExpression(vexp,entryExpression.getKeyExpression()),Token.newSymbol("=",line,col),entryExpression.getValueExpression());
+            stmt.addStatement(new ExpressionStatement(bexp));
+          }
+          stmt.addStatement(new ReturnStatement(vexp));
+          ClosureExpression cl=new ClosureExpression(Parameter.EMPTY_ARRAY,stmt);
+          MethodCallExpression result=new MethodCallExpression(cl,"call",ArgumentListExpression.EMPTY_ARGUMENTS);
+          result.setMethodTarget(StaticTypeCheckingVisitor.CLOSURE_CALL_NO_ARG);
+          VariableScopeVisitor visitor=new VariableScopeVisitor(unit);
+          visitor.visitClosureExpression(cl);
+          return result;
+        }
+      }
+    }
+  }
+  return expr;
+}
