@@ -89,30 +89,7 @@
         ClassNode[] args=getArgumentTypes(argList);
         checkGroovyStyleConstructor(leftRedirect,args);
         MapExpression mapExpression=(MapExpression)rightExpression;
-        for (        MapEntryExpression entryExpression : mapExpression.getMapEntryExpressions()) {
-          Expression keyExpr=entryExpression.getKeyExpression();
-          if (!(keyExpr instanceof ConstantExpression)) {
-            addStaticTypeError("Dynamic keys in map-style constructors are unsupported in static type checking",keyExpr);
-          }
- else {
-            String property=keyExpr.getText();
-            ClassNode currentNode=leftRedirect;
-            PropertyNode propertyNode=null;
-            while (propertyNode == null && currentNode != null) {
-              propertyNode=currentNode.getProperty(property);
-              currentNode=currentNode.getSuperClass();
-            }
-            if (propertyNode == null) {
-              addStaticTypeError("No such property: " + property + " for class: "+ leftRedirect.getName(),leftExpression);
-            }
- else             if (propertyNode != null) {
-              ClassNode valueType=getType(entryExpression.getValueExpression());
-              if (!isAssignableTo(propertyNode.getType(),valueType)) {
-                addStaticTypeError("Cannot assign value of type " + valueType.getName() + " to field of type "+ propertyNode.getType().getName(),entryExpression);
-              }
-            }
-          }
-        }
+        checkGroovyConstructorMap(leftExpression,leftRedirect,mapExpression);
       }
     }
     if (leftExpressionType.isUsingGenerics() && !leftExpressionType.isEnum()) {
