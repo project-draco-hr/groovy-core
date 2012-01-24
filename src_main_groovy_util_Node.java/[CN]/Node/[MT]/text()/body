@@ -2,10 +2,10 @@
   if (value instanceof String) {
     return (String)value;
   }
- else   if (value instanceof Collection) {
+  if (value instanceof Collection) {
     Collection coll=(Collection)value;
     String previousText=null;
-    StringBuffer buffer=null;
+    StringBuilder sb=null;
     for (    Object child : coll) {
       if (child instanceof String) {
         String childText=(String)child;
@@ -13,22 +13,23 @@
           previousText=childText;
         }
  else {
-          if (buffer == null) {
-            buffer=new StringBuffer();
-            buffer.append(previousText);
+          if (sb == null) {
+            sb=new StringBuilder();
+            sb.append(previousText);
           }
-          buffer.append(childText);
+          sb.append(childText);
         }
       }
     }
-    if (buffer != null) {
-      return buffer.toString();
+    if (sb != null) {
+      return sb.toString();
     }
  else {
       if (previousText != null) {
         return previousText;
       }
+      return "";
     }
   }
-  return "";
+  return "" + value;
 }

@@ -1,11 +1,8 @@
 {
-  getParentList(parent).remove(this);
-  NodeBuilder b=new NodeBuilder();
-  Node newNode=(Node)b.invokeMethod("dummyNode",c);
-  List<Node> children=newNode.children();
-  Node result=this;
-  for (  Node child : children) {
-    result=parent.appendNode(child.name(),child.attributes(),child.value());
+  if (parent() == null) {
+    throw new UnsupportedOperationException("Replacing the root node is not supported");
   }
+  Node result=appendNodes(c);
+  getParentList(parent()).remove(this);
   return result;
 }
