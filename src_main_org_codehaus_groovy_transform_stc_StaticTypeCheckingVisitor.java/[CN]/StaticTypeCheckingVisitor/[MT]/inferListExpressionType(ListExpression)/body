@@ -8,7 +8,14 @@
   if ((genericsTypes == null || genericsTypes.length == 0 || (genericsTypes.length == 1 && OBJECT_TYPE.equals(genericsTypes[0].getType()))) && (!expressions.isEmpty())) {
     List<ClassNode> nodes=new LinkedList<ClassNode>();
     for (    Expression expression : expressions) {
-      nodes.add(getType(expression));
+      if (expression instanceof ConstantExpression && ((ConstantExpression)expression).getValue() == null) {
+      }
+ else {
+        nodes.add(getType(expression));
+      }
+    }
+    if (nodes.isEmpty()) {
+      return listType;
     }
     ClassNode superType=getWrapper(lowestUpperBound(nodes));
     ClassNode inferred=listType.getPlainNodeReference();
