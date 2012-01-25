@@ -1,0 +1,59 @@
+{
+  if (spreadSafe && origin instanceof MethodCallExpression) {
+    MethodVisitor mv=controller.getMethodVisitor();
+    CompileStack compileStack=controller.getCompileStack();
+    TypeChooser typeChooser=controller.getTypeChooser();
+    OperandStack operandStack=controller.getOperandStack();
+    ClassNode classNode=controller.getClassNode();
+    int counter=labelCounter.incrementAndGet();
+    VariableExpression result=new VariableExpression("spreadresult" + counter,ARRAYLIST_CLASSNODE);
+    ConstructorCallExpression cce=new ConstructorCallExpression(ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
+    cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,ARRAYLIST_CONSTRUCTOR);
+    DeclarationExpression declr=new DeclarationExpression(result,Token.newSymbol("=",origin.getLineNumber(),origin.getColumnNumber()),cce);
+    declr.visit(controller.getAcg());
+    receiver.visit(controller.getAcg());
+    Label ifnull=compileStack.createLocalLabel("ifnull_" + counter);
+    mv.visitJumpInsn(IFNULL,ifnull);
+    operandStack.remove(1);
+    Label nonull=compileStack.createLocalLabel("nonull_" + counter);
+    mv.visitLabel(nonull);
+    ClassNode componentType=StaticTypeCheckingVisitor.inferLoopElementType(typeChooser.resolveType(receiver,classNode));
+    Parameter iterator=new Parameter(componentType,"for$it$" + counter);
+    VariableExpression iteratorAsVar=new VariableExpression(iterator);
+    MethodCallExpression origMCE=(MethodCallExpression)origin;
+    MethodCallExpression newMCE=new MethodCallExpression(iteratorAsVar,origMCE.getMethodAsString(),origMCE.getArguments());
+    newMCE.setMethodTarget(origMCE.getMethodTarget());
+    newMCE.setSafe(true);
+    MethodCallExpression add=new MethodCallExpression(result,"add",newMCE);
+    add.setMethodTarget(ARRAYLIST_ADD_METHOD);
+    ForStatement stmt=new ForStatement(iterator,receiver,new ExpressionStatement(add));
+    stmt.visit(controller.getAcg());
+    mv.visitLabel(ifnull);
+    result.visit(controller.getAcg());
+  }
+ else   if (safe && origin instanceof MethodCallExpression) {
+    MethodVisitor mv=controller.getMethodVisitor();
+    CompileStack compileStack=controller.getCompileStack();
+    OperandStack operandStack=controller.getOperandStack();
+    int counter=labelCounter.incrementAndGet();
+    receiver.visit(controller.getAcg());
+    Label ifnull=compileStack.createLocalLabel("ifnull_" + counter);
+    mv.visitJumpInsn(IFNULL,ifnull);
+    operandStack.remove(1);
+    Label nonull=compileStack.createLocalLabel("nonull_" + counter);
+    mv.visitLabel(nonull);
+    MethodCallExpression origMCE=(MethodCallExpression)origin;
+    MethodCallExpression newMCE=new MethodCallExpression(origMCE.getObjectExpression(),origMCE.getMethodAsString(),origMCE.getArguments());
+    newMCE.setMethodTarget(origMCE.getMethodTarget());
+    newMCE.setSafe(false);
+    newMCE.visit(controller.getAcg());
+    Label endof=compileStack.createLocalLabel("endof_" + counter);
+    mv.visitJumpInsn(GOTO,endof);
+    mv.visitLabel(ifnull);
+    mv.visitInsn(ACONST_NULL);
+    mv.visitLabel(endof);
+  }
+ else {
+    super.makeCall(origin,receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
+  }
+}
