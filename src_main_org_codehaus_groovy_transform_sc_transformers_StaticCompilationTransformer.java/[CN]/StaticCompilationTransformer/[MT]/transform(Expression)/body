@@ -1,0 +1,18 @@
+{
+  if (expr instanceof StaticMethodCallExpression) {
+    return staticMethodCallExpressionTransformer.transformStaticMethodCallExpression((StaticMethodCallExpression)expr);
+  }
+  if (expr instanceof BinaryExpression) {
+    return binaryExpressionTransformer.transformBinaryExpression(expr);
+  }
+  if (expr instanceof MethodCallExpression) {
+    return methodCallExpressionTransformer.transformMethodCallExpression((MethodCallExpression)expr);
+  }
+  if (expr instanceof ClosureExpression) {
+    return closureExpressionTransformer.transformClosureExpression((ClosureExpression)expr);
+  }
+  if (expr instanceof ConstructorCallExpression) {
+    return constructorCallTransformer.transformConstructorCall((ConstructorCallExpression)expr);
+  }
+  return super.transform(expr);
+}

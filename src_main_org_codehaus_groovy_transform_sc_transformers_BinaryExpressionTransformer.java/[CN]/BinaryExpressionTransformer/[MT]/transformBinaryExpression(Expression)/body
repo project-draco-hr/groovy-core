@@ -1,0 +1,24 @@
+{
+  Object[] list=(Object[])expr.getNodeMetaData(BINARY_EXP_TARGET);
+  if (list != null) {
+    BinaryExpression bin=(BinaryExpression)expr;
+    Token operation=bin.getOperation();
+    boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operation.getType());
+    MethodCallExpression call;
+    MethodNode node=(MethodNode)list[0];
+    String name=(String)list[1];
+    Expression left=staticCompilationTransformer.transform(bin.getLeftExpression());
+    Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
+    call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
+    call.setMethodTarget(node);
+    ClassExpression sba=new ClassExpression(StaticCompilationTransformer.BYTECODE_ADAPTER_CLASS);
+    MethodNode adapter=StaticCompilationTransformer.BYTECODE_BINARY_ADAPTERS.get(operation.getType());
+    if (adapter != null) {
+      call=new MethodCallExpression(sba,"compareEquals",new ArgumentListExpression(left,right));
+      call.setMethodTarget(adapter);
+    }
+    if (!isAssignment)     return call;
+    return new BinaryExpression(left,Token.newSymbol("=",operation.getStartLine(),operation.getStartColumn()),call);
+  }
+  return staticCompilationTransformer.superTransform(expr);
+}
