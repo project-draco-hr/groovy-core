@@ -1,6 +1,9 @@
 {
   if (receiver.equals(compare) || receiver == UNKNOWN_PARAMETER_TYPE)   return 0;
-  if (compare.isInterface() && receiver.implementsInterface(compare))   return 1;
+  if (compare.isInterface() && receiver.implementsInterface(compare)) {
+    int dist=getMaximumInterfaceDistance(receiver,compare);
+    return dist;
+  }
   ClassNode superClass=compare.getSuperClass();
   if (superClass == null)   return 2;
   return 1 + getDistance(receiver,superClass);
