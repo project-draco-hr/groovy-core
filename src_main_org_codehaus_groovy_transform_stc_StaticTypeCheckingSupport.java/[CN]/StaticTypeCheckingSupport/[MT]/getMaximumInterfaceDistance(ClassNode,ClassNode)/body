@@ -1,0 +1,13 @@
+{
+  if (c == null)   return -1;
+  if (c.equals(interfaceClass))   return 0;
+  ClassNode[] interfaces=c.getInterfaces();
+  int max=-1;
+  for (  ClassNode anInterface : interfaces) {
+    int sub=getMaximumInterfaceDistance(anInterface,interfaceClass);
+    if (sub != -1)     sub++;
+    max=Math.max(max,sub);
+  }
+  int superClassMax=getMaximumInterfaceDistance(c.getSuperClass(),interfaceClass);
+  return Math.max(max,superClassMax);
+}
