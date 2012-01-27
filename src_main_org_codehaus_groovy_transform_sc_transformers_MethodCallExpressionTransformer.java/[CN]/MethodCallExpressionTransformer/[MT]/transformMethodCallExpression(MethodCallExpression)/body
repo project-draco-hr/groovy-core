@@ -27,7 +27,7 @@
           if (argType != null && ClassHelper.Integer_TYPE == indexType) {
             BinaryExpression binaryExpression=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
             binaryExpression.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,componentType);
-            return binaryExpression;
+            return staticCompilationTransformer.transform(binaryExpression);
           }
         }
       }
@@ -44,7 +44,7 @@
             BinaryExpression arrayGet=new BinaryExpression(objectExpression,Token.newSymbol("[",indexExpr.getLineNumber(),indexExpr.getColumnNumber()),indexExpr);
             arrayGet.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,componentType);
             BinaryExpression assignment=new BinaryExpression(arrayGet,Token.newSymbol("=",objExpr.getLineNumber(),objExpr.getColumnNumber()),objExpr);
-            return assignment;
+            return staticCompilationTransformer.transform(assignment);
           }
         }
       }

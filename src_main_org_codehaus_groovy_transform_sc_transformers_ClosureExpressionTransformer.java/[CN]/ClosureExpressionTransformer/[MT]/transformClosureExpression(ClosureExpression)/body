@@ -1,4 +1,13 @@
 {
-  transformer.visitClassCodeContainer(expr.getCode());
-  return expr;
+  Parameter[] parameters=expr.getParameters();
+  if (parameters != null) {
+    for (    Parameter parameter : parameters) {
+      if (parameter.hasInitialExpression()) {
+        parameter.setInitialExpression(transformer.transform(parameter.getInitialExpression()));
+      }
+    }
+  }
+  Statement code=expr.getCode();
+  transformer.visitClassCodeContainer(code);
+  return transformer.superTransform(expr);
 }

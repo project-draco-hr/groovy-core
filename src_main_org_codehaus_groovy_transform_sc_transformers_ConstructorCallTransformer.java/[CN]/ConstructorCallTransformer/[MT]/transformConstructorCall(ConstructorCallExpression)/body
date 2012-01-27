@@ -13,7 +13,7 @@
           ClassNode declaringClass=node.getDeclaringClass();
           for (          ConstructorNode constructorNode : declaringClass.getDeclaredConstructors()) {
             if (constructorNode == node) {
-              return expr;
+              return staticCompilationTransformer.superTransform(expr);
             }
           }
           VariableExpression vexp=new VariableExpression("obj" + System.currentTimeMillis(),declaringClass);
@@ -27,7 +27,9 @@
           for (          MapEntryExpression entryExpression : map.getMapEntryExpressions()) {
             int line=entryExpression.getLineNumber();
             int col=entryExpression.getColumnNumber();
-            BinaryExpression bexp=new BinaryExpression(new PropertyExpression(vexp,entryExpression.getKeyExpression()),Token.newSymbol("=",line,col),entryExpression.getValueExpression());
+            Expression keyExpression=staticCompilationTransformer.transform(entryExpression.getKeyExpression());
+            Expression valueExpression=staticCompilationTransformer.transform(entryExpression.getValueExpression());
+            BinaryExpression bexp=new BinaryExpression(new PropertyExpression(vexp,keyExpression),Token.newSymbol("=",line,col),valueExpression);
             stmt.addStatement(new ExpressionStatement(bexp));
           }
           stmt.addStatement(new ReturnStatement(vexp));
@@ -41,5 +43,5 @@
       }
     }
   }
-  return expr;
+  return staticCompilationTransformer.superTransform(expr);
 }
