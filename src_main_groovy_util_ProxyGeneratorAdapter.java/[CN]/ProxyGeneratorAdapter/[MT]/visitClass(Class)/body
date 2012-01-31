@@ -1,5 +1,5 @@
 {
-  Method[] methods=extraInterface.getDeclaredMethods();
+  Method[] methods=clazz.getDeclaredMethods();
   for (  Method method : methods) {
     Class<?>[] exceptionTypes=method.getExceptionTypes();
     String[] exceptions=new String[exceptionTypes.length];
@@ -8,9 +8,24 @@
     }
     visitMethod(method.getModifiers(),method.getName(),BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes()),null,exceptions);
   }
-  for (  Class intf : extraInterface.getInterfaces()) {
+  Constructor[] constructors=clazz.getDeclaredConstructors();
+  for (  Constructor method : constructors) {
+    Class<?>[] exceptionTypes=method.getExceptionTypes();
+    String[] exceptions=new String[exceptionTypes.length];
+    for (int i=0; i < exceptions.length; i++) {
+      exceptions[i]=BytecodeHelper.getClassInternalName(exceptionTypes[i]);
+    }
+    visitMethod(method.getModifiers(),"<init>",BytecodeHelper.getMethodDescriptor(Void.TYPE,method.getParameterTypes()),null,exceptions);
+  }
+  for (  Class intf : clazz.getInterfaces()) {
     visitClass(intf);
   }
-  Class superclass=extraInterface.getSuperclass();
+  Class superclass=clazz.getSuperclass();
   if (superclass != null)   visitClass(superclass);
+  for (  Map.Entry<String,DelegateClosure> entry : closureMap.entrySet()) {
+    DelegateClosure delegate=entry.getValue();
+    if (!delegate.visited) {
+      visitMethod(ACC_PUBLIC,delegate.name,"([Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+    }
+  }
 }

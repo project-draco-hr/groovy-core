@@ -30,7 +30,8 @@
     mv.visitFieldInsn(PUTFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
   }
   mv.visitInsn(RETURN);
-  mv.visitMaxs(0,0);
+  int max=1 + args.length + closureMap.size();
+  mv.visitMaxs(addGroovyObjectSupport ? 1 + max : max,max);
   mv.visitEnd();
-  return mv;
+  return new EmptyVisitor();
 }

@@ -1,0 +1,36 @@
+{
+  super(new ClassWriter(0));
+  this.closureMap=closureMap.isEmpty() ? EMPTY_CLOSURE_MAP : new TreeMap<String,DelegateClosure>();
+  boolean wildcard=false;
+  for (  Map.Entry<Object,Object> entry : closureMap.entrySet()) {
+    final Object value=entry.getValue();
+    Closure cl=value instanceof Closure ? (Closure)value : new Closure(null){
+      @Override public Object call(      final Object... args){
+        return value;
+      }
+    }
+;
+    String name=entry.getKey().toString();
+    if ("*".equals(name)) {
+      name=WILDCARD_FIELD;
+      wildcard=true;
+    }
+    this.closureMap.put(findFieldName(entry.getKey()),new DelegateClosure(name,cl));
+  }
+  this.hasWildcard=wildcard;
+  boolean isSuperClassAnInterface=superClass.isInterface();
+  this.superClass=isSuperClassAnInterface ? Object.class : superClass;
+  this.classList=new LinkedList<Class>();
+  this.classList.add(superClass);
+  if (interfaces != null) {
+    Collections.addAll(this.classList,interfaces);
+  }
+  this.proxyName=proxyName(superClass.getSimpleName());
+  this.loader=proxyLoader != null ? new InnerLoader(proxyLoader) : findClassLoader(superClass);
+  this.emptyBody=emptyBody;
+  ClassWriter writer=(ClassWriter)cv;
+  ClassReader cr=createClassVisitor(Object.class);
+  cr.accept(this,0);
+  byte[] b=writer.toByteArray();
+  cachedClass=loader.defineClass(proxyName,b);
+}

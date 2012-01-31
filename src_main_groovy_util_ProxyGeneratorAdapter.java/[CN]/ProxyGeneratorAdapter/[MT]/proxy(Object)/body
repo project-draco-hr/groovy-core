@@ -1,0 +1,11 @@
+{
+  if (constructorArgs == null)   constructorArgs=EMPTY_ARGS;
+  DelegateClosure[] delegates=closureMap.values().toArray(new DelegateClosure[closureMap.size()]);
+  Object[] values=new Object[constructorArgs.length + delegates.length];
+  System.arraycopy(constructorArgs,0,values,0,constructorArgs.length);
+  for (int i=0; i < delegates.length; i++) {
+    DelegateClosure delegate=delegates[constructorArgs.length + i];
+    values[i]=delegate.closure;
+  }
+  return DefaultGroovyMethods.<GroovyObject>newInstance(cachedClass,values);
+}

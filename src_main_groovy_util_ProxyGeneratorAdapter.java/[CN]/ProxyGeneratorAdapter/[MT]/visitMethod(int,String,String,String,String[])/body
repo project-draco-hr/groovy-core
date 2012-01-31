@@ -1,10 +1,19 @@
 {
-  Object key=Arrays.asList(access,name,desc);
+  Object key=Arrays.asList(name,desc);
   if (visitedMethods.contains(key))   return new EmptyVisitor();
-  visitedMethods.add(key);
+  if (Modifier.isPrivate(access) || Modifier.isNative(access)) {
+    return new EmptyVisitor();
+  }
   int accessFlags=access;
   String fieldName=findFieldName(name);
-  if (closureMap.containsKey(fieldName) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+  visitedMethods.add(key);
+  if ((closureMap.containsKey(fieldName) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+    DelegateClosure delegate=closureMap.get(fieldName);
+    if (delegate == null) {
+      fieldName=findFieldName(WILDCARD);
+      delegate=closureMap.get(fieldName);
+    }
+    delegate.visited=true;
     if (Modifier.isAbstract(access)) {
       accessFlags-=ACC_ABSTRACT;
     }
@@ -13,5 +22,45 @@
  else   if ("<init>".equals(name) && (Modifier.isPublic(access) || Modifier.isProtected(access))) {
     return createConstructor(access,name,desc,signature,exceptions);
   }
-  return new EmptyVisitor();
+ else   if (Modifier.isAbstract(access) && !GROOVYOBJECT_METHODS.contains(name)) {
+    accessFlags-=ACC_ABSTRACT;
+    MethodVisitor mv=super.visitMethod(accessFlags,name,desc,signature,exceptions);
+    mv.visitCode();
+    if (emptyBody) {
+      Type returnType=Type.getReturnType(desc);
+      if (returnType == Type.VOID_TYPE) {
+        mv.visitInsn(RETURN);
+      }
+ else {
+        int loadIns=getLoadInsn(returnType);
+switch (loadIns) {
+case ILOAD:
+          mv.visitInsn(ICONST_0);
+        break;
+case LLOAD:
+      mv.visitInsn(LCONST_0);
+    break;
+case FLOAD:
+  mv.visitInsn(FCONST_0);
+break;
+case DLOAD:
+mv.visitInsn(DCONST_0);
+break;
+default :
+mv.visitInsn(ACONST_NULL);
+}
+mv.visitInsn(getReturnInsn(returnType));
+mv.visitMaxs(2,2);
+}
+}
+ else {
+mv.visitTypeInsn(NEW,"java/lang/UnsupportedOperationException");
+mv.visitInsn(DUP);
+mv.visitMethodInsn(INVOKESPECIAL,"java/lang/UnsupportedOperationException","<init>","()V");
+mv.visitInsn(ATHROW);
+mv.visitMaxs(2,1);
+}
+mv.visitEnd();
+}
+return new EmptyVisitor();
 }
