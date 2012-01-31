@@ -1,0 +1,44 @@
+{
+  MethodVisitor mv=super.visitMethod(accessFlags,name,desc,signature,exceptions);
+  mv.visitCode();
+  Type[] args=Type.getArgumentTypes(desc);
+  int arrayStore=args.length + 1;
+  BytecodeHelper.pushConstant(mv,args.length);
+  mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  for (int i=0; i < args.length; i++) {
+    Type arg=args[i];
+    mv.visitInsn(DUP);
+    BytecodeHelper.pushConstant(mv,i);
+    if (isPrimitive(arg)) {
+      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+      String wrappedType=getWrappedClassDescriptor(arg);
+      mv.visitMethodInsn(INVOKESTATIC,wrappedType,"valueOf","(" + arg.getDescriptor() + ")L"+ wrappedType+ ";");
+    }
+ else {
+      mv.visitVarInsn(ALOAD,i + 1);
+    }
+    mv.visitInsn(AASTORE);
+  }
+  mv.visitVarInsn(ASTORE,arrayStore);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitFieldInsn(GETFIELD,proxyName,fieldName,"Lgroovy/lang/Closure;");
+  mv.visitVarInsn(ALOAD,arrayStore);
+  mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Closure","call","([Ljava/lang/Object;)Ljava/lang/Object;");
+  Type returnType=Type.getReturnType(desc);
+  if (returnType == Type.VOID_TYPE) {
+    mv.visitInsn(POP);
+    mv.visitInsn(RETURN);
+  }
+ else {
+    if (isPrimitive(returnType)) {
+      BytecodeHelper.unbox(mv,ClassHelper.make(returnType.getClassName()));
+    }
+ else {
+      mv.visitTypeInsn(CHECKCAST,returnType.getInternalName());
+    }
+    mv.visitInsn(getReturnInsn(returnType));
+  }
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+  return mv;
+}

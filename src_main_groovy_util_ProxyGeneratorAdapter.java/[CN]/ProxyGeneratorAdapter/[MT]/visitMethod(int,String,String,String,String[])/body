@@ -1,0 +1,17 @@
+{
+  Object key=Arrays.asList(access,name,desc);
+  if (visitedMethods.contains(key))   return new EmptyVisitor();
+  visitedMethods.add(key);
+  int accessFlags=access;
+  String fieldName=findFieldName(name);
+  if (closureMap.containsKey(fieldName) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+    if (Modifier.isAbstract(access)) {
+      accessFlags-=ACC_ABSTRACT;
+    }
+    return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags,fieldName);
+  }
+ else   if ("<init>".equals(name) && (Modifier.isPublic(access) || Modifier.isProtected(access))) {
+    return createConstructor(access,name,desc,signature,exceptions);
+  }
+  return new EmptyVisitor();
+}

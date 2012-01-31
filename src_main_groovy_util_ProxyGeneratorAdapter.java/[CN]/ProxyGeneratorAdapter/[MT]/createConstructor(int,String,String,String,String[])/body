@@ -1,0 +1,36 @@
+{
+  Type[] args=Type.getArgumentTypes(desc);
+  StringBuilder newDesc=new StringBuilder("(");
+  for (  Type arg : args) {
+    newDesc.append(arg.getDescriptor());
+  }
+  for (int i=0; i < closureMap.size(); i++) {
+    newDesc.append("Lgroovy/lang/Closure;");
+  }
+  newDesc.append(")V");
+  MethodVisitor mv=super.visitMethod(access,name,newDesc.toString(),signature,exceptions);
+  mv.visitCode();
+  mv.visitVarInsn(ALOAD,0);
+  for (int i=0; i < args.length; i++) {
+    Type arg=args[i];
+    if (isPrimitive(arg)) {
+      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+    }
+ else {
+      mv.visitVarInsn(ALOAD,i + 1);
+    }
+  }
+  mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
+  initializeDelegates(mv,args.length);
+  if (addGroovyObjectSupport) {
+    mv.visitIntInsn(ALOAD,0);
+    mv.visitInsn(DUP);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","getMetaClass","(Ljava/lang/Class;)Lgroovy/lang/MetaClass;");
+    mv.visitFieldInsn(PUTFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
+  }
+  mv.visitInsn(RETURN);
+  mv.visitMaxs(0,0);
+  mv.visitEnd();
+  return mv;
+}

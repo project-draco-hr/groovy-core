@@ -1,0 +1,17 @@
+{
+  Set<String> interfacesSet=new LinkedHashSet<String>();
+  if (interfaces != null)   Collections.addAll(interfacesSet,interfaces);
+  for (  Class extraInterface : classList) {
+    if (extraInterface.isInterface())     interfacesSet.add(BytecodeHelper.getClassInternalName(extraInterface));
+  }
+  addGroovyObjectSupport=!GroovyObject.class.isAssignableFrom(superClass);
+  if (addGroovyObjectSupport)   interfacesSet.add("groovy/lang/GroovyObject");
+  super.visit(version,ACC_PUBLIC,proxyName,signature,BytecodeHelper.getClassInternalName(superClass),interfacesSet.toArray(new String[interfacesSet.size()]));
+  addClosureDelegates();
+  if (addGroovyObjectSupport) {
+    createGroovyObjectSupport();
+  }
+  for (  Class clazz : classList) {
+    visitClass(clazz);
+  }
+}
