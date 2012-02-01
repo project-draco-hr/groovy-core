@@ -33,4 +33,26 @@
   cr.accept(this,0);
   byte[] b=writer.toByteArray();
   cachedClass=loader.defineClass(proxyName,b);
+  Class[] args=new Class[closureMap.size()];
+  for (int i=0; i < closureMap.size(); i++) {
+    args[i]=Closure.class;
+  }
+  Constructor constructor;
+  Object[] values;
+  try {
+    constructor=cachedClass.getConstructor(args);
+    int size=this.closureMap.size();
+    Iterator<DelegateClosure> delegates=this.closureMap.values().iterator();
+    values=new Object[size];
+    for (int i=0; i < size; i++) {
+      DelegateClosure delegate=delegates.next();
+      values[i]=delegate.closure;
+    }
+  }
+ catch (  NoSuchMethodException e) {
+    constructor=null;
+    values=null;
+  }
+  cachedNoArgConstructor=constructor;
+  cachedClosures=values;
 }

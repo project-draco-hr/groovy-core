@@ -1,4 +1,18 @@
 {
+  if (constructorArgs == null && cachedNoArgConstructor != null) {
+    try {
+      return (GroovyObject)cachedNoArgConstructor.newInstance(cachedClosures);
+    }
+ catch (    InstantiationException e) {
+      throw new GroovyRuntimeException(e);
+    }
+catch (    IllegalAccessException e) {
+      throw new GroovyRuntimeException(e);
+    }
+catch (    InvocationTargetException e) {
+      throw new GroovyRuntimeException(e);
+    }
+  }
   if (constructorArgs == null)   constructorArgs=EMPTY_ARGS;
   DelegateClosure[] delegates=closureMap.values().toArray(new DelegateClosure[closureMap.size()]);
   Object[] values=new Object[constructorArgs.length + delegates.length];

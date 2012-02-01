@@ -22,16 +22,9 @@
   }
   mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
   initializeDelegates(mv,args.length);
-  if (addGroovyObjectSupport) {
-    mv.visitIntInsn(ALOAD,0);
-    mv.visitInsn(DUP);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;");
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","getMetaClass","(Ljava/lang/Class;)Lgroovy/lang/MetaClass;");
-    mv.visitFieldInsn(PUTFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
-  }
   mv.visitInsn(RETURN);
   int max=1 + args.length + closureMap.size();
-  mv.visitMaxs(addGroovyObjectSupport ? 1 + max : max,max);
+  mv.visitMaxs(max,max);
   mv.visitEnd();
   return new EmptyVisitor();
 }
