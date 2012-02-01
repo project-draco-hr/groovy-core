@@ -4,10 +4,10 @@
   for (  Class extraInterface : classList) {
     if (extraInterface.isInterface())     interfacesSet.add(BytecodeHelper.getClassInternalName(extraInterface));
   }
-  addGroovyObjectSupport=!GroovyObject.class.isAssignableFrom(superClass);
+  final boolean addGroovyObjectSupport=!GroovyObject.class.isAssignableFrom(superClass);
   if (addGroovyObjectSupport)   interfacesSet.add("groovy/lang/GroovyObject");
   super.visit(V1_5,ACC_PUBLIC,proxyName,signature,BytecodeHelper.getClassInternalName(superClass),interfacesSet.toArray(new String[interfacesSet.size()]));
-  addClosureDelegates();
+  addClosureDelegateField();
   if (addGroovyObjectSupport) {
     createGroovyObjectSupport();
   }

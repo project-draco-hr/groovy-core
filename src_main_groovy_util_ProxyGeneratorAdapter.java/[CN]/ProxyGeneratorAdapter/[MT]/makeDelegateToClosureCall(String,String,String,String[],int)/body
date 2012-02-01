@@ -24,9 +24,25 @@
     mv.visitInsn(AASTORE);
   }
   mv.visitVarInsn(ASTORE,arrayStore);
+  int arrayIndex=arrayStore;
   mv.visitVarInsn(ALOAD,0);
-  mv.visitFieldInsn(GETFIELD,proxyName,fieldName,"Lgroovy/lang/Closure;");
+  mv.visitFieldInsn(GETFIELD,proxyName,CLOSURES_MAP_FIELD,"Ljava/util/Map;");
+  mv.visitLdcInsn(name);
+  mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+  arrayStore++;
+  mv.visitVarInsn(ASTORE,arrayStore);
+  Label notNull=new Label();
+  mv.visitIntInsn(ALOAD,arrayStore);
+  mv.visitJumpInsn(IFNONNULL,notNull);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitFieldInsn(GETFIELD,proxyName,CLOSURES_MAP_FIELD,"Ljava/util/Map;");
+  mv.visitLdcInsn("*");
+  mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitVarInsn(ASTORE,arrayStore);
+  mv.visitLabel(notNull);
   mv.visitVarInsn(ALOAD,arrayStore);
+  mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(this.getClass()),"ensureClosure","(Ljava/lang/Object;)Lgroovy/lang/Closure;");
+  mv.visitVarInsn(ALOAD,arrayIndex);
   stackSize++;
   mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Closure","call","([Ljava/lang/Object;)Ljava/lang/Object;");
   Type returnType=Type.getReturnType(desc);

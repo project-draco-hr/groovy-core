@@ -1,23 +1,19 @@
 {
   Object key=Arrays.asList(name,desc);
   if (visitedMethods.contains(key))   return new EmptyVisitor();
-  if (Modifier.isPrivate(access) || Modifier.isNative(access)) {
+  if (Modifier.isPrivate(access) || Modifier.isNative(access) || ((access & ACC_SYNTHETIC) != 0)) {
     return new EmptyVisitor();
   }
   int accessFlags=access;
-  String fieldName=findFieldName(name);
   visitedMethods.add(key);
-  if ((closureMap.containsKey(fieldName) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
-    DelegateClosure delegate=closureMap.get(fieldName);
-    if (delegate == null) {
-      fieldName=findFieldName(WILDCARD);
-      delegate=closureMap.get(fieldName);
+  if ((delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+    if (!GROOVYOBJECT_METHODS.contains(name)) {
+      delegatedClosures.put(name,Boolean.TRUE);
+      if (Modifier.isAbstract(access)) {
+        accessFlags-=ACC_ABSTRACT;
+      }
+      return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags);
     }
-    delegate.visited=true;
-    if (Modifier.isAbstract(access)) {
-      accessFlags-=ACC_ABSTRACT;
-    }
-    return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags,fieldName);
   }
  else   if ("<init>".equals(name) && (Modifier.isPublic(access) || Modifier.isProtected(access))) {
     return createConstructor(access,name,desc,signature,exceptions);

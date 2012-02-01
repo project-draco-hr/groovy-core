@@ -1,7 +1,7 @@
 {
   if (constructorArgs == null && cachedNoArgConstructor != null) {
     try {
-      return (GroovyObject)cachedNoArgConstructor.newInstance(cachedClosures);
+      return (GroovyObject)cachedNoArgConstructor.newInstance(map);
     }
  catch (    InstantiationException e) {
       throw new GroovyRuntimeException(e);
@@ -14,12 +14,8 @@ catch (    InvocationTargetException e) {
     }
   }
   if (constructorArgs == null)   constructorArgs=EMPTY_ARGS;
-  DelegateClosure[] delegates=closureMap.values().toArray(new DelegateClosure[closureMap.size()]);
-  Object[] values=new Object[constructorArgs.length + delegates.length];
+  Object[] values=new Object[constructorArgs.length + 1];
   System.arraycopy(constructorArgs,0,values,0,constructorArgs.length);
-  for (int i=0; i < delegates.length; i++) {
-    DelegateClosure delegate=delegates[constructorArgs.length + i];
-    values[i]=delegate.closure;
-  }
+  values[values.length - 1]=map;
   return DefaultGroovyMethods.<GroovyObject>newInstance(cachedClass,values);
 }

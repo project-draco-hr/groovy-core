@@ -4,9 +4,7 @@
   for (  Type arg : args) {
     newDesc.append(arg.getDescriptor());
   }
-  for (int i=0; i < closureMap.size(); i++) {
-    newDesc.append("Lgroovy/lang/Closure;");
-  }
+  newDesc.append("Ljava/util/Map;");
   newDesc.append(")V");
   MethodVisitor mv=super.visitMethod(access,name,newDesc.toString(),signature,exceptions);
   mv.visitCode();
@@ -21,9 +19,9 @@
     }
   }
   mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
-  initializeDelegates(mv,args.length);
+  initializeDelegate(mv,args.length);
   mv.visitInsn(RETURN);
-  int max=1 + args.length + closureMap.size();
+  int max=args.length + 2;
   mv.visitMaxs(max,max);
   mv.visitEnd();
   return new EmptyVisitor();

@@ -22,10 +22,13 @@
   }
   Class superclass=clazz.getSuperclass();
   if (superclass != null)   visitClass(superclass);
-  for (  Map.Entry<String,DelegateClosure> entry : closureMap.entrySet()) {
-    DelegateClosure delegate=entry.getValue();
-    if (!delegate.visited) {
-      visitMethod(ACC_PUBLIC,delegate.name,"([Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+  for (  Map.Entry<String,Boolean> entry : delegatedClosures.entrySet()) {
+    Boolean visited=entry.getValue();
+    if (!visited) {
+      String name=entry.getKey();
+      if (!"*".equals(name)) {
+        visitMethod(ACC_PUBLIC,name,"([Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+      }
     }
   }
 }
