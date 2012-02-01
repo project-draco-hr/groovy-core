@@ -1,4 +1,5 @@
 {
-  MethodHandle mh=SELECT_METHOD.bindTo(mc).bindTo(sender).bindTo(name).bindTo(safeNavigation).bindTo(thisCall).asCollector(Object[].class,type.parameterCount() - 1).asType(type);
+  MethodHandle mh=MethodHandles.insertArguments(SELECT_METHOD,0,mc,sender,name,safeNavigation,thisCall,1);
+  mh=mh.asCollector(Object[].class,type.parameterCount()).asType(type);
   return mh;
 }

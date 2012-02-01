@@ -6,15 +6,13 @@
     GroovyObject go=(GroovyObject)receiver;
     MetaClass mc=(MetaClass)go.getMetaClass();
     test=SAME_MC.bindTo(mc);
-    test=test.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(1)));
-    test=MethodHandles.dropArguments(test,0,ci.targetType.parameterType(0));
+    test=test.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(0)));
   }
  else   if (receiver != null) {
     ConstantMetaClassVersioning mcv=DefaultMetaClassInfo.getCurrentConstantMetaClassVersioning();
     test=VALID_MC_VERSION.bindTo(mcv);
     ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
-    test=IS_NOT_NULL.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(1)));
-    test=MethodHandles.dropArguments(test,0,ci.targetType.parameterType(0));
+    test=IS_NOT_NULL.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(0)));
   }
   if (test != null) {
     ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
@@ -23,13 +21,13 @@
   for (int i=0; i < ci.args.length; i++) {
     Object arg=ci.args[i];
     if (arg == null) {
-      test=IS_NULL.asType(MethodType.methodType(boolean.class,pt[i + 1]));
+      test=IS_NULL.asType(MethodType.methodType(boolean.class,pt[i]));
     }
  else {
       Class argClass=arg.getClass();
-      test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i + 1]));
+      test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i]));
     }
-    Class[] drops=new Class[i + 1];
+    Class[] drops=new Class[i];
     for (int j=0; j < drops.length; j++)     drops[j]=pt[j];
     test=MethodHandles.dropArguments(test,0,drops);
     ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);

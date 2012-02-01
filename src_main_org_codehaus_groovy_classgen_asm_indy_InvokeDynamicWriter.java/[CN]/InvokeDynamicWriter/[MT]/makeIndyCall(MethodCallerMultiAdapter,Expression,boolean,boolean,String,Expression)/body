@@ -2,8 +2,7 @@
   CompileStack compileStack=controller.getCompileStack();
   OperandStack operandStack=controller.getOperandStack();
   compileStack.pushLHS(false);
-  new ConstantExpression(0,false).visit(controller.getAcg());
-  String sig="(Ljava/lang/Integer;";
+  String sig="(";
   compileStack.pushImplicitThis(implicitThis);
   receiver.visit(controller.getAcg());
   compileStack.popImplicitThis();
@@ -25,6 +24,6 @@
   sig+=")Ljava/lang/Object;";
   Handle bsmHandle=getBsmHandle(adapter,safe);
   controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,bsmHandle);
-  operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments + 1);
+  operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments);
   compileStack.popLHS();
 }
