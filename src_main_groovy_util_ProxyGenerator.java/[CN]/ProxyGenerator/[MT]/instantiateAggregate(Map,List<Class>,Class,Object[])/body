@@ -10,6 +10,15 @@
       base=Object.class;
     }
   }
-  ProxyGeneratorAdapter adapter=new ProxyGeneratorAdapter(map,base,intfs,base.getClassLoader(),emptyMethods);
-  return adapter.proxy(closureMap,constructorArgs);
+  Set<String> keys=map == EMPTY_CLOSURE_MAP ? EMPTY_KEYSET : new HashSet<String>();
+  for (  Object o : map.keySet()) {
+    keys.add(o.toString());
+  }
+  CacheKey key=new CacheKey(base,keys,intfs,emptyMethods);
+  ProxyGeneratorAdapter adapter=(ProxyGeneratorAdapter)adapterCache.get(key);
+  if (adapter == null) {
+    adapter=new ProxyGeneratorAdapter(map,base,intfs,base.getClassLoader(),emptyMethods);
+    adapterCache.put(key,adapter);
+  }
+  return adapter.proxy(map,constructorArgs);
 }
