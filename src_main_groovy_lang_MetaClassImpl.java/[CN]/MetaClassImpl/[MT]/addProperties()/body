@@ -29,6 +29,7 @@
     Method[] listenerMethods=descriptor.getListenerMethods();
     for (    Method listenerMethod : listenerMethods) {
       final MetaMethod metaMethod=CachedMethod.find(descriptor.getAddListenerMethod());
+      if (metaMethod == null)       continue;
       addToAllMethodsIfPublic(metaMethod);
       String name=listenerMethod.getName();
       if (listeners.containsKey(name)) {

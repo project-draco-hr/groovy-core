@@ -1,20 +1,37 @@
 {
   MethodVisitor mv=controller.getMethodVisitor();
   Expression objectExpression=expression.getObjectExpression();
+  ClassNode classNode=controller.getClassNode();
   if (isThisOrSuper(objectExpression)) {
     String name=expression.getPropertyAsString();
     if (name != null) {
       FieldNode field=null;
       boolean privateSuperField=false;
       if (isSuperExpression(objectExpression)) {
-        field=controller.getClassNode().getSuperClass().getDeclaredField(name);
+        field=classNode.getSuperClass().getDeclaredField(name);
         if (field != null && ((field.getModifiers() & ACC_PRIVATE) != 0)) {
           privateSuperField=true;
         }
       }
  else {
         if (controller.isNotExplicitThisInClosure(expression.isImplicitThis())) {
-          field=controller.getClassNode().getDeclaredField(name);
+          field=classNode.getDeclaredField(name);
+          if (field == null && classNode instanceof InnerClassNode) {
+            ClassNode outer=classNode.getOuterClass();
+            FieldNode outerClassField;
+            while (outer != null) {
+              outerClassField=outer.getDeclaredField(name);
+              if (outerClassField != null && outerClassField.isStatic() && outerClassField.isFinal()) {
+                if (outer != classNode.getOuterClass() && Modifier.isPrivate(outerClassField.getModifiers())) {
+                  throw new GroovyBugError("Trying to access private constant field [" + outerClassField.getDeclaringClass() + "#"+ outerClassField.getName()+ "] from inner class");
+                }
+                PropertyExpression pexp=new PropertyExpression(new ClassExpression(outer),expression.getProperty());
+                pexp.visit(controller.getAcg());
+                return;
+              }
+              outer=outer.getSuperClass();
+            }
+          }
         }
       }
       if (field != null && !privateSuperField) {
@@ -38,7 +55,7 @@
   final String propName=expression.getPropertyAsString();
   if (expression.getObjectExpression() instanceof ClassExpression && propName != null && propName.equals("this")) {
     ClassNode type=objectExpression.getType();
-    ClassNode iterType=controller.getClassNode();
+    ClassNode iterType=classNode;
     mv.visitVarInsn(ALOAD,0);
     while (!iterType.equals(type)) {
       String ownerName=BytecodeHelper.getClassInternalName(iterType);
