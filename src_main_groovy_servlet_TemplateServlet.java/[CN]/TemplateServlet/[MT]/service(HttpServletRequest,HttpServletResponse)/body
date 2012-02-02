@@ -2,19 +2,31 @@
   if (verbose) {
     log("Creating/getting cached template...");
   }
+  Template template;
+  long getMillis;
+  String name;
   File file=super.getScriptUriAsFile(request);
-  String name=file.getName();
-  if (!file.exists()) {
-    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-    return;
+  if (file != null) {
+    name=file.getName();
+    if (!file.exists()) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    if (!file.canRead()) {
+      response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read \"" + name + "\"!");
+      return;
+    }
+    getMillis=System.currentTimeMillis();
+    template=getTemplate(file);
+    getMillis=System.currentTimeMillis() - getMillis;
   }
-  if (!file.canRead()) {
-    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Can not read \"" + name + "\"!");
-    return;
+ else {
+    name=super.getScriptUri(request);
+    URL url=servletContext.getResource(name);
+    getMillis=System.currentTimeMillis();
+    template=getTemplate(url);
+    getMillis=System.currentTimeMillis() - getMillis;
   }
-  long getMillis=System.currentTimeMillis();
-  Template template=getTemplate(file);
-  getMillis=System.currentTimeMillis() - getMillis;
   ServletBinding binding=new ServletBinding(request,response,servletContext);
   setVariables(binding);
   response.setContentType(CONTENT_TYPE_TEXT_HTML + "; charset=" + encoding);

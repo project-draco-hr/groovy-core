@@ -1,7 +1,4 @@
 {
-  if (file == null) {
-    throw new NullPointerException("file");
-  }
   if (template == null) {
     throw new NullPointerException("template");
   }
@@ -12,7 +9,9 @@
     this.date=null;
   }
   this.hit=0;
-  this.lastModified=file.lastModified();
-  this.length=file.length();
+  if (file != null) {
+    this.lastModified=file.lastModified();
+    this.length=file.length();
+  }
   this.template=template;
 }
