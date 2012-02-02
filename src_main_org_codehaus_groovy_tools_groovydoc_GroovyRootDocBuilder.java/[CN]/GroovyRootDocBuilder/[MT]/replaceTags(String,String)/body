@@ -1,0 +1,8 @@
+{
+  String result=orig.replaceAll("(?m)^\\s*\\*","");
+  result=replaceAllTags(result,"","",LINK_REGEX,relPath);
+  result=replaceAllTags(result,"<TT>","</TT>",CODE_REGEX,relPath);
+  result=replaceAllTags(result + "@endMarker","<DL><DT><B>$1:</B></DT><DD>","</DD></DL>",TAG_REGEX,relPath);
+  result=result.substring(0,result.length() - 10);
+  return SimpleGroovyClassDoc.decodeSpecialSymbols(result);
+}
