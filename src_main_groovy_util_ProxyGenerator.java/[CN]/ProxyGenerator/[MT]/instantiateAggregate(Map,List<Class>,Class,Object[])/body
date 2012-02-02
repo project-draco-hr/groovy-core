@@ -14,10 +14,10 @@
   for (  Object o : map.keySet()) {
     keys.add(o.toString());
   }
-  CacheKey key=new CacheKey(base,keys,intfs,emptyMethods);
+  CacheKey key=new CacheKey(base,keys,intfs,emptyMethods,false);
   ProxyGeneratorAdapter adapter=(ProxyGeneratorAdapter)adapterCache.get(key);
   if (adapter == null) {
-    adapter=new ProxyGeneratorAdapter(map,base,intfs,base.getClassLoader(),emptyMethods);
+    adapter=new ProxyGeneratorAdapter(map,base,intfs,base.getClassLoader(),emptyMethods,null);
     adapterCache.put(key,adapter);
   }
   return adapter.proxy(map,constructorArgs);

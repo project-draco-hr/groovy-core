@@ -45,21 +45,8 @@
   mv.visitVarInsn(ALOAD,arrayIndex);
   stackSize++;
   mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Closure","call","([Ljava/lang/Object;)Ljava/lang/Object;");
-  Type returnType=Type.getReturnType(desc);
-  if (returnType == Type.VOID_TYPE) {
-    mv.visitInsn(POP);
-    mv.visitInsn(RETURN);
-  }
- else {
-    if (isPrimitive(returnType)) {
-      BytecodeHelper.unbox(mv,ClassHelper.make(returnType.getClassName()));
-    }
- else {
-      mv.visitTypeInsn(CHECKCAST,returnType.getInternalName());
-    }
-    mv.visitInsn(getReturnInsn(returnType));
-  }
+  unwrapResult(mv,desc);
   mv.visitMaxs(stackSize,arrayStore + 1);
   mv.visitEnd();
-  return new EmptyVisitor();
+  return EMPTY_VISITOR;
 }

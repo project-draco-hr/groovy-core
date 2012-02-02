@@ -5,6 +5,9 @@
     newDesc.append(arg.getDescriptor());
   }
   newDesc.append("Ljava/util/Map;");
+  if (generateDelegateField) {
+    newDesc.append(BytecodeHelper.getTypeDescription(delegateClass));
+  }
   newDesc.append(")V");
   MethodVisitor mv=super.visitMethod(access,name,newDesc.toString(),signature,exceptions);
   mv.visitCode();
@@ -19,10 +22,13 @@
     }
   }
   mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
-  initializeDelegate(mv,args.length);
+  initializeDelegateClosure(mv,args.length);
+  if (generateDelegateField) {
+    initializeDelegateObject(mv,args.length + 1);
+  }
   mv.visitInsn(RETURN);
-  int max=args.length + 2;
+  int max=args.length + 2 + (generateDelegateField ? 1 : 0);
   mv.visitMaxs(max,max);
   mv.visitEnd();
-  return new EmptyVisitor();
+  return EMPTY_VISITOR;
 }

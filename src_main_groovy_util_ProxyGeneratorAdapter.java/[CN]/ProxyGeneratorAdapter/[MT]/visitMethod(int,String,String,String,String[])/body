@@ -1,27 +1,35 @@
 {
   Object key=Arrays.asList(name,desc);
-  if (visitedMethods.contains(key))   return new EmptyVisitor();
+  if (visitedMethods.contains(key))   return EMPTY_VISITOR;
   if (Modifier.isPrivate(access) || Modifier.isNative(access) || ((access & ACC_SYNTHETIC) != 0)) {
-    return new EmptyVisitor();
+    return EMPTY_VISITOR;
   }
   int accessFlags=access;
   visitedMethods.add(key);
-  if ((delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
-    if (!GROOVYOBJECT_METHODS.contains(name)) {
-      delegatedClosures.put(name,Boolean.TRUE);
+  if ((objectDelegateMethods.contains(name) || delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+    if (!GROOVYOBJECT_METHOD_NAMESS.contains(name)) {
       if (Modifier.isAbstract(access)) {
         accessFlags-=ACC_ABSTRACT;
       }
+      if (delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) {
+        delegatedClosures.put(name,Boolean.TRUE);
+        return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags);
+      }
+      if (generateDelegateField && objectDelegateMethods.contains(name)) {
+        return makeDelegateCall(name,desc,signature,exceptions,accessFlags);
+      }
+      delegatedClosures.put(name,Boolean.TRUE);
       return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags);
     }
   }
  else   if ("<init>".equals(name) && (Modifier.isPublic(access) || Modifier.isProtected(access))) {
     return createConstructor(access,name,desc,signature,exceptions);
   }
- else   if (Modifier.isAbstract(access) && !GROOVYOBJECT_METHODS.contains(name)) {
+ else   if (Modifier.isAbstract(access) && !GROOVYOBJECT_METHOD_NAMESS.contains(name)) {
     accessFlags-=ACC_ABSTRACT;
     MethodVisitor mv=super.visitMethod(accessFlags,name,desc,signature,exceptions);
     mv.visitCode();
+    Type[] args=Type.getArgumentTypes(desc);
     if (emptyBody) {
       Type returnType=Type.getReturnType(desc);
       if (returnType == Type.VOID_TYPE) {
@@ -46,7 +54,7 @@ default :
 mv.visitInsn(ACONST_NULL);
 }
 mv.visitInsn(getReturnInsn(returnType));
-mv.visitMaxs(2,2);
+mv.visitMaxs(2,args.length + 1);
 }
 }
  else {
@@ -54,9 +62,9 @@ mv.visitTypeInsn(NEW,"java/lang/UnsupportedOperationException");
 mv.visitInsn(DUP);
 mv.visitMethodInsn(INVOKESPECIAL,"java/lang/UnsupportedOperationException","<init>","()V");
 mv.visitInsn(ATHROW);
-mv.visitMaxs(2,1);
+mv.visitMaxs(2,args.length + 1);
 }
 mv.visitEnd();
 }
-return new EmptyVisitor();
+return EMPTY_VISITOR;
 }
