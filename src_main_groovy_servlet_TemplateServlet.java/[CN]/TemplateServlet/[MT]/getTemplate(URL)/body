@@ -1,9 +1,9 @@
 {
-  String key=file.getAbsolutePath();
-  Template template=findCachedTemplate(key,file);
+  String key=url.toString();
+  Template template=findCachedTemplate(key,null);
   if (template == null) {
     try {
-      template=createAndStoreTemplate(key,new FileInputStream(file),file);
+      template=createAndStoreTemplate(key,url.openConnection().getInputStream(),null);
     }
  catch (    Exception e) {
       throw new ServletException("Creation of template failed: " + e,e);

@@ -1,0 +1,27 @@
+{
+  if (verbose) {
+    log("Creating new template from " + key + "...");
+  }
+  Reader reader=null;
+  try {
+    String fileEncoding=(fileEncodingParamVal != null) ? fileEncodingParamVal : System.getProperty(GROOVY_SOURCE_ENCODING);
+    reader=fileEncoding == null ? new InputStreamReader(inputStream) : new InputStreamReader(inputStream,fileEncoding);
+    Template template=engine.createTemplate(reader);
+    cache.put(key,new TemplateCacheEntry(file,template,verbose));
+    if (verbose) {
+      log("Created and added template to cache. [key=" + key + "] "+ cache.get(key));
+    }
+    if (template == null) {
+      throw new ServletException("Template is null? Should not happen here!");
+    }
+    return template;
+  }
+  finally {
+    if (reader != null) {
+      reader.close();
+    }
+ else     if (inputStream != null) {
+      inputStream.close();
+    }
+  }
+}

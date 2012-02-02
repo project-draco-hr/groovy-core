@@ -1,0 +1,26 @@
+{
+  Template template=null;
+  if (verbose) {
+    log("Looking for cached template by key \"" + key + "\"");
+  }
+  TemplateCacheEntry entry=(TemplateCacheEntry)cache.get(key);
+  if (entry != null) {
+    if (entry.validate(file)) {
+      if (verbose) {
+        log("Cache hit! " + entry);
+      }
+      template=entry.template;
+    }
+ else {
+      if (verbose) {
+        log("Cached template " + key + " needs recompiliation! "+ entry);
+      }
+    }
+  }
+ else {
+    if (verbose) {
+      log("Cache miss for " + key);
+    }
+  }
+  return template;
+}
