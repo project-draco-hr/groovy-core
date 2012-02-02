@@ -27,6 +27,10 @@
     controller.getOperandStack().push(receiverType);
     return;
   }
+  if (receiver instanceof ClassExpression) {
+    if (makeGetPublicField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))     return;
+    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName))     return;
+  }
   if (isClassReceiver) {
     if (makeGetPublicField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
