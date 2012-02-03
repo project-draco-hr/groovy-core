@@ -1,6 +1,10 @@
 {
   List<MethodNode> methods=new ArrayList<MethodNode>(node.getMethods());
-  Map<MethodNode,MethodNode> privateBridgeMethods=new HashMap<MethodNode,MethodNode>();
+  Map<MethodNode,MethodNode> privateBridgeMethods=(Map<MethodNode,MethodNode>)node.getNodeMetaData(PRIVATE_BRIDGE_METHODS);
+  if (privateBridgeMethods != null) {
+    return;
+  }
+  privateBridgeMethods=new HashMap<MethodNode,MethodNode>();
   int i=-1;
   for (  MethodNode method : methods) {
     int access=method.getModifiers();
@@ -24,5 +28,5 @@
       privateBridgeMethods.put(method,bridge);
     }
   }
-  node.setNodeMetaData(StaticCompilationMetadataKeys.PRIVATE_BRIDGE_METHODS,privateBridgeMethods);
+  node.setNodeMetaData(PRIVATE_BRIDGE_METHODS,privateBridgeMethods);
 }

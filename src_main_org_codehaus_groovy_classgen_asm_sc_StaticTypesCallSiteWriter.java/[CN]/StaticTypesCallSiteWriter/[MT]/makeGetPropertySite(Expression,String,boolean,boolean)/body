@@ -20,7 +20,7 @@
     expr.visit(controller.getAcg());
     return;
   }
-  if (makeGetPublicField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
   if (receiverType.isEnum()) {
     mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
@@ -28,12 +28,13 @@
     return;
   }
   if (receiver instanceof ClassExpression) {
-    if (makeGetPublicField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))     return;
+    if (makeGetField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))     return;
     if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName))     return;
   }
   if (isClassReceiver) {
-    if (makeGetPublicField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
+    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
   }
-  throw new UnsupportedOperationException("Operation not yet implemented: " + receiver.getText() + "."+ methodName);
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName))   return;
+  controller.getSourceUnit().addError(new SyntaxException("Access to " + receiverType.toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
 }

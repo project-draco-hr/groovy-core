@@ -1,0 +1,20 @@
+{
+  Map<String,MethodNode> privateConstantAccessors=(Map<String,MethodNode>)node.getNodeMetaData(PRIVATE_FIELDS_ACCESSORS);
+  if (privateConstantAccessors != null) {
+    return;
+  }
+  int acc=-1;
+  privateConstantAccessors=new HashMap<String,MethodNode>();
+  for (  FieldNode fieldNode : node.getFields()) {
+    int access=fieldNode.getModifiers();
+    if (Modifier.isPrivate(fieldNode.getModifiers()) && (access & Opcodes.ACC_SYNTHETIC) == 0) {
+      acc++;
+      access=(access - Opcodes.ACC_PRIVATE + Opcodes.ACC_SYNTHETIC) + Opcodes.ACC_FINAL;
+      Expression receiver=fieldNode.isStatic() ? new ClassExpression(node) : new VariableExpression("this",node);
+      Statement stmt=new ExpressionStatement(new PropertyExpression(receiver,fieldNode.getName()));
+      MethodNode accessor=node.addMethod("pfaccess$" + acc,access,fieldNode.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,stmt);
+      privateConstantAccessors.put(fieldNode.getName(),accessor);
+    }
+  }
+  node.setNodeMetaData(PRIVATE_FIELDS_ACCESSORS,privateConstantAccessors);
+}
