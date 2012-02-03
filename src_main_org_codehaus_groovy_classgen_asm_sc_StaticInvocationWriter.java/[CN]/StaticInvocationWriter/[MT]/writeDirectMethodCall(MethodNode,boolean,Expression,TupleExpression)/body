@@ -33,6 +33,19 @@
       mce.visit(controller.getAcg());
       return true;
     }
+    if (target != null && target.isPrivate()) {
+      ClassNode declaringClass=target.getDeclaringClass();
+      if (declaringClass instanceof InnerClassNode && declaringClass.getNodeMetaData(StaticCompilationMetadataKeys.PRIVATE_BRIDGE_METHODS) != null && declaringClass != controller.getClassNode()) {
+        @SuppressWarnings("unchecked") Map<MethodNode,MethodNode> bridges=(Map<MethodNode,MethodNode>)declaringClass.getNodeMetaData(StaticCompilationMetadataKeys.PRIVATE_BRIDGE_METHODS);
+        MethodNode bridge=bridges.get(target);
+        if (bridge != null) {
+          return writeDirectMethodCall(bridge,implicitThis,receiver,args);
+        }
+      }
+      if (declaringClass != controller.getClassNode()) {
+        controller.getSourceUnit().addError(new SyntaxException("Cannot call private method " + (target.isStatic() ? "static " : "") + declaringClass.toString(false)+ "#"+ target.getName()+ " from class "+ controller.getClassNode().toString(false),receiver.getLineNumber(),receiver.getColumnNumber()));
+      }
+    }
     return super.writeDirectMethodCall(target,implicitThis,receiver,args);
   }
 }

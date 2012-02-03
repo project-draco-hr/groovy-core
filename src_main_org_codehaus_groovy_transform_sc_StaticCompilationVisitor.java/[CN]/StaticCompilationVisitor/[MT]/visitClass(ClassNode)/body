@@ -1,6 +1,12 @@
 {
-  ClassNode orig=classNode;
+  ClassNode oldCN=classNode;
   classNode=node;
   super.visitClass(node);
-  classNode=orig;
+  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
+  while (innerClasses.hasNext()) {
+    InnerClassNode innerClassNode=innerClasses.next();
+    addPrivateBridgeMethods(innerClassNode);
+    visitClass(innerClassNode);
+  }
+  classNode=oldCN;
 }
