@@ -1,3 +1,10 @@
 {
-  return result.containsKey(key);
+  if (result.containsKey(key))   return true;
+  for (  Object next : result.keySet()) {
+    if (!(next instanceof String) && !(key instanceof String || key instanceof GString))     continue;
+    if (key.toString().equalsIgnoreCase((String)next)) {
+      return true;
+    }
+  }
+  return false;
 }
