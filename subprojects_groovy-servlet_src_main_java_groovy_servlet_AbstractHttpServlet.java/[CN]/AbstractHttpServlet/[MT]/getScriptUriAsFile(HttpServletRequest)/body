@@ -1,5 +1,8 @@
 {
   String uri=getScriptUri(request);
   String real=servletContext.getRealPath(uri);
+  if (real == null) {
+    return null;
+  }
   return new File(real).getAbsoluteFile();
 }

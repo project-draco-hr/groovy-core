@@ -1,0 +1,22 @@
+{
+  Matcher matcher=regex.matcher(self);
+  if (matcher.find()) {
+    matcher.reset();
+    StringBuffer sb=new StringBuffer();
+    while (matcher.find()) {
+      String tagname=matcher.group(1);
+      if (!"interface".equals(tagname)) {
+        String content=encodeSpecialSymbols(matcher.group(2));
+        if ("link".equals(tagname) || "see".equals(tagname)) {
+          content=getDocUrl(content,false,links,relPath,rootDoc,classDoc);
+        }
+        matcher.appendReplacement(sb,s1 + content + s2);
+      }
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
+  }
+ else {
+    return self;
+  }
+}

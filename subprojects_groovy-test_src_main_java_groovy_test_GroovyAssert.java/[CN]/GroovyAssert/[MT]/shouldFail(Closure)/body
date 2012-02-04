@@ -1,0 +1,17 @@
+{
+  boolean failed=false;
+  Throwable th=null;
+  try {
+    code.call();
+  }
+ catch (  GroovyRuntimeException gre) {
+    failed=true;
+    th=ScriptBytecodeAdapter.unwrap(gre);
+  }
+catch (  Throwable e) {
+    failed=true;
+    th=e;
+  }
+  assertTrue("Closure " + code + " should have failed",failed);
+  return th;
+}

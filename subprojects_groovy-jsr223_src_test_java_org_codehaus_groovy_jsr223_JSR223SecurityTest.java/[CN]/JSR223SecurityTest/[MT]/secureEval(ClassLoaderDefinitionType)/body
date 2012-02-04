@@ -1,0 +1,7 @@
+{
+  ScriptEngine engine=createScriptEngine(classLoaderDefType);
+  GroovySecurityManager securityMgr=GroovySecurityManager.instance();
+  securityMgr.overrideGroovyClassLoader(engine,classLoaderDefType);
+  securityMgr.forbid(testFixture.forbiddenInstruction);
+  engine.eval(testFixture.script);
+}
