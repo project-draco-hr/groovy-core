@@ -1,0 +1,49 @@
+{
+  if (!isUsingGenericsOrIsArrayUsingGenerics(receiver))   return;
+  boolean failure=false;
+  GenericsType[] methodGenericTypes=null;
+  ClassNode methodNodeReceiver=candidateMethod.getDeclaringClass();
+  if (!implementsInterfaceOrIsSubclassOf(receiver,methodNodeReceiver) || !isUsingGenericsOrIsArrayUsingGenerics(methodNodeReceiver))   return;
+  Parameter[] parameters=candidateMethod.getParameters();
+  int argNum=0;
+  for (  Parameter parameter : parameters) {
+    ClassNode type=parameter.getType();
+    if (type.isUsingGenerics()) {
+      methodGenericTypes=GenericsUtils.alignGenericTypes(receiver.redirect().getGenericsTypes(),receiver.getGenericsTypes(),type.getGenericsTypes());
+      if (methodGenericTypes.length == 1) {
+        ClassNode nodeType=getWrapper(methodGenericTypes[0].getType());
+        GenericsType[] argumentGenericTypes=arguments[argNum].getGenericsTypes();
+        ClassNode actualType=argumentGenericTypes != null ? getWrapper(argumentGenericTypes[0].getType()) : nodeType;
+        if (!implementsInterfaceOrIsSubclassOf(actualType,nodeType)) {
+          failure=true;
+        }
+      }
+ else {
+      }
+    }
+ else     if (type.isArray() && type.getComponentType().isUsingGenerics()) {
+      ClassNode componentType=type.getComponentType();
+      methodGenericTypes=GenericsUtils.alignGenericTypes(receiver.redirect().getGenericsTypes(),receiver.getGenericsTypes(),componentType.getGenericsTypes());
+      if (methodGenericTypes.length == 1) {
+        ClassNode nodeType=getWrapper(methodGenericTypes[0].getType());
+        ClassNode actualType=getWrapper(arguments[argNum].getComponentType());
+        if (!implementsInterfaceOrIsSubclassOf(actualType,nodeType)) {
+          failure=true;
+          GenericsType baseGT=methodGenericTypes[0];
+          methodGenericTypes[0]=new GenericsType(baseGT.getType(),baseGT.getUpperBounds(),baseGT.getLowerBound());
+          methodGenericTypes[0].setType(methodGenericTypes[0].getType().makeArray());
+        }
+      }
+ else {
+      }
+    }
+    argNum++;
+  }
+  if (failure) {
+    ClassNode[] parameterTypes=new ClassNode[methodGenericTypes.length];
+    for (int i=0; i < methodGenericTypes.length; i++) {
+      parameterTypes[i]=methodGenericTypes[i].getType();
+    }
+    addStaticTypeError("Cannot call " + receiver.getName() + "#"+ toMethodParametersString(candidateMethod.getName(),parameterTypes)+ " with arguments "+ formatArgumentList(arguments),location);
+  }
+}

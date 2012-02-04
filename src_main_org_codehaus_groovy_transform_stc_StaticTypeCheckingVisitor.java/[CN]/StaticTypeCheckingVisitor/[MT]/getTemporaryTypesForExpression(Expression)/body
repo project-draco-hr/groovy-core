@@ -1,0 +1,10 @@
+{
+  List<ClassNode> classNodes=null;
+  int depth=temporaryIfBranchTypeInformation.size();
+  while (classNodes == null && depth > 0) {
+    final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.get(--depth);
+    Object key=extractTemporaryTypeInfoKey(objectExpression);
+    classNodes=tempo.get(key);
+  }
+  return classNodes;
+}

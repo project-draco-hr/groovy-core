@@ -1,0 +1,85 @@
+{
+  final List<MethodNode> chosen;
+  methods.addAll(findDGMMethodsForClassNode(receiver,name));
+  chosen=chooseBestMethod(receiver,methods,args);
+  Iterator<MethodNode> iterator=chosen.iterator();
+  while (iterator.hasNext()) {
+    ExtensionMethodNode emn=(ExtensionMethodNode)iterator.next();
+    MethodNode dgmMethod=emn.getExtensionMethodNode();
+    GenericsType[] methodGenericTypes=dgmMethod.getGenericsTypes();
+    if (methodGenericTypes != null && methodGenericTypes.length > 0) {
+      Parameter[] parameters=dgmMethod.getParameters();
+      ClassNode dgmOwnerType=parameters[0].getOriginType();
+      if (dgmOwnerType.isGenericsPlaceHolder() || dgmOwnerType.isArray() && dgmOwnerType.getComponentType().isGenericsPlaceHolder()) {
+        ClassNode receiverBase=receiver.isArray() ? receiver.getComponentType() : receiver;
+        ClassNode receiverBaseRedirect=dgmOwnerType.isArray() ? dgmOwnerType.getComponentType() : dgmOwnerType;
+        boolean mismatch=false;
+        for (int i=1; i < parameters.length && !mismatch; i++) {
+          final int k=i - 1;
+          ClassNode type=parameters[i].getOriginType();
+          if (isUsingGenericsOrIsArrayUsingGenerics(type)) {
+            String receiverPlaceholder=receiverBaseRedirect.getGenericsTypes()[0].getName();
+            ClassNode parameterBaseType=args[k].isArray() ? args[k].getComponentType() : args[k];
+            ClassNode parameterBaseTypeRedirect=type.isArray() ? type.getComponentType() : type;
+            GenericsType[] paramRedirectGenericsTypes=parameterBaseTypeRedirect.getGenericsTypes();
+            GenericsType[] paramGenericTypes=parameterBaseType.getGenericsTypes();
+            if (paramGenericTypes == null) {
+              paramGenericTypes=new GenericsType[paramRedirectGenericsTypes.length];
+              Arrays.fill(paramGenericTypes,new GenericsType(OBJECT_TYPE));
+            }
+ else {
+              for (int j=0; j < paramGenericTypes.length; j++) {
+                GenericsType paramGenericType=paramGenericTypes[j];
+                if (paramGenericType.isWildcard() || paramGenericType.isPlaceholder()) {
+                  paramGenericTypes[j]=new GenericsType(OBJECT_TYPE);
+                }
+              }
+            }
+            for (int j=0, genericsTypesLength=paramRedirectGenericsTypes.length; j < genericsTypesLength && !mismatch; j++) {
+              final GenericsType gt=paramRedirectGenericsTypes[j];
+              if (gt.isPlaceholder()) {
+                List<GenericsType> fromMethodGenerics=new LinkedList<GenericsType>();
+                for (                GenericsType methodGenericType : methodGenericTypes) {
+                  if (methodGenericType.getName().equals(gt.getName())) {
+                    fromMethodGenerics.add(methodGenericType);
+                    break;
+                  }
+                }
+                while (!fromMethodGenerics.isEmpty()) {
+                  GenericsType test=fromMethodGenerics.remove(0);
+                  if (test.getName().equals(receiverPlaceholder)) {
+                    if (!implementsInterfaceOrIsSubclassOf(getWrapper(args[k]),getWrapper(receiverBase))) {
+                      mismatch=true;
+                      break;
+                    }
+                  }
+ else                   if (test.getUpperBounds() != null) {
+                    for (                    ClassNode classNode : test.getUpperBounds()) {
+                      GenericsType[] genericsTypes=classNode.getGenericsTypes();
+                      if (genericsTypes != null) {
+                        for (                        GenericsType genericsType : genericsTypes) {
+                          if (genericsType.isPlaceholder()) {
+                            for (                            GenericsType methodGenericType : methodGenericTypes) {
+                              if (methodGenericType.getName().equals(genericsType.getName())) {
+                                fromMethodGenerics.add(methodGenericType);
+                                break;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            if (mismatch) {
+              iterator.remove();
+            }
+          }
+        }
+      }
+    }
+  }
+  return chosen;
+}

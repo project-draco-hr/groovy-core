@@ -20,7 +20,7 @@
       subcall.setColumnNumber(call.getColumnNumber());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
-      ClassNode listNode=new ClassNode(List.class);
+      ClassNode listNode=LIST_TYPE.getPlainNodeReference();
       listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
       return;
@@ -33,7 +33,7 @@
     callArguments.visit(this);
   }
   ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
-  final boolean isCallOnClosure=isClosureCall(name,objectExpression);
+  final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
     withReceiverList.add(0,receiver);
@@ -79,7 +79,13 @@
           Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
           if (type == null) {
             if (variable.getType().equals(CLOSURE_TYPE)) {
-              type=variable.getType().getGenericsTypes()[0].getType();
+              GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
+              if (genericsTypes != null && !genericsTypes[0].isPlaceholder()) {
+                type=genericsTypes[0].getType();
+              }
+ else {
+                type=OBJECT_TYPE;
+              }
             }
           }
           if (type != null) {
@@ -95,27 +101,17 @@
           storeType(call,(ClassNode)data);
         }
       }
-      int nbOfArgs=0;
-      if (callArguments instanceof ArgumentListExpression) {
-        ArgumentListExpression list=(ArgumentListExpression)callArguments;
-        nbOfArgs=list.getExpressions().size();
-      }
- else {
-        nbOfArgs=0;
-      }
-      storeTargetMethod(call,nbOfArgs == 0 ? CLOSURE_CALL_NO_ARG : nbOfArgs == 1 ? CLOSURE_CALL_ONE_ARG : CLOSURE_CALL_VARGS);
     }
  else {
       List<ClassNode> receivers=new LinkedList<ClassNode>();
       if (!withReceiverList.isEmpty())       receivers.addAll(withReceiverList);
       receivers.add(receiver);
-      if (objectExpression instanceof ClassExpression) {
-        receivers.add(CLASS_Type);
+      if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
+        GenericsType clazzGT=receiver.getGenericsTypes()[0];
+        receivers.add(clazzGT.getType());
       }
       if (!temporaryIfBranchTypeInformation.empty()) {
-        final Map<Object,List<ClassNode>> tempo=temporaryIfBranchTypeInformation.peek();
-        Object key=extractTemporaryTypeInfoKey(objectExpression);
-        List<ClassNode> potentialReceiverType=tempo.get(key);
+        List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
         if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
       }
       List<MethodNode> mn=null;
@@ -123,7 +119,7 @@
       for (      ClassNode currentReceiver : receivers) {
         mn=findMethod(currentReceiver,name,args);
         if (!mn.isEmpty()) {
-          typeCheckMethodsWithGenerics(currentReceiver,args,mn,call);
+          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
           chosenReceiver=currentReceiver;
           break;
         }
@@ -136,10 +132,15 @@
           MethodNode directMethodCallCandidate=mn.get(0);
           ClassNode currentClassNode=classNode;
           classNode=directMethodCallCandidate.getDeclaringClass();
-          visitMethod(directMethodCallCandidate);
+          for (          ClassNode node : source.getAST().getClasses()) {
+            if (isClassInnerClassOrEqualTo(classNode,node)) {
+              visitMethod(directMethodCallCandidate);
+              break;
+            }
+          }
           classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
-          if (returnType.isUsingGenerics()) {
+          if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
             returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
           }
           storeType(call,returnType);

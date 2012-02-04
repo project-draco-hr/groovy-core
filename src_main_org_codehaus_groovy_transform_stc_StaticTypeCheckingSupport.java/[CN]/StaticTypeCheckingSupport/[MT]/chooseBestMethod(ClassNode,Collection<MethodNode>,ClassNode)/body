@@ -1,0 +1,70 @@
+{
+  if (methods.isEmpty())   return Collections.emptyList();
+  List<MethodNode> bestChoices=new LinkedList<MethodNode>();
+  int bestDist=Integer.MAX_VALUE;
+  ClassNode actualReceiver;
+  for (  MethodNode m : methods) {
+    actualReceiver=receiver != null ? receiver : m.getDeclaringClass();
+    Parameter[] params=parameterizeArguments(actualReceiver,m);
+    if (params.length > args.length && !isVargs(params)) {
+      int dist=allParametersAndArgumentsMatchWithDefaultParams(params,args);
+      if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))       dist+=getDistance(actualReceiver,m.getDeclaringClass());
+      if (dist >= 0 && dist < bestDist) {
+        bestChoices.clear();
+        bestChoices.add(m);
+        bestDist=dist;
+      }
+ else       if (dist >= 0 && dist == bestDist) {
+        bestChoices.add(m);
+      }
+    }
+ else     if (params.length == args.length) {
+      int allPMatch=allParametersAndArgumentsMatch(params,args);
+      int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
+      if (lastArgMatch >= 0)       lastArgMatch++;
+      int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
+      if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))       dist+=getDistance(actualReceiver,m.getDeclaringClass());
+      if (dist >= 0 && dist < bestDist) {
+        bestChoices.clear();
+        bestChoices.add(m);
+        bestDist=dist;
+      }
+ else       if (dist >= 0 && dist == bestDist) {
+        bestChoices.add(m);
+      }
+    }
+ else     if (isVargs(params)) {
+      boolean firstParamMatches=true;
+      if (args.length > 0) {
+        Parameter[] firstParams=new Parameter[params.length - 1];
+        System.arraycopy(params,0,firstParams,0,firstParams.length);
+        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+      }
+      if (firstParamMatches) {
+        if (params.length == args.length + 1) {
+          if (bestDist > 1) {
+            bestChoices.clear();
+            bestChoices.add(m);
+            bestDist=1;
+          }
+        }
+ else {
+          int dist=excessArgumentsMatchesVargsParameter(params,args);
+          if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))           dist++;
+          dist++;
+          if (params.length < args.length && dist >= 0) {
+            if (dist >= 0 && dist < bestDist) {
+              bestChoices.clear();
+              bestChoices.add(m);
+              bestDist=dist;
+            }
+ else             if (dist >= 0 && dist == bestDist) {
+              bestChoices.add(m);
+            }
+          }
+        }
+      }
+    }
+  }
+  return bestChoices;
+}

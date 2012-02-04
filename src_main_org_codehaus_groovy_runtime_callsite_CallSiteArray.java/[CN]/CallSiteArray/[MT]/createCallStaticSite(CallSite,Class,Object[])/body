@@ -1,5 +1,16 @@
 {
   CallSite site;
+  AccessController.doPrivileged(new PrivilegedAction<Void>(){
+    public Void run(){
+      try {
+        Class.forName(receiver.getName(),true,receiver.getClassLoader());
+      }
+ catch (      Exception e) {
+      }
+      return null;
+    }
+  }
+);
   MetaClass metaClass=InvokerHelper.getMetaClass(receiver);
   if (metaClass instanceof MetaClassImpl) {
     site=((MetaClassImpl)metaClass).createStaticSite(callSite,args);
