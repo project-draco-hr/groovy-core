@@ -1,12 +1,9 @@
 {
   try {
     Object value=result.get(property);
-    if (value != null)     return value;
-    if (result.containsKey(property))     return null;
-    String propertyUpper=property.toUpperCase();
-    value=result.get(propertyUpper);
-    if (value != null)     return value;
-    if (result.containsKey(propertyUpper))     return null;
+    if (value != null || result.containsKey(property))     return value;
+    value=getPropertyIgnoringCase(property);
+    if (value != null || containsKey(property))     return value;
     throw new MissingPropertyException(property,GroovyRowResult.class);
   }
  catch (  Exception e) {
