@@ -1,9 +1,9 @@
 {
   try {
-    Object value=result.get(property);
-    if (value != null || result.containsKey(property))     return value;
-    value=getPropertyIgnoringCase(property);
-    if (value != null || containsKey(property))     return value;
+    Object key=lookupKeyIgnoringCase(property);
+    if (key != null) {
+      return result.get(key);
+    }
     throw new MissingPropertyException(property,GroovyRowResult.class);
   }
  catch (  Exception e) {
