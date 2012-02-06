@@ -4,17 +4,15 @@
     superClasses.add(ReflectionCache.OBJECT_CLASS);
     Set interfaces=theCachedClass.getInterfaces();
     LinkedList<CachedClass> superInterfaces=new LinkedList<CachedClass>(interfaces);
-    Collections.sort(superInterfaces,CACHED_CLASS_NAME_COMPARATOR);
-    superInterfaces.remove(theCachedClass);
-    classPropertyIndexForSuper=classPropertyIndex;
-    final SingleKeyHashMap cPI=classPropertyIndex.getNotNull(theCachedClass);
-    for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
-      CachedClass iclass=(CachedClass)interfaceIter.next();
-      SingleKeyHashMap iPropertyIndex=cPI;
-      inheritStaticInterfaceFields(superInterfaces,interfaces);
-      classPropertyIndex.put(iclass,iPropertyIndex);
+    if (superInterfaces.size() > 1) {
+      Collections.sort(superInterfaces,CACHED_CLASS_NAME_COMPARATOR);
     }
-    classPropertyIndex.put(ReflectionCache.OBJECT_CLASS,cPI);
+    SingleKeyHashMap iPropertyIndex=classPropertyIndex.getNotNull(theCachedClass);
+    for (    CachedClass iclass : superInterfaces) {
+      SingleKeyHashMap sPropertyIndex=classPropertyIndex.getNotNull(iclass);
+      copyNonPrivateFields(sPropertyIndex,iPropertyIndex);
+      addFields(iclass,iPropertyIndex);
+    }
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
     makeStaticPropertyIndex();
@@ -22,7 +20,9 @@
  else {
     LinkedList<CachedClass> superClasses=getSuperClasses();
     LinkedList<CachedClass> interfaces=new LinkedList<CachedClass>(theCachedClass.getInterfaces());
-    Collections.sort(interfaces,CACHED_CLASS_NAME_COMPARATOR);
+    if (interfaces.size() > 1) {
+      Collections.sort(interfaces,CACHED_CLASS_NAME_COMPARATOR);
+    }
     if (theCachedClass.isArray) {
       SingleKeyHashMap map=new SingleKeyHashMap();
       map.put("length",arrayLengthProperty);
