@@ -1,0 +1,19 @@
+{
+  List<List<T>> answer=new ArrayList<List<T>>();
+  if (size <= 0 || self.size() == 0) {
+    answer.add(self);
+  }
+ else {
+    for (int pos=0; pos < self.size() && pos > -1; pos+=step) {
+      if (!keepRemainder && pos > self.size() - size) {
+        break;
+      }
+      List<T> element=new ArrayList<T>();
+      for (int offs=pos; offs < pos + size && offs < self.size(); offs++) {
+        element.add(self.get(offs));
+      }
+      answer.add(element);
+    }
+  }
+  return answer;
+}
