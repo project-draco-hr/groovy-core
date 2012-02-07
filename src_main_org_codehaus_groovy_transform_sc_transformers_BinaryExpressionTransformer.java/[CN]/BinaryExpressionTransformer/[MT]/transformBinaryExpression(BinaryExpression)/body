@@ -2,7 +2,16 @@
   Object[] list=(Object[])bin.getNodeMetaData(BINARY_EXP_TARGET);
   if (list != null) {
     Token operation=bin.getOperation();
-    boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operation.getType());
+    int operationType=operation.getType();
+    if (operationType == Types.COMPARE_EQUAL || operationType == Types.COMPARE_NOT_EQUAL) {
+      if (isNullConstant(bin.getLeftExpression())) {
+        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getRightExpression()),operationType == Types.COMPARE_EQUAL);
+      }
+ else       if (isNullConstant(bin.getRightExpression())) {
+        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getLeftExpression()),operationType == Types.COMPARE_EQUAL);
+      }
+    }
+    boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operationType);
     MethodCallExpression call;
     MethodNode node=(MethodNode)list[0];
     String name=(String)list[1];
@@ -10,9 +19,9 @@
     Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
     call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
     call.setMethodTarget(node);
-    ClassExpression sba=new ClassExpression(StaticCompilationTransformer.BYTECODE_ADAPTER_CLASS);
-    MethodNode adapter=StaticCompilationTransformer.BYTECODE_BINARY_ADAPTERS.get(operation.getType());
+    MethodNode adapter=StaticCompilationTransformer.BYTECODE_BINARY_ADAPTERS.get(operationType);
     if (adapter != null) {
+      ClassExpression sba=new ClassExpression(StaticCompilationTransformer.BYTECODE_ADAPTER_CLASS);
       call=new MethodCallExpression(sba,"compareEquals",new ArgumentListExpression(left,right));
       call.setMethodTarget(adapter);
     }
