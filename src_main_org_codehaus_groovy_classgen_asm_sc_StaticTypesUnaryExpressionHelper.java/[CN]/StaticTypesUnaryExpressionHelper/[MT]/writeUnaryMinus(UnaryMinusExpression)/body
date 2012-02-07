@@ -1,0 +1,38 @@
+{
+  expression.getExpression().visit(controller.getAcg());
+  if (isPrimitiveOnTop()) {
+    final ClassNode top=getTopOperand();
+    if (top != boolean_TYPE) {
+      BytecodeExpression bytecodeExpression=new BytecodeExpression(){
+        @Override public void visit(        final MethodVisitor mv){
+          if (int_TYPE == top || short_TYPE == top || byte_TYPE == top || char_TYPE == top) {
+            mv.visitInsn(INEG);
+            if (byte_TYPE == top) {
+              mv.visitInsn(I2B);
+            }
+ else             if (char_TYPE == top) {
+              mv.visitInsn(I2C);
+            }
+ else             if (short_TYPE == top) {
+              mv.visitInsn(I2S);
+            }
+          }
+ else           if (long_TYPE == top) {
+            mv.visitInsn(LNEG);
+          }
+ else           if (float_TYPE == top) {
+            mv.visitInsn(FNEG);
+          }
+ else           if (double_TYPE == top) {
+            mv.visitInsn(DNEG);
+          }
+        }
+      }
+;
+      bytecodeExpression.visit(controller.getAcg());
+      controller.getOperandStack().remove(1);
+      return;
+    }
+  }
+  super.writeUnaryMinus(EMPTY_UNARY_MINUS);
+}
