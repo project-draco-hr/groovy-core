@@ -1,0 +1,9 @@
+{
+  int line=expr.getLineNumber();
+  int col=expr.getColumnNumber();
+  Long err=((long)expr.getLineNumber()) << 16 + expr.getColumnNumber();
+  if (!reportedErrors.contains(err)) {
+    errorCollector.addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException(msg + '\n',line,col),source));
+    reportedErrors.add(err);
+  }
+}
