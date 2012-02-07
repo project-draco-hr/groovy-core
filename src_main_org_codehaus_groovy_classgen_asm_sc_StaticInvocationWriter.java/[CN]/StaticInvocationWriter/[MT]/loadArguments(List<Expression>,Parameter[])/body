@@ -9,8 +9,11 @@
     MethodVisitor orig=mv;
     controller.setMethodVisitor(mv);
     for (int i=0; i < para.length - 1; i++) {
-      argumentList.get(i).visit(acg);
-      operandStack.doGroovyCast(para[i].getType());
+      Expression expression=argumentList.get(i);
+      expression.visit(acg);
+      if (!isNullConstant(expression)) {
+        operandStack.doGroovyCast(para[i].getType());
+      }
     }
     List<Expression> lastParams=new LinkedList<Expression>();
     for (int i=para.length - 1; i < argumentList.size(); i++) {
@@ -27,8 +30,11 @@
   }
  else   if (argumentList.size() == para.length) {
     for (int i=0; i < argumentList.size(); i++) {
-      argumentList.get(i).visit(acg);
-      operandStack.doGroovyCast(para[i].getType());
+      Expression expression=argumentList.get(i);
+      expression.visit(acg);
+      if (!isNullConstant(expression)) {
+        operandStack.doGroovyCast(para[i].getType());
+      }
     }
   }
  else {
@@ -51,8 +57,11 @@
       }
     }
     for (int i=0; i < arguments.length; i++) {
-      arguments[i].visit(acg);
-      operandStack.doGroovyCast(para[i].getType());
+      Expression expression=arguments[i];
+      expression.visit(acg);
+      if (!isNullConstant(expression)) {
+        operandStack.doGroovyCast(para[i].getType());
+      }
     }
   }
 }
