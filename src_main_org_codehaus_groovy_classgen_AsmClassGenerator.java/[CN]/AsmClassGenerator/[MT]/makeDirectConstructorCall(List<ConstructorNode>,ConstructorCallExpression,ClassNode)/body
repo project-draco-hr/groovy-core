@@ -19,8 +19,11 @@
   Parameter[] params=cn.getParameters();
   mv.visitVarInsn(ALOAD,0);
   for (int i=0; i < params.length; i++) {
-    argumentList.get(i).visit(this);
-    operandStack.doGroovyCast(params[i].getType());
+    Expression expression=argumentList.get(i);
+    expression.visit(this);
+    if (!isNullConstant(expression)) {
+      operandStack.doGroovyCast(params[i].getType());
+    }
     operandStack.remove(1);
   }
   String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,params);

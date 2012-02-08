@@ -1,10 +1,16 @@
 {
   ClassNode type=castExpression.getType();
-  castExpression.getExpression().visit(this);
+  Expression subExpression=castExpression.getExpression();
+  subExpression.visit(this);
   if (castExpression.isCoerce()) {
     controller.getOperandStack().doAsType(type);
   }
  else {
-    controller.getOperandStack().doGroovyCast(type);
+    if (isNullConstant(subExpression)) {
+      controller.getOperandStack().replace(type);
+    }
+ else {
+      controller.getOperandStack().doGroovyCast(type);
+    }
   }
 }
