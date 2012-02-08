@@ -89,5 +89,14 @@
     }
     return plain;
   }
+  if (exp instanceof UnaryPlusExpression) {
+    return getType(((UnaryPlusExpression)exp).getExpression());
+  }
+  if (exp instanceof UnaryMinusExpression) {
+    return getType(((UnaryMinusExpression)exp).getExpression());
+  }
+  if (exp instanceof BitwiseNegationExpression) {
+    return getType(((BitwiseNegationExpression)exp).getExpression());
+  }
   return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }
