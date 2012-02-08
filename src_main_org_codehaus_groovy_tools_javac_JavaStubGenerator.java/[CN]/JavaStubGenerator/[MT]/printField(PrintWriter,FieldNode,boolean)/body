@@ -14,7 +14,7 @@
     if (valueExpr instanceof ConstantExpression) {
       valueExpr=Verifier.transformToPrimitiveConstantIfPossible((ConstantExpression)valueExpr);
     }
-    if (valueExpr instanceof ConstantExpression && ClassHelper.isStaticConstantInitializerType(valueExpr.getType()) && valueExpr.getType().equals(fieldNode.getType())) {
+    if (valueExpr instanceof ConstantExpression && fieldNode.isStatic() && fieldNode.isFinal()&& ClassHelper.isStaticConstantInitializerType(valueExpr.getType())&& valueExpr.getType().equals(fieldNode.getType())) {
       if (ClassHelper.STRING_TYPE.equals(valueExpr.getType())) {
         out.print("\"" + valueExpr.getText().replaceAll("\\\"","\\\\\"") + "\"");
       }
