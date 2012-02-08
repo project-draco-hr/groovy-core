@@ -47,6 +47,12 @@
         controller.getSourceUnit().addError(new SyntaxException("Cannot call private method " + (target.isStatic() ? "static " : "") + declaringClass.toString(false)+ "#"+ target.getName()+ " from class "+ classNode.toString(false),receiver.getLineNumber(),receiver.getColumnNumber()));
       }
     }
+    if (target != null && receiver != null) {
+      if (!(receiver instanceof VariableExpression) || !((VariableExpression)receiver).isSuperExpression()) {
+        Expression checkCastReceiver=new CheckcastReceiverExpression(receiver,target);
+        return super.writeDirectMethodCall(target,implicitThis,checkCastReceiver,args);
+      }
+    }
     return super.writeDirectMethodCall(target,implicitThis,receiver,args);
   }
 }
