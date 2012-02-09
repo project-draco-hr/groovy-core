@@ -1,0 +1,52 @@
+{
+  MethodVisitor mv=super.visitMethod(accessFlags,name,desc,signature,exceptions);
+  mv.visitCode();
+  int stackSize=0;
+  Type[] args=Type.getArgumentTypes(desc);
+  int arrayStore=args.length + 1;
+  BytecodeHelper.pushConstant(mv,args.length);
+  mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
+  stackSize=1;
+  for (int i=0; i < args.length; i++) {
+    Type arg=args[i];
+    mv.visitInsn(DUP);
+    BytecodeHelper.pushConstant(mv,i);
+    stackSize=3;
+    if (isPrimitive(arg)) {
+      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+      String wrappedType=getWrappedClassDescriptor(arg);
+      mv.visitMethodInsn(INVOKESTATIC,wrappedType,"valueOf","(" + arg.getDescriptor() + ")L"+ wrappedType+ ";");
+    }
+ else {
+      mv.visitVarInsn(ALOAD,i + 1);
+    }
+    stackSize=4;
+    mv.visitInsn(AASTORE);
+  }
+  mv.visitVarInsn(ASTORE,arrayStore);
+  int arrayIndex=arrayStore;
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitFieldInsn(GETFIELD,proxyName,CLOSURES_MAP_FIELD,"Ljava/util/Map;");
+  mv.visitLdcInsn(name);
+  mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+  arrayStore++;
+  mv.visitVarInsn(ASTORE,arrayStore);
+  Label notNull=new Label();
+  mv.visitIntInsn(ALOAD,arrayStore);
+  mv.visitJumpInsn(IFNONNULL,notNull);
+  mv.visitVarInsn(ALOAD,0);
+  mv.visitFieldInsn(GETFIELD,proxyName,CLOSURES_MAP_FIELD,"Ljava/util/Map;");
+  mv.visitLdcInsn("*");
+  mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitVarInsn(ASTORE,arrayStore);
+  mv.visitLabel(notNull);
+  mv.visitVarInsn(ALOAD,arrayStore);
+  mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(this.getClass()),"ensureClosure","(Ljava/lang/Object;)Lgroovy/lang/Closure;");
+  mv.visitVarInsn(ALOAD,arrayIndex);
+  stackSize++;
+  mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Closure","call","([Ljava/lang/Object;)Ljava/lang/Object;");
+  unwrapResult(mv,desc);
+  mv.visitMaxs(stackSize,arrayStore + 1);
+  mv.visitEnd();
+  return EMPTY_VISITOR;
+}
