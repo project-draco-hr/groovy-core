@@ -1,0 +1,44 @@
+{
+  super(new ClassWriter(0));
+  this.visitedMethods=new LinkedHashSet<Object>();
+  this.delegatedClosures=closureMap.isEmpty() ? EMPTY_DELEGATECLOSURE_MAP : new HashMap<String,Boolean>();
+  boolean wildcard=false;
+  for (  Map.Entry<Object,Object> entry : closureMap.entrySet()) {
+    String name=entry.getKey().toString();
+    if ("*".equals(name)) {
+      wildcard=true;
+    }
+    this.delegatedClosures.put(name,Boolean.FALSE);
+  }
+  this.hasWildcard=wildcard;
+  this.generateDelegateField=delegateClass != null;
+  this.objectDelegateMethods=generateDelegateField ? createDelegateMethodList(delegateClass,interfaces) : EMPTY_STRING_SET;
+  this.delegateClass=delegateClass;
+  boolean isSuperClassAnInterface=superClass.isInterface();
+  this.superClass=isSuperClassAnInterface ? Object.class : superClass;
+  this.classList=new LinkedList<Class>();
+  this.classList.add(superClass);
+  if (generateDelegateField) {
+    classList.add(delegateClass);
+  }
+  if (interfaces != null) {
+    Collections.addAll(this.classList,interfaces);
+  }
+  this.proxyName=proxyName();
+  this.loader=proxyLoader != null ? new InnerLoader(proxyLoader) : findClassLoader(superClass);
+  this.emptyBody=emptyBody;
+  ClassWriter writer=(ClassWriter)cv;
+  ClassReader cr=createClassVisitor(Object.class);
+  cr.accept(this,0);
+  byte[] b=writer.toByteArray();
+  cachedClass=loader.defineClass(proxyName.replace('/','.'),b);
+  Class[] args=generateDelegateField ? new Class[]{Map.class,delegateClass} : new Class[]{Map.class};
+  Constructor constructor;
+  try {
+    constructor=cachedClass.getConstructor(args);
+  }
+ catch (  NoSuchMethodException e) {
+    constructor=null;
+  }
+  cachedNoArgConstructor=constructor;
+}

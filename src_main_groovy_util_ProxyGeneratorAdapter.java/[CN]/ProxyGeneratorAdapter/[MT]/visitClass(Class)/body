@@ -1,0 +1,34 @@
+{
+  Method[] methods=clazz.getDeclaredMethods();
+  for (  Method method : methods) {
+    Class<?>[] exceptionTypes=method.getExceptionTypes();
+    String[] exceptions=new String[exceptionTypes.length];
+    for (int i=0; i < exceptions.length; i++) {
+      exceptions[i]=BytecodeHelper.getClassInternalName(exceptionTypes[i]);
+    }
+    visitMethod(method.getModifiers(),method.getName(),BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes()),null,exceptions);
+  }
+  Constructor[] constructors=clazz.getDeclaredConstructors();
+  for (  Constructor method : constructors) {
+    Class<?>[] exceptionTypes=method.getExceptionTypes();
+    String[] exceptions=new String[exceptionTypes.length];
+    for (int i=0; i < exceptions.length; i++) {
+      exceptions[i]=BytecodeHelper.getClassInternalName(exceptionTypes[i]);
+    }
+    visitMethod(method.getModifiers(),"<init>",BytecodeHelper.getMethodDescriptor(Void.TYPE,method.getParameterTypes()),null,exceptions);
+  }
+  for (  Class intf : clazz.getInterfaces()) {
+    visitClass(intf);
+  }
+  Class superclass=clazz.getSuperclass();
+  if (superclass != null)   visitClass(superclass);
+  for (  Map.Entry<String,Boolean> entry : delegatedClosures.entrySet()) {
+    Boolean visited=entry.getValue();
+    if (!visited) {
+      String name=entry.getKey();
+      if (!"*".equals(name)) {
+        visitMethod(ACC_PUBLIC,name,"([Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+      }
+    }
+  }
+}
