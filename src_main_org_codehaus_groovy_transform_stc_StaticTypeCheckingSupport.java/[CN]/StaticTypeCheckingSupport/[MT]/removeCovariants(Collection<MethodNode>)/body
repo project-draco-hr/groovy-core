@@ -1,0 +1,42 @@
+{
+  if (collection.size() <= 1)   return collection;
+  List<MethodNode> toBeRemoved=new LinkedList<MethodNode>();
+  List<MethodNode> list=new LinkedList<MethodNode>(new HashSet<MethodNode>(collection));
+  for (int i=0; i < list.size() - 1; i++) {
+    MethodNode one=list.get(i);
+    if (toBeRemoved.contains(one))     continue;
+    for (int j=i + 1; j < list.size(); j++) {
+      MethodNode two=list.get(j);
+      if (toBeRemoved.contains(two))       continue;
+      if (one.getName().equals(two.getName()) && one.getDeclaringClass() == two.getDeclaringClass()) {
+        Parameter[] onePars=one.getParameters();
+        Parameter[] twoPars=two.getParameters();
+        if (onePars.length == twoPars.length) {
+          boolean sameTypes=true;
+          for (int k=0; k < onePars.length; k++) {
+            Parameter onePar=onePars[k];
+            Parameter twoPar=twoPars[k];
+            if (!onePar.getType().equals(twoPar.getType())) {
+              sameTypes=false;
+              break;
+            }
+          }
+          if (sameTypes) {
+            ClassNode oneRT=one.getReturnType();
+            ClassNode twoRT=two.getReturnType();
+            if (oneRT.isDerivedFrom(twoRT) || oneRT.implementsInterface(twoRT)) {
+              toBeRemoved.add(two);
+            }
+ else             if (twoRT.isDerivedFrom(oneRT) || twoRT.implementsInterface(oneRT)) {
+              toBeRemoved.add(one);
+            }
+          }
+        }
+      }
+    }
+  }
+  if (toBeRemoved.isEmpty())   return list;
+  List<MethodNode> result=new LinkedList<MethodNode>(list);
+  result.removeAll(toBeRemoved);
+  return result;
+}
