@@ -3,7 +3,8 @@
   List<MethodNode> bestChoices=new LinkedList<MethodNode>();
   int bestDist=Integer.MAX_VALUE;
   ClassNode actualReceiver;
-  for (  MethodNode m : methods) {
+  Collection<MethodNode> choicesLeft=removeCovariants(methods);
+  for (  MethodNode m : choicesLeft) {
     actualReceiver=receiver != null ? receiver : m.getDeclaringClass();
     Parameter[] params=parameterizeArguments(actualReceiver,m);
     if (params.length > args.length && !isVargs(params)) {
