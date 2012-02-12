@@ -11,7 +11,7 @@
       if (initialValueExpression instanceof ConstantExpression) {
         ConstantExpression cexp=(ConstantExpression)initialValueExpression;
         cexp=transformToPrimitiveConstantIfPossible(cexp);
-        if (ClassHelper.isStaticConstantInitializerType(cexp.getType()) && cexp.getType().equals(fieldNode.getType())) {
+        if (fieldNode.isFinal() && ClassHelper.isStaticConstantInitializerType(cexp.getType()) && cexp.getType().equals(fieldNode.getType())) {
           return;
         }
         staticList.add(0,statement);

@@ -155,6 +155,7 @@
         final Execute executor=new Execute();
         executor.setAntRun(getProject());
         executor.setWorkingDirectory(getProject().getBaseDir());
+        executor.setEnvironment(addClasspathToEnvironment(executor.getEnvironment(),classpath.toString()));
         executor.setCommandline(commandLine);
         try {
           executor.execute();

@@ -3,10 +3,7 @@
   if (!isPackageAllowed && ast.getPackage() != null) {
     throw new SecurityException("Package definitions are not allowed");
   }
-  final List<MethodNode> methods=ast.getMethods();
-  if (!isMethodDefinitionAllowed && methods != null && methods.size() > 0) {
-    throw new SecurityException("Method definitions are not allowed");
-  }
+  checkMethodDefinitionAllowed(classNode);
   if (importsBlacklist != null || importsWhitelist != null || starImportsBlacklist != null || starImportsWhitelist != null) {
     for (    ImportNode importNode : ast.getImports()) {
       final String className=importNode.getClassName();
@@ -29,9 +26,20 @@
   }
   final SecuringCodeVisitor visitor=new SecuringCodeVisitor();
   ast.getStatementBlock().visit(visitor);
-  if (isMethodDefinitionAllowed && methods != null) {
+  for (  ClassNode clNode : ast.getClasses()) {
+    if (clNode != classNode) {
+      checkMethodDefinitionAllowed(clNode);
+      for (      MethodNode methodNode : clNode.getMethods()) {
+        if (!methodNode.isSynthetic()) {
+          methodNode.getCode().visit(visitor);
+        }
+      }
+    }
+  }
+  List<MethodNode> methods=filterMethods(classNode);
+  if (isMethodDefinitionAllowed) {
     for (    MethodNode method : methods) {
-      method.getCode().visit(visitor);
+      if (method.getDeclaringClass() == classNode)       method.getCode().visit(visitor);
     }
   }
 }

@@ -2,7 +2,7 @@
   ClassNode type=getType(expression);
   ClassNode typeRe=type.redirect();
   ClassNode resultType;
-  if (isBigDecCategory(typeRe)) {
+  if (isDoubleCategory(ClassHelper.getUnwrapper(typeRe))) {
     resultType=type;
   }
  else   if (typeRe == ArrayList_TYPE) {
@@ -10,7 +10,12 @@
   }
  else {
     MethodNode mn=findMethodOrFail(expression,type,name);
-    resultType=mn.getReturnType();
+    if (mn != null) {
+      resultType=mn.getReturnType();
+    }
+ else {
+      resultType=type;
+    }
   }
   storeType(expression,resultType);
 }

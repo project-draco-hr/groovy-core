@@ -1,0 +1,90 @@
+{
+  visitField(ACC_PRIVATE + ACC_TRANSIENT,"metaClass","Lgroovy/lang/MetaClass;",null,null);
+  MethodVisitor mv;
+{
+    mv=super.visitMethod(ACC_PUBLIC,"getMetaClass","()Lgroovy/lang/MetaClass;",null,null);
+    mv.visitCode();
+    Label l0=new Label();
+    mv.visitLabel(l0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitFieldInsn(GETFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
+    Label l1=new Label();
+    mv.visitJumpInsn(IFNONNULL,l1);
+    Label l2=new Label();
+    mv.visitLabel(l2);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","getMetaClass","(Ljava/lang/Class;)Lgroovy/lang/MetaClass;");
+    mv.visitFieldInsn(PUTFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
+    mv.visitLabel(l1);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitFieldInsn(GETFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(2,1);
+    mv.visitEnd();
+  }
+{
+    mv=super.visitMethod(ACC_PUBLIC,"getProperty","(Ljava/lang/String;)Ljava/lang/Object;",null,null);
+    mv.visitCode();
+    mv.visitIntInsn(ALOAD,0);
+    mv.visitMethodInsn(INVOKEINTERFACE,"groovy/lang/GroovyObject","getMetaClass","()Lgroovy/lang/MetaClass;");
+    mv.visitIntInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,1);
+    mv.visitMethodInsn(INVOKEINTERFACE,"groovy/lang/MetaClass","getProperty","(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;");
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(3,2);
+    mv.visitEnd();
+  }
+{
+    mv=super.visitMethod(ACC_PUBLIC,"setProperty","(Ljava/lang/String;Ljava/lang/Object;)V",null,null);
+    mv.visitCode();
+    Label l0=new Label();
+    mv.visitLabel(l0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitMethodInsn(INVOKEVIRTUAL,proxyName,"getMetaClass","()Lgroovy/lang/MetaClass;");
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,1);
+    mv.visitVarInsn(ALOAD,2);
+    mv.visitMethodInsn(INVOKEINTERFACE,"groovy/lang/MetaClass","setProperty","(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+    Label l1=new Label();
+    mv.visitLabel(l1);
+    mv.visitInsn(RETURN);
+    Label l2=new Label();
+    mv.visitLabel(l2);
+    mv.visitMaxs(4,3);
+    mv.visitEnd();
+  }
+{
+    mv=super.visitMethod(ACC_PUBLIC,"invokeMethod","(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;",null,null);
+    Label l0=new Label();
+    mv.visitLabel(l0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitMethodInsn(INVOKEVIRTUAL,proxyName,"getMetaClass","()Lgroovy/lang/MetaClass;");
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,1);
+    mv.visitVarInsn(ALOAD,2);
+    mv.visitMethodInsn(INVOKEINTERFACE,"groovy/lang/MetaClass","invokeMethod","(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+    mv.visitInsn(ARETURN);
+    Label l1=new Label();
+    mv.visitLabel(l1);
+    mv.visitMaxs(4,3);
+    mv.visitEnd();
+  }
+{
+    mv=super.visitMethod(ACC_PUBLIC,"setMetaClass","(Lgroovy/lang/MetaClass;)V",null,null);
+    mv.visitCode();
+    Label l0=new Label();
+    mv.visitLabel(l0);
+    mv.visitVarInsn(ALOAD,0);
+    mv.visitVarInsn(ALOAD,1);
+    mv.visitFieldInsn(PUTFIELD,proxyName,"metaClass","Lgroovy/lang/MetaClass;");
+    Label l1=new Label();
+    mv.visitLabel(l1);
+    mv.visitInsn(RETURN);
+    Label l2=new Label();
+    mv.visitLabel(l2);
+    mv.visitMaxs(2,2);
+    mv.visitEnd();
+  }
+}

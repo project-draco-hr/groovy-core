@@ -1,0 +1,16 @@
+{
+  Type returnType=Type.getReturnType(desc);
+  if (returnType == Type.VOID_TYPE) {
+    mv.visitInsn(POP);
+    mv.visitInsn(RETURN);
+  }
+ else {
+    if (isPrimitive(returnType)) {
+      BytecodeHelper.unbox(mv,ClassHelper.make(returnType.getClassName()));
+    }
+ else {
+      mv.visitTypeInsn(CHECKCAST,returnType.getInternalName());
+    }
+    mv.visitInsn(getReturnInsn(returnType));
+  }
+}

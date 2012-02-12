@@ -1,0 +1,34 @@
+{
+  Type[] args=Type.getArgumentTypes(desc);
+  StringBuilder newDesc=new StringBuilder("(");
+  for (  Type arg : args) {
+    newDesc.append(arg.getDescriptor());
+  }
+  newDesc.append("Ljava/util/Map;");
+  if (generateDelegateField) {
+    newDesc.append(BytecodeHelper.getTypeDescription(delegateClass));
+  }
+  newDesc.append(")V");
+  MethodVisitor mv=super.visitMethod(access,name,newDesc.toString(),signature,exceptions);
+  mv.visitCode();
+  mv.visitVarInsn(ALOAD,0);
+  for (int i=0; i < args.length; i++) {
+    Type arg=args[i];
+    if (isPrimitive(arg)) {
+      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+    }
+ else {
+      mv.visitVarInsn(ALOAD,i + 1);
+    }
+  }
+  mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
+  initializeDelegateClosure(mv,args.length);
+  if (generateDelegateField) {
+    initializeDelegateObject(mv,args.length + 1);
+  }
+  mv.visitInsn(RETURN);
+  int max=args.length + 2 + (generateDelegateField ? 1 : 0);
+  mv.visitMaxs(max,max);
+  mv.visitEnd();
+  return EMPTY_VISITOR;
+}

@@ -3,28 +3,33 @@
     LinkedList<CachedClass> superClasses=new LinkedList<CachedClass>();
     superClasses.add(ReflectionCache.OBJECT_CLASS);
     Set interfaces=theCachedClass.getInterfaces();
-    classPropertyIndexForSuper=classPropertyIndex;
-    final SingleKeyHashMap cPI=classPropertyIndex.getNotNull(theCachedClass);
-    for (Iterator interfaceIter=interfaces.iterator(); interfaceIter.hasNext(); ) {
-      CachedClass iclass=(CachedClass)interfaceIter.next();
-      SingleKeyHashMap iPropertyIndex=cPI;
-      addFields(iclass,iPropertyIndex);
-      classPropertyIndex.put(iclass,iPropertyIndex);
+    LinkedList<CachedClass> superInterfaces=new LinkedList<CachedClass>(interfaces);
+    if (superInterfaces.size() > 1) {
+      Collections.sort(superInterfaces,CACHED_CLASS_NAME_COMPARATOR);
     }
-    classPropertyIndex.put(ReflectionCache.OBJECT_CLASS,cPI);
+    SingleKeyHashMap iPropertyIndex=classPropertyIndex.getNotNull(theCachedClass);
+    for (    CachedClass iclass : superInterfaces) {
+      SingleKeyHashMap sPropertyIndex=classPropertyIndex.getNotNull(iclass);
+      copyNonPrivateFields(sPropertyIndex,iPropertyIndex);
+      addFields(iclass,iPropertyIndex);
+    }
+    addFields(theCachedClass,iPropertyIndex);
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
     makeStaticPropertyIndex();
   }
  else {
     LinkedList<CachedClass> superClasses=getSuperClasses();
-    Set interfaces=theCachedClass.getInterfaces();
+    LinkedList<CachedClass> interfaces=new LinkedList<CachedClass>(theCachedClass.getInterfaces());
+    if (interfaces.size() > 1) {
+      Collections.sort(interfaces,CACHED_CLASS_NAME_COMPARATOR);
+    }
     if (theCachedClass.isArray) {
       SingleKeyHashMap map=new SingleKeyHashMap();
       map.put("length",arrayLengthProperty);
       classPropertyIndex.put(theCachedClass,map);
     }
-    inheritStaticInterfaceFields(superClasses,interfaces);
+    inheritStaticInterfaceFields(superClasses,new LinkedHashSet(interfaces));
     inheritFields(superClasses);
     applyPropertyDescriptors(propertyDescriptors);
     applyStrayPropertyMethods(superClasses,classPropertyIndex,true);
