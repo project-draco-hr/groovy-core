@@ -1,4 +1,7 @@
 {
+  if (!fork && !getIncludeantruntime()) {
+    throw new IllegalArgumentException("The includeAntRuntime=false option is not compatible with fork=false");
+  }
   ClassLoader parent=getIncludeantruntime() ? getClass().getClassLoader() : new AntClassLoader(new RootLoader(new URL[0],null),getProject(),getClasspath());
   if (parent instanceof AntClassLoader) {
     AntClassLoader antLoader=(AntClassLoader)parent;
