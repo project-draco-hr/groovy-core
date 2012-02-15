@@ -1,7 +1,8 @@
 {
   rootDocBuilder=new GroovyRootDocBuilder(this,sourcepaths,links,properties);
+  String charset=properties.getProperty("charset");
+  properties.setProperty("charset",charset != null && charset.length() != 0 ? charset : Charset.defaultCharset().name());
   this.properties=properties;
-  properties.put("encoding",Charset.defaultCharset().name());
   if (resourceManager == null) {
     templateEngine=null;
   }
