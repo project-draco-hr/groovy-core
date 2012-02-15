@@ -54,7 +54,7 @@ default :
 mv.visitInsn(ACONST_NULL);
 }
 mv.visitInsn(getReturnInsn(returnType));
-mv.visitMaxs(2,args.length + 1);
+mv.visitMaxs(2,registerLen(args) + 1);
 }
 }
  else {
@@ -62,7 +62,7 @@ mv.visitTypeInsn(NEW,"java/lang/UnsupportedOperationException");
 mv.visitInsn(DUP);
 mv.visitMethodInsn(INVOKESPECIAL,"java/lang/UnsupportedOperationException","<init>","()V");
 mv.visitInsn(ATHROW);
-mv.visitMaxs(2,args.length + 1);
+mv.visitMaxs(2,registerLen(args) + 1);
 }
 mv.visitEnd();
 }

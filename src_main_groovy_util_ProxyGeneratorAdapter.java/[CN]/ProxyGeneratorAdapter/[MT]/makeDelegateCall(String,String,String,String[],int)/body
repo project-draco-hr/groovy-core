@@ -8,23 +8,25 @@
   BytecodeHelper.pushConstant(mv,args.length);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   size=3;
+  int idx=1;
   for (int i=0; i < args.length; i++) {
     Type arg=args[i];
     mv.visitInsn(DUP);
     BytecodeHelper.pushConstant(mv,i);
     if (isPrimitive(arg)) {
-      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+      mv.visitIntInsn(getLoadInsn(arg),idx);
       String wrappedType=getWrappedClassDescriptor(arg);
       mv.visitMethodInsn(INVOKESTATIC,wrappedType,"valueOf","(" + arg.getDescriptor() + ")L"+ wrappedType+ ";");
     }
  else {
-      mv.visitVarInsn(ALOAD,i + 1);
+      mv.visitVarInsn(ALOAD,idx);
     }
-    size=6;
+    size=Math.max(6,5 + registerLen(arg));
+    idx+=registerLen(arg);
     mv.visitInsn(AASTORE);
   }
   mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","invokeMethod","(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
   unwrapResult(mv,desc);
-  mv.visitMaxs(size,args.length + 1);
+  mv.visitMaxs(size,registerLen(args) + 1);
   return EMPTY_VISITOR;
 }

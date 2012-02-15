@@ -12,14 +12,15 @@
   MethodVisitor mv=super.visitMethod(access,name,newDesc.toString(),signature,exceptions);
   mv.visitCode();
   mv.visitVarInsn(ALOAD,0);
-  for (int i=0; i < args.length; i++) {
-    Type arg=args[i];
+  int idx=1;
+  for (  Type arg : args) {
     if (isPrimitive(arg)) {
-      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+      mv.visitIntInsn(getLoadInsn(arg),idx);
     }
  else {
-      mv.visitVarInsn(ALOAD,i + 1);
+      mv.visitVarInsn(ALOAD,idx);
     }
+    idx+=registerLen(arg);
   }
   mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(superClass),"<init>",desc);
   initializeDelegateClosure(mv,args.length);
@@ -27,7 +28,7 @@
     initializeDelegateObject(mv,args.length + 1);
   }
   mv.visitInsn(RETURN);
-  int max=args.length + 2 + (generateDelegateField ? 1 : 0);
+  int max=idx + 1 + (generateDelegateField ? 1 : 0);
   mv.visitMaxs(max,max);
   mv.visitEnd();
   return EMPTY_VISITOR;

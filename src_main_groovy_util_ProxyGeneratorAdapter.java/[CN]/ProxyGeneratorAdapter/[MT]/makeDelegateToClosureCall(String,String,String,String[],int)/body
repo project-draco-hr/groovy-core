@@ -7,20 +7,22 @@
   BytecodeHelper.pushConstant(mv,args.length);
   mv.visitTypeInsn(ANEWARRAY,"java/lang/Object");
   stackSize=1;
+  int idx=1;
   for (int i=0; i < args.length; i++) {
     Type arg=args[i];
     mv.visitInsn(DUP);
     BytecodeHelper.pushConstant(mv,i);
     stackSize=3;
     if (isPrimitive(arg)) {
-      mv.visitIntInsn(getLoadInsn(arg),i + 1);
+      mv.visitIntInsn(getLoadInsn(arg),idx);
       String wrappedType=getWrappedClassDescriptor(arg);
       mv.visitMethodInsn(INVOKESTATIC,wrappedType,"valueOf","(" + arg.getDescriptor() + ")L"+ wrappedType+ ";");
     }
  else {
-      mv.visitVarInsn(ALOAD,i + 1);
+      mv.visitVarInsn(ALOAD,idx);
     }
-    stackSize=4;
+    idx+=registerLen(arg);
+    stackSize=Math.max(4,3 + registerLen(arg));
     mv.visitInsn(AASTORE);
   }
   mv.visitVarInsn(ASTORE,arrayStore);
