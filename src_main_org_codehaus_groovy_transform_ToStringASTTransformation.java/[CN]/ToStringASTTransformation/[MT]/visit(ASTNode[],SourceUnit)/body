@@ -14,6 +14,7 @@
     boolean includeFields=memberHasValue(anno,"includeFields",true);
     List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
     List<String> includes=tokenize((String)getMemberValue(anno,"includes"));
+    boolean ignoreNullValues=memberHasValue(anno,"ignoreNullValues",true);
     if (hasAnnotation(cNode,CanonicalASTTransformation.MY_TYPE)) {
       AnnotationNode canonical=cNode.getAnnotations(CanonicalASTTransformation.MY_TYPE).get(0);
       if (excludes == null || excludes.isEmpty())       excludes=tokenize((String)getMemberValue(canonical,"excludes"));
@@ -23,6 +24,6 @@
       addError("Error during " + MY_TYPE_NAME + " processing: Only one of 'includes' and 'excludes' should be supplied not both.",anno);
     }
     toStringInit(cNode,new ConstantExpression(includeNames));
-    createToString(cNode,includeSuper,includeFields,excludes,includes);
+    createToString(cNode,includeSuper,includeFields,excludes,includes,ignoreNullValues);
   }
 }
