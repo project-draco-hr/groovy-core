@@ -23,6 +23,7 @@
       ClassNode listNode=LIST_TYPE.getPlainNodeReference();
       listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
+      storeTargetMethod(call,(MethodNode)subcall.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
       return;
     }
   }
@@ -101,6 +102,15 @@
           storeType(call,(ClassNode)data);
         }
       }
+      int nbOfArgs=0;
+      if (callArguments instanceof ArgumentListExpression) {
+        ArgumentListExpression list=(ArgumentListExpression)callArguments;
+        nbOfArgs=list.getExpressions().size();
+      }
+ else {
+        nbOfArgs=0;
+      }
+      storeTargetMethod(call,nbOfArgs == 0 ? CLOSURE_CALL_NO_ARG : nbOfArgs == 1 ? CLOSURE_CALL_ONE_ARG : CLOSURE_CALL_VARGS);
     }
  else {
       List<ClassNode> receivers=new LinkedList<ClassNode>();

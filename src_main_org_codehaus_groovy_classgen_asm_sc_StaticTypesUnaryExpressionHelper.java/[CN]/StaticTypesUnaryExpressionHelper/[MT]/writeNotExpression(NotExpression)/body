@@ -1,0 +1,25 @@
+{
+  TypeChooser typeChooser=controller.getTypeChooser();
+  Expression subExpression=expression.getExpression();
+  ClassNode classNode=controller.getClassNode();
+  if (typeChooser.resolveType(subExpression,classNode) == boolean_TYPE) {
+    subExpression.visit(controller.getAcg());
+    BytecodeExpression bytecodeExpression=new BytecodeExpression(){
+      @Override public void visit(      final MethodVisitor mv){
+        Label ne=new Label();
+        mv.visitJumpInsn(IFNE,ne);
+        mv.visitInsn(ICONST_1);
+        Label out=new Label();
+        mv.visitJumpInsn(GOTO,out);
+        mv.visitLabel(ne);
+        mv.visitInsn(ICONST_0);
+        mv.visitLabel(out);
+      }
+    }
+;
+    bytecodeExpression.visit(controller.getAcg());
+    controller.getOperandStack().remove(1);
+    return;
+  }
+  super.writeNotExpression(expression);
+}

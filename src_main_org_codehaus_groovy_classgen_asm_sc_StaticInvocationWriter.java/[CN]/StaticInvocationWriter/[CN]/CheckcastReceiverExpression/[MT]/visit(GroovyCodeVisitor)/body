@@ -1,0 +1,26 @@
+{
+  receiver.visit(visitor);
+  if (visitor instanceof AsmClassGenerator) {
+    ClassNode topOperand=controller.getOperandStack().getTopOperand();
+    ClassNode type;
+    if (target instanceof ExtensionMethodNode) {
+      type=((ExtensionMethodNode)target).getExtensionMethodNode().getDeclaringClass();
+    }
+ else {
+      type=target.getDeclaringClass();
+    }
+    if (ClassHelper.GSTRING_TYPE.equals(topOperand) && ClassHelper.STRING_TYPE.equals(type)) {
+      controller.getOperandStack().doGroovyCast(type);
+      return;
+    }
+    if (ClassHelper.isPrimitiveType(topOperand) && !ClassHelper.isPrimitiveType(type)) {
+      controller.getOperandStack().box();
+    }
+ else     if (!ClassHelper.isPrimitiveType(topOperand) && ClassHelper.isPrimitiveType(type)) {
+      controller.getOperandStack().doGroovyCast(type);
+    }
+    if (StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(topOperand,type))     return;
+    controller.getMethodVisitor().visitTypeInsn(CHECKCAST,type.isArray() ? BytecodeHelper.getTypeDescription(type) : BytecodeHelper.getClassInternalName(type.getName()));
+    controller.getOperandStack().replace(type);
+  }
+}

@@ -1,0 +1,15 @@
+{
+  super.visitMethodCallExpression(call);
+  MethodNode target=(MethodNode)call.getNodeMetaData(DIRECT_METHOD_CALL_TARGET);
+  if (target != null) {
+    call.setMethodTarget(target);
+    memorizeInitialExpressions(target);
+  }
+  if (call.getMethodTarget() == null && call.getLineNumber() > 0) {
+    addError("Target method for method call expression hasn't been set",call);
+  }
+  if (StaticTypeCheckingSupport.isWithCall(call.getMethodAsString(),call.getArguments())) {
+    ClosureExpression closure=(ClosureExpression)((ArgumentListExpression)call.getArguments()).getExpression(0);
+    closure.setNodeMetaData(StaticCompilationMetadataKeys.WITH_CLOSURE,Boolean.TRUE);
+  }
+}

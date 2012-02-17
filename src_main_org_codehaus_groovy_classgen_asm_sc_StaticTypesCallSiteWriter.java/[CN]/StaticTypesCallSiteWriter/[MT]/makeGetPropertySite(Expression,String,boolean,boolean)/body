@@ -1,0 +1,40 @@
+{
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode classNode=controller.getClassNode();
+  ClassNode receiverType=typeChooser.resolveType(receiver,classNode);
+  boolean isClassReceiver=false;
+  if (receiverType.equals(ClassHelper.CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
+    isClassReceiver=true;
+    receiverType=receiverType.getGenericsTypes()[0].getType();
+  }
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (receiverType.isArray() && methodName.equals("length")) {
+    receiver.visit(controller.getAcg());
+    mv.visitInsn(ARRAYLENGTH);
+    controller.getOperandStack().replace(ClassHelper.int_TYPE);
+    return;
+  }
+ else   if (receiverType.implementsInterface(COLLECTION_TYPE) && ("size".equals(methodName) || "length".equals(methodName))) {
+    MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
+    expr.setMethodTarget(COLLECTION_SIZE_METHOD);
+    expr.visit(controller.getAcg());
+    return;
+  }
+  if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
+  if (receiverType.isEnum()) {
+    mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
+    controller.getOperandStack().push(receiverType);
+    return;
+  }
+  if (receiver instanceof ClassExpression) {
+    if (makeGetField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))     return;
+    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName))     return;
+  }
+  if (isClassReceiver) {
+    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
+    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
+  }
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName))   return;
+  controller.getSourceUnit().addError(new SyntaxException("Access to " + receiverType.toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
+}

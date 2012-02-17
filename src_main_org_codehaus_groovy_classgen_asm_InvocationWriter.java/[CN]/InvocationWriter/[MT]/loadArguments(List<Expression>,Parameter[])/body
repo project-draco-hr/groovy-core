@@ -1,6 +1,34 @@
 {
-  for (int i=0; i < argumentList.size(); i++) {
-    argumentList.get(i).visit(controller.getAcg());
-    controller.getOperandStack().doGroovyCast(para[i].getType());
+  if (para.length == 0)   return;
+  ClassNode lastParaType=para[para.length - 1].getOriginType();
+  AsmClassGenerator acg=controller.getAcg();
+  OperandStack operandStack=controller.getOperandStack();
+  if (lastParaType.isArray() && (argumentList.size() > para.length || argumentList.size() == para.length - 1 || !argumentList.get(para.length - 1).getType().isArray())) {
+    int stackLen=operandStack.getStackLength() + argumentList.size();
+    MethodVisitor mv=controller.getMethodVisitor();
+    MethodVisitor orig=mv;
+    controller.setMethodVisitor(mv);
+    for (int i=0; i < para.length - 1; i++) {
+      argumentList.get(i).visit(acg);
+      operandStack.doGroovyCast(para[i].getType());
+    }
+    List<Expression> lastParams=new LinkedList<Expression>();
+    for (int i=para.length - 1; i < argumentList.size(); i++) {
+      lastParams.add(argumentList.get(i));
+    }
+    ArrayExpression array=new ArrayExpression(lastParaType.getComponentType(),lastParams);
+    array.visit(acg);
+    while (operandStack.getStackLength() < stackLen) {
+      operandStack.push(ClassHelper.OBJECT_TYPE);
+    }
+    if (argumentList.size() == para.length - 1) {
+      operandStack.remove(1);
+    }
+  }
+ else {
+    for (int i=0; i < argumentList.size(); i++) {
+      argumentList.get(i).visit(acg);
+      operandStack.doGroovyCast(para[i].getType());
+    }
   }
 }
