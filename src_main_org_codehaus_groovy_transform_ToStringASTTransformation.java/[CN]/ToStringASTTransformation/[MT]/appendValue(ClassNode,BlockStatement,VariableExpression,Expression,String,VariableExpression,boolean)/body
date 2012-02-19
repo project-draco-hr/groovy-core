@@ -1,9 +1,0 @@
-{
-  final BlockStatement ifBlock=new BlockStatement();
-  final IfStatement ifNotNull=new IfStatement(new BooleanExpression(new BinaryExpression(new NotExpression(new ConstantExpression(ignoreNullValues)),LOGICAL_OR,new BinaryExpression(localVar,COMPARE_NOT_EQUAL,ConstantExpression.NULL))),ifBlock,EmptyStatement.INSTANCE);
-  appendCommaIfNotFirst(memberList,localVarFirst,ifBlock);
-  appendPrefix(cNode,ifBlock,memberList,nodeName);
-  ifBlock.addStatement(append(memberList,new StaticMethodCallExpression(INVOKER_TYPE,"toString",localVar)));
-  ifBlock.addStatement(new IfStatement(new BooleanExpression(localVarFirst),assignStatement(localVarFirst,ConstantExpression.FALSE),EmptyStatement.INSTANCE));
-  body.addStatement(ifNotNull);
-}

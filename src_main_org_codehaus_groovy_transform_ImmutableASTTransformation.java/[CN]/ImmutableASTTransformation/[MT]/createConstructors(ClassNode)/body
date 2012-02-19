@@ -1,14 +1,12 @@
 {
-  final FieldNode constructorField=cNode.addField("$print$names",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.boolean_TYPE,null);
-  final Expression constructorStyle=new VariableExpression(constructorField);
   if (!validateConstructors(cNode))   return;
   List<PropertyNode> list=getInstanceProperties(cNode);
   boolean specialHashMapCase=list.size() == 1 && list.get(0).getField().getType().equals(HASHMAP_TYPE);
   if (specialHashMapCase) {
-    createConstructorMapSpecial(cNode,constructorStyle,list);
+    createConstructorMapSpecial(cNode,list);
   }
  else {
-    createConstructorMap(cNode,constructorStyle,list);
-    createConstructorOrdered(cNode,constructorStyle,list);
+    createConstructorMap(cNode,list);
+    createConstructorOrdered(cNode,list);
   }
 }
