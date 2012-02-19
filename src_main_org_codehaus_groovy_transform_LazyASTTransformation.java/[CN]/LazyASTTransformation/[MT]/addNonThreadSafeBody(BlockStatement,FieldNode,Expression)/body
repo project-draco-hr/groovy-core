@@ -1,4 +1,4 @@
 {
   final Expression fieldExpr=new VariableExpression(fieldNode);
-  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(fieldExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(fieldExpr),new ExpressionStatement(new BinaryExpression(fieldExpr,ASSIGN,initExpr))));
+  body.addStatement(new IfStatement(notNullExpr(fieldExpr),new ExpressionStatement(fieldExpr),assignStatement(fieldExpr,initExpr)));
 }
