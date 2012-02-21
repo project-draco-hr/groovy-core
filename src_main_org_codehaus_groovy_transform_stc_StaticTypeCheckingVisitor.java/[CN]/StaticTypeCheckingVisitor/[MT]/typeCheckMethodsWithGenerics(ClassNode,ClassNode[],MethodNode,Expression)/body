@@ -12,7 +12,8 @@
       methodGenericTypes=GenericsUtils.alignGenericTypes(receiver.redirect().getGenericsTypes(),receiver.getGenericsTypes(),type.getGenericsTypes());
       if (methodGenericTypes.length == 1) {
         ClassNode nodeType=getWrapper(methodGenericTypes[0].getType());
-        ClassNode actualType=getWrapper(arguments[argNum]);
+        GenericsType[] argumentGenericTypes=arguments[argNum].getGenericsTypes();
+        ClassNode actualType=argumentGenericTypes != null ? getWrapper(argumentGenericTypes[0].getType()) : nodeType;
         if (!implementsInterfaceOrIsSubclassOf(actualType,nodeType)) {
           failure=true;
         }
@@ -43,6 +44,6 @@
     for (int i=0; i < methodGenericTypes.length; i++) {
       parameterTypes[i]=methodGenericTypes[i].getType();
     }
-    addStaticTypeError("Cannot call " + receiver.getName() + "#"+ toMethodParametersString(candidateMethod.getName(),parameterTypes)+ " with arguments "+ Arrays.asList(arguments),location);
+    addStaticTypeError("Cannot call " + receiver.getName() + "#"+ toMethodParametersString(candidateMethod.getName(),parameterTypes)+ " with arguments "+ formatArgumentList(arguments),location);
   }
 }

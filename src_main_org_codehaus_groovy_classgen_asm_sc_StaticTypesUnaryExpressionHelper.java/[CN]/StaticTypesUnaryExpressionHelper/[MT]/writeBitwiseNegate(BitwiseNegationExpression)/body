@@ -1,0 +1,34 @@
+{
+  expression.getExpression().visit(controller.getAcg());
+  if (isPrimitiveOnTop()) {
+    final ClassNode top=getTopOperand();
+    if (top == int_TYPE || top == short_TYPE || top == byte_TYPE || top == char_TYPE || top == long_TYPE) {
+      BytecodeExpression bytecodeExpression=new BytecodeExpression(){
+        @Override public void visit(        final MethodVisitor mv){
+          if (long_TYPE == top) {
+            mv.visitLdcInsn(-1);
+            mv.visitInsn(LXOR);
+          }
+ else {
+            mv.visitInsn(ICONST_M1);
+            mv.visitInsn(IXOR);
+            if (byte_TYPE == top) {
+              mv.visitInsn(I2B);
+            }
+ else             if (char_TYPE == top) {
+              mv.visitInsn(I2C);
+            }
+ else             if (short_TYPE == top) {
+              mv.visitInsn(I2S);
+            }
+          }
+        }
+      }
+;
+      bytecodeExpression.visit(controller.getAcg());
+      controller.getOperandStack().remove(1);
+      return;
+    }
+  }
+  super.writeBitwiseNegate(EMPTY_BITWISE_NEGATE);
+}

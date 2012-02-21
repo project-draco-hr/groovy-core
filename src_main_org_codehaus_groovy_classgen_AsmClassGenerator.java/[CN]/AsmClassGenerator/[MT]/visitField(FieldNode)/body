@@ -7,7 +7,7 @@
   if (cexp != null) {
     cexp=Verifier.transformToPrimitiveConstantIfPossible(cexp);
   }
-  Object value=cexp != null && ClassHelper.isStaticConstantInitializerType(cexp.getType()) && cexp.getType().equals(t) ? cexp.getValue() : null;
+  Object value=cexp != null && ClassHelper.isStaticConstantInitializerType(cexp.getType()) && cexp.getType().equals(t) && fieldNode.isStatic() && fieldNode.isFinal() ? cexp.getValue() : null;
   if (value != null) {
     if (ClassHelper.byte_TYPE.equals(t) || ClassHelper.short_TYPE.equals(t)) {
       value=((Number)value).intValue();

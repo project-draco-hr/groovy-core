@@ -1,71 +1,24 @@
 {
-  Map map=new HashMap();
-  if (closureMap != null) {
-    map=closureMap;
-  }
-  List<String> selectedMethods=new ArrayList<String>();
-  List<Class> interfacesToImplement;
-  if (interfaces == null) {
-    interfacesToImplement=new ArrayList<Class>();
-  }
- else {
-    interfacesToImplement=interfaces;
-  }
-  StringBuffer buffer=new StringBuffer();
-  buffer.append("import org.codehaus.groovy.runtime.InvokerHelper\nclass ").append(name);
-  if (baseClass != null) {
-    buffer.append(" extends ").append(baseClass.getName());
-  }
-  for (int i=0; i < interfacesToImplement.size(); i++) {
-    Class thisInterface=interfacesToImplement.get(i);
-    if (i == 0) {
-      buffer.append(" implements ");
+  Map<Object,Object> map=closureMap != null ? closureMap : EMPTY_CLOSURE_MAP;
+  Class[] intfs=interfaces != null ? interfaces.toArray(new Class[interfaces.size()]) : EMPTY_INTERFACE_ARRAY;
+  Class base=baseClass;
+  if (base == null) {
+    if (intfs.length > 0) {
+      base=intfs[0];
     }
  else {
-      buffer.append(", ");
-    }
-    buffer.append(thisInterface.getName());
-  }
-  buffer.append(" {\n").append("    private delegate\n").append("    private closureMap\n    ");
-  buffer.append(name).append("(map, delegate) {\n");
-  buffer.append("        this.closureMap = map\n");
-  buffer.append("        this.delegate = delegate\n");
-  buffer.append("    }\n");
-  List<Method> interfaceMethods=new ArrayList<Method>();
-  for (  Class thisInterface : interfacesToImplement) {
-    getInheritedMethods(thisInterface,interfaceMethods);
-  }
-  for (  Method method : interfaceMethods) {
-    if (!containsEquivalentMethod(objectMethods,method) && !containsEquivalentMethod(groovyObjectMethods,method)) {
-      selectedMethods.add(method.getName());
-      addWrappedCall(buffer,method,map);
+      base=Object.class;
     }
   }
-  List<Method> additionalMethods=getInheritedMethods(delegate.getClass(),new ArrayList<Method>());
-  for (  Method method : additionalMethods) {
-    if (method.getName().indexOf('$') != -1)     continue;
-    if (!containsEquivalentMethod(interfaceMethods,method) && !containsEquivalentMethod(objectMethods,method) && !containsEquivalentMethod(groovyObjectMethods,method)) {
-      selectedMethods.add(method.getName());
-      addWrappedCall(buffer,method,map);
-    }
-  }
+  Set<String> keys=map == EMPTY_CLOSURE_MAP ? EMPTY_KEYSET : new HashSet<String>();
   for (  Object o : map.keySet()) {
-    String methodName=(String)o;
-    if (selectedMethods.contains(methodName))     continue;
-    addNewMapCall(buffer,methodName);
+    keys.add(o.toString());
   }
-  buffer.append("}\n").append("new ").append(name);
-  buffer.append("(map, delegate)");
-  Binding binding=new Binding();
-  binding.setVariable("map",map);
-  binding.setVariable("delegate",delegate);
-  ClassLoader cl=override != null ? override : delegate.getClass().getClassLoader();
-  GroovyShell shell=new GroovyShell(cl,binding);
-  if (debug)   System.out.println("proxy source:\n------------------\n" + buffer.toString() + "\n------------------");
-  try {
-    return (GroovyObject)shell.evaluate(buffer.toString());
+  CacheKey key=new CacheKey(base,keys,intfs,emptyMethods,true);
+  ProxyGeneratorAdapter adapter=(ProxyGeneratorAdapter)adapterCache.get(key);
+  if (adapter == null) {
+    adapter=new ProxyGeneratorAdapter(map,base,intfs,delegate.getClass().getClassLoader(),emptyMethods,delegate.getClass());
+    adapterCache.put(key,adapter);
   }
- catch (  MultipleCompilationErrorsException err) {
-    throw new GroovyRuntimeException("Error creating proxy: " + err.getMessage());
-  }
+  return adapter.delegatingProxy(delegate,map,(Object[])null);
 }

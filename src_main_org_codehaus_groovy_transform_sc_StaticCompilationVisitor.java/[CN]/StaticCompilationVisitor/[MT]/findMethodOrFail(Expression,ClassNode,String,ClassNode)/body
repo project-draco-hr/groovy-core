@@ -1,0 +1,7 @@
+{
+  MethodNode methodNode=super.findMethodOrFail(expr,receiver,name,args);
+  if (expr instanceof BinaryExpression && methodNode != null) {
+    expr.putNodeMetaData(BINARY_EXP_TARGET,new Object[]{methodNode,name});
+  }
+  return methodNode;
+}

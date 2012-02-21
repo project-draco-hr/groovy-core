@@ -68,6 +68,17 @@
             storeType(pexp,getter.getReturnType());
             return true;
           }
+          if (pluginFactory != null) {
+            TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
+            if (plugin != null) {
+              PropertyNode result=plugin.resolveProperty(current,propertyName);
+              if (result != null) {
+                if (visitor != null)                 visitor.visitProperty(result);
+                storeType(pexp,result.getType());
+                return true;
+              }
+            }
+          }
           current=isAttributeExpression ? null : current.getSuperClass();
         }
       }

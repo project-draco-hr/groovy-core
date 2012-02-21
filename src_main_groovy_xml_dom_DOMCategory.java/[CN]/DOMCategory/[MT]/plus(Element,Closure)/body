@@ -1,10 +1,6 @@
 {
-  Node parent=self.getParentNode();
-  Node beforeNode=self.getNextSibling();
-  DOMBuilder b=new DOMBuilder(self.getOwnerDocument());
-  Element newNodes=(Element)b.invokeMethod("rootNode",c);
-  Iterator<Node> iter=XmlGroovyMethods.iterator(children(newNodes));
-  while (iter.hasNext()) {
-    parent.insertBefore(iter.next(),beforeNode);
+  if (self.getParentNode() instanceof Document) {
+    throw new UnsupportedOperationException("Adding sibling nodes to the root node is not supported");
   }
+  appendNodes(self,c);
 }

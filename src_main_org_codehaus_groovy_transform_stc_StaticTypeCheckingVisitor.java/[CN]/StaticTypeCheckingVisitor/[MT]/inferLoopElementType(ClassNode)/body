@@ -1,0 +1,17 @@
+{
+  ClassNode componentType=collectionType.getComponentType();
+  if (componentType == null) {
+    if (collectionType.implementsInterface(ITERABLE_TYPE)) {
+      ClassNode intf=GenericsUtils.parameterizeInterfaceGenerics(collectionType,ITERABLE_TYPE);
+      GenericsType[] genericsTypes=intf.getGenericsTypes();
+      componentType=genericsTypes[0].getType();
+    }
+ else     if (collectionType == ClassHelper.STRING_TYPE) {
+      componentType=ClassHelper.Character_TYPE;
+    }
+ else {
+      componentType=ClassHelper.OBJECT_TYPE;
+    }
+  }
+  return componentType;
+}

@@ -1,9 +1,11 @@
 {
   ClassNode current=getController().getClassNode();
+  TypeChooser typeChooser=getController().getTypeChooser();
+  int operation=binExp.getOperation().getType();
   Expression leftExp=binExp.getLeftExpression();
-  ClassNode leftType=getController().getTypeChooser().resolveType(leftExp,current);
+  ClassNode leftType=typeChooser.resolveType(leftExp,current);
   Expression rightExp=binExp.getRightExpression();
-  ClassNode rightType=getController().getTypeChooser().resolveType(rightExp,current);
+  ClassNode rightType=typeChooser.resolveType(rightExp,current);
   if (!doPrimtiveCompare(leftType,rightType,binExp)) {
     super.evaluateCompareExpression(compareMethod,binExp);
   }

@@ -1,4 +1,7 @@
 {
-  String description=calcThenSetPackageDescription(src,filename,packageDoc);
-  calcThenSetSummary(description,packageDoc);
+  String relPath=packageDoc.getRelativeRootPath();
+  String description=calcThenSetPackageDescription(src,filename,relPath);
+  packageDoc.setDescription(description);
+  String altDescription=calcThenSetPackageDescription(src,filename,"");
+  calcThenSetSummary(altDescription,packageDoc);
 }

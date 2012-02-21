@@ -1,7 +1,17 @@
 {
-  if (receiver.equals(compare) || receiver == UNKNOWN_PARAMETER_TYPE)   return 0;
-  if (compare.isInterface() && receiver.implementsInterface(compare))   return 1;
-  ClassNode superClass=compare.getSuperClass();
-  if (superClass == null)   return 2;
-  return 1 + getDistance(receiver,superClass);
+  int dist=0;
+  ClassNode ref=compare;
+  while (ref != null) {
+    if (receiver.equals(ref) || receiver == UNKNOWN_PARAMETER_TYPE) {
+      break;
+    }
+    if (ref.isInterface() && receiver.implementsInterface(ref)) {
+      dist+=getMaximumInterfaceDistance(receiver,ref);
+      break;
+    }
+    ref=ref.getSuperClass();
+    if (ref == null)     dist+=2;
+    dist++;
+  }
+  return dist;
 }

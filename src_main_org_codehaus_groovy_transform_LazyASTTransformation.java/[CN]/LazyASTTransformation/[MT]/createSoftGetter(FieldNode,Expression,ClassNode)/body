@@ -4,17 +4,17 @@
   final Expression resExpr=new VariableExpression("res",type);
   final MethodCallExpression callExpression=new MethodCallExpression(fieldExpr,"get",new ArgumentListExpression());
   callExpression.setSafe(true);
-  body.addStatement(new ExpressionStatement(new DeclarationExpression(resExpr,ASSIGN,callExpression)));
+  body.addStatement(declStatement(resExpr,callExpression));
   final BlockStatement elseBlock=new BlockStatement();
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(resExpr,ASSIGN,initExpr)));
-  elseBlock.addStatement(new ExpressionStatement(new BinaryExpression(fieldExpr,ASSIGN,new ConstructorCallExpression(SOFT_REF,resExpr))));
+  elseBlock.addStatement(assignStatement(resExpr,initExpr));
+  elseBlock.addStatement(assignStatement(fieldExpr,new ConstructorCallExpression(SOFT_REF,resExpr)));
   elseBlock.addStatement(new ExpressionStatement(resExpr));
-  final Statement mainIf=new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(resExpr),elseBlock);
-  if (isVolatile(fieldNode)) {
+  final Statement mainIf=new IfStatement(notNullExpr(resExpr),new ExpressionStatement(resExpr),elseBlock);
+  if (notVolatile(fieldNode)) {
     body.addStatement(mainIf);
   }
  else {
-    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(resExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(resExpr),new SynchronizedStatement(synchTarget(fieldNode),mainIf)));
+    body.addStatement(new IfStatement(notNullExpr(resExpr),new ExpressionStatement(resExpr),new SynchronizedStatement(syncTarget(fieldNode),mainIf)));
   }
   addMethod(fieldNode,body,type);
 }

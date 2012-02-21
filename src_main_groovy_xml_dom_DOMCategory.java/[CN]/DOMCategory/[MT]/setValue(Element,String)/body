@@ -1,3 +1,8 @@
 {
-  self.getFirstChild().setNodeValue(value);
+  Node firstChild=self.getFirstChild();
+  if (firstChild == null) {
+    firstChild=self.getOwnerDocument().createTextNode(value);
+    self.appendChild(firstChild);
+  }
+  firstChild.setNodeValue(value);
 }

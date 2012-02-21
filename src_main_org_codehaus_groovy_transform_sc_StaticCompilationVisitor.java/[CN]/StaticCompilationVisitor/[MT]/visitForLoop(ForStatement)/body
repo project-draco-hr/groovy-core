@@ -1,0 +1,9 @@
+{
+  super.visitForLoop(forLoop);
+  Expression collectionExpression=forLoop.getCollectionExpression();
+  if (!(collectionExpression instanceof ClosureListExpression)) {
+    final ClassNode collectionType=getType(forLoop.getCollectionExpression());
+    ClassNode componentType=inferLoopElementType(collectionType);
+    forLoop.getVariable().setType(componentType);
+  }
+}

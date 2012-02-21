@@ -22,11 +22,14 @@
     this.invocationWriter=new InvocationWriter(this);
   }
   this.binaryExpHelper=new BinaryExpressionHelper(this);
+  this.unaryExpressionHelper=new UnaryExpressionHelper(this);
   if (optimizeForInt) {
     this.fastPathBinaryExpHelper=new BinaryExpressionMultiTypeDispatcher(this);
+    this.fastPathUnaryExpressionHelper=new UnaryExpressionHelper(this);
   }
  else {
     this.fastPathBinaryExpHelper=this.binaryExpHelper;
+    this.fastPathUnaryExpressionHelper=new UnaryExpressionHelper(this);
   }
   this.operandStack=new OperandStack(this);
   this.assertionWriter=new AssertionWriter(this);

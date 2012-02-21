@@ -4,7 +4,7 @@
   final String name="set" + MetaClassHelper.capitalize(fieldNode.getName().substring(1));
   final Parameter parameter=new Parameter(type,"value");
   final Expression paramExpr=new VariableExpression(parameter);
-  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(paramExpr,COMPARE_NOT_EQUAL,NULL_EXPR)),new ExpressionStatement(new BinaryExpression(fieldExpr,ASSIGN,new ConstructorCallExpression(SOFT_REF,paramExpr))),new ExpressionStatement(new BinaryExpression(fieldExpr,ASSIGN,NULL_EXPR))));
+  body.addStatement(new IfStatement(notNullExpr(paramExpr),assignStatement(fieldExpr,new ConstructorCallExpression(SOFT_REF,paramExpr)),assignStatement(fieldExpr,NULL_EXPR)));
   int visibility=ACC_PUBLIC;
   if (fieldNode.isStatic())   visibility|=ACC_STATIC;
   fieldNode.getDeclaringClass().addMethod(name,visibility,ClassHelper.VOID_TYPE,new Parameter[]{parameter},ClassNode.EMPTY_ARRAY,body);
