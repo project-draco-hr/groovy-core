@@ -1,0 +1,9 @@
+{
+  GroovyASTTransformation transformationClass=(GroovyASTTransformation)klass.getAnnotation(GroovyASTTransformation.class);
+  if (transformationClass != null) {
+    CompilePhase specifiedCompilePhase=transformationClass.phase();
+    if (specifiedCompilePhase.getPhaseNumber() < CompilePhase.SEMANTIC_ANALYSIS.getPhaseNumber()) {
+      source.getErrorCollector().addError(new SimpleMessage(annotation.getClassNode().getName() + " is defined to be run in compile phase " + specifiedCompilePhase+ ". Local AST transformations must run in "+ CompilePhase.SEMANTIC_ANALYSIS+ " or later!",source));
+    }
+  }
+}
