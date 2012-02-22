@@ -4,7 +4,8 @@
   Parameter[] params=node.getParameters();
   Parameter[] newParams=new Parameter[params.length + 1];
   System.arraycopy(params,0,newParams,1,params.length);
-  Parameter thisPara=new Parameter(classNode.getOuterClass().getPlainNodeReference(),getUniqueName(params,node));
+  String name=getUniqueName(params,node);
+  Parameter thisPara=new Parameter(classNode.getOuterClass().getPlainNodeReference(),name);
   newParams[0]=thisPara;
   node.setParameters(newParams);
   BlockStatement block=null;

@@ -55,7 +55,7 @@
 ,Phases.SEMANTIC_ANALYSIS);
   addPhaseOperation(new PrimaryClassNodeOperation(){
     @Override public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
-      InnerClassCompletionVisitor iv=new InnerClassCompletionVisitor();
+      InnerClassCompletionVisitor iv=new InnerClassCompletionVisitor(CompilationUnit.this,source);
       iv.visitClass(classNode);
     }
   }
