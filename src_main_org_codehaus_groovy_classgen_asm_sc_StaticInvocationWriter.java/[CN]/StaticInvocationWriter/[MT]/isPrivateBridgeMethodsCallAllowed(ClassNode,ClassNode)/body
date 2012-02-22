@@ -1,5 +1,6 @@
 {
+  if (receiver == null)   return false;
   if (receiver.redirect() == caller)   return true;
-  if (caller.redirect() instanceof InnerClassNode)   return isPrivateBridgeMethodsCallAllowed(receiver,caller.redirect().getOuterClass());
+  if (caller.redirect() instanceof InnerClassNode)   return isPrivateBridgeMethodsCallAllowed(receiver,caller.redirect().getOuterClass()) || isPrivateBridgeMethodsCallAllowed(receiver.getOuterClass(),caller);
   return false;
 }

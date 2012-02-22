@@ -37,4 +37,6 @@
   }
   if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName))   return;
   controller.getSourceUnit().addError(new SyntaxException("Access to " + receiverType.toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
+  controller.getMethodVisitor().visitInsn(ACONST_NULL);
+  controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
 }
