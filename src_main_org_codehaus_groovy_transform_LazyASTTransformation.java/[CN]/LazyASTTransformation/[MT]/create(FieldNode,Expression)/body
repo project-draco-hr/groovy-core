@@ -3,11 +3,11 @@
   if (fieldNode.isStatic()) {
     addHolderClassIdiomBody(body,fieldNode,initExpr);
   }
- else   if (notVolatile(fieldNode)) {
-    addNonThreadSafeBody(body,fieldNode,initExpr);
+ else   if (fieldNode.isVolatile()) {
+    addDoubleCheckedLockingBody(body,fieldNode,initExpr);
   }
  else {
-    addDoubleCheckedLockingBody(body,fieldNode,initExpr);
+    addNonThreadSafeBody(body,fieldNode,initExpr);
   }
   addMethod(fieldNode,body,fieldNode.getType());
 }
