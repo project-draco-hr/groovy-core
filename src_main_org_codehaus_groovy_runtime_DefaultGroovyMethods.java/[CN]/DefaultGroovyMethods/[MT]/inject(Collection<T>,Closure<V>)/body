@@ -1,0 +1,10 @@
+{
+  if (self.isEmpty()) {
+    throw new NoSuchElementException("Cannot call inject() on an empty collection without passing an initial value.");
+  }
+  List<T> list=asList(self);
+  if (list.size() == 1) {
+    return list.get(0);
+  }
+  return inject(drop(list,1),head(list),closure);
+}
