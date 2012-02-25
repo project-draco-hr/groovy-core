@@ -1,0 +1,38 @@
+{
+  if (DefaultGroovyMethods.lineSeparator == null) {
+    final StringWriter sw=new StringWriter(2);
+    try {
+      final BufferedWriter bw=new BufferedWriter(sw);
+      bw.newLine();
+      bw.flush();
+      DefaultGroovyMethods.lineSeparator=sw.toString();
+    }
+ catch (    IOException ioe) {
+      DefaultGroovyMethods.lineSeparator="\n";
+    }
+  }
+  final int len=self.length();
+  if (len < 1) {
+    return self;
+  }
+  final StringBuilder sb=new StringBuilder((110 * len) / 100);
+  int i=0;
+  while (i < len) {
+    final char ch=self.charAt(i++);
+switch (ch) {
+case '\r':
+      sb.append(DefaultGroovyMethods.lineSeparator);
+    if ((i < len) && (self.charAt(i) == '\n')) {
+      ++i;
+    }
+  break;
+case '\n':
+sb.append(DefaultGroovyMethods.lineSeparator);
+break;
+default :
+sb.append(ch);
+break;
+}
+}
+return sb.toString();
+}

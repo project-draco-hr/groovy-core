@@ -1,16 +1,3 @@
 {
-  StringBuilder builder=new StringBuilder(self);
-  int index=0;
-  while (index + tabStop < builder.length()) {
-    String piece=builder.substring(index,index + tabStop);
-    int count=0;
-    while ((count < tabStop) && (Character.isWhitespace(piece.charAt(tabStop - (count + 1)))))     count++;
-    if (count > 0) {
-      piece=piece.substring(0,tabStop - count) + '\t';
-      builder.replace(index,index + tabStop,piece);
-      index=index + tabStop - (count - 1);
-    }
- else     index=index + tabStop;
-  }
-  return builder.toString();
+  return StringGroovyMethods.unexpandLine(self,tabStop);
 }

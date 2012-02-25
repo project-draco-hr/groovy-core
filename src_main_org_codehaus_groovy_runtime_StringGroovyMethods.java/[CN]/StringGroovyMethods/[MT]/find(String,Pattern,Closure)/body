@@ -1,0 +1,17 @@
+{
+  Matcher matcher=pattern.matcher(self);
+  if (matcher.find()) {
+    if (hasGroup(matcher)) {
+      int count=matcher.groupCount();
+      List groups=new ArrayList(count);
+      for (int i=0; i <= count; i++) {
+        groups.add(matcher.group(i));
+      }
+      return InvokerHelper.toString(closure.call(groups));
+    }
+ else {
+      return InvokerHelper.toString(closure.call(matcher.group(0)));
+    }
+  }
+  return null;
+}
