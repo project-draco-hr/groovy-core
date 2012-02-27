@@ -1,0 +1,24 @@
+{
+  final URLConnection connection=url.openConnection();
+  if (parameters != null) {
+    if (parameters.containsKey("connectTimeout")) {
+      connection.setConnectTimeout(DefaultGroovyMethods.asType(parameters.get("connectTimeout"),Integer.class));
+    }
+    if (parameters.containsKey("readTimeout")) {
+      connection.setReadTimeout(DefaultGroovyMethods.asType(parameters.get("readTimeout"),Integer.class));
+    }
+    if (parameters.containsKey("useCaches")) {
+      connection.setUseCaches(DefaultGroovyMethods.asType(parameters.get("useCaches"),Boolean.class));
+    }
+    if (parameters.containsKey("allowUserInteraction")) {
+      connection.setAllowUserInteraction(DefaultGroovyMethods.asType(parameters.get("allowUserInteraction"),Boolean.class));
+    }
+    if (parameters.containsKey("requestProperties")) {
+      @SuppressWarnings("unchecked") Map<String,String> properties=(Map<String,String>)parameters.get("requestProperties");
+      for (      Map.Entry<String,String> entry : properties.entrySet()) {
+        connection.setRequestProperty(entry.getKey(),entry.getValue());
+      }
+    }
+  }
+  return connection.getInputStream();
+}

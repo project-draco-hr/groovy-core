@@ -1,11 +1,3 @@
 {
-  checkDir(self);
-  final File[] files=self.listFiles();
-  if (files == null)   return;
-  final MetaClass metaClass=InvokerHelper.getMetaClass(nameFilter);
-  for (  final File currentFile : files) {
-    if ((fileType != FileType.FILES && currentFile.isDirectory()) || (fileType != FileType.DIRECTORIES && currentFile.isFile())) {
-      if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(nameFilter,"isCase",currentFile.getName())))       closure.call(currentFile);
-    }
-  }
+  ResourceGroovyMethods.eachFileMatch(self,fileType,nameFilter,closure);
 }

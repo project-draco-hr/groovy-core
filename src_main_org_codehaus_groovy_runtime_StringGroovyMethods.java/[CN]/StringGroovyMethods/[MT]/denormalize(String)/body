@@ -1,14 +1,14 @@
 {
-  if (DefaultGroovyMethods.lineSeparator == null) {
+  if (lineSeparator == null) {
     final StringWriter sw=new StringWriter(2);
     try {
       final BufferedWriter bw=new BufferedWriter(sw);
       bw.newLine();
       bw.flush();
-      DefaultGroovyMethods.lineSeparator=sw.toString();
+      lineSeparator=sw.toString();
     }
  catch (    IOException ioe) {
-      DefaultGroovyMethods.lineSeparator="\n";
+      lineSeparator="\n";
     }
   }
   final int len=self.length();
@@ -21,13 +21,13 @@
     final char ch=self.charAt(i++);
 switch (ch) {
 case '\r':
-      sb.append(DefaultGroovyMethods.lineSeparator);
+      sb.append(lineSeparator);
     if ((i < len) && (self.charAt(i) == '\n')) {
       ++i;
     }
   break;
 case '\n':
-sb.append(DefaultGroovyMethods.lineSeparator);
+sb.append(lineSeparator);
 break;
 default :
 sb.append(ch);

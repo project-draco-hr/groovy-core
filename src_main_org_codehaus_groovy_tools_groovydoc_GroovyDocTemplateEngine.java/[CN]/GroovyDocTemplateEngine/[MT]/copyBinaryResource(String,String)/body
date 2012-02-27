@@ -4,7 +4,7 @@
     try {
       InputStream inputStream=((ClasspathResourceManager)resourceManager).getInputStream(template);
       outputStream=new FileOutputStream(destFileName);
-      DefaultGroovyMethods.leftShift(outputStream,inputStream);
+      IOGroovyMethods.leftShift(outputStream,inputStream);
     }
  catch (    IOException e) {
       System.err.println("Resource " + template + " skipped due to: "+ e.getMessage());
@@ -13,7 +13,7 @@ catch (    NullPointerException e) {
       System.err.println("Resource " + template + " not found so skipped");
     }
  finally {
-      DefaultGroovyMethods.closeQuietly(outputStream);
+      DefaultGroovyMethodsSupport.closeQuietly(outputStream);
     }
   }
 }

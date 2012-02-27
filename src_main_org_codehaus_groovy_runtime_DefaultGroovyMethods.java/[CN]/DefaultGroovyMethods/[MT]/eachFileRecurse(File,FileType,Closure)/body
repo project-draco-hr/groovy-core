@@ -1,14 +1,3 @@
 {
-  checkDir(self);
-  final File[] files=self.listFiles();
-  if (files == null)   return;
-  for (  File file : files) {
-    if (file.isDirectory()) {
-      if (fileType != FileType.FILES)       closure.call(file);
-      eachFileRecurse(file,fileType,closure);
-    }
- else     if (fileType != FileType.DIRECTORIES) {
-      closure.call(file);
-    }
-  }
+  ResourceGroovyMethods.eachFileRecurse(self,fileType,closure);
 }
