@@ -19,14 +19,14 @@
     return adapter.asList();
   }
  else   if (value instanceof String) {
-    return DefaultGroovyMethods.toList((String)value);
+    return StringGroovyMethods.toList((String)value);
   }
  else   if (value instanceof GString) {
-    return DefaultGroovyMethods.toList(value.toString());
+    return StringGroovyMethods.toList(value.toString());
   }
  else   if (value instanceof File) {
     try {
-      return DefaultGroovyMethods.readLines((File)value);
+      return ResourceGroovyMethods.readLines((File)value);
     }
  catch (    IOException e) {
       throw new GroovyRuntimeException("Error reading file: " + value,e);

@@ -1,10 +1,17 @@
 {
+  this.classNode=node;
+  thisField=null;
   InnerClassNode innerClass=null;
   if (!node.isEnum() && !node.isInterface() && node instanceof InnerClassNode) {
     innerClass=(InnerClassNode)node;
+    thisField=innerClass.getField("this$0");
+    if (innerClass.getVariableScope() == null && innerClass.getDeclaredConstructors().isEmpty()) {
+      innerClass.addConstructor(ACC_PUBLIC,new Parameter[0],null,null);
+    }
   }
   if (node.isEnum() || node.isInterface())   return;
   addDispatcherMethods(node);
   if (innerClass == null)   return;
+  super.visitClass(node);
   addDefaultMethods(innerClass);
 }

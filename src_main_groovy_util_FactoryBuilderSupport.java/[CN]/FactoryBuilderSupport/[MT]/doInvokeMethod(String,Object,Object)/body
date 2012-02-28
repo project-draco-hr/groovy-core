@@ -4,6 +4,14 @@
     return explicitResult.get();
   }
  else {
-    return dispathNodeCall(name,args);
+    try {
+      return dispathNodeCall(name,args);
+    }
+ catch (    MissingMethodException mme) {
+      if (mme.getMethod().equals(methodName) && methodMissingDelegate != null) {
+        return methodMissingDelegate.call(new Object[]{methodName,args});
+      }
+      throw mme;
+    }
   }
 }

@@ -1,15 +1,3 @@
 {
-  byte[] bytes=new byte[(int)file.length()];
-  FileInputStream fileInputStream=new FileInputStream(file);
-  DataInputStream dis=new DataInputStream(fileInputStream);
-  try {
-    dis.readFully(bytes);
-    InputStream temp=dis;
-    dis=null;
-    temp.close();
-  }
-  finally {
-    closeWithWarning(dis);
-  }
-  return bytes;
+  return ResourceGroovyMethods.readBytes(file);
 }

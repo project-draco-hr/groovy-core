@@ -1,17 +1,3 @@
 {
-  if (!self.exists())   return true;
-  if (!self.isDirectory())   return false;
-  File[] files=self.listFiles();
-  if (files == null)   return false;
-  boolean result=true;
-  for (  File file : files) {
-    if (file.isDirectory()) {
-      if (!deleteDir(file))       result=false;
-    }
- else {
-      if (!file.delete())       result=false;
-    }
-  }
-  if (!self.delete())   result=false;
-  return result;
+  return ResourceGroovyMethods.deleteDir(self);
 }

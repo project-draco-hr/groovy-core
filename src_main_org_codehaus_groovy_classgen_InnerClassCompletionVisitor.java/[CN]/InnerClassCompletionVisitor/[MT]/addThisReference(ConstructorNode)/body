@@ -1,0 +1,40 @@
+{
+  if (!shouldHandleImplicitThisForInnerClass(classNode))   return;
+  Statement code=node.getCode();
+  Parameter[] params=node.getParameters();
+  Parameter[] newParams=new Parameter[params.length + 1];
+  System.arraycopy(params,0,newParams,1,params.length);
+  String name=getUniqueName(params,node);
+  Parameter thisPara=new Parameter(classNode.getOuterClass().getPlainNodeReference(),name);
+  newParams[0]=thisPara;
+  node.setParameters(newParams);
+  BlockStatement block=null;
+  if (code == null) {
+    block=new BlockStatement();
+  }
+ else   if (!(code instanceof BlockStatement)) {
+    block=new BlockStatement();
+    block.addStatement(code);
+  }
+ else {
+    block=(BlockStatement)code;
+  }
+  BlockStatement newCode=new BlockStatement();
+  addFieldInit(thisPara,thisField,newCode);
+  ConstructorCallExpression cce=getFirstIfSpecialConstructorCall(block);
+  if (cce == null) {
+    cce=new ConstructorCallExpression(ClassNode.SUPER,new TupleExpression());
+    block.getStatements().add(0,new ExpressionStatement(cce));
+  }
+  if (shouldImplicitlyPassThisPara(cce)) {
+    TupleExpression args=(TupleExpression)cce.getArguments();
+    List<Expression> expressions=args.getExpressions();
+    VariableExpression ve=new VariableExpression(thisPara.getName());
+    ve.setAccessedVariable(thisPara);
+    expressions.add(0,ve);
+  }
+  if (cce.isSuperCall()) {
+    block.getStatements().add(1,newCode);
+  }
+  node.setCode(block);
+}

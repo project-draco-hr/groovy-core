@@ -1,0 +1,16 @@
+{
+  final ArrayList<String> immutableClasses=new ArrayList<String>();
+  final Expression expression=node.getMember(MEMBER_KNOWN_IMMUTABLE_CLASSES);
+  if (expression == null)   return immutableClasses;
+  if (!(expression instanceof ListExpression)) {
+    addError("Use the Groovy list notation [el1, el2] to specify known immutable classes via \"" + MEMBER_KNOWN_IMMUTABLE_CLASSES + "\"",node);
+    return immutableClasses;
+  }
+  final ListExpression listExpression=(ListExpression)expression;
+  for (  Expression listItemExpression : listExpression.getExpressions()) {
+    if (listItemExpression instanceof ClassExpression) {
+      immutableClasses.add(listItemExpression.getType().getName());
+    }
+  }
+  return immutableClasses;
+}

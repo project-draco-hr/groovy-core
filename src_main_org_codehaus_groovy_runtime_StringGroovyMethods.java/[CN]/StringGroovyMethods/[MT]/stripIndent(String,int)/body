@@ -1,0 +1,19 @@
+{
+  if (self.length() == 0 || numChars <= 0)   return self;
+  try {
+    StringBuilder builder=new StringBuilder();
+    for (    String line : readLines(self)) {
+      if (!isAllWhitespace(line)) {
+        builder.append(stripIndentFromLine(line,numChars));
+      }
+      builder.append("\n");
+    }
+    if (!self.endsWith("\n")) {
+      builder.deleteCharAt(builder.length() - 1);
+    }
+    return builder.toString();
+  }
+ catch (  IOException e) {
+  }
+  return self;
+}

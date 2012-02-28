@@ -1,14 +1,3 @@
 {
-  ByteArrayOutputStream answer=new ByteArrayOutputStream();
-  byte[] byteBuffer=new byte[8192];
-  int nbByteRead;
-  try {
-    while ((nbByteRead=is.read(byteBuffer)) != -1) {
-      answer.write(byteBuffer,0,nbByteRead);
-    }
-  }
-  finally {
-    closeWithWarning(is);
-  }
-  return answer.toByteArray();
+  return IOGroovyMethods.getBytes(is);
 }

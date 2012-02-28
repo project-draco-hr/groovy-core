@@ -1,0 +1,39 @@
+{
+  if (c == List.class) {
+    return (T)toList(self);
+  }
+ else   if (c == BigDecimal.class) {
+    return (T)toBigDecimal(self);
+  }
+ else   if (c == BigInteger.class) {
+    return (T)toBigInteger(self);
+  }
+ else   if (c == Long.class || c == Long.TYPE) {
+    return (T)toLong(self);
+  }
+ else   if (c == Integer.class || c == Integer.TYPE) {
+    return (T)toInteger(self);
+  }
+ else   if (c == Short.class || c == Short.TYPE) {
+    return (T)toShort(self);
+  }
+ else   if (c == Byte.class || c == Byte.TYPE) {
+    return (T)Byte.valueOf(self.trim());
+  }
+ else   if (c == Character.class || c == Character.TYPE) {
+    return (T)toCharacter(self);
+  }
+ else   if (c == Double.class || c == Double.TYPE) {
+    return (T)toDouble(self);
+  }
+ else   if (c == Float.class || c == Float.TYPE) {
+    return (T)toFloat(self);
+  }
+ else   if (c == File.class) {
+    return (T)new File(self);
+  }
+ else   if (DefaultTypeTransformation.isEnumSubclass(c)) {
+    return (T)InvokerHelper.invokeMethod(c,"valueOf",new Object[]{self});
+  }
+  return DefaultGroovyMethods.asType((Object)self,c);
+}

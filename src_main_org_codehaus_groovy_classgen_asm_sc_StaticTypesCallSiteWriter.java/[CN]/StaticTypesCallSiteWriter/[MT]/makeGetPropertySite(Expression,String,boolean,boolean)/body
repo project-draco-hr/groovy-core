@@ -17,6 +17,7 @@
  else   if (receiverType.implementsInterface(COLLECTION_TYPE) && ("size".equals(methodName) || "length".equals(methodName))) {
     MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
     expr.setMethodTarget(COLLECTION_SIZE_METHOD);
+    expr.setImplicitThis(implicitThis);
     expr.visit(controller.getAcg());
     return;
   }
@@ -35,6 +36,8 @@
     if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
   }
-  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName))   return;
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,implicitThis))   return;
   controller.getSourceUnit().addError(new SyntaxException("Access to " + receiverType.toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
+  controller.getMethodVisitor().visitInsn(ACONST_NULL);
+  controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
 }

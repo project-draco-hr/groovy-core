@@ -1,21 +1,3 @@
 {
-  int nx=self.indexOf('\r');
-  if (nx < 0) {
-    return self;
-  }
-  final int len=self.length();
-  final StringBuilder sb=new StringBuilder(len);
-  int i=0;
-  do {
-    sb.append(self,i,nx);
-    sb.append('\n');
-    if ((i=nx + 1) >= len)     break;
-    if (self.charAt(i) == '\n') {
-      if (++i >= len)       break;
-    }
-    nx=self.indexOf('\r',i);
-  }
- while (nx > 0);
-  sb.append(self,i,len);
-  return sb.toString();
+  return StringGroovyMethods.normalize(self);
 }
