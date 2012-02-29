@@ -102,6 +102,15 @@
           storeType(call,(ClassNode)data);
         }
       }
+      int nbOfArgs=0;
+      if (callArguments instanceof ArgumentListExpression) {
+        ArgumentListExpression list=(ArgumentListExpression)callArguments;
+        nbOfArgs=list.getExpressions().size();
+      }
+ else {
+        nbOfArgs=0;
+      }
+      storeTargetMethod(call,nbOfArgs == 0 ? CLOSURE_CALL_NO_ARG : nbOfArgs == 1 ? CLOSURE_CALL_ONE_ARG : CLOSURE_CALL_VARGS);
     }
  else {
       List<ClassNode> receivers=new LinkedList<ClassNode>();
