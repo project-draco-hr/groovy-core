@@ -1,9 +1,5 @@
 {
-  Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
-  if (type != null) {
-    return;
-  }
-  node.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,node);
+  if (shouldSkipClassNode(node))   return;
   ClassNode oldCN=classNode;
   classNode=node;
   Set<MethodNode> oldVisitedMethod=alreadyVisitedMethods;
@@ -16,4 +12,5 @@
   }
   alreadyVisitedMethods=oldVisitedMethod;
   classNode=oldCN;
+  node.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,node);
 }

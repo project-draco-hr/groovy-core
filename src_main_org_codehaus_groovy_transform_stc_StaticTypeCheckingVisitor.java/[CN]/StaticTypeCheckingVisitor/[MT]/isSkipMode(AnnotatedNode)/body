@@ -1,0 +1,25 @@
+{
+  if (node == null)   return false;
+  for (  ClassNode tca : getTypeCheckingAnnotations()) {
+    List<AnnotationNode> annotations=node.getAnnotations(tca);
+    if (annotations != null) {
+      for (      AnnotationNode annotation : annotations) {
+        Expression value=annotation.getMember("value");
+        if (value != null) {
+          if (value instanceof ConstantExpression) {
+            ConstantExpression ce=(ConstantExpression)value;
+            if (TypeCheckingMode.SKIP.toString().equals(ce.getValue().toString()))             return true;
+          }
+ else           if (value instanceof PropertyExpression) {
+            PropertyExpression pe=(PropertyExpression)value;
+            if (TypeCheckingMode.SKIP.toString().equals(pe.getPropertyAsString()))             return true;
+          }
+        }
+      }
+    }
+  }
+  if (node instanceof MethodNode) {
+    return isSkipMode(node.getDeclaringClass());
+  }
+  return false;
+}
