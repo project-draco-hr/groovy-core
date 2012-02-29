@@ -7,9 +7,6 @@
     if (!isStatic(innerClass) && innerClass.getVariableScope() == null) {
       thisField=innerClass.addField("this$0",PUBLIC_SYNTHETIC,node.getOuterClass().getPlainNodeReference(),null);
     }
-    if (innerClass.getVariableScope() == null && innerClass.getDeclaredConstructors().isEmpty()) {
-      innerClass.addConstructor(ACC_PUBLIC,new Parameter[0],null,null);
-    }
   }
   super.visitClass(node);
   if (node.isEnum() || node.isInterface())   return;

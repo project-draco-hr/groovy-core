@@ -1,0 +1,12 @@
+{
+  Immutable immutable=(Immutable)clazz.getAnnotation(MY_CLASS);
+  List<Class> knownImmutableClasses=new ArrayList<Class>();
+  if (immutable != null && immutable.knownImmutableClasses().length > 0) {
+    knownImmutableClasses=Arrays.asList(immutable.knownImmutableClasses());
+  }
+  if (field == null || field instanceof Enum || inImmutableList(field.getClass().getName()) || knownImmutableClasses.contains(field.getClass()))   return field;
+  if (field instanceof Collection)   return DefaultGroovyMethods.asImmutable((Collection)field);
+  if (field.getClass().getAnnotation(MY_CLASS) != null)   return field;
+  final String typeName=field.getClass().getName();
+  throw new RuntimeException(createErrorMessage(clazz.getName(),fieldName,typeName,"constructing"));
+}

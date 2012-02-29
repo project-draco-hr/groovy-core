@@ -1,12 +1,17 @@
 {
-  GenericsType[] redirectReceiverTypes=receiver.redirect().getGenericsTypes();
-  if (redirectReceiverTypes == null) {
-    redirectReceiverTypes=m.getGenericsTypes();
+  MethodNode mn=m;
+  ClassNode actualReceiver=receiver;
+  List<GenericsType> redirectTypes=new ArrayList<GenericsType>();
+  if (actualReceiver.redirect().getGenericsTypes() != null) {
+    Collections.addAll(redirectTypes,actualReceiver.redirect().getGenericsTypes());
   }
-  if (redirectReceiverTypes == null)   return m.getParameters();
-  Parameter[] methodParameters=m.getParameters();
+  if (redirectTypes.isEmpty()) {
+    return m.getParameters();
+  }
+  GenericsType[] redirectReceiverTypes=redirectTypes.toArray(new GenericsType[redirectTypes.size()]);
+  Parameter[] methodParameters=mn.getParameters();
   Parameter[] params=new Parameter[methodParameters.length];
-  GenericsType[] receiverParameterizedTypes=receiver.getGenericsTypes();
+  GenericsType[] receiverParameterizedTypes=actualReceiver.getGenericsTypes();
   if (receiverParameterizedTypes == null) {
     receiverParameterizedTypes=redirectReceiverTypes;
   }

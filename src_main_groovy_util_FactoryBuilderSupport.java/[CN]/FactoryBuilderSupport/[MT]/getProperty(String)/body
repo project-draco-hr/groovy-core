@@ -7,7 +7,15 @@
       return getContext().get(property);
     }
  else {
-      return getMetaClass().getProperty(this,property);
+      try {
+        return getMetaClass().getProperty(this,property);
+      }
+ catch (      MissingPropertyException mpe2) {
+        if (mpe2.getProperty().equals(property) && propertyMissingDelegate != null) {
+          return propertyMissingDelegate.call(new Object[]{property});
+        }
+        throw mpe2;
+      }
     }
   }
 }

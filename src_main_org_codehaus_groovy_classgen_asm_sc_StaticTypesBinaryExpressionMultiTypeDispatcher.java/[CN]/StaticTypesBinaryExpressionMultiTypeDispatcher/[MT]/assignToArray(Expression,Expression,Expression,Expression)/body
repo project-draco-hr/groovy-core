@@ -1,0 +1,29 @@
+{
+  ClassNode current=getController().getClassNode();
+  ClassNode arrayType=getController().getTypeChooser().resolveType(receiver,current);
+  ClassNode arrayComponentType=arrayType.getComponentType();
+  int operationType=getOperandType(arrayComponentType);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  AsmClassGenerator acg=getController().getAcg();
+  if (bew.arraySet(true) && arrayType.isArray()) {
+    OperandStack operandStack=getController().getOperandStack();
+    receiver.visit(acg);
+    operandStack.doGroovyCast(arrayType);
+    index.visit(acg);
+    operandStack.doGroovyCast(int_TYPE);
+    rhsValueLoader.visit(acg);
+    operandStack.doGroovyCast(arrayComponentType);
+    bew.arraySet(false);
+    operandStack.remove(3);
+    rhsValueLoader.visit(acg);
+  }
+ else {
+    WriterController controller=getController();
+    StaticTypeCheckingVisitor visitor=new StaticCompilationVisitor(controller.getSourceUnit(),controller.getClassNode(),null);
+    ArgumentListExpression ae=new ArgumentListExpression(index,rhsValueLoader);
+    MethodCallExpression mce=new MethodCallExpression(receiver,"putAt",ae);
+    visitor.visitMethodCallExpression(mce);
+    mce.visit(controller.getAcg());
+    rhsValueLoader.visit(controller.getAcg());
+  }
+}

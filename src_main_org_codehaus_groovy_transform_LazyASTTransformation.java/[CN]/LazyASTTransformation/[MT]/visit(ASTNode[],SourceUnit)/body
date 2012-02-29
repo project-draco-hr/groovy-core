@@ -1,16 +1,16 @@
 {
   if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+    throw new GroovyBugError("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
   }
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (parent instanceof FieldNode) {
     final FieldNode fieldNode=(FieldNode)parent;
-    final Expression member=node.getMember("soft");
+    final Expression soft=node.getMember("soft");
     final Expression init=getInitExpr(fieldNode);
     fieldNode.rename("$" + fieldNode.getName());
     fieldNode.setModifiers(ACC_PRIVATE | (fieldNode.getModifiers() & (~(ACC_PUBLIC | ACC_PROTECTED))));
-    if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(true))     createSoft(fieldNode,init);
+    if (soft instanceof ConstantExpression && ((ConstantExpression)soft).getValue().equals(true))     createSoft(fieldNode,init);
  else {
       create(fieldNode,init);
       if (ClassHelper.isPrimitiveType(fieldNode.getType())) {

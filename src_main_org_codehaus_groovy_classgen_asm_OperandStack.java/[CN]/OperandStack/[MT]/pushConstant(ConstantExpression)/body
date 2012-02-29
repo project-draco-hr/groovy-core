@@ -31,8 +31,7 @@
  else     if (value instanceof Integer || value instanceof Byte || value instanceof Short|| value instanceof Long|| value instanceof Float|| value instanceof Double) {
       ClassNode primType=ClassHelper.getUnwrapper(type);
       pushPrimitiveConstant(mv,value,primType);
-      BytecodeHelper.box(mv,primType);
-      BytecodeHelper.doCast(mv,type);
+      type=primType;
     }
  else {
       mv.visitLdcInsn(value);

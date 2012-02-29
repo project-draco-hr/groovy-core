@@ -1,10 +1,6 @@
 {
   if (metaClass instanceof HandleMetaClass)   metaClass=((HandleMetaClass)metaClass).getAdaptee();
-  if (self instanceof GroovyObject) {
-    ((GroovyObject)self).setMetaClass(metaClass);
-    disablePrimitiveOptimization(self);
-  }
- else   if (self instanceof Class) {
+  if (self instanceof Class) {
     ((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).setMetaClass((Class)self,metaClass);
   }
  else {

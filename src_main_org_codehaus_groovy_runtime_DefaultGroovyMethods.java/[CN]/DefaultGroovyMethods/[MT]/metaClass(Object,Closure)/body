@@ -4,7 +4,12 @@
     final ExpandoMetaClass metaClass=new ExpandoMetaClass(self.getClass(),false,true);
     metaClass.initialize();
     metaClass.define(closure);
-    setMetaClass(self,metaClass);
+    if (self instanceof GroovyObject) {
+      setMetaClass((GroovyObject)self,metaClass);
+    }
+ else {
+      setMetaClass(self,metaClass);
+    }
     return metaClass;
   }
  else {

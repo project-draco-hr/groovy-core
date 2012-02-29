@@ -1,0 +1,8 @@
+{
+  final BlockStatement thenBlock=new BlockStatement();
+  final Statement appendValue=ignoreNulls ? new IfStatement(notNullExpr(value),thenBlock,EmptyStatement.INSTANCE) : thenBlock;
+  appendCommaIfNotFirst(thenBlock,result,first);
+  appendPrefix(thenBlock,result,name,includeNames);
+  thenBlock.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",value)));
+  body.addStatement(appendValue);
+}

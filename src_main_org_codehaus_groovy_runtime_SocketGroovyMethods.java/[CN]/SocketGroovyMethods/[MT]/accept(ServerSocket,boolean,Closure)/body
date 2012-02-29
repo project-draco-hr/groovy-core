@@ -1,0 +1,15 @@
+{
+  final Socket socket=serverSocket.accept();
+  if (runInANewThread) {
+    new Thread(new Runnable(){
+      public void run(){
+        invokeClosureWithSocket(socket,closure);
+      }
+    }
+).start();
+  }
+ else {
+    invokeClosureWithSocket(socket,closure);
+  }
+  return socket;
+}

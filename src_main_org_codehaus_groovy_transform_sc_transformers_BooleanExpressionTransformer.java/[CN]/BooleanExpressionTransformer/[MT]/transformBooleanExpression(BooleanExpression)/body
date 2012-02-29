@@ -1,0 +1,15 @@
+{
+  if (booleanExpression instanceof NotExpression) {
+    return transformer.superTransform(booleanExpression);
+  }
+  final Expression expression=booleanExpression.getExpression();
+  if (!(expression instanceof BinaryExpression)) {
+    StaticTypesTypeChooser typeChooser=transformer.getTypeChooser();
+    final ClassNode type=typeChooser.resolveType(expression,transformer.getClassNode());
+    BooleanExpression transformed=new OptimizingBooleanExpression(transformer.transform(expression),type);
+    transformed.setSourcePosition(booleanExpression);
+    transformed.copyNodeMetaData(booleanExpression);
+    return transformed;
+  }
+  return transformer.superTransform(booleanExpression);
+}

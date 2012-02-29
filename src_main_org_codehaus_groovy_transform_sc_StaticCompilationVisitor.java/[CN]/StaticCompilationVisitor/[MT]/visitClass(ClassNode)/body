@@ -1,11 +1,18 @@
 {
-  super.visitClass(node);
-  if (isStaticallyCompiled(node)) {
-    node.putNodeMetaData(STATIC_COMPILE_NODE,Boolean.TRUE);
-    Iterator<MethodNode> it=node.getMethods().iterator();
-    while (it.hasNext()) {
-      MethodNode next=it.next();
-      if (isRemovableMethod(next))       it.remove();
-    }
+  ClassNode oldCN=classNode;
+  classNode=node;
+  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
+  if (innerClasses.hasNext()) {
+    addPrivateBridgeMethods(classNode);
+    addPrivateFieldsAccessors(classNode);
   }
+  while (innerClasses.hasNext()) {
+    InnerClassNode innerClassNode=innerClasses.next();
+    innerClassNode.setNodeMetaData(STATIC_COMPILE_NODE,Boolean.TRUE);
+    innerClassNode.setNodeMetaData(WriterControllerFactory.class,node.getNodeMetaData(WriterControllerFactory.class));
+    addPrivateBridgeMethods(innerClassNode);
+    addPrivateFieldsAccessors(innerClassNode);
+  }
+  super.visitClass(node);
+  classNode=oldCN;
 }

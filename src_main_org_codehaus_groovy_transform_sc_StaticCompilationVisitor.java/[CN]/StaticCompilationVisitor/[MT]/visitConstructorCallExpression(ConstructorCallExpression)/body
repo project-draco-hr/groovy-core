@@ -4,4 +4,20 @@
   if (target == null && call.getLineNumber() > 0) {
     addError("Target constructor for constructor call expression hasn't been set",call);
   }
+ else {
+    if (target == null) {
+      ArgumentListExpression argumentListExpression=InvocationWriter.makeArgumentList(call.getArguments());
+      List<Expression> expressions=argumentListExpression.getExpressions();
+      ClassNode[] args=new ClassNode[expressions.size()];
+      for (int i=0; i < args.length; i++) {
+        args[i]=typeChooser.resolveType(expressions.get(i),classNode);
+      }
+      MethodNode constructor=findMethodOrFail(call,call.isSuperCall() ? classNode.getSuperClass() : classNode,"<init>",args);
+      call.putNodeMetaData(DIRECT_METHOD_CALL_TARGET,constructor);
+      target=constructor;
+    }
+  }
+  if (target != null) {
+    memorizeInitialExpressions(target);
+  }
 }

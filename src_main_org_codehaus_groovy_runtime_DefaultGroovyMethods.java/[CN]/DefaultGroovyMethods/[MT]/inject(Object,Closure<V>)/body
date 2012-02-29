@@ -1,0 +1,8 @@
+{
+  Iterator iter=InvokerHelper.asIterator(self);
+  if (!iter.hasNext()) {
+    throw new NoSuchElementException("Cannot call inject() over an empty iterable without passing an initial value.");
+  }
+  Object initialValue=iter.next();
+  return (T)inject(iter,initialValue,closure);
+}

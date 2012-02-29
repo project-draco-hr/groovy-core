@@ -1,0 +1,50 @@
+{
+  Object[] list=(Object[])bin.getNodeMetaData(BINARY_EXP_TARGET);
+  if (list != null) {
+    Token operation=bin.getOperation();
+    int operationType=operation.getType();
+    if (operationType == Types.COMPARE_EQUAL || operationType == Types.COMPARE_NOT_EQUAL) {
+      if (isNullConstant(bin.getLeftExpression())) {
+        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getRightExpression()),operationType == Types.COMPARE_EQUAL);
+      }
+ else       if (isNullConstant(bin.getRightExpression())) {
+        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getLeftExpression()),operationType == Types.COMPARE_EQUAL);
+      }
+    }
+    boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operationType);
+    MethodCallExpression call;
+    MethodNode node=(MethodNode)list[0];
+    String name=(String)list[1];
+    Expression left=staticCompilationTransformer.transform(bin.getLeftExpression());
+    Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
+    call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
+    call.setMethodTarget(node);
+    MethodNode adapter=StaticCompilationTransformer.BYTECODE_BINARY_ADAPTERS.get(operationType);
+    if (adapter != null) {
+      ClassExpression sba=new ClassExpression(StaticCompilationTransformer.BYTECODE_ADAPTER_CLASS);
+      call=new MethodCallExpression(sba,"compareEquals",new ArgumentListExpression(left,right));
+      call.setMethodTarget(adapter);
+    }
+    if (!isAssignment)     return call;
+    return new BinaryExpression(left,Token.newSymbol("=",operation.getStartLine(),operation.getStartColumn()),call);
+  }
+  if (bin.getOperation().getType() == Types.EQUAL && bin.getLeftExpression() instanceof TupleExpression && bin.getRightExpression() instanceof ListExpression) {
+    ListOfExpressionsExpression cle=new ListOfExpressionsExpression();
+    boolean isDeclaration=bin instanceof DeclarationExpression;
+    List<Expression> leftExpressions=((TupleExpression)bin.getLeftExpression()).getExpressions();
+    List<Expression> rightExpressions=((ListExpression)bin.getRightExpression()).getExpressions();
+    Iterator<Expression> leftIt=leftExpressions.iterator();
+    Iterator<Expression> rightIt=rightExpressions.iterator();
+    while (leftIt.hasNext()) {
+      Expression left=leftIt.next();
+      if (rightIt.hasNext()) {
+        Expression right=rightIt.next();
+        BinaryExpression bexp=isDeclaration ? new DeclarationExpression(left,bin.getOperation(),right) : new BinaryExpression(left,bin.getOperation(),right);
+        bexp.setSourcePosition(right);
+        cle.addExpression(bexp);
+      }
+    }
+    return staticCompilationTransformer.transform(cle);
+  }
+  return staticCompilationTransformer.superTransform(bin);
+}

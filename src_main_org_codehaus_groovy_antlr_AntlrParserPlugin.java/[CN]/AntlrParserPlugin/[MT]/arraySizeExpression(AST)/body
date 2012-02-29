@@ -9,7 +9,11 @@
  else {
       size=ConstantExpression.EMPTY_EXPRESSION;
     }
-    list=arraySizeExpression(node.getFirstChild());
+    AST child=node.getFirstChild();
+    if (child == null) {
+      throw new ASTRuntimeException(node,"No expression for the array constructor call");
+    }
+    list=arraySizeExpression(child);
   }
  else {
     size=expression(node);

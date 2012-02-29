@@ -1,0 +1,22 @@
+{
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotationNode annotationNode=(AnnotationNode)nodes[0];
+  ASTNode node=nodes[1];
+  if (!(node instanceof MethodNode)) {
+    addError("@NotYetImplemented must only be applied on test methods!",node);
+    return;
+  }
+  MethodNode methodNode=(MethodNode)node;
+  ArrayList<Statement> statements=new ArrayList<Statement>();
+  Statement statement=methodNode.getCode();
+  if (statement instanceof BlockStatement) {
+    statements.addAll(((BlockStatement)statement).getStatements());
+  }
+  if (statements.size() == 0)   return;
+  BlockStatement rewrittenMethodCode=new BlockStatement();
+  rewrittenMethodCode.addStatement(tryCatchAssertionFailedError(annotationNode,methodNode,statements));
+  rewrittenMethodCode.addStatement(throwAssertionFailedError(annotationNode));
+  methodNode.setCode(rewrittenMethodCode);
+}

@@ -1,3 +1,11 @@
 {
-  return getProxyBuilder().doGetVariable(name);
+  try {
+    return getProxyBuilder().doGetVariable(name);
+  }
+ catch (  MissingPropertyException mpe) {
+    if (mpe.getProperty().equals(name) && propertyMissingDelegate != null) {
+      return propertyMissingDelegate.call(new Object[]{name});
+    }
+    throw mpe;
+  }
 }

@@ -26,6 +26,33 @@
       ArrayExpression arr=new ArrayExpression(ClassHelper.OBJECT_TYPE,args.getExpressions());
       return super.writeDirectMethodCall(target,implicitThis,receiver,new ArgumentListExpression(arr));
     }
+    ClassNode classNode=controller.getClassNode();
+    if (target != null && classNode.isDerivedFrom(ClassHelper.CLOSURE_TYPE) && controller.isInClosure() && !target.isPublic() && target.getDeclaringClass() != classNode) {
+      ArrayExpression arr=new ArrayExpression(ClassHelper.OBJECT_TYPE,args.getExpressions());
+      MethodCallExpression mce=new MethodCallExpression(INVOKERHELER_RECEIVER,target.isStatic() ? "invokeStaticMethod" : "invokeMethodSafe",new ArgumentListExpression(receiver,new ConstantExpression(target.getName()),arr));
+      mce.setMethodTarget(target.isStatic() ? INVOKERHELPER_INVOKESTATICMETHOD : INVOKERHELPER_INVOKEMETHOD);
+      mce.visit(controller.getAcg());
+      return true;
+    }
+    if (target != null && target.isPrivate()) {
+      ClassNode declaringClass=target.getDeclaringClass();
+      if ((isPrivateBridgeMethodsCallAllowed(declaringClass,classNode) || isPrivateBridgeMethodsCallAllowed(classNode,declaringClass)) && declaringClass.getNodeMetaData(PRIVATE_BRIDGE_METHODS) != null && !declaringClass.equals(classNode)) {
+        @SuppressWarnings("unchecked") Map<MethodNode,MethodNode> bridges=(Map<MethodNode,MethodNode>)declaringClass.redirect().getNodeMetaData(PRIVATE_BRIDGE_METHODS);
+        MethodNode bridge=bridges.get(target);
+        if (bridge != null) {
+          return writeDirectMethodCall(bridge,implicitThis,receiver,args);
+        }
+      }
+      if (declaringClass != classNode) {
+        controller.getSourceUnit().addError(new SyntaxException("Cannot call private method " + (target.isStatic() ? "static " : "") + declaringClass.toString(false)+ "#"+ target.getName()+ " from class "+ classNode.toString(false),receiver.getLineNumber(),receiver.getColumnNumber()));
+      }
+    }
+    if (target != null && receiver != null) {
+      if (!(receiver instanceof VariableExpression) || !((VariableExpression)receiver).isSuperExpression()) {
+        Expression checkCastReceiver=new CheckcastReceiverExpression(receiver,target);
+        return super.writeDirectMethodCall(target,implicitThis,checkCastReceiver,args);
+      }
+    }
     return super.writeDirectMethodCall(target,implicitThis,receiver,args);
   }
 }

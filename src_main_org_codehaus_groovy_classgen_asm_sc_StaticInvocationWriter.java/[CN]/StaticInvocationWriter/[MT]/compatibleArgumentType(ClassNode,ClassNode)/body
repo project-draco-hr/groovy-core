@@ -1,0 +1,7 @@
+{
+  if (argumentType == null)   return false;
+  if (ClassHelper.getWrapper(argumentType).equals(ClassHelper.getWrapper(paramType)))   return true;
+  if (paramType.isInterface())   return argumentType.implementsInterface(paramType);
+  if (paramType.isArray() && argumentType.isArray())   return compatibleArgumentType(argumentType.getComponentType(),paramType.getComponentType());
+  return ClassHelper.getWrapper(argumentType).isDerivedFrom(ClassHelper.getWrapper(paramType));
+}
