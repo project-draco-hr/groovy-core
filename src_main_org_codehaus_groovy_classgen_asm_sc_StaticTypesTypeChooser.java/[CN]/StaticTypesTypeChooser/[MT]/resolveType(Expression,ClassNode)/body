@@ -1,9 +1,13 @@
 {
   Expression target=exp instanceof VariableExpression ? getTarget((VariableExpression)exp) : exp;
-  ClassNode dif=(ClassNode)target.getNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE);
-  if (dif != null)   return dif;
-  ClassNode inferredType=(ClassNode)target.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  ClassNode inferredType=(ClassNode)target.getNodeMetaData(StaticTypesMarker.DECLARATION_INFERRED_TYPE);
+  if (inferredType == null) {
+    inferredType=(ClassNode)target.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  }
   if (inferredType != null) {
+    if (ClassHelper.VOID_TYPE == inferredType) {
+      inferredType=super.resolveType(exp,current);
+    }
     return inferredType;
   }
   return super.resolveType(exp,current);
