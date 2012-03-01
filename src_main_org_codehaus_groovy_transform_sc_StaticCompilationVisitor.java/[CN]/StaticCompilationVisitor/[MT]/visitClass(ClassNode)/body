@@ -1,4 +1,5 @@
 {
+  boolean skip=shouldSkipClassNode(node);
   ClassNode oldCN=classNode;
   classNode=node;
   Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
@@ -8,7 +9,7 @@
   }
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
-    innerClassNode.setNodeMetaData(STATIC_COMPILE_NODE,Boolean.TRUE);
+    innerClassNode.setNodeMetaData(STATIC_COMPILE_NODE,!skip);
     innerClassNode.setNodeMetaData(WriterControllerFactory.class,node.getNodeMetaData(WriterControllerFactory.class));
     addPrivateBridgeMethods(innerClassNode);
     addPrivateFieldsAccessors(innerClassNode);
