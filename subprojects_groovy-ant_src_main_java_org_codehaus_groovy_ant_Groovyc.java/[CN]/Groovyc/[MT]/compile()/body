@@ -63,20 +63,25 @@
       String separator=System.getProperty("file.separator");
       List<String> commandLineList=new ArrayList<String>();
       if (fork) {
-        String javaHome;
-        if (forkJDK != null) {
-          javaHome=forkJDK.getPath();
-        }
- else {
-          javaHome=System.getProperty("java.home");
-        }
         if (includeAntRuntime) {
           classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
         }
         if (includeJavaRuntime) {
           classpath.addJavaRuntime();
         }
-        commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+        if (forkedExecutable != null && !forkedExecutable.equals("")) {
+          commandLineList.add(forkedExecutable);
+        }
+ else {
+          String javaHome;
+          if (forkJavaHome != null) {
+            javaHome=forkJavaHome.getPath();
+          }
+ else {
+            javaHome=System.getProperty("java.home");
+          }
+          commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+        }
         final String fileEncodingProp=System.getProperty("file.encoding");
         if ((fileEncodingProp != null) && !fileEncodingProp.equals("")) {
           commandLineList.add("-Dfile.encoding=" + fileEncodingProp);
@@ -103,8 +108,10 @@
         commandLineList.add("-j");
         commandLineList.addAll(jointOptions);
       }
-      commandLineList.add("-d");
-      commandLineList.add(destDir.getPath());
+      if (destDir != null) {
+        commandLineList.add("-d");
+        commandLineList.add(destDir.getPath());
+      }
       if (encoding != null) {
         commandLineList.add("--encoding");
         commandLineList.add(encoding);
