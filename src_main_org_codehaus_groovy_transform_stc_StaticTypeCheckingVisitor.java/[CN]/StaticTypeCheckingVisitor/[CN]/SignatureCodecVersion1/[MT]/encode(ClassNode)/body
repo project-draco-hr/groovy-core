@@ -1,0 +1,15 @@
+{
+  ByteArrayOutputStream baos=new ByteArrayOutputStream(128);
+  DataOutputStream dos=new DataOutputStream(baos);
+  StringWriter wrt=new StringWriter();
+  String encoded=null;
+  try {
+    doEncode(node,dos);
+    EncodingGroovyMethods.encodeBase64(baos.toByteArray()).writeTo(wrt);
+    encoded=wrt.toString();
+  }
+ catch (  IOException e) {
+    throw new GroovyRuntimeException("Unable to serialize type information",e);
+  }
+  return encoded;
+}
