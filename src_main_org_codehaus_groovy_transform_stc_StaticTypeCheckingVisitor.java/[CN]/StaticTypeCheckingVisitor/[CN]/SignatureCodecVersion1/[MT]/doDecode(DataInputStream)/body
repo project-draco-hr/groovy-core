@@ -29,7 +29,13 @@
   char typeCode=typedesc.charAt(0);
   ClassNode result=OBJECT_TYPE;
   if (typeCode == 'L') {
-    result=ClassHelper.make(typedesc.replace('/','.').substring(1,typedesc.length() - 1)).getPlainNodeReference();
+    String className=typedesc.replace('/','.').substring(1,typedesc.length() - 1);
+    try {
+      result=ClassHelper.make(Class.forName(className)).getPlainNodeReference();
+    }
+ catch (    ClassNotFoundException e) {
+      result=ClassHelper.make(className);
+    }
     result.setUsingGenerics(dis.readBoolean());
     int len=dis.readInt();
     if (len >= 0) {
