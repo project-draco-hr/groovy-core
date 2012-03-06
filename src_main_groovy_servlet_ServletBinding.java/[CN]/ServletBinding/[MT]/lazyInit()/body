@@ -9,11 +9,12 @@
   builder.setExpandEmptyElements(true);
   super.setVariable("html",builder);
   try {
-    Object jsonBuilder=null;
-    jsonBuilder=this.getClass().getClassLoader().loadClass("groovy.json.JsonBuilder").newInstance();
-    super.setVariable("json",jsonBuilder);
+    Class jsonBuilderClass=this.getClass().getClassLoader().loadClass("groovy.json.StreamingJsonBuilder");
+    Constructor writerConstructor=jsonBuilderClass.getConstructor(Writer.class);
+    super.setVariable("json",writerConstructor.newInstance(output.getWriter()));
   }
  catch (  Throwable t) {
+    t.printStackTrace();
   }
   MethodClosure c=new MethodClosure(this,"forward");
   super.setVariable("forward",c);
