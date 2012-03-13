@@ -1,0 +1,22 @@
+{
+  final int size=size();
+  int normalisedIndex=normaliseIndex(index,size);
+  if (normalisedIndex >= size || normalisedIndex < 0) {
+    final boolean prepend=(normalisedIndex < 0);
+    final int gapCount=(prepend ? ((normalisedIndex + 1) * -1) : normalisedIndex - size);
+    for (int i=0; i < gapCount; i++) {
+      final int idx=prepend ? 0 : size();
+      if (lazyDefaultValues)       delegate.add(idx,null);
+ else       delegate.add(idx,getDefaultValue(idx));
+    }
+    final int idx=prepend ? 0 : normalisedIndex;
+    delegate.add(idx,getDefaultValue(idx));
+    normalisedIndex=normaliseIndex(index,size());
+  }
+  T item=delegate.get(normalisedIndex);
+  if (item == null) {
+    item=getDefaultValue(normalisedIndex);
+    delegate.set(normalisedIndex,item);
+  }
+  return item;
+}
