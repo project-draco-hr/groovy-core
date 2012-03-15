@@ -1,0 +1,14 @@
+{
+  SAXParserFactory factory=SAXParserFactory.newInstance();
+  factory.setValidating(validating);
+  factory.setNamespaceAware(namespaceAware);
+  if (schemas.length != 0) {
+    SchemaFactory schemaFactory=SchemaFactory.newInstance(schemaLanguage);
+    factory.setSchema(schemaFactory.newSchema(schemas));
+  }
+  SAXParser saxParser=factory.newSAXParser();
+  if (schemas.length == 0) {
+    saxParser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage",schemaLanguage);
+  }
+  return saxParser;
+}
