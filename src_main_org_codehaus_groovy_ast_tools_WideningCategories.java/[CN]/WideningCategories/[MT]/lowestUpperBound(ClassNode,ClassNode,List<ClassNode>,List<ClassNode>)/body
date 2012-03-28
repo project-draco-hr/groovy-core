@@ -3,6 +3,13 @@
     return null;
   }
   if (a.equals(OBJECT_TYPE) || b.equals(OBJECT_TYPE)) {
+    GenericsType[] gta=a.getGenericsTypes();
+    GenericsType[] gtb=b.getGenericsTypes();
+    if (gta != null && gtb != null && gta.length == 1 && gtb.length == 1) {
+      if (gta[0].getName().equals(gtb[0].getName())) {
+        return a;
+      }
+    }
     return OBJECT_TYPE;
   }
   if (a.equals(VOID_TYPE) || b.equals(VOID_TYPE)) {
@@ -69,18 +76,12 @@
   }
   ClassNode sa=a.getUnresolvedSuperClass();
   ClassNode sb=b.getUnresolvedSuperClass();
-  ClassNode[] interfacesFromA=a.getInterfaces();
-  ClassNode[] interfacesFromB=b.getInterfaces();
-  if (interfacesFromA.length > 0 || interfacesFromB.length > 0) {
-    if (interfacesImplementedByA == null) {
-      interfacesImplementedByA=new ArrayList<ClassNode>();
-    }
-    if (interfacesImplementedByB == null) {
-      interfacesImplementedByB=new ArrayList<ClassNode>();
-    }
-    Collections.addAll(interfacesImplementedByA,interfacesFromA);
-    Collections.addAll(interfacesImplementedByB,interfacesFromB);
-  }
+  Set<ClassNode> ifa=new HashSet<ClassNode>();
+  extractInterfaces(a,ifa);
+  Set<ClassNode> ifb=new HashSet<ClassNode>();
+  extractInterfaces(b,ifb);
+  interfacesImplementedByA=interfacesImplementedByA == null ? new LinkedList<ClassNode>(ifa) : interfacesImplementedByA;
+  interfacesImplementedByB=interfacesImplementedByB == null ? new LinkedList<ClassNode>(ifb) : interfacesImplementedByB;
   if (sa == null || sb == null)   return buildTypeWithInterfaces(OBJECT_TYPE,OBJECT_TYPE,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));
   if (sa.isDerivedFrom(sb) || sb.isDerivedFrom(sa)) {
     return buildTypeWithInterfaces(sa,sb,keepLowestCommonInterfaces(interfacesImplementedByA,interfacesImplementedByB));

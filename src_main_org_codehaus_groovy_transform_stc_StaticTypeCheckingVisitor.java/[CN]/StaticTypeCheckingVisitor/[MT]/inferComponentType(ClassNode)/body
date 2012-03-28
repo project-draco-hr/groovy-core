@@ -3,7 +3,16 @@
   if (componentType == null) {
     GenericsType[] types=containerType.getGenericsTypes();
     if (types != null && types.length == 1) {
-      return types[0].getType();
+      GenericsType type=types[0];
+      if (type.isWildcard()) {
+        ClassNode[] upperBounds=type.getUpperBounds();
+        if (upperBounds.length == 1) {
+          return upperBounds[0];
+        }
+        ClassNode lowerBound=type.getLowerBound();
+        if (lowerBound != null)         return lowerBound;
+      }
+      return type.getType();
     }
     return OBJECT_TYPE;
   }

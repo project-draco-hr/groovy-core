@@ -30,7 +30,7 @@
       ClassNode elemType=getType(listExpression);
       ClassNode tupleType=getType(tupleExpression);
       if (!isAssignableTo(elemType,tupleType)) {
-        addStaticTypeError("Cannot assign value of type " + elemType.getName() + " to variable of type "+ tupleType.getName(),rightExpression);
+        addStaticTypeError("Cannot assign value of type " + elemType.getText() + " to variable of type "+ tupleType.getText(),rightExpression);
         break;
       }
     }
@@ -41,7 +41,7 @@
     addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
   }
   if (!compatible) {
-    addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
+    addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
@@ -63,14 +63,14 @@
       if (rightRedirect.isArray()) {
         ClassNode rightComponentType=rightRedirect.getComponentType();
         if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType)) {
-          addStaticTypeError("Cannot assign value of type " + rightComponentType + " into array of type "+ leftExpressionType,assignmentExpression);
+          addStaticTypeError("Cannot assign value of type " + rightComponentType.getText() + " into array of type "+ leftExpressionType.getText(),assignmentExpression);
         }
       }
  else       if (rightExpression instanceof ListExpression) {
         for (        Expression element : ((ListExpression)rightExpression).getExpressions()) {
           ClassNode rightComponentType=element.getType().redirect();
           if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType)) {
-            addStaticTypeError("Cannot assign value of type " + rightComponentType + " into array of type "+ leftExpressionType,assignmentExpression);
+            addStaticTypeError("Cannot assign value of type " + rightComponentType.getText() + " into array of type "+ leftExpressionType.getText(),assignmentExpression);
           }
         }
       }
@@ -81,7 +81,7 @@
       checkGroovyStyleConstructor(leftRedirect,args);
     }
  else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
-      addStaticTypeError("Cannot assign value of type " + inferredRightExpressionType.getName() + " to variable of type "+ leftExpressionType.getName(),assignmentExpression);
+      addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
     }
     if (!implementsInterfaceOrIsSubclassOf(leftRedirect,MAP_TYPE) && rightExpression instanceof MapExpression) {
       if (!(leftExpression instanceof VariableExpression) || !((VariableExpression)leftExpression).isDynamicTyped()) {
