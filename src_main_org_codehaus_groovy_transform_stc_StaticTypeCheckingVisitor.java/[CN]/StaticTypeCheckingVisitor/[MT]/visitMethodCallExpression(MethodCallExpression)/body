@@ -135,7 +135,7 @@
         }
       }
       if (mn.isEmpty()) {
-        addStaticTypeError("Cannot find matching method " + receiver.getName() + "#"+ toMethodParametersString(name,args),call);
+        addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),call);
       }
  else {
         if (mn.size() == 1) {
@@ -152,7 +152,8 @@
           classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            returnType=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+            ClassNode irtg=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+            returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
