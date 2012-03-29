@@ -26,6 +26,12 @@
   }
  else {
     superClass=OBJECT_TYPE;
+    if (baseType1.isDerivedFrom(baseType2)) {
+      superClass=baseType2;
+    }
+ else     if (baseType2.isDerivedFrom(baseType1)) {
+      superClass=baseType1;
+    }
     name="CommonAssignOf$" + baseType1.getName() + "$"+ baseType2.getName();
   }
   Iterator<ClassNode> itcn=interfaces.iterator();
