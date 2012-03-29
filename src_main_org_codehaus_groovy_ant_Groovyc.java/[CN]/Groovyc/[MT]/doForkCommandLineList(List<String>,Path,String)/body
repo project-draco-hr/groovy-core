@@ -1,19 +1,24 @@
 {
   if (!fork)   return;
-  String javaHome;
-  if (forkJDK != null) {
-    javaHome=forkJDK.getPath();
-  }
- else {
-    javaHome=System.getProperty("java.home");
-  }
   if (includeAntRuntime) {
     classpath.addExisting((new Path(getProject())).concatSystemClasspath("last"));
   }
   if (includeJavaRuntime) {
     classpath.addJavaRuntime();
   }
-  commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+  if (forkedExecutable != null && !forkedExecutable.equals("")) {
+    commandLineList.add(forkedExecutable);
+  }
+ else {
+    String javaHome;
+    if (forkJavaHome != null) {
+      javaHome=forkJavaHome.getPath();
+    }
+ else {
+      javaHome=System.getProperty("java.home");
+    }
+    commandLineList.add(javaHome + separator + "bin"+ separator+ "java");
+  }
   commandLineList.add("-classpath");
   commandLineList.add(classpath.toString());
   final String fileEncodingProp=System.getProperty("file.encoding");

@@ -8,6 +8,14 @@
   MarkupBuilder builder=new MarkupBuilder(output.getWriter());
   builder.setExpandEmptyElements(true);
   super.setVariable("html",builder);
+  try {
+    Class jsonBuilderClass=this.getClass().getClassLoader().loadClass("groovy.json.StreamingJsonBuilder");
+    Constructor writerConstructor=jsonBuilderClass.getConstructor(Writer.class);
+    super.setVariable("json",writerConstructor.newInstance(output.getWriter()));
+  }
+ catch (  Throwable t) {
+    t.printStackTrace();
+  }
   MethodClosure c=new MethodClosure(this,"forward");
   super.setVariable("forward",c);
   c=new MethodClosure(this,"include");
