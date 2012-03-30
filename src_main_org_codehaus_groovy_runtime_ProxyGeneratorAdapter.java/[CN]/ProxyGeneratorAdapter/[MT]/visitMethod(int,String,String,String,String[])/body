@@ -1,8 +1,8 @@
 {
   Object key=Arrays.asList(name,desc);
-  if (visitedMethods.contains(key))   return EMPTY_VISITOR;
+  if (visitedMethods.contains(key))   return null;
   if (Modifier.isPrivate(access) || Modifier.isNative(access) || ((access & ACC_SYNTHETIC) != 0)) {
-    return EMPTY_VISITOR;
+    return null;
   }
   int accessFlags=access;
   visitedMethods.add(key);
@@ -66,5 +66,5 @@ mv.visitMaxs(2,registerLen(args) + 1);
 }
 mv.visitEnd();
 }
-return EMPTY_VISITOR;
+return null;
 }

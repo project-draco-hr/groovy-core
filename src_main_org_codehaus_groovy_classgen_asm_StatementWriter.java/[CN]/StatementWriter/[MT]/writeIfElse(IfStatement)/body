@@ -7,11 +7,16 @@
   controller.getCompileStack().pushBooleanExpression();
   ifElse.getIfBlock().visit(controller.getAcg());
   controller.getCompileStack().pop();
-  Label l1=new Label();
-  mv.visitJumpInsn(GOTO,l1);
-  mv.visitLabel(l0);
-  controller.getCompileStack().pushBooleanExpression();
-  ifElse.getElseBlock().visit(controller.getAcg());
-  controller.getCompileStack().pop();
-  mv.visitLabel(l1);
+  if (ifElse.getElseBlock() == EmptyStatement.INSTANCE) {
+    mv.visitLabel(l0);
+  }
+ else {
+    Label l1=new Label();
+    mv.visitJumpInsn(GOTO,l1);
+    mv.visitLabel(l0);
+    controller.getCompileStack().pushBooleanExpression();
+    ifElse.getElseBlock().visit(controller.getAcg());
+    controller.getCompileStack().pop();
+    mv.visitLabel(l1);
+  }
 }

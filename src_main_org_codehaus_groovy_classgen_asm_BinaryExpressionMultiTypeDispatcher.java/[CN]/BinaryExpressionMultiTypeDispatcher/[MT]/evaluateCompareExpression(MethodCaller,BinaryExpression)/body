@@ -6,18 +6,7 @@
   ClassNode leftType=typeChooser.resolveType(leftExp,current);
   Expression rightExp=binExp.getRightExpression();
   ClassNode rightType=typeChooser.resolveType(rightExp,current);
-  int operationType=getOperandConversionType(leftType,rightType);
-  BinaryExpressionWriter bew=binExpWriter[operationType];
-  if (bew.write(operation,true)) {
-    AsmClassGenerator acg=getController().getAcg();
-    OperandStack os=getController().getOperandStack();
-    leftExp.visit(acg);
-    os.doGroovyCast(bew.getNormalOpResultType());
-    rightExp.visit(acg);
-    os.doGroovyCast(bew.getNormalOpResultType());
-    bew.write(operation,false);
-  }
- else {
+  if (!doPrimtiveCompare(leftType,rightType,binExp)) {
     super.evaluateCompareExpression(compareMethod,binExp);
   }
 }

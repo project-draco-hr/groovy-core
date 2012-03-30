@@ -13,7 +13,7 @@
     OptimizingStatementWriter.setNodeMeta(controller.getTypeChooser(),classNode);
   }
   try {
-    cv.visit(getBytecodeVersion(),adjustedClassModifiers(classNode.getModifiers()),controller.getInternalClassName(),BytecodeHelper.getGenericsSignature(classNode),controller.getInternalBaseClassName(),BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
+    cv.visit(controller.getBytecodeVersion(),adjustedClassModifiers(classNode.getModifiers()),controller.getInternalClassName(),BytecodeHelper.getGenericsSignature(classNode),controller.getInternalBaseClassName(),BytecodeHelper.getClassInternalNames(classNode.getInterfaces()));
     cv.visitSource(sourceFile,null);
     if (classNode.getName().endsWith("package-info")) {
       PackageNode packageNode=classNode.getPackage();
