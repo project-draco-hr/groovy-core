@@ -1,0 +1,16 @@
+{
+  Expression leftExp=binExp.getLeftExpression();
+  Expression rightExp=binExp.getRightExpression();
+  int operation=binExp.getOperation().getType();
+  int operationType=getOperandConversionType(leftType,rightType);
+  BinaryExpressionWriter bew=binExpWriter[operationType];
+  if (!bew.write(operation,true))   return false;
+  AsmClassGenerator acg=getController().getAcg();
+  OperandStack os=getController().getOperandStack();
+  leftExp.visit(acg);
+  os.doGroovyCast(bew.getNormalOpResultType());
+  rightExp.visit(acg);
+  os.doGroovyCast(bew.getNormalOpResultType());
+  bew.write(operation,false);
+  return true;
+}

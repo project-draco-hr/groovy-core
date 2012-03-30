@@ -1,0 +1,21 @@
+{
+  final Execute executor=new Execute();
+  executor.setAntRun(getProject());
+  executor.setWorkingDirectory(getProject().getBaseDir());
+  executor.setCommandline(commandLine);
+  try {
+    executor.execute();
+  }
+ catch (  final IOException ioe) {
+    throw new BuildException("Error running forked groovyc.",ioe);
+  }
+  final int returnCode=executor.getExitValue();
+  if (returnCode != 0) {
+    if (failOnError) {
+      throw new BuildException("Forked groovyc returned error code: " + returnCode);
+    }
+ else {
+      log("Forked groovyc returned error code: " + returnCode,Project.MSG_ERR);
+    }
+  }
+}

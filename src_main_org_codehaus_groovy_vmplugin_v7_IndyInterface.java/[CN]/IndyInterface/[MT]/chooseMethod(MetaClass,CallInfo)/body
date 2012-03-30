@@ -1,0 +1,16 @@
+{
+  if (!(mc instanceof MetaClassImpl) || mc instanceof AdaptingMetaClass) {
+    return;
+  }
+  MetaClassImpl mci=(MetaClassImpl)mc;
+  Object receiver=ci.args[0];
+  if (receiver == null) {
+    receiver=NullObject.getNullObject();
+  }
+  if (receiver instanceof Class) {
+    ci.method=mci.retrieveStaticMethod(ci.methodName,removeRealReceiver(ci.args));
+  }
+ else {
+    ci.method=mci.getMethodWithCaching(ci.methodSelectionBase,ci.methodName,removeRealReceiver(ci.args),false);
+  }
+}

@@ -1,0 +1,65 @@
+{
+  boolean containsSpreadExpression=AsmClassGenerator.containsSpreadExpression(arguments);
+  if (containsSpreadExpression) {
+    super.makeCall(origin,receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
+    return;
+  }
+  if (origin instanceof MethodCallExpression) {
+    MethodCallExpression mce=(MethodCallExpression)origin;
+    MethodNode target=mce.getMethodTarget();
+    if (writeDirectMethodCall(target,implicitThis,receiver,makeArgumentList(arguments)))     return;
+  }
+  ClassNode cn=controller.getClassNode();
+  if (controller.isInClosure() && !implicitThis && AsmClassGenerator.isThisExpression(receiver))   cn=cn.getOuterClass();
+  ClassExpression sender=new ClassExpression(cn);
+  OperandStack operandStack=controller.getOperandStack();
+  CompileStack compileStack=controller.getCompileStack();
+  AsmClassGenerator acg=controller.getAcg();
+  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod) && !spreadSafe) {
+    String methodName=getMethodName(message);
+    if (methodName != null) {
+      makeIndyCall(adapter,receiver,implicitThis,safe,methodName,arguments);
+      return;
+    }
+  }
+  compileStack.pushLHS(false);
+  if (adapter == AsmClassGenerator.setProperty) {
+    ConstantExpression.NULL.visit(acg);
+  }
+ else {
+    sender.visit(acg);
+  }
+  compileStack.pushImplicitThis(implicitThis);
+  receiver.visit(acg);
+  operandStack.box();
+  compileStack.popImplicitThis();
+  int operandsToRemove=2;
+  if (message != null) {
+    message.visit(acg);
+    operandStack.box();
+    operandsToRemove++;
+  }
+  int numberOfArguments=containsSpreadExpression ? -1 : AsmClassGenerator.argumentSize(arguments);
+  if (numberOfArguments > MethodCallerMultiAdapter.MAX_ARGS || containsSpreadExpression) {
+    ArgumentListExpression ae=makeArgumentList(arguments);
+    if (containsSpreadExpression) {
+      acg.despreadList(ae.getExpressions(),true);
+    }
+ else {
+      ae.visit(acg);
+    }
+  }
+ else   if (numberOfArguments > 0) {
+    operandsToRemove+=numberOfArguments;
+    TupleExpression te=(TupleExpression)arguments;
+    for (int i=0; i < numberOfArguments; i++) {
+      Expression argument=te.getExpression(i);
+      argument.visit(acg);
+      operandStack.box();
+      if (argument instanceof CastExpression)       acg.loadWrapper(argument);
+    }
+  }
+  adapter.call(controller.getMethodVisitor(),numberOfArguments,safe,spreadSafe);
+  compileStack.popLHS();
+  operandStack.replace(ClassHelper.OBJECT_TYPE,operandsToRemove);
+}

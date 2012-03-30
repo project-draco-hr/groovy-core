@@ -1,0 +1,22 @@
+{
+  Class[] params=info.handle.type().parameterArray();
+  if (info.handle == null)   return;
+  if (!info.isVargs) {
+    if (params.length != info.args.length) {
+    }
+    return;
+  }
+  Class lastParam=params[params.length - 1];
+  Object lastArg=info.args[info.args.length - 1];
+  if (params.length == info.args.length) {
+    if (lastParam == lastArg || lastArg == null)     return;
+    if (lastParam.isInstance(lastArg))     return;
+    info.handle=info.handle.asCollector(lastParam,1);
+  }
+ else   if (params.length > info.args.length) {
+    info.handle=MethodHandles.insertArguments(info.handle,params.length - 1,Array.newInstance(lastParam.getComponentType(),0));
+  }
+ else {
+    info.handle=info.handle.asCollector(lastParam,info.args.length - params.length + 1);
+  }
+}

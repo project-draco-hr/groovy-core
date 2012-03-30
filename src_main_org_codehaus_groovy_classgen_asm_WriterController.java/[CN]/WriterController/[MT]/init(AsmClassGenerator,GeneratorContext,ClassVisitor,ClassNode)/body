@@ -15,7 +15,13 @@
   this.internalClassName=BytecodeHelper.getClassInternalName(classNode);
   this.callSiteWriter=new CallSiteWriter(this);
   if (invokedynamic) {
-    this.invocationWriter=new InvokeDynamicWriter(this);
+    bytecodeVersion=Opcodes.V1_7;
+    try {
+      this.invocationWriter=(InvocationWriter)indyWriter.newInstance(this);
+    }
+ catch (    Exception e) {
+      throw new GroovyRuntimeException("Cannot use invokedynamic, indy module was excluded from this build.");
+    }
   }
  else {
     this.invocationWriter=new InvocationWriter(this);

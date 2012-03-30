@@ -1,0 +1,11 @@
+{
+  if (receiver == null) {
+    return NullObject.getNullObject().getMetaClass();
+  }
+ else   if (receiver instanceof GroovyObject) {
+    return ((GroovyObject)receiver).getMetaClass();
+  }
+ else {
+    return ((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).getMetaClass(receiver);
+  }
+}
