@@ -37,6 +37,7 @@
           MethodCallExpression result=new MethodCallExpression(cl,"call",ArgumentListExpression.EMPTY_ARGUMENTS);
           result.setMethodTarget(StaticTypeCheckingVisitor.CLOSURE_CALL_NO_ARG);
           VariableScopeVisitor visitor=new VariableScopeVisitor(staticCompilationTransformer.getSourceUnit());
+          visitor.prepareVisit(staticCompilationTransformer.getClassNode());
           visitor.visitClosureExpression(cl);
           return result;
         }
