@@ -2,13 +2,9 @@
   Comparator comparator=(self instanceof SortedSet) ? ((SortedSet)self).comparator() : null;
   final Set<T> ansSet=createSimilarSet(self);
   ansSet.addAll(self);
-  if (operands != null && operands.size() > 0) {
-    final Iterator it1=self.iterator();
-    while (it1.hasNext()) {
-      final Object o1=it1.next();
-      final Iterator it2=operands.iterator();
-      while (it2.hasNext()) {
-        final Object o2=it2.next();
+  if (removeMe != null) {
+    for (    T o1 : self) {
+      for (      Object o2 : removeMe) {
         boolean areEqual=(comparator != null) ? (comparator.compare(o1,o2) == 0) : coercedEquals(o1,o2);
         if (areEqual) {
           ansSet.remove(o1);
