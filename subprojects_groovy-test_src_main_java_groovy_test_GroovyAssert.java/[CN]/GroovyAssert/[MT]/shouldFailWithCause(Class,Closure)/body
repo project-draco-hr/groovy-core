@@ -1,5 +1,8 @@
 {
-  Throwable th=null;
+  if (expectedCause == null) {
+    fail("The expectedCause class cannot be null");
+  }
+  Throwable cause=null;
   Throwable orig=null;
   int level=0;
   try {
@@ -7,21 +10,24 @@
   }
  catch (  GroovyRuntimeException gre) {
     orig=ScriptBytecodeAdapter.unwrap(gre);
-    th=orig.getCause();
+    cause=orig.getCause();
   }
 catch (  Throwable e) {
     orig=e;
-    th=orig.getCause();
+    cause=orig.getCause();
   }
-  while (th != null && !clazz.isInstance(th) && th != th.getCause() && level < MAX_NESTED_EXCEPTIONS) {
-    th=th.getCause();
+  if (orig != null && cause == null) {
+    fail("Closure " + code + " was expected to fail due to a nested cause of type "+ expectedCause.getName()+ " but instead got a direct exception of type "+ orig.getClass().getName()+ " with no nested cause(s). Code under test has a bug or perhaps you meant shouldFail?");
+  }
+  while (cause != null && !expectedCause.isInstance(cause) && cause != cause.getCause() && level < MAX_NESTED_EXCEPTIONS) {
+    cause=cause.getCause();
     level++;
   }
   if (orig == null) {
-    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName());
+    fail("Closure " + code + " should have failed with an exception having a nested cause of type "+ expectedCause.getName());
   }
- else   if (th == null || !clazz.isInstance(th)) {
-    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName()+ ", instead found these Exceptions:\n"+ buildExceptionList(orig));
+ else   if (cause == null || !expectedCause.isInstance(cause)) {
+    fail("Closure " + code + " should have failed with an exception having a nested cause of type "+ expectedCause.getName()+ ", instead found these Exceptions:\n"+ buildExceptionList(orig));
   }
-  return th;
+  return cause;
 }
