@@ -2,12 +2,15 @@
   List answer=new NodeList();
   List nextLevelChildren=getDirectChildren();
   while (!nextLevelChildren.isEmpty()) {
-    List<Node> working=new NodeList(nextLevelChildren);
+    List working=new NodeList(nextLevelChildren);
     nextLevelChildren=new NodeList();
-    for (    Node childNode : working) {
-      answer.add(childNode);
-      List children=childNode.getDirectChildren();
-      nextLevelChildren.addAll(children);
+    for (    Object child : working) {
+      answer.add(child);
+      if (child instanceof Node) {
+        Node childNode=(Node)child;
+        List children=childNode.getDirectChildren();
+        if (children.size() > 1 || (children.size() == 1 && !(children.get(0) instanceof String)))         nextLevelChildren.addAll(children);
+      }
     }
   }
   return answer;

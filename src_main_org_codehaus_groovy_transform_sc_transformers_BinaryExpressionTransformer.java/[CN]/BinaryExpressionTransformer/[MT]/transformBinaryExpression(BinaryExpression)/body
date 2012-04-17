@@ -11,6 +11,29 @@
         return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getLeftExpression()),operationType == Types.COMPARE_EQUAL);
       }
     }
+    if (operationType == Types.COMPARE_TO) {
+      StaticTypesTypeChooser typeChooser=staticCompilationTransformer.getTypeChooser();
+      ClassNode classNode=staticCompilationTransformer.getClassNode();
+      ClassNode leftType=typeChooser.resolveType(bin.getLeftExpression(),classNode);
+      if (leftType.implementsInterface(ClassHelper.COMPARABLE_TYPE)) {
+        ClassNode rightType=typeChooser.resolveType(bin.getRightExpression(),classNode);
+        if (rightType.implementsInterface(ClassHelper.COMPARABLE_TYPE)) {
+          Expression left=staticCompilationTransformer.transform(bin.getLeftExpression());
+          Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
+          MethodCallExpression call=new MethodCallExpression(left,"compareTo",new ArgumentListExpression(right));
+          call.setMethodTarget(COMPARE_TO_METHOD);
+          CompareIdentityExpression compareIdentity=new CompareIdentityExpression(left,right);
+          compareIdentity.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,ClassHelper.boolean_TYPE);
+          TernaryExpression result=new TernaryExpression(new BooleanExpression(compareIdentity),CONSTANT_ZERO,new TernaryExpression(new BooleanExpression(new CompareToNullExpression(left,true)),CONSTANT_MINUS_ONE,new TernaryExpression(new BooleanExpression(new CompareToNullExpression(right,true)),CONSTANT_ONE,call)));
+          compareIdentity.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,ClassHelper.int_TYPE);
+          result.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,ClassHelper.int_TYPE);
+          TernaryExpression expr=(TernaryExpression)result.getFalseExpression();
+          expr.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,ClassHelper.int_TYPE);
+          expr.getFalseExpression().putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,ClassHelper.int_TYPE);
+          return result;
+        }
+      }
+    }
     boolean isAssignment=StaticTypeCheckingSupport.isAssignment(operationType);
     MethodCallExpression call;
     MethodNode node=(MethodNode)list[0];

@@ -12,5 +12,9 @@
     call.visit(controller.getAcg());
     return true;
   }
+  ClassNode superClass=receiverType.getSuperClass();
+  if (superClass != null) {
+    return makeGetPropertyWithGetter(receiver,superClass,methodName);
+  }
   return false;
 }

@@ -1,5 +1,10 @@
 {
   int dist=0;
+  ClassNode unwrapReceiver=ClassHelper.getUnwrapper(receiver);
+  ClassNode unwrapCompare=ClassHelper.getUnwrapper(compare);
+  if (ClassHelper.isPrimitiveType(unwrapReceiver) && ClassHelper.isPrimitiveType(unwrapCompare) && unwrapReceiver != unwrapCompare) {
+    dist=1;
+  }
   ClassNode ref=compare;
   while (ref != null) {
     if (receiver.equals(ref) || receiver == UNKNOWN_PARAMETER_TYPE) {

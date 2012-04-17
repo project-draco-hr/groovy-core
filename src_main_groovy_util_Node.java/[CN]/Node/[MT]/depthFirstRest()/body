@@ -6,7 +6,10 @@
       Node childNode=(Node)child;
       List children=childNode.depthFirstRest();
       answer.add(childNode);
-      answer.addAll(children);
+      if (children.size() > 1 || (children.size() == 1 && !(children.get(0) instanceof String)))       answer.addAll(children);
+    }
+ else     if (child instanceof String) {
+      answer.add(child);
     }
   }
   return answer;

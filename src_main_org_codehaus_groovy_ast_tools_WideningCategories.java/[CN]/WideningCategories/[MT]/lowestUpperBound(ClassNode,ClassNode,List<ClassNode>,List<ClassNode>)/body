@@ -27,7 +27,23 @@
     return lowestUpperBound(a,getWrapper(b),null,null);
   }
   if (isPrimitiveA && isPrimitiveB) {
+    Integer pa=NUMBER_TYPES_PRECEDENCE.get(a);
+    Integer pb=NUMBER_TYPES_PRECEDENCE.get(b);
+    if (pa != null && pb != null) {
+      if (pa <= pb)       return a;
+      return b;
+    }
     return a.equals(b) ? a : lowestUpperBound(getWrapper(a),getWrapper(b),null,null);
+  }
+  if (isNumberType(a.redirect()) && isNumberType(b.redirect())) {
+    ClassNode ua=getUnwrapper(a);
+    ClassNode ub=getUnwrapper(b);
+    Integer pa=NUMBER_TYPES_PRECEDENCE.get(ua);
+    Integer pb=NUMBER_TYPES_PRECEDENCE.get(ub);
+    if (pa != null && pb != null) {
+      if (pa <= pb)       return a;
+      return b;
+    }
   }
   boolean isInterfaceA=a.isInterface();
   boolean isInterfaceB=b.isInterface();

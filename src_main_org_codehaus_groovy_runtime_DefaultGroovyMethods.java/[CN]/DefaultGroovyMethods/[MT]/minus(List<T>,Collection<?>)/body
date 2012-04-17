@@ -1,0 +1,49 @@
+{
+  if (self.size() == 0)   return new ArrayList<T>();
+  boolean nlgnSort=sameType(new Collection[]{self,removeMe});
+  Comparator<T> numberComparator=new NumberAwareComparator<T>();
+  if (nlgnSort && (self.get(0) instanceof Comparable)) {
+    Set<T> answer;
+    if (Number.class.isInstance(self.get(0))) {
+      answer=new TreeSet<T>(numberComparator);
+      answer.addAll(self);
+      for (      T t : self) {
+        if (Number.class.isInstance(t)) {
+          for (          Object t2 : removeMe) {
+            if (Number.class.isInstance(t2)) {
+              if (numberComparator.compare(t,(T)t2) == 0)               answer.remove(t);
+            }
+          }
+        }
+ else {
+          if (removeMe.contains(t))           answer.remove(t);
+        }
+      }
+    }
+ else {
+      answer=new TreeSet<T>(numberComparator);
+      answer.addAll(self);
+      answer.removeAll(removeMe);
+    }
+    List<T> ansList=new ArrayList<T>();
+    for (    T o : self) {
+      if (answer.contains(o))       ansList.add(o);
+    }
+    return ansList;
+  }
+ else {
+    List<T> tmpAnswer=new LinkedList<T>(self);
+    for (Iterator<T> iter=tmpAnswer.iterator(); iter.hasNext(); ) {
+      T element=iter.next();
+      boolean elementRemoved=false;
+      for (Iterator<?> iterator=removeMe.iterator(); iterator.hasNext() && !elementRemoved; ) {
+        Object elt=iterator.next();
+        if (numberComparator.compare(element,(T)elt) == 0) {
+          iter.remove();
+          elementRemoved=true;
+        }
+      }
+    }
+    return new ArrayList<T>(tmpAnswer);
+  }
+}

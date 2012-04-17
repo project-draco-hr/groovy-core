@@ -1,27 +1,3 @@
 {
-  Throwable th=null;
-  Throwable orig=null;
-  int level=0;
-  try {
-    code.call();
-  }
- catch (  GroovyRuntimeException gre) {
-    orig=ScriptBytecodeAdapter.unwrap(gre);
-    th=orig.getCause();
-  }
-catch (  Throwable e) {
-    orig=e;
-    th=orig.getCause();
-  }
-  while (th != null && !clazz.isInstance(th) && th != th.getCause() && level < MAX_NESTED_EXCEPTIONS) {
-    th=th.getCause();
-    level++;
-  }
-  if (orig == null) {
-    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName());
-  }
- else   if (th == null || !clazz.isInstance(th)) {
-    fail("Closure " + code + " should have failed with an exception caused by type "+ clazz.getName()+ ", instead found these Exceptions:\n"+ buildExceptionList(orig));
-  }
-  return th.getMessage();
+  return GroovyAssert.shouldFailWithCause(clazz,code).getMessage();
 }

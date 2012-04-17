@@ -1,0 +1,14 @@
+{
+  final Map<K,V> ansMap=createSimilarMap(self);
+  ansMap.putAll(self);
+  if (removeMe != null && removeMe.size() > 0) {
+    for (    Map.Entry<K,V> e1 : self.entrySet()) {
+      for (      Object e2 : removeMe.entrySet()) {
+        if (DefaultTypeTransformation.compareEqual(e1,e2)) {
+          ansMap.remove(e1.getKey());
+        }
+      }
+    }
+  }
+  return ansMap;
+}
