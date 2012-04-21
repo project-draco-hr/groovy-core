@@ -1,0 +1,27 @@
+{
+  ClassNode annotationClassNode=visited.getClassNode();
+  if (annotationClassNode.isResolved() && annotationClassNode.getName().equals("java.lang.Override")) {
+    if (node instanceof MethodNode) {
+      MethodNode mn=(MethodNode)node;
+      ClassNode cNode=node.getDeclaringClass();
+      ClassNode sNode=cNode.getSuperClass();
+      while (sNode != null) {
+        if (sNode.getMethod(mn.getName(),mn.getParameters()) != null)         break;
+        sNode=sNode.getSuperClass();
+      }
+      if (sNode == null) {
+        for (        ClassNode anInterface : cNode.getInterfaces()) {
+          sNode=anInterface;
+          while (sNode != null) {
+            if (sNode.getMethod(mn.getName(),mn.getParameters()) != null)             break;
+            sNode=sNode.getSuperClass();
+          }
+          if (sNode != null)           break;
+        }
+      }
+      if (sNode == null) {
+        addError("Method '" + mn.getName() + "' from class '"+ cNode.getName()+ "' does not override method from its superclass but is annotated with @Override.",visited);
+      }
+    }
+  }
+}
