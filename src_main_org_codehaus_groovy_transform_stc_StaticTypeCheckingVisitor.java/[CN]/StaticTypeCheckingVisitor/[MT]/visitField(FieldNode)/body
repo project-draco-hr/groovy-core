@@ -1,0 +1,10 @@
+{
+  final boolean osc=isInStaticContext;
+  try {
+    isInStaticContext=node.isInStaticContext();
+    super.visitField(node);
+  }
+  finally {
+    isInStaticContext=osc;
+  }
+}

@@ -128,6 +128,24 @@
       ClassNode chosenReceiver=null;
       for (      ClassNode currentReceiver : receivers) {
         mn=findMethod(currentReceiver,name,args);
+        if (!mn.isEmpty() && isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
+          List<MethodNode> staticMethods=new LinkedList<MethodNode>();
+          List<MethodNode> nonStaticMethods=new LinkedList<MethodNode>();
+          for (          final MethodNode node : mn) {
+            if (node.isStatic()) {
+              staticMethods.add(node);
+            }
+ else {
+              nonStaticMethods.add(node);
+            }
+          }
+          mn=staticMethods;
+          if (staticMethods.isEmpty()) {
+            MethodNode node=nonStaticMethods.get(0);
+            ClassNode owner=node.getDeclaringClass();
+            addStaticTypeError("Non static method " + owner.getName() + "#"+ node.getName()+ " cannot be called from static context",call);
+          }
+        }
         if (!mn.isEmpty()) {
           if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
           chosenReceiver=currentReceiver;
