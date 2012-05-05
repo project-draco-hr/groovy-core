@@ -1,14 +1,13 @@
 {
-  Class<T> componentType=(Class<T>)self.getClass().getComponentType();
   if (self.length == 0 || num <= 0) {
-    return (T[])Array.newInstance(componentType,0);
+    return createSimilarArray(self,0);
   }
   if (self.length <= num) {
-    T[] ret=(T[])Array.newInstance(componentType,self.length);
+    T[] ret=createSimilarArray(self,self.length);
     System.arraycopy(self,0,ret,0,self.length);
     return ret;
   }
-  T[] ret=(T[])Array.newInstance(componentType,num);
+  T[] ret=createSimilarArray(self,num);
   System.arraycopy(self,0,ret,0,num);
   return ret;
 }

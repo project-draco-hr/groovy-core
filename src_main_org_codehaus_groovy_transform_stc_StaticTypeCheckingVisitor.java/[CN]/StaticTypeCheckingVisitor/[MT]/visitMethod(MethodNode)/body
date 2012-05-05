@@ -3,6 +3,13 @@
   if (alreadyVisitedMethods.contains(node))   return;
   alreadyVisitedMethods.add(node);
   if (!methodsToBeVisited.isEmpty() && !methodsToBeVisited.contains(node))   return;
-  super.visitMethod(node);
-  addTypeCheckingInfoAnnotation(node);
+  final boolean osc=isInStaticContext;
+  try {
+    isInStaticContext=node.isStatic();
+    super.visitMethod(node);
+    addTypeCheckingInfoAnnotation(node);
+  }
+  finally {
+    isInStaticContext=osc;
+  }
 }
