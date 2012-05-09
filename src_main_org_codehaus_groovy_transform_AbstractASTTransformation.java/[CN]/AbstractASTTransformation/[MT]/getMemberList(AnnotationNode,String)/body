@@ -1,0 +1,18 @@
+{
+  List<String> list;
+  Expression expr=anno.getMember(name);
+  if (expr != null && expr instanceof ListExpression) {
+    list=new ArrayList<String>();
+    final ListExpression listExpression=(ListExpression)expr;
+    for (    Expression itemExpr : listExpression.getExpressions()) {
+      if (itemExpr != null && itemExpr instanceof ConstantExpression) {
+        Object value=((ConstantExpression)itemExpr).getValue();
+        if (value != null)         list.add(value.toString());
+      }
+    }
+  }
+ else {
+    list=tokenize(getMemberStringValue(anno,name));
+  }
+  return list;
+}

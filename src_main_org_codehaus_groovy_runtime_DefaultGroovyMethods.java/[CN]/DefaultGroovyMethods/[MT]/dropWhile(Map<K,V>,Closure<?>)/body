@@ -1,0 +1,12 @@
+{
+  if (self.isEmpty()) {
+    return createSimilarMap(self);
+  }
+  Map<K,V> ret=createSimilarMap(self);
+  boolean dropping=true;
+  for (  Map.Entry<K,V> entry : self.entrySet()) {
+    if (dropping && !DefaultTypeTransformation.castToBoolean(callClosureForMapEntry(condition,entry)))     dropping=false;
+    if (!dropping)     ret.put(entry.getKey(),entry.getValue());
+  }
+  return ret;
+}
