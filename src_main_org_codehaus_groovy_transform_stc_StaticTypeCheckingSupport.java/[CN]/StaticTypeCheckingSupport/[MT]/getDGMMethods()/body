@@ -1,6 +1,18 @@
 {
+  MetaClassRegistry registry=GroovySystem.getMetaClassRegistry();
+  Set<Class> classes=new LinkedHashSet<Class>();
+  if (registry instanceof MetaClassRegistryImpl) {
+    MetaClassRegistryImpl impl=(MetaClassRegistryImpl)registry;
+    List<ExtensionModule> modules=impl.getModuleRegistry().getModules();
+    for (    ExtensionModule module : modules) {
+      if (module instanceof MetaInfExtensionModule) {
+        MetaInfExtensionModule extensionModule=(MetaInfExtensionModule)module;
+        List<Class> extensionClasses=extensionModule.getStaticMethodsExtensionClasses();
+        classes.addAll(extensionClasses);
+      }
+    }
+  }
   Map<String,List<MethodNode>> methods=new HashMap<String,List<MethodNode>>();
-  List<Class> classes=new LinkedList<Class>();
   Collections.addAll(classes,DefaultGroovyMethods.DGM_LIKE_CLASSES);
   Collections.addAll(classes,DefaultGroovyMethods.additionals);
   classes.add(ObjectArrayStaticTypesHelper.class);
@@ -8,7 +20,7 @@
     ClassNode cn=ClassHelper.makeWithoutCaching(dgmLikeClass,true);
     for (    MethodNode metaMethod : cn.getMethods()) {
       Parameter[] types=metaMethod.getParameters();
-      if (metaMethod.isStatic() && metaMethod.isPublic() && types.length > 0) {
+      if (metaMethod.isStatic() && metaMethod.isPublic() && types.length > 0 && metaMethod.getAnnotations(Deprecated_TYPE).isEmpty()) {
         Parameter[] parameters=new Parameter[types.length - 1];
         System.arraycopy(types,1,parameters,0,parameters.length);
         MethodNode node=new ExtensionMethodNode(metaMethod,metaMethod.getName(),metaMethod.getModifiers(),metaMethod.getReturnType(),parameters,ClassNode.EMPTY_ARRAY,null);
