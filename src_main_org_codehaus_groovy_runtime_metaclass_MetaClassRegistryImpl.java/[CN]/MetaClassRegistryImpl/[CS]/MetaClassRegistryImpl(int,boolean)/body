@@ -25,7 +25,7 @@
   final MetaClass emcMetaClass=metaClassCreationHandle.create(ExpandoMetaClass.class,this);
   emcMetaClass.initialize();
   ClassInfo.getClassInfo(ExpandoMetaClass.class).setStrongMetaClass(emcMetaClass);
-  addMetaClassRegistryChangeEventListener(new MetaClassRegistryChangeEventListener(){
+  addNonRemovableMetaClassRegistryChangeEventListener(new MetaClassRegistryChangeEventListener(){
     public void updateConstantMetaClass(    MetaClassRegistryChangeEvent cmcu){
 synchronized (metaClassInfo) {
         metaClassInfo.add(cmcu.getNewMetaClass());
