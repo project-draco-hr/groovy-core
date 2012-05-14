@@ -1,22 +1,26 @@
 {
-  MetaClassRegistry registry=GroovySystem.getMetaClassRegistry();
-  Set<Class> classes=new LinkedHashSet<Class>();
+  Set<Class> instanceExtClasses=new LinkedHashSet<Class>();
+  Set<Class> staticExtClasses=new LinkedHashSet<Class>();
   if (registry instanceof MetaClassRegistryImpl) {
     MetaClassRegistryImpl impl=(MetaClassRegistryImpl)registry;
     List<ExtensionModule> modules=impl.getModuleRegistry().getModules();
     for (    ExtensionModule module : modules) {
       if (module instanceof MetaInfExtensionModule) {
         MetaInfExtensionModule extensionModule=(MetaInfExtensionModule)module;
-        List<Class> extensionClasses=extensionModule.getInstanceMethodsExtensionClasses();
-        classes.addAll(extensionClasses);
+        instanceExtClasses.addAll(extensionModule.getInstanceMethodsExtensionClasses());
+        staticExtClasses.addAll(extensionModule.getStaticMethodsExtensionClasses());
       }
     }
   }
   Map<String,List<MethodNode>> methods=new HashMap<String,List<MethodNode>>();
-  Collections.addAll(classes,DefaultGroovyMethods.DGM_LIKE_CLASSES);
-  Collections.addAll(classes,DefaultGroovyMethods.additionals);
-  classes.add(ObjectArrayStaticTypesHelper.class);
-  for (  Class dgmLikeClass : classes) {
+  Collections.addAll(instanceExtClasses,DefaultGroovyMethods.DGM_LIKE_CLASSES);
+  Collections.addAll(instanceExtClasses,DefaultGroovyMethods.additionals);
+  staticExtClasses.add(DefaultGroovyStaticMethods.class);
+  instanceExtClasses.add(ObjectArrayStaticTypesHelper.class);
+  List<Class> allClasses=new ArrayList<Class>(instanceExtClasses.size() + staticExtClasses.size());
+  allClasses.addAll(instanceExtClasses);
+  allClasses.addAll(staticExtClasses);
+  for (  Class dgmLikeClass : allClasses) {
     ClassNode cn=ClassHelper.makeWithoutCaching(dgmLikeClass,true);
     for (    MethodNode metaMethod : cn.getMethods()) {
       Parameter[] types=metaMethod.getParameters();
@@ -24,6 +28,9 @@
         Parameter[] parameters=new Parameter[types.length - 1];
         System.arraycopy(types,1,parameters,0,parameters.length);
         MethodNode node=new ExtensionMethodNode(metaMethod,metaMethod.getName(),metaMethod.getModifiers(),metaMethod.getReturnType(),parameters,ClassNode.EMPTY_ARRAY,null);
+        if (staticExtClasses.contains(dgmLikeClass)) {
+          node.setModifiers(node.getModifiers() | Opcodes.ACC_STATIC);
+        }
         node.setGenericsTypes(metaMethod.getGenericsTypes());
         ClassNode declaringClass=types[0].getType();
         String declaringClassName=declaringClass.getName();
