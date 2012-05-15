@@ -1,0 +1,12 @@
+{
+  List<MetaMethod> metaMethods=new LinkedList<MetaMethod>();
+  List<Class> extensionClasses=getInstanceMethodsExtensionClasses();
+  for (  Class extensionClass : extensionClasses) {
+    createMetaMethods(extensionClass,metaMethods,false);
+  }
+  extensionClasses=getStaticMethodsExtensionClasses();
+  for (  Class extensionClass : extensionClasses) {
+    createMetaMethods(extensionClass,metaMethods,true);
+  }
+  return metaMethods;
+}
