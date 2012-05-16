@@ -5,11 +5,12 @@
   ClassNode actualReceiver;
   Collection<MethodNode> choicesLeft=removeCovariants(methods);
   for (  MethodNode m : choicesLeft) {
-    actualReceiver=receiver != null ? receiver : m.getDeclaringClass();
+    final ClassNode declaringClass=m.getDeclaringClass();
+    actualReceiver=receiver != null ? receiver : declaringClass;
     Parameter[] params=parameterizeArguments(actualReceiver,m);
     if (params.length > args.length && !isVargs(params)) {
       int dist=allParametersAndArgumentsMatchWithDefaultParams(params,args);
-      if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))       dist+=getDistance(actualReceiver,m.getDeclaringClass());
+      if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
         bestChoices.add(m);
@@ -24,7 +25,7 @@
       int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
       if (lastArgMatch >= 0)       lastArgMatch++;
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
-      if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))       dist+=getDistance(actualReceiver,m.getDeclaringClass());
+      if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
         bestChoices.add(m);
@@ -51,7 +52,7 @@
         }
  else {
           int dist=excessArgumentsMatchesVargsParameter(params,args);
-          if (dist >= 0 && !actualReceiver.equals(m.getDeclaringClass()))           dist++;
+          if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist++;
           dist++;
           if (params.length < args.length && dist >= 0) {
             if (dist >= 0 && dist < bestDist) {
