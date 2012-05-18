@@ -156,6 +156,9 @@
         addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),call);
       }
  else {
+        if (areCategoryMethodCalls(mn,name,args)) {
+          addCategoryMethodCallError(call);
+        }
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
           ClassNode currentClassNode=classNode;
@@ -181,7 +184,7 @@
           }
         }
  else {
-          addAmbiguousOrDynamicErrorMessage(mn,name,args,call);
+          addAmbiguousErrorMessage(mn,name,args,call);
         }
       }
     }
