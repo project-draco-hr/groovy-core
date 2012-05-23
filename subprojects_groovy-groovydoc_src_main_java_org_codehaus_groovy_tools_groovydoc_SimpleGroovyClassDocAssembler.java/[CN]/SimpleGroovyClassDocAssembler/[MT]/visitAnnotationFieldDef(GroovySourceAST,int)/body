@@ -1,8 +1,20 @@
 {
-  if (isGroovy)   visitMethodDef(t,visit);
+  if (isGroovy && visit == OPENING_VISIT) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    SimpleGroovyMethodDoc currentMethodDoc=createMethod(t,currentClassDoc);
+    String defaultText=getDefaultValue(t);
+    if (defaultText != null) {
+      String orig=currentMethodDoc.getRawCommentText();
+      currentMethodDoc.setRawCommentText(orig + "\n* @default " + defaultText);
+    }
+    currentClassDoc.add(currentMethodDoc);
+  }
  else   if (visit == OPENING_VISIT) {
     visitVariableDef(t,visit);
     String defaultText=getDefaultValue(t);
+    if (isGroovy) {
+      currentFieldDoc.setPublic(true);
+    }
     if (defaultText != null) {
       currentFieldDoc.setConstantValueExpression(defaultText);
       String orig=currentFieldDoc.getRawCommentText();
