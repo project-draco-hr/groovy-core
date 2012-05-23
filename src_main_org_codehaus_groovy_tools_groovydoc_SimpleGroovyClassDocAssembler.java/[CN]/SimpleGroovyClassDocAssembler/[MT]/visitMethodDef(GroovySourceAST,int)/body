@@ -22,13 +22,7 @@
         return;
       }
     }
-    String methodName=getIdentFor(t);
-    SimpleGroovyMethodDoc currentMethodDoc=new SimpleGroovyMethodDoc(methodName,currentClassDoc);
-    currentMethodDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
-    processModifiers(t,currentMethodDoc);
-    currentMethodDoc.setReturnType(new SimpleGroovyType(getTypeOrDefault(t)));
-    addParametersTo(t,currentMethodDoc);
-    processAnnotations(t,currentMethodDoc);
+    SimpleGroovyMethodDoc currentMethodDoc=createMethod(t,currentClassDoc);
     currentClassDoc.add(currentMethodDoc);
   }
 }
