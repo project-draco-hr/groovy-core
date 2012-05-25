@@ -9,7 +9,7 @@
     cNode.addInterface(CLONEABLE_TYPE);
     boolean includeFields=memberHasValue(anno,"includeFields",true);
     AutoCloneStyle style=getStyle(anno,"style");
-    List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    List<String> excludes=getMemberList(anno,"excludes");
     List<FieldNode> list=getInstancePropertyFields(cNode);
     if (includeFields) {
       list.addAll(getInstanceNonPropertyFields(cNode));

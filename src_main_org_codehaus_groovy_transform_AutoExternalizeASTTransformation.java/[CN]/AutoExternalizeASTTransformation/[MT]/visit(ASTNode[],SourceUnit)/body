@@ -8,7 +8,7 @@
     checkNotInterface(cNode,MY_TYPE_NAME);
     cNode.addInterface(EXTERNALIZABLE_TYPE);
     boolean includeFields=memberHasValue(anno,"includeFields",true);
-    List<String> excludes=tokenize((String)getMemberValue(anno,"excludes"));
+    List<String> excludes=getMemberList(anno,"excludes");
     List<FieldNode> list=getInstancePropertyFields(cNode);
     if (includeFields) {
       list.addAll(getInstanceNonPropertyFields(cNode));
