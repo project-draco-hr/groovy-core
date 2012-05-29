@@ -1,12 +1,6 @@
 {
-  CompileStack compileStack=controller.getCompileStack();
   OperandStack operandStack=controller.getOperandStack();
-  compileStack.pushLHS(false);
-  String sig="(";
-  compileStack.pushImplicitThis(implicitThis);
-  receiver.visit(controller.getAcg());
-  compileStack.popImplicitThis();
-  sig+=getTypeDescription(operandStack.getTopOperand());
+  String sig=prepareIndyCall(receiver,implicitThis);
   int numberOfArguments=1;
   ArgumentListExpression ae=makeArgumentList(arguments);
   for (  Expression arg : ae.getExpressions()) {
@@ -23,7 +17,5 @@
   }
   sig+=")Ljava/lang/Object;";
   Handle bsmHandle=getBsmHandle(adapter,safe);
-  controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,bsmHandle);
-  operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments);
-  compileStack.popLHS();
+  finishIndyCall(bsmHandle,methodName,sig,numberOfArguments);
 }
