@@ -18,13 +18,13 @@
       }
       ci.handle=ci.handle.bindTo(mc);
       if (!useShortForm) {
-        ci.handle=ci.handle.bindTo(ci.methodSelectionBase);
+        ci.handle=ci.handle.bindTo(ci.selector);
       }
       if (receiver instanceof GroovyObject) {
         ci.handle=MethodHandles.catchException(ci.handle,MissingMethodException.class,GROOVY_OBJECT_INVOKER);
       }
     }
-    ci.handle=MethodHandles.insertArguments(ci.handle,1,ci.methodName);
+    ci.handle=MethodHandles.insertArguments(ci.handle,1,ci.name);
     ci.handle=ci.handle.asCollector(Object[].class,ci.targetType.parameterCount() - 1);
   }
  catch (  Exception e) {
