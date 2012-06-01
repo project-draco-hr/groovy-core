@@ -1,7 +1,8 @@
 {
-  MethodType type=info.targetType.changeReturnType(Void.TYPE);
   Map<MethodType,MethodHandle> xmap=methods.get(info.name);
   if (xmap == null)   return false;
+  MethodType type=replaceWithMoreSpecificType(info.args,info.targetType);
+  type=widenOperators(type);
   MethodHandle handle=xmap.get(type);
   if (handle == null)   return false;
   info.handle=handle;
