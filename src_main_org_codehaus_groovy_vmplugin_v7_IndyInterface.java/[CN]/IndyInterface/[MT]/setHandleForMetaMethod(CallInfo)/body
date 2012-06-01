@@ -1,5 +1,9 @@
 {
   MetaMethod metaMethod=info.method;
+  if (metaMethod instanceof NumberNumberMetaMethod) {
+    info.catchException=false;
+    if (IndyMath.chooseMathMethod(info,metaMethod))     return;
+  }
   boolean isCategoryTypeMethod=metaMethod instanceof NewInstanceMetaMethod;
   if (metaMethod instanceof ReflectionMetaMethod) {
     ReflectionMetaMethod rmm=(ReflectionMetaMethod)metaMethod;
