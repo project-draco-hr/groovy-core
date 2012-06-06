@@ -3,11 +3,16 @@
   if (methods.isEmpty()) {
     addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),expr);
   }
- else   if (methods.size() == 1) {
-    return methods.get(0);
-  }
  else {
-    addAmbiguousOrDynamicErrorMessage(methods,name,args,expr);
+    if (areCategoryMethodCalls(methods,name,args)) {
+      addCategoryMethodCallError(expr);
+    }
+    if (methods.size() == 1) {
+      return methods.get(0);
+    }
+ else {
+      addAmbiguousErrorMessage(methods,name,args,expr);
+    }
   }
   return null;
 }

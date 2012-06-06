@@ -1,0 +1,20 @@
+{
+  String factoryName=properties.getProperty(MODULE_FACTORY_KEY);
+  if (factoryName != null) {
+    try {
+      Class<? extends PropertiesModuleFactory> factoryClass=(Class<? extends PropertiesModuleFactory>)classLoader.loadClass(factoryName);
+      PropertiesModuleFactory delegate=factoryClass.newInstance();
+      return delegate.newModule(properties,classLoader);
+    }
+ catch (    ClassNotFoundException e) {
+      throw new GroovyRuntimeException("Unable to load module factory [" + factoryName + "]",e);
+    }
+catch (    InstantiationException e) {
+      throw new GroovyRuntimeException("Unable to instantiate module factory [" + factoryName + "]",e);
+    }
+catch (    IllegalAccessException e) {
+      throw new GroovyRuntimeException("Unable to instantiate module factory [" + factoryName + "]",e);
+    }
+  }
+  return MetaInfExtensionModule.newModule(properties,classLoader);
+}

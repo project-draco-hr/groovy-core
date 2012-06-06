@@ -5,4 +5,18 @@
   for (  URL url : urls) {
     addURL(url);
   }
+  String groovyHome=System.getProperty("groovy.home");
+  List<String> grabUrls=lc.getGrabUrls();
+  for (  String grabUrl : grabUrls) {
+    Map<String,Object> grabParts=GrapeUtil.getIvyParts(grabUrl);
+    String group=grabParts.get("group").toString();
+    String module=grabParts.get("module").toString();
+    String name=grabParts.get("module").toString() + "-" + grabParts.get("version")+ ".jar";
+    File jar=new File(groovyHome + "/repo/" + group+ "/"+ module+ "/jars/"+ name);
+    try {
+      addURL(jar.toURI().toURL());
+    }
+ catch (    MalformedURLException e) {
+    }
+  }
 }

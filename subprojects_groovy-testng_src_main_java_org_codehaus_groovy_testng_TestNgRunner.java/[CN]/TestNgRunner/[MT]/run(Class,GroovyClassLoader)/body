@@ -1,0 +1,14 @@
+{
+  try {
+    Class testNGClass=loader.loadClass("org.testng.TestNG");
+    Object testng=InvokerHelper.invokeConstructorOf(testNGClass,new Object[]{});
+    InvokerHelper.invokeMethod(testng,"setTestClasses",new Object[]{scriptClass});
+    Class listenerClass=loader.loadClass("org.testng.TestListenerAdapter");
+    Object listener=InvokerHelper.invokeConstructorOf(listenerClass,new Object[]{});
+    InvokerHelper.invokeMethod(testng,"addListener",new Object[]{listener});
+    return InvokerHelper.invokeMethod(testng,"run",new Object[]{});
+  }
+ catch (  ClassNotFoundException e) {
+    throw new GroovyRuntimeException("Error running TestNG test.",e);
+  }
+}

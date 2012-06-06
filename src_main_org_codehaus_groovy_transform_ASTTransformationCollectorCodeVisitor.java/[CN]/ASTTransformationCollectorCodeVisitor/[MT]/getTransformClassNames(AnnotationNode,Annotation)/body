@@ -1,0 +1,20 @@
+{
+  List<String> result=new ArrayList<String>();
+  try {
+    Method valueMethod=transformClassAnnotation.getClass().getMethod("value");
+    String[] names=(String[])valueMethod.invoke(transformClassAnnotation);
+    result.addAll(Arrays.asList(names));
+    Method classesMethod=transformClassAnnotation.getClass().getMethod("classes");
+    Class[] classes=(Class[])classesMethod.invoke(transformClassAnnotation);
+    for (    Class klass : classes) {
+      result.add(klass.getName());
+    }
+    if (names.length > 0 && classes.length > 0) {
+      source.getErrorCollector().addError(new SimpleMessage("@GroovyASTTransformationClass in " + annotation.getClassNode().getName() + " should specify transforms only by class names or by classes and not by both",source));
+    }
+  }
+ catch (  Exception e) {
+    source.addException(e);
+  }
+  return result;
+}

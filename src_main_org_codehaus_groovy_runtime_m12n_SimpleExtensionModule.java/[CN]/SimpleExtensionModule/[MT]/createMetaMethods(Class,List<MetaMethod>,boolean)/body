@@ -1,0 +1,9 @@
+{
+  CachedClass cachedClass=ReflectionCache.getCachedClass(extensionClass);
+  CachedMethod[] methods=cachedClass.getMethods();
+  for (  CachedMethod method : methods) {
+    if (method.isStatic() && method.isPublic() && method.getParamsCount() > 0) {
+      metaMethods.add(isStatic ? new NewStaticMetaMethod(method) : new NewInstanceMetaMethod(method));
+    }
+  }
+}

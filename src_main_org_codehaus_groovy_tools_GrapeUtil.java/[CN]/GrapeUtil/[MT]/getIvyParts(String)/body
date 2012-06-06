@@ -1,0 +1,20 @@
+{
+  Map<String,Object> result=new LinkedHashMap<String,Object>();
+  String ext="";
+  String[] parts;
+  if (allstr.contains("@")) {
+    parts=allstr.split("@");
+    if (parts.length > 2)     return result;
+    allstr=parts[0];
+    ext=parts[1];
+  }
+  parts=allstr.split(":");
+  if (parts.length > 4)   return result;
+  if (parts.length > 3)   result.put("classifier",parts[3]);
+  if (parts.length > 2)   result.put("version",parts[2]);
+ else   result.put("version","*");
+  if (ext.length() > 0)   result.put("ext",ext);
+  result.put("module",parts[1]);
+  result.put("group",parts[0]);
+  return result;
+}

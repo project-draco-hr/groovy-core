@@ -1,0 +1,28 @@
+{
+  if (visit == OPENING_VISIT && !insideEnum && !insideAnonymousInnerClass()) {
+    SimpleGroovyClassDoc currentClassDoc=getCurrentClassDoc();
+    if (currentClassDoc == null) {
+      if ("true".equals(properties.getProperty("processScripts","true"))) {
+        currentClassDoc=new SimpleGroovyClassDoc(importedClassesAndPackages,className,links);
+        currentClassDoc.setFullPathName(packagePath + FS + className);
+        currentClassDoc.setPublic(true);
+        currentClassDoc.setScript(true);
+        currentClassDoc.setGroovy(isGroovy);
+        currentClassDoc.setSuperClassName("groovy/lang/Script");
+        if ("true".equals(properties.getProperty("includeMainForScripts","true"))) {
+          currentClassDoc.add(createMainMethod(currentClassDoc));
+        }
+        classDocs.put(currentClassDoc.getFullPathName(),currentClassDoc);
+        if (foundClasses == null) {
+          foundClasses=new HashMap<String,SimpleGroovyClassDoc>();
+        }
+        foundClasses.put(className,currentClassDoc);
+      }
+ else {
+        return;
+      }
+    }
+    SimpleGroovyMethodDoc currentMethodDoc=createMethod(t,currentClassDoc);
+    currentClassDoc.add(currentMethodDoc);
+  }
+}

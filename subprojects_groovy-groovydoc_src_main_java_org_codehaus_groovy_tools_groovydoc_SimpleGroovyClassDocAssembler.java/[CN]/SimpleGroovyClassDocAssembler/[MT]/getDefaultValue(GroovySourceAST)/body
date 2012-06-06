@@ -1,0 +1,12 @@
+{
+  GroovySourceAST child=(GroovySourceAST)t.getFirstChild();
+  if (t.getNumberOfChildren() != 4)   return null;
+  for (int i=1; i < t.getNumberOfChildren(); i++) {
+    child=(GroovySourceAST)child.getNextSibling();
+  }
+  GroovySourceAST nodeToProcess=child;
+  if (child.getType() != ANNOTATION_ARRAY_INIT && child.getNumberOfChildren() > 0) {
+    nodeToProcess=(GroovySourceAST)child.getFirstChild();
+  }
+  return getChildTextFromSource(nodeToProcess,";");
+}
