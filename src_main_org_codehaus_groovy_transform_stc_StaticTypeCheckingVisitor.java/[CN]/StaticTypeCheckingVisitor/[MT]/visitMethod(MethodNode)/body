@@ -7,6 +7,10 @@
   try {
     isInStaticContext=node.isStatic();
     super.visitMethod(node);
+    ClassNode rtype=(ClassNode)node.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    if (rtype == null) {
+      node.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,node.getReturnType());
+    }
     addTypeCheckingInfoAnnotation(node);
   }
   finally {
