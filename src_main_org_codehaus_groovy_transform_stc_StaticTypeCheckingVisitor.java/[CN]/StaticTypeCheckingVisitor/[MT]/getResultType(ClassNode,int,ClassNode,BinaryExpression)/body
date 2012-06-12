@@ -57,7 +57,7 @@
   if (isShiftOperation(operationName) && isNumberCategory(leftRedirect) && (isIntCategory(rightRedirect) || isLongCategory(rightRedirect))) {
     return leftRedirect;
   }
-  if (isNumberCategory(getWrapper(leftRedirect)) && (DIVIDE == op || DIVIDE_EQUAL == op)) {
+  if (isNumberCategory(getWrapper(rightRedirect)) && (isNumberCategory(getWrapper(leftRedirect)) && (DIVIDE == op || DIVIDE_EQUAL == op))) {
     if (isFloatingCategory(leftRedirect) || isFloatingCategory(rightRedirect)) {
       if (!isPrimitiveType(leftRedirect) || !isPrimitiveType(rightRedirect)) {
         return Double_TYPE;
@@ -74,7 +74,7 @@
       return getGroupOperationResultType(leftRedirect,rightRedirect);
     }
   }
-  if (MOD == op || MOD_EQUAL == op) {
+  if (isNumberCategory(getWrapper(rightRedirect)) && isNumberCategory(getWrapper(leftRedirect)) && (MOD == op || MOD_EQUAL == op)) {
     return leftRedirect;
   }
   MethodNode method=findMethodOrFail(expr,left,operationName,right);
