@@ -3,6 +3,12 @@
   if (vexp != VariableExpression.THIS_EXPRESSION && vexp != VariableExpression.SUPER_EXPRESSION) {
     if (vexp.getName().equals("this"))     storeType(vexp,classNode);
     if (vexp.getName().equals("super"))     storeType(vexp,classNode.getSuperClass());
+    if (closureExpression != null) {
+      if (vexp.getName().equals("owner") || vexp.getName().equals("delegate") || vexp.getName().equals("thisObject")) {
+        storeType(vexp,classNode);
+        return;
+      }
+    }
   }
   if (vexp.getAccessedVariable() instanceof DynamicVariable) {
     DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();

@@ -64,6 +64,9 @@
     return inferMapExpressionType((MapExpression)exp);
   }
   if (exp instanceof MethodNode) {
+    if ((exp == GET_DELEGATE || exp == GET_OWNER || exp == GET_THISOBJECT) && closureExpression != null) {
+      return classNode;
+    }
     ClassNode ret=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
     return ret != null ? ret : ((MethodNode)exp).getReturnType();
   }

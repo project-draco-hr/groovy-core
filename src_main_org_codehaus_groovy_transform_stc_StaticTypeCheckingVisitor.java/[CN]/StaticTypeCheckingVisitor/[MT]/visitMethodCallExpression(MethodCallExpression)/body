@@ -152,6 +152,17 @@
           break;
         }
       }
+      if (mn.isEmpty() && closureExpression != null && args.length == 0) {
+        if ("getDelegate".equals(name)) {
+          mn=Collections.singletonList(GET_DELEGATE);
+        }
+ else         if ("getOwner".equals(name)) {
+          mn=Collections.singletonList(GET_OWNER);
+        }
+ else         if ("getThisObject".equals(name)) {
+          mn=Collections.singletonList(GET_THISOBJECT);
+        }
+      }
       if (mn.isEmpty()) {
         addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),call);
       }
