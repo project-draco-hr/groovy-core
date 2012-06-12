@@ -18,13 +18,13 @@
       boolean upIsOk=true;
       for (int i=0, upperBoundsLength=upperBounds.length; i < upperBoundsLength && upIsOk; i++) {
         final ClassNode upperBound=upperBounds[i];
-        upIsOk=(classNode.isDerivedFrom(upperBound) || (upperBound.isInterface() && classNode.implementsInterface(upperBound)));
+        upIsOk=implementsInterfaceOrIsSubclassOf(classNode,upperBound);
       }
       upIsOk=upIsOk && checkGenerics(classNode);
       return upIsOk;
     }
     if (lowerBound != null) {
-      return (lowerBound.isDerivedFrom(classNode) || (classNode.isInterface() && lowerBound.implementsInterface(lowerBound))) && checkGenerics(classNode);
+      return implementsInterfaceOrIsSubclassOf(lowerBound,classNode) && checkGenerics(classNode);
     }
   }
   if ((type != null && !type.equals(classNode))) {

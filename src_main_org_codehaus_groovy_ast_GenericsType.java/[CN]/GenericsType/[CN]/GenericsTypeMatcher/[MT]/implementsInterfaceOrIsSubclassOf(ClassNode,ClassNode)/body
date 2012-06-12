@@ -1,5 +1,5 @@
 {
-  boolean result=type.equals(superOrInterface) || type.isDerivedFrom(superOrInterface) || type.implementsInterface(superOrInterface)|| type == UNKNOWN_PARAMETER_TYPE;
+  boolean result=type.equals(superOrInterface) || type.isDerivedFrom(superOrInterface) || type.implementsInterface(superOrInterface);
   if (result) {
     return true;
   }
@@ -8,17 +8,11 @@
     result=implementsInterfaceOrIsSubclassOf(type,cn.getSuperClass());
     if (result) {
       for (      ClassNode interfaceNode : cn.getInterfaces()) {
-        result=type.implementsInterface(interfaceNode);
+        result=implementsInterfaceOrIsSubclassOf(type,interfaceNode);
         if (!result)         break;
       }
     }
     if (result)     return true;
-  }
- else   if (superOrInterface instanceof UnionTypeClassNode) {
-    UnionTypeClassNode union=(UnionTypeClassNode)superOrInterface;
-    for (    ClassNode delegate : union.getDelegates()) {
-      if (implementsInterfaceOrIsSubclassOf(type,delegate))       return true;
-    }
   }
   if (type.isArray() && superOrInterface.isArray()) {
     return implementsInterfaceOrIsSubclassOf(type.getComponentType(),superOrInterface.getComponentType());
