@@ -14,7 +14,16 @@
       }
       return type.getType();
     }
-    return OBJECT_TYPE;
+    ErrorCollector oldCollector=errorCollector;
+    errorCollector=new ErrorCollector(new CompilerConfiguration());
+    MethodCallExpression vcall=new MethodCallExpression(new VariableExpression("_hash_",containerType),"getAt",new VariableExpression("_index_",indexType));
+    try {
+      visitMethodCallExpression(vcall);
+    }
+  finally {
+      errorCollector=oldCollector;
+    }
+    return getType(vcall);
   }
  else {
     return componentType;
