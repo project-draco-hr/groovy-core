@@ -1,5 +1,5 @@
 {
-  boolean sourceIsNull=source instanceof ConstantExpression && ((ConstantExpression)source).getValue() == null;
+  boolean sourceIsNull=isNullConstant(source);
   ClassNode expressionType=getType(source);
   if (targetType.isArray() && expressionType.isArray()) {
     return checkCast(targetType.getComponentType(),new VariableExpression("foo",expressionType.getComponentType()));

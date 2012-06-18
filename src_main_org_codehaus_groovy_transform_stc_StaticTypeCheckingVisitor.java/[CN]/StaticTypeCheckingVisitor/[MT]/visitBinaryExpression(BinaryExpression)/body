@@ -1,52 +1,59 @@
 {
-  super.visitBinaryExpression(expression);
-  final Expression leftExpression=expression.getLeftExpression();
-  ClassNode lType=getType(leftExpression);
-  final Expression rightExpression=expression.getRightExpression();
-  ClassNode rType=getType(rightExpression);
-  if (rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null) {
-    if (!isPrimitiveType(lType))     rType=UNKNOWN_PARAMETER_TYPE;
-  }
-  int op=expression.getOperation().getType();
-  ClassNode resultType=getResultType(lType,op,rType,expression);
-  if (resultType == null) {
-    resultType=lType;
-  }
-  boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
-  if (!isEmptyDeclaration)   storeType(expression,resultType);
-  if (!isEmptyDeclaration && isAssignment(op)) {
-    if (rightExpression instanceof ConstructorCallExpression) {
-      inferDiamondType((ConstructorCallExpression)rightExpression,lType);
+  BinaryExpression oldBinaryExpression=currentBinaryExpression;
+  currentBinaryExpression=expression;
+  try {
+    super.visitBinaryExpression(expression);
+    final Expression leftExpression=expression.getLeftExpression();
+    ClassNode lType=getType(leftExpression);
+    final Expression rightExpression=expression.getRightExpression();
+    ClassNode rType=getType(rightExpression);
+    if (isNullConstant(rightExpression)) {
+      if (!isPrimitiveType(lType))       rType=UNKNOWN_PARAMETER_TYPE;
     }
-    ClassNode originType=getOriginalDeclarationType(leftExpression);
-    typeCheckAssignment(expression,leftExpression,originType,rightExpression,resultType);
-    if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
-      resultType=originType;
-    }
- else     if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
+    int op=expression.getOperation().getType();
+    ClassNode resultType=getResultType(lType,op,rType,expression);
+    if (resultType == null) {
       resultType=lType;
     }
-    if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
-      Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
-      if (accessedVariable instanceof VariableExpression) {
-        VariableExpression var=(VariableExpression)accessedVariable;
-        List<ClassNode> types=ifElseForWhileAssignmentTracker.get(var);
-        if (types == null) {
-          types=new LinkedList<ClassNode>();
-          ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
-          if (type != null)           types.add(type);
-          ifElseForWhileAssignmentTracker.put(var,types);
+    boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
+    if (!isEmptyDeclaration)     storeType(expression,resultType);
+    if (!isEmptyDeclaration && isAssignment(op)) {
+      if (rightExpression instanceof ConstructorCallExpression) {
+        inferDiamondType((ConstructorCallExpression)rightExpression,lType);
+      }
+      ClassNode originType=getOriginalDeclarationType(leftExpression);
+      typeCheckAssignment(expression,leftExpression,originType,rightExpression,resultType);
+      if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
+        resultType=originType;
+      }
+ else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
+        resultType=lType;
+      }
+      if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
+        Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
+        if (accessedVariable instanceof VariableExpression) {
+          VariableExpression var=(VariableExpression)accessedVariable;
+          List<ClassNode> types=ifElseForWhileAssignmentTracker.get(var);
+          if (types == null) {
+            types=new LinkedList<ClassNode>();
+            ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+            if (type != null)             types.add(type);
+            ifElseForWhileAssignmentTracker.put(var,types);
+          }
+          types.add(resultType);
         }
-        types.add(resultType);
+      }
+      storeType(leftExpression,resultType);
+      if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
+        Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();
+        leftExpression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,parameters);
       }
     }
-    storeType(leftExpression,resultType);
-    if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
-      Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();
-      leftExpression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,parameters);
+ else     if (op == KEYWORD_INSTANCEOF) {
+      pushInstanceOfTypeInfo(leftExpression,rightExpression);
     }
   }
- else   if (op == KEYWORD_INSTANCEOF) {
-    pushInstanceOfTypeInfo(leftExpression,rightExpression);
+  finally {
+    currentBinaryExpression=oldBinaryExpression;
   }
 }
