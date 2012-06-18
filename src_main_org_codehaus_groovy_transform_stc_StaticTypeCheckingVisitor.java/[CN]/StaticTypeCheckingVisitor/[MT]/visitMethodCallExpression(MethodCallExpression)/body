@@ -120,6 +120,9 @@
         GenericsType clazzGT=receiver.getGenericsTypes()[0];
         receivers.add(clazzGT.getType());
       }
+      if (receiver.isInterface()) {
+        receivers.add(OBJECT_TYPE);
+      }
       if (!temporaryIfBranchTypeInformation.empty()) {
         List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
         if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
