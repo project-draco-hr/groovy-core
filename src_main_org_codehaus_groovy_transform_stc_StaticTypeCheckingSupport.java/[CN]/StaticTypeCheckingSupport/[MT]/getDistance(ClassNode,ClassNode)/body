@@ -8,6 +8,9 @@
   if (isPrimitiveType(receiver) && !isPrimitiveType(compare)) {
     dist=(dist + 1) << 1;
   }
+  if (receiver.isArray() && !compare.isArray()) {
+    dist+=256;
+  }
   ClassNode ref=compare;
   while (ref != null) {
     if (receiver.equals(ref) || receiver == UNKNOWN_PARAMETER_TYPE) {
