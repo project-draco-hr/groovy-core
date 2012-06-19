@@ -1,10 +1,4 @@
 {
-  ErrorCollector currentCollector=errorCollector;
-  errorCollector=new ErrorCollector(new CompilerConfiguration());
-  try {
-    visitMethod(directMethodCallCandidate);
-  }
-  finally {
-    errorCollector=currentCollector;
-  }
+  ErrorCollector collector=new ErrorCollector(new CompilerConfiguration());
+  startMethodInference(directMethodCallCandidate,collector);
 }
