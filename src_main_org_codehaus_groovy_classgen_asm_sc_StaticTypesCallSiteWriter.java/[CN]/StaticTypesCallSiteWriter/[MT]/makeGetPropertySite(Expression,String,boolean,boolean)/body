@@ -18,6 +18,16 @@
     receiverType=receiverType.getGenericsTypes()[0].getType();
   }
   MethodVisitor mv=controller.getMethodVisitor();
+  boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
+  if (!isStaticProperty) {
+    if (receiverType.implementsInterface(ClassHelper.MAP_TYPE)) {
+      receiver.visit(controller.getAcg());
+      mv.visitLdcInsn(methodName);
+      mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+      controller.getOperandStack().replace(ClassHelper.OBJECT_TYPE);
+      return;
+    }
+  }
   if (receiverType.isArray() && methodName.equals("length")) {
     receiver.visit(controller.getAcg());
     mv.visitInsn(ARRAYLENGTH);
