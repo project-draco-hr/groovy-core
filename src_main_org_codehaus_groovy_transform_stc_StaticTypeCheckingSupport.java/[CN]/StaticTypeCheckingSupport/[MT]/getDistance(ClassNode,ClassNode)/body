@@ -3,7 +3,10 @@
   ClassNode unwrapReceiver=ClassHelper.getUnwrapper(receiver);
   ClassNode unwrapCompare=ClassHelper.getUnwrapper(compare);
   if (ClassHelper.isPrimitiveType(unwrapReceiver) && ClassHelper.isPrimitiveType(unwrapCompare) && unwrapReceiver != unwrapCompare) {
-    dist=1;
+    dist=getPrimitiveDistance(unwrapReceiver,unwrapCompare);
+  }
+  if (isPrimitiveType(receiver) && !isPrimitiveType(compare)) {
+    dist=(dist + 1) << 1;
   }
   ClassNode ref=compare;
   while (ref != null) {

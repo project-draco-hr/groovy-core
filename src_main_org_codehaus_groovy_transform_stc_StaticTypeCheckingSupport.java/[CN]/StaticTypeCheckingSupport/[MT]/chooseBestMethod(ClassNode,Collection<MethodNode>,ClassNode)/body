@@ -22,7 +22,13 @@
     }
  else     if (params.length == args.length) {
       int allPMatch=allParametersAndArgumentsMatch(params,args);
-      int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
+      boolean firstParamMatches=true;
+      if (args.length > 0) {
+        Parameter[] firstParams=new Parameter[params.length - 1];
+        System.arraycopy(params,0,firstParams,0,firstParams.length);
+        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+      }
+      int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,args) : -1;
       if (lastArgMatch >= 0)       lastArgMatch++;
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
       if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
