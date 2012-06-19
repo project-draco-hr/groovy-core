@@ -21,10 +21,11 @@
   boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
   if (!isStaticProperty) {
     if (receiverType.implementsInterface(ClassHelper.MAP_TYPE)) {
-      receiver.visit(controller.getAcg());
-      mv.visitLdcInsn(methodName);
-      mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
-      controller.getOperandStack().replace(ClassHelper.OBJECT_TYPE);
+      writeMapDotProperty(receiver,methodName,mv);
+      return;
+    }
+    if (receiverType.implementsInterface(ClassHelper.LIST_TYPE)) {
+      writeListDotProperty(receiver,methodName,mv);
       return;
     }
   }
