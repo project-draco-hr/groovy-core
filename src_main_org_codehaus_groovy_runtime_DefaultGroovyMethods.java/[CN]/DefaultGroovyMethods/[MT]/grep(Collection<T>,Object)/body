@@ -1,0 +1,10 @@
+{
+  Collection<T> answer=createSimilarCollection(self);
+  MetaClass metaClass=InvokerHelper.getMetaClass(filter);
+  for (  T element : self) {
+    if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",element))) {
+      answer.add(element);
+    }
+  }
+  return answer;
+}
