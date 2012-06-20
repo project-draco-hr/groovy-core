@@ -10,8 +10,10 @@
     property="delegate";
   }
   if (makeGetField(receiver,receiverType,property,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
-  if (makeGetPropertyWithGetter(receiver,receiverType,property))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,property,safe,implicitThis))   return;
   MethodCallExpression call=new MethodCallExpression(receiver,"getProperty",new ArgumentListExpression(new ConstantExpression(property)));
+  call.setImplicitThis(implicitThis);
+  call.setSafe(safe);
   call.setMethodTarget(GROOVYOBJECT_GETPROPERTY_METHOD);
   call.visit(controller.getAcg());
   return;

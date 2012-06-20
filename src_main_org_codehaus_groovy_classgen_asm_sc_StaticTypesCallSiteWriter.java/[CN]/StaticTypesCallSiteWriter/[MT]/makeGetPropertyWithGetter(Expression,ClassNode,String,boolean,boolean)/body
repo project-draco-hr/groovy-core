@@ -8,13 +8,14 @@
   if (getterNode != null) {
     MethodCallExpression call=new MethodCallExpression(receiver,getterName,new ArgumentListExpression());
     call.setMethodTarget(getterNode);
-    call.setImplicitThis(false);
+    call.setImplicitThis(implicitThis);
+    call.setSafe(safe);
     call.visit(controller.getAcg());
     return true;
   }
   ClassNode superClass=receiverType.getSuperClass();
   if (superClass != null) {
-    return makeGetPropertyWithGetter(receiver,superClass,methodName);
+    return makeGetPropertyWithGetter(receiver,superClass,methodName,safe,implicitThis);
   }
   return false;
 }

@@ -39,11 +39,12 @@
     MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
     expr.setMethodTarget(COLLECTION_SIZE_METHOD);
     expr.setImplicitThis(implicitThis);
+    expr.setSafe(safe);
     expr.visit(controller.getAcg());
     return;
   }
   if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
-  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName,safe,implicitThis))   return;
   if (receiverType.isEnum()) {
     mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
     controller.getOperandStack().push(receiverType);
@@ -51,13 +52,13 @@
   }
   if (receiver instanceof ClassExpression) {
     if (makeGetField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiver.getType().getPackageName(),classNode.getPackageName())))     return;
-    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName))     return;
+    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
   }
   if (isClassReceiver) {
     if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
-    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
+    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName,safe,implicitThis))     return;
   }
-  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,implicitThis))   return;
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
   controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
   controller.getMethodVisitor().visitInsn(ACONST_NULL);
   controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
