@@ -16,31 +16,7 @@
               return staticCompilationTransformer.superTransform(expr);
             }
           }
-          VariableExpression vexp=new VariableExpression("obj" + System.currentTimeMillis(),declaringClass);
-          ConstructorNode cn=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
-          cn.setDeclaringClass(declaringClass);
-          ConstructorCallExpression call=new ConstructorCallExpression(declaringClass,new ArgumentListExpression());
-          call.putNodeMetaData(DIRECT_METHOD_CALL_TARGET,cn);
-          DeclarationExpression declaration=new DeclarationExpression(vexp,Token.newSymbol("=",expr.getLineNumber(),expr.getColumnNumber()),call);
-          BlockStatement stmt=new BlockStatement();
-          stmt.addStatement(new ExpressionStatement(declaration));
-          for (          MapEntryExpression entryExpression : map.getMapEntryExpressions()) {
-            int line=entryExpression.getLineNumber();
-            int col=entryExpression.getColumnNumber();
-            Expression keyExpression=staticCompilationTransformer.transform(entryExpression.getKeyExpression());
-            Expression valueExpression=staticCompilationTransformer.transform(entryExpression.getValueExpression());
-            BinaryExpression bexp=new BinaryExpression(new PropertyExpression(vexp,keyExpression),Token.newSymbol("=",line,col),valueExpression);
-            bexp.setSourcePosition(entryExpression);
-            stmt.addStatement(new ExpressionStatement(bexp));
-          }
-          stmt.addStatement(new ReturnStatement(vexp));
-          ClosureExpression cl=new ClosureExpression(Parameter.EMPTY_ARRAY,stmt);
-          cl.setSourcePosition(call);
-          MethodCallExpression result=new MethodCallExpression(cl,"call",ArgumentListExpression.EMPTY_ARGUMENTS);
-          result.setMethodTarget(StaticTypeCheckingVisitor.CLOSURE_CALL_NO_ARG);
-          VariableScopeVisitor visitor=new VariableScopeVisitor(staticCompilationTransformer.getSourceUnit());
-          visitor.prepareVisit(staticCompilationTransformer.getClassNode());
-          visitor.visitClosureExpression(cl);
+          MapStyleConstructorCall result=new MapStyleConstructorCall(staticCompilationTransformer,declaringClass,map);
           return result;
         }
       }

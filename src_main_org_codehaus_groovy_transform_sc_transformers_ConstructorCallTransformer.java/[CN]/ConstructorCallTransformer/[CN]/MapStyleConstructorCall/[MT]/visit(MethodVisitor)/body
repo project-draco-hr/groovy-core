@@ -1,0 +1,31 @@
+{
+  final WriterController controller=acg.getController();
+  final OperandStack operandStack=controller.getOperandStack();
+  final CompileStack compileStack=controller.getCompileStack();
+  final int tmpObj=compileStack.defineTemporaryVariable("tmpObj",declaringClass,false);
+  String classInternalName=BytecodeHelper.getClassInternalName(declaringClass);
+  mv.visitTypeInsn(NEW,classInternalName);
+  mv.visitInsn(DUP);
+  mv.visitMethodInsn(INVOKESPECIAL,classInternalName,"<init>","()V");
+  mv.visitVarInsn(ASTORE,tmpObj);
+  for (  MapEntryExpression entryExpression : map.getMapEntryExpressions()) {
+    int line=entryExpression.getLineNumber();
+    int col=entryExpression.getColumnNumber();
+    Expression keyExpression=staticCompilationTransformer.transform(entryExpression.getKeyExpression());
+    Expression valueExpression=staticCompilationTransformer.transform(entryExpression.getValueExpression());
+    BinaryExpression bexp=new BinaryExpression(new PropertyExpression(new BytecodeExpression(){
+      @Override public void visit(      final MethodVisitor mv){
+        mv.visitVarInsn(ALOAD,tmpObj);
+      }
+      @Override public ClassNode getType(){
+        return declaringClass;
+      }
+    }
+,keyExpression),Token.newSymbol("=",line,col),valueExpression);
+    bexp.setSourcePosition(entryExpression);
+    bexp.visit(acg);
+    operandStack.pop();
+  }
+  mv.visitVarInsn(ALOAD,tmpObj);
+  compileStack.removeVar(tmpObj);
+}
