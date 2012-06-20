@@ -29,7 +29,7 @@
  else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
         resultType=lType;
       }
-      if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
+      if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
         Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
         if (accessedVariable instanceof VariableExpression) {
           VariableExpression var=(VariableExpression)accessedVariable;
