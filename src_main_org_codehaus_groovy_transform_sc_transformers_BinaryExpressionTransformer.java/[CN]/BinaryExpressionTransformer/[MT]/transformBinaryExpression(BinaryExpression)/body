@@ -1,16 +1,16 @@
 {
   Object[] list=(Object[])bin.getNodeMetaData(BINARY_EXP_TARGET);
-  if (list != null) {
-    Token operation=bin.getOperation();
-    int operationType=operation.getType();
-    if (operationType == Types.COMPARE_EQUAL || operationType == Types.COMPARE_NOT_EQUAL) {
-      if (isNullConstant(bin.getLeftExpression())) {
-        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getRightExpression()),operationType == Types.COMPARE_EQUAL);
-      }
- else       if (isNullConstant(bin.getRightExpression())) {
-        return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getLeftExpression()),operationType == Types.COMPARE_EQUAL);
-      }
+  Token operation=bin.getOperation();
+  int operationType=operation.getType();
+  if (operationType == Types.COMPARE_EQUAL || operationType == Types.COMPARE_NOT_EQUAL) {
+    if (isNullConstant(bin.getLeftExpression())) {
+      return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getRightExpression()),operationType == Types.COMPARE_EQUAL);
     }
+ else     if (isNullConstant(bin.getRightExpression())) {
+      return new CompareToNullExpression(staticCompilationTransformer.transform(bin.getLeftExpression()),operationType == Types.COMPARE_EQUAL);
+    }
+  }
+  if (list != null) {
     if (operationType == Types.COMPARE_TO) {
       StaticTypesTypeChooser typeChooser=staticCompilationTransformer.getTypeChooser();
       ClassNode classNode=staticCompilationTransformer.getClassNode();
