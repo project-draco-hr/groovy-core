@@ -4,8 +4,8 @@
   int line=statement.getLineNumber();
   this.currentASTNode=statement;
   if (line < 0)   return;
-  if (!ASM_DEBUG && line == lineNumber)   return;
-  lineNumber=line;
+  if (!ASM_DEBUG && line == controller.getLineNumber())   return;
+  controller.setLineNumber(line);
   if (mv != null) {
     Label l=new Label();
     mv.visitLabel(l);
