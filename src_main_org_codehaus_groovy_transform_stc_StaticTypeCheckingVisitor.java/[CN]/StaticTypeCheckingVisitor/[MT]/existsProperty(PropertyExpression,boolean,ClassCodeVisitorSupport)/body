@@ -83,6 +83,18 @@
           current=isAttributeExpression ? null : current.getSuperClass();
         }
       }
+      List<MethodNode> methods=findDGMMethodsByNameAndArguments(testClass,"get" + capName,ClassNode.EMPTY_ARRAY);
+      if (!methods.isEmpty()) {
+        List<MethodNode> methodNodes=chooseBestMethod(testClass,methods,ClassNode.EMPTY_ARRAY);
+        if (methodNodes.size() == 1) {
+          MethodNode getter=methodNodes.get(0);
+          if (visitor != null) {
+            visitor.visitMethod(getter);
+          }
+          storeType(pexp,getter.getReturnType());
+          return true;
+        }
+      }
     }
  else {
       if (visitor != null) {
