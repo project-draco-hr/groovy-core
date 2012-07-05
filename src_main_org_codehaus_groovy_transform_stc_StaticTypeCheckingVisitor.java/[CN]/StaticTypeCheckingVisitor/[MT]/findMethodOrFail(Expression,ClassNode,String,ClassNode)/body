@@ -1,7 +1,7 @@
 {
   final List<MethodNode> methods=findMethod(receiver,name,args);
   if (methods.isEmpty()) {
-    addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),expr);
+    addNoMatchingMethodError(receiver,name,args,expr);
   }
  else {
     if (areCategoryMethodCalls(methods,name,args)) {
