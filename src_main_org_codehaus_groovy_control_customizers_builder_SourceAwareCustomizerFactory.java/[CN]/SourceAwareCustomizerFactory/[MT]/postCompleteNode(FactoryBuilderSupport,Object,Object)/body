@@ -1,0 +1,14 @@
+{
+  SourceOptions data=(SourceOptions)node;
+  SourceAwareCustomizer sourceAwareCustomizer=new SourceAwareCustomizer(data.delegate);
+  if (data.extensionValidator != null && (data.extension != null || data.extensions != null)) {
+    throw new RuntimeException("You must choose between an extension name validator or an explicit extension name");
+  }
+  if (data.basenameValidator != null && (data.basename != null || data.basenames != null)) {
+    throw new RuntimeException("You must choose between an base name validator or an explicit base name");
+  }
+  addExtensionValidator(sourceAwareCustomizer,data);
+  addBasenameValidator(sourceAwareCustomizer,data);
+  if (data.unitValidator != null)   sourceAwareCustomizer.setSourceUnitValidator(data.unitValidator);
+  return sourceAwareCustomizer;
+}

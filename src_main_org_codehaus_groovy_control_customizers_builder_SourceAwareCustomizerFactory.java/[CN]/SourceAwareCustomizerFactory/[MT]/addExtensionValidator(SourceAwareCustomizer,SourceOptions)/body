@@ -1,0 +1,14 @@
+{
+  final List<String> extensions=data.extensions != null ? data.extensions : new LinkedList<String>();
+  if (data.extension != null)   extensions.add(data.extension);
+  Closure<Boolean> extensionValidator=data.extensionValidator;
+  if (extensionValidator == null && !extensions.isEmpty()) {
+    extensionValidator=new Closure<Boolean>(sourceAwareCustomizer){
+      @Override @SuppressWarnings("unchecked") public Boolean call(      final Object arguments){
+        return extensions.contains(arguments);
+      }
+    }
+;
+  }
+  sourceAwareCustomizer.setExtensionValidator(extensionValidator);
+}
