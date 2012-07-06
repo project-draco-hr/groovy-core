@@ -26,7 +26,12 @@
   }
   try {
     Class<? extends LoggingStrategy> strategyClass=(Class<? extends LoggingStrategy>)defaultValue;
-    return strategyClass.newInstance();
+    if (AbstractLoggingStrategy.class.isAssignableFrom(strategyClass)) {
+      return DefaultGroovyMethods.newInstance(strategyClass,new Object[]{loader});
+    }
+ else {
+      return strategyClass.newInstance();
+    }
   }
  catch (  Exception e) {
     return null;
