@@ -1,0 +1,17 @@
+{
+  MethodNode node=null;
+  if (arguments instanceof TupleExpression) {
+    TupleExpression texp=(TupleExpression)arguments;
+    List<Expression> expressions=texp.getExpressions();
+    if (expressions.size() == 1) {
+      Expression expression=expressions.get(0);
+      if (expression instanceof MapExpression) {
+        MapExpression argList=(MapExpression)expression;
+        checkGroovyConstructorMap(call,receiver,argList);
+        node=new ConstructorNode(Opcodes.ACC_PUBLIC,new Parameter[]{new Parameter(MAP_TYPE,"map")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+        node.setDeclaringClass(receiver);
+      }
+    }
+  }
+  return node;
+}
