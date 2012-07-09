@@ -59,6 +59,20 @@
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName,safe,implicitThis))     return;
   }
   if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
+  if (receiverType.isInterface()) {
+    Set<ClassNode> allInterfaces=receiverType.getAllInterfaces();
+    for (    ClassNode anInterface : allInterfaces) {
+      MethodNode getterMethod=anInterface.getGetterMethod("get" + MetaClassHelper.capitalize(methodName));
+      if (getterMethod != null) {
+        MethodCallExpression call=new MethodCallExpression(receiver,"get" + MetaClassHelper.capitalize(methodName),ArgumentListExpression.EMPTY_ARGUMENTS);
+        call.setMethodTarget(getterMethod);
+        call.setImplicitThis(false);
+        call.setSourcePosition(receiver);
+        call.visit(controller.getAcg());
+        return;
+      }
+    }
+  }
   List<MethodNode> methods=findDGMMethodsByNameAndArguments(receiverType,"get" + MetaClassHelper.capitalize(methodName),ClassNode.EMPTY_ARRAY);
   if (!methods.isEmpty()) {
     List<MethodNode> methodNodes=chooseBestMethod(receiverType,methods,ClassNode.EMPTY_ARRAY);
