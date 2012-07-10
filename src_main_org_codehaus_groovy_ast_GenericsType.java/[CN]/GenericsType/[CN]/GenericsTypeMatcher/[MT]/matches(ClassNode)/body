@@ -28,6 +28,9 @@
     }
   }
   if ((type != null && !type.equals(classNode))) {
+    if (ClassHelper.GSTRING_TYPE.equals(classNode) && ClassHelper.STRING_TYPE.equals(type)) {
+      return true;
+    }
     return false;
   }
   return type == null || compareGenericsWithBound(classNode,type);
