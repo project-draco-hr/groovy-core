@@ -7,19 +7,7 @@
   Expression falsePart=expression.getFalseExpression();
   ClassNode truePartType=typeChooser.resolveType(truePart,controller.getClassNode());
   ClassNode falsePartType=typeChooser.resolveType(falsePart,controller.getClassNode());
-  ClassNode common;
-  if (isNullConstant(truePart) && isNullConstant(falsePart)) {
-    common=ClassHelper.OBJECT_TYPE;
-  }
- else   if (isNullConstant(truePart)) {
-    common=falsePartType;
-  }
- else   if (isNullConstant(falsePart)) {
-    common=truePartType;
-  }
- else {
-    common=WideningCategories.lowestUpperBound(truePartType,falsePartType);
-  }
+  ClassNode common=WideningCategories.lowestUpperBound(truePartType,falsePartType);
   int mark=operandStack.getStackLength();
   boolPart.visit(controller.getAcg());
   operandStack.castToBool(mark,true);
