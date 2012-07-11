@@ -59,26 +59,32 @@
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName,safe,implicitThis))     return;
   }
   if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
+  String getterName="get" + MetaClassHelper.capitalize(methodName);
   if (receiverType.isInterface()) {
     Set<ClassNode> allInterfaces=receiverType.getAllInterfaces();
+    MethodNode getterMethod=null;
     for (    ClassNode anInterface : allInterfaces) {
-      MethodNode getterMethod=anInterface.getGetterMethod("get" + MetaClassHelper.capitalize(methodName));
-      if (getterMethod != null) {
-        MethodCallExpression call=new MethodCallExpression(receiver,"get" + MetaClassHelper.capitalize(methodName),ArgumentListExpression.EMPTY_ARGUMENTS);
-        call.setMethodTarget(getterMethod);
-        call.setImplicitThis(false);
-        call.setSourcePosition(receiver);
-        call.visit(controller.getAcg());
-        return;
-      }
+      getterMethod=anInterface.getGetterMethod(getterName);
+      if (getterMethod != null)       break;
+    }
+    if (getterMethod == null) {
+      getterMethod=ClassHelper.OBJECT_TYPE.getGetterMethod(getterName);
+    }
+    if (getterMethod != null) {
+      MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
+      call.setMethodTarget(getterMethod);
+      call.setImplicitThis(false);
+      call.setSourcePosition(receiver);
+      call.visit(controller.getAcg());
+      return;
     }
   }
-  List<MethodNode> methods=findDGMMethodsByNameAndArguments(receiverType,"get" + MetaClassHelper.capitalize(methodName),ClassNode.EMPTY_ARRAY);
+  List<MethodNode> methods=findDGMMethodsByNameAndArguments(receiverType,getterName,ClassNode.EMPTY_ARRAY);
   if (!methods.isEmpty()) {
     List<MethodNode> methodNodes=chooseBestMethod(receiverType,methods,ClassNode.EMPTY_ARRAY);
     if (methodNodes.size() == 1) {
       MethodNode getter=methodNodes.get(0);
-      MethodCallExpression call=new MethodCallExpression(receiver,"get" + MetaClassHelper.capitalize(methodName),ArgumentListExpression.EMPTY_ARGUMENTS);
+      MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
       call.setMethodTarget(getter);
       call.setImplicitThis(false);
       call.setSourcePosition(receiver);

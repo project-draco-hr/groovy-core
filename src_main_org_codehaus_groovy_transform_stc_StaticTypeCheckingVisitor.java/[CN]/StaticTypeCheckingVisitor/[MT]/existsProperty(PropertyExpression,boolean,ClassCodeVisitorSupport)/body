@@ -25,6 +25,7 @@
   if (propertyName == null)   return false;
   String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
+  if (clazz.isInterface())   tests.add(OBJECT_TYPE);
   for (  ClassNode testClass : tests) {
     boolean isStaticProperty=pexp.getObjectExpression() instanceof ClassExpression && implementsInterfaceOrIsSubclassOf(testClass,pexp.getObjectExpression().getType());
     if (isStaticProperty || (!implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE) && !implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE))) {
