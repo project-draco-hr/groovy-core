@@ -1,6 +1,9 @@
 {
   super.visitPropertyExpression(pexp);
   if (!existsProperty(pexp,true)) {
+    if (currentBinaryExpression != null && currentBinaryExpression.getLeftExpression() == pexp && isAssignment(currentBinaryExpression.getOperation().getType())) {
+      if (hasSetter(pexp))       return;
+    }
     Expression objectExpression=pexp.getObjectExpression();
     addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
   }
