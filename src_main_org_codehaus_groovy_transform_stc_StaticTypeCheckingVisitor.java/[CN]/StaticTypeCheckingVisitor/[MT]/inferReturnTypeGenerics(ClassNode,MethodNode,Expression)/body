@@ -72,16 +72,15 @@
     }
   }
   GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
-  Set<GenericsType> visitedResolvedGenericsTypes=new LinkedHashSet<GenericsType>();
   for (int i=0; i < copy.length; i++) {
     GenericsType returnTypeGeneric=returnTypeGenerics[i];
     if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
       GenericsType resolved=resolvedPlaceholders.get(returnTypeGeneric.getName());
       if (resolved == null)       resolved=returnTypeGeneric;
-      copy[i]=fullyResolve(resolved,resolvedPlaceholders,visitedResolvedGenericsTypes);
+      copy[i]=fullyResolve(resolved,resolvedPlaceholders);
     }
  else {
-      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders,visitedResolvedGenericsTypes);
+      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders);
     }
   }
   if (returnType.equals(OBJECT_TYPE)) {
