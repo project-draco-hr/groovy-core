@@ -1,0 +1,18 @@
+{
+  if (visited.contains(gt))   return gt;
+  visited.add(gt);
+  if (gt.isPlaceholder() && placeholders.containsKey(gt.getName())) {
+    gt=placeholders.get(gt.getName());
+  }
+  ClassNode type=gt.getType();
+  fullyResolveType(type,placeholders,visited);
+  ClassNode lowerBound=gt.getLowerBound();
+  if (lowerBound != null)   fullyResolveType(lowerBound,placeholders,visited);
+  ClassNode[] upperBounds=gt.getUpperBounds();
+  if (upperBounds != null) {
+    for (    ClassNode upperBound : upperBounds) {
+      fullyResolveType(upperBound,placeholders,visited);
+    }
+  }
+  return gt;
+}

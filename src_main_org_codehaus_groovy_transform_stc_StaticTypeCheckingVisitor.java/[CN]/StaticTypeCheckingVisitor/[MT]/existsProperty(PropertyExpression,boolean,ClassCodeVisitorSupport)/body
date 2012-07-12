@@ -32,7 +32,10 @@
       LinkedList<ClassNode> queue=new LinkedList<ClassNode>();
       queue.add(testClass);
       if (testClass.isInterface()) {
-        queue.addAll(testClass.getAllInterfaces());
+        Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
+        for (        ClassNode intf : allInterfaces) {
+          queue.add(GenericsUtils.parameterizeInterfaceGenerics(testClass,intf));
+        }
       }
       while (!queue.isEmpty()) {
         ClassNode current=queue.removeFirst();
@@ -49,7 +52,7 @@
           MethodNode setterMethod=current.getSetterMethod("set" + capName);
           if (setterMethod != null) {
             if (visitor != null)             visitor.visitMethod(getter);
-            storeType(pexp,getter.getReturnType());
+            storeType(pexp,inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS));
             return true;
           }
         }
@@ -68,18 +71,18 @@
       if (checkForReadOnly) {
         queue=new LinkedList<ClassNode>();
         queue.add(testClass);
-        if (testClass.isInterface()) {
-          queue.addAll(testClass.getAllInterfaces());
+        Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
+        for (        ClassNode intf : allInterfaces) {
+          queue.add(GenericsUtils.parameterizeInterfaceGenerics(testClass,intf));
         }
         while (!queue.isEmpty()) {
           ClassNode current=queue.removeFirst();
-          current=current.redirect();
           MethodNode getter=current.getGetterMethod("get" + capName);
           if (getter == null)           getter=current.getGetterMethod("is" + capName);
           if (getter != null) {
             if (visitor != null)             visitor.visitMethod(getter);
             pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,Boolean.TRUE);
-            storeType(pexp,getter.getReturnType());
+            storeType(pexp,inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS));
             return true;
           }
           if (pluginFactory != null) {
@@ -106,7 +109,7 @@
           if (visitor != null) {
             visitor.visitMethod(getter);
           }
-          storeType(pexp,getter.getReturnType());
+          storeType(pexp,inferReturnTypeGenerics(testClass,getter,ArgumentListExpression.EMPTY_ARGUMENTS));
           return true;
         }
       }

@@ -10,13 +10,17 @@
     collectionExpression.visit(this);
     final ClassNode collectionType=getType(collectionExpression);
     ClassNode componentType=inferLoopElementType(collectionType);
-    if (ClassHelper.getUnwrapper(componentType) == forLoop.getVariableType()) {
-      componentType=forLoop.getVariableType();
+    ClassNode forLoopVariableType=forLoop.getVariableType();
+    if (ClassHelper.getUnwrapper(componentType) == forLoopVariableType) {
+      componentType=forLoopVariableType;
+    }
+    if (!checkCompatibleAssignmentTypes(forLoopVariableType,componentType)) {
+      addStaticTypeError("Cannot loop with element of type " + forLoopVariableType + " with collection of type "+ collectionType,forLoop);
+    }
+    if (forLoopVariableType != DYNAMIC_TYPE) {
+      componentType=forLoopVariableType;
     }
     controlStructureVariables.put(forLoop.getVariable(),componentType);
-    if (!checkCompatibleAssignmentTypes(forLoop.getVariableType(),componentType)) {
-      addStaticTypeError("Cannot loop with element of type " + forLoop.getVariableType() + " with collection of type "+ collectionType,forLoop);
-    }
     try {
       super.visitForLoop(forLoop);
     }

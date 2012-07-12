@@ -20,16 +20,10 @@
   }
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
   GenericsType[] returnTypeGenerics=returnType.isArray() ? returnType.getComponentType().getGenericsTypes() : returnType.getGenericsTypes();
-  List<GenericsType> placeholders=new LinkedList<GenericsType>();
-  for (  GenericsType returnTypeGeneric : returnTypeGenerics) {
-    if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
-      placeholders.add(returnTypeGeneric);
-    }
-  }
-  if (placeholders.isEmpty())   return returnType;
   Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
   GenericsUtils.extractPlaceholders(receiver,resolvedPlaceholders);
   GenericsUtils.extractPlaceholders(method.getReturnType(),resolvedPlaceholders);
+  if (resolvedPlaceholders.isEmpty())   return returnType;
   Parameter[] parameters=method.getParameters();
   boolean isVargs=isVargs(parameters);
   ArgumentListExpression argList=InvocationWriter.makeArgumentList(arguments);
@@ -78,15 +72,16 @@
     }
   }
   GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
+  Set<GenericsType> visitedResolvedGenericsTypes=new LinkedHashSet<GenericsType>();
   for (int i=0; i < copy.length; i++) {
     GenericsType returnTypeGeneric=returnTypeGenerics[i];
     if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
       GenericsType resolved=resolvedPlaceholders.get(returnTypeGeneric.getName());
       if (resolved == null)       resolved=returnTypeGeneric;
-      copy[i]=resolved;
+      copy[i]=fullyResolve(resolved,resolvedPlaceholders,visitedResolvedGenericsTypes);
     }
  else {
-      copy[i]=returnTypeGeneric;
+      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders,visitedResolvedGenericsTypes);
     }
   }
   if (returnType.equals(OBJECT_TYPE)) {
