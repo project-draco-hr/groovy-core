@@ -29,6 +29,8 @@
     body.addStatement(append(result,new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"toString",MethodCallExpression.NO_ARGUMENTS)));
   }
   body.addStatement(append(result,new ConstantExpression(")")));
-  body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));
+  MethodCallExpression toString=new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS);
+  toString.setImplicitThis(false);
+  body.addStatement(new ReturnStatement(toString));
   cNode.addMethod(new MethodNode(hasExistingToString ? "_toString" : "toString",hasExistingToString ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
 }
