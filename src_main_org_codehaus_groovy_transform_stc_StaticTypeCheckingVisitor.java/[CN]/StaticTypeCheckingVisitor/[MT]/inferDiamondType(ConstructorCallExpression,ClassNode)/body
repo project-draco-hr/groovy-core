@@ -1,6 +1,6 @@
 {
   ClassNode node=cce.getType();
-  if (node.isUsingGenerics() && node instanceof InnerClassNode && ((InnerClassNode)node).isAnonymous()) {
+  if (node.isUsingGenerics() && node instanceof InnerClassNode && ((InnerClassNode)node).isAnonymous()&& (node.getGenericsTypes() == null || node.getGenericsTypes().length == 0)&& lType.isUsingGenerics()) {
     addStaticTypeError("Cannot use diamond <> with anonymous inner classes",cce);
   }
  else   if (node.isUsingGenerics() && node.getGenericsTypes() != null && node.getGenericsTypes().length == 0) {
