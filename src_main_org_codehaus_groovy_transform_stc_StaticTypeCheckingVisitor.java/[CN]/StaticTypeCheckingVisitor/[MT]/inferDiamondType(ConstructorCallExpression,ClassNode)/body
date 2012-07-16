@@ -1,6 +1,9 @@
 {
   ClassNode node=cce.getType();
-  if (node.isUsingGenerics() && node.getGenericsTypes() != null && node.getGenericsTypes().length == 0) {
+  if (node.isUsingGenerics() && node instanceof InnerClassNode && ((InnerClassNode)node).isAnonymous()) {
+    addStaticTypeError("Cannot use diamond <> with anonymous inner classes",cce);
+  }
+ else   if (node.isUsingGenerics() && node.getGenericsTypes() != null && node.getGenericsTypes().length == 0) {
     ArgumentListExpression argumentListExpression=InvocationWriter.makeArgumentList(cce.getArguments());
     if (argumentListExpression.getExpressions().isEmpty()) {
       GenericsType[] genericsTypes=lType.getGenericsTypes();
