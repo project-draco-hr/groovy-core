@@ -1,0 +1,25 @@
+{
+  WriterController controller=getController();
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode receiverType=typeChooser.resolveType(receiver,controller.getClassNode());
+  String property=message.getText();
+  String setter="set" + MetaClassHelper.capitalize(property);
+  MethodNode setterMethod=receiverType.getSetterMethod(setter);
+  if (setterMethod == null) {
+    PropertyNode propertyNode=receiverType.getProperty(property);
+    if (propertyNode != null) {
+      setterMethod=new MethodNode(setter,ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(propertyNode.getOriginType(),"value")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+      setterMethod.setDeclaringClass(receiverType);
+    }
+  }
+  if (setterMethod != null) {
+    MethodCallExpression call=new MethodCallExpression(receiver,setter,arguments);
+    call.setImplicitThis(implicitThis);
+    call.setSafe(safe);
+    call.setSpreadSafe(spreadSafe);
+    call.setMethodTarget(setterMethod);
+    call.visit(controller.getAcg());
+    return true;
+  }
+  return false;
+}
