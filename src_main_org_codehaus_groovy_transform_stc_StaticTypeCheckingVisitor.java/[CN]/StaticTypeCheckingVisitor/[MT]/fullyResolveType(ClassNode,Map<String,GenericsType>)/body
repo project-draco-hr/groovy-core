@@ -13,6 +13,12 @@
     result.setGenericsTypes(gts);
     return result;
   }
+ else   if (type.isUsingGenerics() && OBJECT_TYPE.equals(type) && type.getGenericsTypes() != null) {
+    GenericsType genericsType=placeholders.get(type.getGenericsTypes()[0].getName());
+    if (genericsType != null) {
+      return genericsType.getType();
+    }
+  }
  else   if (type.isArray()) {
     return fullyResolveType(type.getComponentType(),placeholders).makeArray();
   }

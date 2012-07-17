@@ -12,10 +12,7 @@
             ClassNode lub=lowestUpperBound(classNodes);
             MethodNode methodNode=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
             Parameter[] parameters=methodNode.getParameters();
-            ClassNode[] params=new ClassNode[parameters.length];
-            for (int i=0; i < params.length; i++) {
-              params[i]=parameters[i].getType();
-            }
+            ClassNode[] params=extractTypesFromParameters(parameters);
             List<MethodNode> method=findMethod(lub,methodNode.getName(),params);
             if (method.size() != 1) {
               addStaticTypeError("A closure shared variable [" + target.getName() + "] has been assigned with various types and the method"+ " ["+ toMethodParametersString(methodNode.getName(),params)+ "]"+ " does not exist in the lowest upper bound of those types: ["+ lub.toString(false)+ "]. In general, this is a bad practice (variable reuse) because the compiler cannot"+ " determine safely what is the type of the variable at the moment of the call in a multithreaded context.",call);
