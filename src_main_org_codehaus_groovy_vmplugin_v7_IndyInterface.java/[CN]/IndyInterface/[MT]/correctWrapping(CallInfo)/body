@@ -1,6 +1,7 @@
 {
   if (ci.useMetaClass)   return;
   Class[] pt=ci.handle.type().parameterArray();
+  if (ci.currentType != null)   pt=ci.currentType.parameterArray();
   for (int i=1; i < ci.args.length; i++) {
     if (ci.args[i] instanceof Wrapper) {
       Class type=pt[i];

@@ -1,0 +1,8 @@
+{
+  MethodType type=transformer.type();
+  Class given=handle.type().parameterType(pos);
+  if (type.returnType() != given || type.parameterType(0) != given) {
+    transformer=transformer.asType(MethodType.methodType(given,type.parameterType(0)));
+  }
+  return MethodHandles.filterArguments(handle,pos,transformer);
+}
