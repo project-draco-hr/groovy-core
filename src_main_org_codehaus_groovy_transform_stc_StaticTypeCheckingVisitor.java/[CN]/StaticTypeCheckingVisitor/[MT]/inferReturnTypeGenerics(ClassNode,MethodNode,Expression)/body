@@ -83,15 +83,22 @@
       copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders);
     }
   }
+  GenericsType firstGenericsType=copy[0];
   if (returnType.equals(OBJECT_TYPE)) {
-    if (copy[0].getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
-    return copy[0].getType();
+    if (firstGenericsType.getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
+    if (firstGenericsType.isWildcard()) {
+      if (firstGenericsType.getLowerBound() != null)       return firstGenericsType.getLowerBound();
+      ClassNode[] upperBounds=firstGenericsType.getUpperBounds();
+      if (upperBounds.length == 1)       return upperBounds[0];
+      return new UnionTypeClassNode(upperBounds);
+    }
+    return firstGenericsType.getType();
   }
   if (returnType.isArray()) {
     returnType=returnType.getComponentType().getPlainNodeReference();
     returnType.setGenericsTypes(copy);
     if (OBJECT_TYPE.equals(returnType)) {
-      returnType=copy[0].getType();
+      returnType=firstGenericsType.getType();
     }
     returnType=returnType.makeArray();
   }

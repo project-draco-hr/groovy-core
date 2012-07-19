@@ -1,19 +1,6 @@
 {
   final ClassNode componentType=containerType.getComponentType();
   if (componentType == null) {
-    GenericsType[] types=containerType.getGenericsTypes();
-    if (types != null && types.length == 1) {
-      GenericsType type=types[0];
-      if (type.isWildcard()) {
-        ClassNode[] upperBounds=type.getUpperBounds();
-        if (upperBounds.length == 1) {
-          return upperBounds[0];
-        }
-        ClassNode lowerBound=type.getLowerBound();
-        if (lowerBound != null)         return lowerBound;
-      }
-      return type.getType();
-    }
     ErrorCollector oldCollector=errorCollector;
     errorCollector=new ErrorCollector(new CompilerConfiguration());
     MethodCallExpression vcall=new MethodCallExpression(new VariableExpression("_hash_",containerType),"getAt",new VariableExpression("_index_",indexType));
