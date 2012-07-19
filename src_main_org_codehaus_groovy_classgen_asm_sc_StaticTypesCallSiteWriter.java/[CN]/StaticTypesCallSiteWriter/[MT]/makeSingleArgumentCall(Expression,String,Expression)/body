@@ -29,6 +29,7 @@
   }
   if (getAtNode != null) {
     MethodCallExpression call=new MethodCallExpression(receiver,"getAt",arguments);
+    call.setSourcePosition(arguments);
     call.setImplicitThis(false);
     call.setMethodTarget(getAtNode);
     call.visit(controller.getAcg());
@@ -41,6 +42,8 @@
   if (nodes.size() == 1 || nodes.size() > 1 && acceptAnyMethod) {
     MethodNode methodNode=nodes.get(0);
     MethodCallExpression call=new MethodCallExpression(receiver,message,arguments);
+    call.setSourcePosition(arguments);
+    call.setImplicitThis(false);
     call.setMethodTarget(methodNode);
     call.visit(controller.getAcg());
     return;
