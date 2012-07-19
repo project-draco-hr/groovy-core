@@ -44,13 +44,22 @@
     mv.visitLabel(nonull);
     MethodCallExpression origMCE=(MethodCallExpression)origin;
     MethodCallExpression newMCE=new MethodCallExpression(origMCE.getObjectExpression(),origMCE.getMethodAsString(),origMCE.getArguments());
-    newMCE.setMethodTarget(origMCE.getMethodTarget());
+    MethodNode methodTarget=origMCE.getMethodTarget();
+    newMCE.setMethodTarget(methodTarget);
     newMCE.setSafe(false);
+    newMCE.setImplicitThis(origMCE.isImplicitThis());
+    newMCE.setSourcePosition(origMCE);
     newMCE.visit(controller.getAcg());
     Label endof=compileStack.createLocalLabel("endof_" + counter);
     mv.visitJumpInsn(GOTO,endof);
     mv.visitLabel(ifnull);
-    mv.visitInsn(ACONST_NULL);
+    ClassNode returnType=methodTarget.getReturnType();
+    if (ClassHelper.isPrimitiveType(returnType) && !ClassHelper.VOID_TYPE.equals(returnType)) {
+      pushZero(mv,returnType);
+    }
+ else {
+      mv.visitInsn(ACONST_NULL);
+    }
     mv.visitLabel(endof);
   }
  else {
