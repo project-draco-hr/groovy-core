@@ -1,0 +1,12 @@
+{
+  if (node.isArray())   return isParameterizedWithString(node.getComponentType());
+  if (node.isUsingGenerics()) {
+    GenericsType[] genericsTypes=node.getGenericsTypes();
+    if (genericsTypes != null) {
+      for (      GenericsType genericsType : genericsTypes) {
+        if (STRING_TYPE.equals(genericsType.getType()))         return true;
+      }
+    }
+  }
+  return node.getSuperClass() != null && isParameterizedWithString(node.getUnresolvedSuperClass());
+}

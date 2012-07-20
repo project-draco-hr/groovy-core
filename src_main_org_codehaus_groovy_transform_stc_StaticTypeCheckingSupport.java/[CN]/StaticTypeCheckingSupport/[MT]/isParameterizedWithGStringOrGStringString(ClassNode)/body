@@ -1,0 +1,12 @@
+{
+  if (node.isArray())   return isParameterizedWithGStringOrGStringString(node.getComponentType());
+  if (node.isUsingGenerics()) {
+    GenericsType[] genericsTypes=node.getGenericsTypes();
+    if (genericsTypes != null) {
+      for (      GenericsType genericsType : genericsTypes) {
+        if (isGStringOrGStringStringLUB(genericsType.getType()))         return true;
+      }
+    }
+  }
+  return node.getSuperClass() != null && isParameterizedWithGStringOrGStringString(node.getUnresolvedSuperClass());
+}
