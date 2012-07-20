@@ -15,6 +15,13 @@
     if (resultType == null) {
       resultType=lType;
     }
+    if (isArrayOp(op) && oldBinaryExpression != null && oldBinaryExpression.getLeftExpression() == expression && isAssignment(oldBinaryExpression.getOperation().getType()) && !lType.isArray()) {
+      ClassNode[] arguments={rType,getType(oldBinaryExpression.getRightExpression())};
+      List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);
+      if (nodes.size() == 1) {
+        typeCheckMethodsWithGenerics(lType,arguments,nodes.get(0),expression);
+      }
+    }
     boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
     if (!isEmptyDeclaration)     storeType(expression,resultType);
     if (!isEmptyDeclaration && isAssignment(op)) {
