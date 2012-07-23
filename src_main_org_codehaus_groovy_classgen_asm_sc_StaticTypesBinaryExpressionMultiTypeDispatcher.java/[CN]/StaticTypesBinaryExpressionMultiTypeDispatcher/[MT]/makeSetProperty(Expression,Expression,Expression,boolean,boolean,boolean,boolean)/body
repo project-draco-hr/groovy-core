@@ -1,0 +1,57 @@
+{
+  WriterController controller=getController();
+  TypeChooser typeChooser=controller.getTypeChooser();
+  ClassNode receiverType=typeChooser.resolveType(receiver,controller.getClassNode());
+  String property=message.getText();
+  if (isAttribute) {
+    ClassNode current=receiverType;
+    FieldNode fn=null;
+    while (fn == null && current != null) {
+      fn=current.getDeclaredField(property);
+      if (fn == null) {
+        current=current.getSuperClass();
+      }
+    }
+    if (fn != null && receiverType != current && !fn.isPublic()) {
+      if (!fn.isProtected()) {
+        return false;
+      }
+      String pkg1=receiverType.getPackageName();
+      String pkg2=current.getPackageName();
+      if (pkg1 != pkg2 && !pkg1.equals(pkg2)) {
+        return false;
+      }
+      OperandStack operandStack=controller.getOperandStack();
+      MethodVisitor mv=controller.getMethodVisitor();
+      if (!fn.isStatic()) {
+        receiver.visit(controller.getAcg());
+      }
+      arguments.visit(controller.getAcg());
+      operandStack.doGroovyCast(fn.getOriginType());
+      mv.visitFieldInsn(fn.isStatic() ? PUTSTATIC : PUTFIELD,BytecodeHelper.getClassInternalName(fn.getOwner()),property,BytecodeHelper.getTypeDescription(fn.getOriginType()));
+      operandStack.remove(fn.isStatic() ? 1 : 2);
+      return true;
+    }
+  }
+ else {
+    String setter="set" + MetaClassHelper.capitalize(property);
+    MethodNode setterMethod=receiverType.getSetterMethod(setter);
+    if (setterMethod == null) {
+      PropertyNode propertyNode=receiverType.getProperty(property);
+      if (propertyNode != null) {
+        setterMethod=new MethodNode(setter,ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(propertyNode.getOriginType(),"value")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+        setterMethod.setDeclaringClass(receiverType);
+      }
+    }
+    if (setterMethod != null) {
+      MethodCallExpression call=new MethodCallExpression(receiver,setter,arguments);
+      call.setImplicitThis(implicitThis);
+      call.setSafe(safe);
+      call.setSpreadSafe(spreadSafe);
+      call.setMethodTarget(setterMethod);
+      call.visit(controller.getAcg());
+      return true;
+    }
+  }
+  return false;
+}

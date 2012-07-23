@@ -3,7 +3,7 @@
     Expression leftExpression=expression.getLeftExpression();
     if (leftExpression instanceof PropertyExpression) {
       PropertyExpression pexp=(PropertyExpression)leftExpression;
-      if (makeSetProperty(pexp.getObjectExpression(),pexp.getProperty(),new ArgumentListExpression(expression.getRightExpression()),pexp.isSafe(),pexp.isSpreadSafe(),pexp.isImplicitThis()))       return;
+      if (makeSetProperty(pexp.getObjectExpression(),pexp.getProperty(),expression.getRightExpression(),pexp.isSafe(),pexp.isSpreadSafe(),pexp.isImplicitThis(),pexp instanceof AttributeExpression))       return;
     }
   }
   super.evaluateEqual(expression,defineVariable);

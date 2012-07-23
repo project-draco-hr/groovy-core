@@ -46,6 +46,9 @@
         }
         if (property != null) {
           MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,property.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+          if (property.isStatic()) {
+            node.setModifiers(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC);
+          }
           node.setDeclaringClass(receiver);
           return Collections.singletonList(node);
         }
@@ -64,6 +67,9 @@
           ClassNode type=property.getOriginType();
           if (implementsInterfaceOrIsSubclassOf(args[0],type)) {
             MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,VOID_TYPE,new Parameter[]{new Parameter(type,"arg")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+            if (property.isStatic()) {
+              node.setModifiers(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC);
+            }
             node.setDeclaringClass(receiver);
             return Collections.singletonList(node);
           }

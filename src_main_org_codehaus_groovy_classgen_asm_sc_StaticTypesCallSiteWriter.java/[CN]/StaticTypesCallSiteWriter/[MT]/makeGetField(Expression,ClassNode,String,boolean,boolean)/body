@@ -1,6 +1,6 @@
 {
   FieldNode field=receiverType.getField(fieldName);
-  if (field != null && (field.isPublic() || (samePackage && field.isProtected()) || Modifier.isPrivate(field.getModifiers()) && field.getOwner().redirect() == controller.getClassNode().redirect())) {
+  if (field != null && isDirectAccessAllowed(field,controller.getClassNode(),samePackage)) {
     CompileStack compileStack=controller.getCompileStack();
     MethodVisitor mv=controller.getMethodVisitor();
     if (field.isStatic()) {

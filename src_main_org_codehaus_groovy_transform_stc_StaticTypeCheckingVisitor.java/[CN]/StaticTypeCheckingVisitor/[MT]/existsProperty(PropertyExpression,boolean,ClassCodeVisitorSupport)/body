@@ -56,15 +56,13 @@
             return true;
           }
         }
-        if (!isAttributeExpression) {
-          FieldNode field=current.getDeclaredField(propertyName);
-          if (field != null) {
-            if (visitor != null)             visitor.visitField(field);
-            storeType(pexp,field.getOriginType());
-            return true;
-          }
+        FieldNode field=current.getDeclaredField(propertyName);
+        if (field != null) {
+          if (visitor != null)           visitor.visitField(field);
+          storeType(pexp,field.getOriginType());
+          return true;
         }
-        if (!isAttributeExpression && current.getSuperClass() != null) {
+        if (current.getSuperClass() != null) {
           queue.add(current.getSuperClass());
         }
       }

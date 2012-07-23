@@ -43,8 +43,8 @@
     expr.visit(controller.getAcg());
     return;
   }
-  if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   if (makeGetPropertyWithGetter(receiver,receiverType,methodName,safe,implicitThis))   return;
+  if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   if (receiverType.isEnum()) {
     mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
     controller.getOperandStack().push(receiverType);
@@ -55,8 +55,8 @@
     if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
   }
   if (isClassReceiver) {
-    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
     if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName,safe,implicitThis))     return;
+    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
   }
   if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
   String getterName="get" + MetaClassHelper.capitalize(methodName);

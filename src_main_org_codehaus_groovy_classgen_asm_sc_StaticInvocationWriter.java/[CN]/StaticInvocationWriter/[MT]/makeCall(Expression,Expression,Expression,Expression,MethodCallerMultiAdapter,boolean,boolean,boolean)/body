@@ -63,6 +63,17 @@
     mv.visitLabel(endof);
   }
  else {
+    if ((adapter == AsmClassGenerator.getGroovyObjectField || adapter == AsmClassGenerator.getField) && origin instanceof AttributeExpression) {
+      String pname=((PropertyExpression)origin).getPropertyAsString();
+      CallSiteWriter callSiteWriter=controller.getCallSiteWriter();
+      if (pname != null && callSiteWriter instanceof StaticTypesCallSiteWriter) {
+        StaticTypesCallSiteWriter stcsw=(StaticTypesCallSiteWriter)callSiteWriter;
+        TypeChooser typeChooser=controller.getTypeChooser();
+        if (stcsw.makeGetField(receiver,typeChooser.resolveType(receiver,controller.getClassNode()),pname,false,true)) {
+          return;
+        }
+      }
+    }
     super.makeCall(origin,receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
   }
 }
