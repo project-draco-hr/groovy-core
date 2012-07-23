@@ -6,9 +6,9 @@
     OperandStack operandStack=controller.getOperandStack();
     ClassNode classNode=controller.getClassNode();
     int counter=labelCounter.incrementAndGet();
-    VariableExpression result=new VariableExpression("spreadresult" + counter,ARRAYLIST_CLASSNODE);
-    ConstructorCallExpression cce=new ConstructorCallExpression(ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
-    cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,ARRAYLIST_CONSTRUCTOR);
+    VariableExpression result=new VariableExpression("spreadresult" + counter,StaticCompilationVisitor.ARRAYLIST_CLASSNODE);
+    ConstructorCallExpression cce=new ConstructorCallExpression(StaticCompilationVisitor.ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
+    cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,StaticCompilationVisitor.ARRAYLIST_CONSTRUCTOR);
     DeclarationExpression declr=new DeclarationExpression(result,Token.newSymbol("=",origin.getLineNumber(),origin.getColumnNumber()),cce);
     declr.visit(controller.getAcg());
     receiver.visit(controller.getAcg());
@@ -25,7 +25,7 @@
     newMCE.setMethodTarget(origMCE.getMethodTarget());
     newMCE.setSafe(true);
     MethodCallExpression add=new MethodCallExpression(result,"add",newMCE);
-    add.setMethodTarget(ARRAYLIST_ADD_METHOD);
+    add.setMethodTarget(StaticCompilationVisitor.ARRAYLIST_ADD_METHOD);
     ForStatement stmt=new ForStatement(iterator,receiver,new ExpressionStatement(add));
     stmt.visit(controller.getAcg());
     mv.visitLabel(ifnull);

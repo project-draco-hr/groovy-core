@@ -6,5 +6,9 @@
       if (makeSetProperty(pexp.getObjectExpression(),pexp.getProperty(),expression.getRightExpression(),pexp.isSafe(),pexp.isSpreadSafe(),pexp.isImplicitThis(),pexp instanceof AttributeExpression))       return;
     }
   }
+  if (expression.getLeftExpression() instanceof PropertyExpression && ((PropertyExpression)expression.getLeftExpression()).isSpreadSafe() && StaticTypeCheckingSupport.isAssignment(expression.getOperation().getType())) {
+    transformSpreadOnLHS(expression);
+    return;
+  }
   super.evaluateEqual(expression,defineVariable);
 }
