@@ -8,9 +8,12 @@
     test=test.asType(MethodType.methodType(boolean.class,ci.targetType.parameterType(0)));
     ci.handle=MethodHandles.guardWithTest(test,ci.handle,fallback);
   }
- else   if (receiver != null) {
-    ci.handle=switchPoint.guardWithTest(ci.handle,fallback);
+  if (!ci.useMetaClass) {
+    if (ci.method instanceof NewInstanceMetaMethod) {
+      ci.handle=MethodHandles.guardWithTest(HAS_CATEGORY_IN_CURRENT_THREAD_GUARD,ci.handle,fallback);
+    }
   }
+  ci.handle=switchPoint.guardWithTest(ci.handle,fallback);
   Class[] pt=ci.handle.type().parameterArray();
   for (int i=0; i < ci.args.length; i++) {
     Object arg=ci.args[i];
