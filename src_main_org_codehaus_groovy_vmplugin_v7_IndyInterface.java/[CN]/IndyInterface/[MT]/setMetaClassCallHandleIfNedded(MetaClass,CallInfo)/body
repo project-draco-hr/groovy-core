@@ -2,10 +2,12 @@
   if (ci.handle != null)   return;
   try {
     ci.useMetaClass=true;
+    if (LOG_ENABLED)     LOG.info("set meta class invocation path");
     Object receiver=ci.args[0];
     if (receiver instanceof Class) {
       ci.handle=LOOKUP.findVirtual(mc.getClass(),"invokeStaticMethod",MethodType.methodType(Object.class,Object.class,String.class,Object[].class));
       ci.handle=ci.handle.bindTo(mc);
+      if (LOG_ENABLED)       LOG.info("use invokeStaticMethod with bound meta class");
     }
  else {
       boolean useShortForm=mc instanceof AdaptingMetaClass;
@@ -20,12 +22,15 @@
       if (!useShortForm) {
         ci.handle=ci.handle.bindTo(ci.selector);
       }
+      if (LOG_ENABLED)       LOG.info("use invokeMethod with bound meta class");
       if (receiver instanceof GroovyObject) {
+        if (LOG_ENABLED)         LOG.info("add MissingMethod handler for GrooObject#invokeMethod fallback path");
         ci.handle=MethodHandles.catchException(ci.handle,MissingMethodException.class,GROOVY_OBJECT_INVOKER);
       }
     }
     ci.handle=MethodHandles.insertArguments(ci.handle,1,ci.name);
     ci.handle=ci.handle.asCollector(Object[].class,ci.targetType.parameterCount() - 1);
+    if (LOG_ENABLED)     LOG.info("bind method name and create collector for arguments");
   }
  catch (  Exception e) {
     throw new GroovyBugError(e);

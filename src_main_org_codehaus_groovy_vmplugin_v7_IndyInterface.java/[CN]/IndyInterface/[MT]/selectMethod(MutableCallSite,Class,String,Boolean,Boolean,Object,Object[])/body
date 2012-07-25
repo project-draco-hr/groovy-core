@@ -8,8 +8,16 @@
   callInfo.safeNavigationOrig=safeNavigation;
   callInfo.safeNavigation=safeNavigation && arguments[0] == null;
   callInfo.thisCall=thisCall;
+  if (LOG_ENABLED) {
+    String msg="----------------------------------------------------" + "\n\t\tinvocation of method '" + methodName + "'"+ "\n\t\tsender: "+ sender+ "\n\t\ttargetType: "+ callInfo.targetType+ "\n\t\tsafe navigation: "+ safeNavigation+ "\n\t\tthisCall: "+ thisCall+ "\n\t\twith "+ arguments.length+ " arguments";
+    for (int i=0; i < arguments.length; i++) {
+      msg+="\n\t\t\targument[" + i + "] = "+ arguments[i];
+    }
+    LOG.info(msg);
+  }
   if (!setNullForSafeNavigation(callInfo)) {
     MetaClass mc=getMetaClass(callInfo.args[0]);
+    if (LOG_ENABLED)     LOG.info("meta class is " + mc);
     setMethodSelectionBase(callInfo,mc);
     chooseMethod(mc,callInfo);
     setHandleForMetaMethod(callInfo);
@@ -18,11 +26,13 @@
     correctParameterLength(callInfo);
     correctCoerce(callInfo);
     correctNullReceiver(callInfo);
+    if (LOG_ENABLED)     LOG.info("casting explicit from " + callInfo.handle.type() + " to "+ callInfo.targetType);
     callInfo.handle=MethodHandles.explicitCastArguments(callInfo.handle,callInfo.targetType);
     addExceptionHandler(callInfo);
   }
   setGuards(callInfo,callInfo.args[0]);
   callSite.setTarget(callInfo.handle);
+  if (LOG_ENABLED)   LOG.info("call site target set, preparing outside invocation");
   MethodHandle call=callInfo.handle.asSpreader(Object[].class,callInfo.args.length);
   call=call.asType(MethodType.methodType(Object.class,Object[].class));
   return call.invokeExact(callInfo.args);

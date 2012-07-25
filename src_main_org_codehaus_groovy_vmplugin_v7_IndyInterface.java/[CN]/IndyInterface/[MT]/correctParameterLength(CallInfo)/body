@@ -15,8 +15,10 @@
   }
  else   if (params.length > info.args.length) {
     info.handle=MethodHandles.insertArguments(info.handle,params.length - 1,Array.newInstance(lastParam.getComponentType(),0));
+    if (LOG_ENABLED)     LOG.info("added empty array for missing vargs part");
   }
  else {
     info.handle=info.handle.asCollector(lastParam,info.args.length - params.length + 1);
+    if (LOG_ENABLED)     LOG.info("changed surplus arguments to be collected for vargs call");
   }
 }
