@@ -92,7 +92,7 @@
       return;
     }
   }
-  controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
+  controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber(),receiver.getLastLineNumber(),receiver.getLastColumnNumber()));
   controller.getMethodVisitor().visitInsn(ACONST_NULL);
   controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
 }

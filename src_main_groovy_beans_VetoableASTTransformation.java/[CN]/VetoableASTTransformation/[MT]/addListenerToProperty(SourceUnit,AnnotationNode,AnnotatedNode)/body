@@ -6,7 +6,7 @@
     boolean bindable=BindableASTTransformation.hasBindableAnnotation(parent) || BindableASTTransformation.hasBindableAnnotation(parent.getDeclaringClass());
     if (propertyNode.getName().equals(fieldName)) {
       if (field.isStatic()) {
-        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber()),source));
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()),source));
       }
  else {
         createListenerSetter(source,node,bindable,declaringClass,propertyNode);
@@ -14,5 +14,5 @@
       return;
     }
   }
-  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Vetoable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()),source));
 }

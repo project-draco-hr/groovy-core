@@ -3,7 +3,7 @@
   for (  PropertyNode propertyNode : declaringClass.getProperties()) {
     if (propertyNode.getName().equals(fieldName)) {
       if (field.isStatic()) {
-        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber()),source));
+        source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a static property.",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()),source));
       }
  else {
         if (needsPropertyChangeSupport(declaringClass,source)) {
@@ -14,5 +14,5 @@
       return;
     }
   }
-  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber()),source));
+  source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable must be on a property, not a field.  Try removing the private, protected, or public modifier.",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()),source));
 }
