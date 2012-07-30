@@ -2,7 +2,9 @@
   super.visitConstructorCallExpression(call);
   ClassNode receiver=call.isThisCall() ? classNode : call.isSuperCall() ? classNode.getSuperClass() : call.getType();
   Expression arguments=call.getArguments();
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(arguments));
+  ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(arguments);
+  checkForbiddenSpreadArgument(argumentList);
+  ClassNode[] args=getArgumentTypes(argumentList);
   MethodNode node=null;
   if (args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE) && findMethod(receiver,"<init>",ClassNode.EMPTY_ARRAY).size() == 1) {
     node=typeCheckMapConstructor(call,receiver,arguments);

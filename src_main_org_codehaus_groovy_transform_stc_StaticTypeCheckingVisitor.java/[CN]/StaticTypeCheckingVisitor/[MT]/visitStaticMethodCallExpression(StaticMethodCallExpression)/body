@@ -6,11 +6,13 @@
   }
   final ClassNode rememberLastItType=lastImplicitItType;
   Expression callArguments=call.getArguments();
+  ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
+  checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
   if (!isWithCall) {
     callArguments.visit(this);
   }
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
+  ClassNode[] args=getArgumentTypes(argumentList);
   final ClassNode receiver=call.getOwnerType();
   if (isWithCall) {
     withReceiverList.add(0,receiver);
