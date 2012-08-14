@@ -36,12 +36,10 @@ synchronized (ctx) {
       Script scriptObject=(Script)scriptClass.newInstance();
       scriptObject.setBinding(binding);
       Method[] methods=scriptClass.getMethods();
-      Map<String,Closure> closures=new HashMap<String,Closure>();
       for (      Method m : methods) {
         String name=m.getName();
-        closures.put(name,new MethodClosure(scriptObject,name));
+        globalClosures.put(name,new MethodClosure(scriptObject,name));
       }
-      globalClosures.putAll(closures);
       MetaClass oldMetaClass=scriptObject.getMetaClass();
       scriptObject.setMetaClass(new DelegatingMetaClass(oldMetaClass){
         @Override public Object invokeMethod(        Object object,        String name,        Object args){
