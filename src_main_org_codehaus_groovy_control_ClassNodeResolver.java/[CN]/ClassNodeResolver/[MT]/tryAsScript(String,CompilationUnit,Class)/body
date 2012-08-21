@@ -1,0 +1,21 @@
+{
+  LookupResult lr=null;
+  if (oldClass != null) {
+    ClassNode cn=ClassHelper.make(oldClass);
+    lr=new LookupResult(null,cn);
+  }
+  if (name.startsWith("java."))   return lr;
+  if (name.indexOf('$') != -1)   return lr;
+  GroovyClassLoader gcl=compilationUnit.getClassLoader();
+  URL url=null;
+  try {
+    url=gcl.getResourceLoader().loadGroovySource(name);
+  }
+ catch (  MalformedURLException e) {
+  }
+  if (url != null && (oldClass == null || isSourceNewer(url,oldClass))) {
+    SourceUnit su=compilationUnit.addSource(url);
+    return new LookupResult(su,null);
+  }
+  return lr;
+}
