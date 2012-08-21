@@ -26,6 +26,7 @@
           Expression left=staticCompilationTransformer.transform(bin.getLeftExpression());
           Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
           MethodCallExpression call=new MethodCallExpression(left,"compareTo",new ArgumentListExpression(right));
+          call.setImplicitThis(false);
           call.setMethodTarget(COMPARE_TO_METHOD);
           CompareIdentityExpression compareIdentity=new CompareIdentityExpression(left,right);
           compareIdentity.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,ClassHelper.boolean_TYPE);
@@ -46,12 +47,14 @@
     Expression left=staticCompilationTransformer.transform(bin.getLeftExpression());
     Expression right=staticCompilationTransformer.transform(bin.getRightExpression());
     call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
+    call.setImplicitThis(false);
     call.setMethodTarget(node);
     MethodNode adapter=StaticCompilationTransformer.BYTECODE_BINARY_ADAPTERS.get(operationType);
     if (adapter != null) {
       ClassExpression sba=new ClassExpression(StaticCompilationTransformer.BYTECODE_ADAPTER_CLASS);
       call=new MethodCallExpression(sba,"compareEquals",new ArgumentListExpression(left,right));
       call.setMethodTarget(adapter);
+      call.setImplicitThis(false);
     }
     if (!isAssignment)     return call;
     return new BinaryExpression(left,Token.newSymbol("=",operation.getStartLine(),operation.getStartColumn()),call);

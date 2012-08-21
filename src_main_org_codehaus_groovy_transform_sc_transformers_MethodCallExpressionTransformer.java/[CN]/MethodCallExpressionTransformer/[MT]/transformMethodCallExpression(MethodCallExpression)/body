@@ -6,6 +6,7 @@
     notSafe.setSpreadSafe(expr.isSpreadSafe());
     notSafe.setSourcePosition(expr);
     notSafe.setMethodTarget(expr.getMethodTarget());
+    notSafe.setImplicitThis(expr.isImplicitThis());
     TernaryExpression texpr=new TernaryExpression(new BooleanExpression(new BinaryExpression(objectExpression,Token.newSymbol("!=",objectExpression.getLineNumber(),objectExpression.getColumnNumber()),ConstantExpression.NULL)),notSafe,ConstantExpression.NULL);
     return staticCompilationTransformer.transform(texpr);
   }
