@@ -196,7 +196,10 @@
           storeTargetMethod(call,directMethodCallCandidate);
           if (objectExpression instanceof VariableExpression) {
             VariableExpression var=(VariableExpression)objectExpression;
-            if (var.isClosureSharedVariable())             secondPassExpressions.add(call);
+            if (var.isClosureSharedVariable()) {
+              SecondPassExpression<ClassNode[]> wrapper=new SecondPassExpression<ClassNode[]>(call,args);
+              secondPassExpressions.add(wrapper);
+            }
           }
         }
  else {
