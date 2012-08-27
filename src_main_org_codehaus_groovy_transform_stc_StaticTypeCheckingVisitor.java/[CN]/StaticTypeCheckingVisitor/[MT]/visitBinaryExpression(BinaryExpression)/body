@@ -15,6 +15,10 @@
     if (resultType == null) {
       resultType=lType;
     }
+    if (lType.isUsingGenerics() && missesGenericsTypes(resultType) && isAssignment(op)) {
+      ClassNode completedType=GenericsUtils.parameterizeType(lType,resultType.getPlainNodeReference());
+      resultType=completedType;
+    }
     if (isArrayOp(op) && oldBinaryExpression != null && oldBinaryExpression.getLeftExpression() == expression && isAssignment(oldBinaryExpression.getOperation().getType()) && !lType.isArray()) {
       ClassNode[] arguments={rType,getType(oldBinaryExpression.getRightExpression())};
       List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);

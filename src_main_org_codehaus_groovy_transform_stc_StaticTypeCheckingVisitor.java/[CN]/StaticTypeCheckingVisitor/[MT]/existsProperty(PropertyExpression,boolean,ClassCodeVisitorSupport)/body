@@ -34,7 +34,7 @@
       if (testClass.isInterface()) {
         Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
         for (        ClassNode intf : allInterfaces) {
-          queue.add(GenericsUtils.parameterizeInterfaceGenerics(testClass,intf));
+          queue.add(GenericsUtils.parameterizeType(testClass,intf));
         }
       }
       while (!queue.isEmpty()) {
@@ -73,7 +73,7 @@
         queue.add(testClass);
         Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
         for (        ClassNode intf : allInterfaces) {
-          queue.add(GenericsUtils.parameterizeInterfaceGenerics(testClass,intf));
+          queue.add(GenericsUtils.parameterizeType(testClass,intf));
         }
         while (!queue.isEmpty()) {
           ClassNode current=queue.removeFirst();
