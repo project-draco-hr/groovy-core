@@ -13,18 +13,18 @@
     receiverType=(ClassNode)type;
   }
   boolean isClassReceiver=false;
-  if (receiverType.equals(ClassHelper.CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
+  if (receiverType.equals(CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
     isClassReceiver=true;
     receiverType=receiverType.getGenericsTypes()[0].getType();
   }
   MethodVisitor mv=controller.getMethodVisitor();
   boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
   if (!isStaticProperty) {
-    if (receiverType.implementsInterface(ClassHelper.MAP_TYPE)) {
+    if (receiverType.implementsInterface(MAP_TYPE) || MAP_TYPE.equals(receiverType)) {
       writeMapDotProperty(receiver,methodName,mv);
       return;
     }
-    if (receiverType.implementsInterface(ClassHelper.LIST_TYPE)) {
+    if (receiverType.implementsInterface(LIST_TYPE) || LIST_TYPE.equals(receiverType)) {
       writeListDotProperty(receiver,methodName,mv);
       return;
     }
@@ -32,10 +32,10 @@
   if (receiverType.isArray() && methodName.equals("length")) {
     receiver.visit(controller.getAcg());
     mv.visitInsn(ARRAYLENGTH);
-    controller.getOperandStack().replace(ClassHelper.int_TYPE);
+    controller.getOperandStack().replace(int_TYPE);
     return;
   }
- else   if (receiverType.implementsInterface(COLLECTION_TYPE) && ("size".equals(methodName) || "length".equals(methodName))) {
+ else   if ((receiverType.implementsInterface(COLLECTION_TYPE) || COLLECTION_TYPE.equals(receiverType)) && ("size".equals(methodName) || "length".equals(methodName))) {
     MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
     expr.setMethodTarget(COLLECTION_SIZE_METHOD);
     expr.setImplicitThis(implicitThis);
@@ -55,8 +55,8 @@
     if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
   }
   if (isClassReceiver) {
-    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName,safe,implicitThis))     return;
-    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
+    if (makeGetPropertyWithGetter(receiver,CLASS_Type,methodName,safe,implicitThis))     return;
+    if (makeGetField(receiver,CLASS_Type,methodName,false,true))     return;
   }
   if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
   String getterName="get" + MetaClassHelper.capitalize(methodName);
@@ -68,7 +68,7 @@
       if (getterMethod != null)       break;
     }
     if (getterMethod == null) {
-      getterMethod=ClassHelper.OBJECT_TYPE.getGetterMethod(getterName);
+      getterMethod=OBJECT_TYPE.getGetterMethod(getterName);
     }
     if (getterMethod != null) {
       MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
@@ -94,5 +94,5 @@
   }
   controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber(),receiver.getLastLineNumber(),receiver.getLastColumnNumber()));
   controller.getMethodVisitor().visitInsn(ACONST_NULL);
-  controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
+  controller.getOperandStack().push(OBJECT_TYPE);
 }

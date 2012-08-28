@@ -1,12 +1,12 @@
 {
   ClassNode componentType=(ClassNode)receiver.getNodeMetaData(StaticCompilationMetadataKeys.COMPONENT_TYPE);
   if (componentType == null) {
-    componentType=ClassHelper.OBJECT_TYPE;
+    componentType=OBJECT_TYPE;
   }
   CompileStack compileStack=controller.getCompileStack();
-  Variable tmpList=new VariableExpression("tmpList",ClassHelper.make(ArrayList.class));
+  Variable tmpList=new VariableExpression("tmpList",make(ArrayList.class));
   int var=compileStack.defineTemporaryVariable(tmpList,false);
-  Variable iterator=new VariableExpression("iterator",ClassHelper.Iterator_TYPE);
+  Variable iterator=new VariableExpression("iterator",Iterator_TYPE);
   int it=compileStack.defineTemporaryVariable(iterator,false);
   Variable nextVar=new VariableExpression("next",componentType);
   final int next=compileStack.defineTemporaryVariable(nextVar,false);
@@ -56,7 +56,7 @@
   mv.visitJumpInsn(GOTO,l2);
   mv.visitLabel(l3);
   mv.visitVarInsn(ALOAD,var);
-  controller.getOperandStack().push(ClassHelper.make(ArrayList.class));
+  controller.getOperandStack().push(make(ArrayList.class));
   controller.getCompileStack().removeVar(next);
   controller.getCompileStack().removeVar(it);
   controller.getCompileStack().removeVar(var);

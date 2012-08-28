@@ -3,7 +3,7 @@
   ClassNode classNode=controller.getClassNode();
   ClassNode rType=typeChooser.resolveType(receiver,classNode);
   ClassNode aType=typeChooser.resolveType(arguments,classNode);
-  if (ClassHelper.getWrapper(rType).isDerivedFrom(ClassHelper.Number_TYPE) && ClassHelper.getWrapper(aType).isDerivedFrom(ClassHelper.Number_TYPE)) {
+  if (getWrapper(rType).isDerivedFrom(Number_TYPE) && getWrapper(aType).isDerivedFrom(Number_TYPE)) {
     if ("plus".equals(message) || "minus".equals(message) || "multiply".equals(message)|| "div".equals(message)) {
       writeNumberNumberCall(receiver,message,arguments);
       return;
@@ -13,7 +13,7 @@
       return;
     }
   }
- else   if (ClassHelper.STRING_TYPE.equals(rType) && "plus".equals(message)) {
+ else   if (STRING_TYPE.equals(rType) && "plus".equals(message)) {
     writeStringPlusCall(receiver,message,arguments);
     return;
   }
@@ -36,7 +36,7 @@
     return;
   }
   ClassNode[] args={aType};
-  boolean acceptAnyMethod=ClassHelper.MAP_TYPE.equals(rType) || rType.implementsInterface(ClassHelper.MAP_TYPE) || ClassHelper.LIST_TYPE.equals(rType)|| rType.implementsInterface(ClassHelper.LIST_TYPE);
+  boolean acceptAnyMethod=MAP_TYPE.equals(rType) || rType.implementsInterface(MAP_TYPE) || LIST_TYPE.equals(rType)|| rType.implementsInterface(LIST_TYPE);
   List<MethodNode> nodes=StaticTypeCheckingSupport.findDGMMethodsByNameAndArguments(rType,message,args);
   nodes=StaticTypeCheckingSupport.chooseBestMethod(rType,nodes,args);
   if (nodes.size() == 1 || nodes.size() > 1 && acceptAnyMethod) {
