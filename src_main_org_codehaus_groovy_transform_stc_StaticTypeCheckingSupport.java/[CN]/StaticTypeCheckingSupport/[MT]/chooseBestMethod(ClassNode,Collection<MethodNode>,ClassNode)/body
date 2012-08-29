@@ -30,7 +30,7 @@
       }
       int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,args) : -1;
       if (lastArgMatch >= 0) {
-        lastArgMatch+=((args.length - params.length) + 1);
+        lastArgMatch+=256 - params.length;
       }
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
       if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
@@ -61,7 +61,7 @@
  else {
           int dist=excessArgumentsMatchesVargsParameter(params,args);
           if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist+=getDistance(actualReceiver,declaringClass);
-          dist+=((args.length - params.length) + 1);
+          dist+=256 - params.length;
           if (params.length < args.length && dist >= 0) {
             if (dist >= 0 && dist < bestDist) {
               bestChoices.clear();
