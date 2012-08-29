@@ -27,6 +27,9 @@
   bew.arrayGet(LEFT_SQUARE_BRACKET,false);
   operandStack.replace(leftType,2);
   binExp.getRightExpression().visit(acg);
+  if (!(bew instanceof BinaryObjectExpressionHelper)) {
+    operandStack.doGroovyCast(leftType);
+  }
   bew.write(operation,false);
   operandStack.dup();
   int resultValueId=compileStack.defineTemporaryVariable("$result",rightType,true);
