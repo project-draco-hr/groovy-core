@@ -16,6 +16,9 @@
     }
     if (leftExpression instanceof VariableExpression) {
       ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
+      if (isPrimitiveType(right) && initialType.isDerivedFrom(Number_TYPE)) {
+        return getWrapper(right);
+      }
       if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)) {
         return initialType;
       }

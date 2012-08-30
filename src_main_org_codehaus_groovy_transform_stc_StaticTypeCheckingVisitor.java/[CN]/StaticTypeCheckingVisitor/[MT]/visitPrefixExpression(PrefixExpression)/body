@@ -3,12 +3,20 @@
   Expression inner=expression.getExpression();
   ClassNode exprType=getType(inner);
   int type=expression.getOperation().getType();
+  String name=type == PLUS_PLUS ? "next" : type == MINUS_MINUS ? "previous" : null;
   if (isPrimitiveType(exprType) || isPrimitiveType(getUnwrapper(exprType))) {
-    if (type == PLUS_PLUS || type == MINUS_MINUS)     return;
+    if (type == PLUS_PLUS || type == MINUS_MINUS) {
+      if (!isPrimitiveType(exprType)) {
+        MethodNode node=findMethodOrFail(inner,exprType,name);
+        if (node != null) {
+          storeTargetMethod(expression,node);
+        }
+      }
+      return;
+    }
     addStaticTypeError("Unsupported prefix operation type [" + expression.getOperation() + "]",expression);
     return;
   }
-  String name=type == PLUS_PLUS ? "next" : type == MINUS_MINUS ? "previous" : null;
   if (name == null) {
     addStaticTypeError("Unsupported prefix operation type [" + expression.getOperation() + "]",expression);
     return;
