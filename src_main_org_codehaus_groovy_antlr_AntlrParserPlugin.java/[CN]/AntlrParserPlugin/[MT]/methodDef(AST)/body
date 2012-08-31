@@ -1,4 +1,5 @@
 {
+  MethodNode oldNode=methodNode;
   List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
   AST node=methodDef.getFirstChild();
   GenericsType[] generics=null;
@@ -47,6 +48,9 @@
   }
   boolean hasAnnotationDefault=false;
   Statement code=null;
+  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
+  modifiers&=~Opcodes.ACC_SYNTHETIC;
+  methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
   if ((modifiers & Opcodes.ACC_ABSTRACT) == 0) {
     if (node == null) {
       throw new ASTRuntimeException(methodDef,"You defined a method without body. Try adding a body, or declare it abstract.");
@@ -63,9 +67,7 @@
       throw new ASTRuntimeException(methodDef,"Abstract methods do not define a body.");
     }
   }
-  boolean syntheticPublic=((modifiers & Opcodes.ACC_SYNTHETIC) != 0);
-  modifiers&=~Opcodes.ACC_SYNTHETIC;
-  MethodNode methodNode=new MethodNode(name,modifiers,returnType,parameters,exceptions,code);
+  methodNode.setCode(code);
   methodNode.addAnnotations(annotations);
   methodNode.setGenericsTypes(generics);
   methodNode.setAnnotationDefault(hasAnnotationDefault);
@@ -77,4 +79,5 @@
  else {
     output.addMethod(methodNode);
   }
+  methodNode=oldNode;
 }
