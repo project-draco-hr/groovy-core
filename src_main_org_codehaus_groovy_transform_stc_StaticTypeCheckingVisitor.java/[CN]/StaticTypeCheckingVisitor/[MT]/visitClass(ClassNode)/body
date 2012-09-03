@@ -1,5 +1,9 @@
 {
   if (shouldSkipClassNode(node))   return;
+  Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  if (type != null) {
+    errorCollector=new ErrorCollector(errorCollector.getConfiguration());
+  }
   ClassNode oldCN=classNode;
   classNode=node;
   Set<MethodNode> oldVisitedMethod=alreadyVisitedMethods;
