@@ -1,7 +1,8 @@
 {
   long answer=0;
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
   while (self.hasNext()) {
-    if (DefaultTypeTransformation.castToBoolean(closure.call(self.next()))) {
+    if (bcw.call(self.next())) {
       ++answer;
     }
   }

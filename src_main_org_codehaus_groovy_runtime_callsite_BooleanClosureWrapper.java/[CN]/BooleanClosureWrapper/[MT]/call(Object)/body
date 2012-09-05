@@ -1,0 +1,15 @@
+{
+  try {
+    Object ret=csa.array[0].call(wrapped,args);
+    if (ret == null)     return false;
+    if (ret instanceof Boolean) {
+      return ((Boolean)ret).booleanValue();
+    }
+    ret=csa.array[1].call(ret,CallSiteArray.NOPARAM);
+    return ((Boolean)ret).booleanValue();
+  }
+ catch (  Throwable t) {
+    sun.misc.Unsafe.getUnsafe().throwException(t);
+    return false;
+  }
+}

@@ -1,6 +1,7 @@
 {
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
   for (Iterator iter=InvokerHelper.asIterator(self); iter.hasNext(); ) {
-    if (!DefaultTypeTransformation.castToBoolean(closure.call(iter.next()))) {
+    if (!bcw.call(iter.next())) {
       return false;
     }
   }
