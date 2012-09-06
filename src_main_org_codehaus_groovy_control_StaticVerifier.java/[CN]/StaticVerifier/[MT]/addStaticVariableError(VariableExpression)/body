@@ -3,7 +3,7 @@
   if (ve.isThisExpression() || ve.isSuperExpression())   return;
   Variable v=ve.getAccessedVariable();
   if (currentMethod != null && currentMethod.isStatic()) {
-    FieldNode fieldNode=currentMethod.getDeclaringClass().getField(ve.getName());
+    FieldNode fieldNode=getDeclaredOrInheritedField(currentMethod.getDeclaringClass(),ve.getName());
     if (fieldNode != null && fieldNode.isStatic())     return;
   }
   if (v != null && !(v instanceof DynamicVariable) && v.isInStaticContext())   return;

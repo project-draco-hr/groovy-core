@@ -1,0 +1,17 @@
+{
+  ClassNode node=cn;
+  while (node != null) {
+    FieldNode fn=node.getDeclaredField(fieldName);
+    if (fn != null)     return fn;
+    for (    ClassNode in : node.getInterfaces()) {
+      ClassNode sn=in;
+      while (sn != null && !sn.equals(ClassHelper.OBJECT_TYPE)) {
+        fn=sn.getDeclaredField(fieldName);
+        if (fn != null)         return fn;
+        sn=sn.getSuperClass();
+      }
+    }
+    node=node.getSuperClass();
+  }
+  return null;
+}
