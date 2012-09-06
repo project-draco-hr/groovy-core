@@ -1,8 +1,8 @@
 {
   Collection<T> answer=new ArrayList<T>();
-  MetaClass metaClass=InvokerHelper.getMetaClass(filter);
+  BooleanReturningMethodInvoker bmi=new BooleanReturningMethodInvoker("isCase");
   for (  T element : self) {
-    if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",element))) {
+    if (bmi.invoke(filter,element)) {
       answer.add(element);
     }
   }
