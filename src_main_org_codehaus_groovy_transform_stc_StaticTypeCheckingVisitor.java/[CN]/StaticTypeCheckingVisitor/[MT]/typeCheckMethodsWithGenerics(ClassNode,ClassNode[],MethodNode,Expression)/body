@@ -41,13 +41,42 @@
   if (parameters.length > arguments.length) {
     return;
   }
+  Map<String,ClassNode> resolvedMethodGenerics=new HashMap<String,ClassNode>();
   ClassNode[] ptypes=new ClassNode[candidateMethod.getParameters().length];
+  final GenericsType[] methodNodeGenericsTypes=candidateMethod.getGenericsTypes();
+  final boolean shouldCheckMethodGenericTypes=methodNodeGenericsTypes != null && methodNodeGenericsTypes.length > 0;
   for (int i=0; i < arguments.length; i++) {
     int pindex=Math.min(i,parameters.length - 1);
     ClassNode type=parameters[pindex].getType();
     type=fullyResolveType(type,classGTs);
     ptypes[pindex]=type;
     failure|=!typeCheckMethodArgumentWithGenerics(type,arguments[i],i >= parameters.length - 1);
+    if (shouldCheckMethodGenericTypes && !failure) {
+      GenericsType[] typeGenericsTypes=type.getGenericsTypes();
+      if (type.isUsingGenerics() && typeGenericsTypes != null) {
+        for (int gtIndex=0, typeGenericsTypesLength=typeGenericsTypes.length; gtIndex < typeGenericsTypesLength; gtIndex++) {
+          final GenericsType typeGenericsType=typeGenericsTypes[gtIndex];
+          if (typeGenericsType.isPlaceholder()) {
+            for (            GenericsType methodNodeGenericsType : methodNodeGenericsTypes) {
+              String placeholderName=methodNodeGenericsType.getName();
+              if (methodNodeGenericsType.isPlaceholder() && placeholderName.equals(typeGenericsType.getName())) {
+                ClassNode parameterized=GenericsUtils.parameterizeType(arguments[i],type);
+                ClassNode alignedType=parameterized;
+                if (parameterized.isUsingGenerics() && parameterized.getGenericsTypes() != null) {
+                  alignedType=parameterized.getGenericsTypes()[gtIndex].getType();
+                }
+                if (resolvedMethodGenerics.containsKey(placeholderName)) {
+                  failure|=!resolvedMethodGenerics.get(placeholderName).equals(alignedType);
+                }
+ else {
+                  resolvedMethodGenerics.put(placeholderName,alignedType);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   if (failure) {
     addStaticTypeError("Cannot call " + receiver.getName() + "#"+ toMethodParametersString(candidateMethod.getName(),ptypes)+ " with arguments "+ formatArgumentList(arguments),location);
