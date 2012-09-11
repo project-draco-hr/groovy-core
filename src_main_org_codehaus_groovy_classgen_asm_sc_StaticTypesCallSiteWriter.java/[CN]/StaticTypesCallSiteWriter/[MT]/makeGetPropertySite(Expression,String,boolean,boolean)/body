@@ -18,17 +18,6 @@
     receiverType=receiverType.getGenericsTypes()[0].getType();
   }
   MethodVisitor mv=controller.getMethodVisitor();
-  boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
-  if (!isStaticProperty) {
-    if (receiverType.implementsInterface(MAP_TYPE) || MAP_TYPE.equals(receiverType)) {
-      writeMapDotProperty(receiver,methodName,mv);
-      return;
-    }
-    if (receiverType.implementsInterface(LIST_TYPE) || LIST_TYPE.equals(receiverType)) {
-      writeListDotProperty(receiver,methodName,mv);
-      return;
-    }
-  }
   if (receiverType.isArray() && methodName.equals("length")) {
     receiver.visit(controller.getAcg());
     ClassNode arrayGetReturnType=typeChooser.resolveType(receiver,classNode);
@@ -91,6 +80,17 @@
       call.setImplicitThis(false);
       call.setSourcePosition(receiver);
       call.visit(controller.getAcg());
+      return;
+    }
+  }
+  boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
+  if (!isStaticProperty) {
+    if (receiverType.implementsInterface(MAP_TYPE) || MAP_TYPE.equals(receiverType)) {
+      writeMapDotProperty(receiver,methodName,mv);
+      return;
+    }
+    if (receiverType.implementsInterface(LIST_TYPE) || LIST_TYPE.equals(receiverType)) {
+      writeListDotProperty(receiver,methodName,mv);
       return;
     }
   }
