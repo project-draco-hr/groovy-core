@@ -1,18 +1,18 @@
 {
   Expression objectExpression=pexp.getObjectExpression();
-  ClassNode clazz=getType(objectExpression);
-  if (clazz.isArray() && "length".equals(pexp.getPropertyAsString())) {
+  final ClassNode objectExpressionType=getType(objectExpression);
+  if (objectExpressionType.isArray() && "length".equals(pexp.getPropertyAsString())) {
     if (visitor != null) {
-      PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,int_TYPE,clazz,null,null,null);
+      PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,int_TYPE,objectExpressionType,null,null,null);
       storeType(pexp,int_TYPE);
       visitor.visitProperty(node);
     }
     return true;
   }
   List<ClassNode> tests=new LinkedList<ClassNode>();
-  tests.add(clazz);
-  if (clazz.equals(CLASS_Type) && clazz.getGenericsTypes() != null) {
-    tests.add(clazz.getGenericsTypes()[0].getType());
+  tests.add(objectExpressionType);
+  if (objectExpressionType.equals(CLASS_Type) && objectExpressionType.getGenericsTypes() != null) {
+    tests.add(objectExpressionType.getGenericsTypes()[0].getType());
   }
   if (!temporaryIfBranchTypeInformation.empty()) {
     List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
@@ -25,7 +25,7 @@
   if (propertyName == null)   return false;
   String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
-  if (clazz.isInterface())   tests.add(OBJECT_TYPE);
+  if (objectExpressionType.isInterface())   tests.add(OBJECT_TYPE);
   for (  ClassNode testClass : tests) {
     LinkedList<ClassNode> queue=new LinkedList<ClassNode>();
     queue.add(testClass);
@@ -119,7 +119,25 @@
   for (  ClassNode testClass : tests) {
     if (implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE) || implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE)) {
       if (visitor != null) {
-        PropertyNode node=new PropertyNode(propertyName,Opcodes.ACC_PUBLIC,OBJECT_TYPE,clazz,null,null,null);
+        ClassNode propertyType=OBJECT_TYPE;
+        if (implementsInterfaceOrIsSubclassOf(objectExpressionType,MAP_TYPE)) {
+          ClassNode intf=GenericsUtils.parameterizeType(objectExpressionType,MAP_TYPE.getPlainNodeReference());
+          if (intf.isUsingGenerics() && intf.getGenericsTypes() != null && intf.getGenericsTypes().length == 2) {
+            propertyType=intf.getGenericsTypes()[1].getType();
+          }
+        }
+ else {
+          ClassNode intf=GenericsUtils.parameterizeType(objectExpressionType,LIST_TYPE.getPlainNodeReference());
+          if (intf.isUsingGenerics() && intf.getGenericsTypes() != null && intf.getGenericsTypes().length == 1) {
+            PropertyExpression subExp=new PropertyExpression(new VariableExpression("{}",intf.getGenericsTypes()[0].getType()),pexp.getPropertyAsString());
+            AtomicReference<ClassNode> result=new AtomicReference<ClassNode>();
+            if (existsProperty(subExp,checkForReadOnly,new PropertyLookupVisitor(result))) {
+              intf.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(result.get()))});
+              propertyType=intf;
+            }
+          }
+        }
+        PropertyNode node=new PropertyNode(propertyName,Opcodes.ACC_PUBLIC,propertyType,objectExpressionType,null,null,null);
         visitor.visitProperty(node);
       }
       return true;
