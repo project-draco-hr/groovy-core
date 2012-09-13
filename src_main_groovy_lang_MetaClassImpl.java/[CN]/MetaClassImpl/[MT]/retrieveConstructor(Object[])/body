@@ -1,0 +1,17 @@
+{
+  checkInitalised();
+  if (arguments == null)   arguments=EMPTY_ARGUMENTS;
+  Class[] argClasses=MetaClassHelper.convertToTypeArray(arguments);
+  MetaClassHelper.unwrap(arguments);
+  Object res=chooseMethod("<init>",constructors,argClasses);
+  if (res instanceof MetaMethod)   return (MetaMethod)res;
+  CachedConstructor constructor=(CachedConstructor)res;
+  if (constructor != null)   return new MetaConstructor(constructor,false);
+  if (arguments.length == 1 && arguments[0] instanceof Map) {
+    res=chooseMethod("<init>",constructors,MetaClassHelper.EMPTY_TYPE_ARRAY);
+    if (res instanceof MetaMethod)     return (MetaMethod)res;
+    constructor=(CachedConstructor)res;
+    if (constructor != null)     return new MetaConstructor(constructor,true);
+  }
+  return null;
+}

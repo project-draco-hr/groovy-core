@@ -16,6 +16,8 @@
     numberOfArguments++;
   }
   sig+=")Ljava/lang/Object;";
-  Handle bsmHandle=getBsmHandle(adapter,safe);
-  finishIndyCall(bsmHandle,methodName,sig,numberOfArguments);
+  String callSiteName=METHOD.getCallSiteName();
+  if (adapter == null)   callSiteName=INIT.getCallSiteName();
+  int flags=getMethodCallFlags(adapter,safe);
+  finishIndyCall(BSM,callSiteName,sig,numberOfArguments,methodName,flags);
 }

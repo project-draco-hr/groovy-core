@@ -1,0 +1,15 @@
+{
+  Object receiver=ci.args[0];
+  if (receiver == null) {
+    return NullObject.getNullObject().getMetaClass();
+  }
+ else   if (receiver instanceof GroovyObject) {
+    return ((GroovyObject)receiver).getMetaClass();
+  }
+ else   if (ci.callID == CALL_TYPES.INIT.ordinal()) {
+    return GroovySystem.getMetaClassRegistry().getMetaClass((Class)receiver);
+  }
+ else {
+    return ((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).getMetaClass(receiver);
+  }
+}

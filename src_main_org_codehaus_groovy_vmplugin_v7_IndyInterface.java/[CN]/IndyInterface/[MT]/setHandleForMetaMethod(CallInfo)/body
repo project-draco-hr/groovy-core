@@ -22,10 +22,23 @@
     try {
       Method m=cm.getCachedMethod();
       info.handle=LOOKUP.unreflect(m);
-      if (LOG_ENABLED)       LOG.info("successfully unreflected");
+      if (LOG_ENABLED)       LOG.info("successfully unreflected method");
       if (!isCategoryTypeMethod && isStatic(m)) {
         info.handle=MethodHandles.dropArguments(info.handle,0,Class.class);
       }
+    }
+ catch (    IllegalAccessException e) {
+      throw new GroovyBugError(e);
+    }
+  }
+ else   if (metaMethod instanceof MetaConstructor) {
+    if (LOG_ENABLED)     LOG.info("meta method is MetaConstructor instance");
+    MetaConstructor mc=(MetaConstructor)metaMethod;
+    info.isVargs=mc.isVargsMethod();
+    Constructor con=mc.getCachedConstrcutor().cachedConstructor;
+    try {
+      info.handle=LOOKUP.unreflectConstructor(con);
+      if (LOG_ENABLED)       LOG.info("successfully unreflected constructor");
     }
  catch (    IllegalAccessException e) {
       throw new GroovyBugError(e);

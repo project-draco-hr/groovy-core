@@ -1,0 +1,21 @@
+{
+  boolean safe=(flags & 0x1) != 0;
+  boolean thisCall=(flags & 0x2) != 0;
+  int callID;
+  if (callType.equals(CALL_TYPES.METHOD.getCallSiteName())) {
+    callID=CALL_TYPES.METHOD.ordinal();
+  }
+ else   if (callType.equals(CALL_TYPES.INIT.getCallSiteName())) {
+    callID=CALL_TYPES.INIT.ordinal();
+  }
+ else   if (callType.equals(CALL_TYPES.GET.getCallSiteName())) {
+    callID=CALL_TYPES.GET.ordinal();
+  }
+ else   if (callType.equals(CALL_TYPES.SET.getCallSiteName())) {
+    callID=CALL_TYPES.SET.ordinal();
+  }
+ else {
+    throw new GroovyBugError("Unknown call type: " + callType);
+  }
+  return realBootstrap(caller,name,callID,type,safe,thisCall);
+}
