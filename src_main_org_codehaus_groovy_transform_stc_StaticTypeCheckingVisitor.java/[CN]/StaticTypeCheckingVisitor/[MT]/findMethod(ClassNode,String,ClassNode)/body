@@ -12,7 +12,7 @@
  else {
     methods=receiver.getMethods(name);
     if (receiver.isInterface()) {
-      methods=collectAllInterfaceMethodsByName(receiver,name,methods);
+      collectAllInterfaceMethodsByName(receiver,name,methods);
       methods.addAll(OBJECT_TYPE.getMethods(name));
     }
     if (closureExpression == null) {
@@ -71,7 +71,7 @@
     }
   }
   if (methods.isEmpty()) {
-    methods=collectAllInterfaceMethodsByName(receiver,name,methods);
+    collectAllInterfaceMethodsByName(receiver,name,methods);
   }
   List<MethodNode> chosen=chooseBestMethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
