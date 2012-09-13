@@ -1,0 +1,11 @@
+{
+  ClassNode[] interfaces=receiver.getInterfaces();
+  if (interfaces != null && interfaces.length > 0) {
+    methods=new ArrayList<MethodNode>(methods);
+    for (    ClassNode node : interfaces) {
+      List<MethodNode> intfMethods=node.getMethods(name);
+      methods.addAll(intfMethods);
+    }
+  }
+  return methods;
+}

@@ -12,14 +12,7 @@
  else {
     methods=receiver.getMethods(name);
     if (receiver.isInterface()) {
-      ClassNode[] interfaces=receiver.getInterfaces();
-      if (interfaces != null && interfaces.length > 0) {
-        methods=new ArrayList<MethodNode>(methods);
-        for (        ClassNode node : interfaces) {
-          List<MethodNode> intfMethods=node.getMethods(name);
-          methods.addAll(intfMethods);
-        }
-      }
+      methods=collectAllInterfaceMethodsByName(receiver,name,methods);
       methods.addAll(OBJECT_TYPE.getMethods(name));
     }
     if (closureExpression == null) {
@@ -76,6 +69,9 @@
         }
       }
     }
+  }
+  if (methods.isEmpty()) {
+    methods=collectAllInterfaceMethodsByName(receiver,name,methods);
   }
   List<MethodNode> chosen=chooseBestMethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
