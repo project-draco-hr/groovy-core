@@ -1,0 +1,9 @@
+{
+  if (receiver instanceof Class) {
+    if (LOG_ENABLED)     LOG.info("receiver is a class");
+    ci.method=mci.retrieveStaticMethod(ci.name,removeRealReceiver(ci.args));
+  }
+ else {
+    ci.method=mci.getMethodWithCaching(ci.selector,ci.name,removeRealReceiver(ci.args),false);
+  }
+}

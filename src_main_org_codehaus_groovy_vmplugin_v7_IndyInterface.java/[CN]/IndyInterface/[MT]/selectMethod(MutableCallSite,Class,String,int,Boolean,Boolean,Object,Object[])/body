@@ -10,7 +10,7 @@
   callInfo.safeNavigation=safeNavigation && arguments[0] == null;
   callInfo.thisCall=thisCall;
   if (LOG_ENABLED) {
-    String msg="----------------------------------------------------" + "\n\t\tinvocation of method '" + methodName + "'"+ "\n\t\tsender: "+ sender+ "\n\t\ttargetType: "+ callInfo.targetType+ "\n\t\tsafe navigation: "+ safeNavigation+ "\n\t\tthisCall: "+ thisCall+ "\n\t\twith "+ arguments.length+ " arguments";
+    String msg="----------------------------------------------------" + "\n\t\tinvocation of method '" + methodName + "'"+ "\n\t\tinvocation type: "+ CALL_TYPES.values()[callID]+ "\n\t\tsender: "+ sender+ "\n\t\ttargetType: "+ callInfo.targetType+ "\n\t\tsafe navigation: "+ safeNavigation+ "\n\t\tthisCall: "+ thisCall+ "\n\t\twith "+ arguments.length+ " arguments";
     for (int i=0; i < arguments.length; i++) {
       msg+="\n\t\t\targument[" + i + "] = "+ arguments[i];
     }
@@ -20,7 +20,7 @@
     MetaClass mc=getMetaClass(callInfo);
     if (LOG_ENABLED)     LOG.info("meta class is " + mc);
     setMethodSelectionBase(callInfo,mc);
-    chooseMethod(mc,callInfo);
+    chooseMethodOrProperty(mc,callInfo);
     setHandleForMetaMethod(callInfo);
     correctConstructor(mc,callInfo);
     setMetaClassCallHandleIfNedded(mc,callInfo);
