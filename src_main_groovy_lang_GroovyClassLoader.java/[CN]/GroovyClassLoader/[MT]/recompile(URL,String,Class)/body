@@ -2,15 +2,16 @@
   if (source != null) {
     if ((oldClass != null && isSourceNewer(source,oldClass)) || (oldClass == null)) {
 synchronized (sourceCache) {
-        sourceCache.remove(className);
+        String name=source.toExternalForm();
+        sourceCache.remove(name);
         if (isFile(source)) {
           try {
-            return doParseClass(new GroovyCodeSource(new File(source.toURI()),config.getSourceEncoding()));
+            return parseClass(new GroovyCodeSource(new File(source.toURI()),config.getSourceEncoding()));
           }
  catch (          URISyntaxException e) {
           }
         }
-        return parseClass(source.openStream(),makeFileName(className));
+        return parseClass(source.openStream(),name);
       }
     }
   }
