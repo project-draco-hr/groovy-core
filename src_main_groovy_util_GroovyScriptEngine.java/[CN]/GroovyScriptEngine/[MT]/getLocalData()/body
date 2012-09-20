@@ -1,0 +1,7 @@
+{
+  ThreadLocal<LocalData> local=localData.get();
+  if (local != null)   return local;
+  local=new ThreadLocal<LocalData>();
+  localData=new WeakReference<ThreadLocal<LocalData>>(local);
+  return local;
+}

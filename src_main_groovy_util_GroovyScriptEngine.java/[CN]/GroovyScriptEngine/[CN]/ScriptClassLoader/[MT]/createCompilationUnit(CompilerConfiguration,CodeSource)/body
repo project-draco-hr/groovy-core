@@ -1,7 +1,8 @@
 {
   CompilationUnit cu=super.createCompilationUnit(configuration,source);
-  getLocalCompilationUnit().set(cu);
-  final StringSetMap cache=getDepCache().get();
+  LocalData local=getLocalData().get();
+  local.cu=cu;
+  final StringSetMap cache=local.dependencyCache;
   for (  String depSourcePath : cache.get(".")) {
     try {
       cu.addSource(getResourceConnection(depSourcePath).getURL());
