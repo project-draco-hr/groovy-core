@@ -32,9 +32,7 @@
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  if (!isWithCall) {
-    callArguments.visit(this);
-  }
+  visitMethodCallArguments(argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
@@ -57,9 +55,6 @@
     }
   }
   try {
-    if (isWithCall) {
-      callArguments.visit(this);
-    }
     if (isCallOnClosure) {
       if (objectExpression == VariableExpression.THIS_EXPRESSION) {
         FieldNode field=classNode.getDeclaredField(name);
@@ -210,6 +205,7 @@
         }
       }
     }
+    visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
   }
   finally {
     if (isWithCall) {

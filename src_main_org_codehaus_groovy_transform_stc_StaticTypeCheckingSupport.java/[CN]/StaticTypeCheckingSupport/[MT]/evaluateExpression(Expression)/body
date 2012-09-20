@@ -1,0 +1,23 @@
+{
+  String className="Expression$" + UUID.randomUUID().toString().replace('-','$');
+  ClassNode node=new ClassNode(className,Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE);
+  ReturnStatement code=new ReturnStatement(expr);
+  node.addMethod(new MethodNode("eval",Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code));
+  CompilationUnit cu=new CompilationUnit();
+  cu.addClassNode(node);
+  cu.compile();
+  @SuppressWarnings("unchecked") List<GroovyClass> classes=(List<GroovyClass>)cu.getClasses();
+  Class aClass=cu.getClassLoader().defineClass(className,classes.get(0).getBytes());
+  try {
+    return aClass.getMethod("eval").invoke(null);
+  }
+ catch (  IllegalAccessException e) {
+    throw new GroovyBugError(e);
+  }
+catch (  InvocationTargetException e) {
+    throw new GroovyBugError(e);
+  }
+catch (  NoSuchMethodException e) {
+    throw new GroovyBugError(e);
+  }
+}

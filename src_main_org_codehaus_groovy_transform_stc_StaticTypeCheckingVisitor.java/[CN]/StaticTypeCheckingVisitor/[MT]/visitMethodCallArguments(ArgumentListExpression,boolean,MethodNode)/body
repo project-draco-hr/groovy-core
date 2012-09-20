@@ -1,0 +1,40 @@
+{
+  Parameter[] params=selectedMethod != null ? selectedMethod.getParameters() : Parameter.EMPTY_ARRAY;
+  final List<Expression> expressions=arguments.getExpressions();
+  for (int i=0, expressionsSize=expressions.size(); i < expressionsSize; i++) {
+    final Expression expression=expressions.get(i);
+    if (visitClosures && expression instanceof ClosureExpression || !visitClosures && !(expression instanceof ClosureExpression)) {
+      if (i < params.length && visitClosures) {
+        Parameter param=params[i];
+        List<AnnotationNode> annotations=param.getAnnotations(DELEGATES_TO);
+        if (annotations != null) {
+          for (          AnnotationNode annotation : annotations) {
+            Expression value=annotation.getMember("value");
+            if (value instanceof ClassExpression) {
+              Expression strategy=annotation.getMember("strategy");
+              int stInt=Closure.OWNER_FIRST;
+              if (strategy != null) {
+                stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
+              }
+switch (stInt) {
+case Closure.OWNER_FIRST:
+                withReceiverList.add(value.getType());
+              break;
+case Closure.DELEGATE_FIRST:
+            withReceiverList.add(0,value.getType());
+          break;
+case Closure.OWNER_ONLY:
+        break;
+case Closure.DELEGATE_ONLY:
+      withReceiverList.remove(0);
+    withReceiverList.add(value.getType());
+  break;
+}
+}
+}
+}
+}
+expression.visit(this);
+}
+}
+}
