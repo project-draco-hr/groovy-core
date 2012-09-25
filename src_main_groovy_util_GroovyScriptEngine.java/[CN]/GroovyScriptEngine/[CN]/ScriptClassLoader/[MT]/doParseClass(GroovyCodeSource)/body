@@ -9,16 +9,16 @@
   if (origDep != null)   cache.put(".",origDep);
   Class answer=super.parseClass(codeSource,false);
   cache.makeTransitiveHull();
-  long time=System.currentTimeMillis();
+  long time=getCurrentTime();
   Set<String> entryNames=new HashSet<String>();
   for (  Map.Entry<String,Set<String>> entry : cache.entrySet()) {
     String className=entry.getKey();
     Class clazz=getClassCacheEntry(className);
     if (clazz == null)     continue;
-    String entryName=getPath(clazz);
+    String entryName=getPath(clazz,localData.precompiledEntries);
     if (entryNames.contains(entryName))     continue;
     entryNames.add(entryName);
-    Set<String> value=convertToPaths(entry.getValue());
+    Set<String> value=convertToPaths(entry.getValue(),localData.precompiledEntries);
     ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,time,value,false);
     scriptCache.put(entryName,cacheEntry);
   }

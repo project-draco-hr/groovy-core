@@ -8,7 +8,8 @@
     if (isSourceNewer(entry)) {
       try {
         String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : "UTF-8";
-        clazz=groovyLoader.parseClass(IOGroovyMethods.getText(conn.getInputStream(),encoding),path);
+        String content=IOGroovyMethods.getText(conn.getInputStream(),encoding);
+        clazz=groovyLoader.parseClass(content,path);
       }
  catch (      IOException e) {
         throw new ResourceException(e);

@@ -1,12 +1,12 @@
 {
   if (entry == null)   return true;
+  long mainEntryLastCheck=entry.lastCheck;
   long now=0;
   for (  String scriptName : entry.dependencies) {
     ScriptCacheEntry depEntry=scriptCache.get(scriptName);
     if (depEntry.sourceNewer)     return true;
-    if (now == 0) {
-      now=System.currentTimeMillis();
-    }
+    if (mainEntryLastCheck < depEntry.lastModified)     return true;
+    if (now == 0)     now=getCurrentTime();
     long nextSourceCheck=depEntry.lastCheck + config.getMinimumRecompilationInterval();
     if (nextSourceCheck > now)     continue;
     long lastMod=getLastModified(scriptName);

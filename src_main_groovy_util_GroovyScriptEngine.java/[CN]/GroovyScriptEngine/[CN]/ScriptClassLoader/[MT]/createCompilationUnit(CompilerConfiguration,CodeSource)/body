@@ -3,8 +3,10 @@
   LocalData local=getLocalData().get();
   local.cu=cu;
   final StringSetMap cache=local.dependencyCache;
+  final Map<String,String> precompiledEntries=local.precompiledEntries;
   for (  String depSourcePath : cache.get(".")) {
     try {
+      cache.get(depSourcePath);
       cu.addSource(getResourceConnection(depSourcePath).getURL());
     }
  catch (    ResourceException e) {
@@ -14,7 +16,7 @@
   cu.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
     @Override public void call(    final SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
       if (classNode instanceof InnerClassNode)       return;
-      DependencyTracker dt=new DependencyTracker(source,cache);
+      DependencyTracker dt=new DependencyTracker(source,cache,precompiledEntries);
       dt.visitClass(classNode);
     }
   }
@@ -32,14 +34,17 @@
           ScriptCacheEntry entry=scriptCache.get(path);
           Class clazz=null;
           if (entry != null)           clazz=entry.scriptClass;
-          try {
-            if (GroovyScriptEngine.this.isSourceNewer(entry)) {
+          if (GroovyScriptEngine.this.isSourceNewer(entry)) {
+            try {
               SourceUnit su=compilationUnit.addSource(url);
               return new LookupResult(su,null);
             }
-          }
   finally {
-            forceClose(conn);
+              forceClose(conn);
+            }
+          }
+ else {
+            precompiledEntries.put(origName,path);
           }
           if (clazz != null) {
             ClassNode cn=new ClassNode(clazz);
