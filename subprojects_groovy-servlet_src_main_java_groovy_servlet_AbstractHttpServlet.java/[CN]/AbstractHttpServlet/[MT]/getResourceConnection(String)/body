@@ -1,6 +1,12 @@
 {
-  String basePath=servletContext.getRealPath("/");
-  if (name.startsWith(basePath))   name=name.substring(basePath.length());
+  URI uri=new File(servletContext.getRealPath("/")).toURI();
+  try {
+    String basePath=uri.toURL().toExternalForm();
+    if (name.startsWith(basePath))     name=name.substring(basePath.length());
+  }
+ catch (  MalformedURLException e) {
+    throw new ResourceException("Malformed URL for base path '" + uri + "'",e);
+  }
   name=name.replaceAll("\\\\","/");
   if (name.startsWith("/"))   name=name.substring(1);
   try {
