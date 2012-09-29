@@ -34,7 +34,7 @@
     }
     final Expression interfacesElement=node.getMember("interfaces");
     if (hasBooleanValue(interfacesElement,false))     return;
-    final Set<ClassNode> allInterfaces=type.getAllInterfaces();
+    final Set<ClassNode> allInterfaces=getInterfacesAndSuperInterfaces(type);
     final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
     for (    ClassNode iface : allInterfaces) {
       if (Modifier.isPublic(iface.getModifiers()) && !ownerIfaces.contains(iface)) {

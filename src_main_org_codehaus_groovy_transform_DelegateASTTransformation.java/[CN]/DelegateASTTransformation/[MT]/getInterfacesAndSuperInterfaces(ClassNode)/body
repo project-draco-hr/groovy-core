@@ -1,0 +1,13 @@
+{
+  Set<ClassNode> res=new HashSet<ClassNode>();
+  if (type.isInterface()) {
+    res.add(type);
+    return res;
+  }
+  ClassNode next=type;
+  while (next != null) {
+    Collections.addAll(res,next.getInterfaces());
+    next=next.getSuperClass();
+  }
+  return res;
+}
