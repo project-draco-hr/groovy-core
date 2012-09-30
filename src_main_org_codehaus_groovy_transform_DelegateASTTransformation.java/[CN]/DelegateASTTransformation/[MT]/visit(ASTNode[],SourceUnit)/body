@@ -21,10 +21,12 @@
       fieldMethods.addAll(getAllMethods(next));
     }
     final Expression deprecatedElement=node.getMember("deprecated");
-    final boolean deprecated=hasBooleanValue(deprecatedElement,true);
+    final Expression interfacesElement=node.getMember("interfaces");
+    final boolean skipInterfaces=hasBooleanValue(interfacesElement,false);
+    final boolean includeDeprecated=hasBooleanValue(deprecatedElement,true) || (type.isInterface() && !skipInterfaces);
     final List<MethodNode> ownerMethods=getAllMethods(owner);
     for (    MethodNode mn : fieldMethods) {
-      addDelegateMethod(fieldNode,owner,ownerMethods,mn,deprecated);
+      addDelegateMethod(fieldNode,owner,ownerMethods,mn,includeDeprecated);
     }
     for (    PropertyNode prop : type.getProperties()) {
       if (prop.isStatic() || !prop.isPublic())       continue;
@@ -32,8 +34,7 @@
       addGetterIfNeeded(fieldNode,owner,prop,name);
       addSetterIfNeeded(fieldNode,owner,prop,name);
     }
-    final Expression interfacesElement=node.getMember("interfaces");
-    if (hasBooleanValue(interfacesElement,false))     return;
+    if (skipInterfaces)     return;
     final Set<ClassNode> allInterfaces=getInterfacesAndSuperInterfaces(type);
     final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
     for (    ClassNode iface : allInterfaces) {

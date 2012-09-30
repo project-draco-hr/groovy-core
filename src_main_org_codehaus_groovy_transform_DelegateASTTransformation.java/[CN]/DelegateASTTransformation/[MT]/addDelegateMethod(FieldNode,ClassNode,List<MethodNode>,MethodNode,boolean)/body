@@ -1,6 +1,6 @@
 {
   if (!candidate.isPublic() || candidate.isStatic() || 0 != (candidate.getModifiers() & Opcodes.ACC_SYNTHETIC))   return;
-  if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !deprecated)   return;
+  if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !includeDeprecated)   return;
   for (  MethodNode mn : GROOVYOBJECT_TYPE.getMethods()) {
     if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor())) {
       return;
