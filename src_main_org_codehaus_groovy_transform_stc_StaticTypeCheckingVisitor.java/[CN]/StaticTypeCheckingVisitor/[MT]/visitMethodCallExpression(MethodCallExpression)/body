@@ -37,22 +37,8 @@
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
-    withReceiverList.add(0,receiver);
     lastImplicitItType=receiver;
-    if (callArguments instanceof ArgumentListExpression) {
-      ArgumentListExpression argList=(ArgumentListExpression)callArguments;
-      ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
-      Parameter[] parameters=closure.getParameters();
-      if (parameters.length > 1) {
-        addStaticTypeError("Unexpected number of parameters for a with call",argList);
-      }
- else       if (parameters.length == 1) {
-        Parameter param=parameters[0];
-        if (!param.isDynamicTyped() && !isAssignableTo(receiver,param.getType().redirect())) {
-          addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
-        }
-      }
-    }
+    checkClosureParameters(callArguments,receiver);
   }
   try {
     if (isCallOnClosure) {
@@ -113,24 +99,13 @@
       storeTargetMethod(call,nbOfArgs == 0 ? CLOSURE_CALL_NO_ARG : nbOfArgs == 1 ? CLOSURE_CALL_ONE_ARG : CLOSURE_CALL_VARGS);
     }
  else {
-      List<ClassNode> receivers=new LinkedList<ClassNode>();
-      if (!withReceiverList.isEmpty())       receivers.addAll(withReceiverList);
-      receivers.add(receiver);
-      if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
-        GenericsType clazzGT=receiver.getGenericsTypes()[0];
-        receivers.add(clazzGT.getType());
-      }
-      if (receiver.isInterface()) {
-        receivers.add(OBJECT_TYPE);
-      }
-      if (!temporaryIfBranchTypeInformation.empty()) {
-        List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
-        if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
-      }
+      List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
+      List<Receiver<String>> owners=makeOwnerList(objectExpression);
+      addReceivers(receivers,owners,call.isImplicitThis());
       List<MethodNode> mn=null;
-      ClassNode chosenReceiver=null;
-      for (      ClassNode currentReceiver : receivers) {
-        mn=findMethod(currentReceiver,name,args);
+      Receiver<String> chosenReceiver=null;
+      for (      Receiver<String> currentReceiver : receivers) {
+        mn=findMethod(currentReceiver.getType(),name,args);
         if (!mn.isEmpty() && isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
           List<MethodNode> staticMethods=new LinkedList<MethodNode>();
           List<MethodNode> nonStaticMethods=new LinkedList<MethodNode>();
@@ -150,7 +125,7 @@
           }
         }
         if (!mn.isEmpty()) {
-          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
+          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver.getType(),args,mn.get(0),call);
           chosenReceiver=currentReceiver;
           break;
         }
@@ -187,11 +162,15 @@
           classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            ClassNode irtg=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+            ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
+          String data=chosenReceiver != null ? chosenReceiver.getData() : null;
+          if (data != null) {
+            call.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,data);
+          }
           if (objectExpression instanceof VariableExpression) {
             VariableExpression var=(VariableExpression)objectExpression;
             if (var.isClosureSharedVariable()) {
@@ -210,7 +189,6 @@
   finally {
     if (isWithCall) {
       lastImplicitItType=rememberLastItType;
-      withReceiverList.removeFirst();
     }
   }
 }

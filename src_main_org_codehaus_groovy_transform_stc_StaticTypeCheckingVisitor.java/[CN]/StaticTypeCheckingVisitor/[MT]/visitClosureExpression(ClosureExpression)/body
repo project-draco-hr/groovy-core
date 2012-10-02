@@ -14,7 +14,15 @@
   ClosureExpression oldClosureExpr=closureExpression;
   List<ClassNode> oldClosureReturnTypes=closureReturnTypes;
   closureExpression=expression;
+  DelegationMetadata dmd=getDelegationMetadata(expression);
+  if (dmd == null) {
+    delegationMetadata=new DelegationMetadata(classNode,Closure.OWNER_FIRST,delegationMetadata);
+  }
+ else {
+    delegationMetadata=new DelegationMetadata(dmd.getType(),dmd.getStrategy(),delegationMetadata);
+  }
   super.visitClosureExpression(expression);
+  delegationMetadata=delegationMetadata.getParent();
   MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
   closureReturnAdder.visitMethod(node);
   if (closureReturnTypes != null) {

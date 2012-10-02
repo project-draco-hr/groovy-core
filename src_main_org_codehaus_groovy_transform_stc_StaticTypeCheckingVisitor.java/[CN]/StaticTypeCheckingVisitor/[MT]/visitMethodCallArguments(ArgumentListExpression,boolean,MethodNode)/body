@@ -7,34 +7,24 @@
       if (i < params.length && visitClosures) {
         Parameter param=params[i];
         List<AnnotationNode> annotations=param.getAnnotations(DELEGATES_TO);
-        if (annotations != null) {
+        if (annotations != null && !annotations.isEmpty()) {
           for (          AnnotationNode annotation : annotations) {
             Expression value=annotation.getMember("value");
             if (value instanceof ClassExpression) {
               Expression strategy=annotation.getMember("strategy");
-              int stInt=Closure.OWNER_FIRST;
+              Integer stInt=Closure.OWNER_FIRST;
               if (strategy != null) {
                 stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
               }
-switch (stInt) {
-case Closure.OWNER_FIRST:
-                withReceiverList.add(value.getType());
-              break;
-case Closure.DELEGATE_FIRST:
-            withReceiverList.add(0,value.getType());
-          break;
-case Closure.OWNER_ONLY:
-        break;
-case Closure.DELEGATE_ONLY:
-      withReceiverList.remove(0);
-    withReceiverList.add(value.getType());
-  break;
-}
-}
-}
-}
-}
-expression.visit(this);
-}
-}
+              expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,delegationMetadata));
+            }
+          }
+        }
+      }
+      expression.visit(this);
+      if (expression.getNodeMetaData(StaticTypesMarker.DELEGATION_METADATA) != null) {
+        expression.removeNodeMetaData(StaticTypesMarker.DELEGATION_METADATA);
+      }
+    }
+  }
 }

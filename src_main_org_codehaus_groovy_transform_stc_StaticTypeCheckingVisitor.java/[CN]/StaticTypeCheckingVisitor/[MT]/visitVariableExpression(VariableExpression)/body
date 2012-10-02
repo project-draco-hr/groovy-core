@@ -13,9 +13,10 @@
   if (vexp.getAccessedVariable() instanceof DynamicVariable) {
     DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
     String dynName=dyn.getName();
-    List<ClassNode> checkList=new LinkedList<ClassNode>(withReceiverList);
-    checkList.add(classNode);
-    for (    ClassNode node : checkList) {
+    List<Receiver<String>> checkList=new LinkedList<Receiver<String>>();
+    addReceivers(checkList,Collections.singletonList(Receiver.<String>make(classNode)),true);
+    for (    Receiver<String> receiver : checkList) {
+      ClassNode node=receiver.getType();
       if (node.getProperty(dynName) != null) {
         storeType(vexp,node.getProperty(dynName).getType());
         return;
