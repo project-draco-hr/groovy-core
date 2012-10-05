@@ -1,0 +1,10 @@
+{
+  if ((adapter == invokeMethod || adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod) && !spreadSafe) {
+    String methodName=getMethodName(message);
+    if (methodName != null) {
+      controller.getCallSiteWriter().makeCallSite(receiver,methodName,arguments,safe,implicitThis,adapter == invokeMethodOnCurrent,adapter == invokeStaticMethod);
+      return true;
+    }
+  }
+  return false;
+}

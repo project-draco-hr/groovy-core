@@ -1,23 +1,7 @@
 {
-  boolean containsSpreadExpression=AsmClassGenerator.containsSpreadExpression(arguments);
-  if (origin instanceof MethodCallExpression && !containsSpreadExpression) {
-    MethodCallExpression mce=(MethodCallExpression)origin;
-    MethodNode target=mce.getMethodTarget();
-    if (writeDirectMethodCall(target,implicitThis,receiver,makeArgumentList(arguments)))     return;
-  }
-  ClassNode cn=controller.getClassNode();
-  if (controller.isInClosure() && !implicitThis && AsmClassGenerator.isThisExpression(receiver))   cn=cn.getOuterClass();
-  ClassExpression sender=new ClassExpression(cn);
   OperandStack operandStack=controller.getOperandStack();
   CompileStack compileStack=controller.getCompileStack();
   AsmClassGenerator acg=controller.getAcg();
-  if ((adapter == null || adapter == invokeMethod || adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod) && !spreadSafe) {
-    String methodName=getMethodName(message);
-    if (methodName != null) {
-      makeIndyCall(adapter,receiver,implicitThis,safe,methodName,arguments);
-      return;
-    }
-  }
   compileStack.pushLHS(false);
   if (adapter == AsmClassGenerator.setProperty) {
     ConstantExpression.NULL.visit(acg);
@@ -55,6 +39,7 @@
       if (argument instanceof CastExpression)       acg.loadWrapper(argument);
     }
   }
+  if (adapter == null)   adapter=invokeMethod;
   adapter.call(controller.getMethodVisitor(),numberOfArguments,safe,spreadSafe);
   compileStack.popLHS();
   operandStack.replace(ClassHelper.OBJECT_TYPE,operandsToRemove);

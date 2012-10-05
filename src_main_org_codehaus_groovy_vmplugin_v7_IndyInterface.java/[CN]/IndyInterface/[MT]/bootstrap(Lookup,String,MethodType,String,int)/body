@@ -1,6 +1,7 @@
 {
-  boolean safe=(flags & 0x1) != 0;
-  boolean thisCall=(flags & 0x2) != 0;
+  boolean safe=(flags & SAFE_NAVIGATION) != 0;
+  boolean thisCall=(flags & THIS_CALL) != 0;
+  boolean spreadCall=(flags & SPREAD_CALL) != 0;
   int callID;
   if (callType.equals(CALL_TYPES.METHOD.getCallSiteName())) {
     callID=CALL_TYPES.METHOD.ordinal();
@@ -17,5 +18,5 @@
  else {
     throw new GroovyBugError("Unknown call type: " + callType);
   }
-  return realBootstrap(caller,name,callID,type,safe,thisCall);
+  return realBootstrap(caller,name,callID,type,safe,thisCall,spreadCall);
 }

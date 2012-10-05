@@ -1,6 +1,7 @@
 {
   if (ci.handle == null)   return;
-  MethodHandle fallback=makeFallBack(ci.callSite,ci.sender,ci.name,ci.callID,ci.targetType,ci.safeNavigationOrig,ci.thisCall);
+  if (ci.spread)   return;
+  MethodHandle fallback=makeFallBack(ci.callSite,ci.sender,ci.name,ci.callID,ci.targetType,ci.safeNavigationOrig,ci.thisCall,ci.spread);
   if (receiver instanceof GroovyObject) {
     GroovyObject go=(GroovyObject)receiver;
     MetaClass mc=(MetaClass)go.getMetaClass();
