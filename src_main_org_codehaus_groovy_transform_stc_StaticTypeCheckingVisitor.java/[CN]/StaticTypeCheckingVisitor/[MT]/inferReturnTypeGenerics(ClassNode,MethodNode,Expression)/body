@@ -76,6 +76,12 @@
       }
     }
   }
+  if (returnType.isGenericsPlaceHolder()) {
+    GenericsType resolved=resolvedPlaceholders.get(returnType.getUnresolvedName());
+    if (resolved != null && !resolved.isPlaceholder() && !resolved.isWildcard()) {
+      return resolved.getType();
+    }
+  }
   GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
   for (int i=0; i < copy.length; i++) {
     GenericsType returnTypeGeneric=returnTypeGenerics[i];
