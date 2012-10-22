@@ -10,13 +10,35 @@
         if (annotations != null && !annotations.isEmpty()) {
           for (          AnnotationNode annotation : annotations) {
             Expression value=annotation.getMember("value");
+            Expression strategy=annotation.getMember("strategy");
+            Integer stInt=Closure.OWNER_FIRST;
+            if (strategy != null) {
+              stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
+            }
             if (value instanceof ClassExpression) {
-              Expression strategy=annotation.getMember("strategy");
-              Integer stInt=Closure.OWNER_FIRST;
-              if (strategy != null) {
-                stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
-              }
               expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,delegationMetadata));
+            }
+ else {
+              Expression parameter=annotation.getMember("target");
+              String parameterName=parameter != null && parameter instanceof ConstantExpression ? parameter.getText() : "";
+              for (int j=0, paramsLength=params.length; j < paramsLength; j++) {
+                final Parameter methodParam=params[j];
+                List<AnnotationNode> targets=methodParam.getAnnotations(DELEGATES_TO_TARGET);
+                if (targets != null && targets.size() == 1) {
+                  AnnotationNode targetAnnotation=targets.get(0);
+                  Expression idMember=targetAnnotation.getMember("value");
+                  String id=idMember != null && idMember instanceof ConstantExpression ? idMember.getText() : "";
+                  if (id.equals(parameterName)) {
+                    if (j < expressionsSize) {
+                      Expression actualArgument=expressions.get(j);
+                      expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(getType(actualArgument),stInt,delegationMetadata));
+                    }
+                  }
+                }
+              }
+              if (expression.getNodeMetaData(StaticTypesMarker.DELEGATION_METADATA) == null) {
+                addError("Not enough arguments found for a @DelegatesTo method call. Please check that you either use an explicit class or @DelegatesTo.Target with a correct id",arguments);
+              }
             }
           }
         }
