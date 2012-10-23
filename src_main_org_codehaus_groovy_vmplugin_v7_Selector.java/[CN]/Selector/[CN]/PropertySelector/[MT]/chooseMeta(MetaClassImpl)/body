@@ -1,0 +1,30 @@
+{
+  Object receiver=getCorrectedReceiver();
+  if (receiver instanceof GroovyObject) {
+    Class aClass=receiver.getClass();
+    Method reflectionMethod=null;
+    try {
+      reflectionMethod=aClass.getMethod("getProperty",String.class);
+      if (!reflectionMethod.isSynthetic()) {
+        handle=LOOKUP.unreflect(reflectionMethod);
+        method=new ReflectionMetaMethod(new CachedMethod(reflectionMethod));
+        args=new Object[]{args[0],name};
+        ;
+        genericInvoker=true;
+        return;
+      }
+    }
+ catch (    ReflectiveOperationException e) {
+    }
+  }
+  if (method == null) {
+    MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
+    if (res instanceof MethodMetaProperty) {
+      MethodMetaProperty mmp=(MethodMetaProperty)res;
+      method=mmp.getMetaMethod();
+    }
+ else {
+      property=res;
+    }
+  }
+}

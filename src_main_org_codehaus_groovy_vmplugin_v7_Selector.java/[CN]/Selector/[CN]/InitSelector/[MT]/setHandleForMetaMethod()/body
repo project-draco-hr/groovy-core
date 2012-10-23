@@ -1,0 +1,9 @@
+{
+  super.setHandleForMetaMethod();
+  if (handle == null)   return;
+  if (beanConstructor) {
+    MethodHandle con=BEAN_CONSTRUCTOR_PROPERTY_SETTER.bindTo(mc);
+    handle=MethodHandles.foldArguments(con,handle.asType(MethodType.methodType(Object.class)));
+  }
+  handle=MethodHandles.dropArguments(handle,0,Class.class);
+}

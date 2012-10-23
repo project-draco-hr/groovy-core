@@ -1,0 +1,19 @@
+{
+  this.callType=callType;
+  this.targetType=callSite.type();
+  this.name=methodName;
+  this.args=spread(arguments,spreadCall);
+  this.callSite=callSite;
+  this.sender=sender;
+  this.safeNavigationOrig=safeNavigation;
+  this.safeNavigation=safeNavigation && arguments[0] == null;
+  this.thisCall=thisCall;
+  this.spread=spreadCall;
+  if (LOG_ENABLED) {
+    String msg="----------------------------------------------------" + "\n\t\tinvocation of method '" + methodName + "'"+ "\n\t\tinvocation type: "+ callType+ "\n\t\tsender: "+ sender+ "\n\t\ttargetType: "+ targetType+ "\n\t\tsafe navigation: "+ safeNavigation+ "\n\t\tthisCall: "+ thisCall+ "\n\t\tspreadCall: "+ spreadCall+ "\n\t\twith "+ arguments.length+ " arguments";
+    for (int i=0; i < arguments.length; i++) {
+      msg+="\n\t\t\targument[" + i + "] = "+ arguments[i];
+    }
+    LOG.info(msg);
+  }
+}

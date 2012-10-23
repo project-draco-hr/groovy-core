@@ -1,0 +1,70 @@
+{
+  MetaMethod metaMethod=method;
+  if (metaMethod instanceof NumberNumberMetaMethod) {
+    if (LOG_ENABLED)     LOG.info("meta method is number method");
+    catchException=false;
+    if (IndyMath.chooseMathMethod(this,metaMethod)) {
+      if (LOG_ENABLED)       LOG.info("indy math successfull");
+      return;
+    }
+  }
+  boolean isCategoryTypeMethod=metaMethod instanceof NewInstanceMetaMethod;
+  if (LOG_ENABLED)   LOG.info("meta method is category type method: " + isCategoryTypeMethod);
+  if (metaMethod instanceof ReflectionMetaMethod) {
+    if (LOG_ENABLED)     LOG.info("meta method is reflective method");
+    ReflectionMetaMethod rmm=(ReflectionMetaMethod)metaMethod;
+    metaMethod=rmm.getCachedMethod();
+  }
+  if (metaMethod instanceof CachedMethod) {
+    if (LOG_ENABLED)     LOG.info("meta method is CachedMethod instance");
+    CachedMethod cm=(CachedMethod)metaMethod;
+    isVargs=cm.isVargsMethod();
+    try {
+      Method m=cm.getCachedMethod();
+      handle=LOOKUP.unreflect(m);
+      if (LOG_ENABLED)       LOG.info("successfully unreflected method");
+      if (!isCategoryTypeMethod && isStatic(m)) {
+        handle=MethodHandles.dropArguments(handle,0,Class.class);
+      }
+    }
+ catch (    IllegalAccessException e) {
+      throw new GroovyBugError(e);
+    }
+  }
+ else   if (metaMethod instanceof MetaConstructor) {
+    if (LOG_ENABLED)     LOG.info("meta method is MetaConstructor instance");
+    MetaConstructor mc=(MetaConstructor)metaMethod;
+    isVargs=mc.isVargsMethod();
+    Constructor con=mc.getCachedConstrcutor().cachedConstructor;
+    try {
+      handle=LOOKUP.unreflectConstructor(con);
+      if (LOG_ENABLED)       LOG.info("successfully unreflected constructor");
+    }
+ catch (    IllegalAccessException e) {
+      throw new GroovyBugError(e);
+    }
+  }
+ else   if (method != null) {
+    if (LOG_ENABLED)     LOG.info("meta method is dgm helper");
+    handle=META_METHOD_INVOKER;
+    handle=handle.bindTo(method);
+    if (LOG_ENABLED)     LOG.info("bound method name to META_METHOD_INVOKER");
+    if (method.getNativeParameterTypes().length == 1 && args.length == 1) {
+      handle=MethodHandles.insertArguments(handle,1,new Object[]{new Object[]{null}});
+      if (LOG_ENABLED)       LOG.info("null argument expansion");
+    }
+ else     if (method.isVargsMethod()) {
+      handle=handle.asCollector(Object[].class,1);
+      handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
+      currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
+      currentType=currentType.insertParameterTypes(0,method.getDeclaringClass().getTheClass());
+      if (LOG_ENABLED)       LOG.info("wrapping vargs for dgm helper");
+    }
+ else {
+      handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
+      currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
+      currentType=currentType.insertParameterTypes(0,method.getDeclaringClass().getTheClass());
+      if (LOG_ENABLED)       LOG.info("normal dgm helper wrapping");
+    }
+  }
+}
