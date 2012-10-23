@@ -6,6 +6,9 @@
  else   if (receiver instanceof GroovyObject) {
     mc=((GroovyObject)receiver).getMetaClass();
   }
+ else   if (receiver instanceof Class) {
+    mc=GroovySystem.getMetaClassRegistry().getMetaClass((Class)receiver);
+  }
  else {
     mc=((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).getMetaClass(receiver);
   }

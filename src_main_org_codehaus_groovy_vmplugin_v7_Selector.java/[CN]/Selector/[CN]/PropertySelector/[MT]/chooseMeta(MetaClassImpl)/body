@@ -7,9 +7,7 @@
       reflectionMethod=aClass.getMethod("getProperty",String.class);
       if (!reflectionMethod.isSynthetic()) {
         handle=LOOKUP.unreflect(reflectionMethod);
-        method=new ReflectionMetaMethod(new CachedMethod(reflectionMethod));
-        args=new Object[]{args[0],name};
-        ;
+        handle=MethodHandles.insertArguments(handle,1,name);
         genericInvoker=true;
         return;
       }
