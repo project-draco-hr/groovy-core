@@ -4,7 +4,9 @@
     if (typeCheckingContext.currentBinaryExpression != null && typeCheckingContext.currentBinaryExpression.getLeftExpression() == pexp && isAssignment(typeCheckingContext.currentBinaryExpression.getOperation().getType())) {
       if (hasSetter(pexp))       return;
     }
-    Expression objectExpression=pexp.getObjectExpression();
-    addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
+    if (!handleUnresolvedProperty(pexp)) {
+      Expression objectExpression=pexp.getObjectExpression();
+      addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
+    }
   }
 }

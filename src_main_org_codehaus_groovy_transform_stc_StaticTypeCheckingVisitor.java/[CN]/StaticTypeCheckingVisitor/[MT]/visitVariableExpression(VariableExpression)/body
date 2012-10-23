@@ -26,6 +26,8 @@
         return;
       }
     }
-    addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
+    if (!handleUnresolvedVariableExpression(vexp)) {
+      addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
+    }
   }
 }
