@@ -14,12 +14,12 @@
   if (objectExpressionType.equals(CLASS_Type) && objectExpressionType.getGenericsTypes() != null) {
     tests.add(objectExpressionType.getGenericsTypes()[0].getType());
   }
-  if (!temporaryIfBranchTypeInformation.empty()) {
+  if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
     List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
     if (classNodes != null)     tests.addAll(classNodes);
   }
-  if (lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
-    tests.add(lastImplicitItType);
+  if (typeCheckingContext.lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
+    tests.add(typeCheckingContext.lastImplicitItType);
   }
   String propertyName=pexp.getPropertyAsString();
   if (propertyName == null)   return false;
@@ -94,17 +94,6 @@
           ClassNode cn=inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS);
           storeInferredTypeForPropertyExpression(pexp,cn);
           return true;
-        }
-        if (pluginFactory != null) {
-          TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
-          if (plugin != null) {
-            PropertyNode result=plugin.resolveProperty(current,propertyName);
-            if (result != null) {
-              if (visitor != null)               visitor.visitProperty(result);
-              storeInferredTypeForPropertyExpression(pexp,result.getType());
-              return true;
-            }
-          }
         }
         if (!isAttributeExpression && current.getSuperClass() != null) {
           queue.add(current.getSuperClass());

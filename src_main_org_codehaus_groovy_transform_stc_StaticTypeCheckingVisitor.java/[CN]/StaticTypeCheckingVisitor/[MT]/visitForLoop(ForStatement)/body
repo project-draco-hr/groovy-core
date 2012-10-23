@@ -20,12 +20,12 @@
     if (forLoopVariableType != DYNAMIC_TYPE) {
       componentType=forLoopVariableType;
     }
-    controlStructureVariables.put(forLoop.getVariable(),componentType);
+    typeCheckingContext.controlStructureVariables.put(forLoop.getVariable(),componentType);
     try {
       super.visitForLoop(forLoop);
     }
   finally {
-      controlStructureVariables.remove(forLoop.getVariable());
+      typeCheckingContext.controlStructureVariables.remove(forLoop.getVariable());
     }
   }
   boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);

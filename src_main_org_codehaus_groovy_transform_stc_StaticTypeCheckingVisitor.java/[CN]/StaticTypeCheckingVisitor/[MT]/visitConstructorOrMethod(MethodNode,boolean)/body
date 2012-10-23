@@ -1,9 +1,9 @@
 {
-  MethodNode old=this.methodNode;
-  this.methodNode=node;
+  MethodNode old=this.typeCheckingContext.methodNode;
+  this.typeCheckingContext.methodNode=node;
   super.visitConstructorOrMethod(node,isConstructor);
   if (!isConstructor) {
     returnAdder.visitMethod(node);
   }
-  this.methodNode=old;
+  this.typeCheckingContext.methodNode=old;
 }

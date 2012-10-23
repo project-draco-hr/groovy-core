@@ -11,25 +11,25 @@
     typesBeforeVisit=new HashMap<VariableExpression,ListHashMap>();
     saveVariableExpressionMetadata(closureSharedExpressions,typesBeforeVisit);
   }
-  ClosureExpression oldClosureExpr=closureExpression;
-  List<ClassNode> oldClosureReturnTypes=closureReturnTypes;
-  closureExpression=expression;
+  ClosureExpression oldClosureExpr=typeCheckingContext.closureExpression;
+  List<ClassNode> oldClosureReturnTypes=typeCheckingContext.closureReturnTypes;
+  typeCheckingContext.closureExpression=expression;
   DelegationMetadata dmd=getDelegationMetadata(expression);
   if (dmd == null) {
-    delegationMetadata=new DelegationMetadata(classNode,Closure.OWNER_FIRST,delegationMetadata);
+    typeCheckingContext.delegationMetadata=new DelegationMetadata(typeCheckingContext.classNode,Closure.OWNER_FIRST,typeCheckingContext.delegationMetadata);
   }
  else {
-    delegationMetadata=new DelegationMetadata(dmd.getType(),dmd.getStrategy(),delegationMetadata);
+    typeCheckingContext.delegationMetadata=new DelegationMetadata(dmd.getType(),dmd.getStrategy(),typeCheckingContext.delegationMetadata);
   }
   super.visitClosureExpression(expression);
-  delegationMetadata=delegationMetadata.getParent();
+  typeCheckingContext.delegationMetadata=typeCheckingContext.delegationMetadata.getParent();
   MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
   closureReturnAdder.visitMethod(node);
-  if (closureReturnTypes != null) {
-    expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(closureReturnTypes));
+  if (typeCheckingContext.closureReturnTypes != null) {
+    expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(typeCheckingContext.closureReturnTypes));
   }
-  closureExpression=oldClosureExpr;
-  closureReturnTypes=oldClosureReturnTypes;
+  typeCheckingContext.closureExpression=oldClosureExpr;
+  typeCheckingContext.closureReturnTypes=oldClosureReturnTypes;
   boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);
   if (typeChanged)   visitClosureExpression(expression);
   restoreVariableExpressionMetadata(typesBeforeVisit);

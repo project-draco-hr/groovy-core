@@ -1,13 +1,13 @@
 {
   Map<VariableExpression,ClassNode> assignments=new HashMap<VariableExpression,ClassNode>();
-  if (!ifElseForWhileAssignmentTracker.isEmpty()) {
-    for (    Map.Entry<VariableExpression,List<ClassNode>> entry : ifElseForWhileAssignmentTracker.entrySet()) {
+  if (!typeCheckingContext.ifElseForWhileAssignmentTracker.isEmpty()) {
+    for (    Map.Entry<VariableExpression,List<ClassNode>> entry : typeCheckingContext.ifElseForWhileAssignmentTracker.entrySet()) {
       VariableExpression key=entry.getKey();
       ClassNode cn=lowestUpperBound(entry.getValue());
       storeType(key,cn);
       assignments.put(key,cn);
     }
   }
-  ifElseForWhileAssignmentTracker=oldTracker;
+  typeCheckingContext.ifElseForWhileAssignmentTracker=oldTracker;
   return assignments;
 }

@@ -8,15 +8,15 @@
   }
  else   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
-    if (vexp == VariableExpression.THIS_EXPRESSION)     return classNode;
-    if (vexp == VariableExpression.SUPER_EXPRESSION)     return classNode.getSuperClass();
+    if (vexp == VariableExpression.THIS_EXPRESSION)     return typeCheckingContext.classNode;
+    if (vexp == VariableExpression.SUPER_EXPRESSION)     return typeCheckingContext.classNode.getSuperClass();
     final Variable variable=vexp.getAccessedVariable();
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
       return getType((Expression)variable);
     }
     if (variable instanceof Parameter) {
       Parameter parameter=(Parameter)variable;
-      ClassNode type=controlStructureVariables.get(parameter);
+      ClassNode type=typeCheckingContext.controlStructureVariables.get(parameter);
       if (type != null)       return type;
     }
   }
@@ -64,8 +64,8 @@
     return inferMapExpressionType((MapExpression)exp);
   }
   if (exp instanceof MethodNode) {
-    if ((exp == GET_DELEGATE || exp == GET_OWNER || exp == GET_THISOBJECT) && closureExpression != null) {
-      return classNode;
+    if ((exp == GET_DELEGATE || exp == GET_OWNER || exp == GET_THISOBJECT) && typeCheckingContext.closureExpression != null) {
+      return typeCheckingContext.classNode;
     }
     ClassNode ret=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
     return ret != null ? ret : ((MethodNode)exp).getReturnType();

@@ -1,7 +1,7 @@
 {
   super.visitReturnStatement(statement);
   checkReturnType(statement);
-  if (closureExpression != null && statement.getExpression() != ConstantExpression.NULL) {
+  if (typeCheckingContext.closureExpression != null && statement.getExpression() != ConstantExpression.NULL) {
     addClosureReturnType(getType(statement.getExpression()));
   }
 }

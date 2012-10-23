@@ -1,6 +1,6 @@
 {
-  BinaryExpression oldBinaryExpression=currentBinaryExpression;
-  currentBinaryExpression=expression;
+  BinaryExpression oldBinaryExpression=typeCheckingContext.currentBinaryExpression;
+  typeCheckingContext.currentBinaryExpression=expression;
   try {
     super.visitBinaryExpression(expression);
     final Expression leftExpression=expression.getLeftExpression();
@@ -40,16 +40,16 @@
  else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
         resultType=lType;
       }
-      if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
+      if (typeCheckingContext.ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
         Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
         if (accessedVariable instanceof VariableExpression) {
           VariableExpression var=(VariableExpression)accessedVariable;
-          List<ClassNode> types=ifElseForWhileAssignmentTracker.get(var);
+          List<ClassNode> types=typeCheckingContext.ifElseForWhileAssignmentTracker.get(var);
           if (types == null) {
             types=new LinkedList<ClassNode>();
             ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
             if (type != null)             types.add(type);
-            ifElseForWhileAssignmentTracker.put(var,types);
+            typeCheckingContext.ifElseForWhileAssignmentTracker.put(var,types);
           }
           types.add(resultType);
         }
@@ -73,6 +73,6 @@
     }
   }
   finally {
-    currentBinaryExpression=oldBinaryExpression;
+    typeCheckingContext.currentBinaryExpression=oldBinaryExpression;
   }
 }

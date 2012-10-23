@@ -4,7 +4,7 @@
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call);
     return;
   }
-  final ClassNode rememberLastItType=lastImplicitItType;
+  final ClassNode rememberLastItType=typeCheckingContext.lastImplicitItType;
   Expression callArguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
@@ -15,7 +15,7 @@
   ClassNode[] args=getArgumentTypes(argumentList);
   final ClassNode receiver=call.getOwnerType();
   if (isWithCall) {
-    lastImplicitItType=receiver;
+    typeCheckingContext.lastImplicitItType=receiver;
     checkClosureParameters(callArguments,receiver);
   }
   try {
@@ -40,16 +40,16 @@
  else {
       if (mn.size() == 1) {
         MethodNode directMethodCallCandidate=mn.get(0);
-        ClassNode currentClassNode=classNode;
-        classNode=directMethodCallCandidate.getDeclaringClass();
-        for (        ClassNode node : source.getAST().getClasses()) {
-          if (isClassInnerClassOrEqualTo(classNode,node)) {
+        ClassNode currentClassNode=typeCheckingContext.classNode;
+        typeCheckingContext.classNode=directMethodCallCandidate.getDeclaringClass();
+        for (        ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
+          if (isClassInnerClassOrEqualTo(typeCheckingContext.classNode,node)) {
             silentlyVisitMethodNode(directMethodCallCandidate);
             break;
           }
         }
         pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-        classNode=currentClassNode;
+        typeCheckingContext.classNode=currentClassNode;
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
           ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
@@ -65,7 +65,7 @@
   }
   finally {
     if (isWithCall) {
-      lastImplicitItType=rememberLastItType;
+      typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
   }
 }

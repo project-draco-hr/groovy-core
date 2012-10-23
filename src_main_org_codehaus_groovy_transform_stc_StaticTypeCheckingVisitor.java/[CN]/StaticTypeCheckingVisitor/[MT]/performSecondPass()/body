@@ -1,5 +1,5 @@
 {
-  for (  SecondPassExpression wrapper : secondPassExpressions) {
+  for (  SecondPassExpression wrapper : typeCheckingContext.secondPassExpressions) {
     Expression expression=wrapper.getExpression();
     if (expression instanceof MethodCallExpression) {
       MethodCallExpression call=(MethodCallExpression)expression;
@@ -8,7 +8,7 @@
         Variable target=findTargetVariable((VariableExpression)objectExpression);
         if (target instanceof VariableExpression) {
           VariableExpression var=(VariableExpression)target;
-          List<ClassNode> classNodes=closureSharedVariablesAssignmentTypes.get(var);
+          List<ClassNode> classNodes=typeCheckingContext.closureSharedVariablesAssignmentTypes.get(var);
           if (classNodes != null && classNodes.size() > 1) {
             ClassNode lub=lowestUpperBound(classNodes);
             MethodNode methodNode=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);

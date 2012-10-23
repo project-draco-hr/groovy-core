@@ -15,7 +15,7 @@
       collectAllInterfaceMethodsByName(receiver,name,methods);
       methods.addAll(OBJECT_TYPE.getMethods(name));
     }
-    if (closureExpression == null) {
+    if (typeCheckingContext.closureExpression == null) {
       ClassNode parent=receiver;
       while (parent instanceof InnerClassNode && !parent.isStaticClass()) {
         parent=receiver.getOuterClass();
@@ -91,12 +91,5 @@
     return chosen;
   }
   if (ClassHelper.GSTRING_TYPE.equals(receiver))   return findMethod(ClassHelper.STRING_TYPE,name,args);
-  if (pluginFactory != null) {
-    TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
-    if (plugin != null) {
-      List<MethodNode> methodNodes=plugin.findMethod(receiver,name,args);
-      if (methodNodes != null && !methodNodes.isEmpty())       return methodNodes;
-    }
-  }
   return EMPTY_METHODNODE_LIST;
 }

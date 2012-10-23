@@ -1,7 +1,7 @@
 {
-  final boolean osc=isInStaticContext;
+  final boolean osc=typeCheckingContext.isInStaticContext;
   try {
-    isInStaticContext=node.isInStaticContext();
+    typeCheckingContext.isInStaticContext=node.isInStaticContext();
     super.visitField(node);
     Expression init=node.getInitialExpression();
     if (init != null) {
@@ -15,6 +15,6 @@
     }
   }
   finally {
-    isInStaticContext=osc;
+    typeCheckingContext.isInStaticContext=osc;
   }
 }

@@ -27,7 +27,7 @@
       return;
     }
   }
-  final ClassNode rememberLastItType=lastImplicitItType;
+  final ClassNode rememberLastItType=typeCheckingContext.lastImplicitItType;
   Expression callArguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
@@ -37,13 +37,13 @@
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
-    lastImplicitItType=receiver;
+    typeCheckingContext.lastImplicitItType=receiver;
     checkClosureParameters(callArguments,receiver);
   }
   try {
     if (isCallOnClosure) {
       if (objectExpression == VariableExpression.THIS_EXPRESSION) {
-        FieldNode field=classNode.getDeclaredField(name);
+        FieldNode field=typeCheckingContext.classNode.getDeclaredField(name);
         GenericsType[] genericsTypes=field.getType().getGenericsTypes();
         if (genericsTypes != null) {
           ClassNode closureReturnType=genericsTypes[0].getType();
@@ -106,7 +106,7 @@
       Receiver<String> chosenReceiver=null;
       for (      Receiver<String> currentReceiver : receivers) {
         mn=findMethod(currentReceiver.getType(),name,args);
-        if (!mn.isEmpty() && isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
+        if (!mn.isEmpty() && typeCheckingContext.isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
           List<MethodNode> staticMethods=new LinkedList<MethodNode>();
           List<MethodNode> nonStaticMethods=new LinkedList<MethodNode>();
           for (          final MethodNode node : mn) {
@@ -130,7 +130,7 @@
           break;
         }
       }
-      if (mn.isEmpty() && closureExpression != null && args.length == 0) {
+      if (mn.isEmpty() && typeCheckingContext.closureExpression != null && args.length == 0) {
         if ("getDelegate".equals(name)) {
           mn=Collections.singletonList(GET_DELEGATE);
         }
@@ -150,16 +150,16 @@
         }
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
-          ClassNode currentClassNode=classNode;
-          classNode=directMethodCallCandidate.getDeclaringClass();
-          for (          ClassNode node : source.getAST().getClasses()) {
-            if (isClassInnerClassOrEqualTo(classNode,node)) {
+          ClassNode currentClassNode=typeCheckingContext.classNode;
+          typeCheckingContext.classNode=directMethodCallCandidate.getDeclaringClass();
+          for (          ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
+            if (isClassInnerClassOrEqualTo(typeCheckingContext.classNode,node)) {
               silentlyVisitMethodNode(directMethodCallCandidate);
               break;
             }
           }
           pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-          classNode=currentClassNode;
+          typeCheckingContext.classNode=currentClassNode;
           ClassNode returnType=getType(directMethodCallCandidate);
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
@@ -175,7 +175,7 @@
             VariableExpression var=(VariableExpression)objectExpression;
             if (var.isClosureSharedVariable()) {
               SecondPassExpression<ClassNode[]> wrapper=new SecondPassExpression<ClassNode[]>(call,args);
-              secondPassExpressions.add(wrapper);
+              typeCheckingContext.secondPassExpressions.add(wrapper);
             }
           }
         }
@@ -188,7 +188,7 @@
   }
   finally {
     if (isWithCall) {
-      lastImplicitItType=rememberLastItType;
+      typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
   }
 }

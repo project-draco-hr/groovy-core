@@ -1,13 +1,13 @@
 {
   if (isSkipMode(node))   return;
-  if (!methodsToBeVisited.isEmpty() && !methodsToBeVisited.contains(node))   return;
-  if (alreadyVisitedMethods.contains(node))   return;
-  alreadyVisitedMethods.add(node);
-  ErrorCollector oldCollector=errorCollector;
-  errorCollector=collector;
-  final boolean osc=isInStaticContext;
+  if (!typeCheckingContext.methodsToBeVisited.isEmpty() && !typeCheckingContext.methodsToBeVisited.contains(node))   return;
+  if (typeCheckingContext.alreadyVisitedMethods.contains(node))   return;
+  typeCheckingContext.alreadyVisitedMethods.add(node);
+  ErrorCollector oldCollector=typeCheckingContext.errorCollector;
+  typeCheckingContext.errorCollector=collector;
+  final boolean osc=typeCheckingContext.isInStaticContext;
   try {
-    isInStaticContext=node.isStatic();
+    typeCheckingContext.isInStaticContext=node.isStatic();
     super.visitMethod(node);
     ClassNode rtype=(ClassNode)node.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
     if (rtype == null) {
@@ -16,8 +16,8 @@
     addTypeCheckingInfoAnnotation(node);
   }
   finally {
-    isInStaticContext=osc;
+    typeCheckingContext.isInStaticContext=osc;
   }
-  errorCollector=oldCollector;
+  typeCheckingContext.errorCollector=oldCollector;
   node.putNodeMetaData(ERROR_COLLECTOR,collector);
 }

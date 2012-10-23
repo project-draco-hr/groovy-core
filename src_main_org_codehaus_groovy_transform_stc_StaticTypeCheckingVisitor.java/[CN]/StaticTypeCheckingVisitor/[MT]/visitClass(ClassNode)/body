@@ -2,20 +2,20 @@
   if (shouldSkipClassNode(node))   return;
   Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
   if (type != null) {
-    errorCollector=new ErrorCollector(errorCollector.getConfiguration());
+    typeCheckingContext.errorCollector=new ErrorCollector(typeCheckingContext.errorCollector.getConfiguration());
   }
-  ClassNode oldCN=classNode;
-  classNode=node;
-  Set<MethodNode> oldVisitedMethod=alreadyVisitedMethods;
-  alreadyVisitedMethods=new LinkedHashSet<MethodNode>();
+  ClassNode oldCN=typeCheckingContext.classNode;
+  typeCheckingContext.classNode=node;
+  Set<MethodNode> oldVisitedMethod=typeCheckingContext.alreadyVisitedMethods;
+  typeCheckingContext.alreadyVisitedMethods=new LinkedHashSet<MethodNode>();
   super.visitClass(node);
-  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
+  Iterator<InnerClassNode> innerClasses=typeCheckingContext.classNode.getInnerClasses();
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
     visitClass(innerClassNode);
   }
-  alreadyVisitedMethods=oldVisitedMethod;
-  classNode=oldCN;
+  typeCheckingContext.alreadyVisitedMethods=oldVisitedMethod;
+  typeCheckingContext.classNode=oldCN;
   node.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,node);
   for (  MethodNode methodNode : node.getMethods()) {
     methodNode.putNodeMetaData(StaticTypeCheckingVisitor.class,Boolean.TRUE);

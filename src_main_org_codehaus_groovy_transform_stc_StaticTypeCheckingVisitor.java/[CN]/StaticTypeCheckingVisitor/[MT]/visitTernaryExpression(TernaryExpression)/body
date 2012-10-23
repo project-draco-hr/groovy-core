@@ -5,12 +5,12 @@
   Expression trueExpression=expression.getTrueExpression();
   Expression falseExpression=expression.getFalseExpression();
   trueExpression.visit(this);
-  temporaryIfBranchTypeInformation.pop();
+  typeCheckingContext.temporaryIfBranchTypeInformation.pop();
   falseExpression.visit(this);
   ClassNode resultType=OBJECT_TYPE;
   if (isNullConstant(trueExpression) || isNullConstant(falseExpression)) {
-    if (currentBinaryExpression != null) {
-      resultType=getType(currentBinaryExpression.getLeftExpression());
+    if (typeCheckingContext.currentBinaryExpression != null) {
+      resultType=getType(typeCheckingContext.currentBinaryExpression.getLeftExpression());
     }
   }
  else {

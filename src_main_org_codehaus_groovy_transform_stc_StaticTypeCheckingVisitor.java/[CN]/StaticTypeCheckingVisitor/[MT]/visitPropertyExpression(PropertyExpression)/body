@@ -1,7 +1,7 @@
 {
   super.visitPropertyExpression(pexp);
   if (!existsProperty(pexp,true)) {
-    if (currentBinaryExpression != null && currentBinaryExpression.getLeftExpression() == pexp && isAssignment(currentBinaryExpression.getOperation().getType())) {
+    if (typeCheckingContext.currentBinaryExpression != null && typeCheckingContext.currentBinaryExpression.getLeftExpression() == pexp && isAssignment(typeCheckingContext.currentBinaryExpression.getOperation().getType())) {
       if (hasSetter(pexp))       return;
     }
     Expression objectExpression=pexp.getObjectExpression();

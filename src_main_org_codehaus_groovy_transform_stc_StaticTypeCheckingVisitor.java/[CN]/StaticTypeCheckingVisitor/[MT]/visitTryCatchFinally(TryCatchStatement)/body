@@ -2,14 +2,14 @@
   final List<CatchStatement> catchStatements=statement.getCatchStatements();
   for (  CatchStatement catchStatement : catchStatements) {
     ClassNode exceptionType=catchStatement.getExceptionType();
-    controlStructureVariables.put(catchStatement.getVariable(),exceptionType);
+    typeCheckingContext.controlStructureVariables.put(catchStatement.getVariable(),exceptionType);
   }
   try {
     super.visitTryCatchFinally(statement);
   }
   finally {
     for (    CatchStatement catchStatement : catchStatements) {
-      controlStructureVariables.remove(catchStatement.getVariable());
+      typeCheckingContext.controlStructureVariables.remove(catchStatement.getVariable());
     }
   }
 }

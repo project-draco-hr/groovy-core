@@ -6,12 +6,12 @@
   if (clazz.equals(CLASS_Type) && clazz.getGenericsTypes() != null) {
     tests.add(clazz.getGenericsTypes()[0].getType());
   }
-  if (!temporaryIfBranchTypeInformation.empty()) {
+  if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
     List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
     if (classNodes != null)     tests.addAll(classNodes);
   }
-  if (lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
-    tests.add(lastImplicitItType);
+  if (typeCheckingContext.lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
+    tests.add(typeCheckingContext.lastImplicitItType);
   }
   String propertyName=pexp.getPropertyAsString();
   if (propertyName == null)   return false;

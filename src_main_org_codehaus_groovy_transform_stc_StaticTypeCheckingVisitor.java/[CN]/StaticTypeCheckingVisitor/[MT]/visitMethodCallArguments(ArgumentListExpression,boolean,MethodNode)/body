@@ -16,7 +16,7 @@
               stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
             }
             if (value instanceof ClassExpression) {
-              expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,delegationMetadata));
+              expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,typeCheckingContext.delegationMetadata));
             }
  else {
               Expression parameter=annotation.getMember("target");
@@ -31,7 +31,7 @@
                   if (id.equals(parameterName)) {
                     if (j < expressionsSize) {
                       Expression actualArgument=expressions.get(j);
-                      expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(getType(actualArgument),stInt,delegationMetadata));
+                      expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(getType(actualArgument),stInt,typeCheckingContext.delegationMetadata));
                     }
                   }
                 }

@@ -1,0 +1,100 @@
+{
+  String classNodeType=dis.readUTF();
+  if (UnionTypeClassNode.class.getSimpleName().equals(classNodeType)) {
+    int len=dis.readInt();
+    ClassNode[] delegates=new ClassNode[len];
+    for (int i=0; i < len; i++) {
+      delegates[i]=doDecode(dis);
+    }
+    return new UnionTypeClassNode(delegates);
+  }
+ else   if (WideningCategories.LowestUpperBoundClassNode.class.getSimpleName().equals(classNodeType)) {
+    String name=dis.readUTF();
+    ClassNode upper=doDecode(dis);
+    int len=dis.readInt();
+    ClassNode[] interfaces=null;
+    if (len >= 0) {
+      interfaces=new ClassNode[len];
+      for (int i=0; i < len; i++) {
+        interfaces[i]=doDecode(dis);
+      }
+    }
+    return new WideningCategories.LowestUpperBoundClassNode(name,upper,interfaces);
+  }
+  boolean makeArray=dis.readBoolean();
+  if (makeArray) {
+    return doDecode(dis).makeArray();
+  }
+  String typedesc=dis.readUTF();
+  char typeCode=typedesc.charAt(0);
+  ClassNode result=OBJECT_TYPE;
+  if (typeCode == 'L') {
+    String className=typedesc.replace('/','.').substring(1,typedesc.length() - 1);
+    try {
+      result=ClassHelper.make(Class.forName(className)).getPlainNodeReference();
+    }
+ catch (    ClassNotFoundException e) {
+      result=ClassHelper.make(className);
+    }
+    result.setUsingGenerics(dis.readBoolean());
+    int len=dis.readInt();
+    if (len >= 0) {
+      GenericsType[] gts=new GenericsType[len];
+      for (int i=0; i < len; i++) {
+        boolean placeholder=dis.readBoolean();
+        boolean wildcard=dis.readBoolean();
+        ClassNode type=doDecode(dis);
+        boolean low=dis.readBoolean();
+        ClassNode lb=null;
+        if (low) {
+          lb=doDecode(dis);
+        }
+        int upc=dis.readInt();
+        ClassNode[] ups=null;
+        if (upc >= 0) {
+          ups=new ClassNode[upc];
+          for (int j=0; j < upc; j++) {
+            ups[j]=doDecode(dis);
+          }
+        }
+        GenericsType gt=new GenericsType(type,ups,lb);
+        gt.setPlaceholder(placeholder);
+        gt.setWildcard(wildcard);
+        gts[i]=gt;
+      }
+      result.setGenericsTypes(gts);
+    }
+  }
+ else {
+switch (typeCode) {
+case 'I':
+      result=int_TYPE;
+    break;
+case 'Z':
+  result=boolean_TYPE;
+break;
+case 'B':
+result=byte_TYPE;
+break;
+case 'C':
+result=char_TYPE;
+break;
+case 'S':
+result=short_TYPE;
+break;
+case 'D':
+result=double_TYPE;
+break;
+case 'F':
+result=float_TYPE;
+break;
+case 'J':
+result=long_TYPE;
+break;
+case 'V':
+result=VOID_TYPE;
+break;
+}
+}
+return result;
+}

@@ -20,14 +20,14 @@
       storeType((Expression)accessedVariable,cn);
     }
     if (var.isClosureSharedVariable()) {
-      List<ClassNode> assignedTypes=closureSharedVariablesAssignmentTypes.get(var);
+      List<ClassNode> assignedTypes=typeCheckingContext.closureSharedVariablesAssignmentTypes.get(var);
       if (assignedTypes == null) {
         assignedTypes=new LinkedList<ClassNode>();
-        closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
+        typeCheckingContext.closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
       }
       assignedTypes.add(cn);
     }
-    if (!temporaryIfBranchTypeInformation.empty()) {
+    if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
       List<ClassNode> temporaryTypesForExpression=getTemporaryTypesForExpression(exp);
       if (temporaryTypesForExpression != null && !temporaryTypesForExpression.isEmpty()) {
         temporaryTypesForExpression.clear();
