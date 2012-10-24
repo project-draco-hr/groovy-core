@@ -15,14 +15,26 @@
  catch (    ReflectiveOperationException e) {
     }
   }
-  if (method == null) {
-    MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
-    if (res instanceof MethodMetaProperty) {
-      MethodMetaProperty mmp=(MethodMetaProperty)res;
-      method=mmp.getMetaMethod();
+  if (method != null)   return;
+  MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
+  if (res instanceof MethodMetaProperty) {
+    MethodMetaProperty mmp=(MethodMetaProperty)res;
+    method=mmp.getMetaMethod();
+  }
+ else   if (res instanceof CachedField) {
+    CachedField cf=(CachedField)res;
+    Field f=cf.field;
+    try {
+      handle=LOOKUP.unreflectGetter(f);
+      if (Modifier.isStatic(f.getModifiers())) {
+        handle=MethodHandles.dropArguments(handle,0,Class.class);
+      }
     }
+ catch (    IllegalAccessException iae) {
+      throw new GroovyBugError(iae);
+    }
+  }
  else {
-      property=res;
-    }
+    handle=META_PROPERTY_GETTER.bindTo(res);
   }
 }
