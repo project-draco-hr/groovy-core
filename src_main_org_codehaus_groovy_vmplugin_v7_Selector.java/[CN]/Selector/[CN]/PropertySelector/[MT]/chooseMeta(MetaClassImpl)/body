@@ -15,7 +15,7 @@
  catch (    ReflectiveOperationException e) {
     }
   }
-  if (method != null)   return;
+  if (method != null || mci == null)   return;
   MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
   if (res instanceof MethodMetaProperty) {
     MethodMetaProperty mmp=(MethodMetaProperty)res;
@@ -27,7 +27,7 @@
     try {
       handle=LOOKUP.unreflectGetter(f);
       if (Modifier.isStatic(f.getModifiers())) {
-        handle=MethodHandles.dropArguments(handle,0,Class.class);
+        handle=META_PROPERTY_GETTER.bindTo(res);
       }
     }
  catch (    IllegalAccessException iae) {

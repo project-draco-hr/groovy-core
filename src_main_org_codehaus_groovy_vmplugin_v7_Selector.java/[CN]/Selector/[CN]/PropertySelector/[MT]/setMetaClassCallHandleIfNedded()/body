@@ -1,0 +1,13 @@
+{
+  if (handle != null)   return;
+  useMetaClass=true;
+  try {
+    if (LOG_ENABLED)     LOG.info("set meta class invocation path for property get.");
+    handle=LOOKUP.findVirtual(MetaClass.class,"getProperty",MethodType.methodType(Object.class,Class.class,Object.class,String.class,boolean.class,boolean.class));
+    handle=MethodHandles.insertArguments(handle,0,mc,selectionBase);
+    handle=MethodHandles.insertArguments(handle,1,this.name,false,false);
+  }
+ catch (  Exception e) {
+    throw new GroovyBugError(e);
+  }
+}

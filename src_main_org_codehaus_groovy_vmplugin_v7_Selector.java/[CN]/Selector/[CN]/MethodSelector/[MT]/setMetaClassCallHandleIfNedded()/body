@@ -5,7 +5,7 @@
     if (LOG_ENABLED)     LOG.info("set meta class invocation path");
     Object receiver=args[0];
     if (receiver instanceof Class) {
-      handle=LOOKUP.findVirtual(mc.getClass(),"invokeStaticMethod",MethodType.methodType(Object.class,Object.class,String.class,Object[].class));
+      handle=LOOKUP.findVirtual(MetaClass.class,"invokeStaticMethod",MethodType.methodType(Object.class,Object.class,String.class,Object[].class));
       handle=handle.bindTo(mc);
       if (LOG_ENABLED)       LOG.info("use invokeStaticMethod with bound meta class");
     }
