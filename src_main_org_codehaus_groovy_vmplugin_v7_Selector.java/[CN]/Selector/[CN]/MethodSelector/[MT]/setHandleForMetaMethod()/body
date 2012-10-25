@@ -53,7 +53,7 @@
       handle=MethodHandles.insertArguments(handle,1,new Object[]{new Object[]{null}});
       if (LOG_ENABLED)       LOG.info("null argument expansion");
     }
- else     if (method.isVargsMethod()) {
+ else     if (method.isVargsMethod() && !spread) {
       handle=handle.asCollector(Object[].class,1);
       handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
       currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
@@ -64,6 +64,10 @@
       handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
       currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
       currentType=currentType.insertParameterTypes(0,method.getDeclaringClass().getTheClass());
+      if (spread) {
+        args=originalArguments;
+        skipSpreadCollector=true;
+      }
       if (LOG_ENABLED)       LOG.info("normal dgm helper wrapping");
     }
   }
