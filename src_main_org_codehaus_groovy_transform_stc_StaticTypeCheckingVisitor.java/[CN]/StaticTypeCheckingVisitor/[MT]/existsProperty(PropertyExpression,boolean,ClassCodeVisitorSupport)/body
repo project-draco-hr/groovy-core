@@ -1,6 +1,7 @@
 {
   Expression objectExpression=pexp.getObjectExpression();
   final ClassNode objectExpressionType=getType(objectExpression);
+  boolean staticProperty=false;
   if (objectExpressionType.isArray() && "length".equals(pexp.getPropertyAsString())) {
     if (visitor != null) {
       PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,int_TYPE,objectExpressionType,null,null,null);
@@ -13,6 +14,7 @@
   tests.add(objectExpressionType);
   if (objectExpressionType.equals(CLASS_Type) && objectExpressionType.getGenericsTypes() != null) {
     tests.add(objectExpressionType.getGenericsTypes()[0].getType());
+    staticProperty=true;
   }
   if (!temporaryIfBranchTypeInformation.empty()) {
     List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
@@ -55,7 +57,7 @@
       }
       MethodNode getter=current.getGetterMethod("get" + capName);
       if (getter == null)       getter=current.getGetterMethod("is" + capName);
-      if (getter != null) {
+      if (getter != null && !(staticProperty && !CLASS_Type.equals(current) && !getter.isStatic())) {
         MethodNode setterMethod=current.getSetterMethod("set" + capName);
         if (setterMethod != null) {
           if (visitor != null)           visitor.visitMethod(getter);
@@ -88,12 +90,21 @@
         ClassNode current=queue.removeFirst();
         MethodNode getter=current.getGetterMethod("get" + capName);
         if (getter == null)         getter=current.getGetterMethod("is" + capName);
-        if (getter != null) {
+        if (getter != null && !(staticProperty && !CLASS_Type.equals(current) && !getter.isStatic())) {
           if (visitor != null)           visitor.visitMethod(getter);
           pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,Boolean.TRUE);
           ClassNode cn=inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS);
           storeInferredTypeForPropertyExpression(pexp,cn);
           return true;
+        }
+        if (getter != null) {
+          FieldNode field=current.getDeclaredField(propertyName);
+          if (field != null) {
+            if (visitor != null)             visitor.visitField(field);
+            storeInferredTypeForPropertyExpression(pexp,field.getOriginType());
+            storeType(pexp,field.getOriginType());
+            return true;
+          }
         }
         if (pluginFactory != null) {
           TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
