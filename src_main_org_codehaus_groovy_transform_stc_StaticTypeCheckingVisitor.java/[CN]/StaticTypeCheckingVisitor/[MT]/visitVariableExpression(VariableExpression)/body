@@ -1,11 +1,11 @@
 {
   super.visitVariableExpression(vexp);
   if (vexp != VariableExpression.THIS_EXPRESSION && vexp != VariableExpression.SUPER_EXPRESSION) {
-    if (vexp.getName().equals("this"))     storeType(vexp,typeCheckingContext.classNode);
-    if (vexp.getName().equals("super"))     storeType(vexp,typeCheckingContext.classNode.getSuperClass());
-    if (typeCheckingContext.closureExpression != null) {
+    if (vexp.getName().equals("this"))     storeType(vexp,typeCheckingContext.enclosingClassNode);
+    if (vexp.getName().equals("super"))     storeType(vexp,typeCheckingContext.enclosingClassNode.getSuperClass());
+    if (typeCheckingContext.getEnclosingClosure() != null) {
       if (vexp.getName().equals("owner") || vexp.getName().equals("delegate") || vexp.getName().equals("thisObject")) {
-        storeType(vexp,typeCheckingContext.classNode);
+        storeType(vexp,typeCheckingContext.enclosingClassNode);
         return;
       }
     }
@@ -14,7 +14,7 @@
     DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
     String dynName=dyn.getName();
     List<Receiver<String>> checkList=new LinkedList<Receiver<String>>();
-    addReceivers(checkList,Collections.singletonList(Receiver.<String>make(typeCheckingContext.classNode)),true);
+    addReceivers(checkList,Collections.singletonList(Receiver.<String>make(typeCheckingContext.enclosingClassNode)),true);
     for (    Receiver<String> receiver : checkList) {
       ClassNode node=receiver.getType();
       if (node.getProperty(dynName) != null) {
@@ -26,7 +26,7 @@
         return;
       }
     }
-    if (!handleUnresolvedVariableExpression(vexp)) {
+    if (!errorHandler.handleUnresolvedVariableExpression(vexp)) {
       addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
     }
   }

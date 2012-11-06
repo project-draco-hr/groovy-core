@@ -1,6 +1,6 @@
 {
   super.visitConstructorCallExpression(call);
-  ClassNode receiver=call.isThisCall() ? typeCheckingContext.classNode : call.isSuperCall() ? typeCheckingContext.classNode.getSuperClass() : call.getType();
+  ClassNode receiver=call.isThisCall() ? typeCheckingContext.enclosingClassNode : call.isSuperCall() ? typeCheckingContext.enclosingClassNode.getSuperClass() : call.getType();
   Expression arguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(arguments);
   checkForbiddenSpreadArgument(argumentList);

@@ -1,10 +1,10 @@
 {
   if (objectExpression instanceof ClosureExpression)   return true;
   if (objectExpression == VariableExpression.THIS_EXPRESSION) {
-    FieldNode fieldNode=typeCheckingContext.classNode.getDeclaredField(name);
+    FieldNode fieldNode=typeCheckingContext.enclosingClassNode.getDeclaredField(name);
     if (fieldNode != null) {
       ClassNode type=fieldNode.getType();
-      if (CLOSURE_TYPE.equals(type) && !typeCheckingContext.classNode.hasPossibleMethod(name,arguments)) {
+      if (CLOSURE_TYPE.equals(type) && !typeCheckingContext.enclosingClassNode.hasPossibleMethod(name,arguments)) {
         return true;
       }
     }

@@ -1,9 +1,8 @@
 {
-  MethodNode old=this.typeCheckingContext.methodNode;
-  this.typeCheckingContext.methodNode=node;
+  typeCheckingContext.pushEnclosingMethod(node);
   super.visitConstructorOrMethod(node,isConstructor);
   if (!isConstructor) {
     returnAdder.visitMethod(node);
   }
-  this.typeCheckingContext.methodNode=old;
+  typeCheckingContext.popEnclosingMethod();
 }

@@ -1,10 +1,11 @@
 {
   super.visitPropertyExpression(pexp);
   if (!existsProperty(pexp,true)) {
-    if (typeCheckingContext.currentBinaryExpression != null && typeCheckingContext.currentBinaryExpression.getLeftExpression() == pexp && isAssignment(typeCheckingContext.currentBinaryExpression.getOperation().getType())) {
+    BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+    if (enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == pexp && isAssignment(enclosingBinaryExpression.getOperation().getType())) {
       if (hasSetter(pexp))       return;
     }
-    if (!handleUnresolvedProperty(pexp)) {
+    if (!errorHandler.handleUnresolvedProperty(pexp)) {
       Expression objectExpression=pexp.getObjectExpression();
       addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
     }

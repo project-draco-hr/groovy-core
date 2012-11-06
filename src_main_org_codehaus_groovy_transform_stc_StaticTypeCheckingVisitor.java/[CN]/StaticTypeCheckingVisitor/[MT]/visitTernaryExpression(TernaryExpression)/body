@@ -9,8 +9,9 @@
   falseExpression.visit(this);
   ClassNode resultType=OBJECT_TYPE;
   if (isNullConstant(trueExpression) || isNullConstant(falseExpression)) {
-    if (typeCheckingContext.currentBinaryExpression != null) {
-      resultType=getType(typeCheckingContext.currentBinaryExpression.getLeftExpression());
+    BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+    if (enclosingBinaryExpression != null) {
+      resultType=getType(enclosingBinaryExpression.getLeftExpression());
     }
   }
  else {

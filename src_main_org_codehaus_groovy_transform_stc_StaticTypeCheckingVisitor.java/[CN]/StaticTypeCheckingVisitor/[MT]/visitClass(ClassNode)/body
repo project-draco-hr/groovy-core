@@ -4,18 +4,18 @@
   if (type != null) {
     typeCheckingContext.errorCollector=new ErrorCollector(typeCheckingContext.errorCollector.getConfiguration());
   }
-  ClassNode oldCN=typeCheckingContext.classNode;
-  typeCheckingContext.classNode=node;
+  ClassNode oldCN=typeCheckingContext.enclosingClassNode;
+  typeCheckingContext.enclosingClassNode=node;
   Set<MethodNode> oldVisitedMethod=typeCheckingContext.alreadyVisitedMethods;
   typeCheckingContext.alreadyVisitedMethods=new LinkedHashSet<MethodNode>();
   super.visitClass(node);
-  Iterator<InnerClassNode> innerClasses=typeCheckingContext.classNode.getInnerClasses();
+  Iterator<InnerClassNode> innerClasses=typeCheckingContext.enclosingClassNode.getInnerClasses();
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
     visitClass(innerClassNode);
   }
   typeCheckingContext.alreadyVisitedMethods=oldVisitedMethod;
-  typeCheckingContext.classNode=oldCN;
+  typeCheckingContext.enclosingClassNode=oldCN;
   node.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,node);
   for (  MethodNode methodNode : node.getMethods()) {
     methodNode.putNodeMetaData(StaticTypeCheckingVisitor.class,Boolean.TRUE);

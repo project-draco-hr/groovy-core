@@ -11,12 +11,10 @@
     typesBeforeVisit=new HashMap<VariableExpression,ListHashMap>();
     saveVariableExpressionMetadata(closureSharedExpressions,typesBeforeVisit);
   }
-  ClosureExpression oldClosureExpr=typeCheckingContext.closureExpression;
-  List<ClassNode> oldClosureReturnTypes=typeCheckingContext.closureReturnTypes;
-  typeCheckingContext.closureExpression=expression;
+  typeCheckingContext.pushEnclosingClosureExpression(expression);
   DelegationMetadata dmd=getDelegationMetadata(expression);
   if (dmd == null) {
-    typeCheckingContext.delegationMetadata=new DelegationMetadata(typeCheckingContext.classNode,Closure.OWNER_FIRST,typeCheckingContext.delegationMetadata);
+    typeCheckingContext.delegationMetadata=new DelegationMetadata(typeCheckingContext.enclosingClassNode,Closure.OWNER_FIRST,typeCheckingContext.delegationMetadata);
   }
  else {
     typeCheckingContext.delegationMetadata=new DelegationMetadata(dmd.getType(),dmd.getStrategy(),typeCheckingContext.delegationMetadata);
@@ -24,12 +22,12 @@
   super.visitClosureExpression(expression);
   typeCheckingContext.delegationMetadata=typeCheckingContext.delegationMetadata.getParent();
   MethodNode node=new MethodNode("dummy",0,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
-  closureReturnAdder.visitMethod(node);
-  if (typeCheckingContext.closureReturnTypes != null) {
-    expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(typeCheckingContext.closureReturnTypes));
+  returnAdder.visitMethod(node);
+  TypeCheckingContext.EnclosingClosure enclosingClosure=typeCheckingContext.getEnclosingClosure();
+  if (!enclosingClosure.getReturnTypes().isEmpty()) {
+    expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(enclosingClosure.getReturnTypes()));
   }
-  typeCheckingContext.closureExpression=oldClosureExpr;
-  typeCheckingContext.closureReturnTypes=oldClosureReturnTypes;
+  typeCheckingContext.popEnclosingClosure();
   boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);
   if (typeChanged)   visitClosureExpression(expression);
   restoreVariableExpressionMetadata(typesBeforeVisit);

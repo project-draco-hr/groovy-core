@@ -1,6 +1,6 @@
 {
-  BinaryExpression oldBinaryExpression=typeCheckingContext.currentBinaryExpression;
-  typeCheckingContext.currentBinaryExpression=expression;
+  BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+  typeCheckingContext.pushEnclosingBinaryExpression(expression);
   try {
     super.visitBinaryExpression(expression);
     final Expression leftExpression=expression.getLeftExpression();
@@ -19,8 +19,8 @@
       ClassNode completedType=GenericsUtils.parameterizeType(lType,resultType.getPlainNodeReference());
       resultType=completedType;
     }
-    if (isArrayOp(op) && oldBinaryExpression != null && oldBinaryExpression.getLeftExpression() == expression && isAssignment(oldBinaryExpression.getOperation().getType()) && !lType.isArray()) {
-      ClassNode[] arguments={rType,getType(oldBinaryExpression.getRightExpression())};
+    if (isArrayOp(op) && enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == expression && isAssignment(enclosingBinaryExpression.getOperation().getType()) && !lType.isArray()) {
+      ClassNode[] arguments={rType,getType(enclosingBinaryExpression.getRightExpression())};
       List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);
       if (nodes.size() == 1) {
         typeCheckMethodsWithGenerics(lType,arguments,nodes.get(0),expression);
@@ -73,6 +73,6 @@
     }
   }
   finally {
-    typeCheckingContext.currentBinaryExpression=oldBinaryExpression;
+    typeCheckingContext.popEnclosingBinaryExpression();
   }
 }

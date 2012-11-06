@@ -1,27 +1,27 @@
 {
   Expression expression=statement.getExpression();
   ClassNode type=getType(expression);
-  if (typeCheckingContext.methodNode != null) {
-    if (!typeCheckingContext.methodNode.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(typeCheckingContext.methodNode.getReturnType(),type)&& !(isNullConstant(expression))) {
-      addStaticTypeError("Cannot return value of type " + type + " on method returning type "+ typeCheckingContext.methodNode.getReturnType(),expression);
+  if (typeCheckingContext.getEnclosingClosure() != null) {
+    return type;
+  }
+  MethodNode enclosingMethod=typeCheckingContext.getEnclosingMethod();
+  if (enclosingMethod != null) {
+    if (!enclosingMethod.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(enclosingMethod.getReturnType(),type)&& !(isNullConstant(expression))) {
+      addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ enclosingMethod.getReturnType().toString(false),expression);
     }
- else     if (!typeCheckingContext.methodNode.isVoidMethod()) {
-      ClassNode previousType=(ClassNode)typeCheckingContext.methodNode.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
-      ClassNode inferred=previousType == null ? type : lowestUpperBound(type,previousType);
-      if (implementsInterfaceOrIsSubclassOf(inferred,typeCheckingContext.methodNode.getReturnType())) {
-        if (missesGenericsTypes(inferred)) {
-          DeclarationExpression virtualDecl=new DeclarationExpression(new VariableExpression("{target}",typeCheckingContext.methodNode.getReturnType()),Token.newSymbol(EQUAL,-1,-1),new VariableExpression("{source}",inferred));
+ else     if (!enclosingMethod.isVoidMethod()) {
+      if (implementsInterfaceOrIsSubclassOf(type,enclosingMethod.getReturnType())) {
+        if (missesGenericsTypes(type)) {
+          DeclarationExpression virtualDecl=new DeclarationExpression(new VariableExpression("{target}",enclosingMethod.getReturnType()),Token.newSymbol(EQUAL,-1,-1),new VariableExpression("{source}",type));
           virtualDecl.setSourcePosition(statement);
           virtualDecl.visit(this);
           ClassNode newlyInferred=(ClassNode)virtualDecl.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
-          if (!missesGenericsTypes(newlyInferred))           inferred=newlyInferred;
+          if (!missesGenericsTypes(newlyInferred))           type=newlyInferred;
         }
-        typeCheckingContext.methodNode.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,inferred);
-        return inferred;
+        return type;
       }
  else {
-        typeCheckingContext.methodNode.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,typeCheckingContext.methodNode.getReturnType());
-        return typeCheckingContext.methodNode.getReturnType();
+        return enclosingMethod.getReturnType();
       }
     }
   }

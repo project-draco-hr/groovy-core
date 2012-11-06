@@ -15,7 +15,7 @@
       collectAllInterfaceMethodsByName(receiver,name,methods);
       methods.addAll(OBJECT_TYPE.getMethods(name));
     }
-    if (typeCheckingContext.closureExpression == null) {
+    if (typeCheckingContext.getEnclosingClosure() == null) {
       ClassNode parent=receiver;
       while (parent instanceof InnerClassNode && !parent.isStaticClass()) {
         parent=receiver.getOuterClass();
