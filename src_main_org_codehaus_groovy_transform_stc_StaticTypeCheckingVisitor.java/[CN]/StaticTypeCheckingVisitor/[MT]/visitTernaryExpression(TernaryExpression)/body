@@ -1,11 +1,11 @@
 {
   Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
-  pushTemporaryTypeInfo();
+  typeCheckingContext.pushTemporaryTypeInfo();
   expression.getBooleanExpression().visit(this);
   Expression trueExpression=expression.getTrueExpression();
   Expression falseExpression=expression.getFalseExpression();
   trueExpression.visit(this);
-  typeCheckingContext.temporaryIfBranchTypeInformation.pop();
+  typeCheckingContext.popTemporaryTypeInfo();
   falseExpression.visit(this);
   ClassNode resultType=OBJECT_TYPE;
   if (isNullConstant(trueExpression) || isNullConstant(falseExpression)) {

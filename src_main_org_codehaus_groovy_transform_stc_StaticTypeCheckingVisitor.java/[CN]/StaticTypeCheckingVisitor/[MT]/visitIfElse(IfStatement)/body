@@ -1,11 +1,11 @@
 {
   Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
   try {
-    pushTemporaryTypeInfo();
+    typeCheckingContext.pushTemporaryTypeInfo();
     visitStatement(ifElse);
     ifElse.getBooleanExpression().visit(this);
     ifElse.getIfBlock().visit(this);
-    typeCheckingContext.temporaryIfBranchTypeInformation.pop();
+    typeCheckingContext.popTemporaryTypeInfo();
     Statement elseBlock=ifElse.getElseBlock();
     if (elseBlock instanceof EmptyStatement) {
       visitEmptyStatement((EmptyStatement)elseBlock);

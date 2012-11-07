@@ -14,7 +14,7 @@
   typeCheckingContext.pushEnclosingClosureExpression(expression);
   DelegationMetadata dmd=getDelegationMetadata(expression);
   if (dmd == null) {
-    typeCheckingContext.delegationMetadata=new DelegationMetadata(typeCheckingContext.enclosingClassNode,Closure.OWNER_FIRST,typeCheckingContext.delegationMetadata);
+    typeCheckingContext.delegationMetadata=new DelegationMetadata(typeCheckingContext.getEnclosingClassNode(),Closure.OWNER_FIRST,typeCheckingContext.delegationMetadata);
   }
  else {
     typeCheckingContext.delegationMetadata=new DelegationMetadata(dmd.getType(),dmd.getStrategy(),typeCheckingContext.delegationMetadata);

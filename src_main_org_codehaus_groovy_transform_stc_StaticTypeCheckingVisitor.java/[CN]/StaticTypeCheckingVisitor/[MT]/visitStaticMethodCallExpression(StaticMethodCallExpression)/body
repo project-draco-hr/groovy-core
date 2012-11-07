@@ -40,16 +40,16 @@
  else {
       if (mn.size() == 1) {
         MethodNode directMethodCallCandidate=mn.get(0);
-        ClassNode currentClassNode=typeCheckingContext.enclosingClassNode;
-        typeCheckingContext.enclosingClassNode=directMethodCallCandidate.getDeclaringClass();
+        ClassNode currentClassNode=typeCheckingContext.getEnclosingClassNode();
+        typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
         for (        ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
-          if (isClassInnerClassOrEqualTo(typeCheckingContext.enclosingClassNode,node)) {
+          if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
             silentlyVisitMethodNode(directMethodCallCandidate);
             break;
           }
         }
         pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-        typeCheckingContext.enclosingClassNode=currentClassNode;
+        typeCheckingContext.popEnclosingClassNode();
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
           ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
