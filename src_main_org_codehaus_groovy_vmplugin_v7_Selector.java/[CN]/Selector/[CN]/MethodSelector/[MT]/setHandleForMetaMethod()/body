@@ -10,6 +10,8 @@
   }
   boolean isCategoryTypeMethod=metaMethod instanceof NewInstanceMetaMethod;
   if (LOG_ENABLED)   LOG.info("meta method is category type method: " + isCategoryTypeMethod);
+  boolean isStaticCategoryTypeMethod=metaMethod instanceof NewStaticMetaMethod;
+  if (LOG_ENABLED)   LOG.info("meta method is static category type method: " + isCategoryTypeMethod);
   if (metaMethod instanceof ReflectionMetaMethod) {
     if (LOG_ENABLED)     LOG.info("meta method is reflective method");
     ReflectionMetaMethod rmm=(ReflectionMetaMethod)metaMethod;
@@ -23,7 +25,11 @@
       Method m=cm.getCachedMethod();
       handle=LOOKUP.unreflect(m);
       if (LOG_ENABLED)       LOG.info("successfully unreflected method");
-      if (!isCategoryTypeMethod && isStatic(m)) {
+      if (isStaticCategoryTypeMethod) {
+        handle=MethodHandles.insertArguments(handle,0,new Object[]{null});
+        handle=MethodHandles.dropArguments(handle,0,targetType.parameterType(0));
+      }
+ else       if (!isCategoryTypeMethod && isStatic(m)) {
         handle=MethodHandles.dropArguments(handle,0,Class.class);
       }
     }
