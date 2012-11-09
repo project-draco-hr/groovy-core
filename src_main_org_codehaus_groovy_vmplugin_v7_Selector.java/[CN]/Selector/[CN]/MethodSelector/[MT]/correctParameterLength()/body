@@ -8,10 +8,11 @@
     return;
   }
   Class lastParam=params[params.length - 1];
-  Object lastArg=args[args.length - 1];
+  Object lastArg=unwrapIfWrapped(args[args.length - 1]);
   if (params.length == args.length) {
     if (lastParam == lastArg || lastArg == null)     return;
     if (lastParam.isInstance(lastArg))     return;
+    if (lastArg.getClass().isArray())     return;
     handle=handle.asCollector(lastParam,1);
   }
  else   if (params.length > args.length) {
