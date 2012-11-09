@@ -8,12 +8,17 @@
       if (!reflectionMethod.isSynthetic()) {
         handle=LOOKUP.unreflect(reflectionMethod);
         handle=MethodHandles.insertArguments(handle,1,name);
-        genericInvoker=true;
         return;
       }
     }
  catch (    ReflectiveOperationException e) {
     }
+  }
+ else   if (receiver instanceof Class) {
+    handle=META_CLASS_GET;
+    handle=MethodHandles.insertArguments(handle,2,name);
+    handle=MethodHandles.insertArguments(handle,0,this.mc);
+    return;
   }
   if (method != null || mci == null)   return;
   MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
