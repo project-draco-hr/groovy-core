@@ -3,14 +3,15 @@
   Class[] params=handle.type().parameterArray();
   if (currentType != null)   params=currentType.parameterArray();
   if (!isVargs) {
-    if (params.length != args.length) {
+    if (params.length == 2 && args.length == 1) {
+      handle=MethodHandles.insertArguments(handle,1,new Object[]{null});
     }
     return;
   }
   Class lastParam=params[params.length - 1];
   Object lastArg=unwrapIfWrapped(args[args.length - 1]);
   if (params.length == args.length) {
-    if (lastParam == lastArg || lastArg == null)     return;
+    if (lastArg == null)     return;
     if (lastParam.isInstance(lastArg))     return;
     if (lastArg.getClass().isArray())     return;
     handle=handle.asCollector(lastParam,1);

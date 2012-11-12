@@ -54,27 +54,14 @@
     if (LOG_ENABLED)     LOG.info("meta method is dgm helper");
     handle=META_METHOD_INVOKER;
     handle=handle.bindTo(method);
-    if (LOG_ENABLED)     LOG.info("bound method name to META_METHOD_INVOKER");
-    if (method.getNativeParameterTypes().length == 1 && args.length == 1) {
-      handle=MethodHandles.insertArguments(handle,1,new Object[]{new Object[]{null}});
-      if (LOG_ENABLED)       LOG.info("null argument expansion");
-    }
- else     if (method.isVargsMethod() && !spread) {
-      handle=handle.asCollector(Object[].class,1);
-      isVargs=true;
-      currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
-      currentType=currentType.insertParameterTypes(0,method.getDeclaringClass().getTheClass());
-      if (LOG_ENABLED)       LOG.info("wrapping vargs for dgm helper");
+    if (spread) {
+      args=originalArguments;
+      skipSpreadCollector=true;
     }
  else {
       handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
-      currentType=MethodType.methodType(method.getReturnType(),method.getNativeParameterTypes());
-      currentType=currentType.insertParameterTypes(0,method.getDeclaringClass().getTheClass());
-      if (spread) {
-        args=originalArguments;
-        skipSpreadCollector=true;
-      }
-      if (LOG_ENABLED)       LOG.info("normal dgm helper wrapping");
     }
+    currentType=removeWrapper(targetType);
+    if (LOG_ENABLED)     LOG.info("bound method name to META_METHOD_INVOKER");
   }
 }
