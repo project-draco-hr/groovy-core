@@ -46,7 +46,9 @@
     addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
   }
   if (!compatible) {
-    addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression.getRightExpression());
+    if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
+      addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression.getRightExpression());
+    }
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
@@ -86,7 +88,9 @@
       checkGroovyStyleConstructor(leftRedirect,args);
     }
  else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
-      addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
+      if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
+        addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
+      }
     }
     if (!implementsInterfaceOrIsSubclassOf(leftRedirect,MAP_TYPE) && rightExpression instanceof MapExpression) {
       if (!(leftExpression instanceof VariableExpression) || !((VariableExpression)leftExpression).isDynamicTyped()) {

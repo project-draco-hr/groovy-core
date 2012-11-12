@@ -12,8 +12,9 @@
       }
  else {
         ClassNode valueType=getType(entryExpression.getValueExpression());
-        if (!isAssignableTo(valueType,lookup.get())) {
-          addAssignmentError(lookup.get(),valueType,entryExpression);
+        ClassNode toBeAssignedTo=lookup.get();
+        if (!isAssignableTo(valueType,toBeAssignedTo) && !extension.handleIncompatibleAssignment(toBeAssignedTo,valueType,entryExpression)) {
+          addAssignmentError(toBeAssignedTo,valueType,entryExpression);
         }
       }
     }

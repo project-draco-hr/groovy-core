@@ -5,7 +5,7 @@
     if (enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == pexp && isAssignment(enclosingBinaryExpression.getOperation().getType())) {
       if (hasSetter(pexp))       return;
     }
-    if (!errorHandler.handleUnresolvedProperty(pexp)) {
+    if (!extension.handleUnresolvedProperty(pexp)) {
       Expression objectExpression=pexp.getObjectExpression();
       addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
     }

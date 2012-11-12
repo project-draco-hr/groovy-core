@@ -4,6 +4,10 @@
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call.getMethod());
     return;
   }
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
+  }
   typeCheckingContext.pushEnclosingMethodCall(call);
   final Expression objectExpression=call.getObjectExpression();
   objectExpression.visit(this);
@@ -144,7 +148,7 @@
         }
       }
       if (mn.isEmpty()) {
-        mn=errorHandler.handleMissingMethod(receiver,name,argumentList,args,call);
+        mn=extension.handleMissingMethod(receiver,name,argumentList,args,call);
       }
       if (mn.isEmpty()) {
         addNoMatchingMethodError(receiver,name,args,call);
@@ -195,5 +199,6 @@
       typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
     typeCheckingContext.popEnclosingMethodCall();
+    extension.afterMethodCall(call);
   }
 }

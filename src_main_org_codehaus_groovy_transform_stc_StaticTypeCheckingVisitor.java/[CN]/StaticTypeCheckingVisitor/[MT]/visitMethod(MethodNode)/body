@@ -2,12 +2,15 @@
   if (shouldSkipMethodNode(node)) {
     return;
   }
-  ErrorCollector collector=(ErrorCollector)node.getNodeMetaData(ERROR_COLLECTOR);
-  if (collector != null) {
-    typeCheckingContext.errorCollector.addCollectorContents(collector);
-  }
+  if (!extension.beforeVisitMethod(node)) {
+    ErrorCollector collector=(ErrorCollector)node.getNodeMetaData(ERROR_COLLECTOR);
+    if (collector != null) {
+      typeCheckingContext.errorCollector.addCollectorContents(collector);
+    }
  else {
-    startMethodInference(node,typeCheckingContext.errorCollector);
+      startMethodInference(node,typeCheckingContext.errorCollector);
+    }
+    node.removeNodeMetaData(ERROR_COLLECTOR);
   }
-  node.removeNodeMetaData(ERROR_COLLECTOR);
+  extension.afterVisitMethod(node);
 }

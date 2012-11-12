@@ -4,6 +4,10 @@
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call);
     return;
   }
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
+  }
   final ClassNode rememberLastItType=typeCheckingContext.lastImplicitItType;
   Expression callArguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
@@ -67,5 +71,6 @@
     if (isWithCall) {
       typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
+    extension.afterMethodCall(call);
   }
 }
