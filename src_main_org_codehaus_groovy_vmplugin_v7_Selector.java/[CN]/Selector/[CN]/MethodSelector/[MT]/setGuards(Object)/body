@@ -10,7 +10,7 @@
     handle=MethodHandles.guardWithTest(test,handle,fallback);
     if (LOG_ENABLED)     LOG.info("added meta class equality check");
   }
-  if (!useMetaClass) {
+  if (!useMetaClass && isCategoryMethod) {
     if (method instanceof NewInstanceMetaMethod) {
       handle=MethodHandles.guardWithTest(HAS_CATEGORY_IN_CURRENT_THREAD_GUARD,handle,fallback);
       if (LOG_ENABLED)       LOG.info("added category-in-current-thread-guard for category method");
