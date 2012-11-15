@@ -1,0 +1,19 @@
+{
+  if (args instanceof Object[] && ((Object[])args).length == 1 && ((Object[])args)[0] instanceof Closure) {
+    Object[] argsArray=(Object[])args;
+    String methodName=METHOD_ALIASES.get(name);
+    if (methodName == null) {
+      return InvokerHelper.invokeMethod(extension,name,args);
+    }
+    List<Closure> closures=extension.eventHandlers.get(methodName);
+    if (closures == null) {
+      closures=new LinkedList<Closure>();
+      extension.eventHandlers.put(methodName,closures);
+    }
+    closures.add((Closure)argsArray[0]);
+    return null;
+  }
+ else {
+    return InvokerHelper.invokeMethod(extension,name,args);
+  }
+}

@@ -4,7 +4,7 @@
   StaticTypeCheckingVisitor visitor=null;
   if (node instanceof ClassNode) {
     ClassNode classNode=(ClassNode)node;
-    visitor=newVisitor(source,classNode,null);
+    visitor=newVisitor(source,classNode);
     classNode.putNodeMetaData(WriterControllerFactory.class,factory);
     node.putNodeMetaData(STATIC_COMPILE_NODE,!visitor.isSkipMode(node));
     visitor.visitClass(classNode);
@@ -12,7 +12,7 @@
  else   if (node instanceof MethodNode) {
     MethodNode methodNode=(MethodNode)node;
     ClassNode declaringClass=methodNode.getDeclaringClass();
-    visitor=newVisitor(source,declaringClass,null);
+    visitor=newVisitor(source,declaringClass);
     methodNode.putNodeMetaData(STATIC_COMPILE_NODE,!visitor.isSkipMode(node));
     if (declaringClass.getNodeMetaData(WriterControllerFactory.class) == null) {
       declaringClass.putNodeMetaData(WriterControllerFactory.class,factory);

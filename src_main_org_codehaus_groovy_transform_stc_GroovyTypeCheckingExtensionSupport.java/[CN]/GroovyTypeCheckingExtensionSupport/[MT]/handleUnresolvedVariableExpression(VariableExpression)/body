@@ -1,0 +1,10 @@
+{
+  setHandled(false);
+  List<Closure> onMethodSelection=eventHandlers.get("handleUnresolvedVariableExpression");
+  if (onMethodSelection != null) {
+    for (    Closure closure : onMethodSelection) {
+      safeCall(closure,vexp);
+    }
+  }
+  return handled;
+}

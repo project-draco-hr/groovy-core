@@ -1,0 +1,10 @@
+{
+  setHandled(false);
+  List<Closure> list=eventHandlers.get("handleIncompatibleAssignment");
+  if (list != null) {
+    for (    Closure closure : list) {
+      safeCall(closure,lhsType,rhsType,assignmentExpression);
+    }
+  }
+  return handled;
+}

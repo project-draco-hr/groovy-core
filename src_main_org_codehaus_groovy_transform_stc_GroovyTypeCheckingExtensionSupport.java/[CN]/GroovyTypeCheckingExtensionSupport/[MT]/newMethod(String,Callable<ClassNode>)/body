@@ -1,0 +1,15 @@
+{
+  MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE){
+    @Override public ClassNode getReturnType(){
+      try {
+        return returnType.call();
+      }
+ catch (      Exception e) {
+        return super.getReturnType();
+      }
+    }
+  }
+;
+  generatedMethods.add(node);
+  return node;
+}

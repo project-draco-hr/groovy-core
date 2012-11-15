@@ -1,0 +1,22 @@
+{
+  CompilerConfiguration config=new CompilerConfiguration();
+  config.setScriptBaseClass("org.codehaus.groovy.transform.stc.GroovyTypeCheckingExtensionSupport.TypeCheckingDSL");
+  GroovyShell shell=new GroovyShell(config);
+  ClassLoader cl=typeCheckingVisitor.getSourceUnit().getClassLoader();
+  InputStream is=cl.getResourceAsStream(scriptPath);
+  if (is == null) {
+    cl=GroovyTypeCheckingExtensionSupport.class.getClassLoader();
+    is=cl.getResourceAsStream(scriptPath);
+  }
+  try {
+    TypeCheckingDSL parse=(TypeCheckingDSL)shell.parse(new InputStreamReader(is,typeCheckingVisitor.getSourceUnit().getConfiguration().getSourceEncoding()));
+    parse.extension=this;
+    parse.run();
+  }
+ catch (  CompilationFailedException e) {
+    throw new GroovyBugError("An unexpected error was thrown during custom type checking",e);
+  }
+catch (  UnsupportedEncodingException e) {
+    throw new GroovyBugError("Unsupported encoding found in compiler configuration",e);
+  }
+}
