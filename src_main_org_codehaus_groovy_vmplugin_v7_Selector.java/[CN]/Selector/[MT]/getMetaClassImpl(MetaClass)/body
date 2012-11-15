@@ -1,8 +1,10 @@
 {
-  if (!(mc instanceof MetaClassImpl) || mc instanceof AdaptingMetaClass) {
-    if (LOG_ENABLED)     LOG.info("meta class is neither MetaClassImpl nor AdoptingMetaClass, normal method selection path disabled.");
+  Class mcc=mc.getClass();
+  boolean valid=mcc == MetaClassImpl.class || mcc == AdaptingMetaClass.class || mcc == ClosureMetaClass.class;
+  if (!valid) {
+    if (LOG_ENABLED)     LOG.info("meta class is neither MetaClassImpl, nor AdoptingMetaClass, nor ClosureMetaClass, normal method selection path disabled.");
     return null;
   }
-  if (LOG_ENABLED)   LOG.info("meta class is a MetaClassImpl");
+  if (LOG_ENABLED)   LOG.info("meta class is a recognized MetaClassImpl");
   return (MetaClassImpl)mc;
 }
