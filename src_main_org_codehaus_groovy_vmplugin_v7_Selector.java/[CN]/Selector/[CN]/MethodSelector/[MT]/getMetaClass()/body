@@ -7,9 +7,12 @@
     mc=((GroovyObject)receiver).getMetaClass();
   }
  else   if (receiver instanceof Class) {
-    mc=GroovySystem.getMetaClassRegistry().getMetaClass((Class)receiver);
+    Class c=(Class)receiver;
+    mc=GroovySystem.getMetaClassRegistry().getMetaClass(c);
+    this.cache&=!ClassInfo.getClassInfo(c).hasPerInstanceMetaClasses();
   }
  else {
     mc=((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).getMetaClass(receiver);
+    this.cache&=!ClassInfo.getClassInfo(receiver.getClass()).hasPerInstanceMetaClasses();
   }
 }

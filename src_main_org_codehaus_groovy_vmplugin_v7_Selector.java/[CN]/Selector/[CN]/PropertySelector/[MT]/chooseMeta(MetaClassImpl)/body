@@ -6,7 +6,7 @@
     try {
       reflectionMethod=aClass.getMethod("getProperty",String.class);
       if (!reflectionMethod.isSynthetic()) {
-        handle=LOOKUP.unreflect(reflectionMethod);
+        handle=LOOKUP.findVirtual(GroovyObject.class,"getProperty",MethodType.methodType(Object.class,String.class));
         handle=MethodHandles.insertArguments(handle,1,name);
         return;
       }
