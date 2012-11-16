@@ -3,6 +3,7 @@
   Class[] params=handle.type().parameterArray();
   if (currentType != null)   params=currentType.parameterArray();
   if (!isVargs) {
+    if (spread && useMetaClass)     return;
     if (params.length == 2 && args.length == 1) {
       handle=MethodHandles.insertArguments(handle,1,new Object[]{null});
     }
