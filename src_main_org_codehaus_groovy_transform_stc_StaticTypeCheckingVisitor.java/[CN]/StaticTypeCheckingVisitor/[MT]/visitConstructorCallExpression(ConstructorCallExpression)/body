@@ -1,5 +1,9 @@
 {
   super.visitConstructorCallExpression(call);
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
+  }
   ClassNode receiver=call.isThisCall() ? typeCheckingContext.getEnclosingClassNode() : call.isSuperCall() ? typeCheckingContext.getEnclosingClassNode().getSuperClass() : call.getType();
   Expression arguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(arguments);
@@ -10,6 +14,7 @@
     node=typeCheckMapConstructor(call,receiver,arguments);
     if (node != null) {
       storeTargetMethod(call,node);
+      extension.afterMethodCall(call);
       return;
     }
   }
@@ -20,4 +25,5 @@
     }
     if (node != null)     storeTargetMethod(call,node);
   }
+  extension.afterMethodCall(call);
 }
