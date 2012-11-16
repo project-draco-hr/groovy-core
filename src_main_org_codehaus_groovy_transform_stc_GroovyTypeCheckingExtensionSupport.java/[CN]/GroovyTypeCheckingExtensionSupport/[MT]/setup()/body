@@ -1,6 +1,10 @@
 {
   CompilerConfiguration config=new CompilerConfiguration();
   config.setScriptBaseClass("org.codehaus.groovy.transform.stc.GroovyTypeCheckingExtensionSupport.TypeCheckingDSL");
+  ImportCustomizer ic=new ImportCustomizer();
+  ic.addStarImports("org.codehaus.groovy.ast.expr");
+  ic.addStaticStars("org.codehaus.groovy.ast.ClassHelper");
+  config.addCompilationCustomizers(ic);
   GroovyShell shell=new GroovyShell(config);
   ClassLoader cl=typeCheckingVisitor.getSourceUnit().getClassLoader();
   InputStream is=cl.getResourceAsStream(scriptPath);
