@@ -38,19 +38,6 @@
       throw new GroovyBugError(e);
     }
   }
- else   if (metaMethod instanceof MetaConstructor) {
-    if (LOG_ENABLED)     LOG.info("meta method is MetaConstructor instance");
-    MetaConstructor mc=(MetaConstructor)metaMethod;
-    isVargs=mc.isVargsMethod();
-    Constructor con=mc.getCachedConstrcutor().cachedConstructor;
-    try {
-      handle=LOOKUP.unreflectConstructor(con);
-      if (LOG_ENABLED)       LOG.info("successfully unreflected constructor");
-    }
- catch (    IllegalAccessException e) {
-      throw new GroovyBugError(e);
-    }
-  }
  else   if (method != null) {
     if (LOG_ENABLED)     LOG.info("meta method is dgm helper");
     handle=META_METHOD_INVOKER;
