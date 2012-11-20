@@ -63,13 +63,13 @@
       }
  else       if (objectExpression instanceof VariableExpression) {
         Variable variable=findTargetVariable((VariableExpression)objectExpression);
-        if (variable instanceof Expression) {
-          Object data=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+        if (variable instanceof ASTNode) {
+          Object data=((ASTNode)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
           if (data != null) {
             Parameter[] parameters=(Parameter[])data;
             typeCheckClosureCall(callArguments,args,parameters);
           }
-          Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+          Object type=((ASTNode)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
           if (type == null) {
             if (variable.getType().equals(CLOSURE_TYPE)) {
               GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
