@@ -87,7 +87,7 @@
       ClassNode[] args=getArgumentTypes(argList);
       checkGroovyStyleConstructor(leftRedirect,args);
     }
- else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
+ else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE) && !isWildcardLeftHandSide(leftExpressionType)) {
       if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
         addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
       }
