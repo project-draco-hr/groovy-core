@@ -10,8 +10,10 @@
       addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ enclosingMethod.getReturnType().toString(false),expression);
     }
  else     if (!enclosingMethod.isVoidMethod()) {
-      if (implementsInterfaceOrIsSubclassOf(type,enclosingMethod.getReturnType())) {
-        if (missesGenericsTypes(type)) {
+      ClassNode previousType=(ClassNode)enclosingMethod.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+      ClassNode inferred=previousType == null ? type : lowestUpperBound(type,previousType);
+      if (implementsInterfaceOrIsSubclassOf(inferred,enclosingMethod.getReturnType())) {
+        if (missesGenericsTypes(inferred)) {
           DeclarationExpression virtualDecl=new DeclarationExpression(new VariableExpression("{target}",enclosingMethod.getReturnType()),Token.newSymbol(EQUAL,-1,-1),new VariableExpression("{source}",type));
           virtualDecl.setSourcePosition(statement);
           virtualDecl.visit(this);
