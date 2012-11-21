@@ -1,10 +1,11 @@
 {
   if (!GroovyCategorySupport.hasCategoryInCurrentThread() && !(this instanceof AdaptingMetaClass)) {
     Class[] params=MetaClassHelper.convertToTypeArray(args);
+    CallSite tempSite=site;
     if (site.getName().equals("call") && GeneratedClosure.class.isAssignableFrom(theClass)) {
-      site=new AbstractCallSite(site.getArray(),site.getIndex(),"doCall");
+      tempSite=new AbstractCallSite(site.getArray(),site.getIndex(),"doCall");
     }
-    MetaMethod metaMethod=getMethodWithCachingInternal(theClass,site,params);
+    MetaMethod metaMethod=getMethodWithCachingInternal(theClass,tempSite,params);
     if (metaMethod != null)     return PogoMetaMethodSite.createPogoMetaMethodSite(site,this,metaMethod,params,args);
   }
   return new PogoMetaClassSite(site,this);
