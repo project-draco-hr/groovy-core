@@ -9,9 +9,7 @@
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  if (!isWithCall) {
-    callArguments.visit(this);
-  }
+  visitMethodCallArguments(argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
   final ClassNode receiver=call.getOwnerType();
   if (isWithCall) {
@@ -61,6 +59,7 @@
  else {
         addAmbiguousErrorMessage(mn,name,args,call);
       }
+      visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
     }
   }
   finally {
