@@ -1,0 +1,7 @@
+{
+  if (!(this.args[0] instanceof GroovyInterceptable))   return false;
+  handle=MethodHandles.insertArguments(INTERCEPTABLE_INVOKER,1,this.name);
+  handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
+  handle=handle.asType(targetType);
+  return true;
+}

@@ -1,0 +1,13 @@
+{
+  if (useMetaClass)   return;
+  Class[] pt=handle.type().parameterArray();
+  if (currentType != null)   pt=currentType.parameterArray();
+  for (int i=1; i < args.length; i++) {
+    if (args[i] instanceof Wrapper) {
+      Class type=pt[i];
+      MethodType mt=MethodType.methodType(type,Wrapper.class);
+      handle=MethodHandles.filterArguments(handle,i,UNWRAP_METHOD.asType(mt));
+      if (LOG_ENABLED)       LOG.info("added filter for Wrapper for argument at pos " + i);
+    }
+  }
+}

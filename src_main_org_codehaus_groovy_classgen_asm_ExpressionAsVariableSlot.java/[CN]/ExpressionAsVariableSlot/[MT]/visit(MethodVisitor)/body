@@ -1,0 +1,14 @@
+{
+  OperandStack os=controller.getOperandStack();
+  if (index == -1) {
+    exp.visit(controller.getAcg());
+    os.dup();
+    this.setType(os.getTopOperand());
+    CompileStack compileStack=controller.getCompileStack();
+    index=compileStack.defineTemporaryVariable(name,getType(),true);
+  }
+ else {
+    os.load(getType(),index);
+  }
+  os.remove(1);
+}

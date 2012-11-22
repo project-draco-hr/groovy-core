@@ -1,0 +1,27 @@
+{
+  boolean fittingAdapter=adapter == invokeMethodOnCurrent || adapter == invokeStaticMethod;
+  if (fittingAdapter && controller.optimizeForInt && controller.isFastPath()) {
+    String methodName=getMethodName(message);
+    if (methodName != null) {
+      TupleExpression args;
+      if (arguments instanceof TupleExpression) {
+        args=(TupleExpression)arguments;
+      }
+ else {
+        args=new TupleExpression(receiver);
+      }
+      StatementMeta meta=null;
+      if (origin != null)       meta=(StatementMeta)origin.getNodeMetaData(StatementMeta.class);
+      MethodNode mn=null;
+      if (meta != null)       mn=meta.target;
+      if (writeDirectMethodCall(mn,true,null,args))       return true;
+    }
+  }
+  if (containsSpreadExpression)   return false;
+  if (origin instanceof MethodCallExpression) {
+    MethodCallExpression mce=(MethodCallExpression)origin;
+    MethodNode target=mce.getMethodTarget();
+    return writeDirectMethodCall(target,implicitThis,receiver,makeArgumentList(arguments));
+  }
+  return false;
+}

@@ -1,0 +1,14 @@
+{
+  CALL_TYPES callType=CALL_TYPES.values()[callID];
+switch (callType) {
+case INIT:
+    return new InitSelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
+case METHOD:
+  return new MethodSelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
+case GET:
+return new PropertySelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
+case SET:
+throw new GroovyBugError("your call tried to do a property set, which is not supported.");
+}
+return null;
+}

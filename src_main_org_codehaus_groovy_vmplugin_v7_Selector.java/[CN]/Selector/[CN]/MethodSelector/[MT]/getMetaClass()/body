@@ -1,0 +1,25 @@
+{
+  Object receiver=args[0];
+  if (receiver == null) {
+    mc=NullObject.getNullObject().getMetaClass();
+  }
+ else   if (receiver instanceof GroovyObject) {
+    mc=((GroovyObject)receiver).getMetaClass();
+  }
+ else   if (receiver instanceof Class) {
+    Class c=(Class)receiver;
+    ClassLoader cl=c.getClassLoader();
+    try {
+      Class.forName(c.getName(),true,cl);
+    }
+ catch (    ClassNotFoundException e) {
+    }
+    mc=GroovySystem.getMetaClassRegistry().getMetaClass(c);
+    this.cache&=!ClassInfo.getClassInfo(c).hasPerInstanceMetaClasses();
+  }
+ else {
+    mc=((MetaClassRegistryImpl)GroovySystem.getMetaClassRegistry()).getMetaClass(receiver);
+    this.cache&=!ClassInfo.getClassInfo(receiver.getClass()).hasPerInstanceMetaClasses();
+  }
+  mc.initialize();
+}

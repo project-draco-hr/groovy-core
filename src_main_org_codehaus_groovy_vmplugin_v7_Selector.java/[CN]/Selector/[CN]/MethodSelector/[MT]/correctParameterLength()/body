@@ -1,0 +1,28 @@
+{
+  if (handle == null)   return;
+  Class[] params=handle.type().parameterArray();
+  if (currentType != null)   params=currentType.parameterArray();
+  if (!isVargs) {
+    if (spread && useMetaClass)     return;
+    if (params.length == 2 && args.length == 1) {
+      handle=MethodHandles.insertArguments(handle,1,new Object[]{null});
+    }
+    return;
+  }
+  Class lastParam=params[params.length - 1];
+  Object lastArg=unwrapIfWrapped(args[args.length - 1]);
+  if (params.length == args.length) {
+    if (lastArg == null)     return;
+    if (lastParam.isInstance(lastArg))     return;
+    if (lastArg.getClass().isArray())     return;
+    handle=handle.asCollector(lastParam,1);
+  }
+ else   if (params.length > args.length) {
+    handle=MethodHandles.insertArguments(handle,params.length - 1,Array.newInstance(lastParam.getComponentType(),0));
+    if (LOG_ENABLED)     LOG.info("added empty array for missing vargs part");
+  }
+ else {
+    handle=handle.asCollector(lastParam,args.length - params.length + 1);
+    if (LOG_ENABLED)     LOG.info("changed surplus arguments to be collected for vargs call");
+  }
+}

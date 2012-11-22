@@ -1,0 +1,13 @@
+{
+  if (mci == null)   return;
+  if (LOG_ENABLED)   LOG.info("getting constructor");
+  Object[] newArgs=removeRealReceiver(args);
+  method=mci.retrieveConstructor(newArgs);
+  if (method instanceof MetaConstructor) {
+    MetaConstructor mcon=(MetaConstructor)method;
+    if (mcon.isBeanConstructor()) {
+      if (LOG_ENABLED)       LOG.info("do beans constructor");
+      beanConstructor=true;
+    }
+  }
+}

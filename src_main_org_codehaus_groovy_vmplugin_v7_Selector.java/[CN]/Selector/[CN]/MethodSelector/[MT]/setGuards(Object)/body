@@ -1,0 +1,40 @@
+{
+  if (handle == null)   return;
+  if (!cache)   return;
+  MethodHandle fallback=makeFallBack(callSite,sender,name,callType.ordinal(),targetType,safeNavigationOrig,thisCall,spread);
+  if (receiver instanceof GroovyObject) {
+    GroovyObject go=(GroovyObject)receiver;
+    MetaClass mc=(MetaClass)go.getMetaClass();
+    MethodHandle test=SAME_MC.bindTo(mc);
+    test=test.asType(MethodType.methodType(boolean.class,targetType.parameterType(0)));
+    handle=MethodHandles.guardWithTest(test,handle,fallback);
+    if (LOG_ENABLED)     LOG.info("added meta class equality check");
+  }
+  if (!useMetaClass && isCategoryMethod) {
+    if (method instanceof NewInstanceMetaMethod) {
+      handle=MethodHandles.guardWithTest(HAS_CATEGORY_IN_CURRENT_THREAD_GUARD,handle,fallback);
+      if (LOG_ENABLED)       LOG.info("added category-in-current-thread-guard for category method");
+    }
+  }
+  handle=switchPoint.guardWithTest(handle,fallback);
+  if (LOG_ENABLED)   LOG.info("added switch point guard");
+  Class[] pt=handle.type().parameterArray();
+  for (int i=0; i < args.length; i++) {
+    Object arg=args[i];
+    MethodHandle test=null;
+    if (arg == null) {
+      test=IS_NULL.asType(MethodType.methodType(boolean.class,pt[i]));
+      if (LOG_ENABLED)       LOG.info("added null argument check at pos " + i);
+    }
+ else {
+      Class argClass=arg.getClass();
+      if (Modifier.isFinal(argClass.getModifiers()) && TypeHelper.argumentClassIsParameterClass(argClass,pt[i]))       continue;
+      test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i]));
+      if (LOG_ENABLED)       LOG.info("added same class check at pos " + i);
+    }
+    Class[] drops=new Class[i];
+    for (int j=0; j < drops.length; j++)     drops[j]=pt[j];
+    test=MethodHandles.dropArguments(test,0,drops);
+    handle=MethodHandles.guardWithTest(test,handle,fallback);
+  }
+}
