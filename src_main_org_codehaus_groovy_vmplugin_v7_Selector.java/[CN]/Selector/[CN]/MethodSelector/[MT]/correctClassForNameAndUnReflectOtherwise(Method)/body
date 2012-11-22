@@ -1,0 +1,8 @@
+{
+  if (m.getDeclaringClass() == Class.class && m.getName().equals("forName") && m.getParameterTypes().length == 1) {
+    return MethodHandles.insertArguments(CLASS_FOR_NAME,1,true,sender.getClassLoader());
+  }
+ else {
+    return LOOKUP.unreflect(m);
+  }
+}

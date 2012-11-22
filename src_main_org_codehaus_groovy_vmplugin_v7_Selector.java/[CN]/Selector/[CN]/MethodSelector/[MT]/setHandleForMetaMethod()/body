@@ -24,7 +24,7 @@
     isVargs=cm.isVargsMethod();
     try {
       Method m=cm.getCachedMethod();
-      handle=LOOKUP.unreflect(m);
+      handle=correctClassForNameAndUnReflectOtherwise(m);
       if (LOG_ENABLED)       LOG.info("successfully unreflected method");
       if (isStaticCategoryTypeMethod) {
         handle=MethodHandles.insertArguments(handle,0,new Object[]{null});
