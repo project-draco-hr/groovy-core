@@ -1,12 +1,6 @@
 {
   if (!(this.args[0] instanceof GroovyInterceptable))   return false;
-  try {
-    handle=LOOKUP.findVirtual(GroovyInterceptable.class,"invokeMethod",MethodType.methodType(Object.class,String.class,Object.class));
-  }
- catch (  ReflectiveOperationException e) {
-    throw new GroovyBugError(e);
-  }
-  handle=MethodHandles.insertArguments(handle,1,this.name);
+  handle=MethodHandles.insertArguments(INTERCEPTABLE_INVOKER,1,this.name);
   handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
   handle=handle.asType(targetType);
   return true;

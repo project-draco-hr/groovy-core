@@ -6,8 +6,7 @@
     try {
       reflectionMethod=aClass.getMethod("getProperty",String.class);
       if (!reflectionMethod.isSynthetic()) {
-        handle=LOOKUP.findVirtual(GroovyObject.class,"getProperty",MethodType.methodType(Object.class,String.class));
-        handle=MethodHandles.insertArguments(handle,1,name);
+        handle=MethodHandles.insertArguments(GROOVY_OBJECT_GET_PROPERTY,1,name);
         return;
       }
     }
@@ -15,7 +14,7 @@
     }
   }
  else   if (receiver instanceof Class) {
-    handle=META_CLASS_GET;
+    handle=MOP_GET;
     handle=MethodHandles.insertArguments(handle,2,name);
     handle=MethodHandles.insertArguments(handle,0,this.mc);
     return;

@@ -6,8 +6,9 @@ case INIT:
 case METHOD:
   return new MethodSelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
 case GET:
-case SET:
 return new PropertySelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
+case SET:
+throw new GroovyBugError("your call tried to do a property set, which is not supported.");
 }
 return null;
 }
