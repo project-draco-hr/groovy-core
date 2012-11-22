@@ -2,8 +2,8 @@
   List<String> jointOptions=new ArrayList<String>();
   if (!jointCompilation)   return jointOptions;
   RuntimeConfigurable rc=javac.getRuntimeConfigurableWrapper();
-  for (Iterator i=rc.getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
-    final Map.Entry e=(Map.Entry)i.next();
+  for (  Object o1 : rc.getAttributeMap().entrySet()) {
+    final Map.Entry e=(Map.Entry)o1;
     final String key=e.getKey().toString();
     final String value=getProject().replaceProperties(e.getValue().toString());
     if (key.contains("debug")) {
@@ -25,15 +25,15 @@
       jointOptions.add("-J" + key + "="+ value);
     }
  else {
-      log("The option " + key + " cannot be set on the contained <javac> element. The option will be ignored",Project.MSG_WARN);
+      log.warn("The option " + key + " cannot be set on the contained <javac> element. The option will be ignored");
     }
   }
   Enumeration children=rc.getChildren();
   while (children.hasMoreElements()) {
     RuntimeConfigurable childrc=(RuntimeConfigurable)children.nextElement();
     if (childrc.getElementTag().equals("compilerarg")) {
-      for (Iterator i=childrc.getAttributeMap().entrySet().iterator(); i.hasNext(); ) {
-        final Map.Entry e=(Map.Entry)i.next();
+      for (      Object o : childrc.getAttributeMap().entrySet()) {
+        final Map.Entry e=(Map.Entry)o;
         final String key=e.getKey().toString();
         if (key.equals("value")) {
           final String value=getProject().replaceProperties(e.getValue().toString());
@@ -41,7 +41,7 @@
           while (st.hasMoreTokens()) {
             String optionStr=st.nextToken();
             String replaced=optionStr.replace("-X","-FX");
-            if (optionStr == replaced) {
+            if (optionStr.equals(replaced)) {
               replaced=optionStr.replace("-W","-FW");
             }
             jointOptions.add(replaced);
