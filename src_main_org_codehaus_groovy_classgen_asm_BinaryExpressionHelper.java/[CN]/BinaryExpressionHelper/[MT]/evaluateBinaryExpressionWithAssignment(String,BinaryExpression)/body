@@ -1,41 +1,11 @@
 {
   Expression leftExpression=expression.getLeftExpression();
-  MethodVisitor mv=controller.getMethodVisitor();
   AsmClassGenerator acg=controller.getAcg();
   OperandStack operandStack=controller.getOperandStack();
-  CompileStack compileStack=controller.getCompileStack();
   if (leftExpression instanceof BinaryExpression) {
     BinaryExpression leftBinExpr=(BinaryExpression)leftExpression;
     if (leftBinExpr.getOperation().getType() == Types.LEFT_SQUARE_BRACKET) {
-      Expression subscriptExpression=leftBinExpr.getRightExpression();
-      subscriptExpression.visit(acg);
-      operandStack.box();
-      int subscriptValueId=compileStack.defineTemporaryVariable("$subscript",ClassHelper.OBJECT_TYPE,true);
-      controller.getCallSiteWriter().prepareCallSite("putAt");
-      controller.getCallSiteWriter().prepareCallSite(method);
-      controller.getCallSiteWriter().prepareCallSite("getAt");
-      leftBinExpr.getLeftExpression().visit(acg);
-      operandStack.box();
-      operandStack.dup();
-      int xValueId=compileStack.defineTemporaryVariable("$xValue",ClassHelper.OBJECT_TYPE,true);
-      operandStack.load(ClassHelper.OBJECT_TYPE,subscriptValueId);
-      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-      operandStack.replace(ClassHelper.OBJECT_TYPE,2);
-      expression.getRightExpression().visit(acg);
-      operandStack.box();
-      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-      operandStack.replace(ClassHelper.OBJECT_TYPE,2);
-      int resultValueId=compileStack.defineTemporaryVariable("$result",ClassHelper.OBJECT_TYPE,true);
-      operandStack.load(ClassHelper.OBJECT_TYPE,xValueId);
-      operandStack.load(ClassHelper.OBJECT_TYPE,subscriptValueId);
-      operandStack.load(ClassHelper.OBJECT_TYPE,resultValueId);
-      mv.visitMethodInsn(INVOKEINTERFACE,"org/codehaus/groovy/runtime/callsite/CallSite","call","(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-      operandStack.replace(ClassHelper.OBJECT_TYPE,3);
-      operandStack.pop();
-      operandStack.load(ClassHelper.OBJECT_TYPE,resultValueId);
-      compileStack.removeVar(resultValueId);
-      compileStack.removeVar(xValueId);
-      compileStack.removeVar(subscriptValueId);
+      evaluateArrayAssignmentWithOperator(method,expression,leftBinExpr);
       return;
     }
   }

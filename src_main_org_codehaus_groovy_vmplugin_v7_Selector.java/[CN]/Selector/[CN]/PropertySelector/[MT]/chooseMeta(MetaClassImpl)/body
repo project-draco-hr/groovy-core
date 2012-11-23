@@ -1,0 +1,45 @@
+{
+  Object receiver=getCorrectedReceiver();
+  if (receiver instanceof GroovyObject) {
+    Class aClass=receiver.getClass();
+    Method reflectionMethod=null;
+    try {
+      reflectionMethod=aClass.getMethod("getProperty",String.class);
+      if (!reflectionMethod.isSynthetic()) {
+        handle=MethodHandles.insertArguments(GROOVY_OBJECT_GET_PROPERTY,1,name);
+        return;
+      }
+    }
+ catch (    ReflectiveOperationException e) {
+    }
+  }
+ else   if (receiver instanceof Class) {
+    handle=MOP_GET;
+    handle=MethodHandles.insertArguments(handle,2,name);
+    handle=MethodHandles.insertArguments(handle,0,this.mc);
+    return;
+  }
+  if (method != null || mci == null)   return;
+  MetaProperty res=mci.getEffectiveGetMetaProperty(mci.getTheClass(),receiver,name,false);
+  if (res instanceof MethodMetaProperty) {
+    MethodMetaProperty mmp=(MethodMetaProperty)res;
+    method=mmp.getMetaMethod();
+    insertName=true;
+  }
+ else   if (res instanceof CachedField) {
+    CachedField cf=(CachedField)res;
+    Field f=cf.field;
+    try {
+      handle=LOOKUP.unreflectGetter(f);
+      if (Modifier.isStatic(f.getModifiers())) {
+        handle=META_PROPERTY_GETTER.bindTo(res);
+      }
+    }
+ catch (    IllegalAccessException iae) {
+      throw new GroovyBugError(iae);
+    }
+  }
+ else {
+    handle=META_PROPERTY_GETTER.bindTo(res);
+  }
+}

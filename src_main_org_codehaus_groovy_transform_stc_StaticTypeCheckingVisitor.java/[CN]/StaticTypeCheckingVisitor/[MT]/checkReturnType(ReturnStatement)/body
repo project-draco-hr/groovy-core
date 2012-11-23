@@ -3,7 +3,7 @@
   ClassNode type=getType(expression);
   if (methodNode != null) {
     if (!methodNode.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(methodNode.getReturnType(),type)&& !(isNullConstant(expression))) {
-      addStaticTypeError("Cannot return value of type " + type + " on method returning type "+ methodNode.getReturnType(),expression);
+      addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ methodNode.getReturnType().toString(false),expression);
     }
  else     if (!methodNode.isVoidMethod()) {
       ClassNode previousType=(ClassNode)methodNode.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);

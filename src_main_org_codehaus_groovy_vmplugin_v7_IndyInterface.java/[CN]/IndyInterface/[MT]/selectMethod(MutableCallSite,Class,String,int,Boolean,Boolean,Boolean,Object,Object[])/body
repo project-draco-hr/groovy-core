@@ -1,0 +1,7 @@
+{
+  Selector selector=Selector.getSelector(callSite,sender,methodName,callID,safeNavigation,thisCall,spreadCall,arguments);
+  selector.setCallSiteTarget();
+  MethodHandle call=selector.handle.asSpreader(Object[].class,arguments.length);
+  call=call.asType(MethodType.methodType(Object.class,Object[].class));
+  return call.invokeExact(arguments);
+}

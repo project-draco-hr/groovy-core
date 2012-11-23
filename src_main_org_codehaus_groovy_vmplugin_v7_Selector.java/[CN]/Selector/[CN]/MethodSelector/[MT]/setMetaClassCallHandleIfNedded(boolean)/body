@@ -1,0 +1,21 @@
+{
+  if (handle != null)   return;
+  useMetaClass=true;
+  if (LOG_ENABLED)   LOG.info("set meta class invocation path");
+  Object receiver=getCorrectedReceiver();
+  if (receiver instanceof Class) {
+    handle=META_CLASS_INVOKE_STATIC_METHOD.bindTo(mc);
+    if (LOG_ENABLED)     LOG.info("use invokeStaticMethod with bound meta class");
+  }
+ else {
+    handle=MOP_INVOKE_METHOD.bindTo(mc);
+    if (LOG_ENABLED)     LOG.info("use invokeMethod with bound meta class");
+    if (receiver instanceof GroovyObject) {
+      if (LOG_ENABLED)       LOG.info("add MissingMethod handler for GrooObject#invokeMethod fallback path");
+      handle=MethodHandles.catchException(handle,MissingMethodException.class,GROOVY_OBJECT_INVOKER);
+    }
+  }
+  handle=MethodHandles.insertArguments(handle,1,name);
+  if (!spread)   handle=handle.asCollector(Object[].class,targetType.parameterCount() - 1);
+  if (LOG_ENABLED)   LOG.info("bind method name and create collector for arguments");
+}

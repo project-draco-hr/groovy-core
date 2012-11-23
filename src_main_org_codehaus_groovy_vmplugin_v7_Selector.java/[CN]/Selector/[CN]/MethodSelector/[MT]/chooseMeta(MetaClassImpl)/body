@@ -1,0 +1,13 @@
+{
+  if (mci == null)   return;
+  Object receiver=getCorrectedReceiver();
+  Object[] newArgs=removeRealReceiver(args);
+  if (receiver instanceof Class) {
+    if (LOG_ENABLED)     LOG.info("receiver is a class");
+    method=mci.retrieveStaticMethod(name,newArgs);
+  }
+ else {
+    method=mci.getMethodWithCaching(selectionBase,name,newArgs,false);
+  }
+  if (LOG_ENABLED)   LOG.info("retrieved method from meta class: " + method);
+}
