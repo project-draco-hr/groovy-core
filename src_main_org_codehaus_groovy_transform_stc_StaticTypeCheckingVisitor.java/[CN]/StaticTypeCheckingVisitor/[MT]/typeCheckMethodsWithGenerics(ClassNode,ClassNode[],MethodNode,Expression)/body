@@ -61,15 +61,36 @@
               String placeholderName=methodNodeGenericsType.getName();
               if (methodNodeGenericsType.isPlaceholder() && placeholderName.equals(typeGenericsType.getName())) {
                 ClassNode parameterized=GenericsUtils.parameterizeType(arguments[i],type);
-                ClassNode alignedType=parameterized;
-                if (parameterized.isUsingGenerics() && parameterized.getGenericsTypes() != null) {
-                  alignedType=parameterized.getGenericsTypes()[gtIndex].getType();
-                }
-                if (resolvedMethodGenerics.containsKey(placeholderName)) {
-                  failure|=!resolvedMethodGenerics.get(placeholderName).equals(alignedType);
+                if (type.isGenericsPlaceHolder()) {
+                  String name=type.getGenericsTypes()[0].getName();
+                  if (name.equals(placeholderName)) {
+                    if (resolvedMethodGenerics.containsKey(name)) {
+                      failure|=!resolvedMethodGenerics.get(name).equals(parameterized);
+                    }
+ else {
+                      resolvedMethodGenerics.put(name,parameterized);
+                    }
+                  }
                 }
  else {
-                  resolvedMethodGenerics.put(placeholderName,alignedType);
+                  if (type.isUsingGenerics() && type.getGenericsTypes() != null) {
+                    GenericsType[] gtInParameter=type.getGenericsTypes();
+                    GenericsType[] gtInArgument=parameterized.getGenericsTypes();
+                    if (gtInArgument != null && gtInArgument.length == gtInParameter.length) {
+                      for (int j=0; j < gtInParameter.length; j++) {
+                        GenericsType genericsType=gtInParameter[j];
+                        if (genericsType.getName().equals(placeholderName)) {
+                          ClassNode actualType=gtInArgument[j].getType();
+                          if (resolvedMethodGenerics.containsKey(placeholderName)) {
+                            failure|=!resolvedMethodGenerics.get(placeholderName).equals(actualType);
+                          }
+ else {
+                            resolvedMethodGenerics.put(placeholderName,actualType);
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
