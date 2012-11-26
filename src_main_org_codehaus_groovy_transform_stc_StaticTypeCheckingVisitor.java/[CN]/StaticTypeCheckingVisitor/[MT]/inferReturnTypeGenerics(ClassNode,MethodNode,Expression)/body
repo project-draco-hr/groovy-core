@@ -25,7 +25,11 @@
     GenericsUtils.extractPlaceholders(receiver.getGenericsTypes()[0].getType(),resolvedPlaceholders);
   }
  else {
-    GenericsUtils.extractPlaceholders(receiver,resolvedPlaceholders);
+    ClassNode current=receiver;
+    while (current != null) {
+      GenericsUtils.extractPlaceholders(current,resolvedPlaceholders);
+      current=current.getUnresolvedSuperClass();
+    }
   }
   GenericsUtils.extractPlaceholders(method.getReturnType(),resolvedPlaceholders);
   if (resolvedPlaceholders.isEmpty())   return returnType;
