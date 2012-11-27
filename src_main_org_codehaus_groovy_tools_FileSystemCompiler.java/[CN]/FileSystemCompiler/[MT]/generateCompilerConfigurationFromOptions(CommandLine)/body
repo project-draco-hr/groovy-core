@@ -29,7 +29,10 @@
     File groovyConfigurator=new File(path);
     Binding binding=new Binding();
     binding.setVariable("configuration",configuration);
-    GroovyShell shell=new GroovyShell(binding);
+    CompilerConfiguration configuratorConfig=new CompilerConfiguration();
+    ImportCustomizer customizer=new ImportCustomizer();
+    customizer.addStaticStars("org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder");
+    GroovyShell shell=new GroovyShell(binding,configuratorConfig);
     shell.evaluate(groovyConfigurator);
   }
   return configuration;
