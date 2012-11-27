@@ -4,7 +4,13 @@
     throw new NullPointerException("Cannot invoke method: " + methodName + " on null object");
   }
   final Object[] arguments=originalArguments == null ? EMPTY_ARGUMENTS : originalArguments;
-  MetaMethod method=getMethodWithCaching(sender,methodName,arguments,isCallToSuper);
+  MetaMethod method=null;
+  if (CLOSURE_CALL_METHOD.equals(methodName) && object instanceof GeneratedClosure) {
+    method=getMethodWithCaching(sender,"doCall",arguments,isCallToSuper);
+  }
+  if (method == null) {
+    method=getMethodWithCaching(sender,methodName,arguments,isCallToSuper);
+  }
   MetaClassHelper.unwrap(arguments);
   if (method == null)   method=tryListParamMetaMethod(sender,methodName,isCallToSuper,arguments);
   final boolean isClosure=object instanceof Closure;
