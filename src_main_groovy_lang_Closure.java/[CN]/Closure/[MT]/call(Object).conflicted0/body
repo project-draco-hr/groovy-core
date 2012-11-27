@@ -2,7 +2,11 @@
   try {
     return (V)getMetaClass().invokeMethod(this,"doCall",args);
   }
- catch (  Exception e) {
+ catch (  InvokerInvocationException e) {
+    ExceptionUtils.sneakyThrow(e.getCause());
+    return null;
+  }
+catch (  Exception e) {
     return (V)throwRuntimeException(e);
   }
 }
