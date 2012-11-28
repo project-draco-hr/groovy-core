@@ -11,6 +11,9 @@
     if (vexp == VariableExpression.THIS_EXPRESSION)     return classNode;
     if (vexp == VariableExpression.SUPER_EXPRESSION)     return classNode.getSuperClass();
     final Variable variable=vexp.getAccessedVariable();
+    if (variable instanceof FieldNode) {
+      checkOrMarkPrivateAccess((FieldNode)variable);
+    }
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
       return getType((Expression)variable);
     }

@@ -44,6 +44,7 @@
   if (receiver instanceof ClassExpression) {
     if (makeGetField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiver.getType().getPackageName(),classNode.getPackageName())))     return;
     if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
+    if (makeGetPrivateFieldWithBridgeMethod(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
   }
   if (isClassReceiver) {
     if (makeGetPropertyWithGetter(receiver,CLASS_Type,methodName,safe,implicitThis))     return;
