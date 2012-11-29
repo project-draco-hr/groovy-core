@@ -1,0 +1,26 @@
+{
+  cNode.addConstructor(constructorNode);
+  Parameter argsParam=null;
+  for (  Parameter p : constructorNode.getParameters()) {
+    if ("args".equals(p.getName())) {
+      argsParam=p;
+      break;
+    }
+  }
+  if (argsParam != null) {
+    final Parameter arg=argsParam;
+    ClassCodeVisitorSupport variableExpressionFix=new ClassCodeVisitorSupport(){
+      @Override protected SourceUnit getSourceUnit(){
+        return cNode.getModule().getContext();
+      }
+      @Override public void visitVariableExpression(      final VariableExpression expression){
+        super.visitVariableExpression(expression);
+        if ("args".equals(expression.getName())) {
+          expression.setAccessedVariable(arg);
+        }
+      }
+    }
+;
+    variableExpressionFix.visitConstructor(constructorNode);
+  }
+}

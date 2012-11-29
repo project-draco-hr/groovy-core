@@ -1,0 +1,9 @@
+{
+  CompileStack compileStack=controller.getCompileStack();
+  OperandStack operandStack=controller.getOperandStack();
+  compileStack.pushLHS(false);
+  compileStack.pushImplicitThis(implicitThis);
+  receiver.visit(controller.getAcg());
+  compileStack.popImplicitThis();
+  return "(" + getTypeDescription(operandStack.getTopOperand());
+}

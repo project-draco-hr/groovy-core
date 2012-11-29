@@ -6,6 +6,9 @@
  else   if (Number.class.isAssignableFrom(parameter)) {
     transformer=selectNumberTransformer(parameter,arg);
   }
+ else   if (parameter.isArray()) {
+    transformer=MethodHandles.insertArguments(AS_ARRAY,1,parameter);
+  }
   if (transformer == null)   throw new GroovyBugError("Unknown transformation for argument " + arg + " at position "+ pos+ " with "+ arg.getClass()+ " for parameter of type "+ parameter);
   return applyUnsharpFilter(handle,pos,transformer);
 }
