@@ -1,0 +1,15 @@
+{
+  Expression memberValue=collector.getMember("value");
+  if (!(memberValue instanceof ListExpression))   return Collections.EMPTY_LIST;
+  ListExpression memberListExp=(ListExpression)memberValue;
+  List<Expression> memberList=memberListExp.getExpressions();
+  if (memberList.size() == 0)   return Collections.EMPTY_LIST;
+  ArrayList<AnnotationNode> ret=new ArrayList(memberList.size());
+  for (  Expression e : memberList) {
+    if (!(e instanceof ClassExpression))     continue;
+    AnnotationNode toAdd=new AnnotationNode(e.getType());
+    toAdd.setSourcePosition(aliasAnnotation);
+    ret.add(toAdd);
+  }
+  return ret;
+}

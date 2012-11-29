@@ -1,0 +1,31 @@
+{
+  ClassNode classNode=aliasNode.getClassNode();
+  boolean ret=false;
+  for (  AnnotationNode annotation : classNode.getAnnotations()) {
+    if (annotation.getClassNode().getName().equals(AnnotationCollector.class.getName())) {
+      Expression processorExp=annotation.getMember("processor");
+      AnnotationCollectorTransform act=null;
+      if (processorExp != null && processorExp instanceof ConstantExpression) {
+        String className=(String)((ConstantExpression)processorExp).getValue();
+        Class klass=loadTransformClass(className,aliasNode);
+        if (klass != null) {
+          try {
+            act=(AnnotationCollectorTransform)klass.newInstance();
+          }
+ catch (          InstantiationException e) {
+            source.getErrorCollector().addErrorAndContinue(new ExceptionMessage(e,true,source));
+          }
+catch (          IllegalAccessException e) {
+            source.getErrorCollector().addErrorAndContinue(new ExceptionMessage(e,true,source));
+          }
+        }
+      }
+ else {
+        act=new AnnotationCollectorTransform();
+      }
+      if (act != null)       collected.addAll(act.visit(annotation,aliasNode,origin,source));
+      ret=true;
+    }
+  }
+  return ret;
+}
