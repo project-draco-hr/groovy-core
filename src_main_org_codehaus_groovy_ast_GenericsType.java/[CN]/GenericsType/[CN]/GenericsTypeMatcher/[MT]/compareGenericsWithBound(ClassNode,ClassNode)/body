@@ -19,6 +19,7 @@
         ClassNode[] interfaces=bound.getInterfaces();
         for (        ClassNode anInterface : interfaces) {
           success&=compareGenericsWithBound(classNode,anInterface);
+          if (!success)           break;
         }
       }
       if (success)       return true;
@@ -78,6 +79,7 @@
                       }
                     }
                     match=match && implementsInterfaceOrIsSubclassOf(classNodeType.getType(),gt.getType());
+                    if (!match)                     break;
                   }
                 }
                 return match;
