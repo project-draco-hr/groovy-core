@@ -1,7 +1,7 @@
 {
   final BlockStatement body=new BlockStatement();
   for (  PropertyNode pNode : list) {
-    body.addStatement(createConstructorStatement(cNode,pNode,knownImmutableClasses));
+    body.addStatement(createConstructorStatement(cNode,pNode,knownImmutableClasses,knownImmutables));
   }
   Expression checkArgs=new ArgumentListExpression(new VariableExpression("this"),new VariableExpression("args"));
   body.addStatement(new ExpressionStatement(new StaticMethodCallExpression(SELF_TYPE,"checkPropNames",checkArgs)));

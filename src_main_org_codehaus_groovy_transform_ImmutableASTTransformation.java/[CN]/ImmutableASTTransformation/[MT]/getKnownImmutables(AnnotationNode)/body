@@ -1,0 +1,16 @@
+{
+  final ArrayList<String> immutables=new ArrayList<String>();
+  final Expression expression=node.getMember(MEMBER_KNOWN_IMMUTABLES);
+  if (expression == null)   return immutables;
+  if (!(expression instanceof ListExpression)) {
+    addError("Use the Groovy list notation [el1, el2] to specify known immutable property names via \"" + MEMBER_KNOWN_IMMUTABLES + "\"",node);
+    return immutables;
+  }
+  final ListExpression listExpression=(ListExpression)expression;
+  for (  Expression listItemExpression : listExpression.getExpressions()) {
+    if (listItemExpression instanceof ConstantExpression) {
+      immutables.add((String)((ConstantExpression)listItemExpression).getValue());
+    }
+  }
+  return immutables;
+}
