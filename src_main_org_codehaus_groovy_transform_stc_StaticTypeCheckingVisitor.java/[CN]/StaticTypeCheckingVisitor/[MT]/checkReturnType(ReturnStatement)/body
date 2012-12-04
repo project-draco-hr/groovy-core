@@ -1,7 +1,7 @@
 {
   Expression expression=statement.getExpression();
   ClassNode type=getType(expression);
-  if (methodNode != null) {
+  if (methodNode != null && closureExpression == null) {
     if (!methodNode.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(methodNode.getReturnType(),type)&& !(isNullConstant(expression))) {
       addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ methodNode.getReturnType().toString(false),expression);
     }
