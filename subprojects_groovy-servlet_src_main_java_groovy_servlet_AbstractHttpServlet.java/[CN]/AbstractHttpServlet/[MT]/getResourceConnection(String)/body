@@ -1,12 +1,5 @@
 {
-  URI uri=new File(servletContext.getRealPath("/")).toURI();
-  try {
-    String basePath=uri.toURL().toExternalForm();
-    if (name.startsWith(basePath))     name=name.substring(basePath.length());
-  }
- catch (  MalformedURLException e) {
-    throw new ResourceException("Malformed URL for base path '" + uri + "'",e);
-  }
+  name=removeNamePrefix(name);
   name=name.replaceAll("\\\\","/");
   if (name.startsWith("/"))   name=name.substring(1);
   try {
@@ -18,9 +11,6 @@
     }
     if (url == null) {
       throw new ResourceException("Resource \"" + name + "\" not found!");
-    }
- else {
-      url=new URL("file","",servletContext.getRealPath(tryScriptName));
     }
     return url.openConnection();
   }

@@ -1,0 +1,25 @@
+{
+  List<Expression> targetAnnotationList=getTargetAnnotationList(collector,source);
+  ArrayList<AnnotationNode> ret=new ArrayList(targetAnnotationList.size());
+  Set<String> unusedNames=new HashSet(aliasAnnotationUsage.getMembers().keySet());
+  for (  Expression e : targetAnnotationList) {
+    if (!(e instanceof ClassExpression)) {
+      addError("Annotation collector expected a ClassExpression, but got " + e.getClass(),collector,source);
+      continue;
+    }
+    AnnotationNode toAdd=new AnnotationNode(e.getType());
+    toAdd.setSourcePosition(aliasAnnotationUsage);
+    ret.add(toAdd);
+    for (    String name : aliasAnnotationUsage.getMembers().keySet()) {
+      if (e.getType().hasMethod(name,Parameter.EMPTY_ARRAY)) {
+        unusedNames.remove(name);
+        toAdd.addMember(name,aliasAnnotationUsage.getMember(name));
+      }
+    }
+  }
+  if (unusedNames.size() > 0) {
+    String message="Annotation collector got unmapped names " + unusedNames.toString() + ".";
+    addError(message,aliasAnnotationUsage,source);
+  }
+  return ret;
+}

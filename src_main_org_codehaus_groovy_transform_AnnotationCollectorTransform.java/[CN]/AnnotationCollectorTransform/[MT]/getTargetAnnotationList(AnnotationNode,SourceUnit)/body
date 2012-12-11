@@ -1,0 +1,11 @@
+{
+  Expression memberValue=collector.getMember("value");
+  if (!(memberValue instanceof ListExpression)) {
+    addError("Annotation collector expected a list of classes, but got a " + memberValue.getClass(),collector,source);
+    return Collections.EMPTY_LIST;
+  }
+  ListExpression memberListExp=(ListExpression)memberValue;
+  List<Expression> memberList=memberListExp.getExpressions();
+  if (memberList.size() == 0)   return Collections.EMPTY_LIST;
+  return memberList;
+}

@@ -1,5 +1,11 @@
 {
   super.visitAnnotations(node);
+  List<AnnotationNode> collected=new ArrayList();
+  for (Iterator<AnnotationNode> it=node.getAnnotations().iterator(); it.hasNext(); ) {
+    AnnotationNode annotation=it.next();
+    if (addCollectedAnnotations(collected,annotation,node))     it.remove();
+  }
+  node.getAnnotations().addAll(collected);
   for (  AnnotationNode annotation : node.getAnnotations()) {
     Annotation transformClassAnnotation=getTransformClassAnnotation(annotation.getClassNode());
     if (transformClassAnnotation == null) {

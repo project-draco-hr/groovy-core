@@ -1,0 +1,10 @@
+{
+  if (exp == null)   return;
+  if (!(exp instanceof ConstantExpression)) {
+    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("Expected a String constant.",exp.getLineNumber(),exp.getColumnNumber()),source));
+  }
+  ConstantExpression ce=(ConstantExpression)exp;
+  if (!(ce.getValue() instanceof String)) {
+    source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("Expected a String constant.",exp.getLineNumber(),exp.getColumnNumber()),source));
+  }
+}

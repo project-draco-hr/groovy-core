@@ -1,7 +1,7 @@
 {
   final Expression fieldExpr=new VariableExpression(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
-  if (initExpr == null)   initExpr=ConstantExpression.NULL;
+  if (initExpr == null)   initExpr=new ConstantExpression(null);
   final Expression date=findArg(fNode.getName());
-  return new IfStatement(equalsNullExpr(date),new IfStatement(equalsNullExpr(initExpr),assignStatement(fieldExpr,ConstantExpression.NULL),assignStatement(fieldExpr,cloneDateExpr(initExpr))),assignStatement(fieldExpr,cloneDateExpr(date)));
+  return new IfStatement(equalsNullExpr(date),new IfStatement(equalsNullExpr(initExpr),assignStatement(fieldExpr,new ConstantExpression(null)),assignStatement(fieldExpr,cloneDateExpr(initExpr))),assignStatement(fieldExpr,cloneDateExpr(date)));
 }
