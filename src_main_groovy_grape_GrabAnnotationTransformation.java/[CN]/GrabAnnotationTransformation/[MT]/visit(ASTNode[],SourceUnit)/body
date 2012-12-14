@@ -28,7 +28,7 @@
  else     if (GRAPES_CLASS_NAME.equals(className)) {
       grapesAliases.add(im.getAlias());
     }
-    if ((className.endsWith(GRAPERESOLVER_DOT_NAME) && ((alias == null) || (alias.length() == 0))) || (GRABRESOLVER_CLASS_NAME.equals(alias))) {
+    if ((className.endsWith(GRABRESOLVER_DOT_NAME) && ((alias == null) || (alias.length() == 0))) || (GRABRESOLVER_CLASS_NAME.equals(alias))) {
       allowShortGrabResolver=false;
     }
  else     if (GRABRESOLVER_CLASS_NAME.equals(className)) {
@@ -58,7 +58,7 @@
           sval=(String)ce.getValue();
         }
         if (sval != null && sval.length() > 0) {
-          for (          String s : GRAPERESOLVER_REQUIRED) {
+          for (          String s : GRABRESOLVER_REQUIRED) {
             Expression member=node.getMember(s);
             if (member != null) {
               addError("The attribute \"" + s + "\" conflicts with attribute 'value' in @"+ node.getClassNode().getNameWithoutPackage()+ " annotations",node);
@@ -69,7 +69,7 @@
           grapeResolverMap.put("root",sval);
         }
  else {
-          for (          String s : GRAPERESOLVER_REQUIRED) {
+          for (          String s : GRABRESOLVER_REQUIRED) {
             Expression member=node.getMember(s);
             if (member == null) {
               addError("The missing attribute \"" + s + "\" is required in @"+ node.getClassNode().getNameWithoutPackage()+ " annotations",node);
