@@ -1,0 +1,39 @@
+{
+  AnnotationNode collector=null;
+  for (ListIterator<AnnotationNode> it=cn.getAnnotations().listIterator(); it.hasNext(); ) {
+    AnnotationNode an=it.next();
+    if (an.getClassNode().getName().equals(AnnotationCollector.class.getName())) {
+      collector=an;
+      break;
+    }
+    ;
+  }
+  if (collector == null)   return;
+  cn.setModifiers((ACC_FINAL + cn.getModifiers()) & ~(ACC_INTERFACE | ACC_ANNOTATION));
+  List<AnnotationNode> meta=getMeta(cn);
+  List<Expression> outer=new ArrayList(meta.size());
+  for (  AnnotationNode an : meta) {
+    MapExpression map=new MapExpression();
+    for (    String key : an.getMembers().keySet()) {
+      Expression val=an.getMember(key);
+      if (val instanceof ListExpression) {
+        ListExpression le=(ListExpression)val;
+        val=new ArrayExpression(ClassHelper.OBJECT_TYPE,le.getExpressions());
+      }
+      map.addMapEntryExpression(new ConstantExpression(key),an.getMember(key));
+    }
+    List<Expression> l=new ArrayList(2);
+    l.add(new ClassExpression(an.getClassNode()));
+    l.add(map);
+    ArrayExpression ae=new ArrayExpression(ClassHelper.OBJECT_TYPE,l);
+    outer.add(ae);
+  }
+  ArrayExpression ae=new ArrayExpression(ClassHelper.OBJECT_TYPE.makeArray(),outer);
+  Statement code=new ReturnStatement(ae);
+  cn.addMethod("value",ACC_PUBLIC + ACC_STATIC,ClassHelper.OBJECT_TYPE.makeArray().makeArray(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
+  for (ListIterator<AnnotationNode> it=cn.getAnnotations().listIterator(); it.hasNext(); ) {
+    AnnotationNode an=it.next();
+    if (an == collector)     continue;
+    it.remove();
+  }
+}

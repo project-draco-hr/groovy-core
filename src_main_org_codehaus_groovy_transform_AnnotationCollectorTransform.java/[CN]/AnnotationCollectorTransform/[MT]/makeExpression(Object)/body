@@ -1,0 +1,10 @@
+{
+  if (o instanceof Class)   return new ClassExpression(ClassHelper.make((Class)o));
+  if (!(o instanceof List))   return new ConstantExpression(o,true);
+  ListExpression le=new ListExpression();
+  List values=(List)o;
+  for (  Object val : values) {
+    le.addExpression(makeExpression(val));
+  }
+  return le;
+}

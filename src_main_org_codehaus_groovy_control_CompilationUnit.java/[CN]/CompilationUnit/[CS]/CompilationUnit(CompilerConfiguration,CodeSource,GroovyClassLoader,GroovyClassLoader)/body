@@ -45,6 +45,13 @@
   addPhaseOperation(compileCompleteCheck,Phases.CANONICALIZATION);
   addPhaseOperation(classgen,Phases.CLASS_GENERATION);
   addPhaseOperation(output);
+  addPhaseOperation(new PrimaryClassNodeOperation(){
+    @Override public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      AnnotationCollectorTransform.ClassChanger actt=new AnnotationCollectorTransform.ClassChanger();
+      actt.transformClass(classNode);
+    }
+  }
+,Phases.SEMANTIC_ANALYSIS);
   ASTTransformationVisitor.addPhaseOperations(this);
   addPhaseOperation(new PrimaryClassNodeOperation(){
     @Override public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
