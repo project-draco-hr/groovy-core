@@ -5,10 +5,10 @@
   if (!extension.beforeVisitMethod(node)) {
     ErrorCollector collector=(ErrorCollector)node.getNodeMetaData(ERROR_COLLECTOR);
     if (collector != null) {
-      typeCheckingContext.errorCollector.addCollectorContents(collector);
+      typeCheckingContext.getErrorCollector().addCollectorContents(collector);
     }
  else {
-      startMethodInference(node,typeCheckingContext.errorCollector);
+      startMethodInference(node,typeCheckingContext.getErrorCollector());
     }
     node.removeNodeMetaData(ERROR_COLLECTOR);
   }

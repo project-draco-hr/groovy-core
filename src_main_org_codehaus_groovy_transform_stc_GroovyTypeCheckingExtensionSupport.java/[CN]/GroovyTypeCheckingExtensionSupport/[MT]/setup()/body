@@ -17,6 +17,12 @@
     TypeCheckingDSL parse=(TypeCheckingDSL)shell.parse(new InputStreamReader(is,typeCheckingVisitor.getSourceUnit().getConfiguration().getSourceEncoding()));
     parse.extension=this;
     parse.run();
+    List<Closure> list=eventHandlers.get("setup");
+    if (list != null) {
+      for (      Closure closure : list) {
+        safeCall(closure);
+      }
+    }
   }
  catch (  CompilationFailedException e) {
     throw new GroovyBugError("An unexpected error was thrown during custom type checking",e);

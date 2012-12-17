@@ -2,7 +2,7 @@
   if (shouldSkipClassNode(node))   return;
   Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
   if (type != null) {
-    typeCheckingContext.errorCollector=new ErrorCollector(typeCheckingContext.errorCollector.getConfiguration());
+    typeCheckingContext.pushErrorCollector();
   }
   typeCheckingContext.pushEnclosingClassNode(node);
   Set<MethodNode> oldVisitedMethod=typeCheckingContext.alreadyVisitedMethods;
