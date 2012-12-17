@@ -1,5 +1,23 @@
 {
   try {
+    String val=(String)ctx.getAttribute("#jsr223.groovy.engine.keep.globals",ScriptContext.ENGINE_SCOPE);
+    ReferenceBundle bundle=ReferenceBundle.getHardBundle();
+    if (val != null && val.length() > 0) {
+      if (val.equalsIgnoreCase("soft")) {
+        bundle=ReferenceBundle.getSoftBundle();
+      }
+ else       if (val.equalsIgnoreCase("weak")) {
+        bundle=ReferenceBundle.getWeakBundle();
+      }
+ else       if (val.equalsIgnoreCase("phantom")) {
+        bundle=ReferenceBundle.getPhantomBundle();
+      }
+    }
+    globalClosures.setBundle(bundle);
+  }
+ catch (  ClassCastException cce) {
+  }
+  try {
     Class clazz=getScriptClass(script);
     if (clazz == null)     throw new ScriptException("Script class is null");
     return eval(clazz,ctx);
