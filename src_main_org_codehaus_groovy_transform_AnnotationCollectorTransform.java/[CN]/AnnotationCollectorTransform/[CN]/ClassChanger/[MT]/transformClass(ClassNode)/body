@@ -9,7 +9,9 @@
     ;
   }
   if (collector == null)   return;
-  cn.setModifiers((ACC_FINAL + cn.getModifiers()) & ~(ACC_INTERFACE | ACC_ANNOTATION));
+  cn.setModifiers((ACC_FINAL + cn.getModifiers()) & ~(ACC_ENUM | ACC_INTERFACE | ACC_ANNOTATION| ACC_ABSTRACT));
+  cn.setSuperClass(ClassHelper.OBJECT_TYPE);
+  cn.setInterfaces(ClassNode.EMPTY_ARRAY);
   List<AnnotationNode> meta=getMeta(cn);
   List<Expression> outer=new ArrayList<Expression>(meta.size());
   for (  AnnotationNode an : meta) {
