@@ -1,0 +1,12 @@
+{
+  final boolean match;
+  ClassNode type=ClassHelper.make(aClass);
+  if (ClassHelper.isPrimitiveType(type) && !ClassHelper.isPrimitiveType(argType)) {
+    type=ClassHelper.getWrapper(type);
+  }
+ else   if (ClassHelper.isPrimitiveType(argType) && !ClassHelper.isPrimitiveType(type)) {
+    type=ClassHelper.getUnwrapper(type);
+  }
+  match=argType.equals(type);
+  return match;
+}
