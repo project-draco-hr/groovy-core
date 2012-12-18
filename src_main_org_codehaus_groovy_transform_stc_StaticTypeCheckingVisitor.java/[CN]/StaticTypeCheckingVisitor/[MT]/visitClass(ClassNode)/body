@@ -1,5 +1,9 @@
 {
   if (shouldSkipClassNode(node))   return;
+  if (extension.beforeVisitClass(node)) {
+    extension.afterVisitClass(node);
+    return;
+  }
   Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
   if (type != null) {
     typeCheckingContext.pushErrorCollector();
@@ -21,4 +25,5 @@
   for (  ConstructorNode constructorNode : node.getDeclaredConstructors()) {
     constructorNode.putNodeMetaData(StaticTypeCheckingVisitor.class,Boolean.TRUE);
   }
+  extension.afterVisitClass(node);
 }
