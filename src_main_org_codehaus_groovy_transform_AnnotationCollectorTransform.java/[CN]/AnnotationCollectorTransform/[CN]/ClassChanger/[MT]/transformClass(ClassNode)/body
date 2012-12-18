@@ -15,20 +15,8 @@
   List<AnnotationNode> meta=getMeta(cn);
   List<Expression> outer=new ArrayList<Expression>(meta.size());
   for (  AnnotationNode an : meta) {
-    MapExpression map=new MapExpression();
-    for (    String key : an.getMembers().keySet()) {
-      Expression val=an.getMember(key);
-      if (val instanceof ListExpression) {
-        ListExpression le=(ListExpression)val;
-        val=new ArrayExpression(ClassHelper.OBJECT_TYPE,le.getExpressions());
-      }
-      map.addMapEntryExpression(new ConstantExpression(key),an.getMember(key));
-    }
-    List<Expression> l=new ArrayList<Expression>(2);
-    l.add(new ClassExpression(an.getClassNode()));
-    l.add(map);
-    ArrayExpression ae=new ArrayExpression(ClassHelper.OBJECT_TYPE,l);
-    outer.add(ae);
+    Expression serialized=serialize(an);
+    outer.add(serialized);
   }
   ArrayExpression ae=new ArrayExpression(ClassHelper.OBJECT_TYPE.makeArray(),outer);
   Statement code=new ReturnStatement(ae);

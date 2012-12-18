@@ -1,0 +1,16 @@
+{
+  if (e instanceof AnnotationConstantExpression) {
+    AnnotationConstantExpression ace=(AnnotationConstantExpression)e;
+    return serialize((AnnotationNode)ace.getValue());
+  }
+ else   if (e instanceof ListExpression) {
+    ListExpression le=(ListExpression)e;
+    List<Expression> list=le.getExpressions();
+    List<Expression> newList=new ArrayList<Expression>(list.size());
+    for (    Expression exp : list) {
+      newList.add(serialize(exp));
+    }
+    return new ArrayExpression(ClassHelper.OBJECT_TYPE.makeArray(),newList);
+  }
+  return e;
+}

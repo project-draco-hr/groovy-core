@@ -1,0 +1,11 @@
+{
+  MapExpression map=new MapExpression();
+  for (  String key : an.getMembers().keySet()) {
+    map.addMapEntryExpression(new ConstantExpression(key),serialize(an.getMember(key)));
+  }
+  List<Expression> l=new ArrayList<Expression>(2);
+  l.add(new ClassExpression(an.getClassNode()));
+  l.add(map);
+  ArrayExpression ae=new ArrayExpression(ClassHelper.OBJECT_TYPE,l);
+  return ae;
+}
