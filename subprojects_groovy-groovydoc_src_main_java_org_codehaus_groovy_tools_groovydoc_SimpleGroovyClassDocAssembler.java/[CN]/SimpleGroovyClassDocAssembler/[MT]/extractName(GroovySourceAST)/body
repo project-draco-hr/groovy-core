@@ -1,10 +1,11 @@
 {
   String typeName=buildName(typeNode);
-  if (typeName.indexOf("/") == -1) {
+  if (!typeName.contains("/")) {
     String slashName="/" + typeName;
     for (    String name : importedClassesAndPackages) {
       if (name.endsWith(slashName)) {
         typeName=name;
+        break;
       }
     }
   }
