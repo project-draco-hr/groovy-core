@@ -1,0 +1,7 @@
+{
+  boolean isKeyword=KEYWORDS.contains(key);
+  key=isKeyword ? InvokerHelper.inspect(key) : key;
+  if (!StringGroovyMethods.asBoolean(prefix) && isKeyword)   prefix="this.";
+  out.append(space).append(prefix).append(key).append('=').append(InvokerHelper.inspect(value));
+  out.newLine();
+}

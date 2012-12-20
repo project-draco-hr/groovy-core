@@ -1,0 +1,60 @@
+{
+  String space=apply ? StringGroovyMethods.multiply(TAB_CHARACTER,tab) : "";
+  for (  Object o1 : map.keySet()) {
+    String key=(String)o1;
+    Object v=map.get(key);
+    if (v instanceof ConfigObject) {
+      ConfigObject value=(ConfigObject)v;
+      if (!value.isEmpty()) {
+        Object dotsInKeys=null;
+        for (        Object o : value.entrySet()) {
+          Entry e=(Entry)o;
+          String k=(String)e.getKey();
+          if (k.indexOf('.') > -1) {
+            dotsInKeys=e;
+            break;
+          }
+        }
+        int configSize=value.size();
+        Object firstKey=value.keySet().iterator().next();
+        Object firstValue=value.values().iterator().next();
+        int firstSize;
+        if (firstValue instanceof ConfigObject) {
+          firstSize=((ConfigObject)firstValue).size();
+        }
+ else {
+          firstSize=1;
+        }
+        if (configSize == 1 || DefaultGroovyMethods.asBoolean(dotsInKeys)) {
+          if (firstSize == 1 && firstValue instanceof ConfigObject) {
+            key=KEYWORDS.contains(key) ? InvokerHelper.inspect(key) : key;
+            String writePrefix=prefix + key + "."+ firstKey+ ".";
+            writeConfig(writePrefix,(ConfigObject)firstValue,out,tab,true);
+          }
+ else           if (!DefaultGroovyMethods.asBoolean(dotsInKeys) && firstValue instanceof ConfigObject) {
+            writeNode(key,space,tab,value,out);
+          }
+ else {
+            for (            Object j : value.keySet()) {
+              Object v2=value.get(j);
+              Object k2=((String)j).indexOf('.') > -1 ? InvokerHelper.inspect(j) : j;
+              if (v2 instanceof ConfigObject) {
+                key=KEYWORDS.contains(key) ? InvokerHelper.inspect(key) : key;
+                writeConfig(prefix + key,(ConfigObject)v2,out,tab,false);
+              }
+ else {
+                writeValue(key + "." + k2,space,prefix,v2,out);
+              }
+            }
+          }
+        }
+ else {
+          writeNode(key,space,tab,value,out);
+        }
+      }
+    }
+ else {
+      writeValue(key,space,prefix,v,out);
+    }
+  }
+}
