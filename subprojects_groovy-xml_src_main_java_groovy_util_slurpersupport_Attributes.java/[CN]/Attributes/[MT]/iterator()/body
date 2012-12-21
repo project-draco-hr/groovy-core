@@ -7,9 +7,13 @@
           return next;
         }
  else {
-          final String value=(String)((Node)next).attributes().get(Attributes.this.attributeName);
+          String attributeKey=Attributes.this.attributeName;
+          if (Attributes.this.namespacePrefix != null && !"*".equals(Attributes.this.namespacePrefix) && Attributes.this.namespacePrefix.length() > 0) {
+            attributeKey=new QName(Attributes.this.lookupNamespace(Attributes.this.namespacePrefix),Attributes.this.attributeName).toString();
+          }
+          final String value=(String)((Node)next).attributes().get(attributeKey);
           if (value != null) {
-            return new Attribute(Attributes.this.name,value,new NodeChild((Node)next,Attributes.this.parent.parent,"",Attributes.this.namespaceTagHints),"",Attributes.this.namespaceTagHints);
+            return new Attribute(Attributes.this.name,value,new NodeChild((Node)next,Attributes.this.parent.parent,"",Attributes.this.namespaceTagHints),(Attributes.this.namespacePrefix == null || "*".equals(Attributes.this.namespacePrefix)) ? "" : Attributes.this.namespacePrefix,Attributes.this.namespaceTagHints);
           }
         }
       }

@@ -7,8 +7,9 @@
       attributes.put(atts.getQName(i),atts.getValue(i));
     }
  else {
-      attributes.put(atts.getLocalName(i),atts.getValue(i));
-      attributeNamespaces.put(atts.getLocalName(i),atts.getURI(i));
+      String key=new QName(atts.getURI(i),atts.getLocalName(i)).toString();
+      attributes.put(key,atts.getValue(i));
+      attributeNamespaces.put(key,atts.getURI(i));
     }
   }
   final Node newElement;
