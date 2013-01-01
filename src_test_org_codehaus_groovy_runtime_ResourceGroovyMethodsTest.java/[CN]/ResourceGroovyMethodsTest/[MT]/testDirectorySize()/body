@@ -1,0 +1,19 @@
+{
+  File tempFile=File.createTempFile("__testDirectorySize__","");
+  delete(tempFile);
+  File testDir=new File(tempFile.getAbsolutePath());
+  testDir.mkdirs();
+  final int nFiles=3;
+  final int maxFileSize=102488;
+  long totalSize=0;
+  Random r=new Random(new Random(System.currentTimeMillis()).nextLong());
+  for (int j=0; j < nFiles; j++) {
+    int fileSize=r.nextInt(maxFileSize);
+    String path=(r.nextBoolean() ? "a/" : "") + (r.nextBoolean() ? "b/" : "") + (r.nextBoolean() ? "c/" : "")+ (r.nextBoolean() ? "d/" : "")+ (r.nextBoolean() ? "e/" : "")+ (r.nextBoolean() ? "f" : "");
+    String filePath=String.format("%s/%s/%s",path,j,fileSize);
+    createFile(new File(testDir,filePath),fileSize);
+    totalSize+=fileSize;
+  }
+  assertEquals(totalSize,ResourceGroovyMethods.directorySize(testDir));
+  delete(testDir);
+}
