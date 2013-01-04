@@ -1,3 +1,9 @@
 {
-  FileSystemCompiler.commandLineCompileWithErrorHandling(args,false);
+  List<String> argList=new ArrayList<String>(Arrays.asList(args));
+  boolean forceLookupUnnamedFiles=argList.contains("--forceLookupUnnamedFiles");
+  if (forceLookupUnnamedFiles) {
+    argList.remove("--forceLookupUnnamedFiles");
+  }
+  String[] newArgs=forceLookupUnnamedFiles ? argList.toArray(new String[argList.size()]) : args;
+  FileSystemCompiler.commandLineCompileWithErrorHandling(newArgs,forceLookupUnnamedFiles);
 }
