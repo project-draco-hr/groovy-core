@@ -27,6 +27,10 @@
     StringWriter writer=new StringWriter();
     new ErrorReporter(t,false).write(new PrintWriter(writer));
     String message=writer.toString();
+    taskSuccess=false;
+    if (errorProperty != null) {
+      getProject().setNewProperty(errorProperty,"true");
+    }
     if (failOnError) {
       log.info(message);
       throw new BuildException("Compilation Failed",t,getLocation());

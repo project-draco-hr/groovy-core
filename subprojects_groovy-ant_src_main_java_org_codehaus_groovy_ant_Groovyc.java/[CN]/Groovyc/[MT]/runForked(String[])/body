@@ -11,6 +11,10 @@
   }
   final int returnCode=executor.getExitValue();
   if (returnCode != 0) {
+    taskSuccess=false;
+    if (errorProperty != null) {
+      getProject().setNewProperty(errorProperty,"true");
+    }
     if (failOnError) {
       throw new BuildException("Forked groovyc returned error code: " + returnCode);
     }
