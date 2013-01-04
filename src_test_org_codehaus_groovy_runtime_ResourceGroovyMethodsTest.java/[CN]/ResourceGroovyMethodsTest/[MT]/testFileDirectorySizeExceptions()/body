@@ -1,0 +1,16 @@
+{
+  try {
+    ResourceGroovyMethods.directorySize(new File("doesn't exist"));
+    fail("directorySize() should fail when directory specified doesn't exist");
+  }
+ catch (  IOException expected) {
+  }
+  File tempFile=File.createTempFile("testDirectorySizeExceptions","");
+  try {
+    ResourceGroovyMethods.directorySize(tempFile);
+    fail("directorySize() should fail when a file is specified");
+  }
+ catch (  IllegalArgumentException expected) {
+  }
+  tempFile.delete();
+}
