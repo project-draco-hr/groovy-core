@@ -1,0 +1,10 @@
+{
+  int oldSize=size();
+  List<E> values=new ArrayList<E>();
+  values.addAll(delegate);
+  delegate.clear();
+  if (!values.isEmpty()) {
+    fireElementClearedEvent(values);
+  }
+  fireSizeChangedEvent(oldSize,size());
+}

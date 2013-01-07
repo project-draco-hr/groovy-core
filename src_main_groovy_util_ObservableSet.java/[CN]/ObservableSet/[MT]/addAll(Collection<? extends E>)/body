@@ -1,0 +1,30 @@
+{
+  Set<E> duplicates=new HashSet<E>();
+  if (null != c) {
+    for (    E e : c) {
+      if (!delegate.contains(e))       continue;
+      duplicates.add(e);
+    }
+  }
+  int oldSize=size();
+  boolean success=delegate.addAll(c);
+  if (success && c != null) {
+    List<E> values=new ArrayList<E>();
+    for (    E element : c) {
+      if (test != null) {
+        Object result=test.call(element);
+        if (result != null && result instanceof Boolean && (Boolean)result && !duplicates.contains(element)) {
+          values.add(element);
+        }
+      }
+ else       if (!duplicates.contains(element)) {
+        values.add(element);
+      }
+    }
+    if (values.size() > 0) {
+      fireMultiElementAddedEvent(values);
+      fireSizeChangedEvent(oldSize,size());
+    }
+  }
+  return success;
+}

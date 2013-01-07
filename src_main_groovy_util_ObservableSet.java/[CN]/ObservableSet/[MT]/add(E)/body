@@ -1,0 +1,18 @@
+{
+  int oldSize=size();
+  boolean success=delegate.add(e);
+  if (success) {
+    if (test != null) {
+      Object result=test.call(e);
+      if (result != null && result instanceof Boolean && (Boolean)result) {
+        fireElementAddedEvent(e);
+        fireSizeChangedEvent(oldSize,size());
+      }
+    }
+ else {
+      fireElementAddedEvent(e);
+      fireSizeChangedEvent(oldSize,size());
+    }
+  }
+  return success;
+}
