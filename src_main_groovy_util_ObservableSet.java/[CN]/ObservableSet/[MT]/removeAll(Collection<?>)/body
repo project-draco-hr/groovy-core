@@ -1,0 +1,18 @@
+{
+  if (c == null) {
+    return false;
+  }
+  List values=new ArrayList();
+  for (  Object element : c) {
+    if (delegate.contains(element)) {
+      values.add(element);
+    }
+  }
+  int oldSize=size();
+  boolean success=delegate.removeAll(c);
+  if (success && !values.isEmpty()) {
+    fireMultiElementRemovedEvent(values);
+    fireSizeChangedEvent(oldSize,size());
+  }
+  return success;
+}
