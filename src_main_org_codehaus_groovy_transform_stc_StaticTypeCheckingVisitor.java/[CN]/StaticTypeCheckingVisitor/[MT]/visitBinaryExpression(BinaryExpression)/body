@@ -19,6 +19,12 @@
     if (resultType == null) {
       resultType=lType;
     }
+    if (leftExpression instanceof VariableExpression) {
+      VariableExpression leftVar=(VariableExpression)leftExpression;
+      if (leftVar.isClosureSharedVariable()) {
+        typeCheckingContext.secondPassExpressions.add(new SecondPassExpression<Void>(expression));
+      }
+    }
     if (lType.isUsingGenerics() && missesGenericsTypes(resultType) && isAssignment(op)) {
       ClassNode completedType=GenericsUtils.parameterizeType(lType,resultType.getPlainNodeReference());
       resultType=completedType;
