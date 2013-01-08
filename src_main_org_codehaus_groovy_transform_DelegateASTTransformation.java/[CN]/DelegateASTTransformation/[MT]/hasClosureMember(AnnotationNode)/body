@@ -1,0 +1,12 @@
+{
+  Map<String,Expression> members=annotation.getMembers();
+  for (  Map.Entry<String,Expression> member : members.entrySet()) {
+    if (member.getValue() instanceof ClosureExpression)     return true;
+    if (member.getValue() instanceof ClassExpression) {
+      ClassExpression classExpression=(ClassExpression)member.getValue();
+      Class<?> typeClass=classExpression.getType().isResolved() ? classExpression.getType().redirect().getTypeClass() : null;
+      if (typeClass != null && GeneratedClosure.class.isAssignableFrom(typeClass))       return true;
+    }
+  }
+  return false;
+}
