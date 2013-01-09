@@ -80,6 +80,9 @@
   if (isNumberCategory(getWrapper(rightRedirect)) && isNumberCategory(getWrapper(leftRedirect)) && (MOD == op || MOD_EQUAL == op)) {
     return leftRedirect;
   }
+  if (leftExpression instanceof ClassExpression) {
+    left=CLASS_Type.getPlainNodeReference();
+  }
   MethodNode method=findMethodOrFail(expr,left,operationName,right);
   if (method != null) {
     storeTargetMethod(expr,method);
