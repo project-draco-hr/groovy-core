@@ -23,6 +23,7 @@
       MethodCallExpression subcall=new MethodCallExpression(new CastExpression(componentType,EmptyExpression.INSTANCE),name,call.getArguments());
       subcall.setLineNumber(call.getLineNumber());
       subcall.setColumnNumber(call.getColumnNumber());
+      subcall.setImplicitThis(call.isImplicitThis());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
       ClassNode listNode=LIST_TYPE.getPlainNodeReference();
