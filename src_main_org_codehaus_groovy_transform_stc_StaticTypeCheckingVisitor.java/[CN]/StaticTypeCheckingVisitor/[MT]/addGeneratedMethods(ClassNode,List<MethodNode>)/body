@@ -1,0 +1,42 @@
+{
+  List<MethodNode> result=new LinkedList<MethodNode>();
+  for (  MethodNode method : methods) {
+    result.add(method);
+    Parameter[] parameters=method.getParameters();
+    int counter=0;
+    int size=parameters.length;
+    for (int i=size - 1; i >= 0; i--) {
+      Parameter parameter=parameters[i];
+      if (parameter != null && parameter.hasInitialExpression()) {
+        counter++;
+      }
+    }
+    for (int j=1; j <= counter; j++) {
+      Parameter[] newParams=new Parameter[parameters.length - j];
+      int index=0;
+      int k=1;
+      for (int i=0; i < parameters.length; i++) {
+        if (k > counter - j && parameters[i] != null && parameters[i].hasInitialExpression()) {
+          k++;
+        }
+ else         if (parameters[i] != null && parameters[i].hasInitialExpression()) {
+          newParams[index++]=parameters[i];
+          k++;
+        }
+ else {
+          newParams[index++]=parameters[i];
+        }
+      }
+      MethodNode stubbed;
+      if ("<init>".equals(method.getName())) {
+        stubbed=new ConstructorNode(method.getModifiers(),newParams,method.getExceptions(),EmptyStatement.INSTANCE);
+      }
+ else {
+        stubbed=new MethodNode(method.getName(),method.getModifiers(),method.getReturnType(),newParams,method.getExceptions(),EmptyStatement.INSTANCE);
+      }
+      stubbed.setDeclaringClass(receiver);
+      result.add(stubbed);
+    }
+  }
+  return result;
+}
