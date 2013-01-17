@@ -169,7 +169,13 @@
           }
           pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
           typeCheckingContext.popEnclosingClassNode();
-          ClassNode returnType=getType(directMethodCallCandidate);
+          ClassNode returnType=null;
+          if (isWithCall) {
+            returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);
+          }
+          if (returnType == null) {
+            returnType=getType(directMethodCallCandidate);
+          }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
