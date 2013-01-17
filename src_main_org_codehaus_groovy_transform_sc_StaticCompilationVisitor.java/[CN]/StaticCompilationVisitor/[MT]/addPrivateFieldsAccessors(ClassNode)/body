@@ -11,7 +11,7 @@
   for (  FieldNode fieldNode : node.getFields()) {
     if (accessedFields.contains(fieldNode)) {
       acc++;
-      Parameter param=new Parameter(node,"$that");
+      Parameter param=new Parameter(node.getPlainNodeReference(),"$that");
       Expression receiver=fieldNode.isStatic() ? new ClassExpression(node) : new VariableExpression(param);
       Statement stmt=new ExpressionStatement(new PropertyExpression(receiver,fieldNode.getName()));
       MethodNode accessor=node.addMethod("pfaccess$" + acc,access,fieldNode.getOriginType(),new Parameter[]{param},ClassNode.EMPTY_ARRAY,stmt);
