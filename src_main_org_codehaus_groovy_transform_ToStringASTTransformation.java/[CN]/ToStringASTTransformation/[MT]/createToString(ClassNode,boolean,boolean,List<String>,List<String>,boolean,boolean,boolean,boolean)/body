@@ -1,0 +1,17 @@
+{
+  boolean hasExistingToString=hasDeclaredMethod(cNode,"toString",0);
+  if (hasExistingToString && hasDeclaredMethod(cNode,"_toString",0))   return;
+  final BlockStatement body=new BlockStatement();
+  Expression tempToString;
+  if (cache) {
+    final FieldNode cacheField=cNode.addField("$to$string",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.STRING_TYPE,null);
+    final Expression savedToString=new VariableExpression(cacheField);
+    body.addStatement(new IfStatement(equalsNullExpr(savedToString),assignStatement(savedToString,calculateToStringStatements(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,includePackage,body)),new EmptyStatement()));
+    tempToString=savedToString;
+  }
+ else {
+    tempToString=calculateToStringStatements(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,includePackage,body);
+  }
+  body.addStatement(new ReturnStatement(tempToString));
+  cNode.addMethod(new MethodNode(hasExistingToString ? "_toString" : "toString",hasExistingToString ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+}
