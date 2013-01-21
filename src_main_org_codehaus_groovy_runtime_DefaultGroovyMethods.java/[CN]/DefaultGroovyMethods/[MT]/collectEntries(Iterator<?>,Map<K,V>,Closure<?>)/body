@@ -1,3 +1,7 @@
 {
-  return collectEntries(toList(self),collector,transform);
+  while (self.hasNext()) {
+    Object next=self.next();
+    addEntry(collector,transform.call(next));
+  }
+  return collector;
 }
