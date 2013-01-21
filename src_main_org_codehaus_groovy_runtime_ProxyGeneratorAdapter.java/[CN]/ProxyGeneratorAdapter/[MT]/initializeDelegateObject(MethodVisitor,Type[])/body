@@ -1,8 +1,5 @@
 {
-  int idx=2;
-  for (  Type type : args) {
-    idx+=registerLen(type);
-  }
+  int idx=2 + getTypeArgsRegisterLength(args);
   mv.visitIntInsn(ALOAD,0);
   mv.visitIntInsn(ALOAD,idx);
   mv.visitFieldInsn(PUTFIELD,proxyName,DELEGATE_OBJECT_FIELD,BytecodeHelper.getTypeDescription(delegateClass));
