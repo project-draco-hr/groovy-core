@@ -106,6 +106,9 @@
     if (firstGenericsType.isWildcard()) {
       if (firstGenericsType.getLowerBound() != null)       return firstGenericsType.getLowerBound();
       ClassNode[] upperBounds=firstGenericsType.getUpperBounds();
+      if (upperBounds == null) {
+        return OBJECT_TYPE;
+      }
       if (upperBounds.length == 1)       return upperBounds[0];
       return new UnionTypeClassNode(upperBounds);
     }
