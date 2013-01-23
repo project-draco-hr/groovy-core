@@ -33,7 +33,7 @@
       return super.writeDirectMethodCall(target,implicitThis,receiver,new ArgumentListExpression(arr));
     }
     ClassNode classNode=controller.getClassNode();
-    if (target != null && classNode.isDerivedFrom(ClassHelper.CLOSURE_TYPE) && controller.isInClosure() && !target.isPublic() && target.getDeclaringClass() != classNode) {
+    if (target != null && classNode.isDerivedFrom(ClassHelper.CLOSURE_TYPE) && controller.isInClosure() && !(target.isPublic() || target.isProtected()) && target.getDeclaringClass() != classNode) {
       ArrayExpression arr=new ArrayExpression(ClassHelper.OBJECT_TYPE,args.getExpressions());
       MethodCallExpression mce=new MethodCallExpression(INVOKERHELER_RECEIVER,target.isStatic() ? "invokeStaticMethod" : "invokeMethodSafe",new ArgumentListExpression(receiver,new ConstantExpression(target.getName()),arr));
       mce.setMethodTarget(target.isStatic() ? INVOKERHELPER_INVOKESTATICMETHOD : INVOKERHELPER_INVOKEMETHOD);
