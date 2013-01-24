@@ -1,0 +1,17 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/bar/Base.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/bar/Alias.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/bar/Deriv.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/foo/Base.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/foo/Deriv.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/foo/Snafu.groovy");
+  htmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  htmlTool.renderToOutput(output,MOCK_DIR);
+  String derivDoc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/foo/Deriv.html");
+  Pattern p=Pattern.compile("<a(.+?)Snafu.html'>(.+?)</a>\\[\\]");
+  Matcher m=p.matcher(derivDoc);
+  assertTrue(m.find());
+  assertEquals("There has to be at least a single reference to the Snafu[]","Snafu",m.group(2));
+}
