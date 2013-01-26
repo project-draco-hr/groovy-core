@@ -13,6 +13,9 @@
     cl=GroovyTypeCheckingExtensionSupport.class.getClassLoader();
     is=cl.getResourceAsStream(scriptPath);
   }
+  if (is == null) {
+    context.getErrorCollector().addFatalError(new SimpleMessage("Static type checking extension '" + scriptPath + "' was not found on the classpath.",config.getDebug(),typeCheckingVisitor.getSourceUnit()));
+  }
   try {
     TypeCheckingDSL parse=(TypeCheckingDSL)shell.parse(new InputStreamReader(is,typeCheckingVisitor.getSourceUnit().getConfiguration().getSourceEncoding()));
     parse.extension=this;

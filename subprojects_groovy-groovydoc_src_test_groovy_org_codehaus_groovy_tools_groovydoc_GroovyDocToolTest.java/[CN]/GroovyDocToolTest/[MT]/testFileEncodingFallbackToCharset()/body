@@ -1,0 +1,7 @@
+{
+  String expectedCharset="ISO-88591";
+  Properties props=new Properties();
+  props.setProperty("charset",expectedCharset);
+  GroovyDocTool tool=new GroovyDocTool(new FileSystemResourceManager("src"),new String[0],new String[0],new String[0],new String[0],new ArrayList<LinkArgument>(),props);
+  assertEquals("'fileEncoding' falls back to 'charset' if not provided",expectedCharset,tool.properties.getProperty("fileEncoding"));
+}

@@ -2,7 +2,7 @@
   if (isPrimitiveType(receiver))   receiver=getWrapper(receiver);
   List<MethodNode> methods;
   if ("<init>".equals(name)) {
-    methods=new ArrayList<MethodNode>(receiver.getDeclaredConstructors());
+    methods=addGeneratedMethods(receiver,new ArrayList<MethodNode>(receiver.getDeclaredConstructors()));
     if (methods.isEmpty()) {
       MethodNode node=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
       node.setDeclaringClass(receiver);
@@ -10,7 +10,7 @@
     }
   }
  else {
-    methods=receiver.getMethods(name);
+    methods=findMethodsWithGenerated(receiver,name);
     if (receiver.isInterface()) {
       collectAllInterfaceMethodsByName(receiver,name,methods);
       methods.addAll(OBJECT_TYPE.getMethods(name));
@@ -18,8 +18,8 @@
     if (typeCheckingContext.getEnclosingClosure() == null) {
       ClassNode parent=receiver;
       while (parent instanceof InnerClassNode && !parent.isStaticClass()) {
-        parent=receiver.getOuterClass();
-        methods.addAll(parent.getMethods(name));
+        parent=parent.getOuterClass();
+        methods.addAll(findMethodsWithGenerated(parent,name));
       }
     }
     if (methods.isEmpty() && (args == null || args.length == 0)) {

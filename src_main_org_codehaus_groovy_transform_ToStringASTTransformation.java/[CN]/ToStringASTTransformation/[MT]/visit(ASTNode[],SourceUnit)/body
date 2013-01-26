@@ -7,6 +7,7 @@
     ClassNode cNode=(ClassNode)parent;
     checkNotInterface(cNode,MY_TYPE_NAME);
     boolean includeSuper=memberHasValue(anno,"includeSuper",true);
+    boolean cacheToString=memberHasValue(anno,"cache",true);
     if (includeSuper && cNode.getSuperClass().getName().equals("java.lang.Object")) {
       addError("Error during " + MY_TYPE_NAME + " processing: includeSuper=true but '"+ cNode.getName()+ "' has no super class.",anno);
     }
@@ -24,6 +25,6 @@
     if (includes != null && !includes.isEmpty() && excludes != null && !excludes.isEmpty()) {
       addError("Error during " + MY_TYPE_NAME + " processing: Only one of 'includes' and 'excludes' should be supplied not both.",anno);
     }
-    createToString(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,includePackage);
+    createToString(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,includePackage,cacheToString);
   }
 }

@@ -1,0 +1,39 @@
+{
+  StringBuilder buffer=new StringBuilder("[");
+  boolean first=true;
+  for (  Object item : collection) {
+    if (first) {
+      first=false;
+    }
+ else {
+      buffer.append(", ");
+    }
+    if (maxSize != -1 && buffer.length() > maxSize) {
+      buffer.append("...");
+      break;
+    }
+    if (item == collection) {
+      buffer.append("(this Collection)");
+    }
+ else {
+      String str;
+      try {
+        str=format(item,verbose,sizeLeft(maxSize,buffer));
+      }
+ catch (      Exception ex) {
+        if (!safe)         throw new GroovyRuntimeException(ex);
+        String hash;
+        try {
+          hash=Integer.toHexString(item.hashCode());
+        }
+ catch (        Exception ignored) {
+          hash="????";
+        }
+        str="<" + item.getClass().getName() + "@"+ hash+ ">";
+      }
+      buffer.append(str);
+    }
+  }
+  buffer.append("]");
+  return buffer.toString();
+}

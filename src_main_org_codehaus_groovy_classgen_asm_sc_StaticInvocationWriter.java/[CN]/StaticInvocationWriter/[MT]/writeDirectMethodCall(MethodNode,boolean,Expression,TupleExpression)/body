@@ -1,11 +1,12 @@
 {
   if (target instanceof ExtensionMethodNode) {
-    MethodNode node=((ExtensionMethodNode)target).getExtensionMethodNode();
+    ExtensionMethodNode emn=(ExtensionMethodNode)target;
+    MethodNode node=emn.getExtensionMethodNode();
     String methodName=target.getName();
     MethodVisitor mv=controller.getMethodVisitor();
     int argumentsToRemove=0;
     List<Expression> argumentList=new LinkedList<Expression>(args.getExpressions());
-    if (receiver instanceof ClassExpression) {
+    if (emn.isStaticExtension()) {
       argumentList.add(0,ConstantExpression.NULL);
     }
  else {
@@ -32,7 +33,7 @@
       return super.writeDirectMethodCall(target,implicitThis,receiver,new ArgumentListExpression(arr));
     }
     ClassNode classNode=controller.getClassNode();
-    if (target != null && classNode.isDerivedFrom(ClassHelper.CLOSURE_TYPE) && controller.isInClosure() && !target.isPublic() && target.getDeclaringClass() != classNode) {
+    if (target != null && classNode.isDerivedFrom(ClassHelper.CLOSURE_TYPE) && controller.isInClosure() && !(target.isPublic() || target.isProtected()) && target.getDeclaringClass() != classNode) {
       ArrayExpression arr=new ArrayExpression(ClassHelper.OBJECT_TYPE,args.getExpressions());
       MethodCallExpression mce=new MethodCallExpression(INVOKERHELER_RECEIVER,target.isStatic() ? "invokeStaticMethod" : "invokeMethodSafe",new ArgumentListExpression(receiver,new ConstantExpression(target.getName()),arr));
       mce.setMethodTarget(target.isStatic() ? INVOKERHELPER_INVOKESTATICMETHOD : INVOKERHELPER_INVOKEMETHOD);
@@ -45,7 +46,11 @@
         @SuppressWarnings("unchecked") Map<MethodNode,MethodNode> bridges=(Map<MethodNode,MethodNode>)declaringClass.redirect().getNodeMetaData(PRIVATE_BRIDGE_METHODS);
         MethodNode bridge=bridges.get(target);
         if (bridge != null) {
-          return writeDirectMethodCall(bridge,implicitThis,receiver,args);
+          ArgumentListExpression newArgs=new ArgumentListExpression(target.isStatic() ? new ConstantExpression(null) : receiver);
+          for (          Expression expression : args.getExpressions()) {
+            newArgs.addExpression(expression);
+          }
+          return writeDirectMethodCall(bridge,implicitThis,receiver,newArgs);
         }
       }
       if (declaringClass != classNode) {

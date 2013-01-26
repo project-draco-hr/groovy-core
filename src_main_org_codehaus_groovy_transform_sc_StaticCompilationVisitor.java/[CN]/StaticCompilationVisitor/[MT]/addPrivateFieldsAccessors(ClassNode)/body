@@ -7,14 +7,14 @@
   }
   int acc=-1;
   privateConstantAccessors=new HashMap<String,MethodNode>();
+  final int access=Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC;
   for (  FieldNode fieldNode : node.getFields()) {
-    int access=fieldNode.getModifiers();
     if (accessedFields.contains(fieldNode)) {
       acc++;
-      access=(access - Opcodes.ACC_PRIVATE + Opcodes.ACC_SYNTHETIC) + Opcodes.ACC_FINAL;
-      Expression receiver=fieldNode.isStatic() ? new ClassExpression(node) : new VariableExpression("this",node);
+      Parameter param=new Parameter(node.getPlainNodeReference(),"$that");
+      Expression receiver=fieldNode.isStatic() ? new ClassExpression(node) : new VariableExpression(param);
       Statement stmt=new ExpressionStatement(new PropertyExpression(receiver,fieldNode.getName()));
-      MethodNode accessor=node.addMethod("pfaccess$" + acc,access,fieldNode.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,stmt);
+      MethodNode accessor=node.addMethod("pfaccess$" + acc,access,fieldNode.getOriginType(),new Parameter[]{param},ClassNode.EMPTY_ARRAY,stmt);
       privateConstantAccessors.put(fieldNode.getName(),accessor);
     }
   }

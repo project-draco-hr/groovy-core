@@ -14,8 +14,8 @@
   call.getMethod().visit(this);
   if (call.isSpreadSafe()) {
     ClassNode expressionType=getType(objectExpression);
-    if (!(expressionType.equals(Collection_TYPE) || expressionType.implementsInterface(Collection_TYPE))) {
-      addStaticTypeError("Spread operator can only be used on collection types",expressionType);
+    if (!implementsInterfaceOrIsSubclassOf(expressionType,Collection_TYPE) && !expressionType.isArray()) {
+      addStaticTypeError("Spread operator can only be used on collection types",objectExpression);
       return;
     }
  else {
@@ -23,6 +23,7 @@
       MethodCallExpression subcall=new MethodCallExpression(new CastExpression(componentType,EmptyExpression.INSTANCE),name,call.getArguments());
       subcall.setLineNumber(call.getLineNumber());
       subcall.setColumnNumber(call.getColumnNumber());
+      subcall.setImplicitThis(call.isImplicitThis());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
       ClassNode listNode=LIST_TYPE.getPlainNodeReference();
@@ -168,7 +169,13 @@
           }
           pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
           typeCheckingContext.popEnclosingClassNode();
-          ClassNode returnType=getType(directMethodCallCandidate);
+          ClassNode returnType=null;
+          if (isWithCall) {
+            returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);
+          }
+          if (returnType == null) {
+            returnType=getType(directMethodCallCandidate);
+          }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
