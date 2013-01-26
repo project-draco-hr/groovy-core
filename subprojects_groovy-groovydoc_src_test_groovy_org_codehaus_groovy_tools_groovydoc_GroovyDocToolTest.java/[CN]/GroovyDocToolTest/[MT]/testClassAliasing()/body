@@ -1,0 +1,12 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/Alias.groovy");
+  htmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  htmlTool.renderToOutput(output,MOCK_DIR);
+  String derivDoc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/Alias.html");
+  Pattern p=Pattern.compile("<a(.+?)java/util/ArrayList.html' title='ArrayList'>(.+?)</a>");
+  Matcher m=p.matcher(derivDoc);
+  assertTrue(m.find());
+  assertEquals("There has to be a reference to class ArrayList","ArrayList",m.group(2));
+}
