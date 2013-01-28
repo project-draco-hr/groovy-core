@@ -1,0 +1,16 @@
+{
+  for (  String key : classDocs.keySet()) {
+    if (key.equals(name))     return classDocs.get(key);
+    int lastSlashIdx=key.lastIndexOf('/');
+    if (lastSlashIdx > 0) {
+      String shortKey=key.substring(lastSlashIdx + 1);
+      String fullPathName=groovyClassDoc.getFullPathName();
+      boolean hasPackage=fullPathName.lastIndexOf('/') > 0;
+      if (hasPackage)       fullPathName=fullPathName.substring(0,fullPathName.lastIndexOf('/'));
+      if (shortKey.equals(name) && (!hasPackage || key.startsWith(fullPathName))) {
+        return classDocs.get(key);
+      }
+    }
+  }
+  return null;
+}
