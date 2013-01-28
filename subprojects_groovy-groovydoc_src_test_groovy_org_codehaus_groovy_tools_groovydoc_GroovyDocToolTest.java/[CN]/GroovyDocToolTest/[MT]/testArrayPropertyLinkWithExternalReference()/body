@@ -1,0 +1,13 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/PropertyLink.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/ArrayPropertyLink.groovy");
+  htmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  htmlTool.renderToOutput(output,MOCK_DIR);
+  String propertyLinkDoc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/PropertyLink.html");
+  Pattern p=Pattern.compile("<a(.+?)ArrayPropertyLink.html'>(.+?)</a>\\[\\]");
+  Matcher m=p.matcher(propertyLinkDoc);
+  assertTrue(m.find());
+  assertEquals("There has to be at least a single reference to the ArrayPropertyLink[]","ArrayPropertyLink",m.group(2));
+}
