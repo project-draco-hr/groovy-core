@@ -1,0 +1,13 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/InnerEnum.groovy");
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/InnerClassProperty.groovy");
+  htmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  htmlTool.renderToOutput(output,MOCK_DIR);
+  String derivDoc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/InnerClassProperty.html");
+  Pattern p=Pattern.compile("<a(.+?)testfiles/InnerEnum.Enum.html'>(.+?)</a>");
+  Matcher m=p.matcher(derivDoc);
+  assertTrue(m.find());
+  assertEquals("There has to be a reference to class Enum","Enum",m.group(2));
+}

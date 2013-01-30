@@ -17,7 +17,7 @@
     for (    GroovyClassDoc nestedDoc : nested) {
       if (nestedDoc.name().endsWith("." + name))       return nestedDoc;
     }
-    doc=rootDoc.classNamed(name);
+    doc=rootDoc.classNamed(this,name);
     if (doc != null)     return doc;
   }
   String shortname=name;
@@ -49,7 +49,18 @@
           }
         }
       }
+      if (gcd instanceof SimpleGroovyClassDoc) {
+        String innerClassName=name.substring(slashIndex + 1);
+        SimpleGroovyClassDoc innerClass=new SimpleGroovyClassDoc(importedClassesAndPackages,aliases,innerClassName);
+        innerClass.setFullPathName(gcd.getFullPathName() + "." + innerClassName);
+        return innerClass;
+      }
     }
+  }
+  if (hasAlias(name)) {
+    String fullyQualifiedTypeName=getFullyQualifiedTypeNameForAlias(name);
+    GroovyClassDoc gcd=resolveClass(rootDoc,fullyQualifiedTypeName);
+    if (gcd != null)     return gcd;
   }
   SimpleGroovyClassDoc placeholder=new SimpleGroovyClassDoc(null,shortname);
   placeholder.setFullPathName(name);

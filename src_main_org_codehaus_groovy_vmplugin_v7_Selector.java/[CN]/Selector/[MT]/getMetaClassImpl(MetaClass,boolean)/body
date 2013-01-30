@@ -1,6 +1,6 @@
 {
   Class mcc=mc.getClass();
-  boolean valid=mcc == MetaClassImpl.class || mcc == AdaptingMetaClass.class || mcc == ClosureMetaClass.class;
+  boolean valid=mcc == MetaClassImpl.class || mcc == AdaptingMetaClass.class || mcc == ClosureMetaClass.class || (includeEMC && mcc == ExpandoMetaClass.class);
   if (!valid) {
     if (LOG_ENABLED)     LOG.info("meta class is neither MetaClassImpl, nor AdoptingMetaClass, nor ClosureMetaClass, normal method selection path disabled.");
     return null;

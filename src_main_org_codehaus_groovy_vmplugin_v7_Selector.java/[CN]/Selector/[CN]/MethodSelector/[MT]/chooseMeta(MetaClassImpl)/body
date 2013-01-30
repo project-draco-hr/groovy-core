@@ -7,7 +7,11 @@
     method=mci.retrieveStaticMethod(name,newArgs);
   }
  else {
-    method=mci.getMethodWithCaching(selectionBase,name,newArgs,false);
+    String changedName=name;
+    if (receiver instanceof GeneratedClosure && changedName.equals("call")) {
+      changedName="doCall";
+    }
+    method=mci.getMethodWithCaching(selectionBase,changedName,newArgs,false);
   }
   if (LOG_ENABLED)   LOG.info("retrieved method from meta class: " + method);
 }

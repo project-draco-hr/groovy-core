@@ -25,5 +25,7 @@
     }
     handle=MethodHandles.foldArguments(con,handle.asType(foldTargetType));
   }
-  handle=MethodHandles.dropArguments(handle,0,Class.class);
+  if (method instanceof MetaConstructor) {
+    handle=MethodHandles.dropArguments(handle,0,Class.class);
+  }
 }

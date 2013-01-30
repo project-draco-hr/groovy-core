@@ -48,6 +48,18 @@
       }
     }
   }
+  for (  GroovyFieldDoc property : properties) {
+    if (property instanceof SimpleGroovyFieldDoc) {
+      SimpleGroovyFieldDoc simpleGroovyFieldDoc=(SimpleGroovyFieldDoc)property;
+      if (simpleGroovyFieldDoc.type() instanceof SimpleGroovyType) {
+        SimpleGroovyType simpleGroovyType=(SimpleGroovyType)simpleGroovyFieldDoc.type();
+        GroovyClassDoc propertyTypeClassDoc=resolveClass(rootDoc,simpleGroovyType.qualifiedTypeName());
+        if (propertyTypeClassDoc != null) {
+          simpleGroovyFieldDoc.setType(propertyTypeClassDoc);
+        }
+      }
+    }
+  }
   if (superClassName != null && superClass == null) {
     superClass=resolveClass(rootDoc,superClassName);
   }

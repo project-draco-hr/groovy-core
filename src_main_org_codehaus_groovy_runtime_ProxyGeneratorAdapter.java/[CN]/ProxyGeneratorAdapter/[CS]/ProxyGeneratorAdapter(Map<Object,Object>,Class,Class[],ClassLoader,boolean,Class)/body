@@ -28,8 +28,7 @@
   this.loader=proxyLoader != null ? new InnerLoader(proxyLoader) : findClassLoader(superClass);
   this.emptyBody=emptyBody;
   ClassWriter writer=(ClassWriter)cv;
-  ClassReader cr=createClassVisitor(Object.class);
-  cr.accept(this,0);
+  this.visit(Opcodes.V1_5,ACC_PUBLIC,proxyName,null,null,null);
   byte[] b=writer.toByteArray();
   cachedClass=loader.defineClass(proxyName.replace('/','.'),b);
   Class[] args=generateDelegateField ? new Class[]{Map.class,delegateClass} : new Class[]{Map.class};
