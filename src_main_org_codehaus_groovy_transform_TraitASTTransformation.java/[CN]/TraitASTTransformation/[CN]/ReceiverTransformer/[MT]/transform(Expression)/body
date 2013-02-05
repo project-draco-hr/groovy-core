@@ -1,0 +1,14 @@
+{
+  if (exp instanceof MethodCallExpression) {
+    MethodCallExpression call=(MethodCallExpression)exp;
+    Expression obj=call.getObjectExpression();
+    if (call.isImplicitThis() || obj.getText().equals("this")) {
+      MethodCallExpression transformed=new MethodCallExpression(new VariableExpression(mixinField),call.getMethod(),call.getArguments());
+      transformed.setSourcePosition(call);
+      transformed.setSafe(call.isSafe());
+      transformed.setSpreadSafe(call.isSpreadSafe());
+      return transformed;
+    }
+  }
+  return super.transform(exp);
+}

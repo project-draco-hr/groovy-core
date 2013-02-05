@@ -42,6 +42,12 @@
     }
   }
 ,Phases.SEMANTIC_ANALYSIS);
+  addPhaseOperation(new PrimaryClassNodeOperation(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      TraitASTTransformation.doExtendTraits(classNode,source);
+    }
+  }
+,Phases.CANONICALIZATION);
   addPhaseOperation(compileCompleteCheck,Phases.CANONICALIZATION);
   addPhaseOperation(classgen,Phases.CLASS_GENERATION);
   addPhaseOperation(output);

@@ -1,0 +1,42 @@
+{
+  ClassNode[] interfaces=cNode.getInterfaces();
+  for (  ClassNode trait : interfaces) {
+    List<AnnotationNode> traitAnn=trait.getAnnotations(MY_TYPE);
+    if (traitAnn != null && !traitAnn.isEmpty() && !cNode.getNameWithoutPackage().endsWith(TRAIT_HELPER)) {
+      DelegateASTTransformation delegateASTTransformation=new DelegateASTTransformation(){
+        @Override protected List<MethodNode> getAllMethods(        final ClassNode type){
+          List<MethodNode> allMethods=super.getAllMethods(type);
+          Iterator<MethodNode> iterator=allMethods.iterator();
+          while (iterator.hasNext()) {
+            MethodNode next=iterator.next();
+            List<AnnotationNode> annotations=next.getAnnotations(ABSTRACT_METHOD);
+            if (annotations != null && !annotations.isEmpty()) {
+              iterator.remove();
+            }
+          }
+          return allMethods;
+        }
+      }
+;
+      AnnotationNode delegate=new AnnotationNode(DELEGATE_NODE);
+      Iterator<InnerClassNode> innerClasses=trait.redirect().getInnerClasses();
+      ClassNode icn;
+      if (innerClasses != null && innerClasses.hasNext()) {
+        icn=innerClasses.next();
+      }
+ else {
+        try {
+          ClassLoader classLoader=trait.getTypeClass().getClassLoader();
+          Class traitHelper=classLoader.loadClass(trait.getName() + TRAIT_HELPER);
+          icn=ClassHelper.make(traitHelper);
+        }
+ catch (        ClassNotFoundException e) {
+          throw new GroovyBugError(e);
+        }
+      }
+      FieldNode delegateNode=new FieldNode("delegate$" + trait.getNameWithoutPackage() + "$trait",ACC_PRIVATE,trait,cNode,new ConstructorCallExpression(icn,new ArgumentListExpression(new VariableExpression("this"))));
+      cNode.addField(delegateNode);
+      delegateASTTransformation.visit(new ASTNode[]{delegate,delegateNode},unit);
+    }
+  }
+}

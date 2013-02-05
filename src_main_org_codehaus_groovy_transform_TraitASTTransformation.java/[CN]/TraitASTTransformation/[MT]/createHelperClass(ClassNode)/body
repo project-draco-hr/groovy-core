@@ -1,0 +1,16 @@
+{
+  ClassNode helper=new InnerClassNode(cNode,cNode.getName() + TRAIT_HELPER,ACC_PUBLIC | ACC_STATIC | ACC_FINAL,ClassHelper.OBJECT_TYPE,new ClassNode[]{cNode},null);
+  mixinField=new FieldNode("mixin",ACC_PRIVATE | ACC_FINAL,cNode,helper,null);
+  helper.addField(mixinField);
+  cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
+  Map<String,MethodNode> methods=cNode.getDeclaredMethodsMap();
+  for (  MethodNode methodNode : methods.values()) {
+    if (methodNode.getDeclaringClass() == cNode) {
+      helper.addMethod(processMethod(methodNode));
+    }
+  }
+  Parameter owner=new Parameter(cNode,"owner");
+  ConstructorNode constructorNode=new ConstructorNode(ACC_PUBLIC,new Parameter[]{owner},ClassNode.EMPTY_ARRAY,new ExpressionStatement(new BinaryExpression(new FieldExpression(mixinField),Token.newSymbol(Types.EQUAL,-1,-1),new VariableExpression(owner))));
+  helper.addConstructor(constructorNode);
+  unit.getAST().addClass(helper);
+}
