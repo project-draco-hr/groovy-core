@@ -1,0 +1,25 @@
+{
+  if (scriptBaseClass != null) {
+    configuration.setScriptBaseClass(scriptBaseClass);
+  }
+  if (indy) {
+    configuration.getOptimizationOptions().put("indy",Boolean.TRUE);
+    configuration.getOptimizationOptions().put("int",Boolean.FALSE);
+  }
+  if (configscript != null) {
+    Binding binding=new Binding();
+    binding.setVariable("configuration",configuration);
+    CompilerConfiguration configuratorConfig=new CompilerConfiguration();
+    ImportCustomizer customizer=new ImportCustomizer();
+    customizer.addStaticStars("org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder");
+    configuratorConfig.addCompilationCustomizers(customizer);
+    GroovyShell shell=new GroovyShell(binding,configuratorConfig);
+    File confSrc=new File(configscript);
+    try {
+      shell.evaluate(confSrc);
+    }
+ catch (    IOException e) {
+      throw new BuildException("Unable to configure compiler using configuration file: " + confSrc,e);
+    }
+  }
+}
