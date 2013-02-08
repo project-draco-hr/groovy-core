@@ -1,5 +1,10 @@
 {
   String fileName=source.getName();
+  ReaderSource reader=source.getSource();
+  if (reader instanceof FileReaderSource) {
+    FileReaderSource file=(FileReaderSource)reader;
+    fileName=file.getFile().getName();
+  }
   if (acceptSource(source) && accept(fileName)) {
     delegate.call(source,context,classNode);
   }
