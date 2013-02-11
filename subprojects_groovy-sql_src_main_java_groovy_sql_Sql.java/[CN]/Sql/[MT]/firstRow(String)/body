@@ -1,5 +1,11 @@
 {
-  List<GroovyRowResult> rows=rows(sql);
+  List<GroovyRowResult> rows=null;
+  try {
+    rows=rows(sql,1,1,null);
+  }
+ catch (  SQLException featureNotSupportedException) {
+    rows=rows(sql);
+  }
   if (rows.isEmpty())   return null;
-  return (rows.get(0));
+  return rows.get(0);
 }
