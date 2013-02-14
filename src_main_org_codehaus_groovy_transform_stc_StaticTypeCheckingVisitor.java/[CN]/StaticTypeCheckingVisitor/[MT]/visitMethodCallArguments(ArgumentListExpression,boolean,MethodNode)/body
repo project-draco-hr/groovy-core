@@ -15,7 +15,7 @@
             if (strategy != null) {
               stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy));
             }
-            if (value instanceof ClassExpression) {
+            if (value instanceof ClassExpression && !value.getType().equals(DELEGATES_TO_TARGET)) {
               expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,typeCheckingContext.delegationMetadata));
             }
  else {

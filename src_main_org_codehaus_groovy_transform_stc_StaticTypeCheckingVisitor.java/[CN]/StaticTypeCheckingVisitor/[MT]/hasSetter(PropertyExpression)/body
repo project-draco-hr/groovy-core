@@ -14,7 +14,7 @@
     tests.add(typeCheckingContext.lastImplicitItType);
   }
   String propertyName=pexp.getPropertyAsString();
-  if (propertyName == null)   return false;
+  if (propertyName == null)   return null;
   String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
   if (clazz.isInterface())   tests.add(OBJECT_TYPE);
@@ -30,12 +30,12 @@
       MethodNode setterMethod=current.getSetterMethod("set" + capName,false);
       if (setterMethod != null) {
         storeType(pexp,setterMethod.getParameters()[0].getType());
-        return true;
+        return new SetterInfo(current,setterMethod);
       }
       if (!isAttributeExpression && current.getSuperClass() != null) {
         queue.add(current.getSuperClass());
       }
     }
   }
-  return false;
+  return null;
 }

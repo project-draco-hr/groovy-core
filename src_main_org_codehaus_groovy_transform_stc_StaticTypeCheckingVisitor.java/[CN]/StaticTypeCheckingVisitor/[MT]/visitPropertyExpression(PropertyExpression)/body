@@ -1,9 +1,13 @@
 {
   super.visitPropertyExpression(pexp);
   if (!existsProperty(pexp,true)) {
-    BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
-    if (enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == pexp && isAssignment(enclosingBinaryExpression.getOperation().getType())) {
-      if (hasSetter(pexp))       return;
+    if (isLHSOfEnclosingAssignment(pexp)) {
+      SetterInfo info=hasSetter(pexp);
+      if (info != null) {
+        BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+        putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
+        return;
+      }
     }
     if (!extension.handleUnresolvedProperty(pexp)) {
       Expression objectExpression=pexp.getObjectExpression();

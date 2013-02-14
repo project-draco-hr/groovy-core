@@ -34,6 +34,14 @@
           return;
         }
       }
+      if (isLHSOfEnclosingAssignment(vexp)) {
+        MethodNode mn=node.getSetterMethod("set" + MetaClassHelper.capitalize(vexp.getName()));
+        if (mn != null) {
+          storeType(vexp,mn.getParameters()[0].getOriginType());
+          putSetterInfo(vexp,new SetterInfo(node,mn));
+          return;
+        }
+      }
     }
     if (!extension.handleUnresolvedVariableExpression(vexp)) {
       addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
