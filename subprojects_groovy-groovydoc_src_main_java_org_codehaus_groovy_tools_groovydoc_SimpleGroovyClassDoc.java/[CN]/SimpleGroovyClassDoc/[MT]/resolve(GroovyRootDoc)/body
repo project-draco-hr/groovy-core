@@ -12,7 +12,9 @@
         GroovyClassDoc doc=resolveClass(rootDoc,paramTypeName);
         if (doc != null)         param.setType(doc);
       }
+      processAnnotationRefs(rootDoc,param.annotations());
     }
+    processAnnotationRefs(rootDoc,constructor.annotations());
   }
   for (  GroovyFieldDoc field : fields) {
     SimpleGroovyFieldDoc mutableField=(SimpleGroovyFieldDoc)field;
@@ -25,6 +27,7 @@
       GroovyClassDoc doc=resolveClass(rootDoc,typeName);
       if (doc != null)       mutableField.setType(doc);
     }
+    processAnnotationRefs(rootDoc,field.annotations());
   }
   for (  GroovyMethodDoc method : methods) {
     GroovyType returnType=method.returnType();
@@ -46,7 +49,9 @@
         GroovyClassDoc doc=resolveClass(rootDoc,paramTypeName);
         if (doc != null)         param.setType(doc);
       }
+      processAnnotationRefs(rootDoc,param.annotations());
     }
+    processAnnotationRefs(rootDoc,method.annotations());
   }
   for (  GroovyFieldDoc property : properties) {
     if (property instanceof SimpleGroovyFieldDoc) {
@@ -59,6 +64,7 @@
         }
       }
     }
+    processAnnotationRefs(rootDoc,property.annotations());
   }
   if (superClassName != null && superClass == null) {
     superClass=resolveClass(rootDoc,superClassName);
@@ -66,8 +72,5 @@
   for (  String name : interfaceNames) {
     interfaceClasses.add(resolveClass(rootDoc,name));
   }
-  for (  GroovyAnnotationRef annotation : annotations()) {
-    SimpleGroovyAnnotationRef ref=(SimpleGroovyAnnotationRef)annotation;
-    ref.setType(resolveClass(rootDoc,ref.name()));
-  }
+  processAnnotationRefs(rootDoc,annotations());
 }
