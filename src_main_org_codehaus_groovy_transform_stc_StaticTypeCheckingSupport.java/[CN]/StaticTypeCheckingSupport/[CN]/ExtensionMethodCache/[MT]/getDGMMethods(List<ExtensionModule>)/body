@@ -1,15 +1,11 @@
 {
   Set<Class> instanceExtClasses=new LinkedHashSet<Class>();
   Set<Class> staticExtClasses=new LinkedHashSet<Class>();
-  if (registry instanceof MetaClassRegistryImpl) {
-    MetaClassRegistryImpl impl=(MetaClassRegistryImpl)registry;
-    List<ExtensionModule> modules=impl.getModuleRegistry().getModules();
-    for (    ExtensionModule module : modules) {
-      if (module instanceof MetaInfExtensionModule) {
-        MetaInfExtensionModule extensionModule=(MetaInfExtensionModule)module;
-        instanceExtClasses.addAll(extensionModule.getInstanceMethodsExtensionClasses());
-        staticExtClasses.addAll(extensionModule.getStaticMethodsExtensionClasses());
-      }
+  for (  ExtensionModule module : modules) {
+    if (module instanceof MetaInfExtensionModule) {
+      MetaInfExtensionModule extensionModule=(MetaInfExtensionModule)module;
+      instanceExtClasses.addAll(extensionModule.getInstanceMethodsExtensionClasses());
+      staticExtClasses.addAll(extensionModule.getStaticMethodsExtensionClasses());
     }
   }
   Map<String,List<MethodNode>> methods=new HashMap<String,List<MethodNode>>();

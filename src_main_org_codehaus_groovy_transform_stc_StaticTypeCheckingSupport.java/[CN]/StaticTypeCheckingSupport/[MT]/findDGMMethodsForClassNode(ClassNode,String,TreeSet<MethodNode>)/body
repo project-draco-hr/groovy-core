@@ -1,28 +1,3 @@
 {
-  List<MethodNode> fromDGM=EXTENSION_METHOD_CACHE.getExtensionMethods().get(clazz.getName());
-  if (fromDGM != null) {
-    for (    MethodNode node : fromDGM) {
-      if (node.getName().equals(name))       accumulator.add(node);
-    }
-  }
-  for (  ClassNode node : clazz.getInterfaces()) {
-    findDGMMethodsForClassNode(node,name,accumulator);
-  }
-  if (clazz.isArray()) {
-    ClassNode componentClass=clazz.getComponentType();
-    if (!componentClass.equals(OBJECT_TYPE)) {
-      if (componentClass.isInterface() || componentClass.getSuperClass() == null) {
-        findDGMMethodsForClassNode(OBJECT_TYPE.makeArray(),name,accumulator);
-      }
- else {
-        findDGMMethodsForClassNode(componentClass.getSuperClass().makeArray(),name,accumulator);
-      }
-    }
-  }
-  if (clazz.getSuperClass() != null) {
-    findDGMMethodsForClassNode(clazz.getSuperClass(),name,accumulator);
-  }
- else   if (!clazz.equals(ClassHelper.OBJECT_TYPE)) {
-    findDGMMethodsForClassNode(ClassHelper.OBJECT_TYPE,name,accumulator);
-  }
+  findDGMMethodsForClassNode(MetaClassRegistryImpl.class.getClassLoader(),clazz,name,accumulator);
 }
