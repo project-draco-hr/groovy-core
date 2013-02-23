@@ -1,0 +1,33 @@
+{
+  if (assumeClass) {
+    String className=re.getText();
+    out.print(className);
+    if (!className.endsWith(".class")) {
+      out.print(".class");
+    }
+  }
+ else {
+    if (re instanceof ConstantExpression) {
+      ConstantExpression ce=(ConstantExpression)re;
+      Object value=ce.getValue();
+      if (ClassHelper.STRING_TYPE.equals(ce.getType())) {
+        out.print(formatString((String)value));
+      }
+ else       if (ClassHelper.long_TYPE.equals(ce.getType())) {
+        out.print("" + value + "L");
+      }
+ else       if (ClassHelper.float_TYPE.equals(ce.getType())) {
+        out.print("" + value + "f");
+      }
+ else       if (ClassHelper.double_TYPE.equals(ce.getType())) {
+        out.print("" + value + "d");
+      }
+ else {
+        out.print(re.getText());
+      }
+    }
+ else {
+      out.print(re.getText());
+    }
+  }
+}
