@@ -1,6 +1,7 @@
 {
-  ClassNode type=ClassHelper.getWrapper(constExpr.getType());
-  if (!type.isDerivedFrom(attrType)) {
-    addError("Attribute '" + attrName + "' should have type '"+ attrType.getName()+ "'; "+ "but found type '"+ constExpr.getType().getName()+ "'",constExpr);
+  ClassNode constType=constExpr.getType();
+  ClassNode wrapperType=ClassHelper.getWrapper(constType);
+  if (!hasCompatibleType(attrType,wrapperType)) {
+    addError("Attribute '" + attrName + "' should have type '"+ attrType.getName()+ "'; but found type '"+ constType.getName()+ "'",constExpr);
   }
 }
