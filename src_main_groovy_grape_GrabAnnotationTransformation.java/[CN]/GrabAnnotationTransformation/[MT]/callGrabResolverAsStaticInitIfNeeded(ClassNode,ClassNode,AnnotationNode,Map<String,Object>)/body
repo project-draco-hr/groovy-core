@@ -1,0 +1,11 @@
+{
+  if ((node.getMember("initClass") == null) || (node.getMember("initClass") == ConstantExpression.TRUE)) {
+    List<Statement> grabInitializers=new ArrayList<Statement>();
+    MapExpression resolverArgs=new MapExpression();
+    for (    Map.Entry<String,Object> next : grapeResolverMap.entrySet()) {
+      resolverArgs.addMapEntryExpression(new ConstantExpression(next.getKey()),new ConstantExpression(next.getValue()));
+    }
+    grabInitializers.add(new ExpressionStatement(new StaticMethodCallExpression(grapeClassNode,"addResolver",new ArgumentListExpression(resolverArgs))));
+    classNode.addStaticInitializerStatements(grabInitializers,true);
+  }
+}
