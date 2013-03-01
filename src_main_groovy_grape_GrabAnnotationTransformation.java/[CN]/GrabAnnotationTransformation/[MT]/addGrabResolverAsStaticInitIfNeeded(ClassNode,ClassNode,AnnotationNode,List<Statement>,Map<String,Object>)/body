@@ -1,0 +1,9 @@
+{
+  if ((node.getMember("initClass") == null) || (node.getMember("initClass") == ConstantExpression.TRUE)) {
+    MapExpression resolverArgs=new MapExpression();
+    for (    Map.Entry<String,Object> next : grabResolverMap.entrySet()) {
+      resolverArgs.addMapEntryExpression(new ConstantExpression(next.getKey()),new ConstantExpression(next.getValue()));
+    }
+    grabResolverInitializers.add(new ExpressionStatement(new StaticMethodCallExpression(grapeClassNode,"addResolver",new ArgumentListExpression(resolverArgs))));
+  }
+}
