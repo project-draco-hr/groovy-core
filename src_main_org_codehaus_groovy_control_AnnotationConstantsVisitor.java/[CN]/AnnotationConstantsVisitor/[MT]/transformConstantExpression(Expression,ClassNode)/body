@@ -1,0 +1,25 @@
+{
+  ClassNode returnWrapperType=ClassHelper.getWrapper(returnType);
+  if (val instanceof ConstantExpression) {
+    Expression result=revertType(val,returnWrapperType);
+    if (result != null) {
+      return result;
+    }
+    return val;
+  }
+  if (val instanceof CastExpression) {
+    CastExpression castExp=(CastExpression)val;
+    Expression castee=castExp.getExpression();
+    if (castee instanceof ConstantExpression) {
+      if (ClassHelper.getWrapper(castee.getType()).isDerivedFrom(returnWrapperType)) {
+        return castee;
+      }
+      Expression result=revertType(castee,returnWrapperType);
+      if (result != null) {
+        return result;
+      }
+      return castee;
+    }
+  }
+  return val;
+}

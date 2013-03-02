@@ -1,0 +1,20 @@
+{
+  ClassNode valWrapperType=ClassHelper.getWrapper(val.getType());
+  ConstantExpression ce=(ConstantExpression)val;
+  if (ClassHelper.Character_TYPE.equals(returnWrapperType) && ClassHelper.STRING_TYPE.equals(val.getType())) {
+    return configure(val,Verifier.transformToPrimitiveConstantIfPossible((ConstantExpression)val));
+  }
+  if (ClassHelper.Integer_TYPE.equals(valWrapperType)) {
+    Integer i=(Integer)ce.getValue();
+    if (ClassHelper.Character_TYPE.equals(returnWrapperType)) {
+      return configure(val,new ConstantExpression((char)i.intValue()));
+    }
+    if (ClassHelper.Short_TYPE.equals(returnWrapperType)) {
+      return configure(val,new ConstantExpression(i.shortValue()));
+    }
+    if (ClassHelper.Byte_TYPE.equals(returnWrapperType)) {
+      return configure(val,new ConstantExpression(i.byteValue()));
+    }
+  }
+  return null;
+}
