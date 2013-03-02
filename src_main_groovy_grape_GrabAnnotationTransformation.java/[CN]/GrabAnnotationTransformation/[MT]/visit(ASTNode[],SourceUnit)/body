@@ -46,6 +46,22 @@
     visitClass(classNode);
     ClassNode grapeClassNode=ClassHelper.make(Grape.class);
     List<Statement> grabResolverInitializers=new ArrayList<Statement>();
+    if (!grapesAnnotations.isEmpty()) {
+      for (      AnnotationNode node : grapesAnnotations) {
+        Expression init=node.getMember("initClass");
+        Expression value=node.getMember("value");
+        if (value instanceof ListExpression) {
+          for (          Object o : ((ListExpression)value).getExpressions()) {
+            if (o instanceof ConstantExpression) {
+              extractGrab(init,(ConstantExpression)o);
+            }
+          }
+        }
+ else         if (value instanceof ConstantExpression) {
+          extractGrab(init,(ConstantExpression)value);
+        }
+      }
+    }
     if (!grabResolverAnnotations.isEmpty()) {
       grabResolverAnnotationLoop:       for (      AnnotationNode node : grabResolverAnnotations) {
         Map<String,Object> grabResolverMap=new HashMap<String,Object>();
@@ -85,22 +101,6 @@
         }
         Grape.addResolver(grabResolverMap);
         addGrabResolverAsStaticInitIfNeeded(grapeClassNode,node,grabResolverInitializers,grabResolverMap);
-      }
-    }
-    if (!grapesAnnotations.isEmpty()) {
-      for (      AnnotationNode node : grapesAnnotations) {
-        Expression init=node.getMember("initClass");
-        Expression value=node.getMember("value");
-        if (value instanceof ListExpression) {
-          for (          Object o : ((ListExpression)value).getExpressions()) {
-            if (o instanceof ConstantExpression) {
-              extractGrab(init,(ConstantExpression)o);
-            }
-          }
-        }
- else         if (value instanceof ConstantExpression) {
-          extractGrab(init,(ConstantExpression)value);
-        }
       }
     }
     if (!grabConfigAnnotations.isEmpty()) {
