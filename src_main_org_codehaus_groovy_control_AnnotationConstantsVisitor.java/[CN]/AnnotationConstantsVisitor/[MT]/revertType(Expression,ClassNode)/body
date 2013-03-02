@@ -7,13 +7,22 @@
   if (ClassHelper.Integer_TYPE.equals(valWrapperType)) {
     Integer i=(Integer)ce.getValue();
     if (ClassHelper.Character_TYPE.equals(returnWrapperType)) {
-      return configure(val,new ConstantExpression((char)i.intValue()));
+      return configure(val,new ConstantExpression((char)i.intValue(),true));
     }
     if (ClassHelper.Short_TYPE.equals(returnWrapperType)) {
-      return configure(val,new ConstantExpression(i.shortValue()));
+      return configure(val,new ConstantExpression(i.shortValue(),true));
     }
     if (ClassHelper.Byte_TYPE.equals(returnWrapperType)) {
-      return configure(val,new ConstantExpression(i.byteValue()));
+      return configure(val,new ConstantExpression(i.byteValue(),true));
+    }
+  }
+  if (ClassHelper.BigDecimal_TYPE.equals(valWrapperType)) {
+    BigDecimal bd=(BigDecimal)ce.getValue();
+    if (ClassHelper.Float_TYPE.equals(returnWrapperType)) {
+      return configure(val,new ConstantExpression(bd.floatValue(),true));
+    }
+    if (ClassHelper.Double_TYPE.equals(returnWrapperType)) {
+      return configure(val,new ConstantExpression(bd.doubleValue(),true));
     }
   }
   return null;
