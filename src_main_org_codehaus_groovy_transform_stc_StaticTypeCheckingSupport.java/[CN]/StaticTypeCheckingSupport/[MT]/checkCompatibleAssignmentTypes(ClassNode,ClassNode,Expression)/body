@@ -16,7 +16,7 @@
   if (rightExpressionIsNull && !isPrimitiveType(left)) {
     return true;
   }
-  if (isWildcardLeftHandSide(leftRedirect))   return true;
+  if (isWildcardLeftHandSide(leftRedirect) && !(boolean_TYPE.equals(left) && rightExpressionIsNull))   return true;
   if (leftRedirect == char_TYPE && rightRedirect == STRING_TYPE) {
     if (rightExpression != null && rightExpression instanceof ConstantExpression) {
       String value=rightExpression.getText();
