@@ -4,7 +4,7 @@
     AnnotationNode head=annotations.get(0);
     int version=Integer.valueOf(head.getMember("version").getText());
     String signature=head.getMember("inferredType").getText();
-    SignatureCodec codec=SignatureCodecFactory.getCodec(version);
+    SignatureCodec codec=SignatureCodecFactory.getCodec(version,getSourceUnit().getClassLoader());
     ClassNode result=codec.decode(signature);
     node.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,result);
   }
