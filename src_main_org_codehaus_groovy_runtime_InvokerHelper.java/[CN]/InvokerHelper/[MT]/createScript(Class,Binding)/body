@@ -27,7 +27,13 @@
           }
         }
 ;
-        setProperties(object,context.getVariables());
+        Map variables=context.getVariables();
+        MetaClass mc=getMetaClass(object);
+        for (        Object o : variables.entrySet()) {
+          Map.Entry entry=(Map.Entry)o;
+          String key=entry.getKey().toString();
+          setPropertySafe(key.startsWith("_") ? script : object,mc,key,entry.getValue());
+        }
       }
     }
  catch (    Exception e) {
