@@ -5,6 +5,9 @@
  else {
     boolean isSuperMethodCall=usesSuper(call);
     MethodCallerMultiAdapter adapter=invokeMethod;
+    if (isSuperMethodCall && call.isSafe()) {
+      call.setSafe(false);
+    }
     if (AsmClassGenerator.isThisExpression(call.getObjectExpression()))     adapter=invokeMethodOnCurrent;
     if (isSuperMethodCall)     adapter=invokeMethodOnSuper;
     if (isStaticInvocation(call))     adapter=invokeStaticMethod;
