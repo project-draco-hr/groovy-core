@@ -6,7 +6,7 @@
   }
   MethodNode enclosingMethod=typeCheckingContext.getEnclosingMethod();
   if (enclosingMethod != null && typeCheckingContext.getEnclosingClosure() == null) {
-    if (!enclosingMethod.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(enclosingMethod.getReturnType(),type)&& !(isNullConstant(expression))) {
+    if (!enclosingMethod.isVoidMethod() && !type.equals(void_WRAPPER_TYPE) && !type.equals(VOID_TYPE)&& !checkCompatibleAssignmentTypes(enclosingMethod.getReturnType(),type,null,false)&& !(isNullConstant(expression))) {
       addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ enclosingMethod.getReturnType().toString(false),expression);
     }
  else     if (!enclosingMethod.isVoidMethod()) {

@@ -57,7 +57,7 @@
           }
         }
  else {
-          while (!actualType.equals(type)) {
+          while (actualType != null && !actualType.equals(type)) {
             Set<ClassNode> interfaces=actualType.getAllInterfaces();
             boolean intf=false;
             for (            ClassNode anInterface : interfaces) {
@@ -69,13 +69,15 @@
             }
             if (!intf)             actualType=actualType.getUnresolvedSuperClass();
           }
-          Map<String,GenericsType> actualTypePlaceholders=GenericsUtils.extractPlaceholders(actualType);
-          for (          Map.Entry<String,GenericsType> typeEntry : actualTypePlaceholders.entrySet()) {
-            String key=typeEntry.getKey();
-            GenericsType value=typeEntry.getValue();
-            GenericsType alias=typePlaceholders.get(key);
-            if (alias != null && alias.isPlaceholder()) {
-              resolvedPlaceholders.put(alias.getName(),value);
+          if (actualType != null) {
+            Map<String,GenericsType> actualTypePlaceholders=GenericsUtils.extractPlaceholders(actualType);
+            for (            Map.Entry<String,GenericsType> typeEntry : actualTypePlaceholders.entrySet()) {
+              String key=typeEntry.getKey();
+              GenericsType value=typeEntry.getValue();
+              GenericsType alias=typePlaceholders.get(key);
+              if (alias != null && alias.isPlaceholder()) {
+                resolvedPlaceholders.put(alias.getName(),value);
+              }
             }
           }
         }
