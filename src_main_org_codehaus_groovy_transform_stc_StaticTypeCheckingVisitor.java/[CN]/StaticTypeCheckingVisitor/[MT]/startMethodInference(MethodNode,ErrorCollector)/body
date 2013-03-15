@@ -13,9 +13,9 @@
         parameter.getInitialExpression().visit(this);
       }
     }
-    ClassNode rtype=(ClassNode)node.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    ClassNode rtype=getInferredReturnType(node);
     if (rtype == null) {
-      node.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,node.getReturnType());
+      storeInferredReturnType(node,node.getReturnType());
     }
     addTypeCheckingInfoAnnotation(node);
   }

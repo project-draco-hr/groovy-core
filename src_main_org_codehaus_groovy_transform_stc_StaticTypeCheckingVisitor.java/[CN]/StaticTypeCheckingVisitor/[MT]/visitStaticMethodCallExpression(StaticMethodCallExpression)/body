@@ -39,6 +39,7 @@
     if (mn.isEmpty()) {
       mn=extension.handleMissingMethod(receiver,name,argumentList,args,call);
     }
+    boolean callArgsVisited=false;
     if (mn.isEmpty()) {
       addNoMatchingMethodError(receiver,name,args,call);
     }
@@ -46,7 +47,6 @@
       mn=disambiguateMethods(mn,call);
       if (mn.size() == 1) {
         MethodNode directMethodCallCandidate=mn.get(0);
-        ClassNode currentClassNode=typeCheckingContext.getEnclosingClassNode();
         typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
         for (        ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
           if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
@@ -58,8 +58,10 @@
         typeCheckingContext.popEnclosingClassNode();
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
+          visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
           ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
           returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
+          callArgsVisited=true;
         }
         storeType(call,returnType);
         storeTargetMethod(call,directMethodCallCandidate);
@@ -67,7 +69,9 @@
  else {
         addAmbiguousErrorMessage(mn,name,args,call);
       }
-      visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+      if (!callArgsVisited) {
+        visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+      }
     }
   }
   finally {

@@ -25,7 +25,11 @@
   returnAdder.visitMethod(node);
   TypeCheckingContext.EnclosingClosure enclosingClosure=typeCheckingContext.getEnclosingClosure();
   if (!enclosingClosure.getReturnTypes().isEmpty()) {
-    expression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,lowestUpperBound(enclosingClosure.getReturnTypes()));
+    ClassNode returnType=lowestUpperBound(enclosingClosure.getReturnTypes());
+    storeInferredReturnType(expression,returnType);
+    ClassNode inferredType=CLOSURE_TYPE.getPlainNodeReference();
+    inferredType.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(returnType))});
+    storeType(enclosingClosure.getClosureExpression(),inferredType);
   }
   typeCheckingContext.popEnclosingClosure();
   boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);

@@ -48,6 +48,7 @@
     checkClosureParameters(callArguments,receiver);
   }
   try {
+    boolean callArgsVisited=false;
     if (isCallOnClosure) {
       if (objectExpression == VariableExpression.THIS_EXPRESSION) {
         FieldNode field=typeCheckingContext.getEnclosingClassNode().getDeclaredField(name);
@@ -70,12 +71,14 @@
             Parameter[] parameters=(Parameter[])data;
             typeCheckClosureCall(callArguments,args,parameters);
           }
-          Object type=((ASTNode)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+          ClassNode type=getInferredReturnType(((ASTNode)variable));
           if (type == null) {
             if (variable.getType().equals(CLOSURE_TYPE)) {
               GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
-              if (genericsTypes != null && !genericsTypes[0].isPlaceholder()) {
-                type=genericsTypes[0].getType();
+              if (genericsTypes != null) {
+                if (!genericsTypes[0].isPlaceholder()) {
+                  type=genericsTypes[0].getType();
+                }
               }
  else {
                 type=OBJECT_TYPE;
@@ -90,9 +93,9 @@
  else       if (objectExpression instanceof ClosureExpression) {
         Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
         typeCheckClosureCall(callArguments,args,parameters);
-        Object data=objectExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+        ClassNode data=getInferredReturnType(objectExpression);
         if (data != null) {
-          storeType(call,(ClassNode)data);
+          storeType(call,data);
         }
       }
       int nbOfArgs=0;
@@ -184,8 +187,10 @@
             returnType=getType(directMethodCallCandidate);
           }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
+            visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
+            callArgsVisited=true;
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
@@ -206,7 +211,9 @@
         }
       }
     }
-    visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+    if (!callArgsVisited) {
+      visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+    }
   }
   finally {
     if (isWithCall) {

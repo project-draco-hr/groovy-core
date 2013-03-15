@@ -10,7 +10,7 @@
       addStaticTypeError("Cannot return value of type " + type.toString(false) + " on method returning type "+ enclosingMethod.getReturnType().toString(false),expression);
     }
  else     if (!enclosingMethod.isVoidMethod()) {
-      ClassNode previousType=(ClassNode)enclosingMethod.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+      ClassNode previousType=getInferredReturnType(enclosingMethod);
       ClassNode inferred=previousType == null ? type : lowestUpperBound(type,previousType);
       if (implementsInterfaceOrIsSubclassOf(inferred,enclosingMethod.getReturnType())) {
         if (missesGenericsTypes(inferred)) {

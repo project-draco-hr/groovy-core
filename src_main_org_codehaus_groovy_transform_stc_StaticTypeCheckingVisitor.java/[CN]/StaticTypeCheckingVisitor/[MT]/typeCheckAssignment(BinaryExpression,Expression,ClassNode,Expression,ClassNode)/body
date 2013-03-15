@@ -52,9 +52,9 @@
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
-      Object type=rightExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+      ClassNode type=getInferredReturnType(rightExpression);
       if (type != null) {
-        leftExpression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,type);
+        storeInferredReturnType(leftExpression,type);
       }
     }
     boolean possibleLooseOfPrecision=false;
