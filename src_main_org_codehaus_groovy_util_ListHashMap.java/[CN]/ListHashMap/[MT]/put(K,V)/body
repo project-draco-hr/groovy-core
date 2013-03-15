@@ -1,23 +1,23 @@
 {
-  if (size < maxListFill) {
-    for (int i=0; i < listFill; i++) {
+  if (innerMap == null) {
+    for (int i=0; i < size; i++) {
       if (listKeys[i].equals(key)) {
         V old=(V)listValues[i];
         listValues[i]=value;
         return old;
       }
     }
-    if (size < maxListFill - 1) {
+    if (size < maxListFill) {
+      listKeys[size]=key;
+      listValues[size]=value;
       size++;
-      listKeys[listFill]=key;
-      listValues[listFill]=value;
-      listFill++;
       return null;
     }
  else {
       innerMap=makeMap();
-      size++;
     }
   }
-  return innerMap.put(key,value);
+  V val=(V)innerMap.put(key,value);
+  size=innerMap.size();
+  return val;
 }
