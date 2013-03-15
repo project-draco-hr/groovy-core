@@ -10,7 +10,9 @@
     final Expression init=getInitExpr(fieldNode);
     fieldNode.rename("$" + fieldNode.getName());
     fieldNode.setModifiers(ACC_PRIVATE | (fieldNode.getModifiers() & (~(ACC_PUBLIC | ACC_PROTECTED))));
-    if (soft instanceof ConstantExpression && ((ConstantExpression)soft).getValue().equals(true))     createSoft(fieldNode,init);
+    if (soft instanceof ConstantExpression && ((ConstantExpression)soft).getValue().equals(true)) {
+      createSoft(fieldNode,init);
+    }
  else {
       create(fieldNode,init);
       if (ClassHelper.isPrimitiveType(fieldNode.getType())) {
