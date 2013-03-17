@@ -1,0 +1,20 @@
+{
+  Reader reader=null;
+  try {
+    if (charset == null || charset.length() == 0) {
+      reader=ResourceGroovyMethods.newReader(file);
+    }
+ else {
+      reader=ResourceGroovyMethods.newReader(file,charset);
+    }
+    return parse(reader);
+  }
+ catch (  IOException ioe) {
+    throw new JsonException("Unable to process file: " + file.getPath(),ioe);
+  }
+ finally {
+    if (reader != null) {
+      DefaultGroovyMethodsSupport.closeWithWarning(reader);
+    }
+  }
+}
