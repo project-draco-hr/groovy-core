@@ -1,0 +1,20 @@
+{
+  Reader reader=null;
+  try {
+    if (params == null || params.isEmpty()) {
+      reader=ResourceGroovyMethods.newReader(url,charset);
+    }
+ else {
+      reader=ResourceGroovyMethods.newReader(url,params,charset);
+    }
+    return parse(reader);
+  }
+ catch (  IOException ioe) {
+    throw new JsonException("Unable to process url: " + url.toString(),ioe);
+  }
+ finally {
+    if (reader != null) {
+      DefaultGroovyMethodsSupport.closeWithWarning(reader);
+    }
+  }
+}
