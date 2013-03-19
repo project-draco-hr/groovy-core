@@ -1,27 +1,3 @@
 {
-  List collectedCombos=new ArrayList();
-  for (Iterator outer=collections.iterator(); outer.hasNext(); ) {
-    Collection items=DefaultTypeTransformation.asCollection(outer.next());
-    if (collectedCombos.isEmpty()) {
-      for (Iterator iterator=items.iterator(); iterator.hasNext(); ) {
-        List l=new ArrayList();
-        l.add(iterator.next());
-        collectedCombos.add(l);
-      }
-    }
- else {
-      List savedCombos=new ArrayList(collectedCombos);
-      List newCombos=new ArrayList();
-      for (Iterator inner=items.iterator(); inner.hasNext(); ) {
-        Object value=inner.next();
-        for (Iterator combos=savedCombos.iterator(); combos.hasNext(); ) {
-          List oldlist=new ArrayList((List)combos.next());
-          oldlist.add(value);
-          newCombos.add(oldlist);
-        }
-      }
-      collectedCombos=newCombos;
-    }
-  }
-  return collectedCombos;
+  return combinations((Iterable)collections);
 }
