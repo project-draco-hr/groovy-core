@@ -1,16 +1,4 @@
 {
   List<Object> answer=new ArrayList<Object>(coll.size());
-  for (  Object item : coll) {
-    if (item == null)     continue;
-    Object value;
-    try {
-      value=InvokerHelper.getProperty(item,property);
-    }
- catch (    MissingPropertyExceptionNoStack mpe) {
-      String causeString=new MissingPropertyException(mpe.getProperty(),mpe.getType()).toString();
-      throw new MissingPropertyException("Exception evaluating property '" + property + "' for "+ coll.getClass().getName()+ ", Reason: "+ causeString);
-    }
-    answer.add(value);
-  }
-  return answer;
+  return getAtIterable(coll,property,answer);
 }

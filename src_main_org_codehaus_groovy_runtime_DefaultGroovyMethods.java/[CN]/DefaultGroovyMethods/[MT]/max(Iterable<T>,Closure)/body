@@ -1,0 +1,16 @@
+{
+  int params=closure.getMaximumNumberOfParameters();
+  if (params != 1) {
+    return max(self,new ClosureComparator<T>(closure));
+  }
+  T answer=null;
+  Object answerValue=null;
+  for (  T item : self) {
+    Object value=closure.call(item);
+    if (answer == null || ScriptBytecodeAdapter.compareLessThan(answerValue,value)) {
+      answer=item;
+      answerValue=value;
+    }
+  }
+  return answer;
+}
