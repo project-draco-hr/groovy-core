@@ -1,0 +1,12 @@
+{
+  int modifiers=PUBLIC_FS | Opcodes.ACC_ENUM;
+  if (init != null && !(init instanceof ListExpression)) {
+    ListExpression list=new ListExpression();
+    list.addExpression(init);
+    init=list;
+  }
+  FieldNode fn=new FieldNode(name,modifiers,enumClass.getPlainNodeReference(),enumClass,init);
+  fn.setLineNumber(lineNumber);
+  fn.setColumnNumber(colNumber);
+  enumClass.addField(fn);
+}
