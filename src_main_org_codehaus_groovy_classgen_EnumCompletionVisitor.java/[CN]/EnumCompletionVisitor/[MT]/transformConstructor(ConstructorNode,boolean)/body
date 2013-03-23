@@ -22,7 +22,15 @@
     argsExprs.add(1,new VariableExpression(intParameterName));
   }
  else {
-    cce=new ConstructorCallExpression(ClassNode.SUPER,new ArgumentListExpression(new VariableExpression(stringParameterName),new VariableExpression(intParameterName)));
+    List<Expression> args=new ArrayList<Expression>();
+    args.add(new VariableExpression(stringParameterName));
+    args.add(new VariableExpression(intParameterName));
+    if (isAic) {
+      for (      Parameter parameter : oldP) {
+        args.add(new VariableExpression(parameter.getName()));
+      }
+    }
+    cce=new ConstructorCallExpression(ClassNode.SUPER,new ArgumentListExpression(args));
     BlockStatement code=new BlockStatement();
     code.addStatement(new ExpressionStatement(cce));
     Statement oldCode=ctor.getCode();
