@@ -1,3 +1,11 @@
 {
-  addEnumConstant(enumClass,name,init,-1,-1);
+  int modifiers=PUBLIC_FS | Opcodes.ACC_ENUM;
+  if (init != null && !(init instanceof ListExpression)) {
+    ListExpression list=new ListExpression();
+    list.addExpression(init);
+    init=list;
+  }
+  FieldNode fn=new FieldNode(name,modifiers,enumClass.getPlainNodeReference(),enumClass,init);
+  enumClass.addField(fn);
+  return fn;
 }

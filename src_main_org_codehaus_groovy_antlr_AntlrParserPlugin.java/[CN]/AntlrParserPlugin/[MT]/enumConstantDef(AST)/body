@@ -6,8 +6,6 @@
     element=element.getNextSibling();
   }
   String identifier=identifier(element);
-  int savedLine=element.getLine();
-  int savedColumn=element.getColumn();
   Expression init=null;
   element=element.getNextSibling();
   if (element != null) {
@@ -52,6 +50,7 @@
       }
     }
   }
-  EnumHelper.addEnumConstant(classNode,identifier,init,savedLine,savedColumn);
+  FieldNode enumField=EnumHelper.addEnumConstant(classNode,identifier,init);
+  configureAST(enumField,node);
   enumConstantBeingDef=false;
 }
