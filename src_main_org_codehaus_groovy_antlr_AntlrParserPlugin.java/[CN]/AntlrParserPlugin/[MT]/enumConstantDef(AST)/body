@@ -27,7 +27,9 @@
       innerClass.setModifiers(classNode.getModifiers() | Opcodes.ACC_FINAL);
       Expression inner=new ClassExpression(innerClass);
       if (init == null) {
-        init=inner;
+        ListExpression le=new ListExpression();
+        le.addExpression(inner);
+        init=le;
       }
  else {
         if (init instanceof ListExpression) {
