@@ -12,24 +12,43 @@
     if ("antcall".equals(taskName) && parent == null) {
       throw new BuildException("antcall not supported within AntBuilder, consider using 'ant.project.executeTarget('targetName')' instead.");
     }
-    InputStream savedProjectInputStream=project.getDefaultInputStream();
-    InputStream savedIn=System.in;
-    PrintStream savedErr=System.err;
-    PrintStream savedOut=System.out;
-    if (!(savedIn instanceof DemuxInputStream)) {
-      project.setDefaultInputStream(savedIn);
-      System.setIn(new DemuxInputStream(project));
+    if (savingStreams) {
+      int currentStreamCount=streamCount.getAndIncrement();
+      if (currentStreamCount == 0) {
+        savedProjectInputStream=project.getDefaultInputStream();
+        savedIn=System.in;
+        savedErr=System.err;
+        savedOut=System.out;
+        if (!(savedIn instanceof DemuxInputStream)) {
+          project.setDefaultInputStream(savedIn);
+          demuxInputStream=new DemuxInputStream(project);
+          System.setIn(demuxInputStream);
+        }
+        demuxOutputStream=new DemuxOutputStream(project,false);
+        System.setOut(new PrintStream(demuxOutputStream));
+        demuxErrorStream=new DemuxOutputStream(project,true);
+        System.setErr(new PrintStream(demuxErrorStream));
+      }
     }
-    System.setOut(new PrintStream(new DemuxOutputStream(project,false)));
-    System.setErr(new PrintStream(new DemuxOutputStream(project,true)));
     try {
       lastCompletedNode=performTask(task);
     }
   finally {
-      project.setDefaultInputStream(savedProjectInputStream);
-      System.setIn(savedIn);
-      System.setOut(savedOut);
-      System.setErr(savedErr);
+      if (savingStreams) {
+        int currentStreamCount=streamCount.decrementAndGet();
+        if (currentStreamCount == 0) {
+          project.setDefaultInputStream(savedProjectInputStream);
+          System.setIn(savedIn);
+          System.setOut(savedOut);
+          System.setErr(savedErr);
+          if (demuxInputStream != null)           DefaultGroovyMethodsSupport.closeQuietly(demuxInputStream);
+          DefaultGroovyMethodsSupport.closeQuietly(demuxOutputStream);
+          DefaultGroovyMethodsSupport.closeQuietly(demuxErrorStream);
+          demuxInputStream=null;
+          demuxOutputStream=null;
+          demuxErrorStream=null;
+        }
+      }
     }
     if ("import".equals(taskName)) {
       antXmlContext.setCurrentTarget(collectorTarget);
