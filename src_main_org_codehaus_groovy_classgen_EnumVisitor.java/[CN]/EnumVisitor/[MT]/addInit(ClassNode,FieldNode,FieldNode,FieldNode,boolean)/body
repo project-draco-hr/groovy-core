@@ -32,9 +32,10 @@
     }
  else {
       ListExpression oldArgs=(ListExpression)field.getInitialExpression();
+      List<MapEntryExpression> savedMapEntries=new ArrayList<MapEntryExpression>();
       for (      Expression exp : oldArgs.getExpressions()) {
         if (exp instanceof MapEntryExpression) {
-          addError(exp,"The usage of a map entry expression to initialize an Enum is currently not supported, please use an explicit map instead.");
+          savedMapEntries.add((MapEntryExpression)exp);
           continue;
         }
         InnerClassNode inner=null;
@@ -61,6 +62,12 @@
           }
         }
         args.addExpression(exp);
+      }
+      if (savedMapEntries.size() > 0) {
+        args.getExpressions().add(2,new MapExpression(savedMapEntries));
+        if (enumClass.getDeclaredConstructors().size() == 0) {
+          addMapConstructor(enumClass);
+        }
       }
     }
     field.setInitialValueExpression(null);
