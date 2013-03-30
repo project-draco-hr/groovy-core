@@ -8,7 +8,7 @@
   body.addStatement(returnTrueIfIdentical(VariableExpression.THIS_EXPRESSION,other));
   if (useCanEqual) {
     body.addStatement(returnFalseIfNotInstanceof(cNode,other));
-    body.addStatement(new IfStatement(new BooleanExpression(new MethodCallExpression(other,"canEqual",VariableExpression.THIS_EXPRESSION)),new EmptyStatement(),new ReturnStatement(ConstantExpression.FALSE)));
+    body.addStatement(new IfStatement(new BooleanExpression(new MethodCallExpression(other,"canEqual",VariableExpression.THIS_EXPRESSION)),EmptyStatement.INSTANCE,new ReturnStatement(ConstantExpression.FALSE)));
   }
  else {
     body.addStatement(returnFalseIfWrongType(cNode,other));
@@ -29,7 +29,7 @@
     body.addStatement(returnFalseIfFieldNotEqual(fNode,otherTyped));
   }
   if (callSuper) {
-    body.addStatement(new IfStatement(isTrueExpr(new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"equals",other)),new EmptyStatement(),new ReturnStatement(ConstantExpression.FALSE)));
+    body.addStatement(new IfStatement(isTrueExpr(new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"equals",other)),EmptyStatement.INSTANCE,new ReturnStatement(ConstantExpression.FALSE)));
   }
   body.addStatement(new ReturnStatement(ConstantExpression.TRUE));
   Parameter[] params={new Parameter(OBJECT_TYPE,other.getName())};

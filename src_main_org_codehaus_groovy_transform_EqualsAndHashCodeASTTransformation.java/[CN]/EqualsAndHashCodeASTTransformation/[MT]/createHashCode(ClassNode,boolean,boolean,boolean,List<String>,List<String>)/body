@@ -5,7 +5,7 @@
   if (cacheResult) {
     final FieldNode hashField=cNode.addField("$hash$code",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.int_TYPE,null);
     final Expression hash=new VariableExpression(hashField);
-    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(cNode,hash,includeFields,callSuper,excludes,includes),new EmptyStatement()));
+    body.addStatement(new IfStatement(isZeroExpr(hash),calculateHashStatements(cNode,hash,includeFields,callSuper,excludes,includes),EmptyStatement.INSTANCE));
     body.addStatement(new ReturnStatement(hash));
   }
  else {
