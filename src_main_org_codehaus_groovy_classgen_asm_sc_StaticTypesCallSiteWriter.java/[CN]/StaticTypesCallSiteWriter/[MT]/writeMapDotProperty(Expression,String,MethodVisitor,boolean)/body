@@ -1,0 +1,19 @@
+{
+  receiver.visit(controller.getAcg());
+  Label exit=new Label();
+  if (safe) {
+    Label doGet=new Label();
+    mv.visitJumpInsn(IFNONNULL,doGet);
+    controller.getOperandStack().remove(1);
+    mv.visitInsn(ACONST_NULL);
+    mv.visitJumpInsn(GOTO,exit);
+    mv.visitLabel(doGet);
+    receiver.visit(controller.getAcg());
+  }
+  mv.visitLdcInsn(methodName);
+  mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Map","get","(Ljava/lang/Object;)Ljava/lang/Object;");
+  if (safe) {
+    mv.visitLabel(exit);
+  }
+  controller.getOperandStack().replace(OBJECT_TYPE);
+}

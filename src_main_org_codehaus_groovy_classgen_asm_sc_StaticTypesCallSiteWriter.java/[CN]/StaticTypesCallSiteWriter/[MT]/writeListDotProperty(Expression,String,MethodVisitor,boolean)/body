@@ -4,6 +4,16 @@
     componentType=OBJECT_TYPE;
   }
   CompileStack compileStack=controller.getCompileStack();
+  Label exit=new Label();
+  if (safe) {
+    receiver.visit(controller.getAcg());
+    Label doGet=new Label();
+    mv.visitJumpInsn(IFNONNULL,doGet);
+    controller.getOperandStack().remove(1);
+    mv.visitInsn(ACONST_NULL);
+    mv.visitJumpInsn(GOTO,exit);
+    mv.visitLabel(doGet);
+  }
   Variable tmpList=new VariableExpression("tmpList",make(ArrayList.class));
   int var=compileStack.defineTemporaryVariable(tmpList,false);
   Variable iterator=new VariableExpression("iterator",Iterator_TYPE);
@@ -56,6 +66,9 @@
   mv.visitJumpInsn(GOTO,l2);
   mv.visitLabel(l3);
   mv.visitVarInsn(ALOAD,var);
+  if (safe) {
+    mv.visitLabel(exit);
+  }
   controller.getOperandStack().push(make(ArrayList.class));
   controller.getCompileStack().removeVar(next);
   controller.getCompileStack().removeVar(it);

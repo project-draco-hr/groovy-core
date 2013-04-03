@@ -90,11 +90,11 @@
   boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
   if (!isStaticProperty) {
     if (receiverType.implementsInterface(MAP_TYPE) || MAP_TYPE.equals(receiverType)) {
-      writeMapDotProperty(receiver,methodName,mv);
+      writeMapDotProperty(receiver,methodName,mv,safe);
       return;
     }
     if (receiverType.implementsInterface(LIST_TYPE) || LIST_TYPE.equals(receiverType)) {
-      writeListDotProperty(receiver,methodName,mv);
+      writeListDotProperty(receiver,methodName,mv,safe);
       return;
     }
   }
