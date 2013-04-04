@@ -1,5 +1,15 @@
 {
-  if (returnGeneratedKeys != 0)   return connection.prepareStatement(sql,returnGeneratedKeys);
-  if (appearsLikeStoredProc(sql))   return connection.prepareCall(sql);
-  return connection.prepareStatement(sql);
+  if (returnGeneratedKeys != 0) {
+    return connection.prepareStatement(sql,returnGeneratedKeys);
+  }
+  if (appearsLikeStoredProc(sql)) {
+    if (resultSetHoldability == -1) {
+      return connection.prepareCall(sql,resultSetType,resultSetConcurrency);
+    }
+    return connection.prepareCall(sql,resultSetType,resultSetConcurrency,resultSetHoldability);
+  }
+  if (resultSetHoldability == -1) {
+    return connection.prepareStatement(sql,resultSetType,resultSetConcurrency);
+  }
+  return connection.prepareStatement(sql,resultSetType,resultSetConcurrency,resultSetHoldability);
 }
