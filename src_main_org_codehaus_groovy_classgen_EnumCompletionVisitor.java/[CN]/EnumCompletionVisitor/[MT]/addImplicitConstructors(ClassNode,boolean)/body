@@ -1,0 +1,18 @@
+{
+  if (aic) {
+    ClassNode sn=enumClass.getSuperClass();
+    List<ConstructorNode> sctors=new ArrayList<ConstructorNode>(sn.getDeclaredConstructors());
+    if (sctors.size() == 0) {
+      addMapConstructors(enumClass);
+    }
+ else {
+      for (      ConstructorNode constructorNode : sctors) {
+        ConstructorNode init=new ConstructorNode(Opcodes.ACC_PUBLIC,constructorNode.getParameters(),ClassNode.EMPTY_ARRAY,new BlockStatement());
+        enumClass.addConstructor(init);
+      }
+    }
+  }
+ else {
+    addMapConstructors(enumClass);
+  }
+}
