@@ -1,0 +1,6 @@
+{
+  String getterName="get" + Verifier.capitalize(pNode.getName());
+  Expression selfGetter=new MethodCallExpression(new VariableExpression("this"),getterName,MethodCallExpression.NO_ARGUMENTS);
+  Expression otherGetter=new MethodCallExpression(other,getterName,MethodCallExpression.NO_ARGUMENTS);
+  return new BooleanExpression(new BinaryExpression(new BinaryExpression(identicalExpr(selfGetter,new VariableExpression("this")),LOGICAL_AND,differentExpr(otherGetter,other)),LOGICAL_OR,new BinaryExpression(differentExpr(selfGetter,new VariableExpression("this")),LOGICAL_AND,identicalExpr(otherGetter,other))));
+}
