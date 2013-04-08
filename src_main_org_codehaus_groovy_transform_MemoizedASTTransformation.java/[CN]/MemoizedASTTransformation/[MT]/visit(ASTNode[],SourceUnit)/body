@@ -7,6 +7,14 @@
   AnnotatedNode annotatedNode=(AnnotatedNode)nodes[1];
   if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof MethodNode) {
     MethodNode methodNode=(MethodNode)annotatedNode;
+    if (methodNode.isAbstract()) {
+      addError("Error: annotation " + MY_TYPE_NAME + " can not be used for abstract method.",methodNode);
+      return;
+    }
+    if (methodNode.isVoidMethod()) {
+      addError("Error: annotation " + MY_TYPE_NAME + " can not be used for method that return void.",methodNode);
+      return;
+    }
     ClosureExpression closureExpression=new ClosureExpression(methodNode.getParameters(),methodNode.getCode());
     closureExpression.setVariableScope(methodNode.getVariableScope());
     ClassNode ownerClassNode=methodNode.getDeclaringClass();
