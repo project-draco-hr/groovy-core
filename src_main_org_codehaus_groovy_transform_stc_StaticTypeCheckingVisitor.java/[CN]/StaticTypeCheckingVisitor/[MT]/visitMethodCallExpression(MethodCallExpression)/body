@@ -187,7 +187,7 @@
             returnType=getType(directMethodCallCandidate);
           }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+            visitMethodCallArguments(argumentList,true,directMethodCallCandidate);
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
             callArgsVisited=true;

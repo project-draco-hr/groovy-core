@@ -1,4 +1,6 @@
 {
+  boolean oldStaticContext=typeCheckingContext.isInStaticContext;
+  typeCheckingContext.isInStaticContext=false;
   final Map<VariableExpression,ClassNode> varOrigType=new HashMap<VariableExpression,ClassNode>();
   Statement code=expression.getCode();
   code.visit(new VariableExpressionTypeMemoizer(varOrigType));
@@ -35,4 +37,5 @@
   boolean typeChanged=isSecondPassNeededForControlStructure(varOrigType,oldTracker);
   if (typeChanged)   visitClosureExpression(expression);
   restoreVariableExpressionMetadata(typesBeforeVisit);
+  typeCheckingContext.isInStaticContext=oldStaticContext;
 }
