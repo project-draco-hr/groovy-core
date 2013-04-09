@@ -14,14 +14,14 @@
     Expression getter=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,MethodCallExpression.NO_ARGUMENTS);
     final Expression args=new TupleExpression(result,getter);
     final Expression current=new StaticMethodCallExpression(HASHUTIL_TYPE,"updateHash",args);
-    body.addStatement(assignStatement(result,current));
+    body.addStatement(new IfStatement(identicalExpr(getter,new VariableExpression("this")),EmptyStatement.INSTANCE,assignStatement(result,current)));
   }
   for (  FieldNode fNode : fList) {
     if (shouldSkip(fNode.getName(),excludes,includes))     continue;
     final Expression fieldExpr=new VariableExpression(fNode);
     final Expression args=new TupleExpression(result,fieldExpr);
     final Expression current=new StaticMethodCallExpression(HASHUTIL_TYPE,"updateHash",args);
-    body.addStatement(assignStatement(result,current));
+    body.addStatement(new IfStatement(identicalExpr(fieldExpr,new VariableExpression("this")),EmptyStatement.INSTANCE,assignStatement(result,current)));
   }
   if (callSuper) {
     final Expression args=new TupleExpression(result,new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"hashCode",MethodCallExpression.NO_ARGUMENTS));
