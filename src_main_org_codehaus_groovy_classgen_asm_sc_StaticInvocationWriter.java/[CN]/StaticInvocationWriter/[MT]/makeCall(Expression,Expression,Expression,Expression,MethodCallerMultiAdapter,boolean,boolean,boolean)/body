@@ -1,4 +1,18 @@
 {
+  Object implicitReceiver=origin.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+  if (implicitReceiver != null && implicitThis) {
+    String[] propertyPath=((String)implicitReceiver).split("\\.");
+    PropertyExpression pexp=new PropertyExpression(new VariableExpression("this"),propertyPath[0]);
+    pexp.setImplicitThis(true);
+    for (int i=1; i < propertyPath.length; i++) {
+      pexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,CLOSURE_TYPE);
+      pexp=new PropertyExpression(pexp,propertyPath[i]);
+    }
+    pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,implicitReceiver);
+    origin.removeNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+    makeCall(origin,pexp,message,arguments,adapter,safe,spreadSafe,false);
+    return;
+  }
   if (spreadSafe && origin instanceof MethodCallExpression) {
     MethodVisitor mv=controller.getMethodVisitor();
     CompileStack compileStack=controller.getCompileStack();
