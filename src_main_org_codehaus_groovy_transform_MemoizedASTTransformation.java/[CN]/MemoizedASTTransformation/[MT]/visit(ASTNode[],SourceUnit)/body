@@ -22,8 +22,10 @@
     if (methodNode.isStatic()) {
       modifiers=modifiers | FieldNode.ACC_STATIC;
     }
+    int protectedCacheSize=getIntMemberValue(annotationNode,PROTECTED_CACHE_SIZE_NAME);
+    int maxCacheSize=getIntMemberValue(annotationNode,MAX_CACHE_SIZE_NAME);
+    MethodCallExpression memoizeClosureCallExpression=buildMemoizeClosureCallExpression(closureExpression,protectedCacheSize,maxCacheSize);
     String memoizedClosureFieldName=buildUniqueName(ownerClassNode,methodNode);
-    MethodCallExpression memoizeClosureCallExpression=new MethodCallExpression(closureExpression,MEMOIZE_METHOD_NAME,MethodCallExpression.NO_ARGUMENTS);
     FieldNode memoizedClosureField=new FieldNode(memoizedClosureFieldName,modifiers,ClassHelper.DYNAMIC_TYPE,null,memoizeClosureCallExpression);
     ownerClassNode.addField(memoizedClosureField);
     BlockStatement newCode=new BlockStatement();

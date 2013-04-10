@@ -1,0 +1,15 @@
+{
+  if (protectedCacheSize == 0 && maxCacheSize == 0) {
+    return new MethodCallExpression(expression,MEMOIZE_METHOD_NAME,MethodCallExpression.NO_ARGUMENTS);
+  }
+ else   if (protectedCacheSize == 0) {
+    return new MethodCallExpression(expression,MEMOIZE_AT_MOST_METHOD_NAME,new ArgumentListExpression(new ConstantExpression(maxCacheSize)));
+  }
+ else   if (maxCacheSize == 0) {
+    return new MethodCallExpression(expression,MEMOIZE_AT_LEAST_METHOD_NAME,new ArgumentListExpression(new ConstantExpression(protectedCacheSize)));
+  }
+ else {
+    ArgumentListExpression args=new ArgumentListExpression(new Expression[]{new ConstantExpression(protectedCacheSize),new ConstantExpression(maxCacheSize)});
+    return new MethodCallExpression(expression,MEMOIZE_BETWEEN_METHOD_NAME,args);
+  }
+}
