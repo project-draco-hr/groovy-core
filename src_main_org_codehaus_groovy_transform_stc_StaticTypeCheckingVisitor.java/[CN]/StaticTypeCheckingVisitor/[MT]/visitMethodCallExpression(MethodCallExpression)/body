@@ -192,6 +192,13 @@
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
             callArgsVisited=true;
           }
+          if (directMethodCallCandidate == GET_DELEGATE && typeCheckingContext.getEnclosingClosure() != null) {
+            DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
+            returnType=typeCheckingContext.getEnclosingClassNode();
+            if (md != null) {
+              returnType=md.getType();
+            }
+          }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
           String data=chosenReceiver != null ? chosenReceiver.getData() : null;

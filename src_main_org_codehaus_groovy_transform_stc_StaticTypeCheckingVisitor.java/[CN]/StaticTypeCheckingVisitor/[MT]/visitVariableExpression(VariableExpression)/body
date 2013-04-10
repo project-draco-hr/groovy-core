@@ -4,8 +4,17 @@
     if (vexp.getName().equals("this"))     storeType(vexp,typeCheckingContext.getEnclosingClassNode());
     if (vexp.getName().equals("super"))     storeType(vexp,typeCheckingContext.getEnclosingClassNode().getSuperClass());
     if (typeCheckingContext.getEnclosingClosure() != null) {
-      if (vexp.getName().equals("owner") || vexp.getName().equals("delegate") || vexp.getName().equals("thisObject")) {
+      if (vexp.getName().equals("owner") || vexp.getName().equals("thisObject")) {
         storeType(vexp,typeCheckingContext.getEnclosingClassNode());
+        return;
+      }
+ else       if ("delegate".equals(vexp.getName())) {
+        DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
+        ClassNode type=typeCheckingContext.getEnclosingClassNode();
+        if (md != null) {
+          type=md.getType();
+        }
+        storeType(vexp,type);
         return;
       }
     }
