@@ -1,6 +1,7 @@
 {
   boolean isStatic=importNode.getType() == STATIC_IMPORT;
   List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
+  ImportNode astImportNode;
   AST node=importNode.getFirstChild();
   if (isType(ANNOTATIONS,node)) {
     processAnnotations(annotations,node);
@@ -16,7 +17,8 @@
     String name=identifier(node);
     ClassNode type=ClassHelper.make(name);
     configureAST(type,importNode);
-    addImport(type,name,alias,annotations);
+    astImportNode=addImport(type,name,alias,annotations);
+    configureAST(astImportNode,importNode);
     return;
   }
   AST packageNode=node.getFirstChild();
@@ -26,10 +28,10 @@
     if (isStatic) {
       ClassNode type=ClassHelper.make(packageName);
       configureAST(type,importNode);
-      addStaticStarImport(type,packageName,annotations);
+      astImportNode=addStaticStarImport(type,packageName,annotations);
     }
  else {
-      addStarImport(packageName,annotations);
+      astImportNode=addStarImport(packageName,annotations);
     }
     if (alias != null)     throw new GroovyBugError("imports like 'import foo.* as Bar' are not " + "supported and should be caught by the grammar");
   }
@@ -38,12 +40,13 @@
     if (isStatic) {
       ClassNode type=ClassHelper.make(packageName);
       configureAST(type,importNode);
-      addStaticImport(type,name,alias,annotations);
+      astImportNode=addStaticImport(type,name,alias,annotations);
     }
  else {
       ClassNode type=ClassHelper.make(packageName + "." + name);
       configureAST(type,importNode);
-      addImport(type,name,alias,annotations);
+      astImportNode=addImport(type,name,alias,annotations);
     }
   }
+  configureAST(astImportNode,importNode);
 }
