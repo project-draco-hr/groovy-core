@@ -1,52 +1,58 @@
 {
-  boolean isStatic=importNode.getType() == STATIC_IMPORT;
-  List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
-  ImportNode astImportNode;
-  AST node=importNode.getFirstChild();
-  if (isType(ANNOTATIONS,node)) {
-    processAnnotations(annotations,node);
-    node=node.getNextSibling();
-  }
-  String alias=null;
-  if (isType(LITERAL_as,node)) {
-    node=node.getFirstChild();
-    AST aliasNode=node.getNextSibling();
-    alias=identifier(aliasNode);
-  }
-  if (node.getNumberOfChildren() == 0) {
-    String name=identifier(node);
-    ClassNode type=ClassHelper.make(name);
-    configureAST(type,importNode);
-    astImportNode=addImport(type,name,alias,annotations);
-    configureAST(astImportNode,importNode);
-    return;
-  }
-  AST packageNode=node.getFirstChild();
-  String packageName=qualifiedName(packageNode);
-  AST nameNode=packageNode.getNextSibling();
-  if (isType(STAR,nameNode)) {
-    if (isStatic) {
-      ClassNode type=ClassHelper.make(packageName);
+  try {
+    boolean isStatic=importNode.getType() == STATIC_IMPORT;
+    List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
+    AST node=importNode.getFirstChild();
+    if (isType(ANNOTATIONS,node)) {
+      processAnnotations(annotations,node);
+      node=node.getNextSibling();
+    }
+    String alias=null;
+    if (isType(LITERAL_as,node)) {
+      node=node.getFirstChild();
+      AST aliasNode=node.getNextSibling();
+      alias=identifier(aliasNode);
+    }
+    if (node.getNumberOfChildren() == 0) {
+      String name=identifier(node);
+      ClassNode type=ClassHelper.make(name);
       configureAST(type,importNode);
-      astImportNode=addStaticStarImport(type,packageName,annotations);
+      addImport(type,name,alias,annotations);
+      return;
+    }
+    AST packageNode=node.getFirstChild();
+    String packageName=qualifiedName(packageNode);
+    AST nameNode=packageNode.getNextSibling();
+    if (isType(STAR,nameNode)) {
+      if (isStatic) {
+        ClassNode type=ClassHelper.make(packageName);
+        configureAST(type,importNode);
+        addStaticStarImport(type,packageName,annotations);
+      }
+ else {
+        addStarImport(packageName,annotations);
+      }
+      if (alias != null)       throw new GroovyBugError("imports like 'import foo.* as Bar' are not " + "supported and should be caught by the grammar");
     }
  else {
-      astImportNode=addStarImport(packageName,annotations);
-    }
-    if (alias != null)     throw new GroovyBugError("imports like 'import foo.* as Bar' are not " + "supported and should be caught by the grammar");
-  }
+      String name=identifier(nameNode);
+      if (isStatic) {
+        ClassNode type=ClassHelper.make(packageName);
+        configureAST(type,importNode);
+        addStaticImport(type,name,alias,annotations);
+      }
  else {
-    String name=identifier(nameNode);
-    if (isStatic) {
-      ClassNode type=ClassHelper.make(packageName);
-      configureAST(type,importNode);
-      astImportNode=addStaticImport(type,name,alias,annotations);
-    }
- else {
-      ClassNode type=ClassHelper.make(packageName + "." + name);
-      configureAST(type,importNode);
-      astImportNode=addImport(type,name,alias,annotations);
+        ClassNode type=ClassHelper.make(packageName + "." + name);
+        configureAST(type,importNode);
+        addImport(type,name,alias,annotations);
+      }
     }
   }
-  configureAST(astImportNode,importNode);
+  finally {
+    ImportNode node=(ImportNode)output.getNodeMetaData(ImportNode.class);
+    if (node != null) {
+      configureAST(node,importNode);
+      output.removeNodeMetaData(ImportNode.class);
+    }
+  }
 }
