@@ -1,5 +1,6 @@
 {
   try {
+    output.putNodeMetaData(ImportNode.class,ImportNode.class);
     boolean isStatic=importNode.getType() == STATIC_IMPORT;
     List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
     AST node=importNode.getFirstChild();
@@ -49,10 +50,10 @@
     }
   }
   finally {
-    ImportNode node=(ImportNode)output.getNodeMetaData(ImportNode.class);
-    if (node != null) {
-      configureAST(node,importNode);
-      output.removeNodeMetaData(ImportNode.class);
+    Object node=output.getNodeMetaData(ImportNode.class);
+    if (node != null && node != ImportNode.class) {
+      configureAST((ImportNode)node,importNode);
     }
+    output.removeNodeMetaData(ImportNode.class);
   }
 }
