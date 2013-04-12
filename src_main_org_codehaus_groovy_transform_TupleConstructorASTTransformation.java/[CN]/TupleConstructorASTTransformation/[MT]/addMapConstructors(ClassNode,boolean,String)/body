@@ -1,0 +1,15 @@
+{
+  Parameter[] parameters=new Parameter[1];
+  parameters[0]=new Parameter(LHMAP_TYPE,"__namedArgs");
+  BlockStatement code=new BlockStatement();
+  VariableExpression namedArgs=new VariableExpression("__namedArgs");
+  code.addStatement(new IfStatement(equalsNullExpr(namedArgs),illegalArgumentBlock(message),processArgsBlock(cNode,namedArgs)));
+  ConstructorNode init=new ConstructorNode(ACC_PUBLIC,parameters,ClassNode.EMPTY_ARRAY,code);
+  cNode.addConstructor(init);
+  if (!hasNoArg) {
+    code=new BlockStatement();
+    code.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.THIS,new StaticMethodCallExpression(COLLECTIONS_TYPE,"emptyMap",MethodCallExpression.NO_ARGUMENTS))));
+    init=new ConstructorNode(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,code);
+    cNode.addConstructor(init);
+  }
+}
