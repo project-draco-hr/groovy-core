@@ -3,7 +3,12 @@
   if (!typeCheckingContext.ifElseForWhileAssignmentTracker.isEmpty()) {
     for (    Map.Entry<VariableExpression,List<ClassNode>> entry : typeCheckingContext.ifElseForWhileAssignmentTracker.entrySet()) {
       VariableExpression key=entry.getKey();
-      ClassNode cn=lowestUpperBound(entry.getValue());
+      List<ClassNode> allValues=entry.getValue();
+      List<ClassNode> nonNullValues=new ArrayList<ClassNode>(allValues.size());
+      for (      ClassNode value : allValues) {
+        if (value != null)         nonNullValues.add(value);
+      }
+      ClassNode cn=lowestUpperBound(nonNullValues);
       storeType(key,cn);
       assignments.put(key,cn);
     }
