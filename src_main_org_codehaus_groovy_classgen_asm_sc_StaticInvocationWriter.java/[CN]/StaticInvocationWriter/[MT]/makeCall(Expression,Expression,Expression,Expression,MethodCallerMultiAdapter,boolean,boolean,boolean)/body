@@ -64,16 +64,14 @@
     newMCE.setImplicitThis(origMCE.isImplicitThis());
     newMCE.setSourcePosition(origMCE);
     newMCE.visit(controller.getAcg());
+    ClassNode returnType=operandStack.getTopOperand();
+    if (ClassHelper.isPrimitiveType(returnType) && !ClassHelper.VOID_TYPE.equals(returnType)) {
+      operandStack.box();
+    }
     Label endof=compileStack.createLocalLabel("endof_" + counter);
     mv.visitJumpInsn(GOTO,endof);
     mv.visitLabel(ifnull);
-    ClassNode returnType=methodTarget.getReturnType();
-    if (ClassHelper.isPrimitiveType(returnType) && !ClassHelper.VOID_TYPE.equals(returnType)) {
-      pushZero(mv,returnType);
-    }
- else {
-      mv.visitInsn(ACONST_NULL);
-    }
+    mv.visitInsn(ACONST_NULL);
     mv.visitLabel(endof);
   }
  else {
