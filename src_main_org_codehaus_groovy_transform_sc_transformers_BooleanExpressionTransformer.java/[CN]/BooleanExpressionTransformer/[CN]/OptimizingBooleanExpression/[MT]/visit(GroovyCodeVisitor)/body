@@ -10,7 +10,16 @@
     if (type.equals(ClassHelper.Boolean_TYPE)) {
       expression.visit(visitor);
       MethodVisitor mv=controller.getMethodVisitor();
+      Label unbox=new Label();
+      Label exit=new Label();
+      mv.visitInsn(DUP);
+      mv.visitJumpInsn(IFNONNULL,unbox);
+      mv.visitInsn(POP);
+      mv.visitInsn(ICONST_0);
+      mv.visitJumpInsn(GOTO,exit);
+      mv.visitLabel(unbox);
       mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Boolean","booleanValue","()Z");
+      mv.visitLabel(exit);
       controller.getOperandStack().replace(ClassHelper.boolean_TYPE);
       return;
     }
