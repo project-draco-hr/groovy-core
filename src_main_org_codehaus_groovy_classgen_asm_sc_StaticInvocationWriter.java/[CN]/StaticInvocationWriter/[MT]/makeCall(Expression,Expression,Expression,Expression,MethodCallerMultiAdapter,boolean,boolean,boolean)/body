@@ -2,7 +2,7 @@
   Object implicitReceiver=origin.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
   if (implicitReceiver != null && implicitThis) {
     String[] propertyPath=((String)implicitReceiver).split("\\.");
-    PropertyExpression pexp=new PropertyExpression(new VariableExpression("this"),propertyPath[0]);
+    PropertyExpression pexp=new PropertyExpression(new VariableExpression("this",CLOSURE_TYPE),propertyPath[0]);
     pexp.setImplicitThis(true);
     for (int i=1; i < propertyPath.length; i++) {
       pexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,CLOSURE_TYPE);
