@@ -1,7 +1,7 @@
 {
   ConstructorNode node=(ConstructorNode)expr.getNodeMetaData(DIRECT_METHOD_CALL_TARGET);
   if (node == null)   return expr;
-  if (node.getParameters().length == 1 && StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(node.getParameters()[0].getType(),ClassHelper.MAP_TYPE)) {
+  if (node.getParameters().length == 1 && StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(node.getParameters()[0].getType(),ClassHelper.MAP_TYPE) && node.getCode() == StaticTypeCheckingVisitor.GENERATED_EMPTY_STATEMENT) {
     Expression arguments=expr.getArguments();
     if (arguments instanceof TupleExpression) {
       TupleExpression tupleExpression=(TupleExpression)arguments;

@@ -10,7 +10,7 @@
   checkForbiddenSpreadArgument(argumentList);
   ClassNode[] args=getArgumentTypes(argumentList);
   MethodNode node=null;
-  if (args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE) && findMethod(receiver,"<init>",ClassNode.EMPTY_ARRAY).size() == 1) {
+  if (args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE) && findMethod(receiver,"<init>",ClassNode.EMPTY_ARRAY).size() == 1 && findMethod(receiver,"<init>",args).isEmpty()) {
     node=typeCheckMapConstructor(call,receiver,arguments);
     if (node != null) {
       storeTargetMethod(call,node);
