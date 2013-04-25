@@ -7,7 +7,7 @@
   try {
     if (isSourceNewer(entry)) {
       try {
-        String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : "UTF-8";
+        String encoding=conn.getContentEncoding() != null ? conn.getContentEncoding() : config.getSourceEncoding();
         String content=IOGroovyMethods.getText(conn.getInputStream(),encoding);
         clazz=groovyLoader.parseClass(content,path);
       }
