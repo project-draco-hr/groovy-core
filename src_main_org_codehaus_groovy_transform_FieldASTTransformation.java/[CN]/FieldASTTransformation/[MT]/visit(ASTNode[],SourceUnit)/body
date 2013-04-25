@@ -26,7 +26,7 @@
     final List<AnnotationNode> annotations=de.getAnnotations();
     for (    AnnotationNode annotation : annotations) {
       final ClassNode annotationClassNode=annotation.getClassNode();
-      if (annotationClassNode.getAnnotations(ASTTRANSFORM_TYPE).isEmpty()) {
+      if (notTransform(annotationClassNode) || acceptableTransform(annotation)) {
         fieldNode.addAnnotation(annotation);
       }
     }
