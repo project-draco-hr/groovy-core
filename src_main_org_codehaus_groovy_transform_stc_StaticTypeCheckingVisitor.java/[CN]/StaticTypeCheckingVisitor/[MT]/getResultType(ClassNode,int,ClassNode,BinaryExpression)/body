@@ -35,6 +35,9 @@
     BinaryExpression newExpr=new BinaryExpression(expr.getLeftExpression(),expr.getOperation(),expr.getRightExpression());
     newExpr.setSourcePosition(expr);
     MethodNode method=findMethodOrFail(newExpr,left.getPlainNodeReference(),"getAt",right.getPlainNodeReference());
+    if (method != null && implementsInterfaceOrIsSubclassOf(right,RANGE_TYPE)) {
+      return inferReturnTypeGenerics(left,method,expr.getRightExpression());
+    }
     return method != null ? inferComponentType(left,right) : null;
   }
  else   if (op == FIND_REGEX) {
