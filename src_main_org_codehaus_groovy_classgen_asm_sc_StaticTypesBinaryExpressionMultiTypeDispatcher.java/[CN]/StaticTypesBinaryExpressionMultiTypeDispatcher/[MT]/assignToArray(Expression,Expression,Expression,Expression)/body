@@ -26,6 +26,7 @@
       rhsValueLoader.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,controller.getTypeChooser().resolveType(right,controller.getClassNode()));
     }
     MethodCallExpression mce=new MethodCallExpression(receiver,"putAt",ae);
+    mce.setSourcePosition(parent);
     visitor.visitMethodCallExpression(mce);
     mce.visit(controller.getAcg());
     rhsValueLoader.visit(controller.getAcg());
