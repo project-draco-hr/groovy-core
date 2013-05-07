@@ -107,6 +107,7 @@
       for (      AnnotationNode node : grabConfigAnnotations) {
         checkForClassLoader(node);
         checkForInitContextClassLoader(node);
+        checkForAutoDownload(node);
       }
       addInitContextClassLoaderIfNeeded(classNode);
     }
@@ -157,6 +158,7 @@
     Map<String,Object> basicArgs=new HashMap<String,Object>();
     basicArgs.put("classLoader",loader != null ? loader : sourceUnit.getClassLoader());
     if (!grabExcludeMaps.isEmpty())     basicArgs.put("excludes",grabExcludeMaps);
+    if (autoDownload != null)     basicArgs.put(AUTO_DOWNLOAD_SETTING,autoDownload);
     try {
       Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
       if (compilationUnit != null) {
