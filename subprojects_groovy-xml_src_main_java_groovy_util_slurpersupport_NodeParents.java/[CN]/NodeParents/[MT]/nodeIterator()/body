@@ -1,0 +1,16 @@
+{
+  return new NodeIterator(this.parent.nodeIterator()){
+    private Node prev=null;
+    protected Object getNextNode(    final Iterator iter){
+      while (iter.hasNext()) {
+        final Node node=((Node)iter.next()).parent();
+        if (node != null && node != prev) {
+          prev=node;
+          return node;
+        }
+      }
+      return null;
+    }
+  }
+;
+}
