@@ -23,12 +23,9 @@
       }
     }
     if (methods.isEmpty() && (args == null || args.length == 0)) {
-      String pname=null;
-      if (name.startsWith("get")) {
-        pname=java.beans.Introspector.decapitalize(name.substring(3));
-      }
- else       if (name.startsWith("is")) {
-        pname=java.beans.Introspector.decapitalize(name.substring(2));
+      String pname=extractPropertyNameFromMethodName("get",name);
+      if (pname == null) {
+        pname=extractPropertyNameFromMethodName("is",name);
       }
       if (pname != null) {
         PropertyNode property=null;
@@ -48,8 +45,8 @@
       }
     }
  else     if (methods.isEmpty() && args != null && args.length == 1) {
-      if (name.startsWith("set")) {
-        String pname=java.beans.Introspector.decapitalize(name.substring(3));
+      String pname=extractPropertyNameFromMethodName("set",name);
+      if (name != null) {
         ClassNode curNode=receiver;
         PropertyNode property=null;
         while (property == null && curNode != null) {
