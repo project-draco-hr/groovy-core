@@ -33,21 +33,23 @@
     }
  else     if (isVargs(params)) {
       boolean firstParamMatches=true;
+      int dist=-1;
       if (args.length > 0) {
         Parameter[] firstParams=new Parameter[params.length - 1];
         System.arraycopy(params,0,firstParams,0,firstParams.length);
-        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+        dist=allParametersAndArgumentsMatch(firstParams,args);
+        firstParamMatches=dist >= 0;
       }
       if (firstParamMatches) {
         if (params.length == args.length + 1) {
-          if (bestDist > 1) {
+          if (bestDist > 1 + dist) {
             bestChoices.clear();
             bestChoices.add(m);
-            bestDist=1;
+            bestDist=1 + dist;
           }
         }
  else {
-          int dist=excessArgumentsMatchesVargsParameter(params,args);
+          dist+=excessArgumentsMatchesVargsParameter(params,args);
           if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist+=getDistance(actualReceiver,declaringClass);
           dist+=256 - params.length;
           if (params.length < args.length && dist >= 0) {
