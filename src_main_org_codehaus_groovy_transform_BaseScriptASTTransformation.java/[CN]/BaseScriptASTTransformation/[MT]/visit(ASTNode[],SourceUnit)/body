@@ -1,0 +1,33 @@
+{
+  sourceUnit=source;
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new GroovyBugError("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(node.getClassNode()))   return;
+  if (parent instanceof DeclarationExpression) {
+    DeclarationExpression de=(DeclarationExpression)parent;
+    ClassNode cNode=de.getDeclaringClass();
+    if (!cNode.isScript()) {
+      addError("Annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
+      return;
+    }
+    candidate=de;
+    if (de.isMultipleAssignmentDeclaration()) {
+      addError("Annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
+      return;
+    }
+    if (!(de.getRightExpression() instanceof EmptyExpression)) {
+      addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",parent);
+      return;
+    }
+    ClassNode baseScriptType=de.getVariableExpression().getType().getPlainNodeReference();
+    if (!baseScriptType.isScript()) {
+      addError("Declared type " + baseScriptType + " does not extend groovy.lang.Script class!",parent);
+      return;
+    }
+    cNode.setSuperClass(baseScriptType);
+    de.setRightExpression(new VariableExpression("this"));
+  }
+}
