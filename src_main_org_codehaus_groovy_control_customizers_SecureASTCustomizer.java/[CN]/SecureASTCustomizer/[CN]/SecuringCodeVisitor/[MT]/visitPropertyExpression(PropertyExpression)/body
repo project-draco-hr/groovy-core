@@ -1,6 +1,14 @@
 {
   assertExpressionAuthorized(expression);
-  expression.getObjectExpression().visit(this);
+  Expression receiver=expression.getObjectExpression();
+  final String typeName=receiver.getType().getName();
+  if (receiversWhiteList != null && !receiversWhiteList.contains(typeName)) {
+    throw new SecurityException("Property access not allowed on [" + typeName + "]");
+  }
+ else   if (receiversBlackList != null && receiversBlackList.contains(typeName)) {
+    throw new SecurityException("Property access not allowed on [" + typeName + "]");
+  }
+  receiver.visit(this);
   final Expression property=expression.getProperty();
   checkConstantTypeIfNotMethodNameOrProperty(property);
 }
