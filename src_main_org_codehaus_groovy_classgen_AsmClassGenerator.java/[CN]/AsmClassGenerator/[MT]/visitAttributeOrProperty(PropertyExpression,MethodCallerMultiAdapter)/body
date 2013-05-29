@@ -32,6 +32,17 @@
               outer=outer.getSuperClass();
             }
           }
+          if (field == null && expression instanceof AttributeExpression && isThisExpression(objectExpression) && controller.isStaticContext()) {
+            ClassNode current=classNode.getSuperClass();
+            while (field == null && current != null) {
+              field=current.getDeclaredField(name);
+              current=current.getSuperClass();
+            }
+            if (field != null && (field.isProtected() || field.isPublic())) {
+              visitFieldExpression(new FieldExpression(field));
+              return;
+            }
+          }
         }
       }
       if (field != null && !privateSuperField) {

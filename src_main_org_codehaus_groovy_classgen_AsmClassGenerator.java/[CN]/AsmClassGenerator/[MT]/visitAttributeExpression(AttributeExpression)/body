@@ -1,6 +1,8 @@
 {
   Expression objectExpression=expression.getObjectExpression();
   MethodCallerMultiAdapter adapter;
+  OperandStack operandStack=controller.getOperandStack();
+  int mark=operandStack.getStackLength() - 1;
   if (controller.getCompileStack().isLHS()) {
     adapter=setField;
     if (isGroovyObject(objectExpression))     adapter=setGroovyObjectField;
@@ -16,6 +18,6 @@
     controller.getAssertionWriter().record(expression.getProperty());
   }
  else {
-    controller.getOperandStack().remove(2);
+    operandStack.remove(operandStack.getStackLength() - mark);
   }
 }
