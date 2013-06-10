@@ -2,7 +2,9 @@
   if (parameter.getTheClass() == argument)   return 0;
   if (parameter.isInterface()) {
     int dist=getMaximumInterfaceDistance(argument,parameter.getTheClass()) << INTERFACE_SHIFT;
-    if (dist != -1)     return dist;
+    if (dist > -1 || !(argument != null && Closure.class.isAssignableFrom(argument))) {
+      return dist;
+    }
   }
   long objectDistance=0;
   if (argument != null) {
