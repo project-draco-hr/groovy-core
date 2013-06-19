@@ -1,0 +1,26 @@
+{
+  System.out.println(version);
+  if (args.length < 1) {
+    initReadme();
+    if (readme != null) {
+      System.out.println(readme);
+    }
+    printUsage(System.out);
+    return;
+  }
+  String name=args[args.length - 1];
+  for (int i=0; i < args.length - 1; i++) {
+    if ("-R".equalsIgnoreCase(args[i])) {
+      recursive=true;
+    }
+ else     if ("-C".equalsIgnoreCase(args[i])) {
+      doPatch=false;
+    }
+ else {
+      System.err.println("Unknown option passed: " + args[i]);
+      printUsage(System.err);
+      return;
+    }
+  }
+  new JavadocFixTool().proceed(name);
+}

@@ -1,0 +1,32 @@
+{
+  if (folder == null || !folder.isDirectory() || folder.list() == null) {
+    return;
+  }
+  for (  File file : folder.listFiles()) {
+    if (file.isDirectory()) {
+      if (recursive) {
+        searchAndPatch(file);
+      }
+      continue;
+    }
+    String name=file.getName();
+    for (    String s : fileNames) {
+      if (s.equalsIgnoreCase(name)) {
+        try {
+          applyPatch(file,folder);
+        }
+ catch (        Exception ex) {
+          String filePath;
+          try {
+            filePath=file.getCanonicalPath();
+          }
+ catch (          IOException ioe) {
+            System.err.println("Can not resolve path to " + file.getName() + " in folder "+ folder.getName());
+            continue;
+          }
+          System.err.println("Patch failed on: " + filePath + " due to the "+ ex);
+        }
+      }
+    }
+  }
+}

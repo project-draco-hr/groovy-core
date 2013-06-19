@@ -1,0 +1,35 @@
+{
+  FileInputStream fis=new FileInputStream(file);
+  BufferedReader br=new BufferedReader(new InputStreamReader(fis));
+  String line;
+  String failedString=patchString;
+  String[] patch=patchData;
+  for (int i=0; i < 80; i++) {
+    line=br.readLine();
+    if (line == null) {
+      return;
+    }
+    if (line.trim().equals("function validURL(url) {")) {
+      failedString=null;
+      patch=null;
+      continue;
+    }
+    if (line.trim().equals(quickFixString)) {
+      failedString=quickFixString;
+      patch=quickFix;
+      continue;
+    }
+    if (line.trim().equals("function loadFrames() {")) {
+      fis.close();
+      if (failedString != null) {
+        if (!doPatch) {
+          System.out.println("Vulnerable file found: " + file.getCanonicalPath());
+        }
+ else {
+          replaceStringInFile(currentFolder,file,failedString,patch);
+        }
+      }
+      return;
+    }
+  }
+}

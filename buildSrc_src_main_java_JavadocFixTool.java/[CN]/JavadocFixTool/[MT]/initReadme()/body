@@ -1,0 +1,17 @@
+{
+  try {
+    InputStream readmeStream=JavadocFixTool.class.getResourceAsStream("/README");
+    if (readmeStream != null) {
+      BufferedReader readmeReader=new BufferedReader(new InputStreamReader(readmeStream));
+      StringBuilder readmeBuilder=new StringBuilder();
+      String s;
+      while ((s=readmeReader.readLine()) != null) {
+        readmeBuilder.append(s);
+        readmeBuilder.append("\n");
+      }
+      readme=readmeBuilder.toString();
+    }
+  }
+ catch (  IOException ignore) {
+  }
+}
