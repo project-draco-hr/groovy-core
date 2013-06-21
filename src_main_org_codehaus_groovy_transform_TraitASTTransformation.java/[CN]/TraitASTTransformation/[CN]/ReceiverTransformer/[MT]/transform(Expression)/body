@@ -3,11 +3,31 @@
     MethodCallExpression call=(MethodCallExpression)exp;
     Expression obj=call.getObjectExpression();
     if (call.isImplicitThis() || obj.getText().equals("this")) {
-      MethodCallExpression transformed=new MethodCallExpression(new VariableExpression(mixinField),call.getMethod(),call.getArguments());
+      MethodCallExpression transformed=new MethodCallExpression(weaved,call.getMethod(),super.transform(call.getArguments()));
       transformed.setSourcePosition(call);
       transformed.setSafe(call.isSafe());
       transformed.setSpreadSafe(call.isSpreadSafe());
       return transformed;
+    }
+  }
+ else   if (exp instanceof FieldExpression) {
+    MethodCallExpression mce=new MethodCallExpression(weaved,helperGetterName(((FieldExpression)exp).getField()),ArgumentListExpression.EMPTY_ARGUMENTS);
+    mce.setSourcePosition(exp);
+    return mce;
+  }
+ else   if (exp instanceof VariableExpression) {
+    VariableExpression vexp=(VariableExpression)exp;
+    if (vexp.getAccessedVariable() instanceof FieldNode) {
+      MethodCallExpression mce=new MethodCallExpression(weaved,helperGetterName((FieldNode)vexp.getAccessedVariable()),ArgumentListExpression.EMPTY_ARGUMENTS);
+      mce.setSourcePosition(exp);
+      return mce;
+    }
+  }
+ else   if (exp instanceof PropertyExpression) {
+    if (((PropertyExpression)exp).isImplicitThis() || "this".equals(((PropertyExpression)exp).getObjectExpression().getText())) {
+      MethodCallExpression mce=new MethodCallExpression(weaved,((PropertyExpression)exp).getPropertyAsString() + "$get",ArgumentListExpression.EMPTY_ARGUMENTS);
+      mce.setSourcePosition(exp);
+      return mce;
     }
   }
   return super.transform(exp);

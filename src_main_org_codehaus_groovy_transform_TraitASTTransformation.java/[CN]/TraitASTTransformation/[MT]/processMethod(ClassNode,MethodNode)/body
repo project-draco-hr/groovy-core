@@ -1,0 +1,15 @@
+{
+  Parameter[] initialParams=methodNode.getParameters();
+  Parameter[] newParams=new Parameter[initialParams.length + 1];
+  newParams[0]=new Parameter(traitClass,"$this");
+  System.arraycopy(initialParams,0,newParams,1,initialParams.length);
+  MethodNode mNode=new MethodNode(methodNode.getName(),ACC_PUBLIC | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode()));
+  if (methodNode.getCode() == null) {
+    mNode.addAnnotation(new AnnotationNode(ABSTRACT_METHOD));
+  }
+ else {
+    methodNode.setCode(null);
+  }
+  methodNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
+  return mNode;
+}

@@ -1,0 +1,13 @@
+{
+  helper.addField(new FieldNode(field.getName(),field.getModifiers(),field.getOriginType(),helper,null));
+  Expression initialExpression=field.getInitialExpression();
+  if (initialExpression != null) {
+    VariableExpression thisObject=new VariableExpression(initializer.getParameters()[0]);
+    BlockStatement code=(BlockStatement)initializer.getCode();
+    code.addStatement(new ExpressionStatement(new BinaryExpression(new AttributeExpression(thisObject,new ConstantExpression(field.getName())),Token.newSymbol(Types.EQUAL,initialExpression.getLineNumber(),initialExpression.getColumnNumber()),initialExpression)));
+  }
+  if (fieldHelper != null) {
+    fieldHelper.addMethod(helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
+    fieldHelper.addMethod(helperGetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null);
+  }
+}

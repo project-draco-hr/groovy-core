@@ -1,16 +1,27 @@
 {
-  ClassNode helper=new InnerClassNode(cNode,cNode.getName() + TRAIT_HELPER,ACC_PUBLIC | ACC_STATIC | ACC_FINAL,ClassHelper.OBJECT_TYPE,new ClassNode[]{cNode},null);
-  mixinField=new FieldNode("mixin",ACC_PRIVATE | ACC_FINAL,cNode,helper,null);
-  helper.addField(mixinField);
+  ClassNode helper=new InnerClassNode(cNode,helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_FINAL,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
   cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
+  MethodNode initializer=new MethodNode("$init$",ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode,"$this")},ClassNode.EMPTY_ARRAY,new BlockStatement());
+  helper.addMethod(initializer);
   Map<String,MethodNode> methods=cNode.getDeclaredMethodsMap();
   for (  MethodNode methodNode : methods.values()) {
     if (methodNode.getDeclaringClass() == cNode) {
-      helper.addMethod(processMethod(methodNode));
+      helper.addMethod(processMethod(cNode,methodNode));
     }
   }
-  Parameter owner=new Parameter(cNode,"owner");
-  ConstructorNode constructorNode=new ConstructorNode(ACC_PUBLIC,new Parameter[]{owner},ClassNode.EMPTY_ARRAY,new ExpressionStatement(new BinaryExpression(new FieldExpression(mixinField),Token.newSymbol(Types.EQUAL,-1,-1),new VariableExpression(owner))));
-  helper.addConstructor(constructorNode);
+  List<FieldNode> fields=new ArrayList<FieldNode>(cNode.getFields());
+  ClassNode fieldHelper=null;
+  if (cNode.getFields() != null) {
+    fieldHelper=new InnerClassNode(cNode,fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
+  }
+  for (  FieldNode field : fields) {
+    processField(helper,field,initializer,fieldHelper);
+  }
+  for (  FieldNode field : fields) {
+    cNode.removeField(field.getName());
+  }
   unit.getAST().addClass(helper);
+  if (fieldHelper != null) {
+    unit.getAST().addClass(fieldHelper);
+  }
 }
