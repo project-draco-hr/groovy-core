@@ -1,0 +1,10 @@
+{
+  setHandled(false);
+  List<Closure> list=eventHandlers.get("handleIncompatibleReturnType");
+  if (list != null) {
+    for (    Closure closure : list) {
+      safeCall(closure,returnStatement,inferredReturnType);
+    }
+  }
+  return handled;
+}
