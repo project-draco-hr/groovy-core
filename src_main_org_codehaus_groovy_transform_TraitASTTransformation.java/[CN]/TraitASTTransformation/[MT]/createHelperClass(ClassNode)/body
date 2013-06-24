@@ -1,5 +1,5 @@
 {
-  ClassNode helper=new InnerClassNode(cNode,helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_FINAL,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
+  ClassNode helper=new InnerClassNode(cNode,helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_ABSTRACT| ACC_SYNTHETIC,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
   cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
   MethodNode initializer=new MethodNode("$init$",ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode,"$this")},ClassNode.EMPTY_ARRAY,new BlockStatement());
   helper.addMethod(initializer);
@@ -15,7 +15,7 @@
     fieldHelper=new InnerClassNode(cNode,fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
   }
   for (  FieldNode field : fields) {
-    processField(helper,field,initializer,fieldHelper);
+    processField(field,initializer,fieldHelper);
   }
   for (  FieldNode field : fields) {
     cNode.removeField(field.getName());

@@ -5,8 +5,8 @@
     Parameter[] argumentTypes=methodNode.getParameters();
     ClassNode[] exceptions=methodNode.getExceptions();
     ClassNode returnType=methodNode.getReturnType();
-    List<AnnotationNode> annotations=methodNode.getAnnotations(ABSTRACT_METHOD);
-    if (annotations.isEmpty() && argumentTypes.length > 0 && ((access & ACC_STATIC) == ACC_STATIC) && !name.contains("$")) {
+    boolean isAbstract=methodNode.isAbstract();
+    if (!isAbstract && argumentTypes.length > 0 && ((access & ACC_STATIC) == ACC_STATIC) && !name.contains("$")) {
       ArgumentListExpression argList=new ArgumentListExpression();
       argList.addExpression(new VariableExpression("this"));
       Parameter[] params=new Parameter[argumentTypes.length - 1];
