@@ -3,6 +3,7 @@
   cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
   MethodNode initializer=new MethodNode("$init$",ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode,"$this")},ClassNode.EMPTY_ARRAY,new BlockStatement());
   helper.addMethod(initializer);
+  generatePropertyMethods(cNode);
   Map<String,MethodNode> methods=cNode.getDeclaredMethodsMap();
   for (  MethodNode methodNode : methods.values()) {
     if (methodNode.getDeclaringClass() == cNode) {
@@ -17,6 +18,7 @@
   for (  FieldNode field : fields) {
     processField(field,initializer,fieldHelper);
   }
+  cNode.getProperties().clear();
   for (  FieldNode field : fields) {
     cNode.removeField(field.getName());
   }
