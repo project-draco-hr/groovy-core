@@ -15,7 +15,7 @@
         leftFieldName=((PropertyExpression)leftExpression).getPropertyAsString();
       }
       if (leftFieldName != null) {
-        MethodCallExpression mce=new MethodCallExpression(weaved,leftFieldName + "$set",new ArgumentListExpression(super.transform(rightExpression)));
+        MethodCallExpression mce=new MethodCallExpression(weaved,leftFieldName + DIRECT_SETTER_SUFFIX,new ArgumentListExpression(super.transform(rightExpression)));
         mce.setSourcePosition(exp);
         return mce;
       }
@@ -53,10 +53,16 @@
   }
  else   if (exp instanceof PropertyExpression) {
     if (((PropertyExpression)exp).isImplicitThis() || "this".equals(((PropertyExpression)exp).getObjectExpression().getText())) {
-      MethodCallExpression mce=new MethodCallExpression(weaved,((PropertyExpression)exp).getPropertyAsString() + "$get",ArgumentListExpression.EMPTY_ARGUMENTS);
+      MethodCallExpression mce=new MethodCallExpression(weaved,((PropertyExpression)exp).getPropertyAsString() + DIRECT_GETTER_SUFFIX,ArgumentListExpression.EMPTY_ARGUMENTS);
       mce.setSourcePosition(exp);
       return mce;
     }
+  }
+ else   if (exp instanceof ClosureExpression) {
+    MethodCallExpression mce=new MethodCallExpression(exp,"rehydrate",new ArgumentListExpression(new VariableExpression(weaved),new VariableExpression(weaved),new VariableExpression(weaved)));
+    mce.setImplicitThis(false);
+    mce.setSourcePosition(exp);
+    return mce;
   }
   return super.transform(exp);
 }
