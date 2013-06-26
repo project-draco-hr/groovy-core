@@ -10,15 +10,21 @@
       helper.addMethod(processMethod(cNode,methodNode));
     }
   }
-  List<FieldNode> fields=new ArrayList<FieldNode>(cNode.getFields());
+  List<FieldNode> fields=new ArrayList<FieldNode>();
+  for (  FieldNode field : cNode.getFields()) {
+    if (!"metaClass".equals(field.getName()) && (!field.isSynthetic() || field.getName().indexOf('$') < 0)) {
+      fields.add(field);
+    }
+  }
   ClassNode fieldHelper=null;
-  if (cNode.getFields() != null) {
+  if (!fields.isEmpty()) {
     fieldHelper=new InnerClassNode(cNode,fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
   }
   for (  FieldNode field : fields) {
     processField(field,initializer,fieldHelper);
   }
   cNode.getProperties().clear();
+  fields=new ArrayList<FieldNode>(cNode.getFields());
   for (  FieldNode field : fields) {
     cNode.removeField(field.getName());
   }

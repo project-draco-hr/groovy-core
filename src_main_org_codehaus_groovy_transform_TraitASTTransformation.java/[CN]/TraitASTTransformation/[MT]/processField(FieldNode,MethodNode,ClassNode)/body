@@ -1,13 +1,13 @@
 {
-  if (field.isSynthetic() && field.getName().indexOf('$') >= 0)   return;
   Expression initialExpression=field.getInitialExpression();
   if (initialExpression != null) {
     VariableExpression thisObject=new VariableExpression(initializer.getParameters()[0]);
     BlockStatement code=(BlockStatement)initializer.getCode();
-    code.addStatement(new ExpressionStatement(new BinaryExpression(new AttributeExpression(thisObject,new ConstantExpression(field.getName())),Token.newSymbol(Types.EQUAL,initialExpression.getLineNumber(),initialExpression.getColumnNumber()),initialExpression)));
+    MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,thisObject),helperSetterName(field),initialExpression);
+    mce.setImplicitThis(false);
+    mce.setSourcePosition(initialExpression);
+    code.addStatement(new ExpressionStatement(mce));
   }
-  if (fieldHelper != null) {
-    fieldHelper.addMethod(helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
-    fieldHelper.addMethod(helperGetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null);
-  }
+  fieldHelper.addMethod(helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
+  fieldHelper.addMethod(helperGetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null);
 }
