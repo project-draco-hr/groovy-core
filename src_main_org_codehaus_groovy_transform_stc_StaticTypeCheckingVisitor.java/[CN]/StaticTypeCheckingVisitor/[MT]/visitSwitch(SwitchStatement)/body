@@ -1,0 +1,9 @@
+{
+  Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
+  try {
+    super.visitSwitch(statement);
+  }
+  finally {
+    popAssignmentTracking(oldTracker);
+  }
+}
