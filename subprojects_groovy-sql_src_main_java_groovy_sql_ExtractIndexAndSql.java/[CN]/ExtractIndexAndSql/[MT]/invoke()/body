@@ -1,0 +1,43 @@
+{
+  indexPropList=new ArrayList<Tuple>();
+  StringBuilder sb=new StringBuilder();
+  StringBuilder currentChunk=new StringBuilder();
+  while (index < sql.length()) {
+switch (sql.charAt(index)) {
+case QUOTE:
+      sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+    currentChunk=new StringBuilder();
+  appendToEndOfString(sb);
+if (sb.charAt(sb.length() - 1) != QUOTE) {
+  throw new IllegalStateException("Failed to process query. Unterminated ' character?");
+}
+break;
+case '-':
+if (next() == '-') {
+sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+currentChunk=new StringBuilder();
+appendToEndOfLine(sb);
+}
+ else {
+currentChunk.append(sql.charAt(index));
+}
+break;
+case '/':
+if (next() == '*') {
+sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+currentChunk=new StringBuilder();
+appendToEndOfComment(sb);
+}
+ else {
+currentChunk.append(sql.charAt(index));
+}
+break;
+default :
+currentChunk.append(sql.charAt(index));
+}
+index++;
+}
+sb.append(adaptForNamedParams(currentChunk.toString(),indexPropList));
+newSql=sb.toString();
+return this;
+}

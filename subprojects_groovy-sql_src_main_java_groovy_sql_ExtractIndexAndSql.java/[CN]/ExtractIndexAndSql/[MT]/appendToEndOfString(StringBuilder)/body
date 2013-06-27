@@ -1,0 +1,15 @@
+{
+  buffer.append(QUOTE);
+  ++index;
+  while (index < sql.length()) {
+    char c=sql.charAt(index);
+    buffer.append(c);
+    if (c == QUOTE && next() != QUOTE) {
+      int previousQuotes=countPreviousRepeatingChars(QUOTE);
+      if (previousQuotes == 0 || previousQuotes % 2 == 0) {
+        break;
+      }
+    }
+    ++index;
+  }
+}
