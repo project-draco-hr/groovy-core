@@ -1,0 +1,11 @@
+{
+  if (!Modifier.isAbstract(c.getModifiers()))   return null;
+  Method[] methods=c.getMethods();
+  Method res=null;
+  for (  Method mi : methods) {
+    if (!Modifier.isAbstract(mi.getModifiers()))     continue;
+    if (res != null)     return null;
+    res=mi;
+  }
+  return res;
+}

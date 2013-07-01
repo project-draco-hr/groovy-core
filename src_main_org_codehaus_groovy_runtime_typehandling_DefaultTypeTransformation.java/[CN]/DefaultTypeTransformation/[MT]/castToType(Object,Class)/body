@@ -146,6 +146,12 @@
     args=new Object[1];
     args[0]=object;
   }
+  if (object instanceof Closure) {
+    Method m=CachedSAMClass.getSAMMethod(type);
+    if (m != null) {
+      return CachedSAMClass.coerceToSAM((Closure)object,m,type,type.isInterface());
+    }
+  }
   Exception nested=null;
   if (args != null) {
     try {

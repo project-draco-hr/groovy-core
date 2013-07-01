@@ -51,5 +51,8 @@
   if (GROOVY_OBJECT_TYPE.equals(leftRedirect) && isBeingCompiled(right)) {
     return true;
   }
+  if (rightRedirect.isDerivedFrom(CLOSURE_TYPE) && isSAMType(leftRedirect)) {
+    return true;
+  }
   return false;
 }
