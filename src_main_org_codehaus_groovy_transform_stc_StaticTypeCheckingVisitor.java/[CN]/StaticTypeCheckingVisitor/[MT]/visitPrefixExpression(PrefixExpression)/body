@@ -11,7 +11,10 @@
         if (node != null) {
           storeTargetMethod(expression,node);
         }
+        storeType(expression,inferReturnTypeGenerics(exprType,node,ArgumentListExpression.EMPTY_ARGUMENTS));
+        return;
       }
+      storeType(expression,exprType);
       return;
     }
     addUnsupportedPreOrPostfixExpressionError(expression);
@@ -24,5 +27,6 @@
   MethodNode node=findMethodOrFail(inner,exprType,name);
   if (node != null) {
     storeTargetMethod(expression,node);
+    storeType(expression,inferReturnTypeGenerics(exprType,node,ArgumentListExpression.EMPTY_ARGUMENTS));
   }
 }
