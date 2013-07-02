@@ -6,7 +6,7 @@
   ClassNode leftType=getController().getTypeChooser().resolveType(leftExp,current);
   Expression rightExp=binExp.getRightExpression();
   ClassNode rightType=getController().getTypeChooser().resolveType(rightExp,current);
-  int operationType=getOperandConversionType(leftType,rightType);
+  int operationType=getOperandType(leftType);
   BinaryExpressionWriter bew=binExpWriter[operationType];
   boolean simulationSuccess=bew.arrayGet(LEFT_SQUARE_BRACKET,true);
   simulationSuccess=simulationSuccess && bew.write(operation,true);
@@ -21,7 +21,7 @@
   operandStack.doGroovyCast(int_TYPE);
   int subscriptValueId=compileStack.defineTemporaryVariable("$sub",ClassHelper.int_TYPE,true);
   arrayWithSubscript.getLeftExpression().visit(acg);
-  operandStack.doGroovyCast(bew.getNormalOpResultType().makeArray());
+  operandStack.doGroovyCast(leftType.makeArray());
   operandStack.dup();
   operandStack.load(ClassHelper.int_TYPE,subscriptValueId);
   bew.arrayGet(LEFT_SQUARE_BRACKET,false);
