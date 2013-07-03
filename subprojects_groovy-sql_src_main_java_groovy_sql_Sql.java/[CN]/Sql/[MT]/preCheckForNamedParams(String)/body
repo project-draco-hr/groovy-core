@@ -1,23 +1,3 @@
 {
-  if (!enableNamedQueries || !ExtractIndexAndSql.hasNamedParameters(sql)) {
-    return null;
-  }
-  String newSql;
-  List<Tuple> propList;
-  if (cacheNamedQueries && namedParamSqlCache.containsKey(sql)) {
-    newSql=namedParamSqlCache.get(sql);
-    propList=namedParamIndexPropCache.get(sql);
-  }
- else {
-    ExtractIndexAndSql extractIndexAndSql=ExtractIndexAndSql.from(sql);
-    newSql=extractIndexAndSql.getNewSql();
-    propList=extractIndexAndSql.getIndexPropList();
-    namedParamSqlCache.put(sql,newSql);
-    namedParamIndexPropCache.put(sql,propList);
-  }
-  if (sql.equals(newSql)) {
-    return null;
-  }
-  List<Object> indexPropList=new ArrayList<Object>(propList);
-  return new SqlWithParams(newSql,indexPropList);
+  return buildSqlWithIndexedProps(sql);
 }
