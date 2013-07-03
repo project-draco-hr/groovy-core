@@ -1,6 +1,7 @@
 {
+  GenericsType[] genericsTypes=classNode.getGenericsTypes();
+  if (genericsTypes != null && genericsTypes.length == 0)   return true;
   if (classNode.isGenericsPlaceHolder()) {
-    GenericsType[] genericsTypes=classNode.getGenericsTypes();
     if (genericsTypes == null)     return true;
     if (isWildcard()) {
       if (lowerBound != null)       return genericsTypes[0].getName().equals(lowerBound.getUnresolvedName());
