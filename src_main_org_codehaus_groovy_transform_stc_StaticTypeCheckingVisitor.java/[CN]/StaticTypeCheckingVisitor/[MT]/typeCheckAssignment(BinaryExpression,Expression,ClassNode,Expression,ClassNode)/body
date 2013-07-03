@@ -82,7 +82,7 @@
         }
       }
     }
-    if (!implementsInterfaceOrIsSubclassOf(leftRedirect,LIST_TYPE) && rightExpression instanceof ListExpression) {
+    if (rightExpression instanceof ListExpression && !implementsInterfaceOrIsSubclassOf(LIST_TYPE,leftRedirect)) {
       ArgumentListExpression argList=new ArgumentListExpression(((ListExpression)rightExpression).getExpressions());
       ClassNode[] args=getArgumentTypes(argList);
       checkGroovyStyleConstructor(leftRedirect,args);
