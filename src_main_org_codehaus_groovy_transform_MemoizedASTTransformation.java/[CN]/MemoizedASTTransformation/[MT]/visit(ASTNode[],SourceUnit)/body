@@ -31,6 +31,7 @@
     BlockStatement newCode=new BlockStatement();
     ArgumentListExpression args=new ArgumentListExpression(methodNode.getParameters());
     MethodCallExpression closureCallExpression=new MethodCallExpression(new FieldExpression(memoizedClosureField),CLOSURE_CALL_METHOD_NAME,args);
+    closureCallExpression.setImplicitThis(false);
     newCode.addStatement(new ReturnStatement(closureCallExpression));
     methodNode.setCode(newCode);
     VariableScopeVisitor visitor=new VariableScopeVisitor(source);
