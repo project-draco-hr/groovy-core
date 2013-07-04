@@ -1,4 +1,11 @@
 {
+  Parameter[] srcParams=privateMethod.getParameters();
+  Parameter[] newParams=cloneParams(srcParams);
+  List<Expression> argList=new ArrayList<Expression>(newParams.length);
+  for (int i=0; i < srcParams.length; i++) {
+    argList.add(new VariableExpression(newParams[i]));
+  }
+  ClosureExpression expression=new ClosureExpression(newParams,new ExpressionStatement(new MethodCallExpression(new VariableExpression("this"),privateMethod.getName(),new ArgumentListExpression(argList))));
   if (protectedCacheSize == 0 && maxCacheSize == 0) {
     return new MethodCallExpression(expression,MEMOIZE_METHOD_NAME,MethodCallExpression.NO_ARGUMENTS);
   }
