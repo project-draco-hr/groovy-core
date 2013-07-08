@@ -1,0 +1,38 @@
+{
+  boolean isPostfix=origin instanceof PostfixExpression;
+  ClassNode exprType=getType(innerExpression);
+  String name=operationType == PLUS_PLUS ? "next" : operationType == MINUS_MINUS ? "previous" : null;
+  if (isPrimitiveType(exprType) || isPrimitiveType(getUnwrapper(exprType))) {
+    if (operationType == PLUS_PLUS || operationType == MINUS_MINUS) {
+      if (!isPrimitiveType(exprType)) {
+        MethodNode node=findMethodOrFail(innerExpression,exprType,name);
+        if (node != null) {
+          storeTargetMethod(origin,node);
+          storeType(origin,isPostfix ? exprType : getMathWideningClassNode(exprType));
+          return;
+        }
+      }
+      storeType(origin,exprType);
+      return;
+    }
+    addUnsupportedPreOrPostfixExpressionError(origin);
+    return;
+  }
+ else   if (implementsInterfaceOrIsSubclassOf(exprType,Number_TYPE) && (operationType == PLUS_PLUS || operationType == MINUS_MINUS)) {
+    MethodNode node=findMethodOrFail(innerExpression,exprType,name);
+    if (node != null) {
+      storeTargetMethod(origin,node);
+      storeType(origin,getMathWideningClassNode(exprType));
+      return;
+    }
+  }
+  if (name == null) {
+    addUnsupportedPreOrPostfixExpressionError(origin);
+    return;
+  }
+  MethodNode node=findMethodOrFail(innerExpression,exprType,name);
+  if (node != null) {
+    storeTargetMethod(origin,node);
+    storeType(origin,isPostfix ? exprType : inferReturnTypeGenerics(exprType,node,ArgumentListExpression.EMPTY_ARGUMENTS));
+  }
+}
