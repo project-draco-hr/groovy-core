@@ -1,0 +1,11 @@
+{
+  if (!implementsInterfaceOrIsSubclassOf(leftRedirect,MAP_TYPE) && rightExpression instanceof MapExpression) {
+    if (!(leftExpression instanceof VariableExpression) || !((VariableExpression)leftExpression).isDynamicTyped()) {
+      ArgumentListExpression argList=new ArgumentListExpression(rightExpression);
+      ClassNode[] args=getArgumentTypes(argList);
+      checkGroovyStyleConstructor(leftRedirect,args);
+      MapExpression mapExpression=(MapExpression)rightExpression;
+      checkGroovyConstructorMap(leftExpression,leftRedirect,mapExpression);
+    }
+  }
+}

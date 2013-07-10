@@ -1,0 +1,8 @@
+{
+  ClassNode wrappedRHS=inferredRightExpressionType;
+  if (leftExpression instanceof PropertyExpression && ((PropertyExpression)leftExpression).isSpreadSafe()) {
+    wrappedRHS=LIST_TYPE.getPlainNodeReference();
+    wrappedRHS.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(inferredRightExpressionType))});
+  }
+  return wrappedRHS;
+}
