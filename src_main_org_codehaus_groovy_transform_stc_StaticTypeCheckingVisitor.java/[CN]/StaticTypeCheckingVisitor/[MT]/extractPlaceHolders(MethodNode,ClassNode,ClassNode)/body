@@ -24,17 +24,19 @@
     resolvedPlaceholders=currentPlaceHolders;
     if (current.equals(declaringClass))     break;
     ClassNode nextNode=null;
-    ClassNode[] interfaces=current.getUnresolvedInterfaces();
-    for (int i=0; i < interfaces.length; i++) {
-      if (interfaces[i].isDerivedFrom(declaringClass)) {
-        nextNode=interfaces[i];
-        break;
+    if (declaringClass.isInterface()) {
+      ClassNode[] interfaces=current.getUnresolvedInterfaces();
+      for (int i=0; i < interfaces.length; i++) {
+        if (implementsInterfaceOrIsSubclassOf(interfaces[i],declaringClass)) {
+          nextNode=interfaces[i];
+          break;
+        }
       }
     }
     if (nextNode == null)     nextNode=current.getUnresolvedSuperClass();
     current=nextNode;
     if (current == null) {
-      throw new GroovyBugError("Declaring class for method call to " + declaringClass.getName() + "#"+ method.getName()+ method.getTypeDescriptor()+ " was not matched with "+ "found receiver "+ receiver.getName()+ "."+ "This should not have happened!");
+      throw new GroovyBugError("Declaring class for method call to '" + method.getTypeDescriptor() + "' declared in "+ declaringClass.getName()+ " was not matched with found receiver "+ receiver.getName()+ "."+ " This should not have happened!");
     }
   }
   return resolvedPlaceholders;
