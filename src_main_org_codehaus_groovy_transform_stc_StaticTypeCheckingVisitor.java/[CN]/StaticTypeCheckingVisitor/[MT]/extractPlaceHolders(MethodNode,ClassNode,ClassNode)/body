@@ -1,0 +1,41 @@
+{
+  if (declaringClass.equals(OBJECT_TYPE)) {
+    Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
+    addMethodLevelDeclaredGenerics(method,resolvedPlaceholders);
+    return resolvedPlaceholders;
+  }
+  Map<String,GenericsType> resolvedPlaceholders=null;
+  ClassNode current=receiver;
+  while (true) {
+    Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>();
+    GenericsUtils.extractPlaceholders(current,currentPlaceHolders);
+    if (declaringClass.equals(current)) {
+      addMethodLevelDeclaredGenerics(method,currentPlaceHolders);
+    }
+    if (resolvedPlaceholders != null) {
+      Set<Map.Entry<String,GenericsType>> entries=currentPlaceHolders.entrySet();
+      for (      Map.Entry<String,GenericsType> entry : entries) {
+        GenericsType gt=entry.getValue();
+        if (!gt.isPlaceholder())         continue;
+        GenericsType referenced=resolvedPlaceholders.get(gt.getName());
+        entry.setValue(referenced);
+      }
+    }
+    resolvedPlaceholders=currentPlaceHolders;
+    if (current.equals(declaringClass))     break;
+    ClassNode nextNode=null;
+    ClassNode[] interfaces=current.getUnresolvedInterfaces();
+    for (int i=0; i < interfaces.length; i++) {
+      if (interfaces[i].isDerivedFrom(declaringClass)) {
+        nextNode=interfaces[i];
+        break;
+      }
+    }
+    if (nextNode == null)     nextNode=current.getUnresolvedSuperClass();
+    current=nextNode;
+    if (current == null) {
+      throw new GroovyBugError("declaring class not matched, should not have happened!");
+    }
+  }
+  return resolvedPlaceholders;
+}
