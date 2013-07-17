@@ -1,0 +1,9 @@
+{
+  prepareSiteAndReceiver(receiver,"mod",false,controller.getCompileStack().isLHS());
+  controller.getOperandStack().doGroovyCast(Number_TYPE);
+  visitBoxedArgument(arguments);
+  controller.getOperandStack().doGroovyCast(Number_TYPE);
+  MethodVisitor mv=controller.getMethodVisitor();
+  mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/typehandling/NumberMath","mod","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
+  controller.getOperandStack().replace(Number_TYPE,2);
+}
