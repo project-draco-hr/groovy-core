@@ -1,0 +1,12 @@
+{
+  if (placeholdersFromContext == null)   return;
+  for (  Map.Entry<String,GenericsType> entry : resolvedPlaceholders.entrySet()) {
+    GenericsType gt=entry.getValue();
+    if (gt.isPlaceholder()) {
+      String name=gt.getName();
+      GenericsType outer=placeholdersFromContext.get(name);
+      if (outer == null)       continue;
+      entry.setValue(outer);
+    }
+  }
+}

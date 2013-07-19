@@ -20,8 +20,7 @@
     return inferReturnTypeGenerics(dc,dgmMethod,argList);
   }
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
-  GenericsType[] returnTypeGenerics=returnType.isArray() ? returnType.getComponentType().getGenericsTypes() : returnType.getGenericsTypes();
-  if (returnTypeGenerics == null)   return returnType;
+  if (getGenericsWithoutArray(returnType) == null)   return returnType;
   Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHolders(receiver,method,arguments);
   if (resolvedPlaceholders.isEmpty())   return returnType;
   Parameter[] parameters=method.getParameters();
@@ -74,12 +73,17 @@
       }
     }
   }
+  Map<String,GenericsType> placeholdersFromContext=getGenericsParameterMapOfThis(typeCheckingContext.getEnclosingMethod());
+  applyContextGenerics(resolvedPlaceholders,placeholdersFromContext);
+  returnType=applyGenerics(returnType,resolvedPlaceholders);
   if (returnType.isGenericsPlaceHolder()) {
     GenericsType resolved=resolvedPlaceholders.get(returnType.getUnresolvedName());
     if (resolved != null && !resolved.isPlaceholder() && !resolved.isWildcard()) {
       return resolved.getType();
     }
   }
+  GenericsType[] returnTypeGenerics=getGenericsWithoutArray(returnType);
+  if (returnTypeGenerics == null)   return returnType;
   GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
   for (int i=0; i < copy.length; i++) {
     GenericsType returnTypeGeneric=returnTypeGenerics[i];
