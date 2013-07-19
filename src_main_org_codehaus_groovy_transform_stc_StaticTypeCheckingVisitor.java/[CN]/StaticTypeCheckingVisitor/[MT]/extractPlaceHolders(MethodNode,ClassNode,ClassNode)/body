@@ -1,7 +1,7 @@
 {
   if (declaringClass.equals(OBJECT_TYPE)) {
     Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
-    addMethodLevelDeclaredGenerics(method,resolvedPlaceholders);
+    if (method != null)     addMethodLevelDeclaredGenerics(method,resolvedPlaceholders);
     return resolvedPlaceholders;
   }
   Map<String,GenericsType> resolvedPlaceholders=null;
@@ -9,7 +9,7 @@
   while (true) {
     Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>();
     GenericsUtils.extractPlaceholders(current,currentPlaceHolders);
-    if (declaringClass.equals(current)) {
+    if (method != null && declaringClass.equals(current)) {
       addMethodLevelDeclaredGenerics(method,currentPlaceHolders);
     }
     if (resolvedPlaceholders != null) {
@@ -36,7 +36,9 @@
     if (nextNode == null)     nextNode=current.getUnresolvedSuperClass();
     current=nextNode;
     if (current == null) {
-      throw new GroovyBugError("Declaring class for method call to '" + method.getTypeDescriptor() + "' declared in "+ declaringClass.getName()+ " was not matched with found receiver "+ receiver.getName()+ "."+ " This should not have happened!");
+      String descriptor="<>";
+      if (method != null)       descriptor=method.getTypeDescriptor();
+      throw new GroovyBugError("Declaring class for method call to '" + descriptor + "' declared in "+ declaringClass.getName()+ " was not matched with found receiver "+ receiver.getName()+ "."+ " This should not have happened!");
     }
   }
   return resolvedPlaceholders;

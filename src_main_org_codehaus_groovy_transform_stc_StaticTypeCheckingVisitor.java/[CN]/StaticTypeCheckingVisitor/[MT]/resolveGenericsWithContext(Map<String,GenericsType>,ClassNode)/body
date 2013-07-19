@@ -1,0 +1,55 @@
+{
+  Map<String,GenericsType> placeholdersFromContext=getGenericsParameterMapOfThis(typeCheckingContext.getEnclosingMethod());
+  applyContextGenerics(resolvedPlaceholders,placeholdersFromContext);
+  currentType=applyGenerics(currentType,resolvedPlaceholders);
+  if (currentType.isGenericsPlaceHolder()) {
+    GenericsType resolved=resolvedPlaceholders.get(currentType.getUnresolvedName());
+    if (resolved != null && !resolved.isPlaceholder() && !resolved.isWildcard()) {
+      return resolved.getType();
+    }
+  }
+  GenericsType[] returnTypeGenerics=getGenericsWithoutArray(currentType);
+  if (returnTypeGenerics == null)   return currentType;
+  GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
+  for (int i=0; i < copy.length; i++) {
+    GenericsType returnTypeGeneric=returnTypeGenerics[i];
+    if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
+      GenericsType resolved=resolvedPlaceholders.get(returnTypeGeneric.getName());
+      if (resolved == null)       resolved=returnTypeGeneric;
+      copy[i]=fullyResolve(resolved,resolvedPlaceholders);
+    }
+ else {
+      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders);
+    }
+  }
+  GenericsType firstGenericsType=copy[0];
+  if (currentType.equals(OBJECT_TYPE)) {
+    if (firstGenericsType.getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
+    if (firstGenericsType.isWildcard()) {
+      if (firstGenericsType.getLowerBound() != null)       return firstGenericsType.getLowerBound();
+      ClassNode[] upperBounds=firstGenericsType.getUpperBounds();
+      if (upperBounds == null) {
+        return OBJECT_TYPE;
+      }
+      if (upperBounds.length == 1)       return upperBounds[0];
+      return new UnionTypeClassNode(upperBounds);
+    }
+    return firstGenericsType.getType();
+  }
+  if (currentType.isArray()) {
+    currentType=currentType.getComponentType().getPlainNodeReference();
+    currentType.setGenericsTypes(copy);
+    if (OBJECT_TYPE.equals(currentType)) {
+      currentType=firstGenericsType.getType();
+    }
+    currentType=currentType.makeArray();
+  }
+ else {
+    currentType=currentType.getPlainNodeReference();
+    currentType.setGenericsTypes(copy);
+  }
+  if (currentType.equals(Annotation_TYPE) && currentType.getGenericsTypes() != null && !currentType.getGenericsTypes()[0].isPlaceholder()) {
+    return currentType.getGenericsTypes()[0].getType();
+  }
+  return currentType;
+}

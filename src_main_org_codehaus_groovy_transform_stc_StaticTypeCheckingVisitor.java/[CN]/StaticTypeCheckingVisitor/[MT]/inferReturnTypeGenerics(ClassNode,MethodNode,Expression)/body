@@ -21,7 +21,7 @@
   }
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
   if (getGenericsWithoutArray(returnType) == null)   return returnType;
-  Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHolders(receiver,method,arguments);
+  Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclartion(receiver,getDeclaringClass(method,arguments),method,method.isStatic());
   if (resolvedPlaceholders.isEmpty())   return returnType;
   Parameter[] parameters=method.getParameters();
   boolean isVargs=isVargs(parameters);
@@ -73,57 +73,5 @@
       }
     }
   }
-  Map<String,GenericsType> placeholdersFromContext=getGenericsParameterMapOfThis(typeCheckingContext.getEnclosingMethod());
-  applyContextGenerics(resolvedPlaceholders,placeholdersFromContext);
-  returnType=applyGenerics(returnType,resolvedPlaceholders);
-  if (returnType.isGenericsPlaceHolder()) {
-    GenericsType resolved=resolvedPlaceholders.get(returnType.getUnresolvedName());
-    if (resolved != null && !resolved.isPlaceholder() && !resolved.isWildcard()) {
-      return resolved.getType();
-    }
-  }
-  GenericsType[] returnTypeGenerics=getGenericsWithoutArray(returnType);
-  if (returnTypeGenerics == null)   return returnType;
-  GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
-  for (int i=0; i < copy.length; i++) {
-    GenericsType returnTypeGeneric=returnTypeGenerics[i];
-    if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
-      GenericsType resolved=resolvedPlaceholders.get(returnTypeGeneric.getName());
-      if (resolved == null)       resolved=returnTypeGeneric;
-      copy[i]=fullyResolve(resolved,resolvedPlaceholders);
-    }
- else {
-      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders);
-    }
-  }
-  GenericsType firstGenericsType=copy[0];
-  if (returnType.equals(OBJECT_TYPE)) {
-    if (firstGenericsType.getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
-    if (firstGenericsType.isWildcard()) {
-      if (firstGenericsType.getLowerBound() != null)       return firstGenericsType.getLowerBound();
-      ClassNode[] upperBounds=firstGenericsType.getUpperBounds();
-      if (upperBounds == null) {
-        return OBJECT_TYPE;
-      }
-      if (upperBounds.length == 1)       return upperBounds[0];
-      return new UnionTypeClassNode(upperBounds);
-    }
-    return firstGenericsType.getType();
-  }
-  if (returnType.isArray()) {
-    returnType=returnType.getComponentType().getPlainNodeReference();
-    returnType.setGenericsTypes(copy);
-    if (OBJECT_TYPE.equals(returnType)) {
-      returnType=firstGenericsType.getType();
-    }
-    returnType=returnType.makeArray();
-  }
- else {
-    returnType=returnType.getPlainNodeReference();
-    returnType.setGenericsTypes(copy);
-  }
-  if (returnType.equals(Annotation_TYPE) && returnType.getGenericsTypes() != null && !returnType.getGenericsTypes()[0].isPlaceholder()) {
-    return returnType.getGenericsTypes()[0].getType();
-  }
-  return returnType;
+  return resolveGenericsWithContext(resolvedPlaceholders,returnType);
 }
