@@ -2,7 +2,9 @@
   if (parent() == null) {
     throw new UnsupportedOperationException("Replacing the root node is not supported");
   }
-  appendNodes(c);
+  List tail=getTail();
+  parent().appendNode(n.name(),n.attributes(),n.value());
+  parent().children().addAll(tail);
   getParentList(parent()).remove(this);
   this.setParent(null);
   return this;
