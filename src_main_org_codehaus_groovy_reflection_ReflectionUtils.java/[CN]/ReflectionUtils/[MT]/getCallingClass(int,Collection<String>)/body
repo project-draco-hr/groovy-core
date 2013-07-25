@@ -1,14 +1,12 @@
 {
-  if (MAGIC_METHOD == null) {
-    return null;
-  }
+  Class[] classContext=HELPER.getClassContext();
   int depth=0;
   try {
     Class c;
     Class sc;
     do {
       do {
-        c=(Class)MAGIC_METHOD.invoke(null,depth++);
+        c=classContext[depth++];
         if (c != null) {
           sc=c.getSuperclass();
         }
@@ -18,7 +16,7 @@
       }
  while (classShouldBeIgnored(c,extraIgnoredPackages) || superClassShouldBeIgnored(sc));
     }
- while (c != null && matchLevel-- > 0);
+ while (c != null && matchLevel-- > 0 && depth < classContext.length);
     return c;
   }
  catch (  Throwable t) {
