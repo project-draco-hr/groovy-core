@@ -1,0 +1,8 @@
+{
+  List<MethodNode> result=nodes;
+  Iterator<TypeCheckingExtension> it=handlers.iterator();
+  while (result.size() > 1 && it.hasNext()) {
+    result=it.next().handleAmbiguousMethods(result,origin);
+  }
+  return result;
+}

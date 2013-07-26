@@ -1,52 +1,100 @@
 {
-  super.visitBinaryExpression(expression);
-  final Expression leftExpression=expression.getLeftExpression();
-  ClassNode lType=getType(leftExpression);
-  final Expression rightExpression=expression.getRightExpression();
-  ClassNode rType=getType(rightExpression);
-  if (rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null) {
-    if (!isPrimitiveType(lType))     rType=UNKNOWN_PARAMETER_TYPE;
-  }
-  int op=expression.getOperation().getType();
-  ClassNode resultType=getResultType(lType,op,rType,expression);
-  if (resultType == null) {
-    resultType=lType;
-  }
-  boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
-  if (!isEmptyDeclaration)   storeType(expression,resultType);
-  if (!isEmptyDeclaration && isAssignment(op)) {
-    if (rightExpression instanceof ConstructorCallExpression) {
-      inferDiamondType((ConstructorCallExpression)rightExpression,lType);
+  BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+  typeCheckingContext.pushEnclosingBinaryExpression(expression);
+  try {
+    final Expression leftExpression=expression.getLeftExpression();
+    final Expression rightExpression=expression.getRightExpression();
+    int op=expression.getOperation().getType();
+    leftExpression.visit(this);
+    SetterInfo setterInfo=removeSetterInfo(leftExpression);
+    if (setterInfo != null && rightExpression instanceof ClosureExpression) {
+      VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
+      MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
+      visitMethodCallExpression(call);
     }
-    ClassNode originType=getOriginalDeclarationType(leftExpression);
-    typeCheckAssignment(expression,leftExpression,originType,rightExpression,resultType);
-    if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
-      resultType=originType;
+ else {
+      rightExpression.visit(this);
     }
- else     if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
+    ClassNode lType=getType(leftExpression);
+    ClassNode rType=getType(rightExpression);
+    if (isNullConstant(rightExpression)) {
+      if (!isPrimitiveType(lType))       rType=UNKNOWN_PARAMETER_TYPE;
+    }
+    BinaryExpression reversedBinaryExpression=new BinaryExpression(rightExpression,expression.getOperation(),leftExpression);
+    ClassNode resultType=op == KEYWORD_IN ? getResultType(rType,op,lType,reversedBinaryExpression) : getResultType(lType,op,rType,expression);
+    if (op == KEYWORD_IN) {
+      storeTargetMethod(expression,(MethodNode)reversedBinaryExpression.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+    }
+    if (resultType == null) {
       resultType=lType;
     }
-    if (ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression) {
-      Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
-      if (accessedVariable instanceof VariableExpression) {
-        VariableExpression var=(VariableExpression)accessedVariable;
-        List<ClassNode> types=ifElseForWhileAssignmentTracker.get(var);
-        if (types == null) {
-          types=new LinkedList<ClassNode>();
-          ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
-          if (type != null)           types.add(type);
-          ifElseForWhileAssignmentTracker.put(var,types);
-        }
-        types.add(resultType);
+    if (leftExpression instanceof VariableExpression) {
+      VariableExpression leftVar=(VariableExpression)leftExpression;
+      if (leftVar.isClosureSharedVariable()) {
+        typeCheckingContext.secondPassExpressions.add(new SecondPassExpression<Void>(expression));
       }
     }
-    storeType(leftExpression,resultType);
-    if (leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
-      Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();
-      leftExpression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,parameters);
+    if (lType.isUsingGenerics() && missesGenericsTypes(resultType) && isAssignment(op)) {
+      ClassNode completedType=GenericsUtils.parameterizeType(lType,resultType.getPlainNodeReference());
+      resultType=completedType;
+    }
+    if (isArrayOp(op) && enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == expression && isAssignment(enclosingBinaryExpression.getOperation().getType()) && !lType.isArray()) {
+      ClassNode[] arguments={rType,getType(enclosingBinaryExpression.getRightExpression())};
+      List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);
+      if (nodes.size() == 1) {
+        typeCheckMethodsWithGenerics(lType,arguments,nodes.get(0),expression);
+      }
+ else       if (nodes.isEmpty()) {
+        addNoMatchingMethodError(lType,"putAt",arguments,enclosingBinaryExpression);
+      }
+    }
+    boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
+    if (!isEmptyDeclaration)     storeType(expression,resultType);
+    if (!isEmptyDeclaration && isAssignment(op)) {
+      if (rightExpression instanceof ConstructorCallExpression) {
+        inferDiamondType((ConstructorCallExpression)rightExpression,lType);
+      }
+      ClassNode originType=getOriginalDeclarationType(leftExpression);
+      typeCheckAssignment(expression,leftExpression,originType,rightExpression,resultType);
+      if (!implementsInterfaceOrIsSubclassOf(getWrapper(resultType),getWrapper(originType))) {
+        resultType=originType;
+      }
+ else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
+        resultType=lType;
+      }
+      if (typeCheckingContext.ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
+        Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
+        if (accessedVariable instanceof VariableExpression) {
+          VariableExpression var=(VariableExpression)accessedVariable;
+          List<ClassNode> types=typeCheckingContext.ifElseForWhileAssignmentTracker.get(var);
+          if (types == null) {
+            types=new LinkedList<ClassNode>();
+            ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+            types.add(type);
+            typeCheckingContext.ifElseForWhileAssignmentTracker.put(var,types);
+          }
+          types.add(resultType);
+        }
+      }
+      storeType(leftExpression,resultType);
+      if (leftExpression instanceof VariableExpression) {
+        if (rightExpression instanceof ClosureExpression) {
+          Parameter[] parameters=((ClosureExpression)rightExpression).getParameters();
+          leftExpression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,parameters);
+        }
+ else         if (rightExpression instanceof VariableExpression && ((VariableExpression)rightExpression).getAccessedVariable() instanceof Expression && ((Expression)((VariableExpression)rightExpression).getAccessedVariable()).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS) != null) {
+          Variable targetVariable=findTargetVariable((VariableExpression)leftExpression);
+          if (targetVariable instanceof ASTNode) {
+            ((ASTNode)targetVariable).putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,((Expression)((VariableExpression)rightExpression).getAccessedVariable()).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS));
+          }
+        }
+      }
+    }
+ else     if (op == KEYWORD_INSTANCEOF) {
+      pushInstanceOfTypeInfo(leftExpression,rightExpression);
     }
   }
- else   if (op == KEYWORD_INSTANCEOF) {
-    pushInstanceOfTypeInfo(leftExpression,rightExpression);
+  finally {
+    typeCheckingContext.popEnclosingBinaryExpression();
   }
 }

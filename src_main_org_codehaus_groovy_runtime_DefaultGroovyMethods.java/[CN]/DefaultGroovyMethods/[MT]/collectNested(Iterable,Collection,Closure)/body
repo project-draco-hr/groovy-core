@@ -1,0 +1,15 @@
+{
+  for (  Object item : self) {
+    if (item instanceof Collection) {
+      Collection c=(Collection)item;
+      collector.add(collectNested((Iterable)c,createSimilarCollection(collector,c.size()),transform));
+    }
+ else {
+      collector.add(transform.call(item));
+    }
+    if (transform.getDirective() == Closure.DONE) {
+      break;
+    }
+  }
+  return collector;
+}

@@ -1,0 +1,28 @@
+{
+  ThreadLocal<LocalData> localTh=getLocalData();
+  LocalData localData=new LocalData();
+  localTh.set(localData);
+  StringSetMap cache=localData.dependencyCache;
+  ScriptCacheEntry origEntry=scriptCache.get(codeSource.getName());
+  Set<String> origDep=null;
+  if (origEntry != null)   origDep=origEntry.dependencies;
+  if (origDep != null)   cache.put(".",origDep);
+  Class answer=super.parseClass(codeSource,false);
+  cache.makeTransitiveHull();
+  long time=getCurrentTime();
+  Set<String> entryNames=new HashSet<String>();
+  for (  Map.Entry<String,Set<String>> entry : cache.entrySet()) {
+    String className=entry.getKey();
+    Class clazz=getClassCacheEntry(className);
+    if (clazz == null)     continue;
+    String entryName=getPath(clazz,localData.precompiledEntries);
+    if (entryNames.contains(entryName))     continue;
+    entryNames.add(entryName);
+    Set<String> value=convertToPaths(entry.getValue(),localData.precompiledEntries);
+    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,time,value,false);
+    scriptCache.put(entryName,cacheEntry);
+  }
+  cache.clear();
+  localTh.set(null);
+  return answer;
+}

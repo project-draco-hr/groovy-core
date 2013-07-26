@@ -10,12 +10,12 @@
     DeclarationExpression de=(DeclarationExpression)parent;
     ClassNode cNode=de.getDeclaringClass();
     if (!cNode.isScript()) {
-      addError("Error: annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
+      addError("Annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
       return;
     }
     candidate=de;
     if (de.isMultipleAssignmentDeclaration()) {
-      addError("Error: annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
+      addError("Annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
       return;
     }
     VariableExpression ve=de.getVariableExpression();
@@ -26,7 +26,7 @@
     final List<AnnotationNode> annotations=de.getAnnotations();
     for (    AnnotationNode annotation : annotations) {
       final ClassNode annotationClassNode=annotation.getClassNode();
-      if (annotationClassNode.getAnnotations(ASTTRANSFORM_TYPE).isEmpty()) {
+      if (notTransform(annotationClassNode) || acceptableTransform(annotation)) {
         fieldNode.addAnnotation(annotation);
       }
     }

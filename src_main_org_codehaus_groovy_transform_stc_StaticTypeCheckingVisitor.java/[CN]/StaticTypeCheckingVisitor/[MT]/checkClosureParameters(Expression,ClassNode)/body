@@ -1,0 +1,17 @@
+{
+  if (callArguments instanceof ArgumentListExpression) {
+    ArgumentListExpression argList=(ArgumentListExpression)callArguments;
+    ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
+    Parameter[] parameters=closure.getParameters();
+    if (parameters.length > 1) {
+      addStaticTypeError("Unexpected number of parameters for a with call",argList);
+    }
+ else     if (parameters.length == 1) {
+      Parameter param=parameters[0];
+      if (!param.isDynamicTyped() && !isAssignableTo(receiver,param.getType().redirect())) {
+        addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
+      }
+    }
+    closure.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(receiver,Closure.DELEGATE_FIRST,typeCheckingContext.delegationMetadata));
+  }
+}

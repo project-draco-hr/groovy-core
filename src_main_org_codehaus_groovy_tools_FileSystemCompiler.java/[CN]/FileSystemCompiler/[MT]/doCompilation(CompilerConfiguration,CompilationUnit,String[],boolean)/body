@@ -2,7 +2,7 @@
   File tmpDir=null;
   try {
     if ((configuration.getJointCompilationOptions() != null) && !configuration.getJointCompilationOptions().containsKey("stubDir")) {
-      tmpDir=createTempDir();
+      tmpDir=DefaultGroovyStaticMethods.createTempDir(null,"groovy-generated-","-java-source");
       configuration.getJointCompilationOptions().put("stubDir",tmpDir);
     }
     FileSystemCompiler compiler=new FileSystemCompiler(configuration,unit);

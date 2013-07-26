@@ -30,24 +30,31 @@
       ClassNode elemType=getType(listExpression);
       ClassNode tupleType=getType(tupleExpression);
       if (!isAssignableTo(elemType,tupleType)) {
-        addStaticTypeError("Cannot assign value of type " + elemType.getText() + " to variable of type "+ tupleType.getText(),rightExpression);
+        addStaticTypeError("Cannot assign value of type " + elemType.toString(false) + " to variable of type "+ tupleType.toString(false),rightExpression);
         break;
       }
     }
     return;
   }
-  boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,inferredRightExpressionType,rightExpression);
+  ClassNode wrappedRHS=inferredRightExpressionType;
+  if (leftExpression instanceof PropertyExpression && ((PropertyExpression)leftExpression).isSpreadSafe()) {
+    wrappedRHS=LIST_TYPE.getPlainNodeReference();
+    wrappedRHS.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(inferredRightExpressionType))});
+  }
+  boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,wrappedRHS,rightExpression);
   if (leftExpression.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY) != null && (leftExpression instanceof PropertyExpression)) {
     addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
   }
   if (!compatible) {
-    addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
+    if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
+      addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression.getRightExpression());
+    }
   }
  else {
     if (rightExpression instanceof ClosureExpression) {
-      Object type=rightExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+      ClassNode type=getInferredReturnType(rightExpression);
       if (type != null) {
-        leftExpression.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,type);
+        storeInferredReturnType(leftExpression,type);
       }
     }
     boolean possibleLooseOfPrecision=false;
@@ -63,14 +70,14 @@
       if (rightRedirect.isArray()) {
         ClassNode rightComponentType=rightRedirect.getComponentType();
         if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType)) {
-          addStaticTypeError("Cannot assign value of type " + rightComponentType.getText() + " into array of type "+ leftExpressionType.getText(),assignmentExpression);
+          addStaticTypeError("Cannot assign value of type " + rightComponentType.toString(false) + " into array of type "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
         }
       }
  else       if (rightExpression instanceof ListExpression) {
         for (        Expression element : ((ListExpression)rightExpression).getExpressions()) {
           ClassNode rightComponentType=element.getType().redirect();
-          if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType)) {
-            addStaticTypeError("Cannot assign value of type " + rightComponentType.getText() + " into array of type "+ leftExpressionType.getText(),assignmentExpression);
+          if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType) && !(isNullConstant(element) && !isPrimitiveType(leftComponentType))) {
+            addStaticTypeError("Cannot assign value of type " + rightComponentType.toString(false) + " into array of type "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
           }
         }
       }
@@ -80,8 +87,10 @@
       ClassNode[] args=getArgumentTypes(argList);
       checkGroovyStyleConstructor(leftRedirect,args);
     }
- else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE)) {
-      addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
+ else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE) && !isWildcardLeftHandSide(leftExpressionType)) {
+      if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
+        addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
+      }
     }
     if (!implementsInterfaceOrIsSubclassOf(leftRedirect,MAP_TYPE) && rightExpression instanceof MapExpression) {
       if (!(leftExpression instanceof VariableExpression) || !((VariableExpression)leftExpression).isDynamicTyped()) {
@@ -93,11 +102,16 @@
       }
     }
     if (leftExpressionType.isUsingGenerics() && !leftExpressionType.isEnum()) {
-      boolean incomplete=hasRHSIncompleteGenericTypeInfo(inferredRightExpressionType);
+      boolean incomplete=hasRHSIncompleteGenericTypeInfo(wrappedRHS);
       if (!incomplete) {
         GenericsType gt=GenericsUtils.buildWildcardType(leftExpressionType);
-        if (!gt.isCompatibleWith(inferredRightExpressionType)) {
-          addStaticTypeError("Incompatible generic argument types. Cannot assign " + inferredRightExpressionType.toString(false) + " to: "+ leftExpressionType.toString(false),assignmentExpression);
+        if (!UNKNOWN_PARAMETER_TYPE.equals(wrappedRHS) && !gt.isCompatibleWith(wrappedRHS) && !isNullConstant(rightExpression)) {
+          if (isParameterizedWithString(leftExpressionType) && isParameterizedWithGStringOrGStringString(wrappedRHS)) {
+            addStaticTypeError("You are trying to use a GString in place of a String in a type which explicitly declares accepting String. " + "Make sure to call toString() on all GString values.",assignmentExpression.getRightExpression());
+          }
+ else {
+            addStaticTypeError("Incompatible generic argument types. Cannot assign " + wrappedRHS.toString(false) + " to: "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
+          }
         }
       }
     }

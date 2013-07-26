@@ -1,12 +1,11 @@
 {
-  if (size < maxListFill) {
-    for (int i=0; i < listFill; i++) {
+  if (innerMap == null) {
+    for (int i=0; i < size; i++) {
       if (listKeys[i].equals(key)) {
         V old=(V)listValues[i];
-        listFill--;
         size--;
-        listValues[i]=listValues[listFill];
-        listKeys[i]=listValues[listFill];
+        listValues[i]=listValues[size];
+        listKeys[i]=listKeys[size];
         return old;
       }
     }
@@ -14,8 +13,8 @@
   }
  else {
     V old=innerMap.remove(key);
-    if (old != null)     size--;
-    if (size < maxListFill) {
+    size=innerMap.size();
+    if (size <= maxListFill) {
       mapToList();
     }
     return old;

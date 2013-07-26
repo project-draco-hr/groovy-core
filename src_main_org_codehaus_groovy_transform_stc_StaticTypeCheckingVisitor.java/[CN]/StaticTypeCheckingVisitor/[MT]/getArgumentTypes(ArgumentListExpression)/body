@@ -2,9 +2,9 @@
   List<Expression> arglist=args.getExpressions();
   ClassNode[] ret=new ClassNode[arglist.size()];
   int i=0;
-  Map<Object,List<ClassNode>> info=temporaryIfBranchTypeInformation.empty() ? null : temporaryIfBranchTypeInformation.peek();
+  Map<Object,List<ClassNode>> info=typeCheckingContext.temporaryIfBranchTypeInformation.empty() ? null : typeCheckingContext.temporaryIfBranchTypeInformation.peek();
   for (  Expression exp : arglist) {
-    if (exp instanceof ConstantExpression && ((ConstantExpression)exp).getValue() == null) {
+    if (isNullConstant(exp)) {
       ret[i]=UNKNOWN_PARAMETER_TYPE;
     }
  else {

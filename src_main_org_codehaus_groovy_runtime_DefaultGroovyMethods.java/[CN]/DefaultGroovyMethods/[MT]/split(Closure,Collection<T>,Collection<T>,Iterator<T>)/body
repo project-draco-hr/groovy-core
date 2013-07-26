@@ -1,8 +1,9 @@
 {
   List<Collection<T>> answer=new ArrayList<Collection<T>>();
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
   while (iter.hasNext()) {
     T value=iter.next();
-    if (DefaultTypeTransformation.castToBoolean(closure.call(value))) {
+    if (bcw.call(value)) {
       accept.add(value);
     }
  else {

@@ -1,0 +1,36 @@
+{
+  String getterName="get" + MetaClassHelper.capitalize(methodName);
+  MethodNode getterNode=receiverType.getGetterMethod(getterName);
+  if (getterNode == null) {
+    getterName="is" + MetaClassHelper.capitalize(methodName);
+    getterNode=receiverType.getGetterMethod(getterName);
+  }
+  if (getterNode != null && receiver instanceof ClassExpression && !CLASS_Type.equals(receiverType) && !getterNode.isStatic()) {
+    return false;
+  }
+  PropertyNode propertyNode=receiverType.getProperty(methodName);
+  if (propertyNode != null) {
+    String prefix="get";
+    if (boolean_TYPE.equals(propertyNode.getOriginType())) {
+      prefix="is";
+    }
+    getterName=prefix + MetaClassHelper.capitalize(methodName);
+    getterNode=new MethodNode(getterName,ACC_PUBLIC,propertyNode.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+    getterNode.setDeclaringClass(receiverType);
+    if (propertyNode.isStatic())     getterNode.setModifiers(ACC_PUBLIC + ACC_STATIC);
+  }
+  if (getterNode != null) {
+    MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
+    call.setSourcePosition(receiver);
+    call.setMethodTarget(getterNode);
+    call.setImplicitThis(implicitThis);
+    call.setSafe(safe);
+    call.visit(controller.getAcg());
+    return true;
+  }
+  ClassNode superClass=receiverType.getSuperClass();
+  if (superClass != null) {
+    return makeGetPropertyWithGetter(receiver,superClass,methodName,safe,implicitThis);
+  }
+  return false;
+}

@@ -1,4 +1,9 @@
 {
+  if (currentMethod != null && currentMethod.isStatic() && pe.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pe.getObjectExpression()).isSuperExpression()) {
+    PropertyExpression pexp=new PropertyExpression(new ClassExpression(currentClass.getSuperClass()),transform(pe.getProperty()));
+    pexp.setSourcePosition(pe);
+    return pexp;
+  }
   boolean oldInPropertyExpression=inPropertyExpression;
   Expression oldFoundArgs=foundArgs;
   Expression oldFoundConstant=foundConstant;

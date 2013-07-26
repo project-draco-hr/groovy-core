@@ -1,0 +1,79 @@
+{
+  Parameter[] params=selectedMethod != null ? selectedMethod.getParameters() : Parameter.EMPTY_ARRAY;
+  final List<Expression> expressions=arguments.getExpressions();
+  for (int i=0, expressionsSize=expressions.size(); i < expressionsSize; i++) {
+    final Expression expression=expressions.get(i);
+    if (visitClosures && expression instanceof ClosureExpression || !visitClosures && !(expression instanceof ClosureExpression)) {
+      if (i < params.length && visitClosures) {
+        Parameter param=params[i];
+        List<AnnotationNode> annotations=param.getAnnotations(DELEGATES_TO);
+        if (annotations != null && !annotations.isEmpty()) {
+          for (          AnnotationNode annotation : annotations) {
+            Expression value=annotation.getMember("value");
+            Expression strategy=annotation.getMember("strategy");
+            Expression genericTypeIndex=annotation.getMember("genericTypeIndex");
+            Integer stInt=Closure.OWNER_FIRST;
+            if (strategy != null) {
+              stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy),typeCheckingContext.source.getConfiguration());
+            }
+            if (value instanceof ClassExpression && !value.getType().equals(DELEGATES_TO_TARGET)) {
+              if (genericTypeIndex != null) {
+                addStaticTypeError("Cannot use @DelegatesTo(genericTypeIndex=" + genericTypeIndex.getText() + ") without @DelegatesTo.Target because generic argument types are not available at runtime",value);
+              }
+              expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,typeCheckingContext.delegationMetadata));
+            }
+ else {
+              Expression parameter=annotation.getMember("target");
+              String parameterName=parameter != null && parameter instanceof ConstantExpression ? parameter.getText() : "";
+              for (int j=0, paramsLength=params.length; j < paramsLength; j++) {
+                final Parameter methodParam=params[j];
+                List<AnnotationNode> targets=methodParam.getAnnotations(DELEGATES_TO_TARGET);
+                if (targets != null && targets.size() == 1) {
+                  AnnotationNode targetAnnotation=targets.get(0);
+                  Expression idMember=targetAnnotation.getMember("value");
+                  String id=idMember != null && idMember instanceof ConstantExpression ? idMember.getText() : "";
+                  if (id.equals(parameterName)) {
+                    if (j < expressionsSize) {
+                      Expression actualArgument=expressions.get(j);
+                      ClassNode actualType=getType(actualArgument);
+                      if (genericTypeIndex != null && genericTypeIndex instanceof ConstantExpression) {
+                        int gti=Integer.valueOf(genericTypeIndex.getText());
+                        ClassNode paramType=methodParam.getType();
+                        GenericsType[] genericsTypes=paramType.getGenericsTypes();
+                        if (genericsTypes == null) {
+                          addStaticTypeError("Cannot use @DelegatesTo(genericTypeIndex=" + genericTypeIndex.getText() + ") with a type that doesn't use generics",methodParam);
+                        }
+ else                         if (gti < 0 || gti >= genericsTypes.length) {
+                          addStaticTypeError("Index of generic type @DelegatesTo(genericTypeIndex=" + genericTypeIndex.getText() + ") "+ (gti < 0 ? "lower" : "greater")+ " than those of the selected type",methodParam);
+                        }
+ else {
+                          ClassNode pType=GenericsUtils.parameterizeType(actualType,paramType);
+                          GenericsType[] pTypeGenerics=pType.getGenericsTypes();
+                          if (pTypeGenerics != null && pTypeGenerics.length > gti) {
+                            actualType=pTypeGenerics[gti].getType();
+                          }
+ else {
+                            addStaticTypeError("Unable to map actual type [" + actualType.toString(false) + "] onto "+ paramType.toString(false),methodParam);
+                          }
+                        }
+                      }
+                      expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(actualType,stInt,typeCheckingContext.delegationMetadata));
+                      break;
+                    }
+                  }
+                }
+              }
+              if (expression.getNodeMetaData(StaticTypesMarker.DELEGATION_METADATA) == null) {
+                addError("Not enough arguments found for a @DelegatesTo method call. Please check that you either use an explicit class or @DelegatesTo.Target with a correct id",arguments);
+              }
+            }
+          }
+        }
+      }
+      expression.visit(this);
+      if (expression.getNodeMetaData(StaticTypesMarker.DELEGATION_METADATA) != null) {
+        expression.removeNodeMetaData(StaticTypesMarker.DELEGATION_METADATA);
+      }
+    }
+  }
+}

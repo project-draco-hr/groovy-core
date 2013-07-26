@@ -1,0 +1,11 @@
+{
+  if (orig.isEmpty())   return orig;
+  List<AnnotationNode> ret=new ArrayList<AnnotationNode>(orig.size());
+  for (  AnnotationNode an : orig) {
+    AnnotationNode newAn=new AnnotationNode(an.getClassNode());
+    newAn.getMembers().putAll(an.getMembers());
+    newAn.setSourcePosition(aliasAnnotationUsage);
+    ret.add(newAn);
+  }
+  return ret;
+}

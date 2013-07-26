@@ -1,0 +1,23 @@
+{
+  List<Closure> onMethodSelection=eventHandlers.get("handleAmbiguousMethods");
+  List<MethodNode> methodList=nodes;
+  if (onMethodSelection != null) {
+    Iterator<Closure> iterator=onMethodSelection.iterator();
+    while (methodList.size() > 1 && iterator.hasNext()) {
+      final Closure closure=iterator.next();
+      Object result=safeCall(closure,methodList,origin);
+      if (result != null) {
+        if (result instanceof MethodNode) {
+          methodList=Collections.singletonList((MethodNode)result);
+        }
+ else         if (result instanceof Collection) {
+          methodList=new LinkedList<MethodNode>((Collection<? extends MethodNode>)result);
+        }
+ else {
+          throw new GroovyBugError("Type checking extension returned unexpected method list: " + result);
+        }
+      }
+    }
+  }
+  return methodList;
+}

@@ -1,0 +1,11 @@
+{
+  if (extensions instanceof ConstantExpression) {
+    visitor.addTypeCheckingExtension(new GroovyTypeCheckingExtensionSupport(visitor,extensions.getText(),compilationUnit));
+  }
+ else   if (extensions instanceof ListExpression) {
+    ListExpression list=(ListExpression)extensions;
+    for (    Expression ext : list.getExpressions()) {
+      addTypeCheckingExtensions(visitor,ext);
+    }
+  }
+}

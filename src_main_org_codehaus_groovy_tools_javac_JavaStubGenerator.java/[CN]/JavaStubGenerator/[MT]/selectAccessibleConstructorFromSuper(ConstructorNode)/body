@@ -1,9 +1,15 @@
 {
   ClassNode type=node.getDeclaringClass();
-  ClassNode superType=type.getSuperClass();
+  ClassNode superType=type.getUnresolvedSuperClass();
   for (  ConstructorNode c : superType.getDeclaredConstructors()) {
     if (c.isPublic() || c.isProtected()) {
-      return c.getParameters();
+      Parameter[] parameters=c.getParameters();
+      Parameter[] copy=new Parameter[parameters.length];
+      for (int i=0; i < copy.length; i++) {
+        Parameter orig=parameters[i];
+        copy[i]=new Parameter(orig.getOriginType().getPlainNodeReference(),orig.getName());
+      }
+      return copy;
     }
   }
   if (superType.isPrimaryClassNode()) {

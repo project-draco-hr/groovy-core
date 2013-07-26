@@ -1,34 +1,3 @@
 {
-  boolean hasExistingToString=hasDeclaredMethod(cNode,"toString",0);
-  if (hasExistingToString && hasDeclaredMethod(cNode,"_toString",0))   return;
-  final BlockStatement body=new BlockStatement();
-  final Expression result=new VariableExpression("_result");
-  final Expression init=new ConstructorCallExpression(STRINGBUILDER_TYPE,MethodCallExpression.NO_ARGUMENTS);
-  body.addStatement(declStatement(result,init));
-  final VariableExpression first=new VariableExpression("$toStringFirst");
-  body.addStatement(declStatement(first,ConstantExpression.TRUE));
-  body.addStatement(append(result,new ConstantExpression(cNode.getName() + "(")));
-  List<PropertyNode> pList=getInstanceProperties(cNode);
-  for (  PropertyNode pNode : pList) {
-    if (shouldSkip(pNode.getName(),excludes,includes))     continue;
-    String getterName="get" + Verifier.capitalize(pNode.getName());
-    Expression getter=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,MethodCallExpression.NO_ARGUMENTS);
-    appendValue(body,result,first,getter,pNode.getName(),includeNames,ignoreNulls);
-  }
-  if (includeFields) {
-    List<FieldNode> fList=new ArrayList<FieldNode>();
-    fList.addAll(getInstanceNonPropertyFields(cNode));
-    for (    FieldNode fNode : fList) {
-      if (shouldSkip(fNode.getName(),excludes,includes))       continue;
-      appendValue(body,result,first,new VariableExpression(fNode),fNode.getName(),includeNames,ignoreNulls);
-    }
-  }
-  if (includeSuper) {
-    appendCommaIfNotFirst(body,result,first);
-    appendPrefix(body,result,"super",includeNames);
-    body.addStatement(append(result,new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"toString",MethodCallExpression.NO_ARGUMENTS)));
-  }
-  body.addStatement(append(result,new ConstantExpression(")")));
-  body.addStatement(new ReturnStatement(new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS)));
-  cNode.addMethod(new MethodNode(hasExistingToString ? "_toString" : "toString",hasExistingToString ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.STRING_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body));
+  createToString(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,true);
 }

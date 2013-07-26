@@ -1,7 +1,7 @@
 {
   try {
     Options options=FileSystemCompiler.createCompilationOptions();
-    PosixParser cliParser=new PosixParser();
+    CommandLineParser cliParser=new GroovyInternalPosixParser();
     CommandLine cli;
     cli=cliParser.parse(options,commandLine);
     configuration=FileSystemCompiler.generateCompilerConfigurationFromOptions(cli);
@@ -16,7 +16,7 @@
       configuration.setTargetBytecode(targetBytecode);
     }
     if (!fileNameErrors) {
-      FileSystemCompiler.doCompilation(configuration,makeCompileUnit(),filenames,false);
+      FileSystemCompiler.doCompilation(configuration,makeCompileUnit(),filenames,forceLookupUnnamedFiles);
     }
   }
  catch (  Exception re) {
@@ -27,12 +27,16 @@
     StringWriter writer=new StringWriter();
     new ErrorReporter(t,false).write(new PrintWriter(writer));
     String message=writer.toString();
+    taskSuccess=false;
+    if (errorProperty != null) {
+      getProject().setNewProperty(errorProperty,"true");
+    }
     if (failOnError) {
-      log(message,Project.MSG_INFO);
+      log.info(message);
       throw new BuildException("Compilation Failed",t,getLocation());
     }
  else {
-      log(message,Project.MSG_ERR);
+      log.error(message);
     }
   }
 }

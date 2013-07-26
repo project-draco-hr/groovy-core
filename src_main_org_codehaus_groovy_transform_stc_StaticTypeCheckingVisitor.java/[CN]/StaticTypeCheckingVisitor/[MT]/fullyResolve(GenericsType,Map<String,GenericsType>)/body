@@ -1,0 +1,20 @@
+{
+  if (gt.isPlaceholder() && placeholders.containsKey(gt.getName()) && !placeholders.get(gt.getName()).isPlaceholder()) {
+    gt=placeholders.get(gt.getName());
+  }
+  ClassNode type=fullyResolveType(gt.getType(),placeholders);
+  ClassNode lowerBound=gt.getLowerBound();
+  if (lowerBound != null)   lowerBound=fullyResolveType(lowerBound,placeholders);
+  ClassNode[] upperBounds=gt.getUpperBounds();
+  if (upperBounds != null) {
+    ClassNode[] copy=new ClassNode[upperBounds.length];
+    for (int i=0, upperBoundsLength=upperBounds.length; i < upperBoundsLength; i++) {
+      final ClassNode upperBound=upperBounds[i];
+      copy[i]=fullyResolveType(upperBound,placeholders);
+    }
+    upperBounds=copy;
+  }
+  GenericsType genericsType=new GenericsType(type,upperBounds,lowerBound);
+  genericsType.setWildcard(gt.isWildcard());
+  return genericsType;
+}

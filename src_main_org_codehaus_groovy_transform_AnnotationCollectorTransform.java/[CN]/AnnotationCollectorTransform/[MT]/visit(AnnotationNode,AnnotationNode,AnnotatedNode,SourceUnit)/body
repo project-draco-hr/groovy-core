@@ -1,0 +1,17 @@
+{
+  List<AnnotationNode> ret=getTargetAnnotationList(collector,aliasAnnotationUsage,source);
+  Set<String> unusedNames=new HashSet<String>(aliasAnnotationUsage.getMembers().keySet());
+  for (  AnnotationNode an : ret) {
+    for (    String name : aliasAnnotationUsage.getMembers().keySet()) {
+      if (an.getClassNode().hasMethod(name,Parameter.EMPTY_ARRAY)) {
+        unusedNames.remove(name);
+        an.setMember(name,aliasAnnotationUsage.getMember(name));
+      }
+    }
+  }
+  if (unusedNames.size() > 0) {
+    String message="Annotation collector got unmapped names " + unusedNames.toString() + ".";
+    addError(message,aliasAnnotationUsage,source);
+  }
+  return ret;
+}

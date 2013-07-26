@@ -1,8 +1,8 @@
 {
   final Expression fieldExpr=new VariableExpression(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
-  if (initExpr == null)   initExpr=ConstantExpression.NULL;
+  if (initExpr == null)   initExpr=new ConstantExpression(null);
   Expression namedArgs=findArg(fNode.getName());
   Expression baseArgs=new VariableExpression("args");
-  return new IfStatement(equalsNullExpr(baseArgs),new IfStatement(equalsNullExpr(initExpr),new EmptyStatement(),assignStatement(fieldExpr,cloneCollectionExpr(initExpr))),new IfStatement(equalsNullExpr(namedArgs),new IfStatement(isTrueExpr(new MethodCallExpression(baseArgs,"containsKey",new ConstantExpression(fNode.getName()))),assignStatement(fieldExpr,namedArgs),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs))),new IfStatement(isOneExpr(new MethodCallExpression(baseArgs,"size",MethodCallExpression.NO_ARGUMENTS)),assignStatement(fieldExpr,cloneCollectionExpr(namedArgs)),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs)))));
+  return new IfStatement(equalsNullExpr(baseArgs),new IfStatement(equalsNullExpr(initExpr),EmptyStatement.INSTANCE,assignStatement(fieldExpr,cloneCollectionExpr(initExpr))),new IfStatement(equalsNullExpr(namedArgs),new IfStatement(isTrueExpr(new MethodCallExpression(baseArgs,"containsKey",new ConstantExpression(fNode.getName()))),assignStatement(fieldExpr,namedArgs),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs))),new IfStatement(isOneExpr(new MethodCallExpression(baseArgs,"size",MethodCallExpression.NO_ARGUMENTS)),assignStatement(fieldExpr,cloneCollectionExpr(namedArgs)),assignStatement(fieldExpr,cloneCollectionExpr(baseArgs)))));
 }

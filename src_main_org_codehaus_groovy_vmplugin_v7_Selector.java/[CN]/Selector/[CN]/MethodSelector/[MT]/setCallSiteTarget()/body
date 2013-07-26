@@ -1,0 +1,21 @@
+{
+  if (!setNullForSafeNavigation() && !setInterceptor()) {
+    getMetaClass();
+    if (LOG_ENABLED)     LOG.info("meta class is " + mc);
+    setSelectionBase();
+    MetaClassImpl mci=getMetaClassImpl(mc,callType != CALL_TYPES.GET);
+    chooseMeta(mci);
+    setHandleForMetaMethod();
+    setMetaClassCallHandleIfNedded(mci != null);
+    correctParameterLength();
+    correctCoerce();
+    correctWrapping();
+    correctNullReceiver();
+    correctSpreading();
+    if (LOG_ENABLED)     LOG.info("casting explicit from " + handle.type() + " to "+ targetType);
+    handle=MethodHandles.explicitCastArguments(handle,targetType);
+    addExceptionHandler();
+  }
+  setGuards(args[0]);
+  doCallSiteTargetSet();
+}

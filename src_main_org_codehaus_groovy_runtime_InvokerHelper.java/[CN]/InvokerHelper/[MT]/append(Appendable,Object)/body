@@ -1,0 +1,40 @@
+{
+  if (object instanceof String) {
+    out.append((String)object);
+  }
+ else   if (object instanceof Object[]) {
+    out.append(toArrayString((Object[])object));
+  }
+ else   if (object instanceof Map) {
+    out.append(toMapString((Map)object));
+  }
+ else   if (object instanceof Collection) {
+    out.append(toListString((Collection)object));
+  }
+ else   if (object instanceof Writable) {
+    Writable writable=(Writable)object;
+    StringWriter stringWriter=new StringWriter();
+    writable.writeTo(stringWriter);
+    out.append(stringWriter.toString());
+  }
+ else   if (object instanceof InputStream || object instanceof Reader) {
+    Reader reader;
+    if (object instanceof InputStream) {
+      reader=new InputStreamReader((InputStream)object);
+    }
+ else {
+      reader=(Reader)object;
+    }
+    char[] chars=new char[8192];
+    int i;
+    while ((i=reader.read(chars)) != -1) {
+      for (int j=0; j < i; j++) {
+        out.append(chars[j]);
+      }
+    }
+    reader.close();
+  }
+ else {
+    out.append(toString(object));
+  }
+}

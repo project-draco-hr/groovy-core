@@ -1,4 +1,10 @@
 {
-  if (!node.isPrimaryClassNode())   return;
+  if (node == null)   return;
+  String name=node.getName();
+  if (!precompiledDependencies.containsKey(name) && !node.isPrimaryClassNode()) {
+    return;
+  }
   current.add(node.getName());
+  addToCache(node.getSuperClass());
+  addToCache(node.getInterfaces());
 }

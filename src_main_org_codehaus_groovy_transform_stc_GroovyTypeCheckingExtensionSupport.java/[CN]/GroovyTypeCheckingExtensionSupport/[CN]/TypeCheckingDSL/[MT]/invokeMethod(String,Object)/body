@@ -1,0 +1,31 @@
+{
+  if (name.startsWith("is") && name.endsWith("Expression") && args instanceof Object[]&& ((Object[])args).length == 1) {
+    String type=name.substring(2);
+    Object target=((Object[])args)[0];
+    if (target == null)     return false;
+    try {
+      Class typeClass=Class.forName("org.codehaus.groovy.ast.expr." + type);
+      return typeClass.isAssignableFrom(target.getClass());
+    }
+ catch (    ClassNotFoundException e) {
+      return false;
+    }
+  }
+  if (args instanceof Object[] && ((Object[])args).length == 1 && ((Object[])args)[0] instanceof Closure) {
+    Object[] argsArray=(Object[])args;
+    String methodName=METHOD_ALIASES.get(name);
+    if (methodName == null) {
+      return InvokerHelper.invokeMethod(extension,name,args);
+    }
+    List<Closure> closures=extension.eventHandlers.get(methodName);
+    if (closures == null) {
+      closures=new LinkedList<Closure>();
+      extension.eventHandlers.put(methodName,closures);
+    }
+    closures.add((Closure)argsArray[0]);
+    return null;
+  }
+ else {
+    return InvokerHelper.invokeMethod(extension,name,args);
+  }
+}

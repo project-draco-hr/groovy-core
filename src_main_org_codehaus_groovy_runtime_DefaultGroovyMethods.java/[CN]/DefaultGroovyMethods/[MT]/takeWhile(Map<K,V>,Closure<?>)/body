@@ -3,8 +3,9 @@
     return createSimilarMap(self);
   }
   Map<K,V> ret=createSimilarMap(self);
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(condition);
   for (  Map.Entry<K,V> entry : self.entrySet()) {
-    if (!DefaultTypeTransformation.castToBoolean(callClosureForMapEntry(condition,entry)))     break;
+    if (!bcw.callForMap(entry))     break;
     ret.put(entry.getKey(),entry.getValue());
   }
   return ret;

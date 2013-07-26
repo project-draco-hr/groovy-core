@@ -1,0 +1,20 @@
+{
+  if (file.isDirectory()) {
+    for (    File f : file.listFiles()) {
+      delete(f);
+    }
+  }
+  if (!file.delete()) {
+    try {
+      Thread.sleep(1000);
+    }
+ catch (    InterruptedException ignored) {
+    }
+    if (!file.delete()) {
+      throw new RuntimeException(String.format("Failed to delete [%s]",file.getAbsolutePath()));
+    }
+  }
+  if (file.exists()) {
+    throw new RuntimeException(String.format("[%s] is not deleted",file.getAbsolutePath()));
+  }
+}

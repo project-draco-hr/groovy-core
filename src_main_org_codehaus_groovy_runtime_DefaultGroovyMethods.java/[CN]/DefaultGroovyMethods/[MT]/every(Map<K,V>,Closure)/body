@@ -1,6 +1,7 @@
 {
-  for (  Map.Entry entry : self.entrySet()) {
-    if (!DefaultTypeTransformation.castToBoolean(callClosureForMapEntry(closure,entry))) {
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
+  for (  Map.Entry<K,V> entry : self.entrySet()) {
+    if (!bcw.callForMap(entry)) {
       return false;
     }
   }

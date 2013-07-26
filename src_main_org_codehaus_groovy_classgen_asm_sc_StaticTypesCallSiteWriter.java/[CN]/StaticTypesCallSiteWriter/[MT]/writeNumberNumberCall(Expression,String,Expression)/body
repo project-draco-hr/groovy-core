@@ -2,10 +2,11 @@
   OperandStack operandStack=controller.getOperandStack();
   int m1=operandStack.getStackLength();
   prepareSiteAndReceiver(receiver,message,false,controller.getCompileStack().isLHS());
-  controller.getOperandStack().doGroovyCast(ClassHelper.Number_TYPE);
+  controller.getOperandStack().doGroovyCast(Number_TYPE);
   visitBoxedArgument(arguments);
+  controller.getOperandStack().doGroovyCast(Number_TYPE);
   int m2=operandStack.getStackLength();
   MethodVisitor mv=controller.getMethodVisitor();
   mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/dgmimpl/NumberNumber" + MetaClassHelper.capitalize(message),message,"(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
-  controller.getOperandStack().replace(ClassHelper.Number_TYPE,m2 - m1);
+  controller.getOperandStack().replace(Number_TYPE,m2 - m1);
 }

@@ -1,10 +1,4 @@
 {
-  ErrorCollector currentCollector=errorCollector;
-  errorCollector=new ErrorCollector(new CompilerConfiguration());
-  try {
-    visitMethod(directMethodCallCandidate);
-  }
-  finally {
-    errorCollector=currentCollector;
-  }
+  ErrorCollector collector=new ErrorCollector(typeCheckingContext.getErrorCollector().getConfiguration());
+  startMethodInference(directMethodCallCandidate,collector);
 }

@@ -10,7 +10,7 @@
   ClassNode declaringClass=parent.getDeclaringClass();
   if (parent instanceof FieldNode) {
     if ((((FieldNode)parent).getModifiers() & Opcodes.ACC_FINAL) != 0) {
-      source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a final property.",node.getLineNumber(),node.getColumnNumber()),source));
+      source.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException("@groovy.beans.Bindable cannot annotate a final property.",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()),source));
     }
     if (VetoableASTTransformation.hasVetoableAnnotation(parent.getDeclaringClass())) {
       return;

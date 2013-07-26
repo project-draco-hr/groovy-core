@@ -3,7 +3,7 @@
   for (  Map.Entry<VariableExpression,ClassNode> entry : assignedVars.entrySet()) {
     Variable key=findTargetVariable(entry.getKey());
     if (key instanceof VariableExpression) {
-      ClassNode origType=varOrigType.get((VariableExpression)key);
+      ClassNode origType=varOrigType.get(key);
       ClassNode newType=entry.getValue();
       if (varOrigType.containsKey(key) && (origType == null || !newType.equals(origType))) {
         return true;

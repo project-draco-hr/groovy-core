@@ -1,0 +1,21 @@
+{
+  List<Closure> onMethodSelection=eventHandlers.get("handleMissingMethod");
+  List<MethodNode> methodList=new LinkedList<MethodNode>();
+  if (onMethodSelection != null) {
+    for (    Closure closure : onMethodSelection) {
+      Object result=safeCall(closure,receiver,name,argumentList,argumentTypes,call);
+      if (result != null) {
+        if (result instanceof MethodNode) {
+          methodList.add((MethodNode)result);
+        }
+ else         if (result instanceof Collection) {
+          methodList.addAll((Collection<? extends MethodNode>)result);
+        }
+ else {
+          throw new GroovyBugError("Type checking extension returned unexpected method list: " + result);
+        }
+      }
+    }
+  }
+  return methodList;
+}

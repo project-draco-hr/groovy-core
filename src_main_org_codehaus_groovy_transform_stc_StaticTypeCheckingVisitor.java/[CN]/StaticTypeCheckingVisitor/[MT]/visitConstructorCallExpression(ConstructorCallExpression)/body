@@ -1,25 +1,29 @@
 {
   super.visitConstructorCallExpression(call);
-  ClassNode receiver=call.isThisCall() ? classNode : call.isSuperCall() ? classNode.getSuperClass() : call.getType();
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
+  }
+  ClassNode receiver=call.isThisCall() ? typeCheckingContext.getEnclosingClassNode() : call.isSuperCall() ? typeCheckingContext.getEnclosingClassNode().getSuperClass() : call.getType();
   Expression arguments=call.getArguments();
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(arguments));
-  MethodNode node=findMethodOrFail(call,receiver,"<init>",args);
+  ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(arguments);
+  checkForbiddenSpreadArgument(argumentList);
+  ClassNode[] args=getArgumentTypes(argumentList);
+  MethodNode node=null;
+  if (args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE) && findMethod(receiver,"<init>",ClassNode.EMPTY_ARRAY).size() == 1 && findMethod(receiver,"<init>",args).isEmpty()) {
+    node=typeCheckMapConstructor(call,receiver,arguments);
+    if (node != null) {
+      storeTargetMethod(call,node);
+      extension.afterMethodCall(call);
+      return;
+    }
+  }
+  node=findMethodOrFail(call,receiver,"<init>",args);
   if (node != null) {
     if (node.getParameters().length == 0 && args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE)) {
-      if (arguments instanceof TupleExpression) {
-        TupleExpression texp=(TupleExpression)arguments;
-        List<Expression> expressions=texp.getExpressions();
-        if (expressions.size() == 1) {
-          Expression expression=expressions.get(0);
-          if (expression instanceof MapExpression) {
-            MapExpression argList=(MapExpression)expression;
-            checkGroovyConstructorMap(call,receiver,argList);
-            node=new ConstructorNode(Opcodes.ACC_PUBLIC,new Parameter[]{new Parameter(MAP_TYPE,"map")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
-            node.setDeclaringClass(receiver);
-          }
-        }
-      }
+      node=typeCheckMapConstructor(call,receiver,arguments);
     }
-    storeTargetMethod(call,node);
+    if (node != null)     storeTargetMethod(call,node);
   }
+  extension.afterMethodCall(call);
 }

@@ -8,7 +8,7 @@
   if ((genericsTypes == null || genericsTypes.length == 0 || (genericsTypes.length == 1 && OBJECT_TYPE.equals(genericsTypes[0].getType()))) && (!expressions.isEmpty())) {
     List<ClassNode> nodes=new LinkedList<ClassNode>();
     for (    Expression expression : expressions) {
-      if (expression instanceof ConstantExpression && ((ConstantExpression)expression).getValue() == null) {
+      if (isNullConstant(expression)) {
       }
  else {
         nodes.add(getType(expression));

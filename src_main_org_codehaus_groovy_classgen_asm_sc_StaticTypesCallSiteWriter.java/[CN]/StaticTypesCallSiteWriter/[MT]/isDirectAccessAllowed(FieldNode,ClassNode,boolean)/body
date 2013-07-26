@@ -1,0 +1,12 @@
+{
+  ClassNode declaringClass=a.getDeclaringClass().redirect();
+  ClassNode receiverType=receiver.redirect();
+  if (declaringClass.equals(receiverType))   return true;
+  if (receiverType instanceof InnerClassNode) {
+    while (receiverType != null && receiverType instanceof InnerClassNode) {
+      if (declaringClass.equals(receiverType))       return true;
+      receiverType=receiverType.getOuterClass();
+    }
+  }
+  return a.isPublic() || (a.isProtected() && isSamePackage);
+}

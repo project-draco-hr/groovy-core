@@ -16,6 +16,12 @@
     }
     if (leftExpression instanceof VariableExpression) {
       ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
+      if (isPrimitiveType(right) && initialType.isDerivedFrom(Number_TYPE)) {
+        return getWrapper(right);
+      }
+      if (isPrimitiveType(initialType) && rightRedirect.isDerivedFrom(Number_TYPE)) {
+        return getUnwrapper(right);
+      }
       if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)) {
         return initialType;
       }
@@ -26,10 +32,13 @@
     return boolean_TYPE;
   }
  else   if (isArrayOp(op)) {
-    if (ClassHelper.STRING_TYPE.equals(left)) {
-      return ClassHelper.STRING_TYPE;
+    BinaryExpression newExpr=new BinaryExpression(expr.getLeftExpression(),expr.getOperation(),expr.getRightExpression());
+    newExpr.setSourcePosition(expr);
+    MethodNode method=findMethodOrFail(newExpr,left.getPlainNodeReference(),"getAt",right.getPlainNodeReference());
+    if (method != null && implementsInterfaceOrIsSubclassOf(right,RANGE_TYPE)) {
+      return inferReturnTypeGenerics(left,method,expr.getRightExpression());
     }
-    return inferComponentType(left);
+    return method != null ? inferComponentType(left,right) : null;
   }
  else   if (op == FIND_REGEX) {
     return Matcher_TYPE;
@@ -46,7 +55,7 @@
     }
  else     if (isBitOperator(op)) {
       if (isIntCategory(leftRedirect) && isIntCategory(rightRedirect))       return int_TYPE;
-      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return Long_TYPE;
+      if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return long_TYPE;
       if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
     }
  else     if (isCompareToBoolean(op) || op == COMPARE_EQUAL) {
@@ -57,7 +66,7 @@
   if (isShiftOperation(operationName) && isNumberCategory(leftRedirect) && (isIntCategory(rightRedirect) || isLongCategory(rightRedirect))) {
     return leftRedirect;
   }
-  if (isNumberCategory(getWrapper(leftRedirect)) && (DIVIDE == op || DIVIDE_EQUAL == op)) {
+  if (isNumberCategory(getWrapper(rightRedirect)) && (isNumberCategory(getWrapper(leftRedirect)) && (DIVIDE == op || DIVIDE_EQUAL == op))) {
     if (isFloatingCategory(leftRedirect) || isFloatingCategory(rightRedirect)) {
       if (!isPrimitiveType(leftRedirect) || !isPrimitiveType(rightRedirect)) {
         return Double_TYPE;
@@ -74,11 +83,15 @@
       return getGroupOperationResultType(leftRedirect,rightRedirect);
     }
   }
-  if (MOD == op || MOD_EQUAL == op) {
+  if (isNumberCategory(getWrapper(rightRedirect)) && isNumberCategory(getWrapper(leftRedirect)) && (MOD == op || MOD_EQUAL == op)) {
     return leftRedirect;
+  }
+  if (leftExpression instanceof ClassExpression) {
+    left=CLASS_Type.getPlainNodeReference();
   }
   MethodNode method=findMethodOrFail(expr,left,operationName,right);
   if (method != null) {
+    storeTargetMethod(expr,method);
     typeCheckMethodsWithGenerics(left,new ClassNode[]{right},method,expr);
     if (isAssignment(op))     return left;
     if (isCompareToBoolean(op))     return boolean_TYPE;

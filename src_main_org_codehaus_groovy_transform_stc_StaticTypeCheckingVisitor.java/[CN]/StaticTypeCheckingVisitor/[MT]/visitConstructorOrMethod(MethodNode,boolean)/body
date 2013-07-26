@@ -1,9 +1,10 @@
 {
-  MethodNode old=this.methodNode;
-  this.methodNode=node;
-  super.visitConstructorOrMethod(node,isConstructor);
+  typeCheckingContext.pushEnclosingMethod(node);
+  if (!isSkipMode(node) && !shouldSkipMethodNode(node)) {
+    super.visitConstructorOrMethod(node,isConstructor);
+  }
   if (!isConstructor) {
     returnAdder.visitMethod(node);
   }
-  this.methodNode=old;
+  typeCheckingContext.popEnclosingMethod();
 }

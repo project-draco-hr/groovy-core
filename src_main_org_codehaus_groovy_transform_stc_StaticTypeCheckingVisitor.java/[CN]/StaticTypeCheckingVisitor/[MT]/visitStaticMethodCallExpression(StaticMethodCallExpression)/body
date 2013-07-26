@@ -4,69 +4,64 @@
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call);
     return;
   }
-  final ClassNode rememberLastItType=lastImplicitItType;
-  Expression callArguments=call.getArguments();
-  boolean isWithCall=isWithCall(name,callArguments);
-  if (!isWithCall) {
-    callArguments.visit(this);
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
   }
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
+  final ClassNode rememberLastItType=typeCheckingContext.lastImplicitItType;
+  Expression callArguments=call.getArguments();
+  ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
+  checkForbiddenSpreadArgument(argumentList);
+  boolean isWithCall=isWithCall(name,callArguments);
+  visitMethodCallArguments(argumentList,false,null);
+  ClassNode[] args=getArgumentTypes(argumentList);
   final ClassNode receiver=call.getOwnerType();
   if (isWithCall) {
-    withReceiverList.add(0,receiver);
-    lastImplicitItType=receiver;
-    if (callArguments instanceof ArgumentListExpression) {
-      ArgumentListExpression argList=(ArgumentListExpression)callArguments;
-      ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
-      Parameter[] parameters=closure.getParameters();
-      if (parameters.length > 1) {
-        addStaticTypeError("Unexpected number of parameters for a with call",argList);
-      }
- else       if (parameters.length == 1) {
-        Parameter param=parameters[0];
-        if (!param.isDynamicTyped() && !isAssignableTo(receiver,param.getType().redirect())) {
-          addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
-        }
-      }
-    }
+    typeCheckingContext.lastImplicitItType=receiver;
+    checkClosureParameters(callArguments,receiver);
   }
   try {
     if (isWithCall) {
       callArguments.visit(this);
     }
-    List<ClassNode> receivers=new LinkedList<ClassNode>();
-    if (!withReceiverList.isEmpty())     receivers.addAll(withReceiverList);
-    receivers.add(receiver);
+    List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
+    addReceivers(receivers,makeOwnerList(new ClassExpression(receiver)),false);
     List<MethodNode> mn=null;
-    ClassNode chosenReceiver=null;
-    for (    ClassNode currentReceiver : receivers) {
-      mn=findMethod(currentReceiver,name,args);
+    Receiver<String> chosenReceiver=null;
+    for (    Receiver<String> currentReceiver : receivers) {
+      mn=findMethod(currentReceiver.getType(),name,args);
       if (!mn.isEmpty()) {
-        if (mn.size() == 1)         typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
+        if (mn.size() == 1)         typeCheckMethodsWithGenerics(currentReceiver.getType(),args,mn.get(0),call);
         chosenReceiver=currentReceiver;
         break;
       }
     }
     if (mn.isEmpty()) {
-      addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),call);
+      mn=extension.handleMissingMethod(receiver,name,argumentList,args,call);
+    }
+    boolean callArgsVisited=false;
+    if (mn.isEmpty()) {
+      addNoMatchingMethodError(receiver,name,args,call);
     }
  else {
+      mn=disambiguateMethods(mn,call);
       if (mn.size() == 1) {
         MethodNode directMethodCallCandidate=mn.get(0);
-        ClassNode currentClassNode=classNode;
-        classNode=directMethodCallCandidate.getDeclaringClass();
-        for (        ClassNode node : source.getAST().getClasses()) {
-          if (isClassInnerClassOrEqualTo(classNode,node)) {
+        typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
+        for (        ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
+          if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
             silentlyVisitMethodNode(directMethodCallCandidate);
             break;
           }
         }
         pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-        classNode=currentClassNode;
+        typeCheckingContext.popEnclosingClassNode();
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
-          ClassNode irtg=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+          visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+          ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
           returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
+          callArgsVisited=true;
         }
         storeType(call,returnType);
         storeTargetMethod(call,directMethodCallCandidate);
@@ -74,12 +69,15 @@
  else {
         addAmbiguousErrorMessage(mn,name,args,call);
       }
+      if (!callArgsVisited) {
+        visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+      }
     }
   }
   finally {
     if (isWithCall) {
-      lastImplicitItType=rememberLastItType;
-      withReceiverList.removeFirst();
+      typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
+    extension.afterMethodCall(call);
   }
 }

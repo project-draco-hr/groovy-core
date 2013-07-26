@@ -1,9 +1,12 @@
 {
   CompilationUnit cu=super.createCompilationUnit(configuration,source);
-  getLocalCompilationUnit().set(cu);
-  final StringSetMap cache=getDepCache().get();
+  LocalData local=getLocalData().get();
+  local.cu=cu;
+  final StringSetMap cache=local.dependencyCache;
+  final Map<String,String> precompiledEntries=local.precompiledEntries;
   for (  String depSourcePath : cache.get(".")) {
     try {
+      cache.get(depSourcePath);
       cu.addSource(getResourceConnection(depSourcePath).getURL());
     }
  catch (    ResourceException e) {
@@ -13,11 +16,48 @@
   cu.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
     @Override public void call(    final SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
       if (classNode instanceof InnerClassNode)       return;
-      DependencyTracker dt=new DependencyTracker(source,cache);
+      DependencyTracker dt=new DependencyTracker(source,cache,precompiledEntries);
       dt.visitClass(classNode);
     }
   }
 ,Phases.CLASS_GENERATION);
+  cu.setClassNodeResolver(new ClassNodeResolver(){
+    @Override public LookupResult findClassNode(    String origName,    CompilationUnit compilationUnit){
+      CompilerConfiguration cc=compilationUnit.getConfiguration();
+      String name=origName.replace('.','/');
+      for (      String ext : cc.getScriptExtensions()) {
+        try {
+          String finalName=name + "." + ext;
+          URLConnection conn=rc.getResourceConnection(finalName);
+          URL url=conn.getURL();
+          String path=url.toExternalForm();
+          ScriptCacheEntry entry=scriptCache.get(path);
+          Class clazz=null;
+          if (entry != null)           clazz=entry.scriptClass;
+          if (GroovyScriptEngine.this.isSourceNewer(entry)) {
+            try {
+              SourceUnit su=compilationUnit.addSource(url);
+              return new LookupResult(su,null);
+            }
+  finally {
+              forceClose(conn);
+            }
+          }
+ else {
+            precompiledEntries.put(origName,path);
+          }
+          if (clazz != null) {
+            ClassNode cn=new ClassNode(clazz);
+            return new LookupResult(null,cn);
+          }
+        }
+ catch (        ResourceException re) {
+        }
+      }
+      return super.findClassNode(origName,compilationUnit);
+    }
+  }
+);
   final List<CompilationCustomizer> customizers=config.getCompilationCustomizers();
   if (customizers != null) {
     for (    CompilationCustomizer customizer : customizers) {

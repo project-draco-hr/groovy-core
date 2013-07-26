@@ -1,27 +1,34 @@
 {
   StaticCompilationTransformer transformer=new StaticCompilationTransformer(source);
+  AnnotationNode annotationInformation=(AnnotationNode)nodes[0];
   AnnotatedNode node=(AnnotatedNode)nodes[1];
   StaticTypeCheckingVisitor visitor=null;
+  Map<String,Expression> members=annotationInformation.getMembers();
+  Expression extensions=members.get("extensions");
   if (node instanceof ClassNode) {
     ClassNode classNode=(ClassNode)node;
-    visitor=newVisitor(source,classNode,null);
+    visitor=newVisitor(source,classNode);
+    addTypeCheckingExtensions(visitor,extensions);
     classNode.putNodeMetaData(WriterControllerFactory.class,factory);
     node.putNodeMetaData(STATIC_COMPILE_NODE,!visitor.isSkipMode(node));
+    visitor.initialize();
     visitor.visitClass(classNode);
   }
  else   if (node instanceof MethodNode) {
     MethodNode methodNode=(MethodNode)node;
     ClassNode declaringClass=methodNode.getDeclaringClass();
-    visitor=newVisitor(source,declaringClass,null);
+    visitor=newVisitor(source,declaringClass);
+    addTypeCheckingExtensions(visitor,extensions);
     methodNode.putNodeMetaData(STATIC_COMPILE_NODE,!visitor.isSkipMode(node));
     if (declaringClass.getNodeMetaData(WriterControllerFactory.class) == null) {
       declaringClass.putNodeMetaData(WriterControllerFactory.class,factory);
     }
     visitor.setMethodsToBeVisited(Collections.singleton(methodNode));
+    visitor.initialize();
     visitor.visitMethod(methodNode);
   }
  else {
-    source.addError(new SyntaxException(STATIC_ERROR_PREFIX + "Unimplemented node type",node.getLineNumber(),node.getColumnNumber()));
+    source.addError(new SyntaxException(STATIC_ERROR_PREFIX + "Unimplemented node type",node.getLineNumber(),node.getColumnNumber(),node.getLastLineNumber(),node.getLastColumnNumber()));
   }
   if (visitor != null) {
     visitor.performSecondPass();

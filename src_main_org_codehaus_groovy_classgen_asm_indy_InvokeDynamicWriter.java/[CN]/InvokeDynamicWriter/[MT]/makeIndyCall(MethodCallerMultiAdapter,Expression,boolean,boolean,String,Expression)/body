@@ -1,29 +1,30 @@
 {
-  CompileStack compileStack=controller.getCompileStack();
   OperandStack operandStack=controller.getOperandStack();
-  compileStack.pushLHS(false);
-  String sig="(";
-  compileStack.pushImplicitThis(implicitThis);
-  receiver.visit(controller.getAcg());
-  compileStack.popImplicitThis();
-  sig+=getTypeDescription(operandStack.getTopOperand());
+  String sig=prepareIndyCall(receiver,implicitThis);
   int numberOfArguments=1;
   ArgumentListExpression ae=makeArgumentList(arguments);
-  for (  Expression arg : ae.getExpressions()) {
-    arg.visit(controller.getAcg());
-    if (arg instanceof CastExpression) {
-      operandStack.box();
-      controller.getAcg().loadWrapper(arg);
-      sig+=getTypeDescription(Wrapper.class);
-    }
+  boolean containsSpreadExpression=AsmClassGenerator.containsSpreadExpression(arguments);
+  if (containsSpreadExpression) {
+    controller.getAcg().despreadList(ae.getExpressions(),true);
+    sig+=getTypeDescription(Object[].class);
+  }
  else {
-      sig+=getTypeDescription(operandStack.getTopOperand());
+    for (    Expression arg : ae.getExpressions()) {
+      arg.visit(controller.getAcg());
+      if (arg instanceof CastExpression) {
+        operandStack.box();
+        controller.getAcg().loadWrapper(arg);
+        sig+=getTypeDescription(Wrapper.class);
+      }
+ else {
+        sig+=getTypeDescription(operandStack.getTopOperand());
+      }
+      numberOfArguments++;
     }
-    numberOfArguments++;
   }
   sig+=")Ljava/lang/Object;";
-  Handle bsmHandle=getBsmHandle(adapter,safe);
-  controller.getMethodVisitor().visitInvokeDynamicInsn(methodName,sig,bsmHandle);
-  operandStack.replace(ClassHelper.OBJECT_TYPE,numberOfArguments);
-  compileStack.popLHS();
+  String callSiteName=METHOD.getCallSiteName();
+  if (adapter == null)   callSiteName=INIT.getCallSiteName();
+  int flags=getMethodCallFlags(adapter,safe,containsSpreadExpression);
+  finishIndyCall(BSM,callSiteName,sig,numberOfArguments,methodName,flags);
 }

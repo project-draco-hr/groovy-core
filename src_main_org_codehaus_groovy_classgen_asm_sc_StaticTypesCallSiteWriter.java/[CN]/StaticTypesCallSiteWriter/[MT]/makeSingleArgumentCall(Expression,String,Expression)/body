@@ -3,7 +3,7 @@
   ClassNode classNode=controller.getClassNode();
   ClassNode rType=typeChooser.resolveType(receiver,classNode);
   ClassNode aType=typeChooser.resolveType(arguments,classNode);
-  if (ClassHelper.getWrapper(rType).isDerivedFrom(ClassHelper.Number_TYPE) && ClassHelper.getWrapper(aType).isDerivedFrom(ClassHelper.Number_TYPE)) {
+  if (getWrapper(rType).isDerivedFrom(Number_TYPE) && getWrapper(aType).isDerivedFrom(Number_TYPE)) {
     if ("plus".equals(message) || "minus".equals(message) || "multiply".equals(message)|| "div".equals(message)) {
       writeNumberNumberCall(receiver,message,arguments);
       return;
@@ -13,22 +13,46 @@
       return;
     }
   }
- else   if (ClassHelper.STRING_TYPE.equals(rType) && "plus".equals(message)) {
+ else   if (STRING_TYPE.equals(rType) && "plus".equals(message)) {
     writeStringPlusCall(receiver,message,arguments);
     return;
   }
- else   if (rType.isArray() && "getAt".equals(message)) {
+ else   if (rType.isArray() && "getAt".equals(message) && getWrapper(aType).isDerivedFrom(Number_TYPE)) {
     writeArrayGet(receiver,arguments,rType,aType);
     return;
   }
+  ClassNode current=rType;
+  MethodNode getAtNode=null;
+  while (current != null && getAtNode == null) {
+    getAtNode=current.getMethod("getAt",new Parameter[]{new Parameter(aType,"index")});
+    current=current.getSuperClass();
+  }
+  if (getAtNode != null) {
+    MethodCallExpression call=new MethodCallExpression(receiver,"getAt",arguments);
+    call.setSourcePosition(arguments);
+    call.setImplicitThis(false);
+    call.setMethodTarget(getAtNode);
+    call.visit(controller.getAcg());
+    return;
+  }
   ClassNode[] args={aType};
-  boolean acceptAnyMethod=ClassHelper.MAP_TYPE.equals(rType) || rType.implementsInterface(ClassHelper.MAP_TYPE) || ClassHelper.LIST_TYPE.equals(rType)|| rType.implementsInterface(ClassHelper.LIST_TYPE);
-  List<MethodNode> nodes=StaticTypeCheckingSupport.findDGMMethodsByNameAndArguments(rType,message,args);
+  boolean acceptAnyMethod=MAP_TYPE.equals(rType) || rType.implementsInterface(MAP_TYPE) || LIST_TYPE.equals(rType)|| rType.implementsInterface(LIST_TYPE);
+  List<MethodNode> nodes=StaticTypeCheckingSupport.findDGMMethodsByNameAndArguments(controller.getSourceUnit().getClassLoader(),rType,message,args);
   nodes=StaticTypeCheckingSupport.chooseBestMethod(rType,nodes,args);
   if (nodes.size() == 1 || nodes.size() > 1 && acceptAnyMethod) {
     MethodNode methodNode=nodes.get(0);
     MethodCallExpression call=new MethodCallExpression(receiver,message,arguments);
+    call.setSourcePosition(arguments);
+    call.setImplicitThis(false);
     call.setMethodTarget(methodNode);
+    call.visit(controller.getAcg());
+    return;
+  }
+  if (implementsInterfaceOrIsSubclassOf(rType,MAP_TYPE)) {
+    MethodCallExpression call=new MethodCallExpression(receiver,"get",arguments);
+    call.setMethodTarget(MAP_GET_METHOD);
+    call.setSourcePosition(arguments);
+    call.setImplicitThis(false);
     call.visit(controller.getAcg());
     return;
   }

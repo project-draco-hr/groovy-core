@@ -1,9 +1,10 @@
 {
   Iterator iter=InvokerHelper.asIterator(self);
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(condition);
   boolean result=false;
   while (iter.hasNext()) {
     Object value=iter.next();
-    if (!DefaultTypeTransformation.castToBoolean(condition.call(value))) {
+    if (!bcw.call(value)) {
       iter.remove();
       result=true;
     }

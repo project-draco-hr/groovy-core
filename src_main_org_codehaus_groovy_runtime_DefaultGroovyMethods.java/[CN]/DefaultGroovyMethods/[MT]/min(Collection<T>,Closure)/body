@@ -1,16 +1,3 @@
 {
-  int params=closure.getMaximumNumberOfParameters();
-  if (params != 1) {
-    return min(self,new ClosureComparator<T>(closure));
-  }
-  T answer=null;
-  Object answer_value=null;
-  for (  T item : self) {
-    Object value=closure.call(item);
-    if (answer == null || ScriptBytecodeAdapter.compareLessThan(value,answer_value)) {
-      answer=item;
-      answer_value=value;
-    }
-  }
-  return answer;
+  return min((Iterable<T>)self,closure);
 }

@@ -5,20 +5,16 @@
       addStaticTypeError("Dynamic keys in map-style constructors are unsupported in static type checking",keyExpr);
     }
  else {
-      String property=keyExpr.getText();
-      ClassNode currentNode=receiverType;
-      PropertyNode propertyNode=null;
-      while (propertyNode == null && currentNode != null) {
-        propertyNode=currentNode.getProperty(property);
-        currentNode=currentNode.getSuperClass();
+      AtomicReference<ClassNode> lookup=new AtomicReference<ClassNode>();
+      boolean hasProperty=existsProperty(new PropertyExpression(new VariableExpression("_",receiverType),keyExpr.getText()),false,new PropertyLookupVisitor(lookup));
+      if (!hasProperty) {
+        addStaticTypeError("No such property: " + keyExpr.getText() + " for class: "+ receiverType.getName(),receiver);
       }
-      if (propertyNode == null) {
-        addStaticTypeError("No such property: " + property + " for class: "+ receiverType.getName(),receiver);
-      }
- else       if (propertyNode != null) {
+ else {
         ClassNode valueType=getType(entryExpression.getValueExpression());
-        if (!isAssignableTo(propertyNode.getType(),valueType)) {
-          addAssignmentError(propertyNode.getType(),valueType,entryExpression);
+        ClassNode toBeAssignedTo=lookup.get();
+        if (!isAssignableTo(valueType,toBeAssignedTo) && !extension.handleIncompatibleAssignment(toBeAssignedTo,valueType,entryExpression)) {
+          addAssignmentError(toBeAssignedTo,valueType,entryExpression);
         }
       }
     }

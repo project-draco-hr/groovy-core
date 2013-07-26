@@ -1,29 +1,39 @@
 {
   ClassNode returnType=method.getReturnType();
-  if (method instanceof ExtensionMethodNode && (returnType.isGenericsPlaceHolder() || returnType.isArray() && returnType.getComponentType().isGenericsPlaceHolder())) {
+  if (method instanceof ExtensionMethodNode && (isUsingGenericsOrIsArrayUsingGenerics(returnType))) {
     ExtensionMethodNode emn=(ExtensionMethodNode)method;
     MethodNode dgmMethod=emn.getExtensionMethodNode();
-    ClassNode firstParam=dgmMethod.getParameters()[0].getOriginType();
-    if (firstParam.isGenericsPlaceHolder() || firstParam.isArray() && firstParam.getComponentType().isGenericsPlaceHolder()) {
-      ClassNode paramType=firstParam.isArray() ? firstParam.getComponentType() : firstParam;
-      ClassNode returnTypeComp=returnType.isArray() ? returnType.getComponentType() : returnType;
-      if (paramType.getName().equals(returnTypeComp.getName())) {
-        return returnType.isArray() ? receiver : receiver.getComponentType();
+    ClassNode dc=emn.getDeclaringClass();
+    ArgumentListExpression argList=new ArgumentListExpression();
+    VariableExpression vexp=new VariableExpression("$foo",receiver);
+    argList.addExpression(vexp);
+    if (arguments instanceof ArgumentListExpression) {
+      List<Expression> expressions=((ArgumentListExpression)arguments).getExpressions();
+      for (      Expression arg : expressions) {
+        argList.addExpression(arg);
       }
     }
+ else {
+      argList.addExpression(arguments);
+    }
+    return inferReturnTypeGenerics(dc,dgmMethod,argList);
   }
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
   GenericsType[] returnTypeGenerics=returnType.isArray() ? returnType.getComponentType().getGenericsTypes() : returnType.getGenericsTypes();
-  List<GenericsType> placeholders=new LinkedList<GenericsType>();
-  for (  GenericsType returnTypeGeneric : returnTypeGenerics) {
-    if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
-      placeholders.add(returnTypeGeneric);
+  if (returnTypeGenerics == null)   return returnType;
+  Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
+  if (method.isStatic() && CLASS_Type.equals(receiver) && receiver.isUsingGenerics()&& receiver.getGenericsTypes().length > 0) {
+    GenericsUtils.extractPlaceholders(receiver.getGenericsTypes()[0].getType(),resolvedPlaceholders);
+  }
+ else {
+    ClassNode current=receiver;
+    while (current != null) {
+      GenericsUtils.extractPlaceholders(current,resolvedPlaceholders);
+      current=current.getUnresolvedSuperClass();
     }
   }
-  if (placeholders.isEmpty())   return returnType;
-  Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
-  GenericsUtils.extractPlaceholders(receiver,resolvedPlaceholders);
   GenericsUtils.extractPlaceholders(method.getReturnType(),resolvedPlaceholders);
+  if (resolvedPlaceholders.isEmpty())   return returnType;
   Parameter[] parameters=method.getParameters();
   boolean isVargs=isVargs(parameters);
   ArgumentListExpression argList=InvocationWriter.makeArgumentList(arguments);
@@ -40,35 +50,44 @@
           actualType=actualType.getComponentType();
         }
         actualType=wrapTypeIfNecessary(actualType);
-        Map<String,GenericsType> typePlaceholders=GenericsUtils.extractPlaceholders(type.isArray() ? type.getComponentType() : type);
+        Map<String,GenericsType> typePlaceholders=GenericsUtils.extractPlaceholders(type);
         if (OBJECT_TYPE.equals(type)) {
           for (          String key : typePlaceholders.keySet()) {
-            resolvedPlaceholders.put(key,new GenericsType(actualType));
+            resolvedPlaceholders.put(key,new GenericsType(actualType.isArray() ? actualType.getComponentType() : actualType));
           }
         }
  else {
-          while (!actualType.equals(type)) {
+          while (actualType != null && !actualType.equals(type)) {
             Set<ClassNode> interfaces=actualType.getAllInterfaces();
             boolean intf=false;
             for (            ClassNode anInterface : interfaces) {
               if (anInterface.equals(type)) {
                 intf=true;
-                actualType=GenericsUtils.parameterizeInterfaceGenerics(actualType,anInterface);
+                actualType=GenericsUtils.parameterizeType(actualType,anInterface);
+                break;
               }
             }
             if (!intf)             actualType=actualType.getUnresolvedSuperClass();
           }
-          Map<String,GenericsType> actualTypePlaceholders=GenericsUtils.extractPlaceholders(actualType);
-          for (          Map.Entry<String,GenericsType> typeEntry : actualTypePlaceholders.entrySet()) {
-            String key=typeEntry.getKey();
-            GenericsType value=typeEntry.getValue();
-            GenericsType alias=typePlaceholders.get(key);
-            if (alias != null && alias.isPlaceholder()) {
-              resolvedPlaceholders.put(alias.getName(),value);
+          if (actualType != null) {
+            Map<String,GenericsType> actualTypePlaceholders=GenericsUtils.extractPlaceholders(actualType);
+            for (            Map.Entry<String,GenericsType> typeEntry : actualTypePlaceholders.entrySet()) {
+              String key=typeEntry.getKey();
+              GenericsType value=typeEntry.getValue();
+              GenericsType alias=typePlaceholders.get(key);
+              if (alias != null && alias.isPlaceholder()) {
+                resolvedPlaceholders.put(alias.getName(),value);
+              }
             }
           }
         }
       }
+    }
+  }
+  if (returnType.isGenericsPlaceHolder()) {
+    GenericsType resolved=resolvedPlaceholders.get(returnType.getUnresolvedName());
+    if (resolved != null && !resolved.isPlaceholder() && !resolved.isWildcard()) {
+      return resolved.getType();
     }
   }
   GenericsType[] copy=new GenericsType[returnTypeGenerics.length];
@@ -77,21 +96,31 @@
     if (returnTypeGeneric.isPlaceholder() || returnTypeGeneric.isWildcard()) {
       GenericsType resolved=resolvedPlaceholders.get(returnTypeGeneric.getName());
       if (resolved == null)       resolved=returnTypeGeneric;
-      copy[i]=resolved;
+      copy[i]=fullyResolve(resolved,resolvedPlaceholders);
     }
  else {
-      copy[i]=returnTypeGeneric;
+      copy[i]=fullyResolve(returnTypeGeneric,resolvedPlaceholders);
     }
   }
+  GenericsType firstGenericsType=copy[0];
   if (returnType.equals(OBJECT_TYPE)) {
-    if (copy[0].getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
-    return copy[0].getType();
+    if (firstGenericsType.getType().isGenericsPlaceHolder())     return OBJECT_TYPE;
+    if (firstGenericsType.isWildcard()) {
+      if (firstGenericsType.getLowerBound() != null)       return firstGenericsType.getLowerBound();
+      ClassNode[] upperBounds=firstGenericsType.getUpperBounds();
+      if (upperBounds == null) {
+        return OBJECT_TYPE;
+      }
+      if (upperBounds.length == 1)       return upperBounds[0];
+      return new UnionTypeClassNode(upperBounds);
+    }
+    return firstGenericsType.getType();
   }
   if (returnType.isArray()) {
     returnType=returnType.getComponentType().getPlainNodeReference();
     returnType.setGenericsTypes(copy);
     if (OBJECT_TYPE.equals(returnType)) {
-      returnType=copy[0].getType();
+      returnType=firstGenericsType.getType();
     }
     returnType=returnType.makeArray();
   }

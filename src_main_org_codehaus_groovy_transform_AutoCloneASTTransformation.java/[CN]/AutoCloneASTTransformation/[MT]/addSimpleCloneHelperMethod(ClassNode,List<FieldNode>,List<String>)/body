@@ -1,0 +1,21 @@
+{
+  Parameter methodParam=new Parameter(cNode,"other");
+  final Expression other=new VariableExpression(methodParam);
+  boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
+  BlockStatement methodBody=new BlockStatement();
+  if (hasParent) {
+    methodBody.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"cloneOrCopyMembers",new ArgumentListExpression(other))));
+  }
+  for (  FieldNode fieldNode : list) {
+    String name=fieldNode.getName();
+    if (excludes.contains(name))     continue;
+    PropertyExpression direct=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);
+    Expression cloned=new MethodCallExpression(direct,"clone",MethodCallExpression.NO_ARGUMENTS);
+    Expression to=new PropertyExpression(other,name);
+    Statement assignCloned=assignStatement(to,cloned);
+    Statement assignDirect=assignStatement(to,direct);
+    methodBody.addStatement(new IfStatement(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+  }
+  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  cNode.addMethod("cloneOrCopyMembers",ACC_PROTECTED,ClassHelper.VOID_TYPE,new Parameter[]{methodParam},exceptions,methodBody);
+}

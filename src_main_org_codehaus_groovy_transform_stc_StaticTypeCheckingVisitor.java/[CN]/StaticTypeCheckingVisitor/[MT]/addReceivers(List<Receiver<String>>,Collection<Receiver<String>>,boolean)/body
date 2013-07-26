@@ -1,0 +1,35 @@
+{
+  if (typeCheckingContext.delegationMetadata == null || !implicitThis) {
+    receivers.addAll(owners);
+    return;
+  }
+  DelegationMetadata dmd=typeCheckingContext.delegationMetadata;
+  StringBuilder path=new StringBuilder();
+  while (dmd != null) {
+    int strategy=dmd.getStrategy();
+    ClassNode delegate=dmd.getType();
+    dmd=dmd.getParent();
+switch (strategy) {
+case Closure.OWNER_FIRST:
+      receivers.addAll(owners);
+    path.append("delegate");
+  receivers.add(new Receiver<String>(delegate,path.toString()));
+break;
+case Closure.DELEGATE_FIRST:
+path.append("delegate");
+receivers.add(new Receiver<String>(delegate,path.toString()));
+receivers.addAll(owners);
+break;
+case Closure.OWNER_ONLY:
+receivers.addAll(owners);
+dmd=null;
+break;
+case Closure.DELEGATE_ONLY:
+path.append("delegate");
+receivers.add(new Receiver<String>(delegate,path.toString()));
+dmd=null;
+break;
+}
+path.append('.');
+}
+}

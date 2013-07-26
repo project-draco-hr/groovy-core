@@ -1,6 +1,6 @@
 {
   if (typeDescriptor == null) {
-    StringBuffer buf=new StringBuffer(name.length() + parameters.length * 10);
+    StringBuilder buf=new StringBuilder(name.length() + parameters.length * 10);
     buf.append(returnType.getName());
     buf.append(' ');
     buf.append(name);
@@ -10,7 +10,7 @@
         buf.append(", ");
       }
       Parameter param=parameters[i];
-      buf.append(param.getType().getName());
+      buf.append(formatTypeName(param.getType()));
     }
     buf.append(')');
     typeDescriptor=buf.toString();

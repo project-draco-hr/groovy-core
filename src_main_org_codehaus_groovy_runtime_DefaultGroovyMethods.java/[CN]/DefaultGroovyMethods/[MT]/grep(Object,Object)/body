@@ -1,9 +1,9 @@
 {
   Collection answer=createSimilarOrDefaultCollection(self);
-  MetaClass metaClass=InvokerHelper.getMetaClass(filter);
+  BooleanReturningMethodInvoker bmi=new BooleanReturningMethodInvoker("isCase");
   for (Iterator iter=InvokerHelper.asIterator(self); iter.hasNext(); ) {
     Object object=iter.next();
-    if (DefaultTypeTransformation.castToBoolean(metaClass.invokeMethod(filter,"isCase",object))) {
+    if (bmi.invoke(filter,object)) {
       answer.add(object);
     }
   }

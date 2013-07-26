@@ -1,0 +1,11 @@
+{
+  URLConnection conn=rc.getResourceConnection(scriptName);
+  long lastMod=0;
+  try {
+    lastMod=((conn.getLastModified() / 1000) + 1) * 1000 - 1;
+  }
+  finally {
+    forceClose(conn);
+  }
+  return lastMod;
+}

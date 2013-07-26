@@ -1,5 +1,6 @@
 {
   if (UNKNOWN_PARAMETER_TYPE == type)   return true;
+  if (type == toBeAssignedTo)   return true;
   if (toBeAssignedTo.redirect() == STRING_TYPE && type.redirect() == GSTRING_TYPE) {
     return true;
   }
@@ -9,22 +10,28 @@
     return type.isDerivedFrom(Number_TYPE);
   }
   if (ClassHelper.Float_TYPE == toBeAssignedTo) {
-    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type;
+    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type.redirect();
   }
   if (ClassHelper.Long_TYPE == toBeAssignedTo) {
-    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type && ClassHelper.Float_TYPE != type;
+    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type.redirect() && ClassHelper.Float_TYPE != type.redirect();
   }
   if (ClassHelper.Integer_TYPE == toBeAssignedTo) {
-    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type && ClassHelper.Float_TYPE != type && ClassHelper.Long_TYPE != type;
+    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type.redirect() && ClassHelper.Float_TYPE != type.redirect() && ClassHelper.Long_TYPE != type.redirect();
   }
   if (ClassHelper.Short_TYPE == toBeAssignedTo) {
-    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type && ClassHelper.Float_TYPE != type && ClassHelper.Long_TYPE != type && ClassHelper.Integer_TYPE != type;
+    return type.isDerivedFrom(Number_TYPE) && ClassHelper.Double_TYPE != type.redirect() && ClassHelper.Float_TYPE != type.redirect() && ClassHelper.Long_TYPE != type.redirect() && ClassHelper.Integer_TYPE != type.redirect();
   }
   if (ClassHelper.Byte_TYPE == toBeAssignedTo) {
-    return type == ClassHelper.Byte_TYPE;
+    return type.redirect() == ClassHelper.Byte_TYPE;
   }
   if (type.isArray() && toBeAssignedTo.isArray()) {
-    return type.getComponentType().equals(toBeAssignedTo.getComponentType());
+    return isAssignableTo(type.getComponentType(),toBeAssignedTo.getComponentType());
+  }
+  if (type.isDerivedFrom(GSTRING_TYPE) && STRING_TYPE.equals(toBeAssignedTo)) {
+    return true;
+  }
+  if (toBeAssignedTo.isDerivedFrom(GSTRING_TYPE) && STRING_TYPE.equals(type)) {
+    return true;
   }
   if (implementsInterfaceOrIsSubclassOf(type,toBeAssignedTo)) {
     if (OBJECT_TYPE.equals(toBeAssignedTo))     return true;

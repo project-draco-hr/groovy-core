@@ -39,7 +39,23 @@
     main.conf.getOptimizationOptions().put(deopt_i,false);
   }
   if (line.hasOption("indy")) {
+    CompilerConfiguration.DEFAULT.getOptimizationOptions().put("indy",true);
     main.conf.getOptimizationOptions().put("indy",true);
+  }
+  if (line.hasOption("basescript")) {
+    main.conf.setScriptBaseClass(line.getOptionValue("basescript"));
+  }
+  if (line.hasOption("configscript")) {
+    String path=line.getOptionValue("configscript");
+    File groovyConfigurator=new File(path);
+    Binding binding=new Binding();
+    binding.setVariable("configuration",main.conf);
+    CompilerConfiguration configuratorConfig=new CompilerConfiguration();
+    ImportCustomizer customizer=new ImportCustomizer();
+    customizer.addStaticStars("org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder");
+    configuratorConfig.addCompilationCustomizers(customizer);
+    GroovyShell shell=new GroovyShell(binding,configuratorConfig);
+    shell.evaluate(groovyConfigurator);
   }
   main.args=args;
   return main.run();

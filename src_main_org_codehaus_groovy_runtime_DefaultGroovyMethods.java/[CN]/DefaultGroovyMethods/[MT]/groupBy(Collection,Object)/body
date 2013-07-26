@@ -1,12 +1,3 @@
 {
-  final Closure head=closures.length == 0 ? Closure.IDENTITY : (Closure)closures[0];
-  @SuppressWarnings("unchecked") Map<Object,List> first=groupBy(self,head);
-  if (closures.length < 2)   return first;
-  final Object[] tail=new Object[closures.length - 1];
-  System.arraycopy(closures,1,tail,0,closures.length - 1);
-  Map<Object,Map> acc=new LinkedHashMap<Object,Map>();
-  for (  Map.Entry<Object,List> item : first.entrySet()) {
-    acc.put(item.getKey(),groupBy(item.getValue(),tail));
-  }
-  return acc;
+  return groupBy((Iterable)self,closures);
 }

@@ -1,9 +1,7 @@
 {
-  int line=expr.getLineNumber();
-  int col=expr.getColumnNumber();
   Long err=((long)expr.getLineNumber()) << 16 + expr.getColumnNumber();
-  if (!reportedErrors.contains(err)) {
-    errorCollector.addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException(msg + '\n',line,col),source));
-    reportedErrors.add(err);
+  if ((DEBUG_GENERATED_CODE && expr.getLineNumber() < 0) || !typeCheckingContext.reportedErrors.contains(err)) {
+    typeCheckingContext.getErrorCollector().addErrorAndContinue(new SyntaxErrorMessage(new SyntaxException(msg + '\n',expr.getLineNumber(),expr.getColumnNumber(),expr.getLastLineNumber(),expr.getLastColumnNumber()),typeCheckingContext.source));
+    typeCheckingContext.reportedErrors.add(err);
   }
 }

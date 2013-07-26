@@ -1,11 +1,11 @@
 {
-  if (node.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE) == null && !node.getAnnotations(TYPECHECKING_INFO_NODE).isEmpty()) {
+  if (getInferredReturnType(node) == null && !node.getAnnotations(TYPECHECKING_INFO_NODE).isEmpty()) {
     List<AnnotationNode> annotations=node.getAnnotations(TYPECHECKING_INFO_NODE);
     AnnotationNode head=annotations.get(0);
     int version=Integer.valueOf(head.getMember("version").getText());
     String signature=head.getMember("inferredType").getText();
-    SignatureCodec codec=SignatureCodecFactory.getCodec(version);
+    SignatureCodec codec=SignatureCodecFactory.getCodec(version,getSourceUnit().getClassLoader());
     ClassNode result=codec.decode(signature);
-    node.putNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE,result);
+    storeInferredReturnType(node,result);
   }
 }

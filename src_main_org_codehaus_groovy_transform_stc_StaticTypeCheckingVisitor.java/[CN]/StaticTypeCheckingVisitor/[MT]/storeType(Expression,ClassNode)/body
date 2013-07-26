@@ -1,4 +1,10 @@
 {
+  if (exp instanceof VariableExpression && ((VariableExpression)exp).isClosureSharedVariable() && isPrimitiveType(cn)) {
+    cn=getWrapper(cn);
+  }
+ else   if (exp instanceof MethodCallExpression && ((MethodCallExpression)exp).isSafe() && isPrimitiveType(cn)) {
+    cn=getWrapper(cn);
+  }
   if (cn == UNKNOWN_PARAMETER_TYPE) {
     storeType(exp,getOriginalDeclarationType(exp));
     return;
@@ -19,15 +25,15 @@
     if (accessedVariable != null && accessedVariable != exp && accessedVariable instanceof VariableExpression) {
       storeType((Expression)accessedVariable,cn);
     }
-    if (var.isClosureSharedVariable()) {
-      List<ClassNode> assignedTypes=closureSharedVariablesAssignmentTypes.get(var);
+    if (var.isClosureSharedVariable() && cn != null) {
+      List<ClassNode> assignedTypes=typeCheckingContext.closureSharedVariablesAssignmentTypes.get(var);
       if (assignedTypes == null) {
         assignedTypes=new LinkedList<ClassNode>();
-        closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
+        typeCheckingContext.closureSharedVariablesAssignmentTypes.put(var,assignedTypes);
       }
       assignedTypes.add(cn);
     }
-    if (!temporaryIfBranchTypeInformation.empty()) {
+    if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
       List<ClassNode> temporaryTypesForExpression=getTemporaryTypesForExpression(exp);
       if (temporaryTypesForExpression != null && !temporaryTypesForExpression.isEmpty()) {
         temporaryTypesForExpression.clear();

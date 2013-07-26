@@ -1,0 +1,13 @@
+{
+  List<AnnotationNode> meta=cn.getNodeMetaData(AnnotationCollector.class);
+  if (meta == null) {
+    if (cn.isPrimaryClassNode()) {
+      meta=getTargetListFromAnnotations(cn);
+    }
+ else {
+      meta=getTargetListFromClass(cn);
+    }
+    cn.setNodeMetaData(AnnotationCollector.class,meta);
+  }
+  return meta;
+}

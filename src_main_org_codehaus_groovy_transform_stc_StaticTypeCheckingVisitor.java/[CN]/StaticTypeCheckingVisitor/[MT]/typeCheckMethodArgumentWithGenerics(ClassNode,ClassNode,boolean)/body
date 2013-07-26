@@ -1,0 +1,28 @@
+{
+  if (UNKNOWN_PARAMETER_TYPE == argumentType) {
+    return true;
+  }
+  if (!isAssignableTo(argumentType,parameterType) && !lastArg) {
+    return false;
+  }
+  if (!isAssignableTo(argumentType,parameterType) && lastArg) {
+    if (parameterType.isArray()) {
+      if (!isAssignableTo(argumentType,parameterType.getComponentType())) {
+        return false;
+      }
+    }
+  }
+  if (parameterType.isUsingGenerics() && argumentType.isUsingGenerics()) {
+    GenericsType gt=GenericsUtils.buildWildcardType(parameterType);
+    if (!gt.isCompatibleWith(argumentType)) {
+      return false;
+    }
+  }
+ else   if (parameterType.isArray() && argumentType.isArray()) {
+    typeCheckMethodArgumentWithGenerics(parameterType.getComponentType(),argumentType.getComponentType(),lastArg);
+  }
+ else   if (lastArg && parameterType.isArray()) {
+    typeCheckMethodArgumentWithGenerics(parameterType.getComponentType(),argumentType,lastArg);
+  }
+  return true;
+}

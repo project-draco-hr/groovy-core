@@ -19,9 +19,14 @@
   }
  else {
     WriterController controller=getController();
-    StaticTypeCheckingVisitor visitor=new StaticCompilationVisitor(controller.getSourceUnit(),controller.getClassNode(),null);
+    StaticTypeCheckingVisitor visitor=new StaticCompilationVisitor(controller.getSourceUnit(),controller.getClassNode());
     ArgumentListExpression ae=new ArgumentListExpression(index,rhsValueLoader);
+    if (rhsValueLoader instanceof VariableSlotLoader && parent instanceof BinaryExpression) {
+      Expression right=((BinaryExpression)parent).getRightExpression();
+      rhsValueLoader.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,controller.getTypeChooser().resolveType(right,controller.getClassNode()));
+    }
     MethodCallExpression mce=new MethodCallExpression(receiver,"putAt",ae);
+    mce.setSourcePosition(parent);
     visitor.visitMethodCallExpression(mce);
     mce.visit(controller.getAcg());
     rhsValueLoader.visit(controller.getAcg());

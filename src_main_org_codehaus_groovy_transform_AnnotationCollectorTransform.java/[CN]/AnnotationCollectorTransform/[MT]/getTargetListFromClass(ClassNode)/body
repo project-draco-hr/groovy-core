@@ -1,0 +1,12 @@
+{
+  Class<?> c=alias.getTypeClass();
+  Object[][] data;
+  try {
+    Method m=c.getMethod("value");
+    data=(Object[][])m.invoke(null);
+  }
+ catch (  Exception e) {
+    throw new GroovyBugError(e);
+  }
+  return makeListOfAnnotations(data);
+}

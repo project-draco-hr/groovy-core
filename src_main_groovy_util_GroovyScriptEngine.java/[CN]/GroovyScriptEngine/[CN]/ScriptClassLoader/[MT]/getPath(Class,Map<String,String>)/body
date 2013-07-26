@@ -1,0 +1,13 @@
+{
+  CompilationUnit cu=getLocalData().get().cu;
+  String name=clazz.getName();
+  ClassNode classNode=cu.getClassNode(name);
+  if (classNode == null) {
+    String path=precompiledEntries.get(name);
+    if (path == null)     throw new GroovyBugError("Precompiled class " + name + " should be available in precompiled entries map, but was not.");
+    return path;
+  }
+ else {
+    return classNode.getModule().getContext().getName();
+  }
+}

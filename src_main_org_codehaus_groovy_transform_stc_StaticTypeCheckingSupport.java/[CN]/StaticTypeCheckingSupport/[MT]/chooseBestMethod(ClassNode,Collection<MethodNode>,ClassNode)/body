@@ -8,22 +8,18 @@
     final ClassNode declaringClass=m.getDeclaringClass();
     actualReceiver=receiver != null ? receiver : declaringClass;
     Parameter[] params=parameterizeArguments(actualReceiver,m);
-    if (params.length > args.length && !isVargs(params)) {
-      int dist=allParametersAndArgumentsMatchWithDefaultParams(params,args);
-      if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
-      if (dist >= 0 && dist < bestDist) {
-        bestChoices.clear();
-        bestChoices.add(m);
-        bestDist=dist;
-      }
- else       if (dist >= 0 && dist == bestDist) {
-        bestChoices.add(m);
-      }
-    }
- else     if (params.length == args.length) {
+    if (params.length == args.length) {
       int allPMatch=allParametersAndArgumentsMatch(params,args);
-      int lastArgMatch=isVargs(params) ? lastArgMatchesVarg(params,args) : -1;
-      if (lastArgMatch >= 0)       lastArgMatch++;
+      boolean firstParamMatches=true;
+      if (args.length > 0) {
+        Parameter[] firstParams=new Parameter[params.length - 1];
+        System.arraycopy(params,0,firstParams,0,firstParams.length);
+        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+      }
+      int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,args) : -1;
+      if (lastArgMatch >= 0) {
+        lastArgMatch+=256 - params.length;
+      }
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
       if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
       if (dist >= 0 && dist < bestDist) {
@@ -37,23 +33,28 @@
     }
  else     if (isVargs(params)) {
       boolean firstParamMatches=true;
+      int dist=-1;
       if (args.length > 0) {
         Parameter[] firstParams=new Parameter[params.length - 1];
         System.arraycopy(params,0,firstParams,0,firstParams.length);
-        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+        dist=allParametersAndArgumentsMatch(firstParams,args);
+        firstParamMatches=dist >= 0;
+      }
+ else {
+        dist=0;
       }
       if (firstParamMatches) {
         if (params.length == args.length + 1) {
-          if (bestDist > 1) {
+          if (bestDist > 1 + dist) {
             bestChoices.clear();
             bestChoices.add(m);
-            bestDist=1;
+            bestDist=1 + dist;
           }
         }
  else {
-          int dist=excessArgumentsMatchesVargsParameter(params,args);
-          if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist++;
-          dist++;
+          dist+=excessArgumentsMatchesVargsParameter(params,args);
+          if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist+=getDistance(actualReceiver,declaringClass);
+          dist+=256 - params.length;
           if (params.length < args.length && dist >= 0) {
             if (dist >= 0 && dist < bestDist) {
               bestChoices.clear();

@@ -1,0 +1,18 @@
+{
+  Expression memberValue=collector.getMember("value");
+  if (memberValue == null)   return Collections.EMPTY_LIST;
+  if (!(memberValue instanceof ListExpression)) {
+    addError("Annotation collector expected a list of classes, but got a " + memberValue.getClass(),collector,source);
+    return Collections.EMPTY_LIST;
+  }
+  ListExpression memberListExp=(ListExpression)memberValue;
+  List<Expression> memberList=memberListExp.getExpressions();
+  if (memberList.size() == 0)   return Collections.EMPTY_LIST;
+  ArrayList<AnnotationNode> ret=new ArrayList<AnnotationNode>();
+  for (  Expression e : memberList) {
+    AnnotationNode toAdd=new AnnotationNode(e.getType());
+    toAdd.setSourcePosition(aliasAnnotationUsage);
+    ret.add(toAdd);
+  }
+  return ret;
+}

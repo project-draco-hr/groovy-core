@@ -16,7 +16,7 @@
     }
     if (valueExpr instanceof ConstantExpression && fieldNode.isStatic() && fieldNode.isFinal()&& ClassHelper.isStaticConstantInitializerType(valueExpr.getType())&& valueExpr.getType().equals(fieldNode.getType())) {
       if (ClassHelper.STRING_TYPE.equals(valueExpr.getType())) {
-        out.print("\"" + escapeSpecialChars(valueExpr.getText()) + "\"");
+        out.print(formatString(valueExpr.getText()));
       }
  else       if (ClassHelper.char_TYPE.equals(valueExpr.getType())) {
         out.print("'" + valueExpr.getText() + "'");

@@ -1,4 +1,18 @@
 {
+  Object implicitReceiver=origin.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+  if (implicitReceiver != null && implicitThis) {
+    String[] propertyPath=((String)implicitReceiver).split("\\.");
+    PropertyExpression pexp=new PropertyExpression(new VariableExpression("this",CLOSURE_TYPE),propertyPath[0]);
+    pexp.setImplicitThis(true);
+    for (int i=1; i < propertyPath.length; i++) {
+      pexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,CLOSURE_TYPE);
+      pexp=new PropertyExpression(pexp,propertyPath[i]);
+    }
+    pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,implicitReceiver);
+    origin.removeNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+    makeCall(origin,pexp,message,arguments,adapter,safe,spreadSafe,false);
+    return;
+  }
   if (spreadSafe && origin instanceof MethodCallExpression) {
     MethodVisitor mv=controller.getMethodVisitor();
     CompileStack compileStack=controller.getCompileStack();
@@ -6,9 +20,9 @@
     OperandStack operandStack=controller.getOperandStack();
     ClassNode classNode=controller.getClassNode();
     int counter=labelCounter.incrementAndGet();
-    VariableExpression result=new VariableExpression("spreadresult" + counter,ARRAYLIST_CLASSNODE);
-    ConstructorCallExpression cce=new ConstructorCallExpression(ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
-    cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,ARRAYLIST_CONSTRUCTOR);
+    VariableExpression result=new VariableExpression("spreadresult" + counter,StaticCompilationVisitor.ARRAYLIST_CLASSNODE);
+    ConstructorCallExpression cce=new ConstructorCallExpression(StaticCompilationVisitor.ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
+    cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,StaticCompilationVisitor.ARRAYLIST_CONSTRUCTOR);
     DeclarationExpression declr=new DeclarationExpression(result,Token.newSymbol("=",origin.getLineNumber(),origin.getColumnNumber()),cce);
     declr.visit(controller.getAcg());
     receiver.visit(controller.getAcg());
@@ -25,7 +39,7 @@
     newMCE.setMethodTarget(origMCE.getMethodTarget());
     newMCE.setSafe(true);
     MethodCallExpression add=new MethodCallExpression(result,"add",newMCE);
-    add.setMethodTarget(ARRAYLIST_ADD_METHOD);
+    add.setMethodTarget(StaticCompilationVisitor.ARRAYLIST_ADD_METHOD);
     ForStatement stmt=new ForStatement(iterator,receiver,new ExpressionStatement(add));
     stmt.visit(controller.getAcg());
     mv.visitLabel(ifnull);
@@ -44,9 +58,16 @@
     mv.visitLabel(nonull);
     MethodCallExpression origMCE=(MethodCallExpression)origin;
     MethodCallExpression newMCE=new MethodCallExpression(origMCE.getObjectExpression(),origMCE.getMethodAsString(),origMCE.getArguments());
-    newMCE.setMethodTarget(origMCE.getMethodTarget());
+    MethodNode methodTarget=origMCE.getMethodTarget();
+    newMCE.setMethodTarget(methodTarget);
     newMCE.setSafe(false);
+    newMCE.setImplicitThis(origMCE.isImplicitThis());
+    newMCE.setSourcePosition(origMCE);
     newMCE.visit(controller.getAcg());
+    ClassNode returnType=operandStack.getTopOperand();
+    if (ClassHelper.isPrimitiveType(returnType) && !ClassHelper.VOID_TYPE.equals(returnType)) {
+      operandStack.box();
+    }
     Label endof=compileStack.createLocalLabel("endof_" + counter);
     mv.visitJumpInsn(GOTO,endof);
     mv.visitLabel(ifnull);
@@ -54,6 +75,17 @@
     mv.visitLabel(endof);
   }
  else {
+    if ((adapter == AsmClassGenerator.getGroovyObjectField || adapter == AsmClassGenerator.getField) && origin instanceof AttributeExpression) {
+      String pname=((PropertyExpression)origin).getPropertyAsString();
+      CallSiteWriter callSiteWriter=controller.getCallSiteWriter();
+      if (pname != null && callSiteWriter instanceof StaticTypesCallSiteWriter) {
+        StaticTypesCallSiteWriter stcsw=(StaticTypesCallSiteWriter)callSiteWriter;
+        TypeChooser typeChooser=controller.getTypeChooser();
+        if (stcsw.makeGetField(receiver,typeChooser.resolveType(receiver,controller.getClassNode()),pname,false,true)) {
+          return;
+        }
+      }
+    }
     super.makeCall(origin,receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
   }
 }

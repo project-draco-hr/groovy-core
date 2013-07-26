@@ -1,12 +1,18 @@
 {
-  final List<MethodNode> methods=findMethod(receiver,name,args);
+  List<MethodNode> methods=findMethod(receiver,name,args);
+  if (methods.isEmpty() && (expr instanceof BinaryExpression)) {
+    BinaryExpression be=(BinaryExpression)expr;
+    MethodCallExpression call=new MethodCallExpression(be.getLeftExpression(),name,be.getRightExpression());
+    methods=extension.handleMissingMethod(receiver,name,new ArgumentListExpression(be.getLeftExpression()),args,call);
+  }
   if (methods.isEmpty()) {
-    addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),expr);
+    addNoMatchingMethodError(receiver,name,args,expr);
   }
  else {
     if (areCategoryMethodCalls(methods,name,args)) {
       addCategoryMethodCallError(expr);
     }
+    methods=disambiguateMethods(methods,expr);
     if (methods.size() == 1) {
       return methods.get(0);
     }

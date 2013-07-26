@@ -1,6 +1,6 @@
 {
   FieldNode field=receiverType.getField(fieldName);
-  if (field != null && (field.isPublic() || (samePackage && field.isProtected()) || Modifier.isPrivate(field.getModifiers()) && field.getOwner().redirect() == controller.getClassNode().redirect())) {
+  if (field != null && isDirectAccessAllowed(field,controller.getClassNode(),samePackage)) {
     CompileStack compileStack=controller.getCompileStack();
     MethodVisitor mv=controller.getMethodVisitor();
     if (field.isStatic()) {
@@ -13,6 +13,9 @@
       }
       receiver.visit(controller.getAcg());
       if (implicitThis)       compileStack.popImplicitThis();
+      if (!controller.getOperandStack().getTopOperand().isDerivedFrom(field.getOwner())) {
+        mv.visitTypeInsn(CHECKCAST,BytecodeHelper.getClassInternalName(field.getOwner()));
+      }
       mv.visitFieldInsn(GETFIELD,BytecodeHelper.getClassInternalName(field.getOwner()),fieldName,BytecodeHelper.getTypeDescription(field.getOriginType()));
     }
     controller.getOperandStack().replace(field.getOriginType());

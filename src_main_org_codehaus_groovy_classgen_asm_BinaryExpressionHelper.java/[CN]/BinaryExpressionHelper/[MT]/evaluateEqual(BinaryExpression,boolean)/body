@@ -24,6 +24,9 @@
   if (directAssignment) {
     VariableExpression var=(VariableExpression)leftExpression;
     rhsType=controller.getTypeChooser().resolveType(var,controller.getClassNode());
+    if (var.isClosureSharedVariable() && ClassHelper.isPrimitiveType(rhsType)) {
+      rhsType=ClassHelper.getWrapper(rhsType);
+    }
     if (!(rightExpression instanceof ConstantExpression) || (((ConstantExpression)rightExpression).getValue() != null)) {
       operandStack.doGroovyCast(rhsType);
     }
@@ -75,14 +78,6 @@
     TypeChooser typeChooser=controller.getTypeChooser();
     ClassNode targetType=typeChooser.resolveType(leftExpression,controller.getClassNode());
     operandStack.doGroovyCast(targetType);
-    if (leftExpression instanceof VariableExpression) {
-      VariableExpression var=(VariableExpression)leftExpression;
-      String varName=var.getName();
-      if (!"this".equals(varName) && !"super".equals(varName)) {
-        BytecodeVariable variable=controller.getCompileStack().getVariable(varName,false);
-        if (variable != null)         variable.setType(targetType);
-      }
-    }
     leftExpression.visit(acg);
     operandStack.remove(operandStack.getStackLength() - mark);
   }

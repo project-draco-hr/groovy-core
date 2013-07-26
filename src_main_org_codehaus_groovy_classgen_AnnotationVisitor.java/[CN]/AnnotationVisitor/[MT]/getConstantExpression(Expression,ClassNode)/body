@@ -2,17 +2,15 @@
   if (exp instanceof ConstantExpression) {
     return (ConstantExpression)exp;
   }
- else {
-    String base="expected '" + exp.getText() + "' to be an inline constant of type "+ attrType.getName();
-    if (exp instanceof PropertyExpression) {
-      addError(base + " not a property expression",exp);
-    }
- else     if (exp instanceof VariableExpression && ((VariableExpression)exp).getAccessedVariable() instanceof FieldNode) {
-      addError(base + " not a field expression",exp);
-    }
- else {
-      addError(base,exp);
-    }
-    return ConstantExpression.EMPTY_EXPRESSION;
+  String base="Expected '" + exp.getText() + "' to be an inline constant of type "+ attrType.getName();
+  if (exp instanceof PropertyExpression) {
+    addError(base + " not a property expression",exp);
   }
+ else   if (exp instanceof VariableExpression && ((VariableExpression)exp).getAccessedVariable() instanceof FieldNode) {
+    addError(base + " not a field expression",exp);
+  }
+ else {
+    addError(base,exp);
+  }
+  return ConstantExpression.EMPTY_EXPRESSION;
 }

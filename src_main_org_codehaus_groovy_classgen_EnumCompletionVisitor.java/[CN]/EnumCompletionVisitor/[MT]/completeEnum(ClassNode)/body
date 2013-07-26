@@ -1,3 +1,9 @@
 {
-  addConstructor(enumClass);
+  boolean isAic=isAnonymousInnerClass(enumClass);
+  if (enumClass.getDeclaredConstructors().size() == 0) {
+    addImplicitConstructors(enumClass,isAic);
+  }
+  for (  ConstructorNode ctor : enumClass.getDeclaredConstructors()) {
+    transformConstructor(ctor,isAic);
+  }
 }

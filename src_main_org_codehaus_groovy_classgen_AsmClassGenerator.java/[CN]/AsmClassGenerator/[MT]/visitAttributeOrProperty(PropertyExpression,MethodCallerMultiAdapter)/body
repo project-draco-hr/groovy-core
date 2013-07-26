@@ -32,6 +32,17 @@
               outer=outer.getSuperClass();
             }
           }
+          if (field == null && expression instanceof AttributeExpression && isThisExpression(objectExpression) && controller.isStaticContext()) {
+            ClassNode current=classNode.getSuperClass();
+            while (field == null && current != null) {
+              field=current.getDeclaredField(name);
+              current=current.getSuperClass();
+            }
+            if (field != null && (field.isProtected() || field.isPublic())) {
+              visitFieldExpression(new FieldExpression(field));
+              return;
+            }
+          }
         }
       }
       if (field != null && !privateSuperField) {
@@ -59,6 +70,7 @@
     mv.visitVarInsn(ALOAD,0);
     while (!iterType.equals(type)) {
       String ownerName=BytecodeHelper.getClassInternalName(iterType);
+      if (iterType.getOuterClass() == null)       break;
       iterType=iterType.getOuterClass();
       String typeName=BytecodeHelper.getTypeDescription(iterType);
       mv.visitFieldInsn(GETFIELD,ownerName,"this$0",typeName);

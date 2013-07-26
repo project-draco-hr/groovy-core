@@ -1,0 +1,36 @@
+{
+  PropertyExpression spreadExpression=(PropertyExpression)origin.getLeftExpression();
+  Expression value=origin.getRightExpression();
+  WriterController controller=getController();
+  MethodVisitor mv=controller.getMethodVisitor();
+  CompileStack compileStack=controller.getCompileStack();
+  TypeChooser typeChooser=controller.getTypeChooser();
+  OperandStack operandStack=controller.getOperandStack();
+  ClassNode classNode=controller.getClassNode();
+  int counter=labelCounter.incrementAndGet();
+  Expression receiver=spreadExpression.getObjectExpression();
+  VariableExpression result=new VariableExpression(this.getClass().getSimpleName() + "$spreadresult" + counter,ARRAYLIST_CLASSNODE);
+  ConstructorCallExpression cce=new ConstructorCallExpression(ARRAYLIST_CLASSNODE,ArgumentListExpression.EMPTY_ARGUMENTS);
+  cce.setNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,ARRAYLIST_CONSTRUCTOR);
+  DeclarationExpression declr=new DeclarationExpression(result,Token.newSymbol("=",spreadExpression.getLineNumber(),spreadExpression.getColumnNumber()),cce);
+  declr.visit(controller.getAcg());
+  receiver.visit(controller.getAcg());
+  Label ifnull=compileStack.createLocalLabel("ifnull_" + counter);
+  mv.visitJumpInsn(IFNULL,ifnull);
+  operandStack.remove(1);
+  Label nonull=compileStack.createLocalLabel("nonull_" + counter);
+  mv.visitLabel(nonull);
+  ClassNode componentType=StaticTypeCheckingVisitor.inferLoopElementType(typeChooser.resolveType(receiver,classNode));
+  Parameter iterator=new Parameter(componentType,"for$it$" + counter);
+  VariableExpression iteratorAsVar=new VariableExpression(iterator);
+  PropertyExpression pexp=spreadExpression instanceof AttributeExpression ? new AttributeExpression(iteratorAsVar,spreadExpression.getProperty(),true) : new PropertyExpression(iteratorAsVar,spreadExpression.getProperty(),true);
+  pexp.setImplicitThis(spreadExpression.isImplicitThis());
+  pexp.setSourcePosition(spreadExpression);
+  BinaryExpression assignment=new BinaryExpression(pexp,origin.getOperation(),value);
+  MethodCallExpression add=new MethodCallExpression(result,"add",assignment);
+  add.setMethodTarget(ARRAYLIST_ADD_METHOD);
+  ForStatement stmt=new ForStatement(iterator,receiver,new ExpressionStatement(add));
+  stmt.visit(controller.getAcg());
+  mv.visitLabel(ifnull);
+  result.visit(controller.getAcg());
+}

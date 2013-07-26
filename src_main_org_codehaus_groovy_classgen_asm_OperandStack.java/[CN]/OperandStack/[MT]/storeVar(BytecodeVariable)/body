@@ -3,6 +3,7 @@
   int idx=variable.getIndex();
   ClassNode type=variable.getType();
   if (variable.isHolder()) {
+    doGroovyCast(type);
     box();
     mv.visitVarInsn(ALOAD,idx);
     mv.visitTypeInsn(CHECKCAST,"groovy/lang/Reference");

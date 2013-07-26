@@ -1,7 +1,8 @@
 {
   long answer=0;
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
   for (  Object entry : self.entrySet()) {
-    if (DefaultTypeTransformation.castToBoolean(callClosureForMapEntry(closure,(Map.Entry)entry))) {
+    if (bcw.callForMap((Map.Entry)entry)) {
       ++answer;
     }
   }

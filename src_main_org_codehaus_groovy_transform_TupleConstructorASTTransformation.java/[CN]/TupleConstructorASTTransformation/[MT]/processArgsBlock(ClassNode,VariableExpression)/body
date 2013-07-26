@@ -1,0 +1,14 @@
+{
+  BlockStatement block=new BlockStatement();
+  for (  PropertyNode pNode : cNode.getProperties()) {
+    if (pNode.isStatic())     continue;
+    BooleanExpression ifTest=new BooleanExpression(new MethodCallExpression(namedArgs,"containsKey",new ConstantExpression(pNode.getName())));
+    Expression pExpr=new VariableExpression(pNode);
+    Statement thenBlock=assignStatement(pExpr,new PropertyExpression(namedArgs,pNode.getName()));
+    IfStatement ifStatement=new IfStatement(ifTest,thenBlock,EmptyStatement.INSTANCE);
+    block.addStatement(ifStatement);
+  }
+  Expression checkArgs=new ArgumentListExpression(new VariableExpression("this"),namedArgs);
+  block.addStatement(new ExpressionStatement(new StaticMethodCallExpression(CHECK_METHOD_TYPE,"checkPropNames",checkArgs)));
+  return block;
+}

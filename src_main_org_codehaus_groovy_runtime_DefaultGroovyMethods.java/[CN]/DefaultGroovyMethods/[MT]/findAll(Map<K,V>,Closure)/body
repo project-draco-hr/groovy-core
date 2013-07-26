@@ -1,7 +1,8 @@
 {
   Map<K,V> answer=createSimilarMap(self);
+  BooleanClosureWrapper bcw=new BooleanClosureWrapper(closure);
   for (  Map.Entry<K,V> entry : self.entrySet()) {
-    if (DefaultTypeTransformation.castToBoolean(callClosureForMapEntry(closure,entry))) {
+    if (bcw.callForMap(entry)) {
       answer.put(entry.getKey(),entry.getValue());
     }
   }

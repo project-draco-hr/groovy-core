@@ -1,6 +1,6 @@
 {
   ArgumentListExpression ae=new ArgumentListExpression(index,rhsValueLoader);
-  controller.getCallSiteWriter().makeCallSite(receiver,"putAt",ae,false,false,false,false);
+  controller.getInvocationWriter().makeCall(parent,receiver,new ConstantExpression("putAt"),ae,InvocationWriter.invokeMethod,false,false,false);
   controller.getOperandStack().pop();
   rhsValueLoader.visit(controller.getAcg());
 }

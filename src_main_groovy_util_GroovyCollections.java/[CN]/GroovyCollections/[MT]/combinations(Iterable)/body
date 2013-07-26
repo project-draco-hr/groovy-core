@@ -1,0 +1,26 @@
+{
+  List collectedCombos=new ArrayList();
+  for (  Object collection : collections) {
+    Iterable items=DefaultTypeTransformation.asCollection(collection);
+    if (collectedCombos.isEmpty()) {
+      for (      Object item : items) {
+        List l=new ArrayList();
+        l.add(item);
+        collectedCombos.add(l);
+      }
+    }
+ else {
+      List savedCombos=new ArrayList(collectedCombos);
+      List newCombos=new ArrayList();
+      for (      Object value : items) {
+        for (        Object savedCombo : savedCombos) {
+          List oldList=new ArrayList((List)savedCombo);
+          oldList.add(value);
+          newCombos.add(oldList);
+        }
+      }
+      collectedCombos=newCombos;
+    }
+  }
+  return collectedCombos;
+}

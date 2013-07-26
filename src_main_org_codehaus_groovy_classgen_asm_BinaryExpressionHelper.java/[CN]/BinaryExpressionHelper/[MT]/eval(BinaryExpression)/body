@@ -128,6 +128,11 @@ break;
 case KEYWORD_IN:
 evaluateCompareExpression(isCaseMethod,expression);
 break;
+case COMPARE_IDENTICAL:
+case COMPARE_NOT_IDENTICAL:
+Token op=expression.getOperation();
+Throwable cause=new SyntaxException("Operator " + op + " not supported",op.getStartLine(),op.getStartColumn());
+throw new GroovyRuntimeException(cause);
 default :
 throw new GroovyBugError("Operation: " + expression.getOperation() + " not supported");
 }

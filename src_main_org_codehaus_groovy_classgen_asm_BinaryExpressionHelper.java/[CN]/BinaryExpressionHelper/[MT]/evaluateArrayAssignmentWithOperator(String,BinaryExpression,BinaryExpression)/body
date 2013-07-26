@@ -1,0 +1,17 @@
+{
+  CompileStack compileStack=getController().getCompileStack();
+  AsmClassGenerator acg=getController().getAcg();
+  OperandStack os=getController().getOperandStack();
+  ExpressionAsVariableSlot subscript=new ExpressionAsVariableSlot(controller,leftBinExpr.getRightExpression(),"subscript");
+  ExpressionAsVariableSlot receiver=new ExpressionAsVariableSlot(controller,leftBinExpr.getLeftExpression(),"receiver");
+  MethodCallExpression getAt=new MethodCallExpression(receiver,"getAt",new ArgumentListExpression(subscript));
+  MethodCallExpression operation=new MethodCallExpression(getAt,method,expression.getRightExpression());
+  ExpressionAsVariableSlot ret=new ExpressionAsVariableSlot(controller,operation,"ret");
+  MethodCallExpression putAt=new MethodCallExpression(receiver,"putAt",new ArgumentListExpression(subscript,ret));
+  putAt.visit(acg);
+  os.pop();
+  os.load(ret.getType(),ret.getIndex());
+  compileStack.removeVar(ret.getIndex());
+  compileStack.removeVar(subscript.getIndex());
+  compileStack.removeVar(receiver.getIndex());
+}

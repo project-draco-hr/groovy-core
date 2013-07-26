@@ -1,0 +1,17 @@
+{
+  final ClassNode componentType=containerType.getComponentType();
+  if (componentType == null) {
+    typeCheckingContext.pushErrorCollector();
+    MethodCallExpression vcall=new MethodCallExpression(new VariableExpression("_hash_",containerType),"getAt",new VariableExpression("_index_",indexType));
+    try {
+      visitMethodCallExpression(vcall);
+    }
+  finally {
+      typeCheckingContext.popErrorCollector();
+    }
+    return getType(vcall);
+  }
+ else {
+    return componentType;
+  }
+}

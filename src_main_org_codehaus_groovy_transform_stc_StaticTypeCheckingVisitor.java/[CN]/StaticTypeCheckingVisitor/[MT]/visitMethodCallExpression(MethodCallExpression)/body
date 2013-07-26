@@ -4,85 +4,81 @@
     addStaticTypeError("cannot resolve dynamic method name at compile time.",call.getMethod());
     return;
   }
+  if (extension.beforeMethodCall(call)) {
+    extension.afterMethodCall(call);
+    return;
+  }
+  typeCheckingContext.pushEnclosingMethodCall(call);
   final Expression objectExpression=call.getObjectExpression();
   objectExpression.visit(this);
   call.getMethod().visit(this);
   if (call.isSpreadSafe()) {
     ClassNode expressionType=getType(objectExpression);
-    if (!(expressionType.equals(Collection_TYPE) || expressionType.implementsInterface(Collection_TYPE))) {
-      addStaticTypeError("Spread operator can only be used on collection types",expressionType);
+    if (!implementsInterfaceOrIsSubclassOf(expressionType,Collection_TYPE) && !expressionType.isArray()) {
+      addStaticTypeError("Spread operator can only be used on collection types",objectExpression);
       return;
     }
  else {
-      ClassNode componentType=inferComponentType(expressionType);
+      ClassNode componentType=inferComponentType(expressionType,int_TYPE);
       MethodCallExpression subcall=new MethodCallExpression(new CastExpression(componentType,EmptyExpression.INSTANCE),name,call.getArguments());
       subcall.setLineNumber(call.getLineNumber());
       subcall.setColumnNumber(call.getColumnNumber());
+      subcall.setImplicitThis(call.isImplicitThis());
       visitMethodCallExpression(subcall);
       ClassNode subcallReturnType=getType(subcall);
       ClassNode listNode=LIST_TYPE.getPlainNodeReference();
       listNode.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(subcallReturnType))});
       storeType(call,listNode);
       storeTargetMethod(call,(MethodNode)subcall.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+      typeCheckingContext.popEnclosingMethodCall();
       return;
     }
   }
-  final ClassNode rememberLastItType=lastImplicitItType;
+  final ClassNode rememberLastItType=typeCheckingContext.lastImplicitItType;
   Expression callArguments=call.getArguments();
+  ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
+  checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  if (!isWithCall) {
-    callArguments.visit(this);
-  }
-  ClassNode[] args=getArgumentTypes(InvocationWriter.makeArgumentList(callArguments));
+  visitMethodCallArguments(argumentList,false,null);
+  ClassNode[] args=getArgumentTypes(argumentList);
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
   final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
-    withReceiverList.add(0,receiver);
-    lastImplicitItType=receiver;
-    if (callArguments instanceof ArgumentListExpression) {
-      ArgumentListExpression argList=(ArgumentListExpression)callArguments;
-      ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
-      Parameter[] parameters=closure.getParameters();
-      if (parameters.length > 1) {
-        addStaticTypeError("Unexpected number of parameters for a with call",argList);
-      }
- else       if (parameters.length == 1) {
-        Parameter param=parameters[0];
-        if (!param.isDynamicTyped() && !isAssignableTo(receiver,param.getType().redirect())) {
-          addStaticTypeError("Expected parameter type: " + receiver.toString(false) + " but was: "+ param.getType().redirect().toString(false),param);
-        }
-      }
-    }
+    typeCheckingContext.lastImplicitItType=receiver;
+    checkClosureParameters(callArguments,receiver);
   }
   try {
-    if (isWithCall) {
-      callArguments.visit(this);
-    }
+    boolean callArgsVisited=false;
     if (isCallOnClosure) {
       if (objectExpression == VariableExpression.THIS_EXPRESSION) {
-        FieldNode field=classNode.getDeclaredField(name);
-        ClassNode closureReturnType=field.getType().getGenericsTypes()[0].getType();
-        Object data=field.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
-        if (data != null) {
-          Parameter[] parameters=(Parameter[])data;
-          typeCheckClosureCall(callArguments,args,parameters);
-        }
-        storeType(call,closureReturnType);
-      }
- else       if (objectExpression instanceof VariableExpression) {
-        Variable variable=findTargetVariable((VariableExpression)objectExpression);
-        if (variable instanceof Expression) {
-          Object data=((Expression)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+        FieldNode field=typeCheckingContext.getEnclosingClassNode().getDeclaredField(name);
+        GenericsType[] genericsTypes=field.getType().getGenericsTypes();
+        if (genericsTypes != null) {
+          ClassNode closureReturnType=genericsTypes[0].getType();
+          Object data=field.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
           if (data != null) {
             Parameter[] parameters=(Parameter[])data;
             typeCheckClosureCall(callArguments,args,parameters);
           }
-          Object type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+          storeType(call,closureReturnType);
+        }
+      }
+ else       if (objectExpression instanceof VariableExpression) {
+        Variable variable=findTargetVariable((VariableExpression)objectExpression);
+        if (variable instanceof ASTNode) {
+          Object data=((ASTNode)variable).getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+          if (data != null) {
+            Parameter[] parameters=(Parameter[])data;
+            typeCheckClosureCall(callArguments,args,parameters);
+          }
+          ClassNode type=getInferredReturnType(((ASTNode)variable));
           if (type == null) {
             if (variable.getType().equals(CLOSURE_TYPE)) {
               GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
-              if (genericsTypes != null && !genericsTypes[0].isPlaceholder()) {
-                type=genericsTypes[0].getType();
+              if (genericsTypes != null) {
+                if (!genericsTypes[0].isPlaceholder()) {
+                  type=genericsTypes[0].getType();
+                }
               }
  else {
                 type=OBJECT_TYPE;
@@ -97,9 +93,9 @@
  else       if (objectExpression instanceof ClosureExpression) {
         Parameter[] parameters=((ClosureExpression)objectExpression).getParameters();
         typeCheckClosureCall(callArguments,args,parameters);
-        Object data=objectExpression.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+        ClassNode data=getInferredReturnType(objectExpression);
         if (data != null) {
-          storeType(call,(ClassNode)data);
+          storeType(call,data);
         }
       }
       int nbOfArgs=0;
@@ -113,22 +109,14 @@
       storeTargetMethod(call,nbOfArgs == 0 ? CLOSURE_CALL_NO_ARG : nbOfArgs == 1 ? CLOSURE_CALL_ONE_ARG : CLOSURE_CALL_VARGS);
     }
  else {
-      List<ClassNode> receivers=new LinkedList<ClassNode>();
-      if (!withReceiverList.isEmpty())       receivers.addAll(withReceiverList);
-      receivers.add(receiver);
-      if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
-        GenericsType clazzGT=receiver.getGenericsTypes()[0];
-        receivers.add(clazzGT.getType());
-      }
-      if (!temporaryIfBranchTypeInformation.empty()) {
-        List<ClassNode> potentialReceiverType=getTemporaryTypesForExpression(objectExpression);
-        if (potentialReceiverType != null)         receivers.addAll(potentialReceiverType);
-      }
+      List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
+      List<Receiver<String>> owners=makeOwnerList(objectExpression);
+      addReceivers(receivers,owners,call.isImplicitThis());
       List<MethodNode> mn=null;
-      ClassNode chosenReceiver=null;
-      for (      ClassNode currentReceiver : receivers) {
-        mn=findMethod(currentReceiver,name,args);
-        if (!mn.isEmpty() && isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
+      Receiver<String> chosenReceiver=null;
+      for (      Receiver<String> currentReceiver : receivers) {
+        mn=findMethod(currentReceiver.getType(),name,args);
+        if (!mn.isEmpty() && typeCheckingContext.isInStaticContext && (call.isImplicitThis() || (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()))) {
           List<MethodNode> staticMethods=new LinkedList<MethodNode>();
           List<MethodNode> nonStaticMethods=new LinkedList<MethodNode>();
           for (          final MethodNode node : mn) {
@@ -147,40 +135,82 @@
           }
         }
         if (!mn.isEmpty()) {
-          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver,args,mn.get(0),call);
+          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver.getType(),args,mn.get(0),call);
           chosenReceiver=currentReceiver;
           break;
         }
       }
+      if (mn.isEmpty() && typeCheckingContext.getEnclosingClosure() != null && args.length == 0) {
+        if ("getDelegate".equals(name)) {
+          mn=Collections.singletonList(GET_DELEGATE);
+        }
+ else         if ("getOwner".equals(name)) {
+          mn=Collections.singletonList(GET_OWNER);
+        }
+ else         if ("getThisObject".equals(name)) {
+          mn=Collections.singletonList(GET_THISOBJECT);
+        }
+      }
       if (mn.isEmpty()) {
-        addStaticTypeError("Cannot find matching method " + receiver.getText() + "#"+ toMethodParametersString(name,args),call);
+        mn=extension.handleMissingMethod(receiver,name,argumentList,args,call);
+      }
+      if (mn.isEmpty()) {
+        addNoMatchingMethodError(receiver,name,args,call);
       }
  else {
         if (areCategoryMethodCalls(mn,name,args)) {
           addCategoryMethodCallError(call);
         }
+        mn=disambiguateMethods(mn,call);
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
-          ClassNode currentClassNode=classNode;
-          classNode=directMethodCallCandidate.getDeclaringClass();
-          for (          ClassNode node : source.getAST().getClasses()) {
-            if (isClassInnerClassOrEqualTo(classNode,node)) {
+          if (chosenReceiver == null) {
+            chosenReceiver=Receiver.make(directMethodCallCandidate.getDeclaringClass());
+            if (chosenReceiver == null) {
+              chosenReceiver=owners.get(0);
+            }
+          }
+          typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
+          for (          ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
+            if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
               silentlyVisitMethodNode(directMethodCallCandidate);
               break;
             }
           }
           pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-          classNode=currentClassNode;
-          ClassNode returnType=getType(directMethodCallCandidate);
+          typeCheckingContext.popEnclosingClassNode();
+          ClassNode returnType=null;
+          if (isWithCall) {
+            returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);
+          }
+          if (returnType == null) {
+            returnType=getType(directMethodCallCandidate);
+          }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            ClassNode irtg=inferReturnTypeGenerics(chosenReceiver,directMethodCallCandidate,callArguments);
+            visitMethodCallArguments(argumentList,true,directMethodCallCandidate);
+            ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
+            callArgsVisited=true;
+          }
+          if (directMethodCallCandidate == GET_DELEGATE && typeCheckingContext.getEnclosingClosure() != null) {
+            DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
+            returnType=typeCheckingContext.getEnclosingClassNode();
+            if (md != null) {
+              returnType=md.getType();
+            }
           }
           storeType(call,returnType);
           storeTargetMethod(call,directMethodCallCandidate);
+          String data=chosenReceiver != null ? chosenReceiver.getData() : null;
+          if (data != null) {
+            call.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,data);
+          }
           if (objectExpression instanceof VariableExpression) {
             VariableExpression var=(VariableExpression)objectExpression;
-            if (var.isClosureSharedVariable())             secondPassExpressions.add(call);
+            if (var.isClosureSharedVariable()) {
+              SecondPassExpression<ClassNode[]> wrapper=new SecondPassExpression<ClassNode[]>(call,args);
+              typeCheckingContext.secondPassExpressions.add(wrapper);
+            }
           }
         }
  else {
@@ -188,11 +218,15 @@
         }
       }
     }
+    if (!callArgsVisited) {
+      visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+    }
   }
   finally {
     if (isWithCall) {
-      lastImplicitItType=rememberLastItType;
-      withReceiverList.removeFirst();
+      typeCheckingContext.lastImplicitItType=rememberLastItType;
     }
+    typeCheckingContext.popEnclosingMethodCall();
+    extension.afterMethodCall(call);
   }
 }

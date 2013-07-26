@@ -1,0 +1,14 @@
+{
+  executeTarget("testFileEncoding");
+  final File testfilesPackageDir=new File(tmpDir,"org/codehaus/groovy/tools/groovydoc/testfiles");
+  System.err.println("testfilesPackageDir = " + testfilesPackageDir);
+  final String[] list=testfilesPackageDir.list(new FilenameFilter(){
+    public boolean accept(    File file,    String name){
+      return name.equals("DocumentedClass.html");
+    }
+  }
+);
+  File documentedClassHtmlDoc=new File(testfilesPackageDir,list[0]);
+  CharsetToolkit charsetToolkit=new CharsetToolkit(documentedClassHtmlDoc);
+  assertEquals("The generated groovydoc must be in 'UTF-16LE' file encoding.'",Charset.forName("UTF-16LE"),charsetToolkit.getCharset());
+}

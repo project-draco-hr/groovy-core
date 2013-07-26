@@ -22,6 +22,30 @@
     printType(out,exception);
   }
   if ((methodNode.getModifiers() & Opcodes.ACC_ABSTRACT) != 0) {
+    if (clazz.isAnnotationDefinition() && methodNode.hasAnnotationDefault()) {
+      Statement fs=methodNode.getFirstStatement();
+      if (fs instanceof ExpressionStatement) {
+        ExpressionStatement es=(ExpressionStatement)fs;
+        Expression re=es.getExpression();
+        out.print(" default ");
+        ClassNode rt=methodNode.getReturnType();
+        boolean classReturn=ClassHelper.CLASS_Type.equals(rt) || (rt.isArray() && ClassHelper.CLASS_Type.equals(rt.getComponentType()));
+        if (re instanceof ListExpression) {
+          out.print("{ ");
+          ListExpression le=(ListExpression)re;
+          boolean first=true;
+          for (          Expression expression : le.getExpressions()) {
+            if (first)             first=false;
+ else             out.print(", ");
+            printValue(out,expression,classReturn);
+          }
+          out.print(" }");
+        }
+ else {
+          printValue(out,re,classReturn);
+        }
+      }
+    }
     out.println(";");
   }
  else {

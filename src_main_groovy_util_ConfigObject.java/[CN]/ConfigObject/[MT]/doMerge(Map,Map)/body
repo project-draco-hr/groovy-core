@@ -1,0 +1,21 @@
+{
+  for (  Object o : other.entrySet()) {
+    Map.Entry next=(Map.Entry)o;
+    Object key=next.getKey();
+    Object value=next.getValue();
+    Object configEntry=config.get(key);
+    if (configEntry == null) {
+      config.put(key,value);
+      continue;
+    }
+ else {
+      if (configEntry instanceof Map && ((Map)configEntry).size() > 0 && value instanceof Map) {
+        doMerge((Map)configEntry,(Map)value);
+      }
+ else {
+        config.put(key,value);
+      }
+    }
+  }
+  return config;
+}

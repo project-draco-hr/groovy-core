@@ -1,0 +1,9 @@
+{
+  ThreadLocalMapHandler handler=localMapRef.get();
+  SoftReference<LocalMap> ref=null;
+  if (handler != null)   ref=handler.get();
+  LocalMap map=null;
+  if (ref != null)   map=ref.get();
+  if (map != null)   return map.values();
+  return globalClassSet.values();
+}

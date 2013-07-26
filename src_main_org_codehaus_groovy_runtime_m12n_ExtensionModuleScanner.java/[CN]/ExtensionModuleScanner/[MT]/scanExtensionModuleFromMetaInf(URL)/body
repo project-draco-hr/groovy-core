@@ -1,0 +1,15 @@
+{
+  Properties properties=new Properties();
+  InputStream inStream=null;
+  try {
+    inStream=metadata.openStream();
+    properties.load(inStream);
+  }
+ catch (  IOException e) {
+    throw new GroovyRuntimeException("Unable to load module META-INF descriptor",e);
+  }
+ finally {
+    closeQuietly(inStream);
+  }
+  scanExtensionModuleFromProperties(properties);
+}

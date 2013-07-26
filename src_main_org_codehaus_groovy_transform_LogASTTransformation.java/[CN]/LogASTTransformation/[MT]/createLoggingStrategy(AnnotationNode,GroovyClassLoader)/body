@@ -1,0 +1,39 @@
+{
+  String annotationName=logAnnotation.getClassNode().getName();
+  Class annotationClass;
+  try {
+    annotationClass=Class.forName(annotationName);
+  }
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not resolve class named " + annotationName);
+  }
+  Method annotationMethod;
+  try {
+    annotationMethod=annotationClass.getDeclaredMethod("loggingStrategy",(Class[])null);
+  }
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not find method named loggingStrategy on class named " + annotationName);
+  }
+  Object defaultValue;
+  try {
+    defaultValue=annotationMethod.getDefaultValue();
+  }
+ catch (  Throwable e) {
+    throw new RuntimeException("Could not find default value of method named loggingStrategy on class named " + annotationName);
+  }
+  if (!LoggingStrategy.class.isAssignableFrom((Class)defaultValue)) {
+    throw new RuntimeException("Default loggingStrategy value on class named " + annotationName + " is not a LoggingStrategy");
+  }
+  try {
+    Class<? extends LoggingStrategy> strategyClass=(Class<? extends LoggingStrategy>)defaultValue;
+    if (AbstractLoggingStrategy.class.isAssignableFrom(strategyClass)) {
+      return DefaultGroovyMethods.newInstance(strategyClass,new Object[]{loader});
+    }
+ else {
+      return strategyClass.newInstance();
+    }
+  }
+ catch (  Exception e) {
+    return null;
+  }
+}

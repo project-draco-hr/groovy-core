@@ -3,17 +3,12 @@
   ClassNode oldCN=classNode;
   classNode=node;
   Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
-  if (innerClasses.hasNext()) {
-    addPrivateBridgeMethods(classNode);
-    addPrivateFieldsAccessors(classNode);
-  }
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
-    innerClassNode.setNodeMetaData(STATIC_COMPILE_NODE,!skip);
-    innerClassNode.setNodeMetaData(WriterControllerFactory.class,node.getNodeMetaData(WriterControllerFactory.class));
-    addPrivateBridgeMethods(innerClassNode);
-    addPrivateFieldsAccessors(innerClassNode);
+    innerClassNode.putNodeMetaData(STATIC_COMPILE_NODE,!(skip || isSkippedInnerClass(innerClassNode)));
+    innerClassNode.putNodeMetaData(WriterControllerFactory.class,node.getNodeMetaData(WriterControllerFactory.class));
   }
   super.visitClass(node);
+  addPrivateFieldAndMethodAccessors(node);
   classNode=oldCN;
 }

@@ -8,12 +8,23 @@
       Set<ClassNode> interfaces=classNode.getAllInterfaces();
       for (      ClassNode anInterface : interfaces) {
         if (anInterface.equals(bound)) {
-          ClassNode node=GenericsUtils.parameterizeInterfaceGenerics(classNode,anInterface);
+          ClassNode node=GenericsUtils.parameterizeType(classNode,anInterface);
           return compareGenericsWithBound(node,bound);
         }
       }
     }
-    return compareGenericsWithBound(classNode.getUnresolvedSuperClass(),bound);
+    if (bound instanceof WideningCategories.LowestUpperBoundClassNode) {
+      boolean success=compareGenericsWithBound(classNode,bound.getSuperClass());
+      if (success) {
+        ClassNode[] interfaces=bound.getInterfaces();
+        for (        ClassNode anInterface : interfaces) {
+          success&=compareGenericsWithBound(classNode,anInterface);
+          if (!success)           break;
+        }
+        if (success)         return true;
+      }
+    }
+    return compareGenericsWithBound(getParameterizedSuperClass(classNode),bound);
   }
   GenericsType[] cnTypes=classNode.getGenericsTypes();
   if (cnTypes == null && classNode.isRedirectNode())   cnTypes=classNode.redirect().getGenericsTypes();
@@ -21,18 +32,37 @@
     return true;
   }
   GenericsType[] redirectBoundGenericTypes=bound.redirect().getGenericsTypes();
-  Map<String,GenericsType> classNodePlaceholders=org.codehaus.groovy.ast.tools.GenericsUtils.extractPlaceholders(classNode);
-  Map<String,GenericsType> boundPlaceHolders=org.codehaus.groovy.ast.tools.GenericsUtils.extractPlaceholders(bound);
+  Map<String,GenericsType> classNodePlaceholders=GenericsUtils.extractPlaceholders(classNode);
+  Map<String,GenericsType> boundPlaceHolders=GenericsUtils.extractPlaceholders(bound);
   boolean match=true;
-  for (int i=0; i < redirectBoundGenericTypes.length && match; i++) {
+  for (int i=0; redirectBoundGenericTypes != null && i < redirectBoundGenericTypes.length && match; i++) {
     GenericsType redirectBoundType=redirectBoundGenericTypes[i];
     GenericsType classNodeType=cnTypes[i];
     if (classNodeType.isPlaceholder()) {
+      String name=classNodeType.getName();
       if (redirectBoundType.isPlaceholder()) {
-        match=classNodeType.getName().equals(redirectBoundType.getName());
+        match=name.equals(redirectBoundType.getName());
+        if (!match) {
+          GenericsType genericsType=boundPlaceHolders.get(redirectBoundType.getName());
+          match=false;
+          if (genericsType != null) {
+            if (genericsType.isPlaceholder()) {
+              match=genericsType.getName().equals(name);
+            }
+ else             if (genericsType.isWildcard()) {
+              if (genericsType.getUpperBounds() != null) {
+                for (                ClassNode up : genericsType.getUpperBounds()) {
+                  match|=redirectBoundType.isCompatibleWith(up);
+                }
+                if (genericsType.getLowerBound() != null) {
+                  match|=redirectBoundType.isCompatibleWith(genericsType.getLowerBound());
+                }
+              }
+            }
+          }
+        }
       }
  else {
-        String name=classNodeType.getName();
         if (classNodePlaceholders.containsKey(name))         classNodeType=classNodePlaceholders.get(name);
         match=classNodeType.isCompatibleWith(redirectBoundType.getType());
       }
@@ -57,7 +87,7 @@
                       gt=classNodePlaceholders.get(gt.getName());
                     }
                   }
-                  match=(gt.getType().isDerivedFrom(classNodeType.getType()) || gt.getType().implementsInterface(classNodeType.getType()));
+                  match=implementsInterfaceOrIsSubclassOf(gt.getType(),classNodeType.getType());
                 }
                 if (match && redirectBoundType.upperBounds != null) {
                   for (                  ClassNode upperBound : redirectBoundType.upperBounds) {
@@ -67,7 +97,8 @@
                         gt=classNodePlaceholders.get(gt.getName());
                       }
                     }
-                    match=match && (classNodeType.getType().isDerivedFrom(gt.getType()) || classNodeType.getType().implementsInterface(gt.getType()));
+                    match=match && (implementsInterfaceOrIsSubclassOf(classNodeType.getType(),gt.getType()) || classNodeType.isCompatibleWith(gt.getType()));
+                    if (!match)                     break;
                   }
                 }
                 return match;

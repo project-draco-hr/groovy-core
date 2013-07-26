@@ -1,15 +1,16 @@
 {
-  if (isSkipMode(node))   return;
-  if (alreadyVisitedMethods.contains(node))   return;
-  alreadyVisitedMethods.add(node);
-  if (!methodsToBeVisited.isEmpty() && !methodsToBeVisited.contains(node))   return;
-  final boolean osc=isInStaticContext;
-  try {
-    isInStaticContext=node.isStatic();
-    super.visitMethod(node);
-    addTypeCheckingInfoAnnotation(node);
+  if (shouldSkipMethodNode(node)) {
+    return;
   }
-  finally {
-    isInStaticContext=osc;
+  if (!extension.beforeVisitMethod(node)) {
+    ErrorCollector collector=(ErrorCollector)node.getNodeMetaData(ERROR_COLLECTOR);
+    if (collector != null) {
+      typeCheckingContext.getErrorCollector().addCollectorContents(collector);
+    }
+ else {
+      startMethodInference(node,typeCheckingContext.getErrorCollector());
+    }
+    node.removeNodeMetaData(ERROR_COLLECTOR);
   }
+  extension.afterVisitMethod(node);
 }

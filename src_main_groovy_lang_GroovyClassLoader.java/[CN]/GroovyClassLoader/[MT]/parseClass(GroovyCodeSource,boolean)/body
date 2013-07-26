@@ -1,13 +1,9 @@
 {
-  Class answer;
 synchronized (sourceCache) {
-    answer=sourceCache.get(codeSource.getName());
+    Class answer=sourceCache.get(codeSource.getName());
     if (answer != null)     return answer;
-    if (shouldCacheSource) {
-      answer=doParseClass(codeSource);
-      sourceCache.put(codeSource.getName(),answer);
-    }
+    answer=doParseClass(codeSource);
+    if (shouldCacheSource)     sourceCache.put(codeSource.getName(),answer);
+    return answer;
   }
-  if (!shouldCacheSource)   answer=doParseClass(codeSource);
-  return answer;
 }

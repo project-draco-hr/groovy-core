@@ -1,0 +1,16 @@
+{
+  if (cNode.getDeclaredConstructors().size() == 0) {
+    BlockStatement initBody=new BlockStatement();
+    initBody.addStatement(EmptyStatement.INSTANCE);
+    cNode.addConstructor(ACC_PUBLIC,new Parameter[0],ClassNode.EMPTY_ARRAY,initBody);
+  }
+  final BlockStatement cloneBody=new BlockStatement();
+  final Expression result=new VariableExpression("_result");
+  final Expression noarg=new ConstructorCallExpression(cNode,ArgumentListExpression.EMPTY_ARGUMENTS);
+  cloneBody.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,noarg)));
+  addSimpleCloneHelperMethod(cNode,list,excludes);
+  cloneBody.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"cloneOrCopyMembers",new ArgumentListExpression(result))));
+  cloneBody.addStatement(new ReturnStatement(result));
+  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[0],exceptions,cloneBody);
+}

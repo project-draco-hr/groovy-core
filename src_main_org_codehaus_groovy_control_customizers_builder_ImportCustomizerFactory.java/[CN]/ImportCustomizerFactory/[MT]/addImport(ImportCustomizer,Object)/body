@@ -1,0 +1,20 @@
+{
+  if (value == null)   return;
+  if (value instanceof Collection) {
+    for (    Object e : (Collection)value) {
+      addImport(customizer,e);
+    }
+  }
+ else   if (value instanceof String) {
+    customizer.addImports((String)value);
+  }
+ else   if (value instanceof Class) {
+    customizer.addImports(((Class)value).getName());
+  }
+ else   if (value instanceof GString) {
+    customizer.addImports(value.toString());
+  }
+ else {
+    throw new RuntimeException("Unsupported import value type [" + value + "]");
+  }
+}

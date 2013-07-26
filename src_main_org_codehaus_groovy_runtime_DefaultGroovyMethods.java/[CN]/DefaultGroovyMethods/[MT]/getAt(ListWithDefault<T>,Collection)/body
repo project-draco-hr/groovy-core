@@ -1,0 +1,13 @@
+{
+  List<T> answer=ListWithDefault.newInstance(new ArrayList<T>(indices.size()),self.isLazyDefaultValues(),self.getInitClosure());
+  for (  Object value : indices) {
+    if (value instanceof Range || value instanceof Collection) {
+      answer.addAll((List<T>)InvokerHelper.invokeMethod(self,"getAt",value));
+    }
+ else {
+      int idx=normaliseIndex(DefaultTypeTransformation.intUnbox(value),self.size());
+      answer.add(self.getAt(idx));
+    }
+  }
+  return answer;
+}

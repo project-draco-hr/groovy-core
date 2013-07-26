@@ -3,6 +3,6 @@
   final Statement appendValue=ignoreNulls ? new IfStatement(notNullExpr(value),thenBlock,EmptyStatement.INSTANCE) : thenBlock;
   appendCommaIfNotFirst(thenBlock,result,first);
   appendPrefix(thenBlock,result,name,includeNames);
-  thenBlock.addStatement(append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",value)));
+  thenBlock.addStatement(new IfStatement(identicalExpr(value,VariableExpression.THIS_EXPRESSION),append(result,new ConstantExpression("(this)")),append(result,new StaticMethodCallExpression(INVOKER_TYPE,"toString",value))));
   body.addStatement(appendValue);
 }

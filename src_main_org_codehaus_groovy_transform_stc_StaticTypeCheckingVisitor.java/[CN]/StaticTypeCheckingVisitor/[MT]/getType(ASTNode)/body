@@ -8,16 +8,22 @@
   }
  else   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
-    if (vexp == VariableExpression.THIS_EXPRESSION)     return classNode;
-    if (vexp == VariableExpression.SUPER_EXPRESSION)     return classNode.getSuperClass();
+    if (vexp == VariableExpression.THIS_EXPRESSION)     return typeCheckingContext.getEnclosingClassNode();
+    if (vexp == VariableExpression.SUPER_EXPRESSION)     return typeCheckingContext.getEnclosingClassNode().getSuperClass();
     final Variable variable=vexp.getAccessedVariable();
+    if (variable instanceof FieldNode) {
+      checkOrMarkPrivateAccess((FieldNode)variable);
+    }
     if (variable != null && variable != vexp && variable instanceof VariableExpression) {
       return getType((Expression)variable);
     }
     if (variable instanceof Parameter) {
       Parameter parameter=(Parameter)variable;
-      ClassNode type=forLoopVariableTypes.get(parameter);
-      if (type != null)       return type;
+      ClassNode type=typeCheckingContext.controlStructureVariables.get(parameter);
+      if (type != null) {
+        storeType((VariableExpression)exp,type);
+        return type;
+      }
     }
   }
  else   if (exp instanceof PropertyExpression) {
@@ -63,12 +69,18 @@
  else   if (exp instanceof MapExpression) {
     return inferMapExpressionType((MapExpression)exp);
   }
+  if (exp instanceof ConstructorCallExpression) {
+    return ((ConstructorCallExpression)exp).getType();
+  }
   if (exp instanceof MethodNode) {
-    ClassNode ret=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    if ((exp == GET_DELEGATE || exp == GET_OWNER || exp == GET_THISOBJECT) && typeCheckingContext.getEnclosingClosure() != null) {
+      return typeCheckingContext.getEnclosingClassNode();
+    }
+    ClassNode ret=getInferredReturnType(exp);
     return ret != null ? ret : ((MethodNode)exp).getReturnType();
   }
   if (exp instanceof ClosureExpression) {
-    ClassNode irt=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_RETURN_TYPE);
+    ClassNode irt=getInferredReturnType(exp);
     if (irt != null) {
       irt=wrapTypeIfNecessary(irt);
       ClassNode result=CLOSURE_TYPE.getPlainNodeReference();
@@ -97,6 +109,12 @@
   }
   if (exp instanceof BitwiseNegationExpression) {
     return getType(((BitwiseNegationExpression)exp).getExpression());
+  }
+  if (exp instanceof MethodCall) {
+    MethodNode target=(MethodNode)exp.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+    if (target != null) {
+      return getType(target);
+    }
   }
   return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }

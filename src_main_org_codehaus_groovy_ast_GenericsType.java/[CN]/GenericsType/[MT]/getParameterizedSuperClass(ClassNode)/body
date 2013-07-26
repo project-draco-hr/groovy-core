@@ -1,0 +1,25 @@
+{
+  if (ClassHelper.OBJECT_TYPE.equals(classNode))   return null;
+  ClassNode superClass=classNode.getUnresolvedSuperClass();
+  if (superClass == null) {
+    return ClassHelper.OBJECT_TYPE;
+  }
+  if (!classNode.isUsingGenerics() || !superClass.isUsingGenerics())   return superClass;
+  GenericsType[] genericsTypes=classNode.getGenericsTypes();
+  GenericsType[] redirectGenericTypes=classNode.redirect().getGenericsTypes();
+  superClass=superClass.getPlainNodeReference();
+  if (genericsTypes == null || redirectGenericTypes == null || superClass.getGenericsTypes() == null)   return superClass;
+  for (int i=0, genericsTypesLength=genericsTypes.length; i < genericsTypesLength; i++) {
+    if (redirectGenericTypes[i].isPlaceholder()) {
+      final GenericsType genericsType=genericsTypes[i];
+      GenericsType[] superGenericTypes=superClass.getGenericsTypes();
+      for (int j=0, superGenericTypesLength=superGenericTypes.length; j < superGenericTypesLength; j++) {
+        final GenericsType superGenericType=superGenericTypes[j];
+        if (superGenericType.isPlaceholder() && superGenericType.getName().equals(redirectGenericTypes[i].getName())) {
+          superGenericTypes[j]=genericsType;
+        }
+      }
+    }
+  }
+  return superClass;
+}

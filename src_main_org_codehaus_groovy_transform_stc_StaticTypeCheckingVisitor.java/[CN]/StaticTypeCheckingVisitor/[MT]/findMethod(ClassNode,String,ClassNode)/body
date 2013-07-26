@@ -2,29 +2,30 @@
   if (isPrimitiveType(receiver))   receiver=getWrapper(receiver);
   List<MethodNode> methods;
   if ("<init>".equals(name)) {
-    methods=new ArrayList<MethodNode>(receiver.getDeclaredConstructors());
+    methods=addGeneratedMethods(receiver,new ArrayList<MethodNode>(receiver.getDeclaredConstructors()));
     if (methods.isEmpty()) {
-      MethodNode node=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+      MethodNode node=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,GENERATED_EMPTY_STATEMENT);
       node.setDeclaringClass(receiver);
       return Collections.singletonList(node);
     }
   }
  else {
-    methods=receiver.getMethods(name);
-    if (closureExpression == null) {
+    methods=findMethodsWithGenerated(receiver,name);
+    if (receiver.isInterface()) {
+      collectAllInterfaceMethodsByName(receiver,name,methods);
+      methods.addAll(OBJECT_TYPE.getMethods(name));
+    }
+    if (typeCheckingContext.getEnclosingClosure() == null) {
       ClassNode parent=receiver;
       while (parent instanceof InnerClassNode && !parent.isStaticClass()) {
-        parent=receiver.getOuterClass();
-        methods.addAll(parent.getMethods(name));
+        parent=parent.getOuterClass();
+        methods.addAll(findMethodsWithGenerated(parent,name));
       }
     }
     if (methods.isEmpty() && (args == null || args.length == 0)) {
-      String pname=null;
-      if (name.startsWith("get")) {
-        pname=java.beans.Introspector.decapitalize(name.substring(3));
-      }
- else       if (name.startsWith("is")) {
-        pname=java.beans.Introspector.decapitalize(name.substring(2));
+      String pname=extractPropertyNameFromMethodName("get",name);
+      if (pname == null) {
+        pname=extractPropertyNameFromMethodName("is",name);
       }
       if (pname != null) {
         PropertyNode property=null;
@@ -34,15 +35,18 @@
           curNode=curNode.getSuperClass();
         }
         if (property != null) {
-          MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,property.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+          MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,property.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,GENERATED_EMPTY_STATEMENT);
+          if (property.isStatic()) {
+            node.setModifiers(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC);
+          }
           node.setDeclaringClass(receiver);
           return Collections.singletonList(node);
         }
       }
     }
  else     if (methods.isEmpty() && args != null && args.length == 1) {
-      if (name.startsWith("set")) {
-        String pname=java.beans.Introspector.decapitalize(name.substring(3));
+      String pname=extractPropertyNameFromMethodName("set",name);
+      if (name != null) {
         ClassNode curNode=receiver;
         PropertyNode property=null;
         while (property == null && curNode != null) {
@@ -52,31 +56,41 @@
         if (property != null) {
           ClassNode type=property.getOriginType();
           if (implementsInterfaceOrIsSubclassOf(args[0],type)) {
-            MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,VOID_TYPE,new Parameter[]{new Parameter(type,"arg")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+            MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,VOID_TYPE,new Parameter[]{new Parameter(type,"arg")},ClassNode.EMPTY_ARRAY,GENERATED_EMPTY_STATEMENT);
+            if (property.isStatic()) {
+              node.setModifiers(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC);
+            }
             node.setDeclaringClass(receiver);
             return Collections.singletonList(node);
-          }
- else {
-            System.out.println();
           }
         }
       }
     }
   }
+  if (methods.isEmpty()) {
+    collectAllInterfaceMethodsByName(receiver,name,methods);
+  }
   List<MethodNode> chosen=chooseBestMethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
+  if (receiver instanceof InnerClassNode && ((InnerClassNode)receiver).isAnonymous() && methods.size() == 1 && args != null && "<init>".equals(name)) {
+    MethodNode constructor=methods.get(0);
+    if (constructor.getParameters().length == args.length) {
+      return methods;
+    }
+  }
+  if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
+    List<MethodNode> result=findMethod(receiver.getGenericsTypes()[0].getType(),name,args);
+    if (!result.isEmpty())     return result;
+  }
   methods.clear();
-  chosen=findDGMMethodsByNameAndArguments(receiver,name,args,methods);
+  chosen=findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),receiver,name,args,methods);
   if (!chosen.isEmpty()) {
     return chosen;
   }
-  if (receiver == ClassHelper.GSTRING_TYPE)   return findMethod(ClassHelper.STRING_TYPE,name,args);
-  if (pluginFactory != null) {
-    TypeCheckerPlugin plugin=pluginFactory.getTypeCheckerPlugin(classNode);
-    if (plugin != null) {
-      List<MethodNode> methodNodes=plugin.findMethod(receiver,name,args);
-      if (methodNodes != null && !methodNodes.isEmpty())       return methodNodes;
-    }
+  if (ClassHelper.GSTRING_TYPE.equals(receiver))   return findMethod(ClassHelper.STRING_TYPE,name,args);
+  if (isBeingCompiled(receiver)) {
+    chosen=findMethod(GROOVY_OBJECT_TYPE,name,args);
+    if (!chosen.isEmpty())     return chosen;
   }
   return EMPTY_METHODNODE_LIST;
 }

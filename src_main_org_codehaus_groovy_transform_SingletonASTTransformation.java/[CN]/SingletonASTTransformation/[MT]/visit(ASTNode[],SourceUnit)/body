@@ -6,6 +6,8 @@
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (parent instanceof ClassNode) {
     ClassNode classNode=(ClassNode)parent;
+    final Expression fieldNameAttribute=node.getMember("property");
+    if (fieldNameAttribute instanceof ConstantExpression)     propertyName=(String)((ConstantExpression)fieldNameAttribute).getValue();
     final Expression member=node.getMember("lazy");
     if (member instanceof ConstantExpression && ((ConstantExpression)member).getValue().equals(true))     createLazy(classNode);
  else     createNonLazy(classNode);

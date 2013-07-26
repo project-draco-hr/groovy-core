@@ -8,8 +8,4 @@
   if (call.getMethodTarget() == null && call.getLineNumber() > 0) {
     addError("Target method for method call expression hasn't been set",call);
   }
-  if (StaticTypeCheckingSupport.isWithCall(call.getMethodAsString(),call.getArguments())) {
-    ClosureExpression closure=(ClosureExpression)((ArgumentListExpression)call.getArguments()).getExpression(0);
-    closure.setNodeMetaData(StaticCompilationMetadataKeys.WITH_CLOSURE,Boolean.TRUE);
-  }
 }

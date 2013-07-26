@@ -1,12 +1,33 @@
 {
   Map<VariableExpression,List<ClassNode>> oldTracker=pushAssignmentTracking();
-  pushTemporaryTypeInfo();
+  typeCheckingContext.pushTemporaryTypeInfo();
   expression.getBooleanExpression().visit(this);
-  expression.getTrueExpression().visit(this);
-  temporaryIfBranchTypeInformation.pop();
-  expression.getFalseExpression().visit(this);
-  final ClassNode typeOfTrue=getType(expression.getTrueExpression());
-  final ClassNode typeOfFalse=getType(expression.getFalseExpression());
-  storeType(expression,lowestUpperBound(typeOfTrue,typeOfFalse));
+  Expression trueExpression=expression.getTrueExpression();
+  Expression falseExpression=expression.getFalseExpression();
+  trueExpression.visit(this);
+  typeCheckingContext.popTemporaryTypeInfo();
+  falseExpression.visit(this);
+  ClassNode resultType;
+  if (isNullConstant(trueExpression) || isNullConstant(falseExpression)) {
+    BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+    if (enclosingBinaryExpression != null && enclosingBinaryExpression.getRightExpression() == expression) {
+      resultType=getType(enclosingBinaryExpression.getLeftExpression());
+    }
+ else     if (isNullConstant(trueExpression) && isNullConstant(falseExpression)) {
+      resultType=OBJECT_TYPE;
+    }
+ else     if (isNullConstant(trueExpression)) {
+      resultType=wrapTypeIfNecessary(getType(falseExpression));
+    }
+ else {
+      resultType=wrapTypeIfNecessary(getType(trueExpression));
+    }
+  }
+ else {
+    final ClassNode typeOfTrue=getType(trueExpression);
+    final ClassNode typeOfFalse=getType(falseExpression);
+    resultType=lowestUpperBound(typeOfTrue,typeOfFalse);
+  }
+  storeType(expression,resultType);
   popAssignmentTracking(oldTracker);
 }

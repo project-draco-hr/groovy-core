@@ -1,0 +1,10 @@
+{
+  if (!(callArguments instanceof ArgumentListExpression))   return null;
+  ArgumentListExpression argList=(ArgumentListExpression)callArguments;
+  ClosureExpression closure=(ClosureExpression)argList.getExpression(0);
+  visitClosureExpression(closure);
+  if (getInferredReturnType(closure) != null) {
+    return getInferredReturnType(closure);
+  }
+  return null;
+}

@@ -1,3 +1,10 @@
 {
   assertExpressionAuthorized(expression);
+  final String type=expression.getType().getName();
+  if (constantTypesWhiteList != null && !constantTypesWhiteList.contains(type)) {
+    throw new SecurityException("Usage of variables of type [" + type + "] is not allowed");
+  }
+  if (constantTypesBlackList != null && constantTypesBlackList.contains(type)) {
+    throw new SecurityException("Usage of variables of type [" + type + "] is not allowed");
+  }
 }

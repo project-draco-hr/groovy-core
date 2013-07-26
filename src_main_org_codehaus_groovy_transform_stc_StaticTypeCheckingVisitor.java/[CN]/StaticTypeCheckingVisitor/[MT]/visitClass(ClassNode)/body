@@ -1,16 +1,29 @@
 {
   if (shouldSkipClassNode(node))   return;
-  ClassNode oldCN=classNode;
-  classNode=node;
-  Set<MethodNode> oldVisitedMethod=alreadyVisitedMethods;
-  alreadyVisitedMethods=new LinkedHashSet<MethodNode>();
+  if (extension.beforeVisitClass(node)) {
+    extension.afterVisitClass(node);
+    return;
+  }
+  Object type=node.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  if (type != null) {
+    typeCheckingContext.pushErrorCollector();
+  }
+  typeCheckingContext.pushEnclosingClassNode(node);
+  Set<MethodNode> oldVisitedMethod=typeCheckingContext.alreadyVisitedMethods;
+  typeCheckingContext.alreadyVisitedMethods=new LinkedHashSet<MethodNode>();
   super.visitClass(node);
-  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
+  Iterator<InnerClassNode> innerClasses=node.getInnerClasses();
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
     visitClass(innerClassNode);
   }
-  alreadyVisitedMethods=oldVisitedMethod;
-  classNode=oldCN;
+  typeCheckingContext.alreadyVisitedMethods=oldVisitedMethod;
   node.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,node);
+  for (  MethodNode methodNode : node.getMethods()) {
+    methodNode.putNodeMetaData(StaticTypeCheckingVisitor.class,Boolean.TRUE);
+  }
+  for (  ConstructorNode constructorNode : node.getDeclaredConstructors()) {
+    constructorNode.putNodeMetaData(StaticTypeCheckingVisitor.class,Boolean.TRUE);
+  }
+  extension.afterVisitClass(node);
 }

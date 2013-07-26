@@ -22,8 +22,7 @@
       if (implicitThis && !classNode.isDerivedFrom(declaringClass) && !classNode.implementsInterface(declaringClass)&& classNode instanceof InnerClassNode) {
         compileStack.pushImplicitThis(false);
         if (controller.isInClosure()) {
-          Expression expr=new PropertyExpression(VariableExpression.THIS_EXPRESSION,"owner");
-          expr.visit(controller.getAcg());
+          new VariableExpression("owner").visit(controller.getAcg());
         }
  else {
           Expression expr=new PropertyExpression(new ClassExpression(declaringClass),"this");
@@ -42,6 +41,7 @@
       mv.visitIntInsn(ALOAD,0);
     }
   }
+  int stackSize=operandStack.getStackLength();
   loadArguments(args.getExpressions(),target.getParameters());
   String owner=BytecodeHelper.getClassInternalName(target.getDeclaringClass());
   String desc=BytecodeHelper.getMethodDescriptor(target.getReturnType(),target.getParameters());
@@ -51,7 +51,7 @@
     ret=ClassHelper.OBJECT_TYPE;
     mv.visitInsn(ACONST_NULL);
   }
-  argumentsToRemove+=args.getExpressions().size();
+  argumentsToRemove+=(operandStack.getStackLength() - stackSize);
   controller.getOperandStack().remove(argumentsToRemove);
   controller.getOperandStack().push(ret);
   return true;

@@ -1,28 +1,44 @@
 {
   TypeChooser typeChooser=controller.getTypeChooser();
   ClassNode classNode=controller.getClassNode();
-  ClassNode receiverType=typeChooser.resolveType(receiver,classNode);
+  ClassNode receiverType=(ClassNode)receiver.getNodeMetaData(StaticCompilationMetadataKeys.PROPERTY_OWNER);
+  if (receiverType == null) {
+    receiverType=typeChooser.resolveType(receiver,classNode);
+  }
+  Object type=receiver.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  if (type == null && receiver instanceof VariableExpression) {
+    Variable variable=((VariableExpression)receiver).getAccessedVariable();
+    if (variable instanceof Expression) {
+      type=((Expression)variable).getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+    }
+  }
+  if (type != null) {
+    receiverType=(ClassNode)type;
+  }
   boolean isClassReceiver=false;
-  if (receiverType.equals(ClassHelper.CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
+  if (receiverType.equals(CLASS_Type) && receiverType.getGenericsTypes() != null && !receiverType.getGenericsTypes()[0].isPlaceholder()) {
     isClassReceiver=true;
     receiverType=receiverType.getGenericsTypes()[0].getType();
   }
   MethodVisitor mv=controller.getMethodVisitor();
   if (receiverType.isArray() && methodName.equals("length")) {
     receiver.visit(controller.getAcg());
+    ClassNode arrayGetReturnType=typeChooser.resolveType(receiver,classNode);
+    controller.getOperandStack().doGroovyCast(arrayGetReturnType);
     mv.visitInsn(ARRAYLENGTH);
-    controller.getOperandStack().replace(ClassHelper.int_TYPE);
+    controller.getOperandStack().replace(int_TYPE);
     return;
   }
- else   if (receiverType.implementsInterface(COLLECTION_TYPE) && ("size".equals(methodName) || "length".equals(methodName))) {
+ else   if ((receiverType.implementsInterface(COLLECTION_TYPE) || COLLECTION_TYPE.equals(receiverType)) && ("size".equals(methodName) || "length".equals(methodName))) {
     MethodCallExpression expr=new MethodCallExpression(receiver,"size",ArgumentListExpression.EMPTY_ARGUMENTS);
     expr.setMethodTarget(COLLECTION_SIZE_METHOD);
     expr.setImplicitThis(implicitThis);
+    expr.setSafe(safe);
     expr.visit(controller.getAcg());
     return;
   }
+  if (makeGetPropertyWithGetter(receiver,receiverType,methodName,safe,implicitThis))   return;
   if (makeGetField(receiver,receiverType,methodName,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
-  if (makeGetPropertyWithGetter(receiver,receiverType,methodName))   return;
   if (receiverType.isEnum()) {
     mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(receiverType),methodName,BytecodeHelper.getTypeDescription(receiverType));
     controller.getOperandStack().push(receiverType);
@@ -30,14 +46,59 @@
   }
   if (receiver instanceof ClassExpression) {
     if (makeGetField(receiver,receiver.getType(),methodName,implicitThis,samePackages(receiver.getType().getPackageName(),classNode.getPackageName())))     return;
-    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName))     return;
+    if (makeGetPropertyWithGetter(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
+    if (makeGetPrivateFieldWithBridgeMethod(receiver,receiver.getType(),methodName,safe,implicitThis))     return;
   }
   if (isClassReceiver) {
-    if (makeGetField(receiver,ClassHelper.CLASS_Type,methodName,false,true))     return;
-    if (makeGetPropertyWithGetter(receiver,ClassHelper.CLASS_Type,methodName))     return;
+    if (makeGetPropertyWithGetter(receiver,CLASS_Type,methodName,safe,implicitThis))     return;
+    if (makeGetField(receiver,CLASS_Type,methodName,false,true))     return;
   }
-  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,implicitThis))   return;
-  controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber()));
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,methodName,safe,implicitThis))   return;
+  String getterName="get" + MetaClassHelper.capitalize(methodName);
+  if (receiverType.isInterface()) {
+    Set<ClassNode> allInterfaces=receiverType.getAllInterfaces();
+    MethodNode getterMethod=null;
+    for (    ClassNode anInterface : allInterfaces) {
+      getterMethod=anInterface.getGetterMethod(getterName);
+      if (getterMethod != null)       break;
+    }
+    if (getterMethod == null) {
+      getterMethod=OBJECT_TYPE.getGetterMethod(getterName);
+    }
+    if (getterMethod != null) {
+      MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
+      call.setMethodTarget(getterMethod);
+      call.setImplicitThis(false);
+      call.setSourcePosition(receiver);
+      call.visit(controller.getAcg());
+      return;
+    }
+  }
+  List<MethodNode> methods=findDGMMethodsByNameAndArguments(controller.getSourceUnit().getClassLoader(),receiverType,getterName,ClassNode.EMPTY_ARRAY);
+  if (!methods.isEmpty()) {
+    List<MethodNode> methodNodes=chooseBestMethod(receiverType,methods,ClassNode.EMPTY_ARRAY);
+    if (methodNodes.size() == 1) {
+      MethodNode getter=methodNodes.get(0);
+      MethodCallExpression call=new MethodCallExpression(receiver,getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
+      call.setMethodTarget(getter);
+      call.setImplicitThis(false);
+      call.setSourcePosition(receiver);
+      call.visit(controller.getAcg());
+      return;
+    }
+  }
+  boolean isStaticProperty=receiver instanceof ClassExpression && (receiverType.isDerivedFrom(receiver.getType()) || receiverType.implementsInterface(receiver.getType()));
+  if (!isStaticProperty) {
+    if (receiverType.implementsInterface(MAP_TYPE) || MAP_TYPE.equals(receiverType)) {
+      writeMapDotProperty(receiver,methodName,mv,safe);
+      return;
+    }
+    if (receiverType.implementsInterface(LIST_TYPE) || LIST_TYPE.equals(receiverType)) {
+      writeListDotProperty(receiver,methodName,mv,safe);
+      return;
+    }
+  }
+  controller.getSourceUnit().addError(new SyntaxException("Access to " + (receiver instanceof ClassExpression ? receiver.getType() : receiverType).toString(false) + "#"+ methodName+ " is forbidden",receiver.getLineNumber(),receiver.getColumnNumber(),receiver.getLastLineNumber(),receiver.getLastColumnNumber()));
   controller.getMethodVisitor().visitInsn(ACONST_NULL);
-  controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
+  controller.getOperandStack().push(OBJECT_TYPE);
 }

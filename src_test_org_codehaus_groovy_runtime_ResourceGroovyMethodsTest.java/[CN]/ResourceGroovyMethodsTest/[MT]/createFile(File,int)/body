@@ -1,0 +1,14 @@
+{
+  file.getParentFile().mkdirs();
+  try {
+    OutputStream os=new FileOutputStream(file);
+    os.write(new byte[size]);
+    os.close();
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(String.format("Failed to create [%s] of size [%s]: %s",file.getAbsolutePath(),size,e),e);
+  }
+  if (file.length() != size) {
+    throw new RuntimeException(String.format("Failed to create [%s] of size [%s]",file.getAbsolutePath(),size));
+  }
+}

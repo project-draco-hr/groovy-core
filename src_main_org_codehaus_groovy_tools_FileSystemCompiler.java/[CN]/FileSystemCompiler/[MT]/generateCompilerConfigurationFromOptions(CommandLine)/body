@@ -9,6 +9,9 @@
   if (cli.hasOption("encoding")) {
     configuration.setSourceEncoding(cli.getOptionValue("encoding"));
   }
+  if (cli.hasOption("basescript")) {
+    configuration.setScriptBaseClass(cli.getOptionValue("basescript"));
+  }
   if (cli.hasOption('j')) {
     Map<String,Object> compilerOptions=new HashMap<String,Object>();
     String[] opts=cli.getOptionValues("J");
@@ -20,6 +23,18 @@
   if (cli.hasOption("indy")) {
     configuration.getOptimizationOptions().put("int",false);
     configuration.getOptimizationOptions().put("indy",true);
+  }
+  if (cli.hasOption("configscript")) {
+    String path=cli.getOptionValue("configscript");
+    File groovyConfigurator=new File(path);
+    Binding binding=new Binding();
+    binding.setVariable("configuration",configuration);
+    CompilerConfiguration configuratorConfig=new CompilerConfiguration();
+    ImportCustomizer customizer=new ImportCustomizer();
+    customizer.addStaticStars("org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder");
+    configuratorConfig.addCompilationCustomizers(customizer);
+    GroovyShell shell=new GroovyShell(binding,configuratorConfig);
+    shell.evaluate(groovyConfigurator);
   }
   return configuration;
 }

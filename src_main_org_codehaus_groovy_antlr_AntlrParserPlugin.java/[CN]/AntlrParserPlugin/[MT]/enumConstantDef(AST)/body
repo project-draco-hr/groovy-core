@@ -1,8 +1,10 @@
 {
   enumConstantBeingDef=true;
   assertNodeType(ENUM_CONSTANT_DEF,node);
+  List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
   AST element=node.getFirstChild();
   if (isType(ANNOTATIONS,element)) {
+    processAnnotations(annotations,element);
     element=element.getNextSibling();
   }
   String identifier=identifier(element);
@@ -10,11 +12,38 @@
   element=element.getNextSibling();
   if (element != null) {
     init=expression(element);
-    ClassNode innerClass=getAnonymousInnerClassNode(init);
+    ClassNode innerClass;
+    if (element.getNextSibling() == null) {
+      innerClass=getAnonymousInnerClassNode(init);
+      if (innerClass != null) {
+        init=null;
+      }
+    }
+ else {
+      element=element.getNextSibling();
+      Expression next=expression(element);
+      innerClass=getAnonymousInnerClassNode(next);
+    }
     if (innerClass != null) {
       innerClass.setSuperClass(classNode.getPlainNodeReference());
       innerClass.setModifiers(classNode.getModifiers() | Opcodes.ACC_FINAL);
-      init=new ClassExpression(innerClass);
+      Expression inner=new ClassExpression(innerClass);
+      if (init == null) {
+        ListExpression le=new ListExpression();
+        le.addExpression(inner);
+        init=le;
+      }
+ else {
+        if (init instanceof ListExpression) {
+          ((ListExpression)init).addExpression(inner);
+        }
+ else {
+          ListExpression le=new ListExpression();
+          le.addExpression(init);
+          le.addExpression(inner);
+          init=le;
+        }
+      }
       classNode.setModifiers(classNode.getModifiers() & ~Opcodes.ACC_FINAL);
     }
  else     if (isType(ELIST,element)) {
@@ -25,6 +54,8 @@
       }
     }
   }
-  EnumHelper.addEnumConstant(classNode,identifier,init);
+  FieldNode enumField=EnumHelper.addEnumConstant(classNode,identifier,init);
+  enumField.addAnnotations(annotations);
+  configureAST(enumField,node);
   enumConstantBeingDef=false;
 }

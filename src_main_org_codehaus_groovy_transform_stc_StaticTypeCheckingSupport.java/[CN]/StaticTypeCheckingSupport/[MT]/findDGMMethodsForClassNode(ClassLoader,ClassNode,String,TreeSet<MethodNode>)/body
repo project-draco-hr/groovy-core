@@ -1,0 +1,28 @@
+{
+  List<MethodNode> fromDGM=EXTENSION_METHOD_CACHE.getExtensionMethods(loader).get(clazz.getName());
+  if (fromDGM != null) {
+    for (    MethodNode node : fromDGM) {
+      if (node.getName().equals(name))       accumulator.add(node);
+    }
+  }
+  for (  ClassNode node : clazz.getInterfaces()) {
+    findDGMMethodsForClassNode(loader,node,name,accumulator);
+  }
+  if (clazz.isArray()) {
+    ClassNode componentClass=clazz.getComponentType();
+    if (!componentClass.equals(OBJECT_TYPE)) {
+      if (componentClass.isInterface() || componentClass.getSuperClass() == null) {
+        findDGMMethodsForClassNode(loader,OBJECT_TYPE.makeArray(),name,accumulator);
+      }
+ else {
+        findDGMMethodsForClassNode(loader,componentClass.getSuperClass().makeArray(),name,accumulator);
+      }
+    }
+  }
+  if (clazz.getSuperClass() != null) {
+    findDGMMethodsForClassNode(loader,clazz.getSuperClass(),name,accumulator);
+  }
+ else   if (!clazz.equals(ClassHelper.OBJECT_TYPE)) {
+    findDGMMethodsForClassNode(loader,ClassHelper.OBJECT_TYPE,name,accumulator);
+  }
+}

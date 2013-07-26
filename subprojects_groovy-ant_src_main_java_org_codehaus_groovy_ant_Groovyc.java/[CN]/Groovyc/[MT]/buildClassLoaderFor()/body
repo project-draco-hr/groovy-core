@@ -19,11 +19,13 @@
     }
   }
   GroovyClassLoader loader=new GroovyClassLoader(parent,configuration);
-  loader.setResourceLoader(new GroovyResourceLoader(){
-    public URL loadGroovySource(    String filename) throws MalformedURLException {
-      return null;
+  if (!forceLookupUnnamedFiles) {
+    loader.setResourceLoader(new GroovyResourceLoader(){
+      public URL loadGroovySource(      String filename) throws MalformedURLException {
+        return null;
+      }
     }
-  }
 );
+  }
   return loader;
 }

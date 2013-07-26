@@ -3,19 +3,30 @@
   ClassNode unwrapReceiver=ClassHelper.getUnwrapper(receiver);
   ClassNode unwrapCompare=ClassHelper.getUnwrapper(compare);
   if (ClassHelper.isPrimitiveType(unwrapReceiver) && ClassHelper.isPrimitiveType(unwrapCompare) && unwrapReceiver != unwrapCompare) {
-    dist=1;
+    dist=getPrimitiveDistance(unwrapReceiver,unwrapCompare);
   }
-  ClassNode ref=compare;
+  if (isPrimitiveType(receiver) && !isPrimitiveType(compare)) {
+    dist=(dist + 1) << 1;
+  }
+  if (unwrapCompare.equals(unwrapReceiver))   return dist;
+  if (receiver.isArray() && !compare.isArray()) {
+    dist+=256;
+  }
+  if (receiver == UNKNOWN_PARAMETER_TYPE) {
+    return dist;
+  }
+  ClassNode ref=receiver;
   while (ref != null) {
-    if (receiver.equals(ref) || receiver == UNKNOWN_PARAMETER_TYPE) {
+    if (compare.equals(ref)) {
       break;
     }
-    if (ref.isInterface() && receiver.implementsInterface(ref)) {
-      dist+=getMaximumInterfaceDistance(receiver,ref);
+    if (compare.isInterface() && ref.implementsInterface(compare)) {
+      dist+=getMaximumInterfaceDistance(ref,compare);
       break;
     }
     ref=ref.getSuperClass();
-    if (ref == null)     dist+=2;
+    dist++;
+    if (ref == null)     dist++;
     dist=(dist + 1) << 1;
   }
   return dist;
