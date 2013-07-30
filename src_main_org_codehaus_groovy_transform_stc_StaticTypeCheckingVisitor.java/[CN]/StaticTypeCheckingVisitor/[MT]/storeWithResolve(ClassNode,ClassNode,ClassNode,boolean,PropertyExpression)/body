@@ -1,0 +1,9 @@
+{
+  ClassNode type=typeToResolve;
+  if (getGenericsWithoutArray(type) != null) {
+    Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclartion(receiver,declaringClass,null,isStatic);
+    type=resolveGenericsWithContext(resolvedPlaceholders,type);
+  }
+  storeInferredTypeForPropertyExpression(expressionToStoreOn,type);
+  storeType(expressionToStoreOn,type);
+}

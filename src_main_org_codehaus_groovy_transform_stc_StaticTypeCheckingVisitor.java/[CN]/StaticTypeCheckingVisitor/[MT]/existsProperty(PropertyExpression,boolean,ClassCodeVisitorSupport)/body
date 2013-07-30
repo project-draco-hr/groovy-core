@@ -1,7 +1,9 @@
 {
+  String propertyName=pexp.getPropertyAsString();
+  if (propertyName == null)   return false;
   Expression objectExpression=pexp.getObjectExpression();
   final ClassNode objectExpressionType=getType(objectExpression);
-  boolean staticProperty=false;
+  boolean staticOnlyAccess=objectExpressionType.equals(CLASS_Type);
   if (objectExpressionType.isArray() && "length".equals(pexp.getPropertyAsString())) {
     if (visitor != null) {
       PropertyNode node=new PropertyNode("length",Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,int_TYPE,objectExpressionType,null,null,null);
@@ -10,121 +12,72 @@
     }
     return true;
   }
-  List<ClassNode> tests=new LinkedList<ClassNode>();
-  tests.add(objectExpressionType);
-  if (objectExpressionType.equals(CLASS_Type) && objectExpressionType.getGenericsTypes() != null) {
-    tests.add(0,objectExpressionType.getGenericsTypes()[0].getType());
-    staticProperty=true;
-  }
-  if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
-    List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
-    if (classNodes != null)     tests.addAll(classNodes);
-  }
-  if (typeCheckingContext.lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
-    tests.add(typeCheckingContext.lastImplicitItType);
-  }
-  String propertyName=pexp.getPropertyAsString();
-  if (propertyName == null)   return false;
+  boolean foundGetterOrSetter=false;
+  List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
+  List<Receiver<String>> owners=makeOwnerList(objectExpression);
+  addReceivers(receivers,owners,pexp.isImplicitThis());
   String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
-  if (objectExpressionType.isInterface())   tests.add(OBJECT_TYPE);
-  for (  ClassNode testClass : tests) {
+  HashSet<ClassNode> handledNodes=new HashSet<ClassNode>();
+  for (  Receiver<String> receiver : receivers) {
+    ClassNode testClass=receiver.getType();
     LinkedList<ClassNode> queue=new LinkedList<ClassNode>();
     queue.add(testClass);
-    if (testClass.isInterface()) {
-      Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
-      for (      ClassNode intf : allInterfaces) {
-        queue.add(GenericsUtils.parameterizeType(testClass,intf));
-      }
-    }
     while (!queue.isEmpty()) {
       ClassNode current=queue.removeFirst();
-      current=current.redirect();
-      if (isAttributeExpression) {
-        FieldNode field=current.getDeclaredField(propertyName);
-        if (field != null) {
-          if (visitor != null)           visitor.visitField(field);
-          storeType(pexp,field.getOriginType());
-          return true;
-        }
+      if (handledNodes.contains(current))       continue;
+      handledNodes.add(current);
+      Set<ClassNode> allInterfaces=current.getAllInterfaces();
+      for (      ClassNode intf : allInterfaces) {
+        queue.add(GenericsUtils.parameterizeType(current,intf));
       }
+      boolean staticOnly;
+      if (current.equals(CLASS_Type)) {
+        staticOnly=false;
+      }
+ else {
+        staticOnly=staticOnlyAccess;
+      }
+      FieldNode field=current.getDeclaredField(propertyName);
+      field=nullIfStaticOnlyAndNotStatic(field,staticOnly);
+      if (storeField(field,isAttributeExpression,pexp,objectExpressionType,visitor))       return true;
       PropertyNode propertyNode=current.getProperty(propertyName);
-      if (propertyNode != null) {
-        if (visitor != null)         visitor.visitProperty(propertyNode);
-        storeType(pexp,propertyNode.getOriginType());
-        return true;
-      }
-      if (objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression()) {
-        FieldNode field=current.getDeclaredField(propertyName);
-        if (field != null) {
-          if (visitor != null)           visitor.visitField(field);
-          storeInferredTypeForPropertyExpression(pexp,field.getOriginType());
-          storeType(pexp,field.getOriginType());
-          checkOrMarkPrivateAccess(field);
-          return true;
-        }
-      }
+      propertyNode=nullIfStaticOnlyAndNotStatic(propertyNode,staticOnly);
+      if (storeProperty(propertyNode,pexp,objectExpressionType,visitor))       return true;
+      boolean isThisExpression=objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression();
+      if (storeField(field,isThisExpression,pexp,objectExpressionType,visitor))       return true;
       MethodNode getter=current.getGetterMethod("get" + capName);
+      getter=nullIfStaticOnlyAndNotStatic(getter,staticOnly);
       if (getter == null)       getter=current.getGetterMethod("is" + capName);
-      if (getter != null && !(staticProperty && !CLASS_Type.equals(current) && !getter.isStatic())) {
-        MethodNode setterMethod=current.getSetterMethod("set" + capName);
-        if (setterMethod != null) {
-          if (visitor != null)           visitor.visitMethod(getter);
+      getter=nullIfStaticOnlyAndNotStatic(getter,staticOnly);
+      MethodNode setter=current.getSetterMethod("set" + capName,false);
+      setter=nullIfStaticOnlyAndNotStatic(setter,staticOnly);
+      if (visitor != null && getter != null)       visitor.visitMethod(getter);
+      if (readMode) {
+        if (getter != null) {
           ClassNode cn=inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS);
           storeInferredTypeForPropertyExpression(pexp,cn);
+          pexp.removeNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
           return true;
         }
       }
-      if (getter == null && checkForReadOnly) {
-        FieldNode field=current.getDeclaredField(propertyName);
-        if (field != null) {
-          if (visitor != null)           visitor.visitField(field);
-          ClassNode type=field.getOriginType();
-          if (getGenericsWithoutArray(type) != null) {
-            Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclartion(objectExpressionType,current,null,field.isStatic());
-            type=resolveGenericsWithContext(resolvedPlaceholders,type);
-          }
-          storeInferredTypeForPropertyExpression(pexp,type);
-          storeType(pexp,type);
-          checkOrMarkPrivateAccess(field);
+ else {
+        if (setter != null) {
+          if (visitor != null && field != null)           visitor.visitField(field);
+          storeType(pexp,setter.getParameters()[0].getType());
+          SetterInfo info=new SetterInfo(current,setter);
+          BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+          putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
           return true;
         }
+ else         if (getter != null) {
+          pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,true);
+        }
       }
+      foundGetterOrSetter=foundGetterOrSetter || setter != null || getter != null;
+      if (storeField(field,true,pexp,objectExpressionType,visitor))       return true;
       if (current.getSuperClass() != null) {
         queue.add(current.getSuperClass());
-      }
-    }
-    if (checkForReadOnly) {
-      queue=new LinkedList<ClassNode>();
-      queue.add(testClass);
-      Set<ClassNode> allInterfaces=testClass.getAllInterfaces();
-      for (      ClassNode intf : allInterfaces) {
-        queue.add(GenericsUtils.parameterizeType(testClass,intf));
-      }
-      while (!queue.isEmpty()) {
-        ClassNode current=queue.removeFirst();
-        MethodNode getter=current.getGetterMethod("get" + capName);
-        if (getter == null)         getter=current.getGetterMethod("is" + capName);
-        if (getter != null && !(staticProperty && !CLASS_Type.equals(current) && !getter.isStatic())) {
-          if (visitor != null)           visitor.visitMethod(getter);
-          pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,Boolean.TRUE);
-          ClassNode cn=inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS);
-          storeInferredTypeForPropertyExpression(pexp,cn);
-          return true;
-        }
-        if (getter != null) {
-          FieldNode field=current.getDeclaredField(propertyName);
-          if (field != null) {
-            if (visitor != null)             visitor.visitField(field);
-            storeInferredTypeForPropertyExpression(pexp,field.getOriginType());
-            storeType(pexp,field.getOriginType());
-            checkOrMarkPrivateAccess(field);
-            return true;
-          }
-        }
-        if (!isAttributeExpression && current.getSuperClass() != null) {
-          queue.add(current.getSuperClass());
-        }
       }
     }
     List<MethodNode> methods=findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),testClass,"get" + capName,ClassNode.EMPTY_ARRAY);
@@ -141,7 +94,8 @@
       }
     }
   }
-  for (  ClassNode testClass : tests) {
+  for (  Receiver<String> receiver : receivers) {
+    ClassNode testClass=receiver.getType();
     if (implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE) || implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE)) {
       if (visitor != null) {
         ClassNode propertyType=OBJECT_TYPE;
@@ -156,7 +110,7 @@
           if (intf.isUsingGenerics() && intf.getGenericsTypes() != null && intf.getGenericsTypes().length == 1) {
             PropertyExpression subExp=new PropertyExpression(new VariableExpression("{}",intf.getGenericsTypes()[0].getType()),pexp.getPropertyAsString());
             AtomicReference<ClassNode> result=new AtomicReference<ClassNode>();
-            if (existsProperty(subExp,checkForReadOnly,new PropertyLookupVisitor(result))) {
+            if (existsProperty(subExp,readMode,new PropertyLookupVisitor(result))) {
               intf=LIST_TYPE.getPlainNodeReference();
               intf.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(result.get()))});
               propertyType=intf;
@@ -169,5 +123,5 @@
       return true;
     }
   }
-  return false;
+  return foundGetterOrSetter;
 }
