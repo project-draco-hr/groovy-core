@@ -1,0 +1,19 @@
+{
+  Matcher matcher=regex.matcher(text);
+  if (matcher.find()) {
+    matcher.reset();
+    StringBuffer sb=new StringBuffer();
+    while (matcher.find()) {
+      String tagName=matcher.group(1);
+      String tagBody=matcher.group(2);
+      String encodedBody=encodeAngleBrackets(tagBody);
+      String replacement="{@" + tagName + " "+ encodedBody+ "}";
+      matcher.appendReplacement(sb,replacement);
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
+  }
+ else {
+    return text;
+  }
+}
