@@ -39,19 +39,19 @@
         staticOnly=staticOnlyAccess;
       }
       FieldNode field=current.getDeclaredField(propertyName);
-      field=nullIfStaticOnlyAndNotStatic(field,staticOnly);
+      field=allowStaticAccessToMember(field,staticOnly);
       if (storeField(field,isAttributeExpression,pexp,objectExpressionType,visitor))       return true;
       PropertyNode propertyNode=current.getProperty(propertyName);
-      propertyNode=nullIfStaticOnlyAndNotStatic(propertyNode,staticOnly);
+      propertyNode=allowStaticAccessToMember(propertyNode,staticOnly);
       if (storeProperty(propertyNode,pexp,objectExpressionType,visitor))       return true;
       boolean isThisExpression=objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression();
       if (storeField(field,isThisExpression,pexp,objectExpressionType,visitor))       return true;
       MethodNode getter=current.getGetterMethod("get" + capName);
-      getter=nullIfStaticOnlyAndNotStatic(getter,staticOnly);
+      getter=allowStaticAccessToMember(getter,staticOnly);
       if (getter == null)       getter=current.getGetterMethod("is" + capName);
-      getter=nullIfStaticOnlyAndNotStatic(getter,staticOnly);
+      getter=allowStaticAccessToMember(getter,staticOnly);
       MethodNode setter=current.getSetterMethod("set" + capName,false);
-      setter=nullIfStaticOnlyAndNotStatic(setter,staticOnly);
+      setter=allowStaticAccessToMember(setter,staticOnly);
       if (visitor != null && getter != null)       visitor.visitMethod(getter);
       if (readMode) {
         if (getter != null) {
