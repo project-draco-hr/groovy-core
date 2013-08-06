@@ -1,74 +1,32 @@
 {
   super.visitVariableExpression(vexp);
-  if (vexp != VariableExpression.THIS_EXPRESSION && vexp != VariableExpression.SUPER_EXPRESSION) {
-    if (vexp.getName().equals("this")) {
-      ClassNode enclosingClassNode=typeCheckingContext.getEnclosingClassNode();
-      if (typeCheckingContext.isInStaticContext) {
-        ClassNode clazzType=CLASS_Type.getPlainNodeReference();
-        clazzType.setGenericsTypes(new GenericsType[]{new GenericsType(enclosingClassNode)});
-        storeType(vexp,clazzType);
-      }
- else {
-        storeType(vexp,enclosingClassNode);
-      }
+  if (storeTypeForThis(vexp))   return;
+  if (storeTypeForSuper(vexp))   return;
+  if (typeCheckingContext.getEnclosingClosure() != null) {
+    String name=vexp.getName();
+    if (name.equals("owner") || name.equals("thisObject")) {
+      storeType(vexp,typeCheckingContext.getEnclosingClassNode());
+      return;
     }
-    if (vexp.getName().equals("super"))     storeType(vexp,typeCheckingContext.getEnclosingClassNode().getSuperClass());
-    if (typeCheckingContext.getEnclosingClosure() != null) {
-      if (vexp.getName().equals("owner") || vexp.getName().equals("thisObject")) {
-        storeType(vexp,typeCheckingContext.getEnclosingClassNode());
-        return;
-      }
- else       if ("delegate".equals(vexp.getName())) {
-        DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
-        ClassNode type=typeCheckingContext.getEnclosingClassNode();
-        if (md != null) {
-          type=md.getType();
-        }
-        storeType(vexp,type);
-        return;
-      }
+ else     if ("delegate".equals(name)) {
+      DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
+      ClassNode type=typeCheckingContext.getEnclosingClassNode();
+      if (md != null)       type=md.getType();
+      storeType(vexp,type);
+      return;
     }
   }
-  if (vexp.getAccessedVariable() instanceof DynamicVariable) {
-    DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
-    String dynName=dyn.getName();
-    List<Receiver<String>> checkList=new LinkedList<Receiver<String>>();
-    addReceivers(checkList,Collections.singletonList(Receiver.<String>make(typeCheckingContext.getEnclosingClassNode())),true);
-    for (    Receiver<String> receiver : checkList) {
-      ClassNode node=receiver.getType();
-      if (node.getProperty(dynName) != null) {
-        storeType(vexp,node.getProperty(dynName).getType());
-        return;
-      }
-      if (node.getField(dynName) != null) {
-        storeType(vexp,node.getField(dynName).getType());
-        checkOrMarkPrivateAccess(node.getField(dynName));
-        return;
-      }
-      MethodNode getterMethod=node.getGetterMethod("is" + MetaClassHelper.capitalize(dynName));
-      if (getterMethod != null) {
-        storeType(vexp,getterMethod.getReturnType());
-        return;
-      }
-      Set<ClassNode> allInterfaces=collectAllInterfaces(node);
-      for (      ClassNode intf : allInterfaces) {
-        FieldNode field=intf.getField(dynName);
-        if (field != null && field.isStatic() && field.isFinal()) {
-          storeType(vexp,field.getOriginType());
-          return;
-        }
-      }
-      if (isLHSOfEnclosingAssignment(vexp)) {
-        MethodNode mn=node.getSetterMethod("set" + MetaClassHelper.capitalize(vexp.getName()));
-        if (mn != null) {
-          storeType(vexp,mn.getParameters()[0].getOriginType());
-          putSetterInfo(vexp,new SetterInfo(node,mn));
-          return;
-        }
-      }
-    }
-    if (!extension.handleUnresolvedVariableExpression(vexp)) {
-      addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
-    }
+  if (!(vexp.getAccessedVariable() instanceof DynamicVariable))   return;
+  DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
+  String dynName=dyn.getName();
+  PropertyExpression pe=new PropertyExpression(new VariableExpression("this"),dynName);
+  pe.setImplicitThis(true);
+  if (visitPropertyExpressionSilent(pe,vexp)) {
+    storeType(vexp,getType(pe));
+    vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY));
+    return;
+  }
+  if (!extension.handleUnresolvedVariableExpression(vexp)) {
+    addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
   }
 }

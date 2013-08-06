@@ -1,17 +1,8 @@
 {
   super.visitPropertyExpression(pexp);
-  if (!existsProperty(pexp,true)) {
-    if (isLHSOfEnclosingAssignment(pexp)) {
-      SetterInfo info=hasSetter(pexp);
-      if (info != null) {
-        BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
-        putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
-        return;
-      }
-    }
-    if (!extension.handleUnresolvedProperty(pexp)) {
-      Expression objectExpression=pexp.getObjectExpression();
-      addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
-    }
+  if (visitPropertyExpressionSilent(pexp,pexp))   return;
+  if (!extension.handleUnresolvedProperty(pexp)) {
+    Expression objectExpression=pexp.getObjectExpression();
+    addStaticTypeError("No such property: " + pexp.getPropertyAsString() + " for class: "+ findCurrentInstanceOfClass(objectExpression,getType(objectExpression)).toString(false),pexp);
   }
 }

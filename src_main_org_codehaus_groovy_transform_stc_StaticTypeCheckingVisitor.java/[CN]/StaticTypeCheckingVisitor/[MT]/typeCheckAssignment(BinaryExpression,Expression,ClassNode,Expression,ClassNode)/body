@@ -1,9 +1,9 @@
 {
   if (!typeCheckMultipleAssignmentAndContinue(leftExpression,rightExpression))   return;
+  if (addedReadOnlyPropertyError(leftExpression))   return;
   ClassNode leftRedirect=leftExpressionType.redirect();
   ClassNode wrappedRHS=adjustTypeForSpreading(inferredRightExpressionType,leftExpression);
   boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,wrappedRHS,rightExpression);
-  addReadOnlyPropertyError(leftExpression);
   if (!compatible) {
     if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
       addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression.getRightExpression());
