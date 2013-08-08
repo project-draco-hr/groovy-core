@@ -4,9 +4,7 @@
   DOMBuilder b=new DOMBuilder(self.getOwnerDocument());
   Element newNodes=(Element)b.invokeMethod("rootNode",c);
   Iterator<Node> iter=XmlGroovyMethods.iterator(children(newNodes));
-  Node lastAppended=null;
   while (iter.hasNext()) {
-    lastAppended=parent.insertBefore(iter.next(),beforeNode);
+    parent.insertBefore(iter.next(),beforeNode);
   }
-  return lastAppended;
 }

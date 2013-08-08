@@ -1,0 +1,7 @@
+{
+  if (vexp == VariableExpression.THIS_EXPRESSION)   return true;
+  if (!vexp.isThisExpression())   return false;
+  ClassNode enclosingClassNode=typeCheckingContext.getEnclosingClassNode();
+  storeType(vexp,makeType(enclosingClassNode,typeCheckingContext.isInStaticContext));
+  return true;
+}

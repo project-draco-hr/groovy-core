@@ -1,50 +1,9 @@
 {
-  ClassNode leftRedirect;
-  if (isArrayAccessExpression(leftExpression) || leftExpression instanceof PropertyExpression || (leftExpression instanceof VariableExpression && ((VariableExpression)leftExpression).getAccessedVariable() instanceof DynamicVariable)) {
-    leftRedirect=leftExpressionType;
-  }
- else {
-    if (leftExpression instanceof VariableExpression && isPrimitiveType(((VariableExpression)leftExpression).getOriginType())) {
-      leftRedirect=leftExpressionType;
-    }
- else {
-      leftRedirect=leftExpression.getType().redirect();
-    }
-  }
-  if (leftExpression instanceof TupleExpression) {
-    if (!(rightExpression instanceof ListExpression)) {
-      addStaticTypeError("Multiple assignments without list expressions on the right hand side are unsupported in static type checking mode",rightExpression);
-      return;
-    }
-    TupleExpression tuple=(TupleExpression)leftExpression;
-    ListExpression list=(ListExpression)rightExpression;
-    List<Expression> listExpressions=list.getExpressions();
-    List<Expression> tupleExpressions=tuple.getExpressions();
-    if (listExpressions.size() < tupleExpressions.size()) {
-      addStaticTypeError("Incorrect number of values. Expected:" + tupleExpressions.size() + " Was:"+ listExpressions.size(),list);
-      return;
-    }
-    for (int i=0, tupleExpressionsSize=tupleExpressions.size(); i < tupleExpressionsSize; i++) {
-      Expression tupleExpression=tupleExpressions.get(i);
-      Expression listExpression=listExpressions.get(i);
-      ClassNode elemType=getType(listExpression);
-      ClassNode tupleType=getType(tupleExpression);
-      if (!isAssignableTo(elemType,tupleType)) {
-        addStaticTypeError("Cannot assign value of type " + elemType.toString(false) + " to variable of type "+ tupleType.toString(false),rightExpression);
-        break;
-      }
-    }
-    return;
-  }
-  ClassNode wrappedRHS=inferredRightExpressionType;
-  if (leftExpression instanceof PropertyExpression && ((PropertyExpression)leftExpression).isSpreadSafe()) {
-    wrappedRHS=LIST_TYPE.getPlainNodeReference();
-    wrappedRHS.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(inferredRightExpressionType))});
-  }
+  if (!typeCheckMultipleAssignmentAndContinue(leftExpression,rightExpression))   return;
+  if (addedReadOnlyPropertyError(leftExpression))   return;
+  ClassNode leftRedirect=leftExpressionType.redirect();
+  ClassNode wrappedRHS=adjustTypeForSpreading(inferredRightExpressionType,leftExpression);
   boolean compatible=checkCompatibleAssignmentTypes(leftRedirect,wrappedRHS,rightExpression);
-  if (leftExpression.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY) != null && (leftExpression instanceof PropertyExpression)) {
-    addStaticTypeError("Cannot set read-only property: " + ((PropertyExpression)leftExpression).getPropertyAsString(),leftExpression);
-  }
   if (!compatible) {
     if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
       addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression.getRightExpression());
@@ -57,63 +16,10 @@
         storeInferredReturnType(leftExpression,type);
       }
     }
-    boolean possibleLooseOfPrecision=false;
-    if (isNumberType(leftRedirect) && isNumberType(inferredRightExpressionType)) {
-      possibleLooseOfPrecision=checkPossibleLooseOfPrecision(leftRedirect,inferredRightExpressionType,rightExpression);
-      if (possibleLooseOfPrecision) {
-        addStaticTypeError("Possible loose of precision from " + inferredRightExpressionType + " to "+ leftRedirect,rightExpression);
-      }
-    }
-    if (!possibleLooseOfPrecision && leftExpressionType.isArray()) {
-      ClassNode leftComponentType=leftExpressionType.getComponentType();
-      ClassNode rightRedirect=rightExpression.getType().redirect();
-      if (rightRedirect.isArray()) {
-        ClassNode rightComponentType=rightRedirect.getComponentType();
-        if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType)) {
-          addStaticTypeError("Cannot assign value of type " + rightComponentType.toString(false) + " into array of type "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
-        }
-      }
- else       if (rightExpression instanceof ListExpression) {
-        for (        Expression element : ((ListExpression)rightExpression).getExpressions()) {
-          ClassNode rightComponentType=element.getType().redirect();
-          if (!checkCompatibleAssignmentTypes(leftComponentType,rightComponentType) && !(isNullConstant(element) && !isPrimitiveType(leftComponentType))) {
-            addStaticTypeError("Cannot assign value of type " + rightComponentType.toString(false) + " into array of type "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
-          }
-        }
-      }
-    }
-    if (rightExpression instanceof ListExpression && !implementsInterfaceOrIsSubclassOf(LIST_TYPE,leftRedirect)) {
-      ArgumentListExpression argList=new ArgumentListExpression(((ListExpression)rightExpression).getExpressions());
-      ClassNode[] args=getArgumentTypes(argList);
-      checkGroovyStyleConstructor(leftRedirect,args);
-    }
- else     if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE) && !isWildcardLeftHandSide(leftExpressionType)) {
-      if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
-        addAssignmentError(leftExpressionType,inferredRightExpressionType,assignmentExpression);
-      }
-    }
-    if (!implementsInterfaceOrIsSubclassOf(leftRedirect,MAP_TYPE) && rightExpression instanceof MapExpression) {
-      if (!(leftExpression instanceof VariableExpression) || !((VariableExpression)leftExpression).isDynamicTyped()) {
-        ArgumentListExpression argList=new ArgumentListExpression(rightExpression);
-        ClassNode[] args=getArgumentTypes(argList);
-        checkGroovyStyleConstructor(leftRedirect,args);
-        MapExpression mapExpression=(MapExpression)rightExpression;
-        checkGroovyConstructorMap(leftExpression,leftRedirect,mapExpression);
-      }
-    }
-    if (leftExpressionType.isUsingGenerics() && !leftExpressionType.isEnum()) {
-      boolean incomplete=hasRHSIncompleteGenericTypeInfo(wrappedRHS);
-      if (!incomplete) {
-        GenericsType gt=GenericsUtils.buildWildcardType(leftExpressionType);
-        if (!UNKNOWN_PARAMETER_TYPE.equals(wrappedRHS) && !gt.isCompatibleWith(wrappedRHS) && !isNullConstant(rightExpression)) {
-          if (isParameterizedWithString(leftExpressionType) && isParameterizedWithGStringOrGStringString(wrappedRHS)) {
-            addStaticTypeError("You are trying to use a GString in place of a String in a type which explicitly declares accepting String. " + "Make sure to call toString() on all GString values.",assignmentExpression.getRightExpression());
-          }
- else {
-            addStaticTypeError("Incompatible generic argument types. Cannot assign " + wrappedRHS.toString(false) + " to: "+ leftExpressionType.toString(false),assignmentExpression.getRightExpression());
-          }
-        }
-      }
-    }
+    addPrecisionErrors(leftRedirect,leftExpressionType,inferredRightExpressionType,rightExpression);
+    addListAssignmentConstructorErrors(leftRedirect,leftExpressionType,inferredRightExpressionType,rightExpression,assignmentExpression);
+    addMapAssignmentConstructorErrors(leftRedirect,leftExpression,rightExpression);
+    if (hasGStringStringError(leftExpressionType,wrappedRHS,rightExpression))     return;
+    checkTypeGenerics(leftExpressionType,wrappedRHS,rightExpression);
   }
 }

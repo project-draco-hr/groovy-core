@@ -2,14 +2,15 @@
   if (visitor instanceof AsmClassGenerator) {
     AsmClassGenerator acg=(AsmClassGenerator)visitor;
     WriterController controller=acg.getController();
+    OperandStack os=controller.getOperandStack();
     if (type.equals(ClassHelper.boolean_TYPE)) {
       expression.visit(visitor);
-      controller.getOperandStack().doGroovyCast(ClassHelper.boolean_TYPE);
+      os.doGroovyCast(ClassHelper.boolean_TYPE);
       return;
     }
     if (type.equals(ClassHelper.Boolean_TYPE)) {
-      expression.visit(visitor);
       MethodVisitor mv=controller.getMethodVisitor();
+      expression.visit(visitor);
       Label unbox=new Label();
       Label exit=new Label();
       mv.visitInsn(DUP);
@@ -18,9 +19,10 @@
       mv.visitInsn(ICONST_0);
       mv.visitJumpInsn(GOTO,exit);
       mv.visitLabel(unbox);
+      if (!os.getTopOperand().equals(type))       BytecodeHelper.doCast(mv,type);
       mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Boolean","booleanValue","()Z");
       mv.visitLabel(exit);
-      controller.getOperandStack().replace(ClassHelper.boolean_TYPE);
+      os.replace(ClassHelper.boolean_TYPE);
       return;
     }
     ClassNode top=type;

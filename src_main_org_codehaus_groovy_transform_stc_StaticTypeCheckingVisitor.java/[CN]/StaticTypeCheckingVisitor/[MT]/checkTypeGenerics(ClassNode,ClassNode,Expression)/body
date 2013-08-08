@@ -1,0 +1,7 @@
+{
+  if (!leftExpressionType.isUsingGenerics())   return;
+  if (hasRHSIncompleteGenericTypeInfo(wrappedRHS))   return;
+  GenericsType gt=GenericsUtils.buildWildcardType(leftExpressionType);
+  if (UNKNOWN_PARAMETER_TYPE.equals(wrappedRHS) || gt.isCompatibleWith(wrappedRHS) || isNullConstant(rightExpression))   return;
+  addStaticTypeError("Incompatible generic argument types. Cannot assign " + wrappedRHS.toString(false) + " to: "+ leftExpressionType.toString(false),rightExpression);
+}

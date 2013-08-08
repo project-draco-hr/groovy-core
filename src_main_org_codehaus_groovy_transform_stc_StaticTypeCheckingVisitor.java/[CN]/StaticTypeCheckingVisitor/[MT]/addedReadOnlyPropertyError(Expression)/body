@@ -1,0 +1,12 @@
+{
+  if (expr.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY) == null)   return false;
+  String name=null;
+  if (expr instanceof VariableExpression) {
+    name=((VariableExpression)expr).getName();
+  }
+ else {
+    name=((PropertyExpression)expr).getPropertyAsString();
+  }
+  addStaticTypeError("Cannot set read-only property: " + name,expr);
+  return true;
+}
