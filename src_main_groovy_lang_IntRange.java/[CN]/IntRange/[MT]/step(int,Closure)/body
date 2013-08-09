@@ -14,6 +14,9 @@
     int value=from;
     while (value <= to) {
       closure.call(Integer.valueOf(value));
+      if ((0L + value + step) >= Integer.MAX_VALUE) {
+        break;
+      }
       value=value + step;
     }
   }
@@ -21,6 +24,9 @@
     int value=to;
     while (value >= from) {
       closure.call(Integer.valueOf(value));
+      if ((0L + value + step) <= Integer.MIN_VALUE) {
+        break;
+      }
       value=value + step;
     }
   }
