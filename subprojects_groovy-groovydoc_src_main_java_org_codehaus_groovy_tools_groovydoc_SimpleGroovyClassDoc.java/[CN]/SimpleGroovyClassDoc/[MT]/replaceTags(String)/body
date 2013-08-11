@@ -1,7 +1,10 @@
 {
   String result=comment.replaceAll("(?m)^\\s*\\*","");
   result=replaceAllTags(result,"","",LINK_REGEX);
-  result=replaceAllTags(result,"<TT>","</TT>",CODE_REGEX);
+  result=encodeAngleBracketsInTagBody(result,LITERAL_REGEX);
+  result=replaceAllTags(result,"","",LITERAL_REGEX);
+  result=encodeAngleBracketsInTagBody(result,CODE_REGEX);
+  result=replaceAllTags(result,"<CODE>","</CODE>",CODE_REGEX);
   result=replaceAllTagsCollated(result,"<DL><DT><B>",":</B></DT><DD>","</DD><DD>","</DD></DL>",TAG_REGEX);
   return decodeSpecialSymbols(result);
 }
