@@ -17,5 +17,8 @@
       }
     }
   }
+  if (typeCheckingContext.lastImplicitItType != null && objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).getName().equals("it")) {
+    owners.add(Receiver.<String>make(typeCheckingContext.lastImplicitItType));
+  }
   return owners;
 }

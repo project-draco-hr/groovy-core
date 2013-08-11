@@ -1,0 +1,15 @@
+{
+  if (member == null)   return null;
+  if (!staticOnly)   return member;
+  boolean isStatic=false;
+  if (member instanceof Variable) {
+    Variable v=(Variable)member;
+    isStatic=Modifier.isStatic(v.getModifiers());
+  }
+ else {
+    MethodNode mn=(MethodNode)member;
+    isStatic=mn.isStatic();
+  }
+  if (staticOnly && !isStatic)   return null;
+  return member;
+}

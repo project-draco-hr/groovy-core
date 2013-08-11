@@ -1,0 +1,7 @@
+{
+  if (vexp == VariableExpression.SUPER_EXPRESSION)   return true;
+  if (!vexp.isSuperExpression())   return false;
+  ClassNode superClassNode=typeCheckingContext.getEnclosingClassNode().getSuperClass();
+  storeType(vexp,makeType(superClassNode,typeCheckingContext.isInStaticContext));
+  return true;
+}
