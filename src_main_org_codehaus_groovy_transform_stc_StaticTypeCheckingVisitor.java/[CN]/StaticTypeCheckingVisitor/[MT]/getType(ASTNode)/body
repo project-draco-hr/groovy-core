@@ -26,43 +26,6 @@
       }
     }
   }
- else   if (exp instanceof PropertyExpression) {
-    PropertyExpression pexp=(PropertyExpression)exp;
-    ClassNode objectExpType=getType(pexp.getObjectExpression());
-    if ((LIST_TYPE.equals(objectExpType) || objectExpType.implementsInterface(LIST_TYPE)) && pexp.isSpreadSafe()) {
-      return LIST_TYPE;
-    }
- else     if ((objectExpType.equals(MAP_TYPE) || objectExpType.implementsInterface(MAP_TYPE)) && pexp.isSpreadSafe()) {
-      String propertyName=pexp.getPropertyAsString();
-      GenericsType[] types=objectExpType.getGenericsTypes();
-      if ("key".equals(propertyName)) {
-        if (types.length == 2) {
-          ClassNode listKey=LIST_TYPE.getPlainNodeReference();
-          listKey.setGenericsTypes(new GenericsType[]{types[0]});
-          return listKey;
-        }
-      }
- else       if ("value".equals(propertyName)) {
-        if (types.length == 2) {
-          ClassNode listValue=LIST_TYPE.getPlainNodeReference();
-          listValue.setGenericsTypes(new GenericsType[]{types[1]});
-          return listValue;
-        }
-      }
- else {
-        addStaticTypeError("Spread operator on map only allows one of [key,value]",pexp);
-      }
-      return LIST_TYPE;
-    }
- else     if (objectExpType.isEnum()) {
-      return objectExpType;
-    }
- else {
-      final AtomicReference<ClassNode> result=new AtomicReference<ClassNode>(ClassHelper.VOID_TYPE);
-      existsProperty(pexp,false,new PropertyLookupVisitor(result));
-      return result.get();
-    }
-  }
   if (exp instanceof ListExpression) {
     return inferListExpressionType((ListExpression)exp);
   }

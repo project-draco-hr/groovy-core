@@ -1,0 +1,25 @@
+{
+  if (!implementsInterfaceOrIsSubclassOf(testClass,MAP_TYPE))   return null;
+  ClassNode intf=GenericsUtils.parameterizeType(objectExpressionType,MAP_TYPE.getPlainNodeReference());
+  GenericsType[] types=intf.getGenericsTypes();
+  if (types == null || types.length != 2)   return OBJECT_TYPE;
+  if (pexp.isSpreadSafe()) {
+    if ("key".equals(pexp.getPropertyAsString())) {
+      ClassNode listKey=LIST_TYPE.getPlainNodeReference();
+      listKey.setGenericsTypes(new GenericsType[]{types[0]});
+      return listKey;
+    }
+ else     if ("value".equals(pexp.getPropertyAsString())) {
+      ClassNode listValue=LIST_TYPE.getPlainNodeReference();
+      listValue.setGenericsTypes(new GenericsType[]{types[1]});
+      return listValue;
+    }
+ else {
+      addStaticTypeError("Spread operator on map only allows one of [key,value]",pexp);
+    }
+  }
+ else {
+    return types[1].getType();
+  }
+  return null;
+}
