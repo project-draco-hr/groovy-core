@@ -1,4 +1,5 @@
 {
+  super.visitPropertyExpression(pexp);
   String propertyName=pexp.getPropertyAsString();
   if (propertyName == null)   return false;
   Expression objectExpression=pexp.getObjectExpression();
@@ -98,6 +99,7 @@
     ClassNode testClass=receiver.getType();
     ClassNode propertyType=getTypeForMapPropertyExpression(testClass,objectExpressionType,pexp);
     if (propertyType == null)     propertyType=getTypeForListPropertyExpression(testClass,objectExpressionType,pexp);
+    if (propertyType == null)     propertyType=getTypeForSpreadExpression(testClass,objectExpressionType,pexp);
     if (propertyType == null)     continue;
     if (visitor != null) {
       PropertyNode node=new PropertyNode(propertyName,Opcodes.ACC_PUBLIC,propertyType,objectExpressionType,null,null,null);
