@@ -41,12 +41,12 @@
       }
       FieldNode field=current.getDeclaredField(propertyName);
       field=allowStaticAccessToMember(field,staticOnly);
-      if (storeField(field,isAttributeExpression,pexp,objectExpressionType,visitor))       return true;
+      if (storeField(field,isAttributeExpression,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
       PropertyNode propertyNode=current.getProperty(propertyName);
       propertyNode=allowStaticAccessToMember(propertyNode,staticOnly);
-      if (storeProperty(propertyNode,pexp,objectExpressionType,visitor))       return true;
+      if (storeProperty(propertyNode,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
       boolean isThisExpression=objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression();
-      if (storeField(field,isThisExpression,pexp,objectExpressionType,visitor))       return true;
+      if (storeField(field,isThisExpression,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
       MethodNode getter=current.getGetterMethod("get" + capName);
       getter=allowStaticAccessToMember(getter,staticOnly);
       if (getter == null)       getter=current.getGetterMethod("is" + capName);
@@ -59,6 +59,8 @@
           ClassNode cn=inferReturnTypeGenerics(current,getter,ArgumentListExpression.EMPTY_ARGUMENTS);
           storeInferredTypeForPropertyExpression(pexp,cn);
           pexp.removeNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
+          String delegationData=receiver.getData();
+          if (delegationData != null)           pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
           return true;
         }
       }
@@ -69,6 +71,8 @@
           SetterInfo info=new SetterInfo(current,setter);
           BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
           if (enclosingBinaryExpression != null)           putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
+          String delegationData=receiver.getData();
+          if (delegationData != null)           pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
           return true;
         }
  else         if (getter != null) {
@@ -76,7 +80,7 @@
         }
       }
       foundGetterOrSetter=foundGetterOrSetter || setter != null || getter != null;
-      if (storeField(field,true,pexp,objectExpressionType,visitor))       return true;
+      if (storeField(field,true,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
       if (current.getSuperClass() != null) {
         queue.add(current.getSuperClass());
       }
@@ -106,6 +110,8 @@
       visitor.visitProperty(node);
     }
     storeType(pexp,propertyType);
+    String delegationData=receiver.getData();
+    if (delegationData != null)     pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
     return true;
   }
   return foundGetterOrSetter;
