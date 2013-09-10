@@ -33,7 +33,19 @@
         }
       }
     }
-    if (nextNode == null)     nextNode=current.getUnresolvedSuperClass();
+    if (nextNode == null) {
+      nextNode=current.getUnresolvedSuperClass();
+      if (current.isArray()) {
+        nextNode=current.getComponentType();
+        nextNode=nextNode.getUnresolvedSuperClass();
+        if (nextNode != null) {
+          nextNode=nextNode.makeArray();
+        }
+ else {
+          nextNode=OBJECT_TYPE;
+        }
+      }
+    }
     current=nextNode;
     if (current == null) {
       String descriptor="<>";
