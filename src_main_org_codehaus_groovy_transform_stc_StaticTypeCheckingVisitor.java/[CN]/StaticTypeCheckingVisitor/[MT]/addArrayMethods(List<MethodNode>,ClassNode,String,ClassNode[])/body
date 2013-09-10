@@ -1,0 +1,18 @@
+{
+  if (args.length != 1)   return;
+  if (!receiver.isArray())   return;
+  if (!isIntCategory(args[0]))   return;
+  if ("getAt".equals(name)) {
+    MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,receiver.getComponentType(),new Parameter[]{new Parameter(args[0],"arg")},null,null);
+    node.setDeclaringClass(receiver.redirect());
+    methods.add(node);
+  }
+ else   if ("setAt".equals(name)) {
+    MethodNode node=new MethodNode(name,Opcodes.ACC_PUBLIC,VOID_TYPE,new Parameter[]{new Parameter(args[0],"arg")},null,null);
+    node.setDeclaringClass(receiver.redirect());
+    methods.add(node);
+  }
+ else {
+    return;
+  }
+}
