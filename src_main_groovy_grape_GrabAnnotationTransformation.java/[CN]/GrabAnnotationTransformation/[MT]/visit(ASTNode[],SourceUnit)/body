@@ -108,6 +108,7 @@
         checkForClassLoader(node);
         checkForInitContextClassLoader(node);
         checkForAutoDownload(node);
+        checkForDisableChecksums(node);
       }
       addInitContextClassLoaderIfNeeded(classNode);
     }
@@ -159,6 +160,7 @@
     basicArgs.put("classLoader",loader != null ? loader : sourceUnit.getClassLoader());
     if (!grabExcludeMaps.isEmpty())     basicArgs.put("excludes",grabExcludeMaps);
     if (autoDownload != null)     basicArgs.put(AUTO_DOWNLOAD_SETTING,autoDownload);
+    if (disableChecksums != null)     basicArgs.put(DISABLE_CHECKSUMS_SETTING,disableChecksums);
     try {
       Grape.grab(basicArgs,grabMaps.toArray(new Map[grabMaps.size()]));
       if (compilationUnit != null) {
