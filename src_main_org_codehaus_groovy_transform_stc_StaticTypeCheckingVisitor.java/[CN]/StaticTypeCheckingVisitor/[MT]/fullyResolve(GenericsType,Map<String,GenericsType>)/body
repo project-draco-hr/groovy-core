@@ -1,4 +1,8 @@
 {
+  if (gt == null)   throw new GroovyBugError("gt must not be null.");
+  if (placeholders == null)   throw new GroovyBugError("placeholders map must not be null");
+  GenericsType fromMap=placeholders.get(gt.getName());
+  if (fromMap == null)   throw new GroovyBugError("placeholders entry has null value, key was: " + gt.getName() + " and map entry exists: "+ placeholders.containsKey(gt.getName()));
   if (gt.isPlaceholder() && placeholders.containsKey(gt.getName()) && !placeholders.get(gt.getName()).isPlaceholder()) {
     gt=placeholders.get(gt.getName());
   }
