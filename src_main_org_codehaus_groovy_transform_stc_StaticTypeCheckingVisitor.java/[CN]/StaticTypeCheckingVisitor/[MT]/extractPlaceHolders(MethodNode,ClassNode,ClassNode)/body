@@ -1,25 +1,13 @@
 {
   if (declaringClass.equals(OBJECT_TYPE)) {
-    Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>(){
-      public GenericsType put(      String key,      GenericsType value){
-        if (key == null || value == null)         throw new NullPointerException("Key and value must not be null.");
-        return super.put(key,value);
-      }
-    }
-;
+    Map<String,GenericsType> resolvedPlaceholders=new HashMap<String,GenericsType>();
     if (method != null)     addMethodLevelDeclaredGenerics(method,resolvedPlaceholders);
     return resolvedPlaceholders;
   }
   Map<String,GenericsType> resolvedPlaceholders=null;
   ClassNode current=receiver;
   while (true) {
-    Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>(){
-      public GenericsType put(      String key,      GenericsType value){
-        if (key == null || value == null)         throw new NullPointerException("Key and value must not be null.");
-        return super.put(key,value);
-      }
-    }
-;
+    Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>();
     GenericsUtils.extractPlaceholders(current,currentPlaceHolders);
     if (method != null && declaringClass.equals(current)) {
       addMethodLevelDeclaredGenerics(method,currentPlaceHolders);
