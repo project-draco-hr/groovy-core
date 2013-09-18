@@ -1,12 +1,10 @@
 {
   if (value instanceof Integer) {
-    Integer integer=(Integer)value;
-    int i=integer.intValue();
-    return i >= from && i <= to;
+    return (Integer)value >= getFrom() && (Integer)value <= getTo();
   }
   if (value instanceof BigInteger) {
     BigInteger bigint=(BigInteger)value;
-    return bigint.compareTo(BigInteger.valueOf(from)) >= 0 && bigint.compareTo(BigInteger.valueOf(to)) <= 0;
+    return bigint.compareTo(BigInteger.valueOf(getFrom())) >= 0 && bigint.compareTo(BigInteger.valueOf(getTo())) <= 0;
   }
   return false;
 }
