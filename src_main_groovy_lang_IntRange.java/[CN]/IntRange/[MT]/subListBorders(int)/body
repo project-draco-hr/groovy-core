@@ -1,0 +1,15 @@
+{
+  if (inclusive == null)   throw new IllegalStateException("Should not call subListBorders on a non-inclusive aware IntRange");
+  int tempFrom=from;
+  if (tempFrom < 0) {
+    tempFrom+=size;
+  }
+  int tempTo=to;
+  if (tempTo < 0) {
+    tempTo+=size;
+  }
+  if (tempFrom > tempTo) {
+    return new RangeInfo(inclusive ? tempTo : tempTo + 1,tempFrom + 1,true);
+  }
+  return new RangeInfo(tempFrom,inclusive ? tempTo + 1 : tempTo,false);
+}

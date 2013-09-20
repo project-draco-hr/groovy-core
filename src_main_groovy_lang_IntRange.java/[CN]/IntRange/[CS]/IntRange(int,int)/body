@@ -1,4 +1,5 @@
 {
+  this.inclusive=null;
   if (from > to) {
     this.from=to;
     this.to=from;
@@ -8,7 +9,8 @@
     this.from=from;
     this.to=to;
   }
-  if (this.to - this.from >= Integer.MAX_VALUE) {
-    throw new IllegalArgumentException("range must have no more than " + Integer.MAX_VALUE + " elements");
+  Long size=0L + this.to - this.from;
+  if (size >= Integer.MAX_VALUE) {
+    throw new IllegalArgumentException("A range must have no more than " + Integer.MAX_VALUE + " elements but attempted "+ size+ " elements");
   }
 }

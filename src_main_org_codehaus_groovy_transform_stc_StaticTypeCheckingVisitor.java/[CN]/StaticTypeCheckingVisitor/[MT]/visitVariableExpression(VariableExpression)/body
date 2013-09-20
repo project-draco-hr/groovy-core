@@ -23,7 +23,10 @@
   pe.setImplicitThis(true);
   if (visitPropertyExpressionSilent(pe,vexp)) {
     storeType(vexp,getType(pe));
-    vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY));
+    Object val=pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
+    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,val);
+    val=pe.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,val);
     return;
   }
   if (!extension.handleUnresolvedVariableExpression(vexp)) {

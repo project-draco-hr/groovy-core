@@ -22,6 +22,9 @@
         methods.addAll(findMethodsWithGenerated(parent,name));
       }
     }
+    if (methods.isEmpty()) {
+      addArrayMethods(methods,receiver,name,args);
+    }
     if (methods.isEmpty() && (args == null || args.length == 0)) {
       String pname=extractPropertyNameFromMethodName("get",name);
       if (pname == null) {
@@ -46,7 +49,7 @@
     }
  else     if (methods.isEmpty() && args != null && args.length == 1) {
       String pname=extractPropertyNameFromMethodName("set",name);
-      if (name != null) {
+      if (pname != null) {
         ClassNode curNode=receiver;
         PropertyNode property=null;
         while (property == null && curNode != null) {
