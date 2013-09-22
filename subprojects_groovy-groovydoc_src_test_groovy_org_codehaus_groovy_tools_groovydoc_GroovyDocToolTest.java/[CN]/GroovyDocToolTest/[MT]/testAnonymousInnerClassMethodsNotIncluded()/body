@@ -1,14 +1,11 @@
 {
-  if (HeadlessTestSupport.isHeadless()) {
-    return;
-  }
   List<String> srcList=new ArrayList<String>();
-  String base="groovy/swing/binding/AbstractButtonProperties";
+  String base="org/codehaus/groovy/tools/groovydoc/testfiles/ClassWithAnonymousInnerClass";
   srcList.add(base + ".java");
   xmlTool.add(srcList);
   MockOutputTool output=new MockOutputTool();
   xmlTool.renderToOutput(output,MOCK_DIR);
-  String abstractButtonPropertiesDoc=output.getText(MOCK_DIR + "/" + base+ ".html");
-  assertNotNull("No GroovyDoc found for " + base,abstractButtonPropertiesDoc);
-  assertTrue("createBinding found in: \"" + abstractButtonPropertiesDoc + "\"",!abstractButtonPropertiesDoc.contains("createBinding"));
+  String classWithAnonymousInnerClassDoc=output.getText(MOCK_DIR + "/" + base+ ".html");
+  assertNotNull("No GroovyDoc found for " + base,classWithAnonymousInnerClassDoc);
+  assertTrue("innerClassMethod found in: \"" + classWithAnonymousInnerClassDoc + "\"",!classWithAnonymousInnerClassDoc.contains("innerClassMethod"));
 }
