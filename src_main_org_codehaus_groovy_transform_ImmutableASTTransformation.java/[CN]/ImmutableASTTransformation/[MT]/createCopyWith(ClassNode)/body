@@ -1,6 +1,0 @@
-{
-  BlockStatement body=new BlockStatement(new Statement[]{AbstractASTTransformUtil.declStatement(new VariableExpression("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE),AbstractASTTransformUtil.declStatement(new VariableExpression("construct",HASHMAP_TYPE),new ConstructorCallExpression(HASHMAP_TYPE,MethodCallExpression.NO_ARGUMENTS)),new ForStatement(new Parameter(FIELD_TYPE,"field"),new MethodCallExpression(new ClassExpression(cNode),"getDeclaredFields",MethodCallExpression.NO_ARGUMENTS),new BlockStatement(new Statement[]{createSyntheticCheckingBlock(cNode)},new VariableScope())),new ReturnStatement(new TernaryExpression(AbstractASTTransformUtil.isTrueExpr(new VariableExpression("dirty",ClassHelper.boolean_TYPE)),new ConstructorCallExpression(cNode,new ArgumentListExpression(new Expression[]{new VariableExpression("construct",HASHMAP_TYPE)})),new VariableExpression("this",cNode)))},new VariableScope());
-  final ClassNode clonedNode=ClassHelper.makeWithoutCaching(cNode.getName());
-  clonedNode.setRedirect(cNode);
-  cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,new Parameter[]{new Parameter(new ClassNode(Map.class),"map")},null,body);
-}
