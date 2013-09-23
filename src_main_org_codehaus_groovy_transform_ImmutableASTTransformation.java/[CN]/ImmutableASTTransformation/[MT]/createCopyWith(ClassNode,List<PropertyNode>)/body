@@ -1,14 +1,12 @@
 {
-  List<Expression> nameList=new ArrayList<Expression>();
-  List<Statement> statements=new ArrayList<Statement>();
-  statements.add(new IfStatement(new BooleanExpression(new BinaryExpression(new BinaryExpression(new VariableExpression("map",ClassHelper.MAP_TYPE),new Token(Types.COMPARE_EQUAL,"==",-1,-1),ConstantExpression.NULL),new Token(Types.LOGICAL_OR,"||",-1,-1),new BinaryExpression(new MethodCallExpression(new VariableExpression("map",HASHMAP_TYPE),"size",ArgumentListExpression.EMPTY_ARGUMENTS),new Token(Types.COMPARE_EQUAL,"==",-1,-1),new ConstantExpression(0)))),new ReturnStatement(new VariableExpression("this",cNode)),EmptyStatement.INSTANCE));
-  statements.add(AbstractASTTransformUtil.declStatement(new VariableExpression("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
-  statements.add(AbstractASTTransformUtil.declStatement(new VariableExpression("construct",HASHMAP_TYPE),new ConstructorCallExpression(HASHMAP_TYPE,MethodCallExpression.NO_ARGUMENTS)));
+  BlockStatement body=new BlockStatement();
+  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(equalsNullExpr(new VariableExpression("map",ClassHelper.MAP_TYPE)),new Token(Types.LOGICAL_OR,"||",-1,-1),new BinaryExpression(new MethodCallExpression(new VariableExpression("map",HASHMAP_TYPE),"size",ArgumentListExpression.EMPTY_ARGUMENTS),new Token(Types.COMPARE_EQUAL,"==",-1,-1),new ConstantExpression(0)))),new ReturnStatement(new VariableExpression("this",cNode)),EmptyStatement.INSTANCE));
+  body.addStatement(AbstractASTTransformUtil.declStatement(new VariableExpression("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
+  body.addStatement(AbstractASTTransformUtil.declStatement(new VariableExpression("construct",HASHMAP_TYPE),new ConstructorCallExpression(HASHMAP_TYPE,MethodCallExpression.NO_ARGUMENTS)));
   for (  final PropertyNode pNode : pList) {
-    statements.add(createCheckForProperty(pNode));
+    body.addStatement(createCheckForProperty(pNode));
   }
-  statements.add(new ReturnStatement(new TernaryExpression(AbstractASTTransformUtil.isTrueExpr(new VariableExpression("dirty",ClassHelper.boolean_TYPE)),new ConstructorCallExpression(cNode,new ArgumentListExpression(new Expression[]{new VariableExpression("construct",HASHMAP_TYPE)})),new VariableExpression("this",cNode))));
-  BlockStatement body=new BlockStatement(statements,new VariableScope());
+  body.addStatement(new ReturnStatement(new TernaryExpression(AbstractASTTransformUtil.isTrueExpr(new VariableExpression("dirty",ClassHelper.boolean_TYPE)),new ConstructorCallExpression(cNode,new ArgumentListExpression(new Expression[]{new VariableExpression("construct",HASHMAP_TYPE)})),new VariableExpression("this",cNode))));
   final ClassNode clonedNode=ClassHelper.makeWithoutCaching(cNode.getName());
   clonedNode.setRedirect(cNode);
   cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,new Parameter[]{new Parameter(new ClassNode(Map.class),"map")},null,body);
