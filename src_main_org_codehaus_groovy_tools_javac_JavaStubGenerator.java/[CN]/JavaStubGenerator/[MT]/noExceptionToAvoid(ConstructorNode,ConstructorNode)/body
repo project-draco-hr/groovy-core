@@ -1,20 +1,9 @@
 {
-  ClassNode[] superExceptions=fromSuper.getExceptions();
-  if (superExceptions == null || superExceptions.length == 0)   return true;
-  superExceptions=superExceptions.clone();
-  int offset=0;
-  for (int i=0; i < superExceptions.length; i++) {
-    ClassNode exc=superExceptions[i];
-    if (exc.isDerivedFrom(RUNTIME_EXCEPTION)) {
-      superExceptions[i]=superExceptions[offset];
-      superExceptions[offset]=null;
-      offset++;
-    }
-  }
-  if (offset >= superExceptions.length)   return true;
   ClassNode[] stubExceptions=fromStub.getExceptions();
   if (stubExceptions == null || stubExceptions.length == 0)   return false;
-  outer:   for (int i=offset; i < superExceptions.length; i++) {
+  ClassNode[] superExceptions=fromSuper.getExceptions();
+  if (superExceptions == null || superExceptions.length == 0)   return true;
+  outer:   for (int i=0; i < superExceptions.length; i++) {
     ClassNode superExc=superExceptions[i];
     for (    ClassNode stub : stubExceptions) {
       if (stub.isDerivedFrom(superExc))       continue outer;
