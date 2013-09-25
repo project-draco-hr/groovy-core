@@ -7,7 +7,6 @@
     body.addStatement(createCheckForProperty(pNode));
   }
   body.addStatement(new ReturnStatement(new TernaryExpression(AbstractASTTransformUtil.isTrueExpr(new VariableExpression("dirty",ClassHelper.boolean_TYPE)),new ConstructorCallExpression(cNode,new ArgumentListExpression(new Expression[]{new VariableExpression("construct",HASHMAP_TYPE)})),new VariableExpression("this",cNode))));
-  final ClassNode clonedNode=ClassHelper.makeWithoutCaching(cNode.getName());
-  clonedNode.setRedirect(cNode);
+  final ClassNode clonedNode=cNode.getPlainNodeReference();
   cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,new Parameter[]{new Parameter(new ClassNode(Map.class),"map")},null,body);
 }
