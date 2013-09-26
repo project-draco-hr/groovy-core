@@ -1,4 +1,14 @@
 {
+  ClassNode dynamicCallReturnType=origin.getNodeMetaData(StaticTypesMarker.DYNAMIC_RESOLUTION);
+  if (dynamicCallReturnType != null) {
+    StaticTypesWriterController staticController=(StaticTypesWriterController)controller;
+    if (origin instanceof MethodCallExpression) {
+      ((MethodCallExpression)origin).setMethodTarget(null);
+    }
+    InvocationWriter dynamicInvocationWriter=staticController.getRegularInvocationWriter();
+    dynamicInvocationWriter.makeCall(origin,receiver,message,arguments,adapter,safe,spreadSafe,implicitThis);
+    return;
+  }
   Object implicitReceiver=origin.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
   if (implicitReceiver != null && implicitThis) {
     String[] propertyPath=((String)implicitReceiver).split("\\.");
