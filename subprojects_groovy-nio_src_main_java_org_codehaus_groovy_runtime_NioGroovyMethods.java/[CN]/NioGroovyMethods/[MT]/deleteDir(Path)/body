@@ -1,0 +1,34 @@
+{
+  if (!Files.exists(self))   return true;
+  if (!Files.isDirectory(self))   return false;
+  Iterator<Path> itr;
+  try {
+    itr=Files.newDirectoryStream(self).iterator();
+  }
+ catch (  IOException e) {
+    return false;
+  }
+  while (itr.hasNext()) {
+    Path path=itr.next();
+    if (Files.isDirectory(path)) {
+      if (!deleteDir(path)) {
+        return false;
+      }
+    }
+ else {
+      try {
+        Files.delete(path);
+      }
+ catch (      IOException e) {
+        return false;
+      }
+    }
+  }
+  try {
+    Files.delete(self);
+  }
+ catch (  IOException e) {
+    return false;
+  }
+  return true;
+}
