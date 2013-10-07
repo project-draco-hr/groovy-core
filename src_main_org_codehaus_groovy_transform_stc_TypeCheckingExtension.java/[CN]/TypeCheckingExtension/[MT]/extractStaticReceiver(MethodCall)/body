@@ -1,0 +1,18 @@
+{
+  if (call instanceof StaticMethodCallExpression) {
+    return ((StaticMethodCallExpression)call).getOwnerType();
+  }
+ else   if (call instanceof MethodCallExpression) {
+    Expression objectExpr=((MethodCallExpression)call).getObjectExpression();
+    if (objectExpr instanceof ClassExpression && ClassHelper.CLASS_Type.equals(objectExpr.getType())) {
+      GenericsType[] genericsTypes=objectExpr.getType().getGenericsTypes();
+      if (genericsTypes != null && genericsTypes.length == 1) {
+        return genericsTypes[0].getType();
+      }
+    }
+    if (objectExpr instanceof ClassExpression) {
+      return objectExpr.getType();
+    }
+  }
+  return null;
+}

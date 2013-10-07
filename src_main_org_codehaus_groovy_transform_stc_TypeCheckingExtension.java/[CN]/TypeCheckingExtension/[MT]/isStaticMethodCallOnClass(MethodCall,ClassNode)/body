@@ -1,16 +1,4 @@
 {
-  if (call instanceof StaticMethodCallExpression) {
-    return ((StaticMethodCallExpression)call).getOwnerType().equals(receiver);
-  }
- else   if (call instanceof MethodCallExpression) {
-    Expression objectExpr=((MethodCallExpression)call).getObjectExpression();
-    if (objectExpr instanceof ClassExpression && objectExpr.getType().equals(receiver)) {
-      return true;
-    }
-    if (objectExpr instanceof ClassExpression && ClassHelper.CLASS_Type.equals(objectExpr.getType())) {
-      GenericsType[] genericsTypes=objectExpr.getType().getGenericsTypes();
-      return genericsTypes != null && genericsTypes.length == 1 && genericsTypes[0].getType().equals(receiver);
-    }
-  }
-  return false;
+  ClassNode staticReceiver=extractStaticReceiver(call);
+  return staticReceiver != null && staticReceiver.equals(receiver);
 }
