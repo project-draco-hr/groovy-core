@@ -14,5 +14,13 @@
     innerClassName=null;
   }
   int mods=innerClass.getModifiers();
+  if (Modifier.isPrivate(mods)) {
+    mods=mods ^ Modifier.PRIVATE;
+    innerClass.setModifiers(mods);
+  }
+  if (Modifier.isProtected(mods)) {
+    mods=mods ^ Modifier.PROTECTED | Modifier.PUBLIC;
+    innerClass.setModifiers(mods);
+  }
   cv.visitInnerClass(innerClassInternalName,outerClassName,innerClassName,mods);
 }
