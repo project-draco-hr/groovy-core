@@ -15,7 +15,14 @@
           break;
         }
       }
-      if (!found && new File(cpEntry).exists())       antLoader.addPathElement(cpEntry);
+      if (!found && new File(cpEntry).exists()) {
+        try {
+          antLoader.addPathElement(cpEntry);
+        }
+ catch (        BuildException e) {
+          log.warn("The classpath entry " + cpEntry + " is not a valid Java resource");
+        }
+      }
     }
   }
   GroovyClassLoader loader=new GroovyClassLoader(parent,configuration);
