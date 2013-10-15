@@ -1,7 +1,7 @@
 {
   MethodNode mn=call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
   if (mn == null) {
-    super.writeInvokeConstructor(call);
+    super.writeSpecialConstructorCall(call);
     return;
   }
   ConstructorNode cn;
@@ -12,9 +12,11 @@
     cn=new ConstructorNode(mn.getModifiers(),mn.getParameters(),mn.getExceptions(),mn.getCode());
     cn.setDeclaringClass(mn.getDeclaringClass());
   }
-  String ownerDescriptor=prepareConstructorCall(cn);
+  controller.getMethodVisitor().visitVarInsn(ALOAD,0);
+  String ownerDescriptor=BytecodeHelper.getClassInternalName(cn.getDeclaringClass());
   TupleExpression args=makeArgumentList(call.getArguments());
   int before=controller.getOperandStack().getStackLength();
   loadArguments(args.getExpressions(),cn.getParameters());
   finnishConstructorCall(cn,ownerDescriptor,controller.getOperandStack().getStackLength() - before);
+  controller.getOperandStack().remove(1);
 }

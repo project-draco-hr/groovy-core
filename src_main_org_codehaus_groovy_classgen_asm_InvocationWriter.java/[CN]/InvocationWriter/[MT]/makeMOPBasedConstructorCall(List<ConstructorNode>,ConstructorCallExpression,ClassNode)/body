@@ -1,10 +1,10 @@
 {
   MethodVisitor mv=controller.getMethodVisitor();
   OperandStack operandStack=controller.getOperandStack();
-  call.getArguments().visit(this);
+  call.getArguments().visit(controller.getAcg());
   mv.visitInsn(DUP);
   BytecodeHelper.pushConstant(mv,constructors.size());
-  visitClassExpression(new ClassExpression(callNode));
+  controller.getAcg().visitClassExpression(new ClassExpression(callNode));
   operandStack.remove(1);
   selectConstructorAndTransformArguments.call(mv);
   mv.visitInsn(DUP_X1);
