@@ -3,20 +3,10 @@
   OperandStack operandStack=controller.getOperandStack();
   call.getArguments().visit(controller.getAcg());
   mv.visitInsn(DUP);
-  BytecodeHelper.pushConstant(mv,constructors.size());
+  BytecodeHelper.pushConstant(mv,-1);
   controller.getAcg().visitClassExpression(new ClassExpression(callNode));
   operandStack.remove(1);
   selectConstructorAndTransformArguments.call(mv);
-  mv.visitInsn(DUP_X1);
-  mv.visitInsn(ICONST_1);
-  mv.visitInsn(IAND);
-  Label afterIf=new Label();
-  mv.visitJumpInsn(IFEQ,afterIf);
-  mv.visitInsn(ICONST_0);
-  mv.visitInsn(AALOAD);
-  mv.visitTypeInsn(CHECKCAST,"[Ljava/lang/Object;");
-  mv.visitLabel(afterIf);
-  mv.visitInsn(SWAP);
   if (controller.isConstructor()) {
     mv.visitVarInsn(ALOAD,0);
   }
@@ -24,13 +14,22 @@
     mv.visitTypeInsn(NEW,BytecodeHelper.getClassInternalName(callNode));
   }
   mv.visitInsn(SWAP);
-  mv.visitIntInsn(BIPUSH,8);
-  mv.visitInsn(ISHR);
+  TreeMap<Integer,ConstructorNode> sortedConstructors=new TreeMap<Integer,ConstructorNode>();
+  for (  ConstructorNode constructor : constructors) {
+    String typeDescriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,constructor.getParameters());
+    int hash=BytecodeHelper.hashCode(typeDescriptor);
+    ConstructorNode sameHashNode=sortedConstructors.put(hash,constructor);
+    if (sameHashNode != null) {
+      controller.getSourceUnit().addError(new SyntaxException("Unable to compile class " + controller.getClassNode().getName() + " due to hash collision in constructors",call.getLineNumber(),call.getColumnNumber()));
+    }
+  }
   Label[] targets=new Label[constructors.size()];
   int[] indices=new int[constructors.size()];
+  Iterator<Integer> hashIt=sortedConstructors.keySet().iterator();
+  Iterator<ConstructorNode> constructorIt=sortedConstructors.values().iterator();
   for (int i=0; i < targets.length; i++) {
     targets[i]=new Label();
-    indices[i]=i;
+    indices[i]=hashIt.next();
   }
   Label defaultLabel=new Label();
   Label afterSwitch=new Label();
@@ -46,7 +45,7 @@
       mv.visitInsn(DUP2_X1);
       mv.visitInsn(POP);
     }
-    ConstructorNode cn=constructors.get(i);
+    ConstructorNode cn=constructorIt.next();
     String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
     Parameter[] parameters=cn.getParameters();
     for (int p=0; p < parameters.length; p++) {
@@ -67,7 +66,7 @@
   mv.visitLabel(defaultLabel);
   mv.visitTypeInsn(NEW,"java/lang/IllegalArgumentException");
   mv.visitInsn(DUP);
-  mv.visitLdcInsn("illegal constructor number");
+  mv.visitLdcInsn("This class has been compiled with a super class which is binary incompatible with the current super class found on classpath. You should recompile this class with the new version.");
   mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
   mv.visitInsn(ATHROW);
   mv.visitLabel(afterSwitch);
