@@ -29,8 +29,7 @@
   if (!enclosingClosure.getReturnTypes().isEmpty()) {
     ClassNode returnType=lowestUpperBound(enclosingClosure.getReturnTypes());
     storeInferredReturnType(expression,returnType);
-    ClassNode inferredType=CLOSURE_TYPE.getPlainNodeReference();
-    inferredType.setGenericsTypes(new GenericsType[]{new GenericsType(wrapTypeIfNecessary(returnType))});
+    ClassNode inferredType=wrapClosureType(returnType);
     storeType(enclosingClosure.getClosureExpression(),inferredType);
   }
   typeCheckingContext.popEnclosingClosure();

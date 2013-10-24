@@ -79,5 +79,8 @@
       return getType(target);
     }
   }
+  if (exp instanceof Parameter) {
+    return ((Parameter)exp).getOriginType();
+  }
   return exp instanceof VariableExpression ? ((VariableExpression)exp).getOriginType() : ((Expression)exp).getType();
 }

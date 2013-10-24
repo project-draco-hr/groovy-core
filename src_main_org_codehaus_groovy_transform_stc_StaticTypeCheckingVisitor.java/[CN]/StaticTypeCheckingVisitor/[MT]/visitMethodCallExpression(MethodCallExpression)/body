@@ -71,22 +71,20 @@
             Parameter[] parameters=(Parameter[])data;
             typeCheckClosureCall(callArguments,args,parameters);
           }
-          ClassNode type=getInferredReturnType(((ASTNode)variable));
-          if (type == null) {
-            if (variable.getType().equals(CLOSURE_TYPE)) {
-              GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
-              if (genericsTypes != null) {
-                if (!genericsTypes[0].isPlaceholder()) {
-                  type=genericsTypes[0].getType();
-                }
+          ClassNode type=getType(((ASTNode)variable));
+          if (type != null && type.equals(CLOSURE_TYPE)) {
+            GenericsType[] genericsTypes=type.getGenericsTypes();
+            if (genericsTypes != null) {
+              if (!genericsTypes[0].isPlaceholder()) {
+                type=genericsTypes[0].getType();
               }
+            }
  else {
-                type=OBJECT_TYPE;
-              }
+              type=OBJECT_TYPE;
             }
           }
           if (type != null) {
-            storeType(call,(ClassNode)type);
+            storeType(call,type);
           }
         }
       }
@@ -170,15 +168,6 @@
               chosenReceiver=owners.get(0);
             }
           }
-          typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
-          for (          ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
-            if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
-              silentlyVisitMethodNode(directMethodCallCandidate);
-              break;
-            }
-          }
-          pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-          typeCheckingContext.popEnclosingClassNode();
           ClassNode returnType=null;
           if (isWithCall) {
             returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);

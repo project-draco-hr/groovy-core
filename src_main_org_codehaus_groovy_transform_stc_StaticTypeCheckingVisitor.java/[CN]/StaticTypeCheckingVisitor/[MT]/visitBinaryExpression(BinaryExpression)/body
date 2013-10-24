@@ -49,7 +49,6 @@
       }
     }
     boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
-    if (!isEmptyDeclaration)     storeType(expression,resultType);
     if (!isEmptyDeclaration && isAssignment(op)) {
       if (rightExpression instanceof ConstructorCallExpression) {
         inferDiamondType((ConstructorCallExpression)rightExpression,lType);
@@ -69,7 +68,7 @@
           List<ClassNode> types=typeCheckingContext.ifElseForWhileAssignmentTracker.get(var);
           if (types == null) {
             types=new LinkedList<ClassNode>();
-            ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+            ClassNode type=var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
             types.add(type);
             typeCheckingContext.ifElseForWhileAssignmentTracker.put(var,types);
           }
@@ -92,6 +91,9 @@
     }
  else     if (op == KEYWORD_INSTANCEOF) {
       pushInstanceOfTypeInfo(leftExpression,rightExpression);
+    }
+    if (!isEmptyDeclaration) {
+      storeType(expression,resultType);
     }
   }
   finally {
