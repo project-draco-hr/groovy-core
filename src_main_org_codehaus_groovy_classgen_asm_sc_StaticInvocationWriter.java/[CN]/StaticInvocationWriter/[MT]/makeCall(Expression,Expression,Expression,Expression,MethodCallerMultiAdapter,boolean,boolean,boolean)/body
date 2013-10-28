@@ -60,20 +60,23 @@
     CompileStack compileStack=controller.getCompileStack();
     OperandStack operandStack=controller.getOperandStack();
     int counter=labelCounter.incrementAndGet();
-    receiver.visit(controller.getAcg());
+    ExpressionAsVariableSlot slot=new ExpressionAsVariableSlot(controller,receiver);
+    slot.visit(controller.getAcg());
+    operandStack.box();
     Label ifnull=compileStack.createLocalLabel("ifnull_" + counter);
     mv.visitJumpInsn(IFNULL,ifnull);
     operandStack.remove(1);
     Label nonull=compileStack.createLocalLabel("nonull_" + counter);
     mv.visitLabel(nonull);
     MethodCallExpression origMCE=(MethodCallExpression)origin;
-    MethodCallExpression newMCE=new MethodCallExpression(origMCE.getObjectExpression(),origMCE.getMethodAsString(),origMCE.getArguments());
+    MethodCallExpression newMCE=new MethodCallExpression(new VariableSlotLoader(slot.getType(),slot.getIndex(),controller.getOperandStack()),origMCE.getMethodAsString(),origMCE.getArguments());
     MethodNode methodTarget=origMCE.getMethodTarget();
     newMCE.setMethodTarget(methodTarget);
     newMCE.setSafe(false);
     newMCE.setImplicitThis(origMCE.isImplicitThis());
     newMCE.setSourcePosition(origMCE);
     newMCE.visit(controller.getAcg());
+    compileStack.removeVar(slot.getIndex());
     ClassNode returnType=operandStack.getTopOperand();
     if (ClassHelper.isPrimitiveType(returnType) && !ClassHelper.VOID_TYPE.equals(returnType)) {
       operandStack.box();
