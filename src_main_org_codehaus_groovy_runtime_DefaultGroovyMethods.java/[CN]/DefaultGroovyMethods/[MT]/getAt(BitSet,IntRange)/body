@@ -1,13 +1,12 @@
 {
-  int from=DefaultTypeTransformation.intUnbox(range.getFrom());
-  int to=DefaultTypeTransformation.intUnbox(range.getTo());
+  RangeInfo info=subListBorders(self.length(),range);
   BitSet result=new BitSet();
-  int numberOfBits=to - from + 1;
+  int numberOfBits=info.to - info.from;
   int adjuster=1;
-  int offset=from;
-  if (range.isReverse()) {
+  int offset=info.from;
+  if (info.reverse) {
     adjuster=-1;
-    offset=to;
+    offset=info.to - 1;
   }
   for (int i=0; i < numberOfBits; i++) {
     result.set(i,self.get(offset + (adjuster * i)));

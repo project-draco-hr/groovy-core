@@ -1,0 +1,23 @@
+{
+  if (clazz.isArray()) {
+    ClassNode cn=getNextSuperClass(clazz.getComponentType(),goalClazz.getComponentType());
+    if (cn != null)     cn=cn.makeArray();
+    return cn;
+  }
+  if (!goalClazz.isInterface()) {
+    if (clazz.isInterface()) {
+      if (OBJECT_TYPE.equals(clazz))       return null;
+      return OBJECT_TYPE;
+    }
+ else {
+      return clazz.getUnresolvedSuperClass();
+    }
+  }
+  ClassNode[] interfaces=clazz.getUnresolvedInterfaces();
+  for (int i=0; i < interfaces.length; i++) {
+    if (implementsInterfaceOrIsSubclassOf(interfaces[i],goalClazz)) {
+      return interfaces[i];
+    }
+  }
+  return clazz.getUnresolvedSuperClass();
+}

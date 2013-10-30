@@ -1,3 +1,5 @@
 {
-  return primitiveArrayGet(array,range);
+  RangeInfo info=subListBorders(array.length,range);
+  List<Byte> answer=primitiveArrayGet(array,new IntRange(true,info.from,info.to - 1));
+  return info.reverse ? reverse(answer) : answer;
 }

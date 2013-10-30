@@ -1,0 +1,12 @@
+{
+  if (!(node instanceof ConstructorNode))   return;
+  Object meta=node.getNodeMetaData(STATIC_COMPILE_NODE);
+  if (!Boolean.TRUE.equals(meta))   return;
+  ClassNode clz=typeCheckingContext.getEnclosingClassNode();
+  meta=clz.getNodeMetaData(STATIC_COMPILE_NODE);
+  if (Boolean.TRUE.equals(meta))   return;
+  if (clz.getObjectInitializerStatements().isEmpty() && clz.getFields().isEmpty() && clz.getProperties().isEmpty()) {
+    return;
+  }
+  addStaticTypeError("Cannot statically compile constructor implicitly including non static elements from object initializers, properties or fields.",node);
+}

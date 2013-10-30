@@ -1,0 +1,10 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  srcList.add("org/codehaus/groovy/tools/groovydoc/testfiles/MultipleConstructorErrorBug.java");
+  xmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  xmlTool.renderToOutput(output,MOCK_DIR);
+  String sqlDoc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/MultipleConstructorErrorBug.html");
+  System.out.println(sqlDoc);
+  assertTrue(sqlDoc.indexOf("<method modifiers=\"public static \" returns=\"java.lang.String\" name=\"VARBINARY\">") > 0);
+}

@@ -18,35 +18,13 @@
         GenericsType gt=entry.getValue();
         if (!gt.isPlaceholder())         continue;
         GenericsType referenced=resolvedPlaceholders.get(gt.getName());
+        if (referenced == null)         continue;
         entry.setValue(referenced);
       }
     }
     resolvedPlaceholders=currentPlaceHolders;
     if (current.equals(declaringClass))     break;
-    ClassNode nextNode=null;
-    if (declaringClass.isInterface()) {
-      ClassNode[] interfaces=current.getUnresolvedInterfaces();
-      for (int i=0; i < interfaces.length; i++) {
-        if (implementsInterfaceOrIsSubclassOf(interfaces[i],declaringClass)) {
-          nextNode=interfaces[i];
-          break;
-        }
-      }
-    }
-    if (nextNode == null) {
-      nextNode=current.getUnresolvedSuperClass();
-      if (current.isArray()) {
-        nextNode=current.getComponentType();
-        nextNode=nextNode.getUnresolvedSuperClass();
-        if (nextNode != null) {
-          nextNode=nextNode.makeArray();
-        }
- else {
-          nextNode=OBJECT_TYPE;
-        }
-      }
-    }
-    current=nextNode;
+    current=getNextSuperClass(current,declaringClass);
     if (current == null) {
       String descriptor="<>";
       if (method != null)       descriptor=method.getTypeDescriptor();

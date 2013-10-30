@@ -1,0 +1,10 @@
+{
+  if (controller.getClosureWriter().addGeneratedClosureConstructorCall(call))   return;
+  AsmClassGenerator acg=controller.getAcg();
+  ClassNode callNode=controller.getClassNode();
+  if (call.isSuperCall())   callNode=callNode.getSuperClass();
+  List<ConstructorNode> constructors=sortConstructors(call,callNode);
+  if (!makeDirectConstructorCall(constructors,call,callNode)) {
+    makeMOPBasedConstructorCall(constructors,call,callNode);
+  }
+}

@@ -1,0 +1,10 @@
+{
+  if (!(receiver instanceof ClassExpression))   return false;
+  ClassExpression ce=(ClassExpression)receiver;
+  if (!ClassHelper.CLASS_Type.equals(ce.getType()))   return false;
+  String msg=getMethodName(message);
+  if (!"forName".equals(msg))   return false;
+  ArgumentListExpression ae=makeArgumentList(arguments);
+  if (ae.getExpressions().size() != 1)   return false;
+  return writeDirectMethodCall(CLASS_FOR_NAME_STRING,false,receiver,ae);
+}

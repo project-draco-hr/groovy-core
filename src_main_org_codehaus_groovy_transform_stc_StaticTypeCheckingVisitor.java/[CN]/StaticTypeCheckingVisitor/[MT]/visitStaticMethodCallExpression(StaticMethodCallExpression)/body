@@ -47,15 +47,6 @@
       mn=disambiguateMethods(mn,call);
       if (mn.size() == 1) {
         MethodNode directMethodCallCandidate=mn.get(0);
-        typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
-        for (        ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
-          if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
-            silentlyVisitMethodNode(directMethodCallCandidate);
-            break;
-          }
-        }
-        pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-        typeCheckingContext.popEnclosingClassNode();
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
           visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));

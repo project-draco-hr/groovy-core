@@ -1,8 +1,10 @@
 {
+  MethodNode methodNode=getMethodNode();
+  if (methodNode != null && methodNode.getNodeMetaData(StaticTypesMarker.DYNAMIC_RESOLUTION) == Boolean.TRUE) {
+    return super.getCallSiteWriter();
+  }
   if (isInStaticallyCheckedMethod) {
     return callSiteWriter;
   }
- else {
-    return super.getCallSiteWriter();
-  }
+  return super.getCallSiteWriter();
 }
