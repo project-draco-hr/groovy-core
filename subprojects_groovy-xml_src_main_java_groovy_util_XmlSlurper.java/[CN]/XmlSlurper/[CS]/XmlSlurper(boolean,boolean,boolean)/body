@@ -2,7 +2,7 @@
   SAXParserFactory factory=FactorySupport.createSaxParserFactory();
   factory.setNamespaceAware(namespaceAware);
   factory.setValidating(validating);
-  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true);
-  factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",!allowDocTypeDeclaration);
+  setQuietly(factory,XMLConstants.FEATURE_SECURE_PROCESSING,true);
+  setQuietly(factory,"http://apache.org/xml/features/disallow-doctype-decl",!allowDocTypeDeclaration);
   reader=factory.newSAXParser().getXMLReader();
 }
