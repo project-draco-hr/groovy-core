@@ -1,0 +1,10 @@
+{
+  if (c == m.getDeclaringClass())   return false;
+  MethodNode found=c.getDeclaredMethod(m.getName(),m.getParameters());
+  if (found == null)   return false;
+  int asp=found.getModifiers() & ABSTRACT_STATIC_PRIVATE;
+  int visible=found.getModifiers() & VISIBILITY;
+  if (visible != 0 && asp == 0)   return true;
+  if (c.equals(OBJECT_TYPE))   return false;
+  return hasUsableImplementation(c.getSuperClass(),m);
+}

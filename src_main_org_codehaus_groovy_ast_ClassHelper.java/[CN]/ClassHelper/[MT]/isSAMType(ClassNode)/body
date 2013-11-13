@@ -1,4 +1,28 @@
 {
   if (!Modifier.isAbstract(type.getModifiers()))   return false;
-  return type.getMethods().size() == 1;
+  if (type.isInterface()) {
+    List<MethodNode> methods=type.getMethods();
+    boolean found=false;
+    for (    MethodNode mi : methods) {
+      if (!Modifier.isAbstract(mi.getModifiers()))       continue;
+      if (mi.getDeclaringClass().equals(OBJECT_TYPE))       continue;
+      if (OBJECT_TYPE.getDeclaredMethod(mi.getName(),mi.getParameters()) != null)       continue;
+      if (found)       return false;
+      found=true;
+    }
+    return found;
+  }
+ else {
+    List<MethodNode> methods=type.getAbstractMethods();
+    boolean found=false;
+    if (methods != null) {
+      for (      MethodNode mi : methods) {
+        if (!hasUsableImplementation(type,mi)) {
+          if (found)           return false;
+          found=true;
+        }
+      }
+    }
+    return found;
+  }
 }

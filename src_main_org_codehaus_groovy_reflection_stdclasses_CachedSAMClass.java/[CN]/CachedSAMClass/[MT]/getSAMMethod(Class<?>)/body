@@ -1,11 +1,30 @@
 {
   if (!Modifier.isAbstract(c.getModifiers()))   return null;
-  Method[] methods=c.getMethods();
-  Method res=null;
-  for (  Method mi : methods) {
-    if (!Modifier.isAbstract(mi.getModifiers()))     continue;
-    if (res != null)     return null;
-    res=mi;
+  if (c.isInterface()) {
+    Method[] methods=c.getMethods();
+    Method res=null;
+    for (    Method mi : methods) {
+      if (!Modifier.isAbstract(mi.getModifiers()))       continue;
+      try {
+        Object.class.getMethod(mi.getName(),mi.getParameterTypes());
+        continue;
+      }
+ catch (      NoSuchMethodException e) {
+      }
+      if (res != null)       return null;
+      res=mi;
+    }
+    return res;
   }
-  return res;
+ else {
+    LinkedList<Method> methods=new LinkedList();
+    getAbstractMethods(c,methods);
+    if (methods.isEmpty())     return null;
+    ListIterator<Method> it=methods.listIterator();
+    while (it.hasNext()) {
+      Method m=it.next();
+      if (hasUsableImplementation(c,m))       it.remove();
+    }
+    return getSingleNonDuplicateMethod(methods);
+  }
 }
