@@ -1,15 +1,14 @@
 {
-  final List list=classNode.getDeclaredConstructors();
-  MethodNode found=null;
-  for (Iterator it=list.iterator(); it.hasNext(); ) {
-    MethodNode mn=(MethodNode)it.next();
-    final Parameter[] parameters=mn.getParameters();
+  final List<ConstructorNode> cNodes=classNode.getDeclaredConstructors();
+  ConstructorNode foundNoArg=null;
+  for (  ConstructorNode cNode : cNodes) {
+    final Parameter[] parameters=cNode.getParameters();
     if (parameters == null || parameters.length == 0) {
-      found=mn;
+      foundNoArg=cNode;
       break;
     }
   }
-  if (found == null) {
+  if (foundNoArg == null) {
     final BlockStatement body=new BlockStatement();
     body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression(field),Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ThrowStatement(new ConstructorCallExpression(ClassHelper.make(RuntimeException.class),new ArgumentListExpression(new ConstantExpression("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ "."+ propertyName)))),EmptyStatement.INSTANCE));
     classNode.addConstructor(new ConstructorNode(ACC_PRIVATE,body));
