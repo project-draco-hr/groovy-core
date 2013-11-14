@@ -2,7 +2,7 @@
   int modifiers=isLazy ? ACC_PRIVATE | ACC_STATIC | ACC_VOLATILE : ACC_PUBLIC | ACC_FINAL | ACC_STATIC;
   Expression initialValue=isLazy ? null : new ConstructorCallExpression(classNode,new ArgumentListExpression());
   final FieldNode fieldNode=classNode.addField(propertyName,modifiers,classNode.getPlainNodeReference(),initialValue);
-  createConstructor(classNode,fieldNode,propertyName);
+  createConstructor(classNode,fieldNode,propertyName,isStrict);
   final BlockStatement body=new BlockStatement();
   body.addStatement(isLazy ? lazyBody(classNode,fieldNode) : nonLazyBody(fieldNode));
   classNode.addMethod(getGetterName(propertyName),ACC_STATIC | ACC_PUBLIC,classNode.getPlainNodeReference(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,body);

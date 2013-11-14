@@ -6,6 +6,7 @@
     ClassNode classNode=(ClassNode)parent;
     String propertyName=getMemberStringValue(node,"property","instance");
     boolean isLazy=memberHasValue(node,"lazy",true);
-    createField(classNode,propertyName,isLazy);
+    boolean isStrict=!memberHasValue(node,"strict",false);
+    createField(classNode,propertyName,isLazy,isStrict);
   }
 }
