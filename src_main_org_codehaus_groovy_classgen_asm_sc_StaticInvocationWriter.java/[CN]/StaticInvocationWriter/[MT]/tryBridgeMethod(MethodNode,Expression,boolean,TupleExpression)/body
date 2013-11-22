@@ -1,0 +1,12 @@
+{
+  Map<MethodNode,MethodNode> bridges=target.getDeclaringClass().redirect().getNodeMetaData(PRIVATE_BRIDGE_METHODS);
+  MethodNode bridge=bridges.get(target);
+  if (bridge != null) {
+    ArgumentListExpression newArgs=new ArgumentListExpression(target.isStatic() ? new ConstantExpression(null) : receiver);
+    for (    Expression expression : args.getExpressions()) {
+      newArgs.addExpression(expression);
+    }
+    return writeDirectMethodCall(bridge,implicitThis,receiver,newArgs);
+  }
+  return false;
+}
