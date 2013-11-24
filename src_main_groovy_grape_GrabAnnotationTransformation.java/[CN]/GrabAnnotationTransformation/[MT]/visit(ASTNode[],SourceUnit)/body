@@ -99,6 +99,17 @@
             grabResolverMap.put(s,((ConstantExpression)member).getValue());
           }
         }
+        String root=(String)grabResolverMap.get("root");
+        if (root != null && !root.contains(":")) {
+          try {
+            URL sourceURL=getSourceURL();
+            URL rootURL=new URL(sourceURL,root);
+            grabResolverMap.put("root",rootURL.toExternalForm());
+          }
+ catch (          MalformedURLException e) {
+            addError("Attribute \"root\" has value '" + root + "' which can't be turned into a valid URL relative to it's source '"+ getSourceUnit().getName()+ "' @"+ node.getClassNode().getNameWithoutPackage()+ " annotations",node);
+          }
+        }
         Grape.addResolver(grabResolverMap);
         addGrabResolverAsStaticInitIfNeeded(grapeClassNode,node,grabResolverInitializers,grabResolverMap);
       }
