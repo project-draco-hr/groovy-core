@@ -12,7 +12,7 @@
   if (verbose) {
     log("Parsing init parameters...");
   }
-  String regex=config.getInitParameter("resource.name.regex");
+  String regex=config.getInitParameter(INIT_PARAM_RESOURCE_NAME_REGEX);
   if (regex != null) {
     String replacement=config.getInitParameter("resource.name.replacement");
     if (replacement == null) {
@@ -21,12 +21,19 @@
       log(message,npex);
       throw new ServletException(message,npex);
     }
+ else     if ("EMPTY_STRING".equals(replacement)) {
+      replacement="";
+    }
     int flags=0;
-    this.resourceNameMatcher=Pattern.compile(regex,flags).matcher("");
+    String flagsStr=config.getInitParameter(INIT_PARAM_RESOURCE_NAME_REGEX_FLAGS);
+    if (flagsStr != null && flagsStr.length() > 0) {
+      flags=Integer.decode(flagsStr.trim());
+    }
+    resourceNamePattern=Pattern.compile(regex,flags);
     this.resourceNameReplacement=replacement;
     String all=config.getInitParameter("resource.name.replace.all");
     if (all != null) {
-      this.resourceNameReplaceAll=Boolean.valueOf(all);
+      this.resourceNameReplaceAll=Boolean.valueOf(all.trim());
     }
   }
   value=config.getInitParameter("logGROOVY861");
@@ -38,11 +45,11 @@
     log("verbose = " + verbose);
     log("reflection = " + reflection);
     log("logGROOVY861 = " + logGROOVY861);
-    if (resourceNameMatcher != null) {
-      log("resource.name.regex = " + resourceNameMatcher.pattern().pattern());
+    if (resourceNamePattern != null) {
+      log(INIT_PARAM_RESOURCE_NAME_REGEX + " = " + resourceNamePattern.pattern());
     }
  else {
-      log("resource.name.regex = null");
+      log(INIT_PARAM_RESOURCE_NAME_REGEX + " = null");
     }
     log("resource.name.replacement = " + resourceNameReplacement);
   }
