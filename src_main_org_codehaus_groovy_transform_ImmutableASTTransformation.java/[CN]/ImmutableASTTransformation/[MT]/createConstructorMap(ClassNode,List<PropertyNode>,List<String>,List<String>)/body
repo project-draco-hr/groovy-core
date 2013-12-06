@@ -7,4 +7,7 @@
   body.addStatement(new ExpressionStatement(new StaticMethodCallExpression(SELF_TYPE,"checkPropNames",checkArgs)));
   body.addStatement(new IfStatement(equalsNullExpr(new VariableExpression("args")),assignStatement(new VariableExpression("args"),new MapExpression()),EmptyStatement.INSTANCE));
   createConstructorMapCommon(cNode,body);
+  if (list.size() > 0) {
+    createNoArgConstructor(cNode);
+  }
 }
