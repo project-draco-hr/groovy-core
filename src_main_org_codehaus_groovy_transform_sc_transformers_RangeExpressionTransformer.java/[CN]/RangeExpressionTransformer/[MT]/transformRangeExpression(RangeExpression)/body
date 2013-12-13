@@ -1,0 +1,11 @@
+{
+  final ClassNode inferred=range.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  if (INTRANGE_TYPE.equals(inferred)) {
+    ArgumentListExpression bounds=new ArgumentListExpression(new ConstantExpression(range.isInclusive(),true),range.getFrom(),range.getTo());
+    ConstructorCallExpression cce=new ConstructorCallExpression(INTRANGE_TYPE,bounds);
+    cce.setSourcePosition(range);
+    cce.putNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,INTRANGE_CTOR);
+    return transformer.transform(cce);
+  }
+  return transformer.superTransform(range);
+}
