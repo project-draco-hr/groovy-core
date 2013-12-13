@@ -16,7 +16,7 @@
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
       MethodNode existingMethod=cNode.getDeclaredMethod(name,params);
-      if (existingMethod != null) {
+      if (existingMethod != null || isExistingProperty(name,cNode,params)) {
         continue;
       }
       ClassNode[] exceptionNodes=new ClassNode[exceptions == null ? 0 : exceptions.length];
