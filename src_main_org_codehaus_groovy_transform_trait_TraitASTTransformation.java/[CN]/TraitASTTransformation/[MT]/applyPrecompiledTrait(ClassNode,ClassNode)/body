@@ -1,0 +1,18 @@
+{
+  try {
+    final ClassLoader classLoader=trait.getTypeClass().getClassLoader();
+    String helperClassName=helperClassName(trait);
+    final ClassNode helperClassNode=ClassHelper.make(classLoader.loadClass(helperClassName));
+    ClassNode fieldHelperClassNode;
+    try {
+      fieldHelperClassNode=ClassHelper.make(classLoader.loadClass(fieldHelperClassName(trait)));
+    }
+ catch (    ClassNotFoundException e) {
+      fieldHelperClassNode=null;
+    }
+    applyTrait(trait,cNode,helperClassNode,fieldHelperClassNode);
+  }
+ catch (  ClassNotFoundException e) {
+    e.printStackTrace();
+  }
+}
