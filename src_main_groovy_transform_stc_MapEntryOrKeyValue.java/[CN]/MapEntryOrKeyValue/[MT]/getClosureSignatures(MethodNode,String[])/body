@@ -1,0 +1,11 @@
+{
+  GenericsType[] genericsTypes=node.getParameters()[0].getOriginType().getGenericsTypes();
+  if (genericsTypes == null) {
+    genericsTypes=new GenericsType[]{new GenericsType(ClassHelper.OBJECT_TYPE),new GenericsType(ClassHelper.OBJECT_TYPE)};
+  }
+  ClassNode[] firstSig={genericsTypes[0].getType(),genericsTypes[1].getType()};
+  ClassNode mapEntry=MAPENTRY_TYPE.getPlainNodeReference();
+  mapEntry.setGenericsTypes(genericsTypes);
+  ClassNode[] secondSig={mapEntry};
+  return Arrays.asList(firstSig,secondSig);
+}

@@ -1,0 +1,74 @@
+{
+  List<AnnotationNode> annotations=param.getAnnotations(CLOSUREPARAMS_CLASSNODE);
+  if (annotations != null && !annotations.isEmpty()) {
+    final Parameter[] closureParams=expression.getParameters();
+    for (    AnnotationNode annotation : annotations) {
+      Expression hintClass=annotation.getMember("value");
+      Expression options=annotation.getMember("options");
+      if (hintClass instanceof ClassExpression) {
+        try {
+          @SuppressWarnings("unchecked") Class<? extends ClosureSignatureHint> hint=(Class<? extends ClosureSignatureHint>)getSourceUnit().getClassLoader().loadClass(hintClass.getText());
+          ClosureSignatureHint hintInstance=hint.newInstance();
+          List<ClassNode[]> closureSignatures=hintInstance.getClosureSignatures(selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod,convertToStringArray(options));
+          List<ClassNode[]> candidates=new LinkedList<ClassNode[]>();
+          for (          ClassNode[] signature : closureSignatures) {
+            if (signature.length == closureParams.length || (signature.length == 1 && closureParams.length == 0)) {
+              final int id=System.identityHashCode(expression);
+              ClassNode dummyResultNode=new ClassNode("cl$" + id,0,OBJECT_TYPE).getPlainNodeReference();
+              final GenericsType[] genericTypes=new GenericsType[signature.length];
+              for (int i=0; i < signature.length; i++) {
+                genericTypes[i]=new GenericsType(signature[i]);
+              }
+              dummyResultNode.setGenericsTypes(genericTypes);
+              MethodNode dummyMN=selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod;
+              dummyMN=new MethodNode(dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,dummyMN.getParameters(),dummyMN.getExceptions(),EmptyStatement.INSTANCE);
+              dummyMN.setDeclaringClass(selectedMethod.getDeclaringClass());
+              if (selectedMethod instanceof ExtensionMethodNode) {
+                ExtensionMethodNode orig=(ExtensionMethodNode)selectedMethod;
+                dummyMN=new ExtensionMethodNode(dummyMN,dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,orig.getParameters(),orig.getExceptions(),EmptyStatement.INSTANCE,orig.isStaticExtension());
+                dummyMN.setDeclaringClass(orig.getDeclaringClass());
+              }
+              ClassNode classNode=inferReturnTypeGenerics(receiver,dummyMN,arguments);
+              ClassNode[] inferred=new ClassNode[classNode.getGenericsTypes().length];
+              for (int i=0; i < classNode.getGenericsTypes().length; i++) {
+                GenericsType genericsType=classNode.getGenericsTypes()[i];
+                inferred[i]=genericsType.getType();
+              }
+              candidates.add(inferred);
+            }
+          }
+          if (candidates.size() > 1) {
+            addError("Ambiguous prototypes for closure. More than one target method matches. Please use explicit argument types.",expression);
+          }
+ else           if (candidates.size() == 1) {
+            ClassNode[] inferred=candidates.get(0);
+            if (closureParams.length == 0 && inferred.length == 1) {
+              typeCheckingContext.lastImplicitItType=inferred[0];
+            }
+ else {
+              final int length=closureParams.length;
+              for (int i=0; i < length; i++) {
+                Parameter closureParam=closureParams[i];
+                final ClassNode originType=closureParam.getOriginType();
+                final ClassNode inferredType=inferred[i];
+                if (!typeCheckMethodArgumentWithGenerics(originType,inferredType,i == length - 1)) {
+                  addError("Expected parameter of type " + inferredType.toString(false) + " but got "+ originType.toString(false),expression);
+                }
+                typeCheckingContext.controlStructureVariables.put(closureParam,inferredType);
+              }
+            }
+          }
+        }
+ catch (        ClassNotFoundException e) {
+          e.printStackTrace();
+        }
+catch (        InstantiationException e) {
+          e.printStackTrace();
+        }
+catch (        IllegalAccessException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+}

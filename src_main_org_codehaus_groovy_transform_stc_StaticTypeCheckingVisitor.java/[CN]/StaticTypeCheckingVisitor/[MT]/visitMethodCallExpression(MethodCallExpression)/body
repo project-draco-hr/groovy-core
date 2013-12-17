@@ -39,10 +39,10 @@
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  visitMethodCallArguments(argumentList,false,null);
+  final ClassNode receiver=getType(objectExpression);
+  visitMethodCallArguments(receiver,argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
-  final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
     typeCheckingContext.lastImplicitItType=receiver;
     checkClosureParameters(callArguments,receiver);
@@ -174,7 +174,7 @@
             returnType=getType(directMethodCallCandidate);
           }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            visitMethodCallArguments(argumentList,true,directMethodCallCandidate);
+            visitMethodCallArguments(receiver,argumentList,true,directMethodCallCandidate);
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
             callArgsVisited=true;
@@ -207,7 +207,7 @@
     }
     if (!callArgsVisited) {
       MethodNode mn=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
-      visitMethodCallArguments(argumentList,true,mn);
+      visitMethodCallArguments(receiver,argumentList,true,mn);
       if (mn != null) {
         List<Expression> argExpressions=argumentList.getExpressions();
         Parameter[] parameters=mn.getParameters();
