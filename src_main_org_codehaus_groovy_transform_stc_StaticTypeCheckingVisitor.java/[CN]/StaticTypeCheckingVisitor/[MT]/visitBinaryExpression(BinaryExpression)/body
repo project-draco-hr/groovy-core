@@ -5,15 +5,21 @@
     final Expression leftExpression=expression.getLeftExpression();
     final Expression rightExpression=expression.getRightExpression();
     int op=expression.getOperation().getType();
-    leftExpression.visit(this);
-    SetterInfo setterInfo=removeSetterInfo(leftExpression);
-    if (setterInfo != null && rightExpression instanceof ClosureExpression) {
-      VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
-      MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
-      visitMethodCallExpression(call);
+    if (rightExpression instanceof ClosureExpression) {
+      leftExpression.visit(this);
+      SetterInfo setterInfo=removeSetterInfo(leftExpression);
+      if (setterInfo != null) {
+        VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
+        MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
+        visitMethodCallExpression(call);
+      }
+ else {
+        rightExpression.visit(this);
+      }
     }
  else {
       rightExpression.visit(this);
+      leftExpression.visit(this);
     }
     ClassNode lType=getType(leftExpression);
     ClassNode rType=getType(rightExpression);
