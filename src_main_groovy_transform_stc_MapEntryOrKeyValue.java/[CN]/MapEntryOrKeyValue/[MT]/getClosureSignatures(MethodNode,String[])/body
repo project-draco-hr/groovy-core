@@ -1,5 +1,9 @@
 {
-  GenericsType[] genericsTypes=node.getParameters()[0].getOriginType().getGenericsTypes();
+  int index=0;
+  if (options != null && options.length > 0) {
+    index=Integer.valueOf(options[0]);
+  }
+  GenericsType[] genericsTypes=node.getParameters()[index].getOriginType().getGenericsTypes();
   if (genericsTypes == null) {
     genericsTypes=new GenericsType[]{new GenericsType(ClassHelper.OBJECT_TYPE),new GenericsType(ClassHelper.OBJECT_TYPE)};
   }
