@@ -23,10 +23,12 @@
               MethodNode dummyMN=selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod;
               dummyMN=new MethodNode(dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,dummyMN.getParameters(),dummyMN.getExceptions(),EmptyStatement.INSTANCE);
               dummyMN.setDeclaringClass(selectedMethod.getDeclaringClass());
+              dummyMN.setGenericsTypes(selectedMethod.getGenericsTypes());
               if (selectedMethod instanceof ExtensionMethodNode) {
                 ExtensionMethodNode orig=(ExtensionMethodNode)selectedMethod;
                 dummyMN=new ExtensionMethodNode(dummyMN,dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,orig.getParameters(),orig.getExceptions(),EmptyStatement.INSTANCE,orig.isStaticExtension());
                 dummyMN.setDeclaringClass(orig.getDeclaringClass());
+                dummyMN.setGenericsTypes(orig.getGenericsTypes());
               }
               ClassNode classNode=inferReturnTypeGenerics(receiver,dummyMN,arguments);
               ClassNode[] inferred=new ClassNode[classNode.getGenericsTypes().length];
