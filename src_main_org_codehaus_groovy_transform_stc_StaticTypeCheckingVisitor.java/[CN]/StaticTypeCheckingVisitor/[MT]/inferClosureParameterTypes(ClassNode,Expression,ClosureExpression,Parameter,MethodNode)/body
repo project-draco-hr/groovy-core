@@ -9,7 +9,7 @@
         try {
           @SuppressWarnings("unchecked") Class<? extends ClosureSignatureHint> hint=(Class<? extends ClosureSignatureHint>)getSourceUnit().getClassLoader().loadClass(hintClass.getText());
           ClosureSignatureHint hintInstance=hint.newInstance();
-          List<ClassNode[]> closureSignatures=hintInstance.getClosureSignatures(selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod,typeCheckingContext.source,typeCheckingContext.compilationUnit,convertToStringArray(options));
+          List<ClassNode[]> closureSignatures=hintInstance.getClosureSignatures(selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod,typeCheckingContext.source,typeCheckingContext.compilationUnit,convertToStringArray(options),expression);
           List<ClassNode[]> candidates=new LinkedList<ClassNode[]>();
           for (          ClassNode[] signature : closureSignatures) {
             if (signature.length == closureParams.length || (signature.length == 1 && closureParams.length == 0)) {
