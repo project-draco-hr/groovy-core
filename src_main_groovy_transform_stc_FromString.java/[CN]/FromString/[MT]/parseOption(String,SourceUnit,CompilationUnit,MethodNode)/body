@@ -1,0 +1,36 @@
+{
+  GroovyLexer lexer=new GroovyLexer(new StringReader(option));
+  final GroovyRecognizer rn=GroovyRecognizer.make(lexer);
+  try {
+    rn.classOrInterfaceType(true);
+    final AtomicReference<ClassNode> ref=new AtomicReference<ClassNode>();
+    AntlrParserPlugin plugin=new AntlrParserPlugin(){
+      @Override public ModuleNode buildAST(      final SourceUnit sourceUnit,      final ClassLoader classLoader,      final Reduction cst) throws ParserException {
+        ref.set(makeTypeWithArguments(rn.getAST()));
+        return null;
+      }
+    }
+;
+    plugin.buildAST(null,null,null);
+    ClassNode parsedNode=ref.get();
+    ClassNode dummyClass=new ClassNode("dummy",0,ClassHelper.OBJECT_TYPE);
+    dummyClass.setModule(new ModuleNode(sourceUnit));
+    dummyClass.setGenericsTypes(mn.getDeclaringClass().getGenericsTypes());
+    MethodNode dummyMN=new MethodNode("dummy",0,parsedNode,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+    dummyMN.setGenericsTypes(mn.getGenericsTypes());
+    dummyClass.addMethod(dummyMN);
+    ResolveVisitor visitor=new ResolveVisitor(compilationUnit);
+    visitor.startResolving(dummyClass,sourceUnit);
+    return dummyMN.getReturnType();
+  }
+ catch (  RecognitionException e) {
+    sourceUnit.addException(e);
+  }
+catch (  TokenStreamException e) {
+    sourceUnit.addException(e);
+  }
+catch (  ParserException e) {
+    sourceUnit.addException(e);
+  }
+  return null;
+}
