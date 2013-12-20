@@ -5,6 +5,9 @@
     return resolvedPlaceholders;
   }
   Map<String,GenericsType> resolvedPlaceholders=null;
+  if (isPrimitiveType(receiver) && !isPrimitiveType(declaringClass)) {
+    receiver=getWrapper(receiver);
+  }
   ClassNode current=receiver;
   while (true) {
     Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>();
