@@ -1,15 +1,27 @@
 {
-  int index=0;
-  if (options != null && options.length > 0) {
-    index=Integer.valueOf(options[0]);
+  Options opt;
+  try {
+    opt=Options.parse(node,usage,options);
   }
-  GenericsType[] genericsTypes=node.getParameters()[index].getOriginType().getGenericsTypes();
+ catch (  IncorrectTypeHintException e) {
+    sourceUnit.addError(e);
+    return Collections.emptyList();
+  }
+  GenericsType[] genericsTypes=node.getParameters()[opt.parameterIndex].getOriginType().getGenericsTypes();
   if (genericsTypes == null) {
     genericsTypes=new GenericsType[]{new GenericsType(ClassHelper.OBJECT_TYPE),new GenericsType(ClassHelper.OBJECT_TYPE)};
   }
-  ClassNode[] firstSig={genericsTypes[0].getType(),genericsTypes[1].getType()};
+  ClassNode[] firstSig;
+  ClassNode[] secondSig;
   ClassNode mapEntry=MAPENTRY_TYPE.getPlainNodeReference();
   mapEntry.setGenericsTypes(genericsTypes);
-  ClassNode[] secondSig={mapEntry};
+  if (opt.generateIndex) {
+    firstSig=new ClassNode[]{genericsTypes[0].getType(),genericsTypes[1].getType(),ClassHelper.int_TYPE};
+    secondSig=new ClassNode[]{mapEntry,ClassHelper.int_TYPE};
+  }
+ else {
+    firstSig=new ClassNode[]{genericsTypes[0].getType(),genericsTypes[1].getType()};
+    secondSig=new ClassNode[]{mapEntry};
+  }
   return Arrays.asList(firstSig,secondSig);
 }
