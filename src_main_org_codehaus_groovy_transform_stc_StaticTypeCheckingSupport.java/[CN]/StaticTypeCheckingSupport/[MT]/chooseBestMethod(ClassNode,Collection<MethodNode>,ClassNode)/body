@@ -6,6 +6,8 @@
   for (  MethodNode candidateNode : choicesLeft) {
     ClassNode declaringClass=candidateNode.getDeclaringClass();
     ClassNode actualReceiver=receiver != null ? receiver : declaringClass;
+    final ClassNode declaringClassForDistance=declaringClass;
+    final ClassNode actualReceiverForDistance=actualReceiver;
     MethodNode safeNode=candidateNode;
     ClassNode[] safeArgs=args;
     if (candidateNode instanceof ExtensionMethodNode) {
@@ -30,7 +32,7 @@
         lastArgMatch+=256 - params.length;
       }
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
-      if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
+      if (dist >= 0 && !actualReceiverForDistance.equals(declaringClassForDistance))       dist+=getDistance(actualReceiverForDistance,declaringClassForDistance);
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
         bestChoices.add(candidateNode);
@@ -65,7 +67,7 @@
         }
  else {
           dist+=excessArgumentsMatchesVargsParameter(params,safeArgs);
-          if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist+=getDistance(actualReceiver,declaringClass);
+          if (dist >= 0 && !actualReceiverForDistance.equals(declaringClassForDistance))           dist+=getDistance(actualReceiverForDistance,declaringClassForDistance);
           dist+=256 - params.length;
           if (params.length < safeArgs.length && dist >= 0) {
             if (dist >= 0 && dist < bestDist) {
