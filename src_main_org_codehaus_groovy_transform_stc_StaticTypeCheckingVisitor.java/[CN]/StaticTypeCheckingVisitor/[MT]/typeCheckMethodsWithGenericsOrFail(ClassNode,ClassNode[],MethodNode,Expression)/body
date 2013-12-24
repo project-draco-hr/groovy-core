@@ -1,0 +1,15 @@
+{
+  if (!typeCheckMethodsWithGenerics(receiver,arguments,candidateMethod)) {
+    Map<String,GenericsType> classGTs=GenericsUtils.extractPlaceholders(receiver);
+    ClassNode[] ptypes=new ClassNode[candidateMethod.getParameters().length];
+    final Parameter[] parameters=candidateMethod.getParameters();
+    for (int i=0; i < parameters.length; i++) {
+      final Parameter parameter=parameters[i];
+      ClassNode type=parameter.getType();
+      ptypes[i]=fullyResolveType(type,classGTs);
+    }
+    addStaticTypeError("Cannot call " + toMethodGenericTypesString(candidateMethod) + receiver.toString(false)+ "#"+ toMethodParametersString(candidateMethod.getName(),ptypes)+ " with arguments "+ formatArgumentList(arguments),location);
+    return false;
+  }
+  return true;
+}

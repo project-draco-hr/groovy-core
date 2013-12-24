@@ -39,10 +39,14 @@
       resultType=completedType;
     }
     if (isArrayOp(op) && enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == expression && isAssignment(enclosingBinaryExpression.getOperation().getType()) && !lType.isArray()) {
-      ClassNode[] arguments={rType,getType(enclosingBinaryExpression.getRightExpression())};
+      Expression enclosingBE_rightExpr=enclosingBinaryExpression.getRightExpression();
+      if (!(enclosingBE_rightExpr instanceof ClosureExpression)) {
+        enclosingBE_rightExpr.visit(this);
+      }
+      ClassNode[] arguments={rType,getType(enclosingBE_rightExpr)};
       List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);
       if (nodes.size() == 1) {
-        typeCheckMethodsWithGenerics(lType,arguments,nodes.get(0),expression);
+        typeCheckMethodsWithGenericsOrFail(lType,arguments,nodes.get(0),enclosingBE_rightExpr);
       }
  else       if (nodes.isEmpty()) {
         addNoMatchingMethodError(lType,"putAt",arguments,enclosingBinaryExpression);
