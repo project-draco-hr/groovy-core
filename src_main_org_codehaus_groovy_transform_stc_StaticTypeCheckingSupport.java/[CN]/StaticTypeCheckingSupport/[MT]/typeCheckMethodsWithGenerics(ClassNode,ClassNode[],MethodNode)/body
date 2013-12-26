@@ -1,4 +1,7 @@
 {
+  if (isUsingUncheckedGenerics(receiver)) {
+    return true;
+  }
   if (CLASS_Type.equals(receiver) && receiver.isUsingGenerics() && candidateMethod.getDeclaringClass() != receiver && !(candidateMethod instanceof ExtensionMethodNode)) {
     return typeCheckMethodsWithGenerics(receiver.getGenericsTypes()[0].getType(),arguments,candidateMethod);
   }
