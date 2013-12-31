@@ -16,15 +16,15 @@
       return;
     }
     ClassNode ownerClassNode=methodNode.getDeclaringClass();
-    MethodNode privateMethod=buildPrivateDelegatingMethod(methodNode,ownerClassNode);
-    ownerClassNode.addMethod(privateMethod);
+    MethodNode delegatingMethod=buildDelegatingMethod(methodNode,ownerClassNode);
+    ownerClassNode.addMethod(delegatingMethod);
     int modifiers=FieldNode.ACC_PRIVATE | FieldNode.ACC_FINAL;
     if (methodNode.isStatic()) {
       modifiers=modifiers | FieldNode.ACC_STATIC;
     }
     int protectedCacheSize=getIntMemberValue(annotationNode,PROTECTED_CACHE_SIZE_NAME);
     int maxCacheSize=getIntMemberValue(annotationNode,MAX_CACHE_SIZE_NAME);
-    MethodCallExpression memoizeClosureCallExpression=buildMemoizeClosureCallExpression(privateMethod,protectedCacheSize,maxCacheSize);
+    MethodCallExpression memoizeClosureCallExpression=buildMemoizeClosureCallExpression(delegatingMethod,protectedCacheSize,maxCacheSize);
     String memoizedClosureFieldName=buildUniqueName(ownerClassNode,CLOSURE_LABEL,methodNode);
     FieldNode memoizedClosureField=new FieldNode(memoizedClosureFieldName,modifiers,ClassHelper.CLOSURE_TYPE.getPlainNodeReference(),null,memoizeClosureCallExpression);
     ownerClassNode.addField(memoizedClosureField);
