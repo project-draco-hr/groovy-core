@@ -1,0 +1,10 @@
+{
+  List<MethodNode> methods=cn.getAllDeclaredMethods();
+  List<ClassNode[]> signatures=new LinkedList<ClassNode[]>();
+  for (  MethodNode method : methods) {
+    if (!method.isSynthetic() && method.isAbstract()) {
+      extractParametersFromMethod(signatures,method);
+    }
+  }
+  return signatures;
+}
