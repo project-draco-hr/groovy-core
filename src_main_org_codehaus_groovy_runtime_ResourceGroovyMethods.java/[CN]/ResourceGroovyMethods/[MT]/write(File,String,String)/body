@@ -1,7 +1,9 @@
 {
   Writer writer=null;
   try {
-    writer=new OutputStreamWriter(new FileOutputStream(file),charset);
+    FileOutputStream out=new FileOutputStream(file);
+    writeUTF16BomIfRequired(charset,out);
+    writer=new OutputStreamWriter(out,charset);
     writer.write(text);
     writer.flush();
     Writer temp=writer;
