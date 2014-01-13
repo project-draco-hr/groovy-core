@@ -1,28 +1,9 @@
 {
-  URI uri=new File(servletContext.getRealPath("/")).toURI();
-  try {
-    String basePath=uri.toURL().toExternalForm();
-    if (name.startsWith(basePath))     return name.substring(basePath.length());
+  if (namePrefix == null) {
+    generateNamePrefixOnce();
   }
- catch (  MalformedURLException e) {
-    throw new ResourceException("Malformed URL for base path '" + uri + "'",e);
-  }
-  try {
-    URL res=servletContext.getResource("/");
-    if (res != null)     uri=res.toURI();
-  }
- catch (  MalformedURLException e) {
-  }
-catch (  URISyntaxException e) {
-  }
-  if (uri != null) {
-    try {
-      String basePath=uri.toURL().toExternalForm();
-      if (name.startsWith(basePath))       return name.substring(basePath.length());
-    }
- catch (    MalformedURLException e) {
-      throw new ResourceException("Malformed URL for base path '" + uri + "'",e);
-    }
+  if (name.startsWith(namePrefix)) {
+    return name.substring(namePrefix.length());
   }
   return name;
 }
