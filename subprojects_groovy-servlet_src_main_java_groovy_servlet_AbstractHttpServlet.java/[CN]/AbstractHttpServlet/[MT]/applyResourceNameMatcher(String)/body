@@ -1,8 +1,6 @@
 {
-  String uri=aUri;
-  Matcher matcher=resourceNameMatcher;
-  if (matcher != null) {
-    matcher.reset(uri);
+  if (resourceNamePattern != null) {
+    Matcher matcher=resourceNamePattern.matcher(uri);
     String replaced;
     if (resourceNameReplaceAll) {
       replaced=matcher.replaceAll(resourceNameReplacement);
@@ -14,7 +12,7 @@
       if (verbose) {
         log("Replaced resource name \"" + uri + "\" with \""+ replaced+ "\".");
       }
-      uri=replaced;
+      return replaced;
     }
   }
   return uri;

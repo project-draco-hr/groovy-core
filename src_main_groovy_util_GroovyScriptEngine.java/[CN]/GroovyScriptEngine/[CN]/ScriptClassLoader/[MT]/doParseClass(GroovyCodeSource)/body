@@ -6,7 +6,20 @@
   ScriptCacheEntry origEntry=scriptCache.get(codeSource.getName());
   Set<String> origDep=null;
   if (origEntry != null)   origDep=origEntry.dependencies;
-  if (origDep != null)   cache.put(".",origDep);
+  if (origDep != null) {
+    HashSet<String> newDep=new HashSet<String>(origDep.size());
+    for (    String depName : origDep) {
+      ScriptCacheEntry dep=scriptCache.get(depName);
+      try {
+        if (origEntry == dep || GroovyScriptEngine.this.isSourceNewer(dep)) {
+          newDep.add(depName);
+        }
+      }
+ catch (      ResourceException re) {
+      }
+    }
+    cache.put(".",newDep);
+  }
   Class answer=super.parseClass(codeSource,false);
   cache.makeTransitiveHull();
   long time=getCurrentTime();
@@ -19,7 +32,14 @@
     if (entryNames.contains(entryName))     continue;
     entryNames.add(entryName);
     Set<String> value=convertToPaths(entry.getValue(),localData.precompiledEntries);
-    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,time,time,value,false);
+    long lastModified;
+    try {
+      lastModified=getLastModified(entryName);
+    }
+ catch (    ResourceException e) {
+      lastModified=time;
+    }
+    ScriptCacheEntry cacheEntry=new ScriptCacheEntry(clazz,lastModified,time,value,false);
     scriptCache.put(entryName,cacheEntry);
   }
   cache.clear();
