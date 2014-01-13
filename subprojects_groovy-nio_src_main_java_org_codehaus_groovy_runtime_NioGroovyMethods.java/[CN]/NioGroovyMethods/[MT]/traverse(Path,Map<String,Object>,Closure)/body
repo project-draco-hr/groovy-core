@@ -1,0 +1,27 @@
+{
+  Number maxDepthNumber=DefaultGroovyMethods.asType(options.remove("maxDepth"),Number.class);
+  int maxDepth=maxDepthNumber == null ? -1 : maxDepthNumber.intValue();
+  Boolean visitRoot=DefaultGroovyMethods.asType(get(options,"visitRoot",false),Boolean.class);
+  Boolean preRoot=DefaultGroovyMethods.asType(get(options,"preRoot",false),Boolean.class);
+  Boolean postRoot=DefaultGroovyMethods.asType(get(options,"postRoot",false),Boolean.class);
+  final Closure pre=(Closure)options.get("preDir");
+  final Closure post=(Closure)options.get("postDir");
+  final FileType type=(FileType)options.get("type");
+  final Object filter=options.get("filter");
+  final Object nameFilter=options.get("nameFilter");
+  final Object excludeFilter=options.get("excludeFilter");
+  final Object excludeNameFilter=options.get("excludeNameFilter");
+  Object preResult=null;
+  if (preRoot && pre != null) {
+    preResult=pre.call(self);
+  }
+  if (preResult == FileVisitResult.TERMINATE || preResult == FileVisitResult.SKIP_SUBTREE)   return;
+  FileVisitResult terminated=traverse(self,options,closure,maxDepth);
+  if (type != FileType.FILES && visitRoot) {
+    if (closure != null && notFiltered(self,filter,nameFilter,excludeFilter,excludeNameFilter)) {
+      Object closureResult=closure.call(self);
+      if (closureResult == FileVisitResult.TERMINATE)       return;
+    }
+  }
+  if (postRoot && post != null && terminated != FileVisitResult.TERMINATE)   post.call(self);
+}
