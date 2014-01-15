@@ -1,0 +1,13 @@
+{
+  for (  FieldNode fNode : list) {
+    if (excludes.contains(fNode.getName()))     continue;
+    if ((fNode.getModifiers() & ACC_TRANSIENT) != 0)     continue;
+    if ((fNode.getModifiers() & ACC_FINAL) != 0) {
+      addError(MY_TYPE_NAME + ": The Externalizable property (or field) '" + fNode.getName()+ "' cannot be final",fNode);
+    }
+    ClassNode propType=fNode.getType();
+    if (checkPropertyTypes && !isPrimitiveType(propType) && !implementsExternalizable(propType)&& !implementsSerializable(propType)) {
+      addError(MY_TYPE_NAME + ": strict type checking is enabled and the non-primitive property (or field) '" + fNode.getName()+ "' in an Externalizable class has the type '"+ propType.getName()+ "' which isn't Externalizable or Serializable",fNode);
+    }
+  }
+}
