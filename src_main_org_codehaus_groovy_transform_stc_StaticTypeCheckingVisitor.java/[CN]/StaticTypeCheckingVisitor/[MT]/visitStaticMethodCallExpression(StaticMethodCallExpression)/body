@@ -13,9 +13,9 @@
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  visitMethodCallArguments(argumentList,false,null);
-  ClassNode[] args=getArgumentTypes(argumentList);
   final ClassNode receiver=call.getOwnerType();
+  visitMethodCallArguments(receiver,argumentList,false,null);
+  ClassNode[] args=getArgumentTypes(argumentList);
   if (isWithCall) {
     typeCheckingContext.lastImplicitItType=receiver;
     checkClosureParameters(callArguments,receiver);
@@ -49,7 +49,7 @@
         MethodNode directMethodCallCandidate=mn.get(0);
         ClassNode returnType=getType(directMethodCallCandidate);
         if (returnType.isUsingGenerics() && !returnType.isEnum()) {
-          visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+          visitMethodCallArguments(receiver,argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
           ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
           returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
           callArgsVisited=true;
@@ -61,7 +61,7 @@
         addAmbiguousErrorMessage(mn,name,args,call);
       }
       if (!callArgsVisited) {
-        visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+        visitMethodCallArguments(receiver,argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
       }
     }
   }

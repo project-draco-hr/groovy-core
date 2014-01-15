@@ -37,4 +37,10 @@
   if (typeChanged)   visitClosureExpression(expression);
   restoreVariableExpressionMetadata(typesBeforeVisit);
   typeCheckingContext.isInStaticContext=oldStaticContext;
+  Parameter[] parameters=expression.getParameters();
+  if (parameters != null) {
+    for (    Parameter parameter : parameters) {
+      typeCheckingContext.controlStructureVariables.remove(parameter);
+    }
+  }
 }
