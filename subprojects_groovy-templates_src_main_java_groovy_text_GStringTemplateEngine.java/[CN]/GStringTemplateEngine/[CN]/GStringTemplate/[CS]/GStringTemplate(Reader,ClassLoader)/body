@@ -1,5 +1,5 @@
 {
-  final StringBuilder templateExpressions=new StringBuilder("package groovy.tmp.templates\n def getTemplate() { return { out -> delegate = new Binding(delegate); out << \"\"\"");
+  final StringBuilder templateExpressions=new StringBuilder("package groovy.tmp.templates\n def getTemplate() { return { out -> out << \"\"\"");
   boolean writingString=true;
   while (true) {
     int c=reader.read();
@@ -46,7 +46,7 @@
   if (writingString) {
     templateExpressions.append("\"\"\"");
   }
-  templateExpressions.append("}.asWritable()}");
+  templateExpressions.append("}}");
   final GroovyClassLoader loader=parentLoader instanceof GroovyClassLoader ? (GroovyClassLoader)parentLoader : ((GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
       return new GroovyClassLoader(parentLoader);
@@ -55,14 +55,15 @@
 ));
   final Class groovyClass;
   try {
-    groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"GStringTemplateScript" + counter++ + ".groovy","x"));
+    groovyClass=loader.parseClass(new GroovyCodeSource(templateExpressions.toString(),"GStringTemplateScript" + counter.incrementAndGet() + ".groovy","x"));
   }
  catch (  Exception e) {
     throw new GroovyRuntimeException("Failed to parse template script (your template may contain an error or be trying to use expressions not currently supported): " + e.getMessage());
   }
   try {
-    final GroovyObject object=(GroovyObject)groovyClass.newInstance();
-    this.template=(Closure)object.invokeMethod("getTemplate",null);
+    final GroovyObject script=(GroovyObject)groovyClass.newInstance();
+    this.template=(Closure)script.invokeMethod("getTemplate",null);
+    this.template.setResolveStrategy(Closure.DELEGATE_FIRST);
   }
  catch (  InstantiationException e) {
     throw new ClassNotFoundException(e.getMessage());
