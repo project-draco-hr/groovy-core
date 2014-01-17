@@ -1,8 +1,7 @@
 {
-  Writer writer=null;
+  BufferedWriter writer=null;
   try {
-    OutputStream out=Files.newOutputStream(self,CREATE,APPEND);
-    writer=new OutputStreamWriter(out,Charset.forName(charset));
+    writer=newWriter(file,true);
     InvokerHelper.write(writer,text);
     writer.flush();
     Writer temp=writer;
