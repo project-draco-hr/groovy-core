@@ -1,5 +1,5 @@
 {
-  ClassNode classNode=controller.getClassNode();
+  ClassNode classNode=controller.isInClosure() ? controller.getOutermostClass() : controller.getClassNode();
   String methodName=call.getMethodAsString();
   if (methodName == null)   return false;
   if (!call.isImplicitThis())   return false;
