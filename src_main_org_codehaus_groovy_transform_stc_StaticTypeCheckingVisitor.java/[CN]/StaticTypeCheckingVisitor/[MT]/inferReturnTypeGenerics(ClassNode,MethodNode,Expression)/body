@@ -35,6 +35,10 @@
       if (!type.isUsingGenerics() && type.isArray())       type=type.getComponentType();
       if (type.isUsingGenerics()) {
         ClassNode actualType=getType(expressions.get(i));
+        if (implementsInterfaceOrIsSubclassOf(actualType,CLOSURE_TYPE) && !implementsInterfaceOrIsSubclassOf(type,CLOSURE_TYPE)) {
+          Map<String,GenericsType> pholders=new HashMap<String,GenericsType>(resolvedPlaceholders);
+          actualType=convertClosureTypeToSAMType(expressions.get(i),actualType,type,pholders);
+        }
         if (isVargs && lastArg && actualType.isArray()) {
           actualType=actualType.getComponentType();
         }
