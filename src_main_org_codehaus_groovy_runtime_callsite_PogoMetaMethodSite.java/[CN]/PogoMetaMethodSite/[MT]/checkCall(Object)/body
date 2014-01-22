@@ -1,13 +1,3 @@
 {
-  try {
-    return !GroovyCategorySupport.hasCategoryInCurrentThread() && receiver instanceof GroovyObject && ((GroovyObject)receiver).getMetaClass() == metaClass && MetaClassHelper.sameClasses(params);
-  }
- catch (  NullPointerException e) {
-    if (receiver == null)     return false;
-    throw e;
-  }
-catch (  ClassCastException e) {
-    if (!(receiver instanceof GroovyObject))     return false;
-    throw e;
-  }
+  return nonParamCheck(receiver) && MetaClassHelper.sameClasses(params);
 }

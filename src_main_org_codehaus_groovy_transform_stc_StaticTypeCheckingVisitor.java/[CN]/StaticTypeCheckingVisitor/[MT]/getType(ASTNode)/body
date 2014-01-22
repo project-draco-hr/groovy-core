@@ -1,5 +1,5 @@
 {
-  ClassNode cn=(ClassNode)exp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+  ClassNode cn=exp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
   if (cn != null)   return cn;
   if (exp instanceof ClassExpression) {
     ClassNode node=CLASS_Type.getPlainNodeReference();
@@ -20,6 +20,14 @@
     if (variable instanceof Parameter) {
       Parameter parameter=(Parameter)variable;
       ClassNode type=typeCheckingContext.controlStructureVariables.get(parameter);
+      TypeCheckingContext.EnclosingClosure enclosingClosure=typeCheckingContext.getEnclosingClosure();
+      ClassNode[] closureParamTypes=(ClassNode[])(enclosingClosure != null ? enclosingClosure.getClosureExpression().getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS) : null);
+      if (type == null && enclosingClosure != null && "it".equals(variable.getName()) && closureParamTypes != null) {
+        final Parameter[] parameters=enclosingClosure.getClosureExpression().getParameters();
+        if (parameters.length == 0 && getTemporaryTypesForExpression(vexp) == null) {
+          type=closureParamTypes[0];
+        }
+      }
       if (type != null) {
         storeType((VariableExpression)exp,type);
         return type;

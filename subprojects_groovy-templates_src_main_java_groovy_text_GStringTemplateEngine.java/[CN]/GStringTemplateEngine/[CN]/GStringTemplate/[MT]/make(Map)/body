@@ -1,5 +1,6 @@
 {
-  final Closure template=(Closure)this.template.clone();
-  template.setDelegate(map);
+  final Closure template=((Closure)this.template.clone()).asWritable();
+  Binding binding=new Binding(map);
+  template.setDelegate(binding);
   return (Writable)template;
 }

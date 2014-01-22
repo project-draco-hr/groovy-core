@@ -1,12 +1,14 @@
 {
-  name=removeNamePrefix(name);
-  name=name.replaceAll("\\\\","/");
-  if (name.startsWith("/"))   name=name.substring(1);
+  name=removeNamePrefix(name).replace('\\','/');
+  if (name.startsWith("WEB-INF/groovy/")) {
+    name=name.substring(15);
+  }
+ else   if (name.startsWith("/")) {
+    name=name.substring(1);
+  }
   try {
-    String tryScriptName="/" + name;
-    URL url=servletContext.getResource(tryScriptName);
+    URL url=servletContext.getResource('/' + name);
     if (url == null) {
-      tryScriptName="/WEB-INF/groovy/" + name;
       url=servletContext.getResource("/WEB-INF/groovy/" + name);
     }
     if (url == null) {

@@ -2,10 +2,14 @@
   if (entry == null)   return true;
   long mainEntryLastCheck=entry.lastCheck;
   long now=0;
+  boolean returnValue=false;
   for (  String scriptName : entry.dependencies) {
     ScriptCacheEntry depEntry=scriptCache.get(scriptName);
     if (depEntry.sourceNewer)     return true;
-    if (mainEntryLastCheck < depEntry.lastModified)     return true;
+    if (mainEntryLastCheck < depEntry.lastModified) {
+      returnValue=true;
+      continue;
+    }
     if (now == 0)     now=getCurrentTime();
     long nextSourceCheck=depEntry.lastCheck + config.getMinimumRecompilationInterval();
     if (nextSourceCheck > now)     continue;
@@ -13,12 +17,12 @@
     if (depEntry.lastModified < lastMod) {
       depEntry=new ScriptCacheEntry(depEntry,lastMod,true);
       scriptCache.put(scriptName,depEntry);
-      return true;
+      returnValue=true;
     }
  else {
       depEntry=new ScriptCacheEntry(depEntry,now,false);
       scriptCache.put(scriptName,depEntry);
     }
   }
-  return false;
+  return returnValue;
 }

@@ -1,0 +1,15 @@
+{
+  List<AnnotationNode> annotations=param.getAnnotations(CLOSUREPARAMS_CLASSNODE);
+  if (annotations != null && !annotations.isEmpty()) {
+    for (    AnnotationNode annotation : annotations) {
+      Expression hintClass=annotation.getMember("value");
+      Expression options=annotation.getMember("options");
+      if (hintClass instanceof ClassExpression) {
+        doInferClosureParameterTypes(receiver,arguments,expression,selectedMethod,hintClass,options);
+      }
+    }
+  }
+ else   if (isSAMType(param.getOriginType())) {
+    doInferClosureParameterTypes(receiver,arguments,expression,selectedMethod,new ClassExpression(ClassHelper.make(FromAbstractTypeMethods.class)),new ConstantExpression(param.getOriginType().getName()));
+  }
+}

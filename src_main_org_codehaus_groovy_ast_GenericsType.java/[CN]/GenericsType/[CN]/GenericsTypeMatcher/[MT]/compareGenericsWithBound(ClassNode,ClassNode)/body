@@ -1,6 +1,6 @@
 {
   if (classNode == null)   return false;
-  if (!bound.isUsingGenerics()) {
+  if (!bound.isUsingGenerics() || (classNode.getGenericsTypes() == null && classNode.redirect().getGenericsTypes() != null)) {
     return true;
   }
   if (!classNode.equals(bound)) {
@@ -112,7 +112,7 @@
         }
       }
  else {
-        match=classNodeType.isCompatibleWith(redirectBoundType.getType());
+        match=redirectBoundType.isWildcard() || classNodeType.isCompatibleWith(redirectBoundType.getType());
       }
     }
   }

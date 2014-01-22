@@ -1,0 +1,31 @@
+{
+  if (paramType.isArray()) {
+    ClassNode componentType=paramType.getComponentType();
+    Parameter subMethodParameter=new Parameter(componentType,methodParameter.getName());
+    Parameter component=buildParameter(redirectReceiverTypes,receiverParameterizedTypes,subMethodParameter,componentType);
+    return new Parameter(component.getType().makeArray(),component.getName());
+  }
+  final Parameter newParam;
+  if (paramType.isUsingGenerics()) {
+    GenericsType[] alignmentTypes=paramType.getGenericsTypes();
+    GenericsType[] genericsTypes=GenericsUtils.alignGenericTypes(redirectReceiverTypes,receiverParameterizedTypes,alignmentTypes);
+    if (genericsTypes.length == 1) {
+      ClassNode parameterizedCN;
+      if (paramType.equals(OBJECT_TYPE)) {
+        parameterizedCN=genericsTypes[0].getType();
+      }
+ else {
+        parameterizedCN=paramType.getPlainNodeReference();
+        parameterizedCN.setGenericsTypes(genericsTypes);
+      }
+      newParam=new Parameter(parameterizedCN,methodParameter.getName());
+    }
+ else {
+      newParam=methodParameter;
+    }
+  }
+ else {
+    newParam=methodParameter;
+  }
+  return newParam;
+}

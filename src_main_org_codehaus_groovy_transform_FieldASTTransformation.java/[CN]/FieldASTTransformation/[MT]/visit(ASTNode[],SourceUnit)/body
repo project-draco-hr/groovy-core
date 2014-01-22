@@ -25,6 +25,9 @@
     cNode.addField(fieldNode);
     final List<AnnotationNode> annotations=de.getAnnotations();
     for (    AnnotationNode annotation : annotations) {
+      if (annotation.getClassNode().equals(LAZY_TYPE)) {
+        LazyASTTransformation.visitField(annotation,fieldNode);
+      }
       final ClassNode annotationClassNode=annotation.getClassNode();
       if (notTransform(annotationClassNode) || acceptableTransform(annotation)) {
         fieldNode.addAnnotation(annotation);

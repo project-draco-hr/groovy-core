@@ -1,0 +1,16 @@
+{
+  ClassNode dummyClass=new ClassNode("dummy",0,ClassHelper.OBJECT_TYPE);
+  dummyClass.setModule(new ModuleNode(sourceUnit));
+  dummyClass.setGenericsTypes(mn.getDeclaringClass().getGenericsTypes());
+  MethodNode dummyMN=new MethodNode("dummy",0,parsedNode,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+  dummyMN.setGenericsTypes(mn.getGenericsTypes());
+  dummyClass.addMethod(dummyMN);
+  ResolveVisitor visitor=new ResolveVisitor(compilationUnit){
+    @Override protected void addError(    final String msg,    final ASTNode expr){
+      sourceUnit.addError(new IncorrectTypeHintException(mn,msg,usage.getLineNumber(),usage.getColumnNumber()));
+    }
+  }
+;
+  visitor.startResolving(dummyClass,sourceUnit);
+  return dummyMN.getReturnType();
+}

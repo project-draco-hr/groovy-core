@@ -28,6 +28,11 @@
       operandStack.box();
     }
     ClassNode lhsType=controller.getTypeChooser().resolveType(var,controller.getClassNode());
+    if (var.isClosureSharedVariable() && ClassHelper.isPrimitiveType(var.getOriginType()) && isNull(rightExpression)) {
+      operandStack.doGroovyCast(var.getOriginType());
+      operandStack.box();
+      operandStack.doGroovyCast(lhsType);
+    }
     if (!ClassHelper.isPrimitiveType(lhsType) && isNull(rightExpression)) {
       operandStack.replace(lhsType);
     }

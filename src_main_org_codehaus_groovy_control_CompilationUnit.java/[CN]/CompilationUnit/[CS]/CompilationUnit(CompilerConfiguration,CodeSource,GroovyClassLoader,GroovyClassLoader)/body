@@ -77,6 +77,9 @@
   if (configuration != null) {
     final List<CompilationCustomizer> customizers=configuration.getCompilationCustomizers();
     for (    CompilationCustomizer customizer : customizers) {
+      if (customizer instanceof CompilationUnitAware) {
+        ((CompilationUnitAware)customizer).setCompilationUnit(this);
+      }
       addPhaseOperation(customizer,customizer.getPhase().getPhaseNumber());
     }
   }

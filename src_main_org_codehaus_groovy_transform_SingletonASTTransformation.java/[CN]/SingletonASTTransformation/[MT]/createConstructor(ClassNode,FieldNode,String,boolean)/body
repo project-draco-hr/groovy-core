@@ -1,0 +1,21 @@
+{
+  final List<ConstructorNode> cNodes=classNode.getDeclaredConstructors();
+  ConstructorNode foundNoArg=null;
+  for (  ConstructorNode cNode : cNodes) {
+    final Parameter[] parameters=cNode.getParameters();
+    if (parameters == null || parameters.length == 0) {
+      foundNoArg=cNode;
+      break;
+    }
+  }
+  if (isStrict && cNodes.size() != 0) {
+    for (    ConstructorNode cNode : cNodes) {
+      addError("@Singleton didn't expect to find one or more additional constructors: remove constructor(s) or set strict=false",cNode);
+    }
+  }
+  if (foundNoArg == null) {
+    final BlockStatement body=new BlockStatement();
+    body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(new VariableExpression(field),Token.newSymbol("!=",-1,-1),ConstantExpression.NULL)),new ThrowStatement(new ConstructorCallExpression(ClassHelper.make(RuntimeException.class),new ArgumentListExpression(new ConstantExpression("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ "."+ propertyName)))),EmptyStatement.INSTANCE));
+    classNode.addConstructor(new ConstructorNode(ACC_PRIVATE,body));
+  }
+}

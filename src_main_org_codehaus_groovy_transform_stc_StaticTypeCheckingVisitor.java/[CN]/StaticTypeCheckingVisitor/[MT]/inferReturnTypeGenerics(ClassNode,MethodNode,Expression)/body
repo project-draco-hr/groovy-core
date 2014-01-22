@@ -21,7 +21,7 @@
   }
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
   if (getGenericsWithoutArray(returnType) == null)   return returnType;
-  Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclartion(receiver,getDeclaringClass(method,arguments),method,method.isStatic());
+  Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclaration(receiver,getDeclaringClass(method,arguments),method,method.isStatic());
   if (resolvedPlaceholders.isEmpty())   return returnType;
   Parameter[] parameters=method.getParameters();
   boolean isVargs=isVargs(parameters);
@@ -35,6 +35,10 @@
       if (!type.isUsingGenerics() && type.isArray())       type=type.getComponentType();
       if (type.isUsingGenerics()) {
         ClassNode actualType=getType(expressions.get(i));
+        if (implementsInterfaceOrIsSubclassOf(actualType,CLOSURE_TYPE) && !implementsInterfaceOrIsSubclassOf(type,CLOSURE_TYPE)) {
+          Map<String,GenericsType> pholders=new HashMap<String,GenericsType>(resolvedPlaceholders);
+          actualType=convertClosureTypeToSAMType(expressions.get(i),actualType,type,pholders);
+        }
         if (isVargs && lastArg && actualType.isArray()) {
           actualType=actualType.getComponentType();
         }

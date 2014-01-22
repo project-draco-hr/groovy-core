@@ -1,0 +1,9 @@
+{
+  if (receiver.isArray()) {
+    return makeRawType(receiver.getComponentType()).makeArray();
+  }
+  ClassNode raw=receiver.getPlainNodeReference();
+  raw.setUsingGenerics(false);
+  raw.setGenericsTypes(null);
+  return raw;
+}

@@ -1,0 +1,17 @@
+{
+  if (options == null) {
+    return new String[0];
+  }
+  if (options instanceof ConstantExpression) {
+    return new String[]{options.getText()};
+  }
+  if (options instanceof ListExpression) {
+    List<Expression> list=((ListExpression)options).getExpressions();
+    List<String> result=new ArrayList<String>(list.size());
+    for (    Expression expression : list) {
+      result.add(expression.getText());
+    }
+    return result.toArray(new String[result.size()]);
+  }
+  throw new IllegalArgumentException("Unexpected options for @ClosureParams:" + options);
+}

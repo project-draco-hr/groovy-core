@@ -1,4 +1,7 @@
 {
+  if (hint.isArray() && target.isArray()) {
+    return parameterizeType(hint.getComponentType(),target.getComponentType()).makeArray();
+  }
   ClassNode interfaceFromClassNode=null;
   if (hint.equals(target))   interfaceFromClassNode=hint;
   if (ClassHelper.OBJECT_TYPE.equals(target) && target.isUsingGenerics() && target.getGenericsTypes() != null && target.getGenericsTypes()[0].isPlaceholder()) {

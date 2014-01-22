@@ -1,0 +1,115 @@
+{
+  if (isUsingUncheckedGenerics(receiver)) {
+    return true;
+  }
+  if (CLASS_Type.equals(receiver) && receiver.isUsingGenerics() && candidateMethod.getDeclaringClass() != receiver && !(candidateMethod instanceof ExtensionMethodNode)) {
+    return typeCheckMethodsWithGenerics(receiver.getGenericsTypes()[0].getType(),arguments,candidateMethod);
+  }
+  boolean failure=false;
+  Parameter[] parameters=candidateMethod.getParameters();
+  GenericsType[] genericsTypes=candidateMethod.getGenericsTypes();
+  boolean methodUsesGenerics=(genericsTypes != null && genericsTypes.length > 0);
+  boolean isExtensionMethod=candidateMethod instanceof ExtensionMethodNode;
+  if (isExtensionMethod && methodUsesGenerics) {
+    ClassNode[] dgmArgs=new ClassNode[arguments.length + 1];
+    dgmArgs[0]=receiver;
+    System.arraycopy(arguments,0,dgmArgs,1,arguments.length);
+    MethodNode extensionMethodNode=((ExtensionMethodNode)candidateMethod).getExtensionMethodNode();
+    return typeCheckMethodsWithGenerics(extensionMethodNode.getDeclaringClass(),dgmArgs,extensionMethodNode);
+  }
+  Map<String,GenericsType> classGTs=GenericsUtils.extractPlaceholders(receiver);
+  if (parameters.length > arguments.length || parameters.length == 0) {
+    return true;
+  }
+  Map<String,ClassNode> resolvedMethodGenerics=new HashMap<String,ClassNode>();
+  final GenericsType[] methodNodeGenericsTypes=candidateMethod.getGenericsTypes();
+  final boolean shouldCheckMethodGenericTypes=methodNodeGenericsTypes != null && methodNodeGenericsTypes.length > 0;
+  for (int i=0; i < arguments.length; i++) {
+    int pindex=Math.min(i,parameters.length - 1);
+    ClassNode type=parameters[pindex].getType();
+    type=fullyResolveType(type,classGTs);
+    failure|=!typeCheckMethodArgumentWithGenerics(type,arguments[i],i >= parameters.length - 1);
+    if (shouldCheckMethodGenericTypes && !failure) {
+      while (type.isArray()) {
+        type=type.getComponentType();
+      }
+      GenericsType[] typeGenericsTypes=type.getGenericsTypes();
+      if (type.isUsingGenerics() && typeGenericsTypes != null) {
+        for (int gtIndex=0, typeGenericsTypesLength=typeGenericsTypes.length; gtIndex < typeGenericsTypesLength; gtIndex++) {
+          final GenericsType typeGenericsType=typeGenericsTypes[gtIndex];
+          if (typeGenericsType.isPlaceholder()) {
+            for (            GenericsType methodNodeGenericsType : methodNodeGenericsTypes) {
+              String placeholderName=methodNodeGenericsType.getName();
+              if (methodNodeGenericsType.isPlaceholder() && placeholderName.equals(typeGenericsType.getName())) {
+                ClassNode argument=arguments[i];
+                if (argument == UNKNOWN_PARAMETER_TYPE) {
+                  continue;
+                }
+                while (argument.isArray()) {
+                  argument=argument.getComponentType();
+                }
+                ClassNode parameterized=GenericsUtils.parameterizeType(argument,type);
+                if (type.isGenericsPlaceHolder()) {
+                  String name=type.getGenericsTypes()[0].getName();
+                  if (name.equals(placeholderName)) {
+                    if (resolvedMethodGenerics.containsKey(name)) {
+                      failure|=!GenericsUtils.buildWildcardType(resolvedMethodGenerics.get(name)).isCompatibleWith(parameterized);
+                    }
+ else {
+                      resolvedMethodGenerics.put(name,parameterized);
+                    }
+                  }
+                }
+ else {
+                  if (type.isUsingGenerics() && type.getGenericsTypes() != null) {
+                    GenericsType[] gtInParameter=type.getGenericsTypes();
+                    GenericsType[] gtInArgument=parameterized.getGenericsTypes();
+                    if (gtInArgument != null && gtInArgument.length == gtInParameter.length) {
+                      for (int j=0; j < gtInParameter.length; j++) {
+                        GenericsType genericsType=gtInParameter[j];
+                        if (genericsType.getName().equals(placeholderName)) {
+                          ClassNode actualType=gtInArgument[j].getType();
+                          if (gtInArgument[j].isPlaceholder() && gtInArgument[j].getName().equals(placeholderName) && resolvedMethodGenerics.containsKey(placeholderName)) {
+                            actualType=resolvedMethodGenerics.get(placeholderName);
+                          }
+                          if (resolvedMethodGenerics.containsKey(placeholderName)) {
+                            failure|=!GenericsUtils.buildWildcardType(resolvedMethodGenerics.get(placeholderName)).isCompatibleWith(actualType);
+                          }
+ else                           if (!actualType.isGenericsPlaceHolder()) {
+                            resolvedMethodGenerics.put(placeholderName,actualType);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  if (!failure && genericsTypes != null) {
+    for (    GenericsType type : genericsTypes) {
+      ClassNode node=resolvedMethodGenerics.get(type.getName());
+      if (node != null && type.getUpperBounds() != null) {
+        for (        ClassNode classNode : type.getUpperBounds()) {
+          if (classNode.isGenericsPlaceHolder()) {
+            ClassNode resolved=resolvedMethodGenerics.get(classNode.getGenericsTypes()[0].getName());
+            if (resolved != null) {
+              failure|=!GenericsUtils.buildWildcardType(resolved).isCompatibleWith(node);
+            }
+          }
+        }
+      }
+      if (type.getLowerBound() != null) {
+        ClassNode resolved=resolvedMethodGenerics.get(type.getLowerBound().getGenericsTypes()[0].getName());
+        if (resolved != null) {
+          failure=!GenericsUtils.buildWildcardType(node).isCompatibleWith(resolved);
+        }
+      }
+    }
+  }
+  return !failure;
+}

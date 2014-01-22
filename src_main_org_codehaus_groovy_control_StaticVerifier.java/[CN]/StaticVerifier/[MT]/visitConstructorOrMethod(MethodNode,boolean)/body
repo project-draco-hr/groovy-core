@@ -2,5 +2,25 @@
   MethodNode oldCurrentMethod=currentMethod;
   currentMethod=node;
   super.visitConstructorOrMethod(node,isConstructor);
+  if (isConstructor) {
+    final HashSet<String> exceptions=new HashSet<String>();
+    for (    Parameter param : node.getParameters()) {
+      exceptions.add(param.getName());
+      if (param.hasInitialExpression()) {
+        param.getInitialExpression().visit(new CodeVisitorSupport(){
+          @Override public void visitVariableExpression(          VariableExpression ve){
+            if (exceptions.contains(ve.getName()))             return;
+            Variable av=ve.getAccessedVariable();
+            if (av instanceof DynamicVariable || !av.isInStaticContext()) {
+              addVariableError(ve);
+            }
+          }
+          @Override public void visitClosureExpression(          ClosureExpression expression){
+          }
+        }
+);
+      }
+    }
+  }
   currentMethod=oldCurrentMethod;
 }
