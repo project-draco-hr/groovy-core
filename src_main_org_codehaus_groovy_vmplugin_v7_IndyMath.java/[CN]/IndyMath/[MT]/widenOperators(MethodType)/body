@@ -1,9 +1,19 @@
 {
-  Class leftType=mt.parameterType(0);
-  Class rightType=mt.parameterType(1);
-  if (isIntCategory(leftType) && isIntCategory(rightType))   return II;
-  if (isLongCategory(leftType) && isLongCategory(rightType))   return LL;
-  if (isBigDecCategory(leftType) && isBigDecCategory(rightType))   return GG;
-  if (isDoubleCategory(leftType) && isDoubleCategory(rightType))   return DD;
-  return OO;
+  if (mt.parameterCount() == 2) {
+    Class leftType=mt.parameterType(0);
+    Class rightType=mt.parameterType(1);
+    if (isIntCategory(leftType) && isIntCategory(rightType))     return IIV;
+    if (isLongCategory(leftType) && isLongCategory(rightType))     return LLV;
+    if (isBigDecCategory(leftType) && isBigDecCategory(rightType))     return GGV;
+    if (isDoubleCategory(leftType) && isDoubleCategory(rightType))     return DDV;
+    return OOV;
+  }
+ else   if (mt.parameterCount() == 1) {
+    Class leftType=mt.parameterType(0);
+    if (isIntCategory(leftType))     return IV;
+    if (isLongCategory(leftType))     return LV;
+    if (isBigDecCategory(leftType))     return GV;
+    if (isDoubleCategory(leftType))     return DV;
+  }
+  return mt;
 }
