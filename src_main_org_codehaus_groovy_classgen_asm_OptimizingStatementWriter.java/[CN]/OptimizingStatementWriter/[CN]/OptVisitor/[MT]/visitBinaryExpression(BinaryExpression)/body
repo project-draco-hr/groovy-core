@@ -30,7 +30,6 @@ if (isLongCategory(leftType) && isLongCategory(rightType)) {
   resultType=BigDecimal_TYPE;
 }
  else if (isBigDecCategory(leftType) && isBigDecCategory(rightType)) {
-  resultType=BigDecimal_TYPE;
 }
  else if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
   resultType=double_TYPE;
@@ -40,6 +39,7 @@ case Types.POWER:
 case Types.POWER_EQUAL:
 break;
 case Types.ASSIGN:
+resultType=optimizeDivWithIntOrLongTarget(expression.getRightExpression(),leftType);
 opt.chainCanOptimize(true);
 break;
 default :
@@ -50,7 +50,6 @@ resultType=int_TYPE;
 resultType=long_TYPE;
 }
  else if (isBigDecCategory(leftType) && isBigDecCategory(rightType)) {
-resultType=BigDecimal_TYPE;
 }
  else if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
 resultType=double_TYPE;
