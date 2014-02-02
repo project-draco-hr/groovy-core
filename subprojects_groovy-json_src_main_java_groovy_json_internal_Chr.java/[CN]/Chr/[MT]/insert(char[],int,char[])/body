@@ -1,0 +1,23 @@
+{
+  if (fromIndex >= array.length) {
+    return add(array,values);
+  }
+  final int index=calculateIndex(array,fromIndex);
+  char[] newArray=new char[array.length + values.length];
+  if (index != 0) {
+    arraycopy(array,0,newArray,0,index);
+  }
+  boolean lastIndex=index == array.length - 1;
+  int toIndex=index + values.length;
+  int remainingIndex=newArray.length - toIndex;
+  if (lastIndex) {
+    arraycopy(array,index,newArray,index + values.length,remainingIndex);
+  }
+ else {
+    arraycopy(array,index,newArray,index + values.length,remainingIndex);
+  }
+  for (int i=index, j=0; i < toIndex; i++, j++) {
+    newArray[i]=values[j];
+  }
+  return newArray;
+}

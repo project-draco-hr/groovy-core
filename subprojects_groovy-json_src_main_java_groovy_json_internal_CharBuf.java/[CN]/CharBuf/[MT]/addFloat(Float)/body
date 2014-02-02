@@ -1,0 +1,13 @@
+{
+  if (fcache == null) {
+    fcache=new SimpleCache<Float,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=fcache.get(key);
+  if (chars == null) {
+    String str=Float.toString(key);
+    chars=FastStringUtils.toCharArray(str);
+    fcache.put(key,chars);
+  }
+  add(chars);
+  return this;
+}

@@ -1,0 +1,20 @@
+{
+  if (idx >= array.length) {
+    return add(array,v);
+  }
+  final int index=calculateIndex(array,idx);
+  char[] newArray=new char[array.length + 1];
+  if (index != 0) {
+    arraycopy(array,0,newArray,0,index);
+  }
+  boolean lastIndex=index == array.length - 1;
+  int remainingIndex=array.length - index;
+  if (lastIndex) {
+    arraycopy(array,index,newArray,index + 1,remainingIndex);
+  }
+ else {
+    arraycopy(array,index,newArray,index + 1,remainingIndex);
+  }
+  newArray[index]=v;
+  return newArray;
+}

@@ -1,0 +1,20 @@
+{
+  int index=0;
+  for (  Object message : messages) {
+    if (index != 0) {
+      buf.add(' ');
+    }
+    index++;
+    if (message == null) {
+      buf.add("<NULL>");
+    }
+ else     if (message.getClass().isArray()) {
+      buf.add(Arrays.asList(message).toString());
+    }
+ else {
+      buf.add(message.toString());
+    }
+  }
+  buf.add('\n');
+  return buf.toString();
+}

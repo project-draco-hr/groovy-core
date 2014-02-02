@@ -1,0 +1,57 @@
+{
+  int location=this.location;
+  char[] buffer=this.buffer;
+  if ((c >> 5) == -2) {
+    int b2;
+    index++;
+    b2=bytes[index];
+    if (isMalformed2(c,b2)) {
+      buffer[location]='#';
+      location++;
+    }
+ else {
+      buffer[location]=(char)(((c << 6) ^ b2) ^ 0x0f80);
+      location++;
+    }
+  }
+ else   if ((c >> 4) == -2) {
+    int b2;
+    int b3;
+    index++;
+    b2=bytes[index];
+    index++;
+    b3=bytes[index];
+    if (isMalformed3(c,b2,b3)) {
+      buffer[location]='#';
+      location++;
+    }
+ else {
+      buffer[location]=(char)(((c << 12) ^ (b2 << 6) ^ b3) ^ 0x1f80);
+      location++;
+    }
+  }
+ else   if ((c >> 3) == -2) {
+    int b2;
+    int b3;
+    int b4;
+    index++;
+    b2=bytes[index];
+    index++;
+    b3=bytes[index];
+    index++;
+    b4=bytes[index];
+    int uc=((c & 0x07) << 18) | ((b2 & 0x3f) << 12) | ((b3 & 0x3f) << 6)| (b4 & 0x3f);
+    if (isMalformed4(b2,b3,b4) && !Surrogate.neededFor(uc)) {
+      addChar('#');
+    }
+ else {
+      final char high=Surrogate.high(uc);
+      final char low=Surrogate.low(uc);
+      addChar(high);
+      addChar(low);
+    }
+  }
+  this.location=location;
+  this.buffer=buffer;
+  return index;
+}

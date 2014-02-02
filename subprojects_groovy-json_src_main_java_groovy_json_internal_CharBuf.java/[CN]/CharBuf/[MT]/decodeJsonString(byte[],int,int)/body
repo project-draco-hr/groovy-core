@@ -1,0 +1,62 @@
+{
+  int len=to - start;
+  char[] buffer=this.buffer;
+  int location=this.location;
+  if (len > capacity) {
+    buffer=Chr.grow(buffer,buffer.length * 2 + len);
+    capacity=buffer.length;
+  }
+  for (int index=start; index < to; index++) {
+    int c=bytes[index];
+    if (c >= 0) {
+      if (c == ESCAPE && index < to) {
+        c=bytes[++index];
+switch (c) {
+case LETTER_N:
+          buffer[location++]='\n';
+        break;
+case FORWARD_SLASH:
+      buffer[location++]='/';
+    break;
+case DOUBLE_QUOTE:
+  buffer[location++]='"';
+break;
+case LETTER_F:
+buffer[location++]='\f';
+break;
+case LETTER_T:
+buffer[location++]='\t';
+break;
+case ESCAPE:
+buffer[location++]='\\';
+break;
+case LETTER_B:
+buffer[location++]='\b';
+break;
+case LETTER_R:
+buffer[location++]='\r';
+break;
+case LETTER_U:
+if (index + 4 < to) {
+String hex=new String(bytes,index + 1,4);
+char unicode=(char)Integer.parseInt(hex,16);
+buffer[location++]=unicode;
+index+=4;
+}
+break;
+default :
+throw new JsonException("Unable to decode string");
+}
+}
+ else {
+buffer[location++]=(char)c;
+}
+}
+ else {
+index=utf8MultiByte(c,index,bytes);
+}
+}
+this.buffer=buffer;
+this.location=location;
+return this;
+}

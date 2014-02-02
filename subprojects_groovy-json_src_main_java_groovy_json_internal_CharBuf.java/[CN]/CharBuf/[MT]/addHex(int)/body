@@ -1,0 +1,18 @@
+{
+  int _location=location;
+  char[] _buffer=buffer;
+  int _capacity=capacity;
+  if (2 + _location > _capacity) {
+    _buffer=Chr.grow(_buffer);
+    _capacity=_buffer.length;
+  }
+  _buffer[_location]=(char)encodeNibbleToHexAsciiCharByte((decoded >> 4) & 0x0F);
+  _location++;
+  _buffer[_location]=(char)encodeNibbleToHexAsciiCharByte(decoded & 0x0F);
+  ;
+  _location++;
+  location=_location;
+  buffer=_buffer;
+  capacity=_capacity;
+  return this;
+}

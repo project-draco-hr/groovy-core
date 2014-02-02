@@ -1,0 +1,40 @@
+{
+  char[] array=charArray;
+  final int startIndex=__index;
+  int index=__index;
+  char currentChar;
+  boolean doubleFloat=false;
+  boolean simple=true;
+  int digitsPastPoint=0;
+  int sign=1;
+  if (minus) {
+    minus=true;
+    sign=-1;
+    nextChar();
+  }
+  while (true) {
+    currentChar=array[index];
+    if (doubleFloat) {
+      digitsPastPoint++;
+    }
+    if (isNumberDigit(currentChar)) {
+    }
+ else     if (currentChar <= 32) {
+      break;
+    }
+ else     if (isDelimiter(currentChar)) {
+      break;
+    }
+ else     if (isDecimalChar(currentChar)) {
+      doubleFloat=true;
+      if (currentChar != '.') {
+        simple=false;
+      }
+    }
+    index++;
+    if (index >= array.length)     break;
+  }
+  __index=index;
+  __currentChar=currentChar;
+  return getNumberFromSpan(startIndex,doubleFloat,simple,digitsPastPoint,minus,sign);
+}

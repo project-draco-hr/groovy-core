@@ -1,0 +1,33 @@
+{
+  if (in == null || in.length == 0 || in.length == 1) {
+    return in;
+  }
+  char[] out=null;
+  int count=0;
+  for (int index=0; index < in.length; index++) {
+    char ch=in[index];
+    if (ch == '_' || ch == ' ' || ch == '\t') {
+      count++;
+    }
+  }
+  out=new char[in.length - count];
+  boolean upperNext=false;
+  for (int index=0, secondIndex=0; index < in.length; index++) {
+    char ch=in[index];
+    if (ch == '_' || ch == ' ' || ch == '\t') {
+      upperNext=true;
+    }
+ else {
+      out[secondIndex]=upperNext ? Character.toUpperCase(ch) : Character.toLowerCase(ch);
+      upperNext=false;
+      secondIndex++;
+    }
+  }
+  if (upper) {
+    out[0]=Character.toUpperCase(out[0]);
+  }
+ else {
+    out[0]=Character.toLowerCase(out[0]);
+  }
+  return out;
+}

@@ -1,0 +1,42 @@
+{
+  if (__currentChar == '{') {
+    __index++;
+  }
+  LazyMap map=new LazyMap();
+  for (; __index < this.charArray.length; __index++) {
+    skipWhiteSpace();
+    if (__currentChar == '"') {
+      String key=decodeString();
+      if (internKeys) {
+        String keyPrime=internedKeysCache.get(key);
+        if (keyPrime == null) {
+          key=key.intern();
+          internedKeysCache.put(key,key);
+        }
+ else {
+          key=keyPrime;
+        }
+      }
+      skipWhiteSpace();
+      if (__currentChar != ':') {
+        complain("expecting current character to be " + charDescription(__currentChar) + "\n");
+      }
+      __index++;
+      skipWhiteSpace();
+      Object value=decodeValueInternal();
+      skipWhiteSpace();
+      map.put(key,value);
+    }
+    if (__currentChar == '}') {
+      __index++;
+      break;
+    }
+ else     if (__currentChar == ',') {
+      continue;
+    }
+ else {
+      complain("expecting '}' or ',' but got current char " + charDescription(__currentChar));
+    }
+  }
+  return map;
+}

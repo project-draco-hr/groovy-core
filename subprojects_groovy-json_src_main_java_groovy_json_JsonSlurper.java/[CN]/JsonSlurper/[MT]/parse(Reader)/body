@@ -1,15 +1,6 @@
 {
   Object content;
-  JsonLexer lexer=new JsonLexer(reader);
-  JsonToken token=lexer.nextToken();
-  if (token.getType() == OPEN_CURLY) {
-    content=parseObject(lexer);
-  }
- else   if (token.getType() == OPEN_BRACKET) {
-    content=parseArray(lexer);
-  }
- else {
-    throw new JsonException("A JSON payload should start with " + OPEN_CURLY.getLabel() + " or "+ OPEN_BRACKET.getLabel()+ ".\n"+ "Instead, '"+ token.getText()+ "' was found "+ "on line: "+ token.getStartLine()+ ", "+ "column: "+ token.getStartColumn());
-  }
+  JsonParser parser=createParser();
+  content=parser.parse(reader);
   return content;
 }
