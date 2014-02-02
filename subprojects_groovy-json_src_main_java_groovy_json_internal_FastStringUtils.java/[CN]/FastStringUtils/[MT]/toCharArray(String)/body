@@ -2,9 +2,9 @@
   if (ENABLED) {
     char[] value=(char[])UNSAFE.getObject(string,STRING_VALUE_FIELD_OFFSET);
     if (STRING_OFFSET_FIELD_OFFSET != -1) {
-      int offset=(Integer)UNSAFE.getObject(string,STRING_OFFSET_FIELD_OFFSET);
-      int count=(Integer)UNSAFE.getObject(string,STRING_COUNT_FIELD_OFFSET);
-      if (offset == 0 && count == value.length) {
+      Integer offset=(Integer)UNSAFE.getObject(string,STRING_OFFSET_FIELD_OFFSET);
+      Integer count=(Integer)UNSAFE.getObject(string,STRING_COUNT_FIELD_OFFSET);
+      if ((offset == null || value == null) || (offset == 0 && count == value.length)) {
         return value;
       }
  else {
