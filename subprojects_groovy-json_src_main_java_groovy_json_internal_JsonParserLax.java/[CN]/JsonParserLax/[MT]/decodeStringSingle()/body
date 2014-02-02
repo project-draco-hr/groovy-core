@@ -1,0 +1,41 @@
+{
+  __currentChar=charArray[__index];
+  if (__index < charArray.length && __currentChar == '\'') {
+    __index++;
+  }
+  final int startIndex=__index;
+  boolean escape=false;
+  boolean encoded=false;
+  int minusCount=0;
+  int colonCount=0;
+  done:   for (; __index < this.charArray.length; __index++) {
+    __currentChar=charArray[__index];
+switch (__currentChar) {
+case '\'':
+      if (!escape) {
+        break done;
+      }
+ else {
+        escape=false;
+        continue;
+      }
+case '\\':
+    encoded=true;
+  escape=true;
+continue;
+case '-':
+minusCount++;
+break;
+case ':':
+colonCount++;
+break;
+}
+escape=false;
+}
+boolean checkDates=defaultCheckDates && !encoded && minusCount >= 2 && colonCount >= 2;
+Value value=new CharSequenceValue(chop,Type.STRING,startIndex,__index,this.charArray,encoded,checkDates);
+if (__index < charArray.length) {
+__index++;
+}
+return value;
+}

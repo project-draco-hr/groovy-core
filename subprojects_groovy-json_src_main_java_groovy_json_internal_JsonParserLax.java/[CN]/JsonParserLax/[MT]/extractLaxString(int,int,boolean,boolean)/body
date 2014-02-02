@@ -1,0 +1,34 @@
+{
+  char startChar;
+  startIndexLookup:   for (; startIndexOfKey < __index && startIndexOfKey < charArray.length; startIndexOfKey++) {
+    startChar=charArray[startIndexOfKey];
+switch (startChar) {
+case ' ':
+case '\n':
+case '\t':
+      continue;
+default :
+    break startIndexLookup;
+}
+}
+char endChar;
+int endIndex=end >= charArray.length ? charArray.length - 1 : end;
+endIndexLookup: for (; endIndex >= startIndexOfKey + 1 && endIndex >= 0; endIndex--) {
+endChar=charArray[endIndex];
+switch (endChar) {
+case ' ':
+case '\n':
+case '\t':
+case '}':
+  continue;
+case ',':
+case ';':
+continue;
+case ']':
+continue;
+default :
+break endIndexLookup;
+}
+}
+return new CharSequenceValue(chop,Type.STRING,startIndexOfKey,endIndex + 1,this.charArray,encoded,checkDate);
+}

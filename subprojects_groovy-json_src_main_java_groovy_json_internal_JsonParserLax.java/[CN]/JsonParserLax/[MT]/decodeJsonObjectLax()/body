@@ -1,0 +1,78 @@
+{
+  if (__currentChar == '{')   this.nextChar();
+  ValueMap map=useValues ? new ValueMapImpl() : new LazyValueMap(lazyChop);
+  Value value=new ValueContainer(map);
+  skipWhiteSpace();
+  int startIndexOfKey=__index;
+  Value key;
+  MapItemValue miv;
+  Value item;
+  done:   for (; __index < this.charArray.length; __index++) {
+    skipWhiteSpace();
+switch (__currentChar) {
+case '/':
+      handleComment();
+    startIndexOfKey=__index;
+  break;
+case '#':
+handleBashComment();
+startIndexOfKey=__index;
+break;
+case ':':
+char startChar=charArray[startIndexOfKey];
+if (startChar == ',') {
+startIndexOfKey++;
+}
+key=extractLaxString(startIndexOfKey,__index - 1,false,false);
+__index++;
+item=decodeValueInternal();
+skipWhiteSpace();
+miv=new MapItemValue(key,item);
+map.add(miv);
+startIndexOfKey=__index;
+if (__currentChar == '}') {
+__index++;
+break done;
+}
+break;
+case '\'':
+key=decodeStringSingle();
+skipWhiteSpace();
+if (__currentChar != ':') {
+complain("expecting current character to be ':' but got " + charDescription(__currentChar) + "\n");
+}
+__index++;
+item=decodeValueInternal();
+skipWhiteSpace();
+miv=new MapItemValue(key,item);
+map.add(miv);
+startIndexOfKey=__index;
+if (__currentChar == '}') {
+__index++;
+break done;
+}
+break;
+case '"':
+key=decodeStringDouble();
+skipWhiteSpace();
+if (__currentChar != ':') {
+complain("expecting current character to be ':' but got " + charDescription(__currentChar) + "\n");
+}
+__index++;
+item=decodeValueInternal();
+skipWhiteSpace();
+miv=new MapItemValue(key,item);
+map.add(miv);
+startIndexOfKey=__index;
+if (__currentChar == '}') {
+__index++;
+break done;
+}
+break;
+case '}':
+__index++;
+break done;
+}
+}
+return value;
+}

@@ -1,3 +1,8 @@
 {
-  return createParser().parse(file,charset);
+  if (file.length() < maxSizeForInMemory) {
+    return createParser().parse(file,charset);
+  }
+ else {
+    return new JsonParserUsingCharacterSource().parse(file,charset);
+  }
 }

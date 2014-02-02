@@ -1,0 +1,39 @@
+{
+  if (__currentChar == '[') {
+    __index++;
+  }
+  skipWhiteSpace();
+  if (__currentChar == ']') {
+    __index++;
+    return EMPTY_LIST;
+  }
+  List<Object> list;
+  if (useValues) {
+    list=new ArrayList<Object>();
+  }
+ else {
+    list=new ValueList(lazyChop);
+  }
+  Value value=new ValueContainer(list);
+  do {
+    skipWhiteSpace();
+    Object arrayItem=decodeValueInternal();
+    list.add(arrayItem);
+    skipWhiteSpace();
+    char c=__currentChar;
+    if (c == ',') {
+      __index++;
+      continue;
+    }
+ else     if (c == ']') {
+      __index++;
+      break;
+    }
+ else {
+      String charString=charDescription(c);
+      complain(String.format("expecting a ',' or a ']', " + " but got \nthe current character of  %s " + " on array index of %s \n",charString,list.size()));
+    }
+  }
+ while (this.hasMore());
+  return value;
+}

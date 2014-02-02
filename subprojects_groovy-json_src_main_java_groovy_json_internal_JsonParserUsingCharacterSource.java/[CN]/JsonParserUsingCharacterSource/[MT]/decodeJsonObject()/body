@@ -1,0 +1,50 @@
+{
+  LazyMap map=new LazyMap();
+  try {
+    CharacterSource characterSource=this.characterSource;
+    if (characterSource.currentChar() == '{') {
+      characterSource.nextChar();
+    }
+    while (characterSource.hasChar()) {
+      characterSource.skipWhiteSpace();
+      if (characterSource.currentChar() == DOUBLE_QUOTE) {
+        String key=decodeString();
+        if (internKeys) {
+          String keyPrime=internedKeysCache.get(key);
+          if (keyPrime == null) {
+            key=key.intern();
+            internedKeysCache.put(key,key);
+          }
+ else {
+            key=keyPrime;
+          }
+        }
+        characterSource.skipWhiteSpace();
+        if (characterSource.currentChar() != COLON) {
+          complain("expecting current character to be : but was " + charDescription(characterSource.currentChar()) + "\n");
+        }
+        characterSource.nextChar();
+        characterSource.skipWhiteSpace();
+        Object value=decodeValue();
+        characterSource.skipWhiteSpace();
+        map.put(key,value);
+      }
+      int ch=characterSource.currentChar();
+      if (ch == '}') {
+        characterSource.nextChar();
+        break;
+      }
+ else       if (ch == ',') {
+        characterSource.nextChar();
+        continue;
+      }
+ else {
+        complain("expecting '}' or ',' but got current char " + charDescription(ch));
+      }
+    }
+  }
+ catch (  Exception ex) {
+    throw new JsonException(exceptionDetails("Unable to parse JSON object"),ex);
+  }
+  return map;
+}

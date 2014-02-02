@@ -1,0 +1,31 @@
+{
+  char[] array=charArray;
+  final int startIndex=__index;
+  int index=__index;
+  char currentChar;
+  boolean doubleFloat=false;
+  if (minus && index + 1 < array.length) {
+    index++;
+  }
+  while (true) {
+    currentChar=array[index];
+    if (isNumberDigit(currentChar)) {
+    }
+ else     if (currentChar <= 32) {
+      break;
+    }
+ else     if (isDelimiter(currentChar)) {
+      break;
+    }
+ else     if (isDecimalChar(currentChar)) {
+      doubleFloat=true;
+    }
+    index++;
+    if (index >= array.length)     break;
+  }
+  __index=index;
+  __currentChar=currentChar;
+  Type type=doubleFloat ? Type.DOUBLE : Type.INTEGER;
+  NumberValue value=new NumberValue(chop,type,startIndex,__index,this.charArray);
+  return value;
+}

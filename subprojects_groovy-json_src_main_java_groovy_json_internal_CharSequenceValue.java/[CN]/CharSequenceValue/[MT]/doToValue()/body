@@ -1,0 +1,44 @@
+{
+switch (type) {
+case DOUBLE:
+    return doubleValue();
+case INTEGER:
+  int sign=1;
+boolean negative=false;
+if (buffer[startIndex] == '-') {
+startIndex++;
+sign=-1;
+negative=true;
+}
+if (isInteger(buffer,startIndex,endIndex - startIndex,negative)) {
+return intValue() * sign;
+}
+ else {
+return longValue() * sign;
+}
+case STRING:
+if (checkDate) {
+Date date=null;
+if (Dates.isISO8601QuickCheck(buffer,startIndex,endIndex)) {
+if (Dates.isJsonDate(buffer,startIndex,endIndex)) {
+date=Dates.fromJsonDate(buffer,startIndex,endIndex);
+}
+ else if (Dates.isISO8601(buffer,startIndex,endIndex)) {
+date=Dates.fromISO8601(buffer,startIndex,endIndex);
+}
+ else {
+return stringValue();
+}
+if (date == null) {
+return stringValue();
+}
+ else {
+return date;
+}
+}
+}
+return stringValue();
+}
+die();
+return null;
+}

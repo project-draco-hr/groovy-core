@@ -1,0 +1,19 @@
+{
+  if (key == null) {
+    if (internKeys) {
+      key=name.toString();
+      String keyPrime=internedKeysCache.get(key);
+      if (keyPrime == null) {
+        key=key.intern();
+        internedKeysCache.put(key,key);
+      }
+ else {
+        key=keyPrime;
+      }
+    }
+ else {
+      key=name.toString();
+    }
+  }
+  return key;
+}

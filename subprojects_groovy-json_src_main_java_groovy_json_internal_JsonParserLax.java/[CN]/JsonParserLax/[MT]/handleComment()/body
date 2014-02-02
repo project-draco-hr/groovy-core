@@ -1,0 +1,40 @@
+{
+  if (hasMore()) {
+    __index++;
+    __currentChar=charArray[__index];
+switch (__currentChar) {
+case '*':
+      for (; __index < charArray.length; __index++) {
+        __currentChar=charArray[__index];
+        if (__currentChar == '*') {
+          if (hasMore()) {
+            __index++;
+            __currentChar=charArray[__index];
+            if (__currentChar == '/') {
+              if (hasMore()) {
+                __index++;
+                return;
+              }
+            }
+          }
+ else {
+            complain("missing close of comment");
+          }
+        }
+      }
+case '/':
+    for (; __index < charArray.length; __index++) {
+      __currentChar=charArray[__index];
+      if (__currentChar == '\n') {
+        if (hasMore()) {
+          __index++;
+          return;
+        }
+ else {
+          return;
+        }
+      }
+    }
+}
+}
+}

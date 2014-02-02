@@ -1,0 +1,41 @@
+{
+  CharacterSource characterSource=this.characterSource;
+  Object value=null;
+  characterSource.skipWhiteSpace();
+switch (characterSource.currentChar()) {
+case '"':
+    value=decodeString();
+  break;
+case 't':
+value=decodeTrue();
+break;
+case 'f':
+value=decodeFalse();
+break;
+case 'n':
+value=decodeNull();
+break;
+case '[':
+value=decodeJsonArray();
+break;
+case '{':
+value=decodeJsonObject();
+break;
+case '0':
+case '1':
+case '2':
+case '3':
+case '4':
+case '5':
+case '6':
+case '7':
+case '8':
+case '9':
+case '-':
+value=decodeNumber();
+break;
+default :
+throw new JsonException(exceptionDetails("Unable to determine the " + "current character, it is not a string, number, array, or object"));
+}
+return value;
+}
