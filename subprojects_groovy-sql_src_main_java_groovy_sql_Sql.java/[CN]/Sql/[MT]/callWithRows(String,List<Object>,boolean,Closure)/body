@@ -1,0 +1,51 @@
+{
+  Connection connection=createConnection();
+  CallableStatement statement=null;
+  List<GroovyResultSet> resultSetResources=new ArrayList<GroovyResultSet>();
+  try {
+    statement=connection.prepareCall(sql);
+    LOG.fine(sql + " | " + params);
+    setParameters(params,statement);
+    boolean hasResultSet=statement.execute();
+    List<Object> results=new ArrayList<Object>();
+    int indx=0;
+    int inouts=0;
+    for (    Object value : params) {
+      if (value instanceof OutParameter) {
+        if (value instanceof ResultSetOutParameter) {
+          GroovyResultSet resultSet=CallResultSet.getImpl(statement,indx);
+          resultSetResources.add(resultSet);
+          results.add(resultSet);
+        }
+ else {
+          Object o=statement.getObject(indx + 1);
+          if (o instanceof ResultSet) {
+            GroovyResultSet resultSet=new GroovyResultSetProxy((ResultSet)o).getImpl();
+            results.add(resultSet);
+            resultSetResources.add(resultSet);
+          }
+ else {
+            results.add(o);
+          }
+        }
+        inouts++;
+      }
+      indx++;
+    }
+    closure.call(results.toArray(new Object[inouts]));
+    if (processResultSet && (hasResultSet || statement.getMoreResults())) {
+      return asList(sql,statement.getResultSet());
+    }
+    return new ArrayList<GroovyRowResult>();
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+    for (    GroovyResultSet rs : resultSetResources) {
+      closeResources(null,null,rs);
+    }
+  }
+}
