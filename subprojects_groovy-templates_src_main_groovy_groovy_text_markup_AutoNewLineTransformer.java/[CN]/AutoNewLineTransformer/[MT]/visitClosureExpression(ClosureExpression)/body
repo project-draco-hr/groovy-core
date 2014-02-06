@@ -1,0 +1,19 @@
+{
+  super.visitClosureExpression(expression);
+  if (inBuilderMethod) {
+    Statement oldCode=expression.getCode();
+    BlockStatement block=oldCode instanceof BlockStatement ? ((BlockStatement)oldCode) : new BlockStatement(Arrays.asList(oldCode),new VariableScope());
+    List<Statement> statements=block.getStatements();
+    if (!statements.isEmpty()) {
+      Statement first=statements.get(0);
+      Statement last=statements.get(statements.size() - 1);
+      if (expression.getLineNumber() < first.getLineNumber()) {
+        statements.add(0,createNewLine(expression));
+      }
+      if (expression.getLastLineNumber() > last.getLastLineNumber()) {
+        statements.add(createNewLine(expression));
+      }
+    }
+    expression.setCode(block);
+  }
+}
