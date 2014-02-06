@@ -1,7 +1,9 @@
 {
   char[] _buffer=buffer;
   int _location=this.location;
-  int ensureThisMuch=charArray.length * 2;
+  final byte[] _encoded=encoded;
+  final byte[] _charTo=charTo;
+  int ensureThisMuch=charArray.length * 2 + 2;
   int sizeNeeded=(ensureThisMuch) + _location;
   if (sizeNeeded > capacity) {
     int growBy=(_buffer.length * 2) < sizeNeeded ? sizeNeeded : (_buffer.length * 2);
@@ -13,7 +15,10 @@
   int index=0;
   while (true) {
     char c=charArray[index];
-    if (isJSONControl(c)) {
+    if (hasAnyJSONControlOrUnicodeChars(c)) {
+      if (_location + 5 > charArray.length) {
+        _buffer=Chr.grow(_buffer,20);
+      }
 switch (c) {
 case '\"':
         _buffer[_location]='\\';
@@ -57,6 +62,32 @@ _location++;
 _buffer[_location]='t';
 _location++;
 break;
+default :
+_buffer[_location]='\\';
+_location++;
+_buffer[_location]='u';
+_location++;
+if (c <= 255) {
+_buffer[_location]='0';
+_location++;
+_buffer[_location]='0';
+_location++;
+ByteScanner.encodeByteIntoTwoAsciiCharBytes(c,_encoded);
+for (int b : _encoded) {
+_buffer[_location]=(char)b;
+_location++;
+}
+}
+ else {
+Byt.charTo(_charTo,c);
+for (int charByte : _charTo) {
+ByteScanner.encodeByteIntoTwoAsciiCharBytes(charByte,_encoded);
+for (int b : _encoded) {
+_buffer[_location]=(char)b;
+_location++;
+}
+}
+}
 }
 }
  else {
