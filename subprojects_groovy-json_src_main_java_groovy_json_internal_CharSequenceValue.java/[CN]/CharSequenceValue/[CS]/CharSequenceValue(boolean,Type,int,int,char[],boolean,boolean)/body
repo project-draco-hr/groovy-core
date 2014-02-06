@@ -1,0 +1,21 @@
+{
+  this.type=type;
+  this.checkDate=checkDate;
+  this.decodeStrings=encoded;
+  if (chop) {
+    try {
+      this.buffer=ArrayUtils.copyRange(buffer,startIndex,endIndex);
+    }
+ catch (    Exception ex) {
+      Exceptions.handle(ex);
+    }
+    this.startIndex=0;
+    this.endIndex=this.buffer.length;
+    this.chopped=true;
+  }
+ else {
+    this.startIndex=startIndex;
+    this.endIndex=endIndex;
+    this.buffer=buffer;
+  }
+}

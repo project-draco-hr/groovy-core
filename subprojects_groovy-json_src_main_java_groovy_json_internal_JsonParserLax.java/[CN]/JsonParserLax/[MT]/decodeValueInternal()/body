@@ -1,0 +1,81 @@
+{
+  Value value=null;
+  for (; __index < charArray.length; __index++) {
+    skipWhiteSpace();
+switch (__currentChar) {
+case '\n':
+      break;
+case '\r':
+    break;
+case ' ':
+  break;
+case '\t':
+break;
+case '\b':
+break;
+case '\f':
+break;
+case '/':
+handleComment();
+break;
+case '#':
+handleBashComment();
+break;
+case '"':
+value=decodeStringDouble();
+break;
+case '\'':
+value=decodeStringSingle();
+break;
+case 't':
+if (isTrue()) {
+return decodeTrue() == true ? ValueContainer.TRUE : ValueContainer.FALSE;
+}
+ else {
+value=decodeStringLax();
+}
+break;
+case 'f':
+if (isFalse()) {
+return decodeFalse() == false ? ValueContainer.FALSE : ValueContainer.TRUE;
+}
+ else {
+value=decodeStringLax();
+}
+break;
+case 'n':
+if (isNull()) {
+return decodeNull() == null ? ValueContainer.NULL : ValueContainer.NULL;
+}
+ else {
+value=decodeStringLax();
+}
+break;
+case '[':
+value=decodeJsonArrayLax();
+break;
+case '{':
+value=decodeJsonObjectLax();
+break;
+case '1':
+case '2':
+case '3':
+case '4':
+case '5':
+case '6':
+case '7':
+case '8':
+case '9':
+case '0':
+return decodeNumberLax(false);
+case '-':
+return decodeNumberLax(true);
+default :
+value=decodeStringLax();
+}
+if (value != null) {
+return value;
+}
+}
+return null;
+}

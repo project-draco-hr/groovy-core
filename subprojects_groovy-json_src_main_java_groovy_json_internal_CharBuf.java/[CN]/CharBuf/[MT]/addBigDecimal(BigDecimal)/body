@@ -1,0 +1,13 @@
+{
+  if (bigDCache == null) {
+    bigDCache=new SimpleCache<BigDecimal,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=bigDCache.get(key);
+  if (chars == null) {
+    String str=key.toString();
+    chars=FastStringUtils.toCharArray(str);
+    bigDCache.put(key,chars);
+  }
+  add(chars);
+  return this;
+}

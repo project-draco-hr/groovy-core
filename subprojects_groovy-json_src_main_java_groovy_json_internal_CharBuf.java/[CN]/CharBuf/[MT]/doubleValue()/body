@@ -1,0 +1,59 @@
+{
+  boolean simple=true;
+  int digitsPastPoint=0;
+  boolean foundPoint=false;
+  boolean negative=false;
+  int startIndex=0;
+  double sign;
+  if (buffer[startIndex] == '-') {
+    startIndex++;
+    negative=true;
+    sign=-1.0;
+  }
+ else {
+    negative=false;
+    sign=1.0;
+  }
+  loop:   for (int index=startIndex; index < location; index++) {
+    char ch=buffer[index];
+switch (ch) {
+case 'e':
+      simple=false;
+    break loop;
+case 'E':
+  simple=false;
+break loop;
+case 'F':
+simple=false;
+break loop;
+case 'f':
+simple=false;
+break loop;
+case '.':
+foundPoint=true;
+continue loop;
+}
+if (foundPoint) {
+digitsPastPoint++;
+if (digitsPastPoint >= powersOf10.length) {
+simple=true;
+break;
+}
+}
+}
+if (simple) {
+long value;
+final int length=location - startIndex;
+if (CharScanner.isInteger(buffer,startIndex,length,negative)) {
+value=CharScanner.parseIntIgnoreDot(buffer,startIndex,length);
+}
+ else {
+value=CharScanner.parseLongIgnoreDot(buffer,startIndex,length);
+}
+if (digitsPastPoint < powersOf10.length) {
+double power=powersOf10[digitsPastPoint] * sign;
+return value / power;
+}
+}
+return Double.parseDouble(toString()) * sign;
+}

@@ -1,0 +1,72 @@
+{
+  try {
+    ensureBuffer();
+    int idx=index;
+    char[] _chars=readBuf;
+    int ch=this.ch;
+    if (ch == '"') {
+    }
+ else     if (idx < length - 1) {
+      ch=_chars[idx];
+      if (ch == '"') {
+        idx++;
+      }
+    }
+    if (idx < length) {
+      ch=_chars[idx];
+    }
+    if (ch == '"') {
+      index=idx;
+      index++;
+      return EMPTY_CHARS;
+    }
+    int start=idx;
+    foundEscape=false;
+    boolean foundEnd=false;
+    char[] results;
+    for (; idx < length; idx++) {
+      ch=_chars[idx];
+      if (ch == match || ch == esc) {
+        if (ch == match) {
+          foundEnd=true;
+          break;
+        }
+ else         if (ch == esc) {
+          foundEscape=true;
+          if (idx + 1 < length) {
+            idx++;
+          }
+        }
+      }
+    }
+    if (idx == 0) {
+      results=EMPTY_CHARS;
+    }
+ else {
+      results=ArrayUtils.copyRange(_chars,start,idx);
+    }
+    index=idx;
+    if (foundEnd) {
+      index++;
+      if (index < length) {
+        ch=_chars[index];
+        this.ch=ch;
+      }
+      return results;
+    }
+ else {
+      if (index >= length && !done) {
+        ensureBuffer();
+        char results2[]=findNextChar(match,esc);
+        return Chr.add(results,results2);
+      }
+ else {
+        return Exceptions.die(char[].class,"Unable to find close char " + (char)match + " "+ new String(results));
+      }
+    }
+  }
+ catch (  Exception ex) {
+    String str=CharScanner.errorDetails("findNextChar issue",readBuf,index,ch);
+    return Exceptions.handle(char[].class,str,ex);
+  }
+}

@@ -1,0 +1,24 @@
+{
+  try {
+    ensureBuffer();
+    char[] results=CharScanner.readNumber(readBuf,index,length);
+    index+=results.length;
+    if (index >= length && more) {
+      ensureBuffer();
+      if (length != 0) {
+        char results2[]=readNumber();
+        return Chr.add(results,results2);
+      }
+ else {
+        return results;
+      }
+    }
+ else {
+      return results;
+    }
+  }
+ catch (  Exception ex) {
+    String str=CharScanner.errorDetails("readNumber issue",readBuf,index,ch);
+    return Exceptions.handle(char[].class,str,ex);
+  }
+}

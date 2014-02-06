@@ -1,0 +1,31 @@
+{
+  if (charBuf == null) {
+    charBuf=CharBuf.create(bufSize);
+  }
+ else {
+    charBuf.readForRecycle();
+  }
+  try {
+    char[] buffer=charBuf.toCharArray();
+    int size=input.read(buffer);
+    if (size != -1) {
+      charBuf._len(size);
+    }
+    if (size < buffer.length) {
+      return charBuf;
+    }
+    copy(input,charBuf);
+  }
+ catch (  IOException e) {
+    Exceptions.handle(e);
+  }
+ finally {
+    try {
+      input.close();
+    }
+ catch (    IOException e) {
+      Exceptions.handle(e);
+    }
+  }
+  return charBuf;
+}

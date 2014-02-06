@@ -1,0 +1,10 @@
+{
+  CharBuf buffer=CharBuf.create(255);
+  buffer.addLine(ex.getLocalizedMessage());
+  final StackTraceElement[] stackTrace=ex.getStackTrace();
+  for (  StackTraceElement element : stackTrace) {
+    buffer.add(element.getClassName());
+    sputs(buffer,"class",element.getClassName(),"method",element.getMethodName(),"line",element.getLineNumber());
+  }
+  return buffer.toString();
+}

@@ -1,0 +1,13 @@
+{
+  if (icache == null) {
+    icache=new SimpleCache<Integer,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=icache.get(key);
+  if (chars == null) {
+    String str=Integer.toString(key);
+    chars=FastStringUtils.toCharArray(str);
+    icache.put(key,chars);
+  }
+  addChars(chars);
+  return this;
+}
