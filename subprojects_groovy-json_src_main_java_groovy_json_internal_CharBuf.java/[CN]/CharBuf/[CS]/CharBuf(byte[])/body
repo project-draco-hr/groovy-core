@@ -1,4 +1,10 @@
 {
   this.buffer=null;
-  this.addAsUTF(bytes);
+  try {
+    String str=new String(bytes,"UTF-8");
+    __init__(FastStringUtils.toCharArray(str));
+  }
+ catch (  UnsupportedEncodingException e) {
+    Exceptions.handle(e);
+  }
 }
