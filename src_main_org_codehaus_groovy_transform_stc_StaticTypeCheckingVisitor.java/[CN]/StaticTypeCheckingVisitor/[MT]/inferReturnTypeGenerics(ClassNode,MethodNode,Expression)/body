@@ -69,7 +69,9 @@
               GenericsType value=typeEntry.getValue();
               GenericsType alias=typePlaceholders.get(key);
               if (alias != null && alias.isPlaceholder()) {
-                resolvedPlaceholders.put(alias.getName(),value);
+                if (!resolvedPlaceholders.containsKey(alias.getName()) || resolvedPlaceholders.get(alias.getName()).isPlaceholder()) {
+                  resolvedPlaceholders.put(alias.getName(),value);
+                }
               }
             }
           }

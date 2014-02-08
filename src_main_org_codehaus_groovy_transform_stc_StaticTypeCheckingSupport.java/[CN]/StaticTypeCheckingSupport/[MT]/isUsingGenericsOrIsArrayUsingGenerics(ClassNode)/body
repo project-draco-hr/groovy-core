@@ -1,3 +1,6 @@
 {
-  return (cn.isUsingGenerics() && cn.getGenericsTypes() != null) || cn.isArray() && cn.getComponentType().isUsingGenerics();
+  if (cn.isArray()) {
+    return isUsingGenericsOrIsArrayUsingGenerics(cn.getComponentType());
+  }
+  return (cn.isUsingGenerics() && cn.getGenericsTypes() != null);
 }
