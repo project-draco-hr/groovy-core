@@ -3,39 +3,32 @@ switch (type) {
 case DOUBLE:
     return doubleValue();
 case INTEGER:
-  int sign=1;
-boolean negative=false;
-if (buffer[startIndex] == '-') {
-startIndex++;
-sign=-1;
-negative=true;
-}
-if (isInteger(buffer,startIndex,endIndex - startIndex,negative)) {
-return intValue() * sign;
-}
+  if (isInteger(buffer,startIndex,endIndex - startIndex)) {
+    return intValue();
+  }
  else {
-return longValue() * sign;
-}
+    return longValue();
+  }
 case STRING:
 if (checkDate) {
-Date date=null;
-if (Dates.isISO8601QuickCheck(buffer,startIndex,endIndex)) {
-if (Dates.isJsonDate(buffer,startIndex,endIndex)) {
-date=Dates.fromJsonDate(buffer,startIndex,endIndex);
-}
- else if (Dates.isISO8601(buffer,startIndex,endIndex)) {
-date=Dates.fromISO8601(buffer,startIndex,endIndex);
-}
+  Date date=null;
+  if (Dates.isISO8601QuickCheck(buffer,startIndex,endIndex)) {
+    if (Dates.isJsonDate(buffer,startIndex,endIndex)) {
+      date=Dates.fromJsonDate(buffer,startIndex,endIndex);
+    }
+ else     if (Dates.isISO8601(buffer,startIndex,endIndex)) {
+      date=Dates.fromISO8601(buffer,startIndex,endIndex);
+    }
  else {
-return stringValue();
-}
-if (date == null) {
-return stringValue();
-}
+      return stringValue();
+    }
+    if (date == null) {
+      return stringValue();
+    }
  else {
-return date;
-}
-}
+      return date;
+    }
+  }
 }
 return stringValue();
 }

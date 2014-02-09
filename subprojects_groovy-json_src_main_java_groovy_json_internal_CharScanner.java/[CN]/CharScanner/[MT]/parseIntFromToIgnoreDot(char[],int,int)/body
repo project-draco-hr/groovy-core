@@ -1,0 +1,19 @@
+{
+  int num;
+  boolean negative=false;
+  char c=digitChars[offset];
+  if (c == '-') {
+    offset++;
+    negative=true;
+  }
+  c=digitChars[offset];
+  num=(c - '0');
+  offset++;
+  for (; offset < to; offset++) {
+    c=digitChars[offset];
+    if (c != '.') {
+      num=(num * 10) + (c - '0');
+    }
+  }
+  return negative ? num * -1 : num;
+}

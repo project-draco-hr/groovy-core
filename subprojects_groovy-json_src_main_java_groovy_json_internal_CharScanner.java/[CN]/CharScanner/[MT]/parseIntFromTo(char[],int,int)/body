@@ -1,9 +1,14 @@
 {
-  int num=digitChars[offset] - '0';
-  if (++offset < to) {
-    num=(num * 10) + (digitChars[offset] - '0');
-    if (++offset < to) {
-      num=(num * 10) + (digitChars[offset] - '0');
+  try {
+    int num;
+    boolean negative=false;
+    char c=digitChars[offset];
+    if (c == '-') {
+      offset++;
+      negative=true;
+    }
+    if (negative) {
+      num=(digitChars[offset] - '0');
       if (++offset < to) {
         num=(num * 10) + (digitChars[offset] - '0');
         if (++offset < to) {
@@ -16,6 +21,15 @@
                 num=(num * 10) + (digitChars[offset] - '0');
                 if (++offset < to) {
                   num=(num * 10) + (digitChars[offset] - '0');
+                  if (++offset < to) {
+                    num=(num * 10) + (digitChars[offset] - '0');
+                    if (++offset < to) {
+                      num=(num * 10) + (digitChars[offset] - '0');
+                      if (++offset < to) {
+                        num=(num * 10) + (digitChars[offset] - '0');
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -23,6 +37,39 @@
         }
       }
     }
+ else {
+      num=(digitChars[offset] - '0');
+      if (++offset < to) {
+        num=(num * 10) + (digitChars[offset] - '0');
+        if (++offset < to) {
+          num=(num * 10) + (digitChars[offset] - '0');
+          if (++offset < to) {
+            num=(num * 10) + (digitChars[offset] - '0');
+            if (++offset < to) {
+              num=(num * 10) + (digitChars[offset] - '0');
+              if (++offset < to) {
+                num=(num * 10) + (digitChars[offset] - '0');
+                if (++offset < to) {
+                  num=(num * 10) + (digitChars[offset] - '0');
+                  if (++offset < to) {
+                    num=(num * 10) + (digitChars[offset] - '0');
+                    if (++offset < to) {
+                      num=(num * 10) + (digitChars[offset] - '0');
+                      if (++offset < to) {
+                        num=(num * 10) + (digitChars[offset] - '0');
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return negative ? num * -1 : num;
   }
-  return num;
+ catch (  Exception ex) {
+    return handle(int.class,ex);
+  }
 }
