@@ -4,7 +4,7 @@
   if (propertyName == null)   return false;
   Expression objectExpression=pexp.getObjectExpression();
   final ClassNode objectExpressionType=getType(objectExpression);
-  boolean staticOnlyAccess=objectExpressionType.equals(CLASS_Type);
+  boolean staticOnlyAccess=isClassClassNodeWrappingConcreteType(objectExpressionType);
   if (objectExpressionType.isArray() && "length".equals(pexp.getPropertyAsString())) {
     storeType(pexp,int_TYPE);
     if (visitor != null) {
@@ -33,7 +33,7 @@
         queue.add(GenericsUtils.parameterizeType(current,intf));
       }
       boolean staticOnly;
-      if (current.equals(CLASS_Type)) {
+      if (isClassClassNodeWrappingConcreteType(current)) {
         staticOnly=false;
       }
  else {
