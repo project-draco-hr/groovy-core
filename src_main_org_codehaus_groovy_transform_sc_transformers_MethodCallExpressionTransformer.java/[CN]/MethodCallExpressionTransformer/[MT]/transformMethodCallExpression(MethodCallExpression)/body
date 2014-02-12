@@ -4,11 +4,13 @@
   if (isCallOnClosure(expr)) {
     FieldNode field=staticCompilationTransformer.getClassNode().getField(expr.getMethodAsString());
     if (field != null) {
-      MethodCallExpression result=new MethodCallExpression(new FieldExpression(field),"call",staticCompilationTransformer.transform(expr.getArguments()));
+      VariableExpression vexp=new VariableExpression(field);
+      MethodCallExpression result=new MethodCallExpression(vexp,"call",staticCompilationTransformer.transform(expr.getArguments()));
       result.setImplicitThis(false);
       result.setSourcePosition(expr);
       result.setSafe(expr.isSafe());
       result.setSpreadSafe(expr.isSpreadSafe());
+      result.setMethodTarget(StaticTypeCheckingVisitor.CLOSURE_CALL_VARGS);
       return result;
     }
   }
