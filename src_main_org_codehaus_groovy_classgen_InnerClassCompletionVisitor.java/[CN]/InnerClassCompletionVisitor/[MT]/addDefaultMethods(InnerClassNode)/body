@@ -6,7 +6,9 @@
   final String outerClassDescriptor=getTypeDescriptor(outerClass,isStatic);
   final int objectDistance=getObjectDistance(outerClass);
   Parameter[] parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"args")};
-  MethodNode method=node.addSyntheticMethod("methodMissing",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  String methodName="methodMissing";
+  if (isStatic)   addCompilationErrorOnCustomMethodNode(node,methodName,parameters);
+  MethodNode method=node.addSyntheticMethod(methodName,Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
   BlockStatement block=new BlockStatement();
   if (isStatic) {
     setMethodDispatcherCode(block,new ClassExpression(outerClass),parameters);
@@ -26,7 +28,9 @@
   }
   method.setCode(block);
   parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name"),new Parameter(ClassHelper.OBJECT_TYPE,"val")};
-  method=node.addSyntheticMethod("propertyMissing",Opcodes.ACC_PUBLIC,ClassHelper.VOID_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  methodName="propertyMissing";
+  if (isStatic)   addCompilationErrorOnCustomMethodNode(node,methodName,parameters);
+  method=node.addSyntheticMethod(methodName,Opcodes.ACC_PUBLIC,ClassHelper.VOID_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
   block=new BlockStatement();
   if (isStatic) {
     setPropertySetterDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
@@ -46,7 +50,9 @@
   }
   method.setCode(block);
   parameters=new Parameter[]{new Parameter(ClassHelper.STRING_TYPE,"name")};
-  method=node.addSyntheticMethod("propertyMissing",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
+  methodName="propertyMissing";
+  if (isStatic)   addCompilationErrorOnCustomMethodNode(node,methodName,parameters);
+  method=node.addSyntheticMethod(methodName,Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,parameters,ClassNode.EMPTY_ARRAY,null);
   block=new BlockStatement();
   if (isStatic) {
     setPropertyGetterDispatcher(block,new ClassExpression(node.getOuterClass()),parameters);
