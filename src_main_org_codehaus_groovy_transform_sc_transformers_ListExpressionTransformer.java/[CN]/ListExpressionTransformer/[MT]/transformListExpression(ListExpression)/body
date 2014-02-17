@@ -1,0 +1,12 @@
+{
+  MethodNode target=expr.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  if (target != null && target instanceof ConstructorNode) {
+    if (target.getDeclaringClass().isArray()) {
+      return transformArrayConstructor(expr,target);
+    }
+    return transformRegularConstructor(expr,target);
+  }
+ else {
+    return transformer.superTransform(expr);
+  }
+}

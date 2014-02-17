@@ -2,7 +2,10 @@
   if (rightExpression instanceof ListExpression && !implementsInterfaceOrIsSubclassOf(LIST_TYPE,leftRedirect)) {
     ArgumentListExpression argList=new ArgumentListExpression(((ListExpression)rightExpression).getExpressions());
     ClassNode[] args=getArgumentTypes(argList);
-    checkGroovyStyleConstructor(leftRedirect,args);
+    MethodNode methodNode=checkGroovyStyleConstructor(leftRedirect,args,assignmentExpression);
+    if (methodNode != null) {
+      rightExpression.putNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,methodNode);
+    }
   }
  else   if (!implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,leftRedirect) && implementsInterfaceOrIsSubclassOf(inferredRightExpressionType,LIST_TYPE) && !isWildcardLeftHandSide(leftExpressionType)) {
     if (!extension.handleIncompatibleAssignment(leftExpressionType,inferredRightExpressionType,assignmentExpression)) {
