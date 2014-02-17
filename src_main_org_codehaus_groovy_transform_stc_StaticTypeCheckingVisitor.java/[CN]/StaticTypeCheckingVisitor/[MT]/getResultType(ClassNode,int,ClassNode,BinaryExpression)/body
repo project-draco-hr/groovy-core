@@ -3,7 +3,7 @@
   ClassNode rightRedirect=right.redirect();
   Expression leftExpression=expr.getLeftExpression();
   if (op == ASSIGN || op == ASSIGNMENT_OPERATOR) {
-    if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
+    if (leftRedirect.isArray() && implementsInterfaceOrIsSubclassOf(rightRedirect,Collection_TYPE))     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
       if (expr.getRightExpression() instanceof ListExpression) {
         List<Expression> list=((ListExpression)expr.getRightExpression()).getExpressions();
