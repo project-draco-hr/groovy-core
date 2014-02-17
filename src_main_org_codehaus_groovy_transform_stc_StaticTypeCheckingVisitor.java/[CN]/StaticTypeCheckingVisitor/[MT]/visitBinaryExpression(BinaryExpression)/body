@@ -71,6 +71,9 @@
  else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
         resultType=lType;
       }
+      if (isPrimitiveType(originType) && resultType.equals(getWrapper(originType))) {
+        resultType=originType;
+      }
       if (typeCheckingContext.ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
         Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
         if (accessedVariable instanceof VariableExpression) {
