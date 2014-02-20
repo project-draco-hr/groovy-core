@@ -5,9 +5,16 @@
   }
   handleMainMethodIfPresent(methods);
   classNode.addMethod(new MethodNode("main",ACC_PUBLIC | ACC_STATIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.STRING_TYPE.makeArray(),"args")},ClassNode.EMPTY_ARRAY,new ExpressionStatement(new MethodCallExpression(new ClassExpression(ClassHelper.make(InvokerHelper.class)),"runScript",new ArgumentListExpression(new ClassExpression(classNode),new VariableExpression("args"))))));
-  MethodNode methodNode=new MethodNode("run",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,statementBlock);
-  methodNode.setIsScriptBody();
-  classNode.addMethod(methodNode);
+  MethodNode methodNode=hasRunMethod();
+  if (methodNode != null) {
+    ErrorCollector ec=context.getErrorCollector();
+    ec.addError(new SyntaxException("You cannot define a 'run()' method in a script because it is used to wrap the script body. Please choose another name.",methodNode.getLineNumber(),methodNode.getLineNumber()),context);
+  }
+ else {
+    methodNode=new MethodNode("run",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,statementBlock);
+    methodNode.setIsScriptBody();
+    classNode.addMethod(methodNode);
+  }
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
   Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new VariableExpression("context"))));
   classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ClassHelper.make(Binding.class),"context")},ClassNode.EMPTY_ARRAY,stmt);
