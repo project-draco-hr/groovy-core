@@ -7,34 +7,9 @@
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (!MY_TYPE.equals(node.getClassNode()))   return;
   if (parent instanceof DeclarationExpression) {
-    DeclarationExpression de=(DeclarationExpression)parent;
-    ClassNode cNode=de.getDeclaringClass();
-    if (!cNode.isScript()) {
-      addError("Annotation " + MY_TYPE_NAME + " can only be used within a Script.",parent);
-      return;
-    }
-    if (de.isMultipleAssignmentDeclaration()) {
-      addError("Annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",parent);
-      return;
-    }
-    if (!(de.getRightExpression() instanceof EmptyExpression)) {
-      addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",parent);
-      return;
-    }
-    ClassNode baseScriptType=de.getVariableExpression().getType().getPlainNodeReference();
-    if (!baseScriptType.isScript()) {
-      addError("Declared type " + baseScriptType + " does not extend groovy.lang.Script class!",parent);
-      return;
-    }
-    cNode.setSuperClass(baseScriptType);
-    de.setRightExpression(new VariableExpression("this"));
-    MethodNode runScriptMethod=ClassHelper.findSAM(baseScriptType);
-    if (isSuitableAbstractMethod(runScriptMethod)) {
-      MethodNode defaultMethod=cNode.getDeclaredMethod("run",Parameter.EMPTY_ARRAY);
-      cNode.removeMethod(defaultMethod);
-      MethodNode methodNode=new MethodNode(runScriptMethod.getName(),runScriptMethod.getModifiers() & ~ACC_ABSTRACT,runScriptMethod.getReturnType(),runScriptMethod.getParameters(),runScriptMethod.getExceptions(),defaultMethod.getCode());
-      methodNode.copyNodeMetaData(defaultMethod);
-      cNode.addMethod(methodNode);
-    }
+    changeBaseScriptTypeFromDeclaration((DeclarationExpression)parent,node);
+  }
+ else   if (parent instanceof ImportNode || parent instanceof PackageNode) {
+    changeBaseScriptTypeFromPackageOrImport(source,parent,node);
   }
 }
