@@ -1,0 +1,15 @@
+{
+  sourceUnit=source;
+  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
+    throw new GroovyBugError("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
+  }
+  AnnotatedNode parent=(AnnotatedNode)nodes[1];
+  AnnotationNode node=(AnnotationNode)nodes[0];
+  if (!MY_TYPE.equals(node.getClassNode()))   return;
+  if (parent instanceof DeclarationExpression) {
+    setScriptURIOnDeclaration((DeclarationExpression)parent,node);
+  }
+ else {
+    addError("Expected to find the annotation " + MY_TYPE_NAME + " on an declaration statement.",parent);
+  }
+}
