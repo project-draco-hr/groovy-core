@@ -7,15 +7,11 @@
     addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",de);
     return;
   }
-  URI uri=sourceUnit.getSource().getURI();
+  URI uri=getSourceURI(node);
   if (uri == null) {
     addError("Unable to get the URI for the source of this script!",de);
   }
  else {
-    if (!(uri.isAbsolute() || memberHasValue(node,"allowRelative",true))) {
-      URI baseURI=new File(".").toURI();
-      uri=uri.resolve(baseURI);
-    }
-    de.setRightExpression(new StaticMethodCallExpression(URI_TYPE,"create",new ArgumentListExpression(new ConstantExpression(uri.toString()))));
+    de.setRightExpression(getExpression(uri));
   }
 }
