@@ -1,0 +1,14 @@
+{
+  String scriptFileName=input.trim();
+  File scriptFile=new File(scriptFileName);
+  String[] standardExtensions={".groovy",".gvy",".gy",".gsh"};
+  int i=0;
+  while (i < standardExtensions.length && !scriptFile.exists()) {
+    scriptFile=new File(scriptFileName + standardExtensions[i]);
+    i++;
+  }
+  if (!scriptFile.exists()) {
+    scriptFile=new File(scriptFileName);
+  }
+  return scriptFile;
+}

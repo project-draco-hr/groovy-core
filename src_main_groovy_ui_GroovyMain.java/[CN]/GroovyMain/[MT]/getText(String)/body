@@ -1,0 +1,11 @@
+{
+  if (isScriptURI(uriOrFilename)) {
+    try {
+      return ResourceGroovyMethods.getText(new URL(uriOrFilename));
+    }
+ catch (    Exception e) {
+      throw new GroovyRuntimeException("Unable to get script from URL: ",e);
+    }
+  }
+  return ResourceGroovyMethods.getText(huntForTheScriptFile(uriOrFilename));
+}
