@@ -12,6 +12,10 @@
     addError("Unable to get the URI for the source of this script!",de);
   }
  else {
-    de.setRightExpression(new ConstructorCallExpression(URI_TYPE,new ArgumentListExpression(new ConstantExpression(uri.toString()))));
+    if (!(uri.isAbsolute() || memberHasValue(node,"allowRelative",true))) {
+      URI baseURI=new File(".").toURI();
+      uri=uri.resolve(baseURI);
+    }
+    de.setRightExpression(new StaticMethodCallExpression(URI_TYPE,"create",new ArgumentListExpression(new ConstantExpression(uri.toString()))));
   }
 }
