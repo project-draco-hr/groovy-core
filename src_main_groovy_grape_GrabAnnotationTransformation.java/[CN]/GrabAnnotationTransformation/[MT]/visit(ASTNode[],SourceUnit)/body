@@ -102,13 +102,18 @@
         }
         String root=(String)grabResolverMap.get("root");
         if (root != null && !root.contains(":")) {
-          try {
-            URL sourceURL=getSourceURL();
-            URL rootURL=new URL(sourceURL,root);
-            grabResolverMap.put("root",rootURL.toExternalForm());
+          URI sourceURI=null;
+          if (!(getSourceUnit().getSource() instanceof StringReaderSource)) {
+            sourceURI=getSourceUnit().getSource().getURI();
           }
- catch (          MalformedURLException e) {
-            addError("Attribute \"root\" has value '" + root + "' which can't be turned into a valid URL relative to it's source '"+ getSourceUnit().getName()+ "' @"+ node.getClassNode().getNameWithoutPackage()+ " annotations",node);
+          if (sourceURI == null) {
+            sourceURI=new File(".").toURI();
+          }
+          try {
+            URI rootURI=sourceURI.resolve(new URI(root));
+            grabResolverMap.put("root",rootURI.toString());
+          }
+ catch (          URISyntaxException e) {
           }
         }
         Grape.addResolver(grabResolverMap);
