@@ -2,8 +2,8 @@
   GroovyShell groovy=new GroovyShell(conf);
   Script s;
   if (isScriptFile) {
-    if (isScriptUrl(script)) {
-      s=groovy.parse(getText(script),script.substring(script.lastIndexOf("/") + 1));
+    if (isScriptURI(script)) {
+      s=groovy.parse(new URI(script));
     }
  else {
       s=groovy.parse(huntForTheScriptFile(script));
