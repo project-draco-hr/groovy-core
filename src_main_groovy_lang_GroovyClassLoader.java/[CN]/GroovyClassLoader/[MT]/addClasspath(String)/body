@@ -2,15 +2,22 @@
   AccessController.doPrivileged(new PrivilegedAction<Void>(){
     public Void run(){
       try {
-        File f=new File(path);
-        URL newURL=f.toURI().toURL();
+        URI newURI;
+        if (!isPathURI(path)) {
+          newURI=new File(path).toURI();
+        }
+ else {
+          newURI=new URI(path);
+        }
         URL[] urls=getURLs();
         for (        URL url : urls) {
-          if (url.equals(newURL))           return null;
+          if (newURI.equals(url.toURI()))           return null;
         }
-        addURL(newURL);
+        addURL(newURI.toURL());
       }
  catch (      MalformedURLException e) {
+      }
+catch (      URISyntaxException e) {
       }
       return null;
     }
