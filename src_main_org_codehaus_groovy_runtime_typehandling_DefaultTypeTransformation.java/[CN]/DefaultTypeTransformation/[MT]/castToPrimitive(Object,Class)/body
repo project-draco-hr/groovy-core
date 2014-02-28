@@ -1,0 +1,31 @@
+{
+  if (type == boolean.class) {
+    return booleanUnbox(object);
+  }
+ else   if (type == byte.class) {
+    return byteUnbox(object);
+  }
+ else   if (type == char.class) {
+    return charUnbox(object);
+  }
+ else   if (type == short.class) {
+    return shortUnbox(object);
+  }
+ else   if (type == int.class) {
+    return intUnbox(object);
+  }
+ else   if (type == long.class) {
+    return longUnbox(object);
+  }
+ else   if (type == float.class) {
+    return floatUnbox(object);
+  }
+ else   if (type == double.class) {
+    Double answer=new Double(doubleUnbox(object));
+    if (!(object instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
+      throw new GroovyRuntimeException("Automatic coercion of " + object.getClass().getName() + " value "+ object+ " to double failed.  Value is out of range.");
+    }
+    return answer;
+  }
+  throw new GroovyCastException(object,type);
+}

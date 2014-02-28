@@ -4,6 +4,7 @@
   OperandStack operandStack=controller.getOperandStack();
   Expression rightExpression=expression.getRightExpression();
   Expression leftExpression=expression.getLeftExpression();
+  ClassNode lhsType=controller.getTypeChooser().resolveType(leftExpression,controller.getClassNode());
   if (defineVariable && rightExpression instanceof EmptyExpression && !(leftExpression instanceof TupleExpression)) {
     VariableExpression ve=(VariableExpression)leftExpression;
     BytecodeVariable var=compileStack.defineVariable(ve,controller.getTypeChooser().resolveType(ve,controller.getClassNode()),false);
@@ -11,7 +12,13 @@
     return;
   }
   ClassNode rhsType;
-  if (rightExpression instanceof EmptyExpression) {
+  if (rightExpression instanceof ListExpression && lhsType.isArray()) {
+    ListExpression list=(ListExpression)rightExpression;
+    ArrayExpression array=new ArrayExpression(lhsType.getComponentType(),list.getExpressions());
+    array.setSourcePosition(list);
+    array.visit(acg);
+  }
+ else   if (rightExpression instanceof EmptyExpression) {
     rhsType=leftExpression.getType();
     loadInitValue(rhsType);
   }
@@ -27,7 +34,6 @@
       rhsType=ClassHelper.getWrapper(rhsType);
       operandStack.box();
     }
-    ClassNode lhsType=controller.getTypeChooser().resolveType(var,controller.getClassNode());
     if (var.isClosureSharedVariable() && ClassHelper.isPrimitiveType(var.getOriginType()) && isNull(rightExpression)) {
       operandStack.doGroovyCast(var.getOriginType());
       operandStack.box();

@@ -18,6 +18,7 @@
  else {
     collectionExpression.visit(controller.getAcg());
     mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","iterator","(Ljava/lang/Object;)Ljava/util/Iterator;");
+    operandStack.replace(ClassHelper.Iterator_TYPE);
   }
   final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.Iterator_TYPE,true);
   Label continueLabel=compileStack.getContinueLabel();

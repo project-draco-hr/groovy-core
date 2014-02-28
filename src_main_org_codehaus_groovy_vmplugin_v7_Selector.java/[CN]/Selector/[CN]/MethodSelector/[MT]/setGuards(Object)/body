@@ -28,7 +28,7 @@
     }
  else {
       Class argClass=arg.getClass();
-      if (Modifier.isFinal(argClass.getModifiers()) && TypeHelper.argumentClassIsParameterClass(argClass,pt[i]))       continue;
+      if (pt[i].isPrimitive())       continue;
       test=SAME_CLASS.bindTo(argClass).asType(MethodType.methodType(boolean.class,pt[i]));
       if (LOG_ENABLED)       LOG.info("added same class check at pos " + i);
     }

@@ -9,6 +9,9 @@ case GET:
 return new PropertySelector(callSite,sender,methodName,callType,safeNavigation,thisCall,spreadCall,arguments);
 case SET:
 throw new GroovyBugError("your call tried to do a property set, which is not supported.");
+case CAST:
+return new CastSelector(callSite,arguments);
+default :
+throw new GroovyBugError("unexpected call type");
 }
-return null;
 }

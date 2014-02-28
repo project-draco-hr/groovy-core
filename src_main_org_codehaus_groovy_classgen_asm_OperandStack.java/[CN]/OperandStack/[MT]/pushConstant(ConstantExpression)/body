@@ -1,48 +1,36 @@
 {
   MethodVisitor mv=controller.getMethodVisitor();
   Object value=expression.getValue();
-  ClassNode type=expression.getType().redirect();
-  boolean asPrimitive=ClassHelper.isPrimitiveType(type);
+  ClassNode origType=expression.getType().redirect();
+  ClassNode type=ClassHelper.getUnwrapper(origType);
+  boolean boxing=origType != type;
+  boolean asPrimitive=boxing || ClassHelper.isPrimitiveType(type);
   if (value == null) {
     mv.visitInsn(ACONST_NULL);
+  }
+ else   if (boxing && value instanceof Boolean) {
+    Boolean bool=(Boolean)value;
+    String text=bool ? "TRUE" : "FALSE";
+    mv.visitFieldInsn(GETSTATIC,"java/lang/Boolean",text,"Ljava/lang/Boolean;");
+    boxing=false;
+    type=origType;
   }
  else   if (asPrimitive) {
     pushPrimitiveConstant(mv,value,type);
   }
- else   if (value instanceof Character) {
-    mv.visitLdcInsn(value);
-    BytecodeHelper.box(mv,type);
+ else   if (value instanceof BigDecimal) {
+    String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
+    mv.visitTypeInsn(NEW,className);
+    mv.visitInsn(DUP);
+    mv.visitLdcInsn(value.toString());
+    mv.visitMethodInsn(INVOKESPECIAL,className,"<init>","(Ljava/lang/String;)V");
   }
- else   if (value instanceof Number) {
-    if (value instanceof BigDecimal) {
-      String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
-      mv.visitTypeInsn(NEW,className);
-      mv.visitInsn(DUP);
-      mv.visitLdcInsn(value.toString());
-      mv.visitMethodInsn(INVOKESPECIAL,className,"<init>","(Ljava/lang/String;)V");
-    }
- else     if (value instanceof BigInteger) {
-      String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
-      mv.visitTypeInsn(NEW,className);
-      mv.visitInsn(DUP);
-      mv.visitLdcInsn(value.toString());
-      mv.visitMethodInsn(INVOKESPECIAL,className,"<init>","(Ljava/lang/String;)V");
-    }
- else     if (value instanceof Integer || value instanceof Byte || value instanceof Short|| value instanceof Long|| value instanceof Float|| value instanceof Double) {
-      ClassNode primType=ClassHelper.getUnwrapper(type);
-      pushPrimitiveConstant(mv,value,primType);
-      type=primType;
-    }
- else {
-      mv.visitLdcInsn(value);
-      BytecodeHelper.box(mv,ClassHelper.getUnwrapper(type));
-      BytecodeHelper.doCast(mv,type);
-    }
-  }
- else   if (value instanceof Boolean) {
-    Boolean bool=(Boolean)value;
-    String text=bool ? "TRUE" : "FALSE";
-    mv.visitFieldInsn(GETSTATIC,"java/lang/Boolean",text,"Ljava/lang/Boolean;");
+ else   if (value instanceof BigInteger) {
+    String className=BytecodeHelper.getClassInternalName(value.getClass().getName());
+    mv.visitTypeInsn(NEW,className);
+    mv.visitInsn(DUP);
+    mv.visitLdcInsn(value.toString());
+    mv.visitMethodInsn(INVOKESPECIAL,className,"<init>","(Ljava/lang/String;)V");
   }
  else   if (value instanceof String) {
     mv.visitLdcInsn(value);
@@ -51,4 +39,5 @@
     throw new ClassGeneratorException("Cannot generate bytecode for constant: " + value + " of type: "+ type.getName());
   }
   push(type);
+  if (boxing)   box();
 }

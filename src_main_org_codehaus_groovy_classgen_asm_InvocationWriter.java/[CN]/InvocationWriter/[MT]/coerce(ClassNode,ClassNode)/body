@@ -1,0 +1,11 @@
+{
+  if (from.isDerivedFrom(target))   return;
+  MethodVisitor mv=controller.getMethodVisitor();
+  OperandStack os=controller.getOperandStack();
+  os.box();
+  (new ClassExpression(target)).visit(controller.getAcg());
+  os.remove(1);
+  asTypeMethod.call(mv);
+  BytecodeHelper.doCast(mv,target);
+  os.replace(target);
+}

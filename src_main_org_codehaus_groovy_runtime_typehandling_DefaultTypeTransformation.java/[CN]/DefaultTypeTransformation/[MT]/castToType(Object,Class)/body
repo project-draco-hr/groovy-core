@@ -1,191 +1,30 @@
 {
-  if (object == null) {
-    return null;
-  }
+  if (object == null)   return null;
   if (type == Object.class)   return object;
   final Class aClass=object.getClass();
   if (type == aClass)   return object;
-  if (ReflectionCache.isArray(type)) {
-    return asArray(object,type);
+  if (type.isAssignableFrom(aClass))   return object;
+  if (ReflectionCache.isArray(type))   return asArray(object,type);
+  if (type.isEnum()) {
+    return ShortTypeHandling.castToEnum(object,type);
   }
-  if (ReflectionCache.isAssignableFrom(type,aClass)) {
-    return object;
+ else   if (Collection.class.isAssignableFrom(type)) {
+    return continueCastOnCollection(object,type);
   }
-  if (Collection.class.isAssignableFrom(type)) {
-    int modifiers=type.getModifiers();
-    Collection answer;
-    if (object instanceof Collection && type.isAssignableFrom(HashSet.class) && (type == HashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
-      return new HashSet((Collection)object);
-    }
-    if (aClass.isArray()) {
-      if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
-        answer=new ArrayList();
-      }
- else       if (type.isAssignableFrom(HashSet.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
-        answer=new HashSet();
-      }
- else {
-        try {
-          answer=(Collection)type.newInstance();
-        }
- catch (        Exception e) {
-          throw new GroovyCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
-        }
-      }
-      int length=Array.getLength(object);
-      for (int i=0; i < length; i++) {
-        Object element=Array.get(object,i);
-        answer.add(element);
-      }
-      return answer;
-    }
-  }
-  if (type == String.class) {
-    return object.toString();
+ else   if (type == String.class) {
+    return ShortTypeHandling.castToString(object);
   }
  else   if (type == Character.class) {
-    return box(castToChar(object));
+    return ShortTypeHandling.castToChar(object);
   }
  else   if (type == Boolean.class) {
-    return box(castToBoolean(object));
+    return castToBoolean(object);
   }
  else   if (type == Class.class) {
-    return castToClass(object);
-  }
- else   if (Number.class.isAssignableFrom(type)) {
-    Number n=castToNumber(object,type);
-    if (type == Byte.class) {
-      return new Byte(n.byteValue());
-    }
- else     if (type == Character.class) {
-      return new Character((char)n.intValue());
-    }
- else     if (type == Short.class) {
-      return new Short(n.shortValue());
-    }
- else     if (type == Integer.class) {
-      return Integer.valueOf(n.intValue());
-    }
- else     if (type == Long.class) {
-      return new Long(n.longValue());
-    }
- else     if (type == Float.class) {
-      return new Float(n.floatValue());
-    }
- else     if (type == Double.class) {
-      Double answer=new Double(n.doubleValue());
-      if (!(n instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
-        throw new GroovyRuntimeException("Automatic coercion of " + n.getClass().getName() + " value "+ n+ " to double failed.  Value is out of range.");
-      }
-      return answer;
-    }
- else     if (type == BigDecimal.class) {
-      if (n instanceof Float || n instanceof Double) {
-        return new BigDecimal(n.doubleValue());
-      }
-      return new BigDecimal(n.toString());
-    }
- else     if (type == BigInteger.class) {
-      if (object instanceof Float || object instanceof Double) {
-        BigDecimal bd=new BigDecimal(n.doubleValue());
-        return bd.toBigInteger();
-      }
- else       if (object instanceof BigDecimal) {
-        return ((BigDecimal)object).toBigInteger();
-      }
- else {
-        return new BigInteger(n.toString());
-      }
-    }
+    return ShortTypeHandling.castToClass(object);
   }
  else   if (type.isPrimitive()) {
-    if (type == boolean.class) {
-      return box(booleanUnbox(object));
-    }
- else     if (type == byte.class) {
-      return box(byteUnbox(object));
-    }
- else     if (type == char.class) {
-      return box(charUnbox(object));
-    }
- else     if (type == short.class) {
-      return box(shortUnbox(object));
-    }
- else     if (type == int.class) {
-      return box(intUnbox(object));
-    }
- else     if (type == long.class) {
-      return box(longUnbox(object));
-    }
- else     if (type == float.class) {
-      return box(floatUnbox(object));
-    }
- else     if (type == double.class) {
-      Double answer=new Double(doubleUnbox(object));
-      if (!(object instanceof Double) && (answer.doubleValue() == Double.NEGATIVE_INFINITY || answer.doubleValue() == Double.POSITIVE_INFINITY)) {
-        throw new GroovyRuntimeException("Automatic coercion of " + aClass.getName() + " value "+ object+ " to double failed.  Value is out of range.");
-      }
-      return answer;
-    }
+    return castToPrimitive(object,type);
   }
- else   if (object instanceof String && type.isEnum()) {
-    return Enum.valueOf(type,(String)object);
-  }
- else   if (object instanceof GString && type.isEnum()) {
-    return Enum.valueOf(type,object.toString());
-  }
-  Object[] args=null;
-  if (object instanceof Collection) {
-    Collection collection=(Collection)object;
-    args=collection.toArray();
-  }
- else   if (object instanceof Object[]) {
-    args=(Object[])object;
-  }
- else   if (object instanceof Map) {
-    args=new Object[1];
-    args[0]=object;
-  }
-  if (object instanceof Closure) {
-    Method m=CachedSAMClass.getSAMMethod(type);
-    if (m != null) {
-      return CachedSAMClass.coerceToSAM((Closure)object,m,type,type.isInterface());
-    }
-  }
-  Exception nested=null;
-  if (args != null) {
-    try {
-      return InvokerHelper.invokeConstructorOf(type,args);
-    }
- catch (    InvokerInvocationException iie) {
-      throw iie;
-    }
-catch (    GroovyRuntimeException e) {
-      if (e.getMessage().contains("Could not find matching constructor for")) {
-        try {
-          return InvokerHelper.invokeConstructorOf(type,object);
-        }
- catch (        InvokerInvocationException iie) {
-          throw iie;
-        }
-catch (        Exception ex) {
-          nested=e;
-        }
-      }
- else {
-        nested=e;
-      }
-    }
-catch (    Exception e) {
-      nested=e;
-    }
-  }
-  GroovyCastException gce;
-  if (nested != null) {
-    gce=new GroovyCastException(object,type,nested);
-  }
- else {
-    gce=new GroovyCastException(object,type);
-  }
-  throw gce;
+  return continueCastOnNumber(object,type);
 }
