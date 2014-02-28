@@ -1,0 +1,10 @@
+{
+  ScriptEngineManager factory=new ScriptEngineManager();
+  ScriptEngine engine=factory.getEngineByName("groovy");
+  String fact="def factorial(n) { n == 1 ? 1 : n * factorial(n - 1) }";
+  engine.eval(fact);
+  Invocable inv=(Invocable)engine;
+  Object[] params={5};
+  Object result=inv.invokeFunction("factorial",params);
+  assertEquals(new Integer(120),result);
+}
