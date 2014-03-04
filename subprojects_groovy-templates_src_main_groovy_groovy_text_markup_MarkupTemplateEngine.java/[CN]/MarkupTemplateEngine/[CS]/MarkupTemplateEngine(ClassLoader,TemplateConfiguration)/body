@@ -11,5 +11,10 @@
     }
 );
   }
-  groovyClassLoader=new TemplateGroovyClassLoader(parentLoader,compilerConfiguration);
+  groovyClassLoader=AccessController.doPrivileged(new PrivilegedAction<TemplateGroovyClassLoader>(){
+    public TemplateGroovyClassLoader run(){
+      return new TemplateGroovyClassLoader(parentLoader,compilerConfiguration);
+    }
+  }
+);
 }
