@@ -1,0 +1,30 @@
+{
+  if (exp instanceof MethodCallExpression) {
+    return transformMethodCall((MethodCallExpression)exp);
+  }
+  if (exp instanceof ClosureExpression) {
+    ClosureExpression cl=(ClosureExpression)exp;
+    cl.getCode().visit(this);
+  }
+  if (exp instanceof VariableExpression) {
+    VariableExpression var=(VariableExpression)exp;
+    if (var.getAccessedVariable() instanceof DynamicVariable) {
+      MethodCallExpression callGetModel=new MethodCallExpression(new VariableExpression("this"),"getModel",ArgumentListExpression.EMPTY_ARGUMENTS);
+      callGetModel.setImplicitThis(true);
+      callGetModel.setSourcePosition(exp);
+      String varName=var.getName();
+      if ("model".equals(varName) || "unescaped".equals(varName)) {
+        return callGetModel;
+      }
+      MethodCallExpression mce=new MethodCallExpression(callGetModel,"get",new ArgumentListExpression(new ConstantExpression(varName)));
+      mce.setSourcePosition(exp);
+      mce.setImplicitThis(false);
+      MethodCallExpression yield=new MethodCallExpression(new VariableExpression("this"),"tryEscape",new ArgumentListExpression(mce));
+      yield.setImplicitThis(true);
+      yield.setSourcePosition(exp);
+      yield.putNodeMetaData(TARGET_VARIABLE,varName);
+      return autoEscape ? yield : mce;
+    }
+  }
+  return super.transform(exp);
+}

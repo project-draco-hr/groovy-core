@@ -1,0 +1,26 @@
+{
+  Expression arguments=exp.getArguments();
+  if (arguments instanceof TupleExpression) {
+    List<Expression> expressions=((TupleExpression)arguments).getExpressions();
+    if (expressions.size() == 1 && expressions.get(0) instanceof MapExpression) {
+      MapExpression map=(MapExpression)expressions.get(0);
+      List<MapEntryExpression> entries=map.getMapEntryExpressions();
+      if (entries.size() == 1) {
+        MapEntryExpression mapEntry=entries.get(0);
+        Expression keyExpression=mapEntry.getKeyExpression();
+        try {
+          IncludeType includeType=IncludeType.valueOf(keyExpression.getText().toLowerCase());
+          MethodCallExpression call=new MethodCallExpression(exp.getObjectExpression(),includeType.getMethodName(),new ArgumentListExpression(mapEntry.getValueExpression()));
+          call.setImplicitThis(true);
+          call.setSafe(exp.isSafe());
+          call.setSpreadSafe(exp.isSpreadSafe());
+          call.setSourcePosition(exp);
+          return call;
+        }
+ catch (        IllegalArgumentException e) {
+        }
+      }
+    }
+  }
+  return super.transform(exp);
+}

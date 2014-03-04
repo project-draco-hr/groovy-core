@@ -1,0 +1,7 @@
+{
+  Matcher matcher=LOCALIZED_RESOURCE_PATTERN.matcher(fullPath);
+  if (!matcher.find()) {
+    throw new IllegalArgumentException("Illegal template path: " + fullPath);
+  }
+  return new TemplateResource(matcher.group(1),matcher.group(2),matcher.group(3));
+}

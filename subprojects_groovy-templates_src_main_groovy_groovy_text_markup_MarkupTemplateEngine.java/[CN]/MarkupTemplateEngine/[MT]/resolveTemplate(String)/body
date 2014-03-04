@@ -1,0 +1,15 @@
+{
+  MarkupTemplateEngine.TemplateResource templateResource=MarkupTemplateEngine.TemplateResource.parse(templatePath);
+  String configurationLocale=templateConfiguration.getLocale().toLanguageTag().replace("-","_");
+  URL resource=templateResource.hasLocale() ? groovyClassLoader.getResource(templateResource.toString()) : null;
+  if (resource == null) {
+    resource=groovyClassLoader.getResource(templateResource.withLocale(configurationLocale).toString());
+  }
+  if (resource == null) {
+    resource=groovyClassLoader.getResource(templateResource.withLocale(null).toString());
+  }
+  if (resource == null) {
+    throw new IOException("Unable to load template:" + templatePath);
+  }
+  return resource;
+}

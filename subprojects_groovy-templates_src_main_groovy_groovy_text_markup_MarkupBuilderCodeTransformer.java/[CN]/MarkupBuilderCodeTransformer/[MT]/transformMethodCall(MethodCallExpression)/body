@@ -1,0 +1,23 @@
+{
+  String name=exp.getMethodAsString();
+  if (exp.isImplicitThis() && "include".equals(name)) {
+    return tryTransformInclude(exp);
+  }
+ else   if (exp.isImplicitThis() && name.startsWith(":")) {
+    List<Expression> args;
+    if (exp.getArguments() instanceof ArgumentListExpression) {
+      args=((ArgumentListExpression)exp.getArguments()).getExpressions();
+    }
+ else {
+      args=Collections.singletonList(exp.getArguments());
+    }
+    Expression newArguments=transform(new ArgumentListExpression(new ConstantExpression(name.substring(1)),new ArrayExpression(ClassHelper.OBJECT_TYPE,args)));
+    MethodCallExpression call=new MethodCallExpression(new VariableExpression("this"),"methodMissing",newArguments);
+    call.setImplicitThis(true);
+    call.setSafe(exp.isSafe());
+    call.setSpreadSafe(exp.isSpreadSafe());
+    call.setSourcePosition(exp);
+    return call;
+  }
+  return super.transform(exp);
+}
