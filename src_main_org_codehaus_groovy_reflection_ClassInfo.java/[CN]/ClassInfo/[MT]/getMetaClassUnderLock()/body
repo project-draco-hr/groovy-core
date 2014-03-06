@@ -4,12 +4,8 @@
   answer=getWeakMetaClass();
   final MetaClassRegistry metaClassRegistry=GroovySystem.getMetaClassRegistry();
   MetaClassRegistry.MetaClassCreationHandle mccHandle=metaClassRegistry.getMetaClassCreationHandler();
-  if (answer != null) {
-    boolean enableGloballyOn=(mccHandle instanceof ExpandoMetaClassCreationHandle);
-    boolean cachedAnswerIsEMC=(answer instanceof ExpandoMetaClass);
-    if (!enableGloballyOn || cachedAnswerIsEMC) {
-      return answer;
-    }
+  if (isValidWeakMetaClass(answer,mccHandle)) {
+    return answer;
   }
   answer=mccHandle.create(get(),metaClassRegistry);
   answer.initialize();
