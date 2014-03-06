@@ -6,7 +6,7 @@
     ClassNode[] exceptions=methodNode.getExceptions();
     ClassNode returnType=methodNode.getReturnType();
     boolean isAbstract=methodNode.isAbstract();
-    if (!isAbstract && argumentTypes.length > 0 && ((access & ACC_STATIC) == ACC_STATIC) && !name.contains("$")) {
+    if (!isAbstract && argumentTypes.length > 0 && ((access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC) && !name.contains("$")) {
       ArgumentListExpression argList=new ArgumentListExpression();
       argList.addExpression(new VariableExpression("this"));
       Parameter[] params=new Parameter[argumentTypes.length - 1];
@@ -23,29 +23,29 @@
       System.arraycopy(exceptions,0,exceptionNodes,0,exceptionNodes.length);
       MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),name,argList);
       mce.setImplicitThis(false);
-      MethodNode forwarder=new MethodNode(name,access ^ ACC_STATIC,returnType,params,exceptionNodes,new ExpressionStatement(mce));
+      MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,returnType,params,exceptionNodes,new ExpressionStatement(mce));
       cNode.addMethod(forwarder);
     }
   }
-  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
+  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),TraitConstants.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
   if (fieldHelperClassNode != null) {
     cNode.addInterface(fieldHelperClassNode);
     List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
     Collections.sort(declaredMethods,GETTER_FIRST_COMPARATOR);
     for (    MethodNode methodNode : declaredMethods) {
       String fieldName=methodNode.getName();
-      if (fieldName.endsWith(DIRECT_GETTER_SUFFIX) || fieldName.endsWith(DIRECT_SETTER_SUFFIX)) {
+      if (fieldName.endsWith(TraitConstants.DIRECT_GETTER_SUFFIX) || fieldName.endsWith(TraitConstants.DIRECT_SETTER_SUFFIX)) {
         int suffixIdx=fieldName.lastIndexOf("$");
         fieldName=fieldName.substring(0,suffixIdx);
         String operation=methodNode.getName().substring(suffixIdx + 1);
         boolean getter="get".equals(operation);
         if (getter) {
-          cNode.addField(remappedFieldName(trait,fieldName),ACC_PRIVATE,methodNode.getReturnType(),null);
+          cNode.addField(TraitConstants.remappedFieldName(trait,fieldName),Opcodes.ACC_PRIVATE,methodNode.getReturnType(),null);
         }
         Parameter[] newParams=getter ? Parameter.EMPTY_ARRAY : new Parameter[]{new Parameter(methodNode.getParameters()[0].getOriginType(),"val")};
-        Expression fieldExpr=new VariableExpression(cNode.getField(remappedFieldName(trait,fieldName)));
+        Expression fieldExpr=new VariableExpression(cNode.getField(TraitConstants.remappedFieldName(trait,fieldName)));
         Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
-        MethodNode impl=new MethodNode(methodNode.getName(),ACC_PUBLIC,methodNode.getReturnType(),newParams,ClassNode.EMPTY_ARRAY,body);
+        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,methodNode.getReturnType(),newParams,ClassNode.EMPTY_ARRAY,body);
         impl.addAnnotation(new AnnotationNode(ClassHelper.make(CompileStatic.class)));
         cNode.addMethod(impl);
       }

@@ -1,18 +1,22 @@
 {
+  boolean isItselfTrait=isTrait(cNode);
+  if (isItselfTrait) {
+    inheritTrait(cNode,unit);
+  }
   ClassNode[] interfaces=cNode.getInterfaces();
   for (  ClassNode trait : interfaces) {
-    List<AnnotationNode> traitAnn=trait.getAnnotations(MY_TYPE);
-    if (traitAnn != null && !traitAnn.isEmpty() && !cNode.getNameWithoutPackage().endsWith(TRAIT_HELPER)) {
+    List<AnnotationNode> traitAnn=trait.getAnnotations(TraitConstants.TRAIT_CLASSNODE);
+    if (traitAnn != null && !traitAnn.isEmpty() && !cNode.getNameWithoutPackage().endsWith(TraitConstants.TRAIT_HELPER)) {
       Iterator<InnerClassNode> innerClasses=trait.redirect().getInnerClasses();
       if (innerClasses != null && innerClasses.hasNext()) {
         ClassNode helperClassNode=null;
         ClassNode fieldHelperClassNode=null;
         while (innerClasses.hasNext()) {
           ClassNode icn=innerClasses.next();
-          if (icn.getName().endsWith(FIELD_HELPER)) {
+          if (icn.getName().endsWith(TraitConstants.FIELD_HELPER)) {
             fieldHelperClassNode=icn;
           }
- else           if (icn.getName().endsWith(TRAIT_HELPER)) {
+ else           if (icn.getName().endsWith(TraitConstants.TRAIT_HELPER)) {
             helperClassNode=icn;
           }
         }

@@ -1,0 +1,8 @@
+{
+  ClassNode superClass=bottomTrait.getSuperClass();
+  if (superClass == null || ClassHelper.OBJECT_TYPE.equals(superClass))   return;
+  if (!isTrait(superClass)) {
+    unit.addError(new SyntaxException("A trait can only inherit from another trait",superClass.getLineNumber(),superClass.getColumnNumber()));
+    return;
+  }
+}
