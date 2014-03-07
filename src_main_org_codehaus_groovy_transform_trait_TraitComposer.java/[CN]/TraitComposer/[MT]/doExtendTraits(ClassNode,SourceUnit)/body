@@ -1,9 +1,10 @@
 {
-  boolean isItselfTrait=isTrait(cNode);
+  boolean isItselfTrait=TraitConstants.isTrait(cNode);
   if (isItselfTrait) {
-    inheritTrait(cNode,unit);
+    checkTraitAllowed(cNode,unit);
+    return;
   }
-  ClassNode[] interfaces=cNode.getInterfaces();
+  Set<ClassNode> interfaces=cNode.getAllInterfaces();
   for (  ClassNode trait : interfaces) {
     List<AnnotationNode> traitAnn=trait.getAnnotations(TraitConstants.TRAIT_CLASSNODE);
     if (traitAnn != null && !traitAnn.isEmpty() && !cNode.getNameWithoutPackage().endsWith(TraitConstants.TRAIT_HELPER)) {
