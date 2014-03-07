@@ -1,0 +1,13 @@
+{
+  if (isScriptFile) {
+    if (uriPattern.matcher(script).matches()) {
+      return new GroovyCodeSource(new URI(script));
+    }
+ else {
+      return new GroovyCodeSource(huntForTheScriptFile(script));
+    }
+  }
+ else {
+    return new GroovyCodeSource(script,"script_from_command_line",GroovyShell.DEFAULT_CODE_BASE);
+  }
+}

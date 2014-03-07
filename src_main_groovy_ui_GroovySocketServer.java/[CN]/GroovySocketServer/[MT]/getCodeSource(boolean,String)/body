@@ -1,0 +1,21 @@
+{
+  if (scriptFile) {
+    try {
+      if (uriPattern.matcher(scriptFilenameOrText).matches()) {
+        return new GroovyCodeSource(new URI(scriptFilenameOrText));
+      }
+ else {
+        return new GroovyCodeSource(GroovyMain.searchForGroovyScriptFile(scriptFilenameOrText));
+      }
+    }
+ catch (    IOException e) {
+      throw new GroovyRuntimeException("Unable to get script from: " + scriptFilenameOrText,e);
+    }
+catch (    URISyntaxException e) {
+      throw new GroovyRuntimeException("Unable to get script from URI: " + scriptFilenameOrText,e);
+    }
+  }
+ else {
+    return new GroovyCodeSource(scriptFilenameOrText,generateScriptName(),GroovyShell.DEFAULT_CODE_BASE);
+  }
+}

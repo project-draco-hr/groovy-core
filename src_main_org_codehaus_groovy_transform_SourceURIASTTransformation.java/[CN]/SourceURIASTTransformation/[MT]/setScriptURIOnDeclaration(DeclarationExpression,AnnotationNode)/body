@@ -1,0 +1,17 @@
+{
+  if (de.isMultipleAssignmentDeclaration()) {
+    addError("Annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",de);
+    return;
+  }
+  if (!(de.getRightExpression() instanceof EmptyExpression)) {
+    addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",de);
+    return;
+  }
+  URI uri=getSourceURI(node);
+  if (uri == null) {
+    addError("Unable to get the URI for the source of this script!",de);
+  }
+ else {
+    de.setRightExpression(getExpression(uri));
+  }
+}

@@ -1,0 +1,13 @@
+{
+  if (fieldNode.hasInitialExpression()) {
+    addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",fieldNode);
+    return;
+  }
+  URI uri=getSourceURI(node);
+  if (uri == null) {
+    addError("Unable to get the URI for the source of this class!",fieldNode);
+  }
+ else {
+    fieldNode.setInitialValueExpression(getExpression(uri));
+  }
+}

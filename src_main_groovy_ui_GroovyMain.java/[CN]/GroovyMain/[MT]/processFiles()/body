@@ -1,17 +1,6 @@
 {
   GroovyShell groovy=new GroovyShell(conf);
-  Script s;
-  if (isScriptFile) {
-    if (isScriptUrl(script)) {
-      s=groovy.parse(getText(script),script.substring(script.lastIndexOf("/") + 1));
-    }
- else {
-      s=groovy.parse(huntForTheScriptFile(script));
-    }
-  }
- else {
-    s=groovy.parse(script,"main");
-  }
+  Script s=groovy.parse(getScriptSource(isScriptFile,script));
   if (args.isEmpty()) {
     BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
     PrintWriter writer=new PrintWriter(System.out);
