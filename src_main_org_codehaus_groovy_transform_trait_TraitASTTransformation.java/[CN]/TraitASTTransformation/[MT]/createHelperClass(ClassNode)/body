@@ -21,10 +21,12 @@
   }
   List<MethodNode> methods=cNode.getMethods();
   for (  final MethodNode methodNode : methods) {
-    if (methodNode.isPrivate() || methodNode.isProtected()) {
-      ExceptionUtils.sneakyThrow(new SyntaxException("Cannot have " + (methodNode.isPrivate() ? "private" : "protected") + " method in a trait",methodNode.getLineNumber(),methodNode.getColumnNumber()));
-    }
-    if (methodNode.getDeclaringClass() == cNode) {
+    boolean declared=methodNode.getDeclaringClass() == cNode;
+    if (declared) {
+      if (!methodNode.isSynthetic() && (methodNode.isPrivate() || methodNode.isProtected())) {
+        unit.addError(new SyntaxException("Cannot have " + (methodNode.isPrivate() ? "private" : "protected") + " method in a trait ("+ cNode.getName()+ "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
+        return;
+      }
       helper.addMethod(processMethod(cNode,methodNode,fieldHelper));
     }
   }
