@@ -1,0 +1,26 @@
+{
+  if (!(leftExpression instanceof TupleExpression))   return true;
+  if (!(rightExpression instanceof ListExpression)) {
+    addStaticTypeError("Multiple assignments without list expressions on the right hand side are unsupported in static type checking mode",rightExpression);
+    return false;
+  }
+  TupleExpression tuple=(TupleExpression)leftExpression;
+  ListExpression list=(ListExpression)rightExpression;
+  List<Expression> listExpressions=list.getExpressions();
+  List<Expression> tupleExpressions=tuple.getExpressions();
+  if (listExpressions.size() < tupleExpressions.size()) {
+    addStaticTypeError("Incorrect number of values. Expected:" + tupleExpressions.size() + " Was:"+ listExpressions.size(),list);
+    return false;
+  }
+  for (int i=0, tupleExpressionsSize=tupleExpressions.size(); i < tupleExpressionsSize; i++) {
+    Expression tupleExpression=tupleExpressions.get(i);
+    Expression listExpression=listExpressions.get(i);
+    ClassNode elemType=getType(listExpression);
+    ClassNode tupleType=getType(tupleExpression);
+    if (!isAssignableTo(elemType,tupleType)) {
+      addStaticTypeError("Cannot assign value of type " + elemType.toString(false) + " to variable of type "+ tupleType.toString(false),rightExpression);
+      return false;
+    }
+  }
+  return true;
+}

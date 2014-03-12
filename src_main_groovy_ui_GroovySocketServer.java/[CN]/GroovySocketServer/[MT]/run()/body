@@ -2,14 +2,7 @@
   try {
     ServerSocket serverSocket=new ServerSocket(url.getPort());
     while (true) {
-      Script script;
-      if (isScriptFile) {
-        GroovyMain gm=new GroovyMain();
-        script=groovy.parse(gm.getText(scriptFilenameOrText));
-      }
- else {
-        script=groovy.parse(scriptFilenameOrText);
-      }
+      Script script=groovy.parse(source);
       new GroovyClientConnection(script,autoOutput,serverSocket.accept());
     }
   }

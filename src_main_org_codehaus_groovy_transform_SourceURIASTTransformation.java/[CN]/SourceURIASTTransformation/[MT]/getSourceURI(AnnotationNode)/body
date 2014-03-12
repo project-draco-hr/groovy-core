@@ -1,0 +1,10 @@
+{
+  URI uri=sourceUnit.getSource().getURI();
+  if (uri != null) {
+    if (!(uri.isAbsolute() || memberHasValue(node,"allowRelative",true))) {
+      URI baseURI=new File(".").toURI();
+      uri=uri.resolve(baseURI);
+    }
+  }
+  return uri;
+}

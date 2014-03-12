@@ -1,0 +1,30 @@
+{
+  int modifiers=type.getModifiers();
+  Collection answer;
+  if (object instanceof Collection && type.isAssignableFrom(HashSet.class) && (type == HashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+    return new HashSet((Collection)object);
+  }
+  if (object.getClass().isArray()) {
+    if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+      answer=new ArrayList();
+    }
+ else     if (type.isAssignableFrom(HashSet.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+      answer=new HashSet();
+    }
+ else {
+      try {
+        answer=(Collection)type.newInstance();
+      }
+ catch (      Exception e) {
+        throw new GroovyCastException("Could not instantiate instance of: " + type.getName() + ". Reason: "+ e);
+      }
+    }
+    int length=Array.getLength(object);
+    for (int i=0; i < length; i++) {
+      Object element=Array.get(object,i);
+      answer.add(element);
+    }
+    return answer;
+  }
+  return continueCastOnNumber(object,type);
+}

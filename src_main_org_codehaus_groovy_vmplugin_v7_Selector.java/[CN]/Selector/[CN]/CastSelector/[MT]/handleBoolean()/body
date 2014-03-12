@@ -1,0 +1,22 @@
+{
+  if (handle != null)   return;
+  boolean primitive=staticTargetType == boolean.class;
+  if (!primitive && staticTargetType != Boolean.class)   return;
+  if (args[0] == null) {
+    if (primitive) {
+      handle=MethodHandles.constant(boolean.class,false);
+      handle=MethodHandles.dropArguments(handle,0,staticSourceType);
+    }
+ else {
+      handle=BOOLEAN_IDENTITY;
+    }
+  }
+ else   if (args[0] instanceof Boolean) {
+    handle=BOOLEAN_IDENTITY;
+  }
+ else {
+    name="asBoolean";
+    super.setCallSiteTarget();
+    return;
+  }
+}

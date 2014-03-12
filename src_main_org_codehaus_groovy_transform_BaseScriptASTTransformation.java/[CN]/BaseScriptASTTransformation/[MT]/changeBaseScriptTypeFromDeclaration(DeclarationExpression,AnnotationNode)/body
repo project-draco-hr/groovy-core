@@ -1,0 +1,19 @@
+{
+  if (de.isMultipleAssignmentDeclaration()) {
+    addError("Annotation " + MY_TYPE_NAME + " not supported with multiple assignment notation.",de);
+    return;
+  }
+  if (!(de.getRightExpression() instanceof EmptyExpression)) {
+    addError("Annotation " + MY_TYPE_NAME + " not supported with variable assignment.",de);
+    return;
+  }
+  Expression value=node.getMember("value");
+  if (value != null) {
+    addError("Annotation " + MY_TYPE_NAME + " cannot have member 'value' if used on a declaration.",value);
+    return;
+  }
+  ClassNode cNode=de.getDeclaringClass();
+  ClassNode baseScriptType=de.getVariableExpression().getType().getPlainNodeReference();
+  de.setRightExpression(new VariableExpression("this"));
+  changeBaseScriptType(de,cNode,baseScriptType);
+}

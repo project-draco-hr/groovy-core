@@ -1,0 +1,56 @@
+{
+  if (object instanceof Closure) {
+    Method m=CachedSAMClass.getSAMMethod(type);
+    if (m != null) {
+      return CachedSAMClass.coerceToSAM((Closure)object,m,type,type.isInterface());
+    }
+  }
+  Object[] args=null;
+  if (object instanceof Collection) {
+    Collection collection=(Collection)object;
+    args=collection.toArray();
+  }
+ else   if (object instanceof Object[]) {
+    args=(Object[])object;
+  }
+ else   if (object instanceof Map) {
+    args=new Object[1];
+    args[0]=object;
+  }
+  Exception nested=null;
+  if (args != null) {
+    try {
+      return InvokerHelper.invokeConstructorOf(type,args);
+    }
+ catch (    InvokerInvocationException iie) {
+      throw iie;
+    }
+catch (    GroovyRuntimeException e) {
+      if (e.getMessage().contains("Could not find matching constructor for")) {
+        try {
+          return InvokerHelper.invokeConstructorOf(type,object);
+        }
+ catch (        InvokerInvocationException iie) {
+          throw iie;
+        }
+catch (        Exception ex) {
+          nested=e;
+        }
+      }
+ else {
+        nested=e;
+      }
+    }
+catch (    Exception e) {
+      nested=e;
+    }
+  }
+  GroovyCastException gce;
+  if (nested != null) {
+    gce=new GroovyCastException(object,type,nested);
+  }
+ else {
+    gce=new GroovyCastException(object,type);
+  }
+  throw gce;
+}

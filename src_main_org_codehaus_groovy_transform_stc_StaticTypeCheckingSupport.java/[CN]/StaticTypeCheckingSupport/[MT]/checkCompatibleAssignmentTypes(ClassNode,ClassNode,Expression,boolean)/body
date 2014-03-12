@@ -13,7 +13,7 @@
       return true;
     }
     if (BigInteger_TYPE == leftRedirect) {
-      return WideningCategories.isBigIntCategory(getUnwrapper(rightRedirect));
+      return WideningCategories.isBigIntCategory(getUnwrapper(rightRedirect)) || rightRedirect.isDerivedFrom(BigInteger_TYPE);
     }
   }
   boolean rightExpressionIsNull=rightExpression instanceof ConstantExpression && ((ConstantExpression)rightExpression).getValue() == null;
@@ -49,6 +49,9 @@
     return true;
   }
   if (GROOVY_OBJECT_TYPE.equals(leftRedirect) && isBeingCompiled(right)) {
+    return true;
+  }
+  if (rightRedirect.isDerivedFrom(CLOSURE_TYPE) && isSAMType(leftRedirect)) {
     return true;
   }
   return false;

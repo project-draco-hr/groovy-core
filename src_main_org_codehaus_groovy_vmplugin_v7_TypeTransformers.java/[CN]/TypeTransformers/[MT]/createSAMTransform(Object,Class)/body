@@ -1,0 +1,15 @@
+{
+  Method method=CachedSAMClass.getSAMMethod(parameter);
+  if (method == null)   return null;
+  if (parameter.isInterface()) {
+    MethodHandle ret=TO_REFLECTIVE_PROXY;
+    ret=MethodHandles.insertArguments(ret,1,method.getName(),arg.getClass().getClassLoader(),new Class[]{parameter});
+    return ret;
+  }
+ else {
+    MethodHandle ret=TO_GENERATED_PROXY;
+    ret=MethodHandles.insertArguments(ret,2,ProxyGenerator.INSTANCE,parameter);
+    ret=MethodHandles.insertArguments(ret,0,method.getName());
+    return ret;
+  }
+}

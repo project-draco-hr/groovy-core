@@ -1,0 +1,21 @@
+{
+  try {
+    if (isJsonDate(charArray,from,to)) {
+      int year=CharScanner.parseIntFromTo(charArray,from + 0,from + 4);
+      int month=CharScanner.parseIntFromTo(charArray,from + 5,from + 7);
+      int day=CharScanner.parseIntFromTo(charArray,from + 8,from + 10);
+      int hour=CharScanner.parseIntFromTo(charArray,from + 11,from + 13);
+      int minute=CharScanner.parseIntFromTo(charArray,from + 14,from + 16);
+      int second=CharScanner.parseIntFromTo(charArray,from + 17,from + 19);
+      int miliseconds=CharScanner.parseIntFromTo(charArray,from + 20,from + 23);
+      TimeZone tz=TimeZone.getTimeZone("GMT");
+      return toDate(tz,year,month,day,hour,minute,second,miliseconds);
+    }
+ else {
+      return null;
+    }
+  }
+ catch (  Exception ex) {
+    return null;
+  }
+}

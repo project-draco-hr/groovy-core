@@ -1,0 +1,18 @@
+{
+  boolean failed=false;
+  Throwable th=null;
+  try {
+    GroovyShell shell=new GroovyShell();
+    shell.evaluate(script,genericScriptName());
+  }
+ catch (  GroovyRuntimeException gre) {
+    failed=true;
+    th=ScriptBytecodeAdapter.unwrap(gre);
+  }
+catch (  Throwable e) {
+    failed=true;
+    th=e;
+  }
+  assertTrue("Script should have failed",failed);
+  return th;
+}

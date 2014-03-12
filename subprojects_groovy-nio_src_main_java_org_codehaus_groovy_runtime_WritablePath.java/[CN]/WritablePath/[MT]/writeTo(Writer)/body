@@ -1,0 +1,14 @@
+{
+  final Reader reader=(this.encoding == null) ? new InputStreamReader(Files.newInputStream(this)) : new InputStreamReader(Files.newInputStream(this),Charset.forName(this.encoding));
+  try {
+    int c=reader.read();
+    while (c != -1) {
+      out.write(c);
+      c=reader.read();
+    }
+  }
+  finally {
+    reader.close();
+  }
+  return out;
+}

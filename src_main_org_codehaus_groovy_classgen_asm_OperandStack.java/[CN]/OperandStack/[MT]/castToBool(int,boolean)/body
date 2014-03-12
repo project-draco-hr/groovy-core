@@ -14,7 +14,7 @@
     ClassNode last=stack.get(size - 1);
     if (last == ClassHelper.boolean_TYPE)     return;
     if (!ClassHelper.isPrimitiveType(last)) {
-      BytecodeHelper.unbox(mv,ClassHelper.boolean_TYPE);
+      controller.getInvocationWriter().castNonPrimitiveToBool(last);
     }
  else {
       primitive2b(mv,last);

@@ -1,13 +1,5 @@
 {
-  int from=normaliseIndex(DefaultTypeTransformation.intUnbox(range.getFrom()),text.length());
-  int to=normaliseIndex(DefaultTypeTransformation.intUnbox(range.getTo()),text.length());
-  boolean reverse=range.isReverse();
-  if (from > to) {
-    int tmp=from;
-    from=to;
-    to=tmp;
-    reverse=!reverse;
-  }
-  CharSequence sequence=text.subSequence(from,to + 1);
-  return reverse ? reverse((String)sequence) : sequence;
+  RangeInfo info=subListBorders(text.length(),range);
+  CharSequence sequence=text.subSequence(info.from,info.to);
+  return info.reverse ? reverse((String)sequence) : sequence;
 }

@@ -1,0 +1,20 @@
+{
+  char[] array=charArray;
+  int index=__index;
+  char currentChar=charArray[index];
+  if (index < array.length && currentChar == '"') {
+    index++;
+  }
+  final int startIndex=index;
+  boolean encoded=hasEscapeChar(array,index,indexHolder);
+  index=indexHolder[0];
+  if (encoded) {
+    index=findEndQuote(array,index);
+  }
+  Value value=new CharSequenceValue(chop,Type.STRING,startIndex,index,array,encoded,checkDates);
+  if (index < array.length) {
+    index++;
+  }
+  __index=index;
+  return value;
+}

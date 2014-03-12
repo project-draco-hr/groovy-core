@@ -2,10 +2,14 @@
   if (placeholder)   visited.add(name);
   String ret=wildcard ? "?" : ((type == null || placeholder) ? name : genericsBounds(type,visited));
   if (upperBounds != null) {
-    ret+=" extends ";
-    for (int i=0; i < upperBounds.length; i++) {
-      ret+=genericsBounds(upperBounds[i],visited);
-      if (i + 1 < upperBounds.length)       ret+=" & ";
+    if (placeholder && upperBounds.length == 1 && !upperBounds[0].isGenericsPlaceHolder() && upperBounds[0].getName().equals("java.lang.Object")) {
+    }
+ else {
+      ret+=" extends ";
+      for (int i=0; i < upperBounds.length; i++) {
+        ret+=genericsBounds(upperBounds[i],visited);
+        if (i + 1 < upperBounds.length)         ret+=" & ";
+      }
     }
   }
  else   if (lowerBound != null) {

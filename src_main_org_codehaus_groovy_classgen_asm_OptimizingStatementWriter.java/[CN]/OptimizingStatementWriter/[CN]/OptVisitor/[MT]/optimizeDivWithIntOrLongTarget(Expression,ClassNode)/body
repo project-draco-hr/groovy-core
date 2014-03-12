@@ -1,0 +1,31 @@
+{
+  if (!(rhs instanceof BinaryExpression))   return null;
+  BinaryExpression binExp=(BinaryExpression)rhs;
+  int op=binExp.getOperation().getType();
+  if (op != Types.DIVIDE && op != Types.DIVIDE_EQUAL)   return null;
+  ClassNode originalResultType=typeChooser.resolveType(binExp,node);
+  if (!originalResultType.equals(BigDecimal_TYPE) || !(isLongCategory(assignmentTartgetType) || isFloatingCategory(assignmentTartgetType))) {
+    return null;
+  }
+  ClassNode leftType=typeChooser.resolveType(binExp.getLeftExpression(),node);
+  if (!isLongCategory(leftType))   return null;
+  ClassNode rightType=typeChooser.resolveType(binExp.getRightExpression(),node);
+  if (!isLongCategory(rightType))   return null;
+  ClassNode target;
+  if (isIntCategory(leftType) && isIntCategory(rightType)) {
+    target=int_TYPE;
+  }
+ else   if (isLongCategory(leftType) && isLongCategory(rightType)) {
+    target=long_TYPE;
+  }
+ else   if (isDoubleCategory(leftType) && isDoubleCategory(rightType)) {
+    target=double_TYPE;
+  }
+ else {
+    return null;
+  }
+  StatementMeta meta=addMeta(rhs);
+  meta.type=target;
+  opt.chainInvolvedType(target);
+  return target;
+}

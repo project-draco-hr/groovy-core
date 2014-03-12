@@ -1,0 +1,67 @@
+{
+  if (!samType.isUsingGenerics())   return samType;
+  MethodNode sam=findSAM(samType);
+  if (sam == null) {
+    return samType;
+  }
+  ClassNode samReturnType=sam.getReturnType();
+  List<ClassNode[]> itemsToCheck=new LinkedList<ClassNode[]>();
+  if (closureType.isUsingGenerics()) {
+    ClassNode closureReturnType=closureType.getGenericsTypes()[0].getType();
+    itemsToCheck.add(new ClassNode[]{closureReturnType,samReturnType});
+  }
+  if (expression instanceof ClosureExpression) {
+    Parameter[] closureParams=((ClosureExpression)expression).getParameters();
+    ClassNode[] closureParamTypes=extractTypesFromParameters(closureParams);
+    if (expression.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS) != null) {
+      closureParamTypes=expression.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+    }
+    final Parameter[] parameters=sam.getParameters();
+    for (int i=0; i < parameters.length; i++) {
+      final Parameter parameter=parameters[i];
+      if (closureParamTypes.length > i) {
+        itemsToCheck.add(new ClassNode[]{closureParamTypes[i],parameter.getOriginType()});
+      }
+    }
+  }
+  for (  ClassNode[] classNodes : itemsToCheck) {
+    ClassNode found=classNodes[0];
+    ClassNode expected=classNodes[1];
+    if (!isAssignableTo(found,expected)) {
+      continue;
+    }
+    ClassNode generifiedReturnType=GenericsUtils.parameterizeType(found,expected);
+    while (expected.isArray()) {
+      expected=expected.getComponentType();
+      generifiedReturnType=generifiedReturnType.getComponentType();
+    }
+    if (expected.isGenericsPlaceHolder()) {
+      placeholders.put(expected.getGenericsTypes()[0].getName(),new GenericsType(generifiedReturnType));
+    }
+ else {
+      GenericsType[] samReturnTypeGenericsTypes=expected.getGenericsTypes();
+      GenericsType[] generifiedReturnTypeGenericsTypes=generifiedReturnType.getGenericsTypes();
+      for (int i=0; i < samReturnTypeGenericsTypes.length; i++) {
+        final GenericsType type=samReturnTypeGenericsTypes[i];
+        if (type.isPlaceholder()) {
+          String name=type.getName();
+          placeholders.put(name,generifiedReturnTypeGenericsTypes[i]);
+        }
+      }
+    }
+  }
+  ClassNode result=samType.getPlainNodeReference();
+  GenericsType[] genericsTypes=samType.redirect().getGenericsTypes();
+  GenericsType[] copy=new GenericsType[genericsTypes.length];
+  for (int i=0; i < genericsTypes.length; i++) {
+    GenericsType genericsType=genericsTypes[i];
+    if (genericsType.isPlaceholder() && placeholders.containsKey(genericsType.getName())) {
+      copy[i]=placeholders.get(genericsType.getName());
+    }
+ else {
+      copy[i]=genericsType;
+    }
+  }
+  result.setGenericsTypes(copy);
+  return result;
+}

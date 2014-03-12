@@ -1,10 +1,10 @@
 {
   MetaMethod metaMethod=method;
   isCategoryMethod=method instanceof CategoryMethod;
-  if (metaMethod instanceof NumberNumberMetaMethod) {
+  if (metaMethod instanceof NumberNumberMetaMethod || (method instanceof GeneratedMetaMethod && (name.equals("next") || name.equals("previous")))) {
     if (LOG_ENABLED)     LOG.info("meta method is number method");
-    catchException=false;
     if (IndyMath.chooseMathMethod(this,metaMethod)) {
+      catchException=false;
       if (LOG_ENABLED)       LOG.info("indy math successfull");
       return;
     }

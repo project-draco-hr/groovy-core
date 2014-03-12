@@ -1,0 +1,37 @@
+{
+switch (type) {
+case DOUBLE:
+    return doubleValue();
+case INTEGER:
+  if (isInteger(buffer,startIndex,endIndex - startIndex)) {
+    return intValue();
+  }
+ else {
+    return longValue();
+  }
+case STRING:
+if (checkDate) {
+  Date date=null;
+  if (Dates.isISO8601QuickCheck(buffer,startIndex,endIndex)) {
+    if (Dates.isJsonDate(buffer,startIndex,endIndex)) {
+      date=Dates.fromJsonDate(buffer,startIndex,endIndex);
+    }
+ else     if (Dates.isISO8601(buffer,startIndex,endIndex)) {
+      date=Dates.fromISO8601(buffer,startIndex,endIndex);
+    }
+ else {
+      return stringValue();
+    }
+    if (date == null) {
+      return stringValue();
+    }
+ else {
+      return date;
+    }
+  }
+}
+return stringValue();
+}
+die();
+return null;
+}

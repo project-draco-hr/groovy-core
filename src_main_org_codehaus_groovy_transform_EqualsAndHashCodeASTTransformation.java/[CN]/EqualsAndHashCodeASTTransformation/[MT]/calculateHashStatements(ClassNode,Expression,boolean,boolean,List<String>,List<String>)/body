@@ -10,8 +10,7 @@
   body.addStatement(new ExpressionStatement(new DeclarationExpression(result,ASSIGN,init)));
   for (  PropertyNode pNode : pList) {
     if (shouldSkip(pNode.getName(),excludes,includes))     continue;
-    String getterName="get" + Verifier.capitalize(pNode.getName());
-    Expression getter=new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,MethodCallExpression.NO_ARGUMENTS);
+    Expression getter=new StaticMethodCallExpression(INVOKERHELPER_TYPE,"getProperty",new TupleExpression(new VariableExpression("this"),new ConstantExpression(pNode.getName())));
     final Expression args=new TupleExpression(result,getter);
     final Expression current=new StaticMethodCallExpression(HASHUTIL_TYPE,"updateHash",args);
     body.addStatement(new IfStatement(identicalExpr(getter,new VariableExpression("this")),EmptyStatement.INSTANCE,assignStatement(result,current)));

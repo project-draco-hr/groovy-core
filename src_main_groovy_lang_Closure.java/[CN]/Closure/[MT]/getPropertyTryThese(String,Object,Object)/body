@@ -12,4 +12,14 @@
     }
     throw e1;
   }
+catch (  MissingFieldException e2) {
+    if (secondTry != null && firstTry != this && firstTry != secondTry) {
+      try {
+        return InvokerHelper.getProperty(secondTry,property);
+      }
+ catch (      GroovyRuntimeException e3) {
+      }
+    }
+    throw e2;
+  }
 }

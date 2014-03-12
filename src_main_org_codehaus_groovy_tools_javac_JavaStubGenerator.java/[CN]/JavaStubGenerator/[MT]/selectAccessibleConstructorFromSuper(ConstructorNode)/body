@@ -1,17 +1,19 @@
 {
   ClassNode type=node.getDeclaringClass();
   ClassNode superType=type.getUnresolvedSuperClass();
+  Parameter[] bestMatch=null;
   for (  ConstructorNode c : superType.getDeclaredConstructors()) {
-    if (c.isPublic() || c.isProtected()) {
-      Parameter[] parameters=c.getParameters();
-      Parameter[] copy=new Parameter[parameters.length];
-      for (int i=0; i < copy.length; i++) {
-        Parameter orig=parameters[i];
-        copy[i]=new Parameter(orig.getOriginType().getPlainNodeReference(),orig.getName());
-      }
-      return copy;
+    if (!c.isPublic() && !c.isProtected())     continue;
+    Parameter[] parameters=c.getParameters();
+    Parameter[] copy=new Parameter[parameters.length];
+    for (int i=0; i < copy.length; i++) {
+      Parameter orig=parameters[i];
+      copy[i]=new Parameter(orig.getOriginType().getPlainNodeReference(),orig.getName());
     }
+    if (noExceptionToAvoid(node,c))     return copy;
+    if (bestMatch == null)     bestMatch=copy;
   }
+  if (bestMatch != null)   return bestMatch;
   if (superType.isPrimaryClassNode()) {
     return Parameter.EMPTY_ARRAY;
   }

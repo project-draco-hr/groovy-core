@@ -4,10 +4,18 @@
     classNode.setInterfaces(ClassNode.EMPTY_ARRAY);
   }
  else {
-    Class[] interfaceClasses=clazz.getInterfaces();
     ClassNode[] ret=new ClassNode[interfaceTypes.length];
     for (int i=0; i < interfaceTypes.length; i++) {
-      ret[i]=makeClassNode(cu,interfaceTypes[i],interfaceClasses[i]);
+      Type type=interfaceTypes[i];
+      while (!(type instanceof Class)) {
+        ParameterizedType pt=(ParameterizedType)type;
+        Type t2=pt.getRawType();
+        if (t2 == type) {
+          throw new GroovyBugError("Cannot transform generic signature of " + clazz + " with generic interface "+ interfaceTypes[i]+ " to a class.");
+        }
+        type=t2;
+      }
+      ret[i]=makeClassNode(cu,interfaceTypes[i],(Class)type);
     }
     classNode.setInterfaces(ret);
   }

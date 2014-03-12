@@ -1,0 +1,32 @@
+{
+  char[] array=charArray;
+  if (__currentChar == '{')   __index++;
+  ValueMap map=useValues ? new ValueMapImpl() : new LazyValueMap(lazyChop);
+  Value value=new ValueContainer(map);
+  objectLoop:   for (; __index < array.length; __index++) {
+    skipWhiteSpace();
+switch (__currentChar) {
+case '"':
+      Value key=decodeStringOverlay();
+    skipWhiteSpace();
+  if (__currentChar != ':') {
+    complain("expecting current character to be " + charDescription(__currentChar) + "\n");
+  }
+__index++;
+Value item=decodeValueOverlay();
+skipWhiteSpace();
+MapItemValue miv=new MapItemValue(key,item);
+map.add(miv);
+}
+switch (__currentChar) {
+case '}':
+__index++;
+break objectLoop;
+case ',':
+continue;
+default :
+complain("expecting '}' or ',' but got current char " + charDescription(__currentChar));
+}
+}
+return value;
+}

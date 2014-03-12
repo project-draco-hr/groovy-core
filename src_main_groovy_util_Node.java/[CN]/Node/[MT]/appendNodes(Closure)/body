@@ -1,12 +1,7 @@
 {
-  List list=parent().children();
-  int afterIndex=list.indexOf(this);
-  List leftOvers=new ArrayList(list.subList(afterIndex + 1,list.size()));
-  list.subList(afterIndex + 1,list.size()).clear();
-  Node lastAppended=null;
+  List tail=getTail();
   for (  Node child : buildChildrenFromClosure(c)) {
-    lastAppended=parent().appendNode(child.name(),child.attributes(),child.value());
+    parent().appendNode(child.name(),child.attributes(),child.value());
   }
-  parent().children().addAll(leftOvers);
-  return lastAppended;
+  parent().children().addAll(tail);
 }

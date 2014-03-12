@@ -3,7 +3,7 @@
   ClassNode rightRedirect=right.redirect();
   Expression leftExpression=expr.getLeftExpression();
   if (op == ASSIGN || op == ASSIGNMENT_OPERATOR) {
-    if (leftRedirect.isArray() && !rightRedirect.isArray())     return leftRedirect;
+    if (leftRedirect.isArray() && implementsInterfaceOrIsSubclassOf(rightRedirect,Collection_TYPE))     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
       if (expr.getRightExpression() instanceof ListExpression) {
         List<Expression> list=((ListExpression)expr.getRightExpression()).getExpressions();
@@ -22,7 +22,7 @@
       if (isPrimitiveType(initialType) && rightRedirect.isDerivedFrom(Number_TYPE)) {
         return getUnwrapper(right);
       }
-      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)) {
+      if (STRING_TYPE.equals(initialType) || CLASS_Type.equals(initialType) || Boolean_TYPE.equals(initialType)|| boolean_TYPE.equals(initialType)) {
         return initialType;
       }
     }
@@ -58,7 +58,7 @@
       if (isLongCategory(leftRedirect) && isLongCategory(rightRedirect))       return long_TYPE;
       if (isBigIntCategory(leftRedirect) && isBigIntCategory(rightRedirect))       return BigInteger_TYPE;
     }
- else     if (isCompareToBoolean(op) || op == COMPARE_EQUAL) {
+ else     if (isCompareToBoolean(op) || op == COMPARE_EQUAL || op == COMPARE_NOT_EQUAL) {
       return boolean_TYPE;
     }
   }
@@ -92,7 +92,7 @@
   MethodNode method=findMethodOrFail(expr,left,operationName,right);
   if (method != null) {
     storeTargetMethod(expr,method);
-    typeCheckMethodsWithGenerics(left,new ClassNode[]{right},method,expr);
+    typeCheckMethodsWithGenericsOrFail(left,new ClassNode[]{right},method,expr);
     if (isAssignment(op))     return left;
     if (isCompareToBoolean(op))     return boolean_TYPE;
     if (op == COMPARE_TO)     return int_TYPE;

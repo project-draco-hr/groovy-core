@@ -1,0 +1,10 @@
+{
+  try {
+    ensureBuffer();
+    return index + 1 < readBuf.length ? readBuf[index++] : -1;
+  }
+ catch (  Exception ex) {
+    String str=CharScanner.errorDetails("safeNextChar issue",readBuf,index,ch);
+    return Exceptions.handle(int.class,str,ex);
+  }
+}

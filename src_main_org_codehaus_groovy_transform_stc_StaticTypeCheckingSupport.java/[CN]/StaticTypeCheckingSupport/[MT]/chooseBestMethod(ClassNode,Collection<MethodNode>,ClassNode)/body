@@ -1,68 +1,93 @@
 {
   if (methods.isEmpty())   return Collections.emptyList();
+  if (isUsingUncheckedGenerics(receiver)) {
+    ClassNode raw=makeRawType(receiver);
+    return chooseBestMethod(raw,methods,args);
+  }
   List<MethodNode> bestChoices=new LinkedList<MethodNode>();
   int bestDist=Integer.MAX_VALUE;
-  ClassNode actualReceiver;
   Collection<MethodNode> choicesLeft=removeCovariants(methods);
-  for (  MethodNode m : choicesLeft) {
-    final ClassNode declaringClass=m.getDeclaringClass();
-    actualReceiver=receiver != null ? receiver : declaringClass;
-    Parameter[] params=parameterizeArguments(actualReceiver,m);
-    if (params.length == args.length) {
-      int allPMatch=allParametersAndArgumentsMatch(params,args);
+  for (  MethodNode candidateNode : choicesLeft) {
+    ClassNode declaringClass=candidateNode.getDeclaringClass();
+    ClassNode actualReceiver=receiver != null ? receiver : declaringClass;
+    final ClassNode declaringClassForDistance=declaringClass;
+    final ClassNode actualReceiverForDistance=actualReceiver;
+    MethodNode safeNode=candidateNode;
+    ClassNode[] safeArgs=args;
+    boolean isExtensionMethodNode=candidateNode instanceof ExtensionMethodNode;
+    if (isExtensionMethodNode) {
+      safeArgs=new ClassNode[args.length + 1];
+      System.arraycopy(args,0,safeArgs,1,args.length);
+      safeArgs[0]=receiver;
+      safeNode=((ExtensionMethodNode)candidateNode).getExtensionMethodNode();
+      declaringClass=safeNode.getDeclaringClass();
+      actualReceiver=declaringClass;
+    }
+    Parameter[] params=parameterizeArguments(actualReceiver,safeNode);
+    if (params.length == safeArgs.length) {
+      int allPMatch=allParametersAndArgumentsMatch(params,safeArgs);
       boolean firstParamMatches=true;
-      if (args.length > 0) {
+      if (safeArgs.length > 0) {
         Parameter[] firstParams=new Parameter[params.length - 1];
         System.arraycopy(params,0,firstParams,0,firstParams.length);
-        firstParamMatches=allParametersAndArgumentsMatch(firstParams,args) >= 0;
+        firstParamMatches=allParametersAndArgumentsMatch(firstParams,safeArgs) >= 0;
       }
-      int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,args) : -1;
+      int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,safeArgs) : -1;
       if (lastArgMatch >= 0) {
         lastArgMatch+=256 - params.length;
       }
       int dist=allPMatch >= 0 ? Math.max(allPMatch,lastArgMatch) : lastArgMatch;
-      if (dist >= 0 && !actualReceiver.equals(declaringClass))       dist+=getDistance(actualReceiver,declaringClass);
+      if (dist >= 0 && !actualReceiverForDistance.equals(declaringClassForDistance))       dist+=getDistance(actualReceiverForDistance,declaringClassForDistance);
+      if (dist >= 0 && !isExtensionMethodNode) {
+        dist++;
+      }
       if (dist >= 0 && dist < bestDist) {
         bestChoices.clear();
-        bestChoices.add(m);
+        bestChoices.add(candidateNode);
         bestDist=dist;
       }
  else       if (dist >= 0 && dist == bestDist) {
-        bestChoices.add(m);
+        bestChoices.add(candidateNode);
       }
     }
  else     if (isVargs(params)) {
       boolean firstParamMatches=true;
       int dist=-1;
-      if (args.length > 0) {
+      if (safeArgs.length > 0) {
         Parameter[] firstParams=new Parameter[params.length - 1];
         System.arraycopy(params,0,firstParams,0,firstParams.length);
-        dist=allParametersAndArgumentsMatch(firstParams,args);
+        dist=allParametersAndArgumentsMatch(firstParams,safeArgs);
         firstParamMatches=dist >= 0;
       }
  else {
         dist=0;
       }
       if (firstParamMatches) {
-        if (params.length == args.length + 1) {
+        if (params.length == safeArgs.length + 1) {
+          if (dist >= 0) {
+            dist+=256 - params.length;
+          }
           if (bestDist > 1 + dist) {
             bestChoices.clear();
-            bestChoices.add(m);
+            bestChoices.add(candidateNode);
             bestDist=1 + dist;
           }
         }
  else {
-          dist+=excessArgumentsMatchesVargsParameter(params,args);
-          if (dist >= 0 && !actualReceiver.equals(declaringClass))           dist+=getDistance(actualReceiver,declaringClass);
+          dist+=excessArgumentsMatchesVargsParameter(params,safeArgs);
+          if (dist >= 0 && !actualReceiverForDistance.equals(declaringClassForDistance))           dist+=getDistance(actualReceiverForDistance,declaringClassForDistance);
           dist+=256 - params.length;
-          if (params.length < args.length && dist >= 0) {
+          if (dist >= 0 && !isExtensionMethodNode) {
+            dist++;
+          }
+          if (params.length < safeArgs.length && dist >= 0) {
             if (dist >= 0 && dist < bestDist) {
               bestChoices.clear();
-              bestChoices.add(m);
+              bestChoices.add(candidateNode);
               bestDist=dist;
             }
  else             if (dist >= 0 && dist == bestDist) {
-              bestChoices.add(m);
+              bestChoices.add(candidateNode);
             }
           }
         }

@@ -1,0 +1,11 @@
+{
+  if (c == null || !Modifier.isAbstract(c.getModifiers()))   return;
+  getAbstractMethods(c.getSuperclass(),current);
+  for (  Class ci : c.getInterfaces()) {
+    getAbstractMethods(ci,current);
+  }
+  for (  Method m : getDeclaredMethods(c)) {
+    if (Modifier.isPrivate(m.getModifiers()))     continue;
+    if (Modifier.isAbstract(m.getModifiers()))     current.add(m);
+  }
+}

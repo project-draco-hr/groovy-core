@@ -23,7 +23,7 @@
     ArgumentListExpression ae=new ArgumentListExpression(index,rhsValueLoader);
     if (rhsValueLoader instanceof VariableSlotLoader && parent instanceof BinaryExpression) {
       Expression right=((BinaryExpression)parent).getRightExpression();
-      rhsValueLoader.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,controller.getTypeChooser().resolveType(right,controller.getClassNode()));
+      rhsValueLoader.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,controller.getTypeChooser().resolveType(parent,controller.getClassNode()));
     }
     MethodCallExpression mce=new MethodCallExpression(receiver,"putAt",ae);
     mce.setSourcePosition(parent);

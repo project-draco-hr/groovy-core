@@ -1,0 +1,7 @@
+{
+  List<Expression> transformedArgs=transformArguments(expr);
+  ConstructorCallExpression cce=new ConstructorCallExpression(target.getDeclaringClass(),new ArgumentListExpression(transformedArgs));
+  cce.setSourcePosition(expr);
+  cce.putNodeMetaData(DIRECT_METHOD_CALL_TARGET,target);
+  return cce;
+}

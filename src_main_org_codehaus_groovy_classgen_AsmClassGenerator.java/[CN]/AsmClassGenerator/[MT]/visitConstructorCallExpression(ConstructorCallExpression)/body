@@ -1,9 +1,7 @@
 {
   onLineNumber(call,"visitConstructorCallExpression: \"" + call.getType().getName() + "\":");
   if (call.isSpecialCall()) {
-    controller.getCompileStack().pushInSpecialConstructorCall();
-    visitSpecialConstructorCall(call);
-    controller.getCompileStack().pop();
+    controller.getInvocationWriter().writeSpecialConstructorCall(call);
     return;
   }
   controller.getInvocationWriter().writeInvokeConstructor(call);

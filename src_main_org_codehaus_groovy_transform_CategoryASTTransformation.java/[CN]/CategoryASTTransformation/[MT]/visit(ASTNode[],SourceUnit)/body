@@ -1,13 +1,18 @@
 {
   if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof ClassNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, ClassNode] but got: " + Arrays.asList(nodes));
+    source.getErrorCollector().addError(new SyntaxErrorMessage(new SyntaxException("@Category can only be added to a ClassNode but got: " + (nodes.length == 2 ? nodes[1] : "nothing"),nodes[0].getLineNumber(),nodes[0].getColumnNumber()),source));
   }
   AnnotationNode annotation=(AnnotationNode)nodes[0];
   ClassNode parent=(ClassNode)nodes[1];
   ClassNode targetClass=getTargetClass(source,annotation);
+  thisExpression.setType(targetClass);
   final LinkedList<Set<String>> varStack=new LinkedList<Set<String>>();
+  if (!ensureNoInstanceFieldOrProperty(source,parent))   return;
   Set<String> names=new HashSet<String>();
   for (  FieldNode field : parent.getFields()) {
+    names.add(field.getName());
+  }
+  for (  PropertyNode field : parent.getProperties()) {
     names.add(field.getName());
   }
   varStack.add(names);
@@ -80,10 +85,10 @@
     @Override public Expression transform(    Expression exp){
       if (exp instanceof VariableExpression) {
         VariableExpression ve=(VariableExpression)exp;
-        if (ve.getName().equals("this"))         return THIS_EXPRESSION;
+        if (ve.getName().equals("this"))         return thisExpression;
  else {
           if (!varStack.getLast().contains(ve.getName())) {
-            return new PropertyExpression(THIS_EXPRESSION,ve.getName());
+            return new PropertyExpression(thisExpression,ve.getName());
           }
         }
       }
@@ -92,7 +97,7 @@
         if (pe.getObjectExpression() instanceof VariableExpression) {
           VariableExpression vex=(VariableExpression)pe.getObjectExpression();
           if (vex.isThisExpression()) {
-            pe.setObjectExpression(THIS_EXPRESSION);
+            pe.setObjectExpression(thisExpression);
             return pe;
           }
         }

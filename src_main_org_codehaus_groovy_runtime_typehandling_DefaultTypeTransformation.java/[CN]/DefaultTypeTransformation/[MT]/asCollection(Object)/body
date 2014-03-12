@@ -32,7 +32,7 @@
       throw new GroovyRuntimeException("Error reading file: " + value,e);
     }
   }
- else   if (isEnumSubclass(value)) {
+ else   if (value instanceof Class && ((Class)value).isEnum()) {
     Object[] values=(Object[])InvokerHelper.invokeMethod(value,"values",new Object[0]);
     return Arrays.asList(values);
   }

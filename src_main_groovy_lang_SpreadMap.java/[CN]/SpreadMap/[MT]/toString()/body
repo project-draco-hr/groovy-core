@@ -1,14 +1,14 @@
 {
-  if (mapData.isEmpty()) {
+  if (isEmpty()) {
     return "*:[:]";
   }
-  StringBuffer buff=new StringBuffer("*:[");
-  Iterator iter=mapData.keySet().iterator();
-  for (; iter.hasNext(); ) {
+  StringBuilder sb=new StringBuilder("*:[");
+  Iterator iter=keySet().iterator();
+  while (iter.hasNext()) {
     Object key=iter.next();
-    buff.append(key + ":" + mapData.get(key));
-    if (iter.hasNext())     buff.append(", ");
+    sb.append(key).append(":").append(get(key));
+    if (iter.hasNext())     sb.append(", ");
   }
-  buff.append("]");
-  return buff.toString();
+  sb.append("]");
+  return sb.toString();
 }

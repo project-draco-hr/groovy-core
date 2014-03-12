@@ -7,6 +7,7 @@
   final LoggingStrategy loggingStrategy=createLoggingStrategy(logAnnotation,source.getClassLoader());
   if (loggingStrategy == null)   return;
   final String logFieldName=lookupLogFieldName(logAnnotation);
+  final String categoryName=lookupCategoryName(logAnnotation);
   if (!(targetClass instanceof ClassNode))   throw new GroovyBugError("Class annotation " + logAnnotation.getClassNode().getName() + " annotated no Class, this must not happen.");
   final ClassNode classNode=(ClassNode)targetClass;
   ClassCodeExpressionTransformer transformer=new ClassCodeExpressionTransformer(){
@@ -30,7 +31,7 @@
         addError("Class annotated with Log annotation cannot have log field declared because the field exists in the parent class: " + logField.getOwner().getName(),logField);
       }
  else {
-        logNode=loggingStrategy.addLoggerFieldToClass(node,logFieldName);
+        logNode=loggingStrategy.addLoggerFieldToClass(node,logFieldName,categoryName);
       }
       super.visitClass(node);
     }

@@ -2,7 +2,9 @@
   Expression right=expression.getRightExpression();
   right.visit(this);
   ClassNode leftType=typeChooser.resolveType(expression.getLeftExpression(),node);
-  ClassNode rightType=typeChooser.resolveType(expression.getRightExpression(),node);
+  Expression rightExpression=expression.getRightExpression();
+  ClassNode rightType=optimizeDivWithIntOrLongTarget(rightExpression,leftType);
+  if (rightType == null)   rightType=typeChooser.resolveType(expression.getRightExpression(),node);
   if (isPrimitiveType(leftType) && isPrimitiveType(rightType)) {
     if (right instanceof ConstantExpression) {
       opt.chainCanOptimize(true);

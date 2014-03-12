@@ -1,0 +1,22 @@
+{
+  boolean old=inBuilderMethod;
+  inBuilderMethod=false;
+  if (call.isImplicitThis() && call.getArguments() instanceof TupleExpression) {
+    List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
+    if (!expressions.isEmpty()) {
+      Expression lastArg=expressions.get(expressions.size() - 1);
+      if (lastArg instanceof ClosureExpression) {
+        call.getObjectExpression().visit(this);
+        call.getMethod().visit(this);
+        for (        Expression expression : expressions) {
+          inBuilderMethod=(expression == lastArg);
+          expression.visit(this);
+        }
+      }
+    }
+  }
+ else {
+    super.visitMethodCallExpression(call);
+  }
+  inBuilderMethod=old;
+}

@@ -1,6 +1,19 @@
 {
   Expression objectExpression=expr.getObjectExpression();
   ClassNode type=staticCompilationTransformer.getTypeChooser().resolveType(objectExpression,staticCompilationTransformer.getClassNode());
+  if (isCallOnClosure(expr)) {
+    FieldNode field=staticCompilationTransformer.getClassNode().getField(expr.getMethodAsString());
+    if (field != null) {
+      VariableExpression vexp=new VariableExpression(field);
+      MethodCallExpression result=new MethodCallExpression(vexp,"call",staticCompilationTransformer.transform(expr.getArguments()));
+      result.setImplicitThis(false);
+      result.setSourcePosition(expr);
+      result.setSafe(expr.isSafe());
+      result.setSpreadSafe(expr.isSpreadSafe());
+      result.setMethodTarget(StaticTypeCheckingVisitor.CLOSURE_CALL_VARGS);
+      return result;
+    }
+  }
   if (type != null && type.isArray()) {
     String method=expr.getMethodAsString();
     ClassNode componentType=type.getComponentType();
@@ -23,7 +36,7 @@
         }
       }
     }
-    if ("putAt".equals(method)) {
+ else     if ("putAt".equals(method)) {
       Expression arguments=expr.getArguments();
       if (arguments instanceof TupleExpression) {
         List<Expression> argList=((TupleExpression)arguments).getExpressions();

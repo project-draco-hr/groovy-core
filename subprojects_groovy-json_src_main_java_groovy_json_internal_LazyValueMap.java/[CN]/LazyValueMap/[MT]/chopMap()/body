@@ -1,0 +1,41 @@
+{
+  if (mapChopped) {
+    return;
+  }
+  mapChopped=true;
+  if (this.map == null) {
+    for (int index=0; index < len; index++) {
+      MapItemValue entry=(MapItemValue)items[index];
+      Value value=entry.getValue();
+      if (value == null)       continue;
+      if (value.isContainer()) {
+        chopContainer(value);
+      }
+ else {
+        value.chop();
+      }
+    }
+  }
+ else {
+    for (    Map.Entry<String,Object> entry : map.entrySet()) {
+      Object object=entry.getValue();
+      if (object instanceof Value) {
+        Value value=(Value)object;
+        if (value.isContainer()) {
+          chopContainer(value);
+        }
+ else {
+          value.chop();
+        }
+      }
+ else       if (object instanceof LazyValueMap) {
+        LazyValueMap m=(LazyValueMap)object;
+        m.chopMap();
+      }
+ else       if (object instanceof ValueList) {
+        ValueList list=(ValueList)object;
+        list.chopList();
+      }
+    }
+  }
+}

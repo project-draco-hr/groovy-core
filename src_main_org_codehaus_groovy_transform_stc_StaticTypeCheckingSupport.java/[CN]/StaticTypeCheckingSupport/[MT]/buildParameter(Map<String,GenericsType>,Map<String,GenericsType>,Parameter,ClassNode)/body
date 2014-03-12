@@ -1,0 +1,13 @@
+{
+  if (genericFromReceiver.isEmpty() && (placeholdersFromContext == null || placeholdersFromContext.isEmpty())) {
+    return methodParameter;
+  }
+  if (paramType.isArray()) {
+    ClassNode componentType=paramType.getComponentType();
+    Parameter subMethodParameter=new Parameter(componentType,methodParameter.getName());
+    Parameter component=buildParameter(genericFromReceiver,placeholdersFromContext,subMethodParameter,componentType);
+    return new Parameter(component.getType().makeArray(),component.getName());
+  }
+  ClassNode resolved=resolveClassNodeGenerics(genericFromReceiver,placeholdersFromContext,paramType);
+  return new Parameter(resolved,methodParameter.getName());
+}

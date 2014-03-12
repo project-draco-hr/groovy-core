@@ -11,7 +11,10 @@
   elseBlock.addStatement(new ExpressionStatement(resExpr));
   final Statement mainIf=new IfStatement(notNullExpr(resExpr),new ExpressionStatement(resExpr),elseBlock);
   if (fieldNode.isVolatile()) {
-    body.addStatement(new IfStatement(notNullExpr(resExpr),new ExpressionStatement(resExpr),new SynchronizedStatement(syncTarget(fieldNode),mainIf)));
+    final BlockStatement mainIfBlock=new BlockStatement();
+    mainIfBlock.addStatement(assignStatement(resExpr,callExpression));
+    mainIfBlock.addStatement(mainIf);
+    body.addStatement(new IfStatement(notNullExpr(resExpr),new ExpressionStatement(resExpr),new SynchronizedStatement(syncTarget(fieldNode),mainIfBlock)));
   }
  else {
     body.addStatement(mainIf);

@@ -1,0 +1,8 @@
+{
+  if (object == null)   return null;
+  if (type.isInstance(object))   return (Enum)object;
+  if (object instanceof String || object instanceof GString) {
+    return Enum.valueOf(type,object.toString());
+  }
+  throw new GroovyCastException(object,type);
+}

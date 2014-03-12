@@ -39,10 +39,10 @@
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
   boolean isWithCall=isWithCall(name,callArguments);
-  visitMethodCallArguments(argumentList,false,null);
+  final ClassNode receiver=getType(objectExpression);
+  visitMethodCallArguments(receiver,argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
-  final ClassNode receiver=getType(objectExpression);
   if (isWithCall) {
     typeCheckingContext.lastImplicitItType=receiver;
     checkClosureParameters(callArguments,receiver);
@@ -71,22 +71,18 @@
             Parameter[] parameters=(Parameter[])data;
             typeCheckClosureCall(callArguments,args,parameters);
           }
-          ClassNode type=getInferredReturnType(((ASTNode)variable));
-          if (type == null) {
-            if (variable.getType().equals(CLOSURE_TYPE)) {
-              GenericsType[] genericsTypes=variable.getType().getGenericsTypes();
-              if (genericsTypes != null) {
-                if (!genericsTypes[0].isPlaceholder()) {
-                  type=genericsTypes[0].getType();
-                }
-              }
- else {
-                type=OBJECT_TYPE;
+          ClassNode type=getType(((ASTNode)variable));
+          if (type != null && type.equals(CLOSURE_TYPE)) {
+            GenericsType[] genericsTypes=type.getGenericsTypes();
+            type=OBJECT_TYPE;
+            if (genericsTypes != null) {
+              if (!genericsTypes[0].isPlaceholder()) {
+                type=genericsTypes[0].getType();
               }
             }
           }
           if (type != null) {
-            storeType(call,(ClassNode)type);
+            storeType(call,type);
           }
         }
       }
@@ -135,7 +131,6 @@
           }
         }
         if (!mn.isEmpty()) {
-          if (mn.size() == 1)           typeCheckMethodsWithGenerics(currentReceiver.getType(),args,mn.get(0),call);
           chosenReceiver=currentReceiver;
           break;
         }
@@ -170,15 +165,6 @@
               chosenReceiver=owners.get(0);
             }
           }
-          typeCheckingContext.pushEnclosingClassNode(directMethodCallCandidate.getDeclaringClass());
-          for (          ClassNode node : typeCheckingContext.source.getAST().getClasses()) {
-            if (isClassInnerClassOrEqualTo(typeCheckingContext.getEnclosingClassNode(),node)) {
-              silentlyVisitMethodNode(directMethodCallCandidate);
-              break;
-            }
-          }
-          pickInferredTypeFromMethodAnnotation(directMethodCallCandidate);
-          typeCheckingContext.popEnclosingClassNode();
           ClassNode returnType=null;
           if (isWithCall) {
             returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);
@@ -187,7 +173,7 @@
             returnType=getType(directMethodCallCandidate);
           }
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
-            visitMethodCallArguments(argumentList,true,directMethodCallCandidate);
+            visitMethodCallArguments(receiver,argumentList,true,directMethodCallCandidate);
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
             returnType=irtg != null && implementsInterfaceOrIsSubclassOf(irtg,returnType) ? irtg : returnType;
             callArgsVisited=true;
@@ -199,17 +185,19 @@
               returnType=md.getType();
             }
           }
-          storeType(call,returnType);
-          storeTargetMethod(call,directMethodCallCandidate);
-          String data=chosenReceiver != null ? chosenReceiver.getData() : null;
-          if (data != null) {
-            call.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,data);
-          }
-          if (objectExpression instanceof VariableExpression) {
-            VariableExpression var=(VariableExpression)objectExpression;
-            if (var.isClosureSharedVariable()) {
-              SecondPassExpression<ClassNode[]> wrapper=new SecondPassExpression<ClassNode[]>(call,args);
-              typeCheckingContext.secondPassExpressions.add(wrapper);
+          if (typeCheckMethodsWithGenericsOrFail(chosenReceiver.getType(),args,mn.get(0),call)) {
+            storeType(call,returnType);
+            storeTargetMethod(call,directMethodCallCandidate);
+            String data=chosenReceiver != null ? chosenReceiver.getData() : null;
+            if (data != null) {
+              call.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,data);
+            }
+            if (objectExpression instanceof VariableExpression) {
+              VariableExpression var=(VariableExpression)objectExpression;
+              if (var.isClosureSharedVariable()) {
+                SecondPassExpression<ClassNode[]> wrapper=new SecondPassExpression<ClassNode[]>(call,args);
+                typeCheckingContext.secondPassExpressions.add(wrapper);
+              }
             }
           }
         }
@@ -219,7 +207,23 @@
       }
     }
     if (!callArgsVisited) {
-      visitMethodCallArguments(argumentList,true,(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+      MethodNode mn=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+      visitMethodCallArguments(receiver,argumentList,true,mn);
+      if (mn != null) {
+        List<Expression> argExpressions=argumentList.getExpressions();
+        Parameter[] parameters=mn.getParameters();
+        for (int i=0; i < argExpressions.size() && i < parameters.length; i++) {
+          Expression arg=argExpressions.get(i);
+          ClassNode pType=parameters[i].getType();
+          ClassNode aType=getType(arg);
+          if (CLOSURE_TYPE.equals(pType) && CLOSURE_TYPE.equals(aType)) {
+            if (!isAssignableTo(aType,pType)) {
+              addNoMatchingMethodError(receiver,name,getArgumentTypes(argumentList),call);
+              call.removeNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+            }
+          }
+        }
+      }
     }
   }
   finally {

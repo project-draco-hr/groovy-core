@@ -1,0 +1,20 @@
+{
+  Throwable th=null;
+  try {
+    GroovyShell shell=new GroovyShell();
+    shell.evaluate(script,genericScriptName());
+  }
+ catch (  GroovyRuntimeException gre) {
+    th=ScriptBytecodeAdapter.unwrap(gre);
+  }
+catch (  Throwable e) {
+    th=e;
+  }
+  if (th == null) {
+    fail("Script should have failed with an exception of type " + clazz.getName());
+  }
+ else   if (!clazz.isInstance(th)) {
+    fail("Script should have failed with an exception of type " + clazz.getName() + ", instead got Exception "+ th);
+  }
+  return th;
+}

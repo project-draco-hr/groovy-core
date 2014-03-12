@@ -1,44 +1,12 @@
 {
-  MethodNode mn=m;
-  ClassNode actualReceiver=receiver;
-  List<GenericsType> redirectTypes=new ArrayList<GenericsType>();
-  if (actualReceiver.redirect().getGenericsTypes() != null) {
-    Collections.addAll(redirectTypes,actualReceiver.redirect().getGenericsTypes());
-  }
-  if (redirectTypes.isEmpty()) {
-    return m.getParameters();
-  }
-  GenericsType[] redirectReceiverTypes=redirectTypes.toArray(new GenericsType[redirectTypes.size()]);
-  Parameter[] methodParameters=mn.getParameters();
+  Map<String,GenericsType> genericFromReceiver=GenericsUtils.extractPlaceholders(receiver);
+  Map<String,GenericsType> contextPlaceholders=extractGenericsParameterMapOfThis(m);
+  Parameter[] methodParameters=m.getParameters();
   Parameter[] params=new Parameter[methodParameters.length];
-  GenericsType[] receiverParameterizedTypes=actualReceiver.getGenericsTypes();
-  if (receiverParameterizedTypes == null) {
-    receiverParameterizedTypes=redirectReceiverTypes;
-  }
   for (int i=0; i < methodParameters.length; i++) {
     Parameter methodParameter=methodParameters[i];
     ClassNode paramType=methodParameter.getType();
-    if (paramType.isUsingGenerics()) {
-      GenericsType[] alignmentTypes=paramType.getGenericsTypes();
-      GenericsType[] genericsTypes=GenericsUtils.alignGenericTypes(redirectReceiverTypes,receiverParameterizedTypes,alignmentTypes);
-      if (genericsTypes.length == 1) {
-        ClassNode parameterizedCN;
-        if (paramType.equals(OBJECT_TYPE)) {
-          parameterizedCN=genericsTypes[0].getType();
-        }
- else {
-          parameterizedCN=paramType.getPlainNodeReference();
-          parameterizedCN.setGenericsTypes(genericsTypes);
-        }
-        params[i]=new Parameter(parameterizedCN,methodParameter.getName());
-      }
- else {
-        params[i]=methodParameter;
-      }
-    }
- else {
-      params[i]=methodParameter;
-    }
+    params[i]=buildParameter(genericFromReceiver,contextPlaceholders,methodParameter,paramType);
   }
   return params;
 }

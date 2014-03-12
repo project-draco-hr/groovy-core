@@ -4,12 +4,7 @@
   }
  else {
     FileOutputStream stream=new FileOutputStream(file);
-    if ("UTF-16BE".equals(charset)) {
-      writeUtf16Bom(stream,true);
-    }
- else     if ("UTF-16LE".equals(charset)) {
-      writeUtf16Bom(stream,false);
-    }
+    writeUTF16BomIfRequired(charset,stream);
     return new EncodingAwareBufferedWriter(new OutputStreamWriter(stream,charset));
   }
 }

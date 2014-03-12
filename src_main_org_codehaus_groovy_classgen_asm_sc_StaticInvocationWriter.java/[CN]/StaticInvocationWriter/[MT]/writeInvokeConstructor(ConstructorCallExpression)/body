@@ -1,9 +1,10 @@
 {
-  MethodNode mn=(MethodNode)call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  MethodNode mn=call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
   if (mn == null) {
     super.writeInvokeConstructor(call);
     return;
   }
+  if (writeAICCall(call))   return;
   ConstructorNode cn;
   if (mn instanceof ConstructorNode) {
     cn=(ConstructorNode)mn;

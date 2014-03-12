@@ -1,0 +1,13 @@
+{
+  if (lcache == null) {
+    lcache=new SimpleCache<Long,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=lcache.get(key);
+  if (chars == null) {
+    String str=Long.toString(key);
+    chars=FastStringUtils.toCharArray(str);
+    lcache.put(key,chars);
+  }
+  add(chars);
+  return this;
+}

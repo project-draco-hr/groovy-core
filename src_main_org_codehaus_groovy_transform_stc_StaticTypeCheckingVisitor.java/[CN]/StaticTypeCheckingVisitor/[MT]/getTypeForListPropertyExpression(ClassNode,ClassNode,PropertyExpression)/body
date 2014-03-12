@@ -1,0 +1,14 @@
+{
+  if (!implementsInterfaceOrIsSubclassOf(testClass,LIST_TYPE))   return null;
+  ClassNode intf=GenericsUtils.parameterizeType(objectExpressionType,LIST_TYPE.getPlainNodeReference());
+  GenericsType[] types=intf.getGenericsTypes();
+  if (types == null || types.length != 1)   return OBJECT_TYPE;
+  PropertyExpression subExp=new PropertyExpression(new VariableExpression("{}",types[0].getType()),pexp.getPropertyAsString());
+  AtomicReference<ClassNode> result=new AtomicReference<ClassNode>();
+  if (existsProperty(subExp,true,new PropertyLookupVisitor(result))) {
+    intf=LIST_TYPE.getPlainNodeReference();
+    intf.setGenericsTypes(new GenericsType[]{new GenericsType(getWrapper(result.get()))});
+    return intf;
+  }
+  return null;
+}

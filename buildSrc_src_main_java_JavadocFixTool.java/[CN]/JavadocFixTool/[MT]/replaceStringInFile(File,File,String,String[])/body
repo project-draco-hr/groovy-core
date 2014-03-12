@@ -1,0 +1,31 @@
+{
+  System.out.println("Patching file: " + file.getCanonicalPath());
+  String name=file.getName();
+  File origFile=new File(folder,name + ".orig");
+  file.renameTo(origFile);
+  File temporaryFile=new File(folder,name + ".tmp");
+  if (temporaryFile.exists()) {
+    temporaryFile.delete();
+  }
+  temporaryFile.createNewFile();
+  String line;
+  FileInputStream fis=new FileInputStream(origFile);
+  PrintWriter pw=new PrintWriter(temporaryFile);
+  BufferedReader br=new BufferedReader(new InputStreamReader(fis));
+  while ((line=br.readLine()) != null) {
+    if (line.trim().equals(template)) {
+      for (      String s : replacement) {
+        pw.println(s);
+      }
+    }
+ else {
+      pw.println(line);
+    }
+  }
+  pw.flush();
+  pw.close();
+  if (!temporaryFile.renameTo(new File(folder,name))) {
+    throw new IOException("Unable to rename file in folder " + folder.getName() + " from \""+ temporaryFile.getName()+ "\" into \""+ name+ "\n Original file saved as "+ origFile.getName());
+  }
+  origFile.delete();
+}

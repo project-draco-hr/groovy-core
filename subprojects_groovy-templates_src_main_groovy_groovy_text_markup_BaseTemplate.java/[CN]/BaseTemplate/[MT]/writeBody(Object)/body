@@ -1,0 +1,15 @@
+{
+  boolean indent=out instanceof DelegatingIndentWriter;
+  if (body instanceof Closure) {
+    if (indent) {
+      ((DelegatingIndentWriter)(out)).next();
+    }
+    ((Closure)body).call();
+    if (indent) {
+      ((DelegatingIndentWriter)(out)).previous();
+    }
+  }
+ else {
+    out.write(body.toString());
+  }
+}

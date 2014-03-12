@@ -1,14 +1,11 @@
 {
-  if (HeadlessTestSupport.isHeadless()) {
-    return;
-  }
   List<String> srcList=new ArrayList<String>();
-  String base="groovy/swing/binding/AbstractButtonProperties";
+  String base="org/codehaus/groovy/tools/groovydoc/testfiles/StaticModifier";
   srcList.add(base + ".java");
   xmlTool.add(srcList);
   MockOutputTool output=new MockOutputTool();
   xmlTool.renderToOutput(output,MOCK_DIR);
-  String abstractButtonPropertiesDoc=output.getText(MOCK_DIR + "/" + base+ ".html");
-  assertNotNull("No GroovyDoc found for " + base,abstractButtonPropertiesDoc);
-  assertTrue("static not found in: \"" + abstractButtonPropertiesDoc + "\"",abstractButtonPropertiesDoc.contains("static"));
+  String staticModifierDoc=output.getText(MOCK_DIR + "/" + base+ ".html");
+  assertNotNull("No GroovyDoc found for " + base,staticModifierDoc);
+  assertTrue("static not found in: \"" + staticModifierDoc + "\"",staticModifierDoc.contains("static"));
 }

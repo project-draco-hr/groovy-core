@@ -5,15 +5,21 @@
     final Expression leftExpression=expression.getLeftExpression();
     final Expression rightExpression=expression.getRightExpression();
     int op=expression.getOperation().getType();
-    leftExpression.visit(this);
-    SetterInfo setterInfo=removeSetterInfo(leftExpression);
-    if (setterInfo != null && rightExpression instanceof ClosureExpression) {
-      VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
-      MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
-      visitMethodCallExpression(call);
+    if (rightExpression instanceof ClosureExpression) {
+      leftExpression.visit(this);
+      SetterInfo setterInfo=removeSetterInfo(leftExpression);
+      if (setterInfo != null) {
+        VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
+        MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
+        visitMethodCallExpression(call);
+      }
+ else {
+        rightExpression.visit(this);
+      }
     }
  else {
       rightExpression.visit(this);
+      leftExpression.visit(this);
     }
     ClassNode lType=getType(leftExpression);
     ClassNode rType=getType(rightExpression);
@@ -39,17 +45,20 @@
       resultType=completedType;
     }
     if (isArrayOp(op) && enclosingBinaryExpression != null && enclosingBinaryExpression.getLeftExpression() == expression && isAssignment(enclosingBinaryExpression.getOperation().getType()) && !lType.isArray()) {
-      ClassNode[] arguments={rType,getType(enclosingBinaryExpression.getRightExpression())};
+      Expression enclosingBE_rightExpr=enclosingBinaryExpression.getRightExpression();
+      if (!(enclosingBE_rightExpr instanceof ClosureExpression)) {
+        enclosingBE_rightExpr.visit(this);
+      }
+      ClassNode[] arguments={rType,getType(enclosingBE_rightExpr)};
       List<MethodNode> nodes=findMethod(lType.redirect(),"putAt",arguments);
       if (nodes.size() == 1) {
-        typeCheckMethodsWithGenerics(lType,arguments,nodes.get(0),expression);
+        typeCheckMethodsWithGenericsOrFail(lType,arguments,nodes.get(0),enclosingBE_rightExpr);
       }
  else       if (nodes.isEmpty()) {
         addNoMatchingMethodError(lType,"putAt",arguments,enclosingBinaryExpression);
       }
     }
     boolean isEmptyDeclaration=expression instanceof DeclarationExpression && rightExpression instanceof EmptyExpression;
-    if (!isEmptyDeclaration)     storeType(expression,resultType);
     if (!isEmptyDeclaration && isAssignment(op)) {
       if (rightExpression instanceof ConstructorCallExpression) {
         inferDiamondType((ConstructorCallExpression)rightExpression,lType);
@@ -62,6 +71,9 @@
  else       if (lType.isUsingGenerics() && !lType.isEnum() && hasRHSIncompleteGenericTypeInfo(resultType)) {
         resultType=lType;
       }
+      if (isPrimitiveType(originType) && resultType.equals(getWrapper(originType))) {
+        resultType=originType;
+      }
       if (typeCheckingContext.ifElseForWhileAssignmentTracker != null && leftExpression instanceof VariableExpression && !isNullConstant(rightExpression)) {
         Variable accessedVariable=((VariableExpression)leftExpression).getAccessedVariable();
         if (accessedVariable instanceof VariableExpression) {
@@ -69,7 +81,7 @@
           List<ClassNode> types=typeCheckingContext.ifElseForWhileAssignmentTracker.get(var);
           if (types == null) {
             types=new LinkedList<ClassNode>();
-            ClassNode type=(ClassNode)var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+            ClassNode type=var.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
             types.add(type);
             typeCheckingContext.ifElseForWhileAssignmentTracker.put(var,types);
           }
@@ -92,6 +104,9 @@
     }
  else     if (op == KEYWORD_INSTANCEOF) {
       pushInstanceOfTypeInfo(leftExpression,rightExpression);
+    }
+    if (!isEmptyDeclaration) {
+      storeType(expression,resultType);
     }
   }
   finally {

@@ -1,0 +1,11 @@
+{
+  Statement code=annotatedMethod.getCode();
+  int access=ACC_PROTECTED;
+  if (annotatedMethod.isStatic()) {
+    access=ACC_PRIVATE | ACC_STATIC;
+  }
+  MethodNode method=new MethodNode(buildUniqueName(ownerClassNode,METHOD_LABEL,annotatedMethod),access,annotatedMethod.getReturnType(),cloneParams(annotatedMethod.getParameters()),annotatedMethod.getExceptions(),code);
+  List<AnnotationNode> sourceAnnotations=annotatedMethod.getAnnotations();
+  method.addAnnotations(new ArrayList<AnnotationNode>(sourceAnnotations));
+  return method;
+}

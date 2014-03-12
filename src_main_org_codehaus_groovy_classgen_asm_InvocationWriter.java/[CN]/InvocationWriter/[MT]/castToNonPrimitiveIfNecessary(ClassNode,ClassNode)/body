@@ -1,0 +1,23 @@
+{
+  OperandStack os=controller.getOperandStack();
+  ClassNode boxedType=os.box();
+  if (WideningCategories.implementsInterfaceOrSubclassOf(boxedType,targetType))   return;
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (ClassHelper.CLASS_Type.equals(targetType)) {
+    castToClassMethod.call(mv);
+  }
+ else   if (ClassHelper.STRING_TYPE.equals(targetType)) {
+    castToStringMethod.call(mv);
+  }
+ else   if (targetType.isDerivedFrom(ClassHelper.Enum_Type)) {
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    os.remove(1);
+    castToEnumMethod.call(mv);
+    BytecodeHelper.doCast(mv,targetType);
+  }
+ else {
+    (new ClassExpression(targetType)).visit(controller.getAcg());
+    os.remove(1);
+    castToTypeMethod.call(mv);
+  }
+}

@@ -4,6 +4,7 @@
   OperandStack operandStack=controller.getOperandStack();
   Expression rightExpression=expression.getRightExpression();
   Expression leftExpression=expression.getLeftExpression();
+  ClassNode lhsType=controller.getTypeChooser().resolveType(leftExpression,controller.getClassNode());
   if (defineVariable && rightExpression instanceof EmptyExpression && !(leftExpression instanceof TupleExpression)) {
     VariableExpression ve=(VariableExpression)leftExpression;
     BytecodeVariable var=compileStack.defineVariable(ve,controller.getTypeChooser().resolveType(ve,controller.getClassNode()),false);
@@ -11,29 +12,41 @@
     return;
   }
   ClassNode rhsType;
-  if (rightExpression instanceof EmptyExpression) {
+  if (rightExpression instanceof ListExpression && lhsType.isArray()) {
+    ListExpression list=(ListExpression)rightExpression;
+    ArrayExpression array=new ArrayExpression(lhsType.getComponentType(),list.getExpressions());
+    array.setSourcePosition(list);
+    array.visit(acg);
+  }
+ else   if (rightExpression instanceof EmptyExpression) {
     rhsType=leftExpression.getType();
     loadInitValue(rhsType);
   }
  else {
     rightExpression.visit(acg);
-    rhsType=controller.getOperandStack().getTopOperand();
   }
+  rhsType=operandStack.getTopOperand();
   boolean directAssignment=defineVariable && !(leftExpression instanceof TupleExpression);
   int rhsValueId;
   if (directAssignment) {
     VariableExpression var=(VariableExpression)leftExpression;
-    rhsType=controller.getTypeChooser().resolveType(var,controller.getClassNode());
     if (var.isClosureSharedVariable() && ClassHelper.isPrimitiveType(rhsType)) {
       rhsType=ClassHelper.getWrapper(rhsType);
+      operandStack.box();
     }
-    if (!(rightExpression instanceof ConstantExpression) || (((ConstantExpression)rightExpression).getValue() != null)) {
-      operandStack.doGroovyCast(rhsType);
+    if (var.isClosureSharedVariable() && ClassHelper.isPrimitiveType(var.getOriginType()) && isNull(rightExpression)) {
+      operandStack.doGroovyCast(var.getOriginType());
+      operandStack.box();
+      operandStack.doGroovyCast(lhsType);
+    }
+    if (!ClassHelper.isPrimitiveType(lhsType) && isNull(rightExpression)) {
+      operandStack.replace(lhsType);
     }
  else {
-      operandStack.replace(rhsType);
+      operandStack.doGroovyCast(lhsType);
     }
-    rhsValueId=compileStack.defineVariable(var,rhsType,true).getIndex();
+    rhsType=lhsType;
+    rhsValueId=compileStack.defineVariable(var,lhsType,true).getIndex();
   }
  else {
     rhsValueId=compileStack.defineTemporaryVariable("$rhs",rhsType,true);

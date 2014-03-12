@@ -1,0 +1,19 @@
+{
+  for (  Map.Entry<?,?> entry : attrs.entrySet()) {
+    Object target=entry.getKey();
+    Object instruction=entry.getValue();
+    out.write("<?");
+    if (instruction instanceof Map) {
+      out.write(target.toString());
+      writeAttributes((Map)instruction);
+    }
+ else {
+      out.write(target.toString());
+      out.write(" ");
+      out.write(instruction.toString());
+    }
+    out.write("?>");
+    out.write(configuration.getNewLineString());
+  }
+  return this;
+}

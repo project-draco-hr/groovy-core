@@ -1,0 +1,13 @@
+{
+  if (bigICache == null) {
+    bigICache=new SimpleCache<BigInteger,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=bigICache.get(key);
+  if (chars == null) {
+    String str=key.toString();
+    chars=FastStringUtils.toCharArray(str);
+    bigICache.put(key,chars);
+  }
+  add(chars);
+  return this;
+}

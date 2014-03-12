@@ -1,0 +1,22 @@
+{
+  if (node.isArray())   return isUsingUncheckedGenerics(node.getComponentType());
+  if (node.isUsingGenerics()) {
+    GenericsType[] genericsTypes=node.getGenericsTypes();
+    if (genericsTypes != null) {
+      for (      GenericsType genericsType : genericsTypes) {
+        if (genericsType.isPlaceholder()) {
+          return true;
+        }
+ else {
+          if (isUsingUncheckedGenerics(genericsType.getType())) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+ else {
+    return false;
+  }
+  return false;
+}

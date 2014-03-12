@@ -1,0 +1,16 @@
+{
+  boolean valid=true;
+  final int length=to - start;
+  if (length == SHORT_ISO_8601_TIME_LENGTH) {
+    valid&=(charArray[start + 19] == 'Z');
+  }
+ else   if (length == LONG_ISO_8601_TIME_LENGTH) {
+    valid&=(charArray[start + 19] == '-' || charArray[start + 19] == '+');
+    valid&=(charArray[start + 22] == ':');
+  }
+ else {
+    return false;
+  }
+  valid&=(charArray[start + 4] == '-') && (charArray[start + 7] == '-') && (charArray[start + 10] == 'T')&& (charArray[start + 13] == ':')&& (charArray[start + 16] == ':');
+  return valid;
+}

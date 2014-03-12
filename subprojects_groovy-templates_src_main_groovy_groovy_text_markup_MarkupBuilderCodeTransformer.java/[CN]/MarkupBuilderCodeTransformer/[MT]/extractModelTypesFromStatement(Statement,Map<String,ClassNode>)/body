@@ -1,0 +1,15 @@
+{
+  if (code instanceof BlockStatement) {
+    BlockStatement block=(BlockStatement)code;
+    for (    Statement statement : block.getStatements()) {
+      extractModelTypesFromStatement(statement,model);
+    }
+  }
+ else   if (code instanceof ExpressionStatement) {
+    Expression expression=((ExpressionStatement)code).getExpression();
+    if (expression instanceof DeclarationExpression) {
+      VariableExpression var=((DeclarationExpression)expression).getVariableExpression();
+      model.put(var.getName(),var.getOriginType());
+    }
+  }
+}

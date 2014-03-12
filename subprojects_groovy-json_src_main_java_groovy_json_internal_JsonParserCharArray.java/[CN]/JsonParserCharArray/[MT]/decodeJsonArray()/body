@@ -1,0 +1,58 @@
+{
+  ArrayList<Object> list=null;
+  boolean foundEnd=false;
+  char[] charArray=this.charArray;
+  try {
+    if (__currentChar == '[') {
+      __index++;
+    }
+    int lastIndex;
+    skipWhiteSpace();
+    if (__currentChar == ']') {
+      __index++;
+      return Collections.EMPTY_LIST;
+    }
+    list=new ArrayList();
+    while (this.hasMore()) {
+      Object arrayItem=decodeValueInternal();
+      list.add(arrayItem);
+      char c=charArray[__index];
+      if (c == ',') {
+        __index++;
+        continue;
+      }
+ else       if (c == ']') {
+        __index++;
+        foundEnd=true;
+        break;
+      }
+      lastIndex=__index;
+      skipWhiteSpace();
+      c=charArray[__index];
+      if (c == ',') {
+        __index++;
+        continue;
+      }
+ else       if (c == ']' && lastIndex != __index) {
+        __index++;
+        foundEnd=true;
+        break;
+      }
+ else {
+        String charString=charDescription(c);
+        complain(String.format("expecting a ',' or a ']', " + " but got \nthe current character of  %s " + " on array index of %s \n",charString,list.size()));
+      }
+    }
+  }
+ catch (  Exception ex) {
+    if (ex instanceof JsonException) {
+      JsonException jsonException=(JsonException)ex;
+      throw jsonException;
+    }
+    throw new JsonException(exceptionDetails("issue parsing JSON array"),ex);
+  }
+  if (!foundEnd) {
+    complain("Did not find end of Json Array");
+  }
+  return list;
+}

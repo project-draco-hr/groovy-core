@@ -1,24 +1,14 @@
 {
-  Expression objectExpression=pexp.getObjectExpression();
-  ClassNode clazz=getType(objectExpression);
-  List<ClassNode> tests=new LinkedList<ClassNode>();
-  tests.add(clazz);
-  if (clazz.equals(CLASS_Type) && clazz.getGenericsTypes() != null) {
-    tests.add(0,clazz.getGenericsTypes()[0].getType());
-  }
-  if (!typeCheckingContext.temporaryIfBranchTypeInformation.empty()) {
-    List<ClassNode> classNodes=getTemporaryTypesForExpression(objectExpression);
-    if (classNodes != null)     tests.addAll(classNodes);
-  }
-  if (typeCheckingContext.lastImplicitItType != null && pexp.getObjectExpression() instanceof VariableExpression && ((VariableExpression)pexp.getObjectExpression()).getName().equals("it")) {
-    tests.add(typeCheckingContext.lastImplicitItType);
-  }
   String propertyName=pexp.getPropertyAsString();
   if (propertyName == null)   return null;
+  Expression objectExpression=pexp.getObjectExpression();
+  List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
+  List<Receiver<String>> owners=makeOwnerList(objectExpression);
+  addReceivers(receivers,owners,pexp.isImplicitThis());
   String capName=MetaClassHelper.capitalize(propertyName);
   boolean isAttributeExpression=pexp instanceof AttributeExpression;
-  if (clazz.isInterface())   tests.add(OBJECT_TYPE);
-  for (  ClassNode testClass : tests) {
+  for (  Receiver<String> receiver : receivers) {
+    ClassNode testClass=receiver.getType();
     LinkedList<ClassNode> queue=new LinkedList<ClassNode>();
     queue.add(testClass);
     if (testClass.isInterface()) {

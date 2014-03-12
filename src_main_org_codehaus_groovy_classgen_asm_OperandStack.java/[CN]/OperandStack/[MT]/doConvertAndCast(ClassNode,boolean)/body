@@ -1,42 +1,11 @@
 {
   int size=stack.size();
-  try {
-    if (size == 0) {
-      StringBuilder sb=new StringBuilder();
-      sb.append("Internal compiler error while compiling ").append(controller.getSourceUnit().getName()).append("\n");
-      MethodNode methodNode=controller.getMethodNode();
-      if (methodNode != null) {
-        sb.append("Method: ");
-        sb.append(methodNode);
-        sb.append("\n");
-      }
-      ConstructorNode constructorNode=controller.getConstructorNode();
-      if (constructorNode != null) {
-        sb.append("Constructor: ");
-        sb.append(methodNode);
-        sb.append("\n");
-      }
-      sb.append("Line ").append(controller.getLineNumber()).append(",");
-      sb.append(" expecting ").append(coerce ? "coercion" : "casting").append(" to ").append(targetType.toString(false));
-      sb.append(" but operand stack is empty");
-      throw new ArrayIndexOutOfBoundsException(sb.toString());
-    }
-  }
- catch (  ArrayIndexOutOfBoundsException ai) {
-    throw ai;
-  }
+  throwExceptionForNoStackElement(size,targetType,coerce);
   ClassNode top=stack.get(size - 1);
   targetType=targetType.redirect();
   if (targetType == top)   return;
-  MethodVisitor mv=controller.getMethodVisitor();
   if (coerce) {
-    if (top.isDerivedFrom(targetType))     return;
-    box();
-    (new ClassExpression(targetType)).visit(controller.getAcg());
-    remove(1);
-    asTypeMethod.call(mv);
-    BytecodeHelper.doCast(mv,targetType);
-    replace(targetType);
+    controller.getInvocationWriter().coerce(top,targetType);
     return;
   }
   boolean primTarget=ClassHelper.isPrimitiveType(targetType);
@@ -49,20 +18,20 @@
     box();
   }
  else   if (primTop) {
-    ClassNode boxedType=box();
-    castToTypeIfNecessary(boxedType,targetType);
+    controller.getInvocationWriter().castToNonPrimitiveIfNecessary(top,targetType);
   }
  else   if (primTarget) {
   }
  else {
-    castToTypeIfNecessary(top,targetType);
+    controller.getInvocationWriter().castToNonPrimitiveIfNecessary(top,targetType);
   }
-  if (ClassHelper.isNumberType(top) && primTarget && ClassHelper.isNumberType(targetType)) {
+  MethodVisitor mv=controller.getMethodVisitor();
+  if (primTarget && !primTop && ClassHelper.getWrapper(targetType).equals(top)) {
     BytecodeHelper.doCastToPrimitive(mv,top,targetType);
   }
  else {
     top=stack.get(size - 1);
-    if (!implementsInterfaceOrSubclassOf(top,targetType)) {
+    if (!WideningCategories.implementsInterfaceOrSubclassOf(top,targetType)) {
       BytecodeHelper.doCast(mv,targetType);
     }
   }

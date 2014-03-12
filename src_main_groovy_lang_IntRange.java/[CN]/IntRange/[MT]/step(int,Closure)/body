@@ -1,26 +1,32 @@
 {
   if (step == 0) {
-    if (from != to) {
+    if (!getFrom().equals(getTo())) {
       throw new GroovyRuntimeException("Infinite loop detected due to step size of 0");
     }
  else {
       return;
     }
   }
-  if (reverse) {
+  if (isReverse()) {
     step=-step;
   }
   if (step > 0) {
-    int value=from;
-    while (value <= to) {
+    int value=getFrom();
+    while (value <= getTo()) {
       closure.call(Integer.valueOf(value));
+      if ((0L + value + step) >= Integer.MAX_VALUE) {
+        break;
+      }
       value=value + step;
     }
   }
  else {
-    int value=to;
-    while (value >= from) {
+    int value=getTo();
+    while (value >= getFrom()) {
       closure.call(Integer.valueOf(value));
+      if ((0L + value + step) <= Integer.MIN_VALUE) {
+        break;
+      }
       value=value + step;
     }
   }

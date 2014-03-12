@@ -1,0 +1,15 @@
+{
+  if (code == null)   return null;
+  if (code instanceof BlockStatement) {
+    BlockStatement bs=(BlockStatement)code;
+    if (bs.isEmpty())     return null;
+    return getConstructorCall(bs.getStatements().get(0));
+  }
+  if (!(code instanceof ExpressionStatement))   return null;
+  ExpressionStatement es=(ExpressionStatement)code;
+  Expression exp=es.getExpression();
+  if (!(exp instanceof ConstructorCallExpression))   return null;
+  ConstructorCallExpression cce=(ConstructorCallExpression)exp;
+  if (!cce.isSpecialCall())   return null;
+  return cce;
+}

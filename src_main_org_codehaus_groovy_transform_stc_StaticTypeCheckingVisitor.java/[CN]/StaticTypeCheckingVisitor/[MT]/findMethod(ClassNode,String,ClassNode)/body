@@ -1,7 +1,7 @@
 {
   if (isPrimitiveType(receiver))   receiver=getWrapper(receiver);
   List<MethodNode> methods;
-  if ("<init>".equals(name)) {
+  if (!receiver.isInterface() && "<init>".equals(name)) {
     methods=addGeneratedMethods(receiver,new ArrayList<MethodNode>(receiver.getDeclaredConstructors()));
     if (methods.isEmpty()) {
       MethodNode node=new ConstructorNode(Opcodes.ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,GENERATED_EMPTY_STATEMENT);
@@ -21,6 +21,9 @@
         parent=parent.getOuterClass();
         methods.addAll(findMethodsWithGenerated(parent,name));
       }
+    }
+    if (methods.isEmpty()) {
+      addArrayMethods(methods,receiver,name,args);
     }
     if (methods.isEmpty() && (args == null || args.length == 0)) {
       String pname=extractPropertyNameFromMethodName("get",name);
@@ -46,7 +49,7 @@
     }
  else     if (methods.isEmpty() && args != null && args.length == 1) {
       String pname=extractPropertyNameFromMethodName("set",name);
-      if (name != null) {
+      if (pname != null) {
         ClassNode curNode=receiver;
         PropertyNode property=null;
         while (property == null && curNode != null) {
@@ -70,6 +73,7 @@
   if (methods.isEmpty()) {
     collectAllInterfaceMethodsByName(receiver,name,methods);
   }
+  findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),receiver,name,args,methods);
   List<MethodNode> chosen=chooseBestMethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
   if (receiver instanceof InnerClassNode && ((InnerClassNode)receiver).isAnonymous() && methods.size() == 1 && args != null && "<init>".equals(name)) {
@@ -81,11 +85,6 @@
   if (receiver.equals(CLASS_Type) && receiver.getGenericsTypes() != null) {
     List<MethodNode> result=findMethod(receiver.getGenericsTypes()[0].getType(),name,args);
     if (!result.isEmpty())     return result;
-  }
-  methods.clear();
-  chosen=findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),receiver,name,args,methods);
-  if (!chosen.isEmpty()) {
-    return chosen;
   }
   if (ClassHelper.GSTRING_TYPE.equals(receiver))   return findMethod(ClassHelper.STRING_TYPE,name,args);
   if (isBeingCompiled(receiver)) {

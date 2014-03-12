@@ -1,0 +1,16 @@
+{
+  Expression leftExpression=bin.getLeftExpression();
+  Expression rightExpression=bin.getRightExpression();
+  boolean assignment=bin.getOperation().getType() == Types.ASSIGN;
+  if (assignment && leftExpression instanceof VariableExpression && rightExpression instanceof ClosureExpression) {
+    VariableExpression var=(VariableExpression)leftExpression;
+    if ("modelTypes".equals(var.getName())) {
+      Map<String,ClassNode> modelTypes=extractModelTypesFromClosureExpression((ClosureExpression)rightExpression);
+      Expression result=new EmptyExpression();
+      result.setSourcePosition(bin);
+      classNode.putNodeMetaData(MarkupTemplateEngine.MODELTYPES_ASTKEY,modelTypes);
+      return result;
+    }
+  }
+  return super.transform(bin);
+}

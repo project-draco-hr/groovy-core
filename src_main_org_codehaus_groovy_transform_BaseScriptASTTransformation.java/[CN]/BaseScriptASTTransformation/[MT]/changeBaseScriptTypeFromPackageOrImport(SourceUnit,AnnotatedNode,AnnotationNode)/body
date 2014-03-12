@@ -1,0 +1,13 @@
+{
+  Expression value=node.getMember("value");
+  if (!(value instanceof ClassExpression)) {
+    addError("Annotation " + MY_TYPE_NAME + " member 'value' should be a class literal.",value);
+    return;
+  }
+  List<ClassNode> classes=source.getAST().getClasses();
+  for (  ClassNode classNode : classes) {
+    if (classNode.isScriptBody()) {
+      changeBaseScriptType(parent,classNode,value.getType());
+    }
+  }
+}

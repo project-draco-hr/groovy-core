@@ -1,0 +1,9 @@
+{
+  if (propertyNode == null)   return false;
+  if (visitor != null)   visitor.visitProperty(propertyNode);
+  storeWithResolve(propertyNode.getOriginType(),receiver,propertyNode.getDeclaringClass(),propertyNode.isStatic(),expressionToStoreOn);
+  if (delegationData != null) {
+    expressionToStoreOn.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
+  }
+  return true;
+}

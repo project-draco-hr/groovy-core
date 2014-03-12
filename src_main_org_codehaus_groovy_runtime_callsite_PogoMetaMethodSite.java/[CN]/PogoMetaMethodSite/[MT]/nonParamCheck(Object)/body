@@ -1,0 +1,13 @@
+{
+  try {
+    return !GroovyCategorySupport.hasCategoryInCurrentThread() && ((GroovyObject)receiver).getMetaClass() == metaClass && (skipVersionCheck || ((MetaClassImpl)metaClass).getVersion() == version);
+  }
+ catch (  NullPointerException e) {
+    if (receiver == null)     return false;
+    throw e;
+  }
+catch (  ClassCastException e) {
+    if (!(receiver instanceof GroovyObject))     return false;
+    throw e;
+  }
+}

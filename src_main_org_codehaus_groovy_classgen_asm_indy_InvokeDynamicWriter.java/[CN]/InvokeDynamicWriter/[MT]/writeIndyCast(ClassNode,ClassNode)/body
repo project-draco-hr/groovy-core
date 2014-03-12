@@ -1,0 +1,9 @@
+{
+  StringBuilder sig=new StringBuilder();
+  sig.append('(');
+  sig.append(getTypeDescription(sourceType));
+  sig.append(')');
+  sig.append(getTypeDescription(targetType));
+  controller.getMethodVisitor().visitInvokeDynamicInsn(CAST.getCallSiteName(),sig.toString(),BSM,"()",0);
+  controller.getOperandStack().replace(targetType);
+}

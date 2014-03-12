@@ -3,6 +3,9 @@
   if (arg instanceof GString) {
     transformer=TO_STRING;
   }
+ else   if (arg instanceof Closure) {
+    transformer=createSAMTransform(arg,parameter);
+  }
  else   if (Number.class.isAssignableFrom(parameter)) {
     transformer=selectNumberTransformer(parameter,arg);
   }

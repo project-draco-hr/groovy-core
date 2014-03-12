@@ -1,0 +1,16 @@
+{
+  boolean valid=true;
+  for (  FieldNode fieldNode : parent.getFields()) {
+    if (!fieldNode.isStatic() && fieldNode.getLineNumber() > 0) {
+      addUnsupportedError(fieldNode,source);
+      valid=false;
+    }
+  }
+  for (  PropertyNode propertyNode : parent.getProperties()) {
+    if (!propertyNode.isStatic() && propertyNode.getLineNumber() > 0) {
+      addUnsupportedError(propertyNode,source);
+      valid=false;
+    }
+  }
+  return valid;
+}

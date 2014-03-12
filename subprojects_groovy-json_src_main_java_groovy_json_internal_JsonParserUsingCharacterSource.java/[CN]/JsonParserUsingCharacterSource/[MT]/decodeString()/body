@@ -1,0 +1,14 @@
+{
+  CharacterSource characterSource=this.characterSource;
+  characterSource.nextChar();
+  char[] chars=characterSource.findNextChar('"','\\');
+  String value=null;
+  if (characterSource.hadEscape()) {
+    value=builder.decodeJsonString(chars).toString();
+    builder.recycle();
+  }
+ else {
+    value=new String(chars);
+  }
+  return value;
+}

@@ -1,0 +1,56 @@
+{
+  char[] array=charArray;
+  if (__currentChar == '[') {
+    __index++;
+  }
+  skipWhiteSpace();
+  if (__currentChar == ']') {
+    __index++;
+    return EMPTY_LIST;
+  }
+  List<Object> list;
+  if (useValues) {
+    list=new ArrayList<Object>();
+  }
+ else {
+    list=new ValueList(lazyChop);
+  }
+  Value value=new ValueContainer(list);
+  Value item;
+  char c;
+  int lastIndex;
+  boolean foundEnd=false;
+  arrayLoop:   for (; __index < array.length; __index++) {
+    item=decodeValueOverlay();
+    list.add(item);
+    c=currentChar();
+switch (c) {
+case ',':
+      continue;
+case ']':
+    __index++;
+  foundEnd=true;
+break arrayLoop;
+}
+lastIndex=__index;
+skipWhiteSpace();
+c=currentChar();
+switch (c) {
+case ',':
+continue;
+case ']':
+if (__index == lastIndex) {
+complain("missing ]");
+}
+foundEnd=true;
+__index++;
+break arrayLoop;
+default :
+complain(String.format("expecting a ',' or a ']', " + " but got \nthe current character of  %s " + " on array size of %s \n",charDescription(__currentChar),list.size()));
+}
+}
+if (!foundEnd) {
+complain("Did not find end of Json Array");
+}
+return value;
+}

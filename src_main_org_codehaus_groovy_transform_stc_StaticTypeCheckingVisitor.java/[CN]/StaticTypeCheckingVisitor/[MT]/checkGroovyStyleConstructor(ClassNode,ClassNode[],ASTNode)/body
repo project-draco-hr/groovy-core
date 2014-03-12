@@ -1,0 +1,19 @@
+{
+  if (node.equals(ClassHelper.OBJECT_TYPE) || node.equals(ClassHelper.DYNAMIC_TYPE)) {
+    return null;
+  }
+  List<ConstructorNode> constructors=node.getDeclaredConstructors();
+  if (constructors.isEmpty() && arguments.length == 0) {
+    return null;
+  }
+  List<MethodNode> constructorList=findMethod(node,"<init>",arguments);
+  if (constructorList.isEmpty()) {
+    addStaticTypeError("No matching constructor found: " + node + toMethodParametersString("<init>",arguments),source);
+    return null;
+  }
+ else   if (constructorList.size() > 1) {
+    addStaticTypeError("Ambiguous constructor call " + node + toMethodParametersString("<init>",arguments),source);
+    return null;
+  }
+  return constructorList.get(0);
+}

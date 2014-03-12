@@ -1,0 +1,26 @@
+{
+  try {
+    char[] _chars=readBuf;
+    int i=0;
+    int idx=index;
+    boolean ok=true;
+    if (idx + match.length > length) {
+      readForToken();
+    }
+    for (; i < match.length; i++, idx++) {
+      ok&=(match[i] == _chars[idx]);
+      if (!ok)       break;
+    }
+    if (ok) {
+      index=idx;
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+ catch (  Exception ex) {
+    String str=CharScanner.errorDetails("consumeIfMatch issue",readBuf,index,ch);
+    return Exceptions.handle(boolean.class,str,ex);
+  }
+}

@@ -1,0 +1,13 @@
+{
+  if (dcache == null) {
+    dcache=new SimpleCache<Double,char[]>(20,CacheType.LRU);
+  }
+  char[] chars=dcache.get(key);
+  if (chars == null) {
+    String str=Double.toString(key);
+    chars=FastStringUtils.toCharArray(str);
+    dcache.put(key,chars);
+  }
+  add(chars);
+  return this;
+}

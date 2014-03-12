@@ -1,11 +1,19 @@
 {
   ClassNode closureClass=super.createClosureClass(expression,mods);
-  List<MethodNode> methods=closureClass.getMethods("call");
+  List<MethodNode> methods=closureClass.getDeclaredMethods("call");
   List<MethodNode> doCall=closureClass.getMethods("doCall");
   if (doCall.size() != 1) {
     throw new GroovyBugError("Expected to find one (1) doCall method on generated closure, but found " + doCall.size());
   }
-  MethodTargetCompletionVisitor visitor=new MethodTargetCompletionVisitor(doCall.get(0));
+  MethodNode doCallMethod=doCall.get(0);
+  if (methods.isEmpty() && doCallMethod.getParameters().length == 1) {
+    createDirectCallMethod(closureClass,doCallMethod);
+  }
+  MethodTargetCompletionVisitor visitor=new MethodTargetCompletionVisitor(doCallMethod);
+  Object dynamic=expression.getNodeMetaData(StaticTypesMarker.DYNAMIC_RESOLUTION);
+  if (dynamic != null) {
+    doCallMethod.putNodeMetaData(StaticTypesMarker.DYNAMIC_RESOLUTION,dynamic);
+  }
   for (  MethodNode method : methods) {
     visitor.visitMethod(method);
   }

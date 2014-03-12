@@ -1,0 +1,10 @@
+{
+  if (handle != null || args[0] != null)   return;
+  if (staticTargetType.isPrimitive()) {
+    handle=MethodHandles.insertArguments(GROOVY_CAST_EXCEPTION,1,staticTargetType);
+    castAndSetGuards();
+  }
+ else {
+    handle=MethodHandles.identity(staticSourceType);
+  }
+}
