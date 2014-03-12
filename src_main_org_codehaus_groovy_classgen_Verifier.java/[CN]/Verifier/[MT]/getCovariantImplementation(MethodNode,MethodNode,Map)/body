@@ -7,11 +7,11 @@
   ClassNode mr=overridingMethod.getReturnType();
   ClassNode omr=oldMethod.getReturnType();
   boolean equalReturnType=mr.equals(omr);
-  if (equalReturnType && normalEqualParameters)   return null;
   ClassNode testmr=correctToGenericsSpec(genericsSpec,omr);
   if (!isAssignable(mr,testmr)) {
-    throw new RuntimeParserException("The return type of " + overridingMethod.getTypeDescriptor() + " in "+ overridingMethod.getDeclaringClass().getName()+ " is incompatible with "+ oldMethod.getTypeDescriptor()+ " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
+    throw new RuntimeParserException("The return type of " + overridingMethod.getTypeDescriptor() + " in "+ overridingMethod.getDeclaringClass().getName()+ " is incompatible with "+ testmr.getName()+ " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
   }
+  if (equalReturnType && normalEqualParameters)   return null;
   if ((oldMethod.getModifiers() & ACC_FINAL) != 0) {
     throw new RuntimeParserException("Cannot override final method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName(),overridingMethod);
   }
@@ -29,7 +29,7 @@
  else       if (newM) {
         message=" with new method having a primitive return type and old method not";
       }
- else       if (oldM) {
+ else {
         message=" with old method having a primitive return type and new method not";
       }
       throw new RuntimeParserException("Cannot override method " + oldMethod.getTypeDescriptor() + " in "+ oldMethod.getDeclaringClass().getName()+ message,overridingMethod);
