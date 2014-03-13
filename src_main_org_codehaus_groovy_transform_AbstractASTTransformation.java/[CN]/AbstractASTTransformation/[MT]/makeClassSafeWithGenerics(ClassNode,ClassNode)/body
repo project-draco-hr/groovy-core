@@ -1,4 +1,7 @@
 {
+  if (type.isArray()) {
+    return makeClassSafeWithGenerics(type.getComponentType(),genericTypes).makeArray();
+  }
   GenericsType[] gtypes=new GenericsType[0];
   if (genericTypes != null) {
     gtypes=new GenericsType[genericTypes.length];
@@ -6,5 +9,5 @@
       gtypes[i]=new GenericsType(newClass(genericTypes[i]));
     }
   }
-  return AbstractASTTransformation.makeClassSafe0(type,gtypes);
+  return makeClassSafe0(type,gtypes);
 }
