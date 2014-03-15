@@ -2,7 +2,10 @@
   if (!candidate.isPublic() || candidate.isStatic() || 0 != (candidate.getModifiers() & Opcodes.ACC_SYNTHETIC))   return;
   if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !includeDeprecated)   return;
   if (shouldSkip(candidate.getName(),excludes,includes))   return;
-  checkIncludeExclude(node,excludes,includes,MY_TYPE_NAME);
+  Map genericsSpec=Verifier.createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
+  genericsSpec=Verifier.createGenericsSpec(fieldNode.getType(),genericsSpec);
+  String correctedTypeDescriptor=correctToGenericsSpec(genericsSpec,candidate).getTypeDescriptor();
+  if (shouldSkipOnDescriptor(correctedTypeDescriptor,excludeTypes,includeTypes))   return;
   for (  MethodNode mn : GROOVYOBJECT_TYPE.getMethods()) {
     if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor())) {
       return;
@@ -20,8 +23,6 @@
       break;
     }
   }
-  Map genericsSpec=Verifier.createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
-  genericsSpec=Verifier.createGenericsSpec(fieldNode.getType(),genericsSpec);
   if (existingNode == null || existingNode.getCode() == null) {
     final boolean includeParameterAnnotations=hasBooleanValue(node.getMember(MEMBER_PARAMETER_ANNOTATIONS),true);
     final ArgumentListExpression args=new ArgumentListExpression();
