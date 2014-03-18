@@ -1,0 +1,18 @@
+{
+  List<ClassNode> list=new ArrayList<ClassNode>();
+  Expression expr=anno.getMember(name);
+  if (expr != null && expr instanceof ListExpression) {
+    final ListExpression listExpression=(ListExpression)expr;
+    for (    Expression itemExpr : listExpression.getExpressions()) {
+      if (itemExpr != null && itemExpr instanceof ClassExpression) {
+        ClassNode cn=itemExpr.getType();
+        if (cn != null)         list.add(cn);
+      }
+    }
+  }
+ else   if (expr != null && expr instanceof ClassExpression) {
+    ClassNode cn=expr.getType();
+    if (cn != null)     list.add(cn);
+  }
+  return list;
+}
