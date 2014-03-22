@@ -4,8 +4,10 @@
   if (shouldSkip(candidate.getName(),excludes,includes))   return;
   Map genericsSpec=Verifier.createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
   genericsSpec=Verifier.createGenericsSpec(fieldNode.getType(),genericsSpec);
-  String correctedTypeDescriptor=correctToGenericsSpec(genericsSpec,candidate).getTypeDescriptor();
-  if (shouldSkipOnDescriptor(correctedTypeDescriptor,excludeTypes,includeTypes))   return;
+  if (!excludeTypes.isEmpty() || !includeTypes.isEmpty()) {
+    String correctedTypeDescriptor=correctToGenericsSpec(genericsSpec,candidate).getTypeDescriptor();
+    if (shouldSkipOnDescriptor(genericsSpec,correctedTypeDescriptor,excludeTypes,includeTypes))     return;
+  }
   for (  MethodNode mn : GROOVYOBJECT_TYPE.getMethods()) {
     if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor())) {
       return;
