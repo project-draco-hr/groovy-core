@@ -22,10 +22,12 @@
     final boolean includeDeprecated=hasBooleanValue(node.getMember(MEMBER_DEPRECATED),true) || (type.isInterface() && !skipInterfaces);
     List<String> excludes=getMemberList(node,MEMBER_EXCLUDES);
     List<String> includes=getMemberList(node,MEMBER_INCLUDES);
-    checkIncludeExclude(node,excludes,includes,MY_TYPE_NAME);
+    List<ClassNode> excludeTypes=getClassList(node,MEMBER_EXCLUDE_TYPES);
+    List<ClassNode> includeTypes=getClassList(node,MEMBER_INCLUDE_TYPES);
+    checkIncludeExclude(node,excludes,includes,excludeTypes,includeTypes,MY_TYPE_NAME);
     final List<MethodNode> ownerMethods=getAllMethods(owner);
     for (    MethodNode mn : fieldMethods) {
-      addDelegateMethod(node,fieldNode,owner,ownerMethods,mn,includeDeprecated,includes,excludes);
+      addDelegateMethod(node,fieldNode,owner,ownerMethods,mn,includeDeprecated,includes,excludes,includeTypes,excludeTypes);
     }
     for (    PropertyNode prop : getAllProperties(type)) {
       if (prop.isStatic() || !prop.isPublic())       continue;
