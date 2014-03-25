@@ -6,6 +6,8 @@
     SimpleGroovyFieldDoc currentEnumConstantDoc=new SimpleGroovyFieldDoc(enumConstantName,currentClassDoc);
     currentEnumConstantDoc.setRawCommentText(getJavaDocCommentsBeforeNode(t));
     processModifiers(t,currentEnumConstantDoc);
+    processAnnotations(t,currentEnumConstantDoc);
+    updateDeprecatedFlagWithAnnotations(currentEnumConstantDoc);
     String typeName=getTypeNodeAsText(t.childOfType(TYPE),currentClassDoc.getTypeDescription());
     currentEnumConstantDoc.setType(new SimpleGroovyType(typeName));
     currentClassDoc.addEnumConstant(currentEnumConstantDoc);
