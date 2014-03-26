@@ -1,6 +1,8 @@
 {
   ClassNode helperClassNode=helpers.getHelper();
   ClassNode fieldHelperClassNode=helpers.getFieldHelper();
+  Map genericsSpec=Verifier.createGenericsSpec(cNode,new HashMap());
+  genericsSpec=Verifier.createGenericsSpec(trait,genericsSpec);
   for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
     String name=methodNode.getName();
     int access=methodNode.getModifiers();
@@ -14,7 +16,8 @@
       Parameter[] params=new Parameter[argumentTypes.length - 1];
       for (int i=1; i < argumentTypes.length; i++) {
         Parameter parameter=argumentTypes[i];
-        params[i - 1]=new Parameter(parameter.getOriginType(),"arg" + i);
+        ClassNode fixedType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,parameter.getOriginType());
+        params[i - 1]=new Parameter(fixedType,"arg" + i);
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
       MethodNode existingMethod=cNode.getDeclaredMethod(name,params);
@@ -25,7 +28,9 @@
       System.arraycopy(exceptions,0,exceptionNodes,0,exceptionNodes.length);
       MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),name,argList);
       mce.setImplicitThis(false);
-      MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,returnType,params,exceptionNodes,new ExpressionStatement(mce));
+      ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,returnType);
+      Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
+      MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,fixedReturnType,params,exceptionNodes,new ExpressionStatement(forwardExpression));
       cNode.addMethod(forwarder);
     }
   }
@@ -41,13 +46,22 @@
         fieldName=fieldName.substring(0,suffixIdx);
         String operation=methodNode.getName().substring(suffixIdx + 1);
         boolean getter="get".equals(operation);
+        ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
         if (getter) {
-          cNode.addField(TraitConstants.remappedFieldName(trait,fieldName),Opcodes.ACC_PRIVATE,methodNode.getReturnType(),null);
+          cNode.addField(TraitConstants.remappedFieldName(trait,fieldName),Opcodes.ACC_PRIVATE,returnType,null);
         }
-        Parameter[] newParams=getter ? Parameter.EMPTY_ARRAY : new Parameter[]{new Parameter(methodNode.getParameters()[0].getOriginType(),"val")};
+        Parameter[] newParams;
+        if (getter) {
+          newParams=Parameter.EMPTY_ARRAY;
+        }
+ else {
+          ClassNode originType=methodNode.getParameters()[0].getOriginType();
+          ClassNode fixedType=originType.isGenericsPlaceHolder() ? ClassHelper.OBJECT_TYPE : AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
+          newParams=new Parameter[]{new Parameter(fixedType,"val")};
+        }
         Expression fieldExpr=new VariableExpression(cNode.getField(TraitConstants.remappedFieldName(trait,fieldName)));
         Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
-        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,methodNode.getReturnType(),newParams,ClassNode.EMPTY_ARRAY,body);
+        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
         impl.addAnnotation(new AnnotationNode(ClassHelper.make(CompileStatic.class)));
         cNode.addMethod(impl);
       }

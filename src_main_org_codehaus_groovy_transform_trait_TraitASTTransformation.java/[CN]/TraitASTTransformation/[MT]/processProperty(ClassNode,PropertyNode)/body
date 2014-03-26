@@ -31,11 +31,13 @@
   if (getterBlock != null) {
     MethodNode getter=new MethodNode(getterName,propNodeModifiers,node.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,getterBlock);
     getter.setSynthetic(true);
+    fixGenerics(getter,cNode);
     cNode.addMethod(getter);
     if (ClassHelper.boolean_TYPE == node.getType() || ClassHelper.Boolean_TYPE == node.getType()) {
       String secondGetterName="is" + Verifier.capitalize(name);
       MethodNode secondGetter=new MethodNode(secondGetterName,propNodeModifiers,node.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,getterBlock);
       secondGetter.setSynthetic(true);
+      fixGenerics(secondGetter,cNode);
       cNode.addMethod(secondGetter);
     }
   }
@@ -45,6 +47,7 @@
     var.setAccessedVariable(setterParameterTypes[0]);
     MethodNode setter=new MethodNode(setterName,propNodeModifiers,ClassHelper.VOID_TYPE,setterParameterTypes,ClassNode.EMPTY_ARRAY,setterBlock);
     setter.setSynthetic(true);
+    fixGenerics(setter,cNode);
     cNode.addMethod(setter);
   }
 }

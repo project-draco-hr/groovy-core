@@ -7,6 +7,7 @@
     cNode.addInterface(superClass);
   }
   MethodNode initializer=new MethodNode(TraitConstants.STATIC_INIT_METHOD,ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode.getPlainNodeReference(),TraitConstants.THIS_OBJECT)},ClassNode.EMPTY_ARRAY,new BlockStatement());
+  fixGenerics(initializer,cNode);
   helper.addMethod(initializer);
   generatePropertyMethods(cNode);
   List<FieldNode> fields=new ArrayList<FieldNode>();
