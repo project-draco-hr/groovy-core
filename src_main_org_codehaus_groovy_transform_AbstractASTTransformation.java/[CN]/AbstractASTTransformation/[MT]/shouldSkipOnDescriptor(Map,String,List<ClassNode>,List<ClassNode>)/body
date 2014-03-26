@@ -2,11 +2,13 @@
   for (  ClassNode cn : excludeTypes) {
     List<ClassNode> remaining=new LinkedList<ClassNode>();
     remaining.add(cn);
+    Map updatedGenericsSpec=new HashMap(genericsSpec);
     while (!remaining.isEmpty()) {
       ClassNode next=remaining.remove(0);
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
+        updatedGenericsSpec=Verifier.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=correctToGenericsSpec(genericsSpec,mn).getTypeDescriptor();
+          String md=correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
           if (md.equals(descriptor))           return true;
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
@@ -17,11 +19,13 @@
   for (  ClassNode cn : includeTypes) {
     List<ClassNode> remaining=new LinkedList<ClassNode>();
     remaining.add(cn);
+    Map updatedGenericsSpec=new HashMap(genericsSpec);
     while (!remaining.isEmpty()) {
       ClassNode next=remaining.remove(0);
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
+        updatedGenericsSpec=Verifier.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=correctToGenericsSpec(genericsSpec,mn).getTypeDescriptor();
+          String md=correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
           if (md.equals(descriptor))           return false;
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
