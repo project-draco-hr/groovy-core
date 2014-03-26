@@ -3,12 +3,15 @@
   String prop=expression.getPropertyAsString();
   if (prop == null)   return;
   if (!prop.equals("this") && !prop.equals("super"))   return;
+  ClassNode type=expression.getObjectExpression().getType();
   if (expression.getObjectExpression() instanceof ClassExpression) {
-    if (!(currentClass instanceof InnerClassNode)) {
+    if (!(currentClass instanceof InnerClassNode) && !TraitConstants.isTrait(type)) {
       addError("The usage of 'Class.this' and 'Class.super' is only allowed in nested/inner classes.",expression);
       return;
     }
-    ClassNode type=expression.getObjectExpression().getType();
+    if (!currentScope.isInStaticContext() && TraitConstants.isTrait(type) && "super".equals(prop)&& directlyImplementsTrait(type)) {
+      return;
+    }
     ClassNode iterType=currentClass;
     while (iterType != null) {
       if (iterType.equals(type))       break;

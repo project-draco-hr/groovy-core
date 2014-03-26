@@ -3,8 +3,7 @@
   collectAllInterfaces(cNode,interfaces);
   List<ClassNode> traits=new LinkedList<ClassNode>();
   for (  ClassNode candidate : interfaces) {
-    List<AnnotationNode> traitAnn=candidate.getAnnotations(TraitConstants.TRAIT_CLASSNODE);
-    if (traitAnn != null && !traitAnn.isEmpty()) {
+    if (TraitConstants.isAnnotatedWithTrait(candidate)) {
       traits.add(candidate);
     }
   }
