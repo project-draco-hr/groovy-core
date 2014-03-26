@@ -1,17 +1,19 @@
 {
   Set<String> selectedMethods=new HashSet<String>();
   List<Method> interfaceMethods=new ArrayList<Method>();
+  List<Method> superClassMethods=new ArrayList<Method>();
+  getInheritedMethods(superClass,superClassMethods);
   if (interfaces != null) {
     for (    Class thisInterface : interfaces) {
       getInheritedMethods(thisInterface,interfaceMethods);
     }
     for (    Method method : interfaceMethods) {
-      if (!containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method)) {
+      if (!containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method) && !(containsEquivalentMethod(superClassMethods,method) && !isImplemented(delegateClass,method.getName(),Type.getMethodDescriptor(method)))) {
         selectedMethods.add(method.getName());
       }
     }
   }
-  List<Method> additionalMethods=getInheritedMethods(superClass,new ArrayList<Method>());
+  List<Method> additionalMethods=getInheritedMethods(delegateClass,new ArrayList<Method>());
   for (  Method method : additionalMethods) {
     if (method.getName().indexOf('$') != -1)     continue;
     if (!containsEquivalentMethod(interfaceMethods,method) && !containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method)) {

@@ -26,6 +26,9 @@
     return createConstructor(access,name,desc,signature,exceptions);
   }
  else   if (Modifier.isAbstract(access) && !GROOVYOBJECT_METHOD_NAMESS.contains(name)) {
+    if (isImplemented(superClass,name,desc)) {
+      return null;
+    }
     accessFlags-=ACC_ABSTRACT;
     MethodVisitor mv=super.visitMethod(accessFlags,name,desc,signature,exceptions);
     mv.visitCode();

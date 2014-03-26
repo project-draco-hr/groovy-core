@@ -1,0 +1,15 @@
+{
+  Method[] methods=clazz.getDeclaredMethods();
+  for (  Method method : methods) {
+    if (method.getName().equals(name)) {
+      if (desc.equals(Type.getMethodDescriptor(method))) {
+        return !Modifier.isAbstract(method.getModifiers());
+      }
+    }
+  }
+  Class parent=clazz.getSuperclass();
+  if (parent != null) {
+    return isImplemented(parent,name,desc);
+  }
+  return false;
+}

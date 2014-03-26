@@ -1,5 +1,6 @@
 {
   super(Opcodes.ASM4,new ClassWriter(0));
+  this.loader=proxyLoader != null ? createInnerLoader(proxyLoader) : findClassLoader(superClass);
   this.visitedMethods=new LinkedHashSet<Object>();
   this.delegatedClosures=closureMap.isEmpty() ? EMPTY_DELEGATECLOSURE_MAP : new HashMap<String,Boolean>();
   boolean wildcard=false;
@@ -11,21 +12,21 @@
     this.delegatedClosures.put(name,Boolean.FALSE);
   }
   this.hasWildcard=wildcard;
+  Class fixedSuperClass=adjustSuperClass(superClass);
   this.generateDelegateField=delegateClass != null;
-  this.objectDelegateMethods=generateDelegateField ? createDelegateMethodList(delegateClass,interfaces) : EMPTY_STRING_SET;
+  this.objectDelegateMethods=generateDelegateField ? createDelegateMethodList(fixedSuperClass,delegateClass,interfaces) : EMPTY_STRING_SET;
   this.delegateClass=delegateClass;
-  boolean isSuperClassAnInterface=superClass.isInterface();
-  this.superClass=isSuperClassAnInterface ? Object.class : superClass;
-  this.classList=new LinkedList<Class>();
+  this.superClass=fixedSuperClass;
+  this.classList=new LinkedHashSet<Class>();
   this.classList.add(superClass);
   if (generateDelegateField) {
     classList.add(delegateClass);
+    Collections.addAll(this.classList,delegateClass.getInterfaces());
   }
   if (interfaces != null) {
     Collections.addAll(this.classList,interfaces);
   }
   this.proxyName=proxyName();
-  this.loader=proxyLoader != null ? createInnerLoader(proxyLoader) : findClassLoader(superClass);
   this.emptyBody=emptyBody;
   ClassWriter writer=(ClassWriter)cv;
   this.visit(Opcodes.V1_5,ACC_PUBLIC,proxyName,null,null,null);
