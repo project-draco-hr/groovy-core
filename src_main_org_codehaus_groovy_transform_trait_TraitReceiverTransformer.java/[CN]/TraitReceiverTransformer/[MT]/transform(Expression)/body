@@ -48,11 +48,15 @@
   }
  else   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
-    if (vexp.getAccessedVariable() instanceof FieldNode) {
-      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),TraitConstants.helperGetterName((FieldNode)vexp.getAccessedVariable()),ArgumentListExpression.EMPTY_ARGUMENTS);
+    Variable accessedVariable=vexp.getAccessedVariable();
+    if (accessedVariable instanceof FieldNode) {
+      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),TraitConstants.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
       mce.setSourcePosition(exp);
       mce.setImplicitThis(false);
       return mce;
+    }
+ else     if (accessedVariable instanceof DynamicVariable) {
+      return new PropertyExpression(new VariableExpression(weaved),accessedVariable.getName());
     }
     if (vexp.isThisExpression()) {
       VariableExpression res=new VariableExpression(weaved);
