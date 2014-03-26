@@ -4,10 +4,9 @@
     checkTraitAllowed(cNode,unit);
     return;
   }
-  Set<ClassNode> interfaces=cNode.getAllInterfaces();
-  for (  ClassNode trait : interfaces) {
-    List<AnnotationNode> traitAnn=trait.getAnnotations(TraitConstants.TRAIT_CLASSNODE);
-    if (traitAnn != null && !traitAnn.isEmpty() && !cNode.getNameWithoutPackage().endsWith(TraitConstants.TRAIT_HELPER)) {
+  if (!cNode.getNameWithoutPackage().endsWith(TraitConstants.TRAIT_HELPER)) {
+    List<ClassNode> traits=findTraits(cNode);
+    for (    ClassNode trait : traits) {
       Iterator<InnerClassNode> innerClasses=trait.redirect().getInnerClasses();
       if (innerClasses != null && innerClasses.hasNext()) {
         ClassNode helperClassNode=null;

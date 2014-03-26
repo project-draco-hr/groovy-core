@@ -1,0 +1,12 @@
+{
+  LinkedHashSet<ClassNode> interfaces=new LinkedHashSet<ClassNode>();
+  collectAllInterfaces(cNode,interfaces);
+  List<ClassNode> traits=new LinkedList<ClassNode>();
+  for (  ClassNode candidate : interfaces) {
+    List<AnnotationNode> traitAnn=candidate.getAnnotations(TraitConstants.TRAIT_CLASSNODE);
+    if (traitAnn != null && !traitAnn.isEmpty()) {
+      traits.add(candidate);
+    }
+  }
+  return traits;
+}
