@@ -1,0 +1,19 @@
+{
+  boolean isSuperClassAnInterface=superClass.isInterface();
+  if (!isSuperClassAnInterface) {
+    return superClass;
+  }
+  Class result=Object.class;
+  Set<String> traits=new LinkedHashSet<String>();
+  collectTraits(superClass,traits);
+  if (interfaces != null) {
+    for (    Class anInterface : interfaces) {
+      collectTraits(anInterface,traits);
+    }
+  }
+  if (!traits.isEmpty()) {
+    String name=superClass.getName() + "$TraitAdapter";
+    result=loader.parseClass("abstract class " + name + " implements "+ DefaultGroovyMethods.join((Iterable)traits,",")+ " {}");
+  }
+  return result;
+}
