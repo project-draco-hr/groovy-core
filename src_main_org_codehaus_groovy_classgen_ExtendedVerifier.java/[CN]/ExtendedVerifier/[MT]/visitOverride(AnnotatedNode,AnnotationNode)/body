@@ -1,0 +1,36 @@
+{
+  ClassNode annotationClassNode=visited.getClassNode();
+  if (annotationClassNode.isResolved() && annotationClassNode.getName().equals("java.lang.Override")) {
+    if (node instanceof MethodNode) {
+      MethodNode origMethod=(MethodNode)node;
+      ClassNode cNode=node.getDeclaringClass();
+      Map genericsSpec=Verifier.createGenericsSpec(cNode,new HashMap());
+      ClassNode next=cNode;
+      outer:       while (next != null) {
+        MethodNode mn=AbstractASTTransformation.correctToGenericsSpec(genericsSpec,origMethod);
+        if (next != cNode) {
+          ClassNode correctedNext=correctToGenericsSpecRecurse(genericsSpec,next);
+          MethodNode found=getDeclaredMethodCorrected(genericsSpec,mn,correctedNext);
+          if (found != null)           break;
+        }
+        List<ClassNode> ifaces=new ArrayList<ClassNode>();
+        ifaces.addAll(Arrays.asList(next.getInterfaces()));
+        Map updatedGenericsSpec=new HashMap(genericsSpec);
+        while (!ifaces.isEmpty()) {
+          ClassNode origInterface=ifaces.remove(0);
+          if (!origInterface.equals(ClassHelper.OBJECT_TYPE)) {
+            updatedGenericsSpec=Verifier.createGenericsSpec(origInterface,updatedGenericsSpec);
+            ClassNode iNode=correctToGenericsSpecRecurse(updatedGenericsSpec,origInterface);
+            MethodNode found2=getDeclaredMethodCorrected(updatedGenericsSpec,mn,iNode);
+            if (found2 != null)             break outer;
+            ifaces.addAll(Arrays.asList(iNode.getInterfaces()));
+          }
+        }
+        next=next.getSuperClass();
+      }
+      if (next == null) {
+        addError("Method '" + origMethod.getName() + "' from class '"+ cNode.getName()+ "' does not override "+ "method from its superclass or interfaces but is annotated with @Override.",visited);
+      }
+    }
+  }
+}
