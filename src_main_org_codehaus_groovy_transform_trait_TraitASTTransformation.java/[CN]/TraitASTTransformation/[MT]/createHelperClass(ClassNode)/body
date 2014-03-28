@@ -1,6 +1,7 @@
 {
   ClassNode helper=new InnerClassNode(cNode,TraitConstants.helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_ABSTRACT| ACC_SYNTHETIC,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
   cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
+  checkInnerClasses(cNode);
   MethodNode initializer=new MethodNode(TraitConstants.STATIC_INIT_METHOD,ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode.getPlainNodeReference(),TraitConstants.THIS_OBJECT)},ClassNode.EMPTY_ARRAY,new BlockStatement());
   fixGenerics(initializer,cNode);
   helper.addMethod(initializer);
