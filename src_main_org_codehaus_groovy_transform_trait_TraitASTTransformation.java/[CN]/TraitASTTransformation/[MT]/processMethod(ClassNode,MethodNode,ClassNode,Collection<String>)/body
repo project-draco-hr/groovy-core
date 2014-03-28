@@ -3,7 +3,7 @@
   Parameter[] newParams=new Parameter[initialParams.length + 1];
   newParams[0]=new Parameter(traitClass.getPlainNodeReference(),TraitConstants.THIS_OBJECT);
   System.arraycopy(initialParams,0,newParams,1,initialParams.length);
-  MethodNode mNode=new MethodNode(methodNode.getName(),ACC_PUBLIC | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),fieldHelper));
+  MethodNode mNode=new MethodNode(methodNode.getName(),ACC_PUBLIC | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),fieldHelper,knownFields));
   if (methodNode.isAbstract()) {
     mNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
   }

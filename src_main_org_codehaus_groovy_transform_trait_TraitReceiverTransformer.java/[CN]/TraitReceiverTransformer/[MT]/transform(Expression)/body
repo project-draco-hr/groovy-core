@@ -68,11 +68,16 @@
     }
   }
  else   if (exp instanceof PropertyExpression) {
-    if (((PropertyExpression)exp).isImplicitThis() || "this".equals(((PropertyExpression)exp).getObjectExpression().getText())) {
-      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),((PropertyExpression)exp).getPropertyAsString() + TraitConstants.DIRECT_GETTER_SUFFIX,ArgumentListExpression.EMPTY_ARGUMENTS);
-      mce.setSourcePosition(exp);
-      mce.setImplicitThis(false);
-      return mce;
+    PropertyExpression pexp=(PropertyExpression)exp;
+    Expression object=pexp.getObjectExpression();
+    if (pexp.isImplicitThis() || "this".equals(object.getText())) {
+      String propName=pexp.getPropertyAsString();
+      if (knownFields.contains(propName)) {
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),propName + TraitConstants.DIRECT_GETTER_SUFFIX,ArgumentListExpression.EMPTY_ARGUMENTS);
+        mce.setSourcePosition(exp);
+        mce.setImplicitThis(false);
+        return mce;
+      }
     }
   }
  else   if (exp instanceof ClosureExpression) {
