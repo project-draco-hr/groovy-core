@@ -4,6 +4,7 @@
   Map genericsSpec=Verifier.createGenericsSpec(cNode,new HashMap());
   genericsSpec=Verifier.createGenericsSpec(trait,genericsSpec);
   for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
+    boolean isForceOverride=TraitConstants.isForceOverride(methodNode);
     String name=methodNode.getName();
     int access=methodNode.getModifiers();
     Parameter[] argumentTypes=methodNode.getParameters();
@@ -21,13 +22,13 @@
         Parameter newParam=new Parameter(fixedType,"arg" + i);
         List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
         List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
-        AbstractASTTransformation.copyAnnotatedNodeAnnotations(parameter.getAnnotations(),parameter,copied,notCopied);
+        AbstractASTTransformation.copyAnnotatedNodeAnnotations(parameter,copied,notCopied);
         newParam.addAnnotations(copied);
         params[i - 1]=newParam;
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
-      MethodNode existingMethod=cNode.getDeclaredMethod(name,params);
-      if (existingMethod != null || isExistingProperty(name,cNode,params)) {
+      MethodNode existingMethod=cNode.getMethod(name,params);
+      if (!isForceOverride && (existingMethod != null || isExistingProperty(name,cNode,params))) {
         continue;
       }
       ClassNode[] exceptionNodes=new ClassNode[exceptions == null ? 0 : exceptions.length];
