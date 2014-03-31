@@ -2,6 +2,12 @@
   Method method=CachedSAMClass.getSAMMethod(parameter);
   if (method == null)   return null;
   if (parameter.isInterface()) {
+    if (Traits.isTrait(parameter)) {
+      MethodHandle ret=TO_SAMTRAIT_PROXY;
+      ret=MethodHandles.insertArguments(ret,2,ProxyGenerator.INSTANCE,Collections.singletonList(parameter));
+      ret=MethodHandles.insertArguments(ret,0,method.getName());
+      return ret;
+    }
     MethodHandle ret=TO_REFLECTIVE_PROXY;
     ret=MethodHandles.insertArguments(ret,1,method.getName(),arg.getClass().getClassLoader(),new Class[]{parameter});
     return ret;
