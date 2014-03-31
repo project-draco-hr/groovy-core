@@ -32,6 +32,9 @@
       if (!isForceOverride && (existingMethod != null || isExistingProperty(name,cNode,params))) {
         continue;
       }
+      if (isForceOverride && cNode.getDeclaredMethod(name,params) != null) {
+        continue;
+      }
       ClassNode[] exceptionNodes=new ClassNode[exceptions == null ? 0 : exceptions.length];
       System.arraycopy(exceptions,0,exceptionNodes,0,exceptionNodes.length);
       MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),name,argList);
