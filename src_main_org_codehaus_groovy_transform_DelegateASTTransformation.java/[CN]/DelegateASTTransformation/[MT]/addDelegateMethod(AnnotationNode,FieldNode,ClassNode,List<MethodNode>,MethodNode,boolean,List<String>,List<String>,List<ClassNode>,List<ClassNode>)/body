@@ -2,8 +2,8 @@
   if (!candidate.isPublic() || candidate.isStatic() || 0 != (candidate.getModifiers() & Opcodes.ACC_SYNTHETIC))   return;
   if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !includeDeprecated)   return;
   if (shouldSkip(candidate.getName(),excludes,includes))   return;
-  Map genericsSpec=Verifier.createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
-  genericsSpec=Verifier.createGenericsSpec(fieldNode.getType(),genericsSpec);
+  Map genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
+  genericsSpec=createGenericsSpec(fieldNode.getType(),genericsSpec);
   if (!excludeTypes.isEmpty() || !includeTypes.isEmpty()) {
     String correctedTypeDescriptor=correctToGenericsSpec(genericsSpec,candidate).getTypeDescriptor();
     if (shouldSkipOnDescriptor(genericsSpec,correctedTypeDescriptor,excludeTypes,includeTypes))     return;
