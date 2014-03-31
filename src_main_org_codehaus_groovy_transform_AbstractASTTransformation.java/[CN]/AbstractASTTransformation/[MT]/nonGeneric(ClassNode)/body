@@ -1,13 +1,3 @@
 {
-  if (type.isUsingGenerics()) {
-    final ClassNode nonGen=ClassHelper.makeWithoutCaching(type.getName());
-    nonGen.setRedirect(type);
-    nonGen.setGenericsTypes(null);
-    nonGen.setUsingGenerics(false);
-    return nonGen;
-  }
-  if (type.isArray() && type.getComponentType().isUsingGenerics()) {
-    return type.getComponentType().getPlainNodeReference().makeArray();
-  }
-  return type;
+  return GenericsUtils.nonGeneric(type);
 }

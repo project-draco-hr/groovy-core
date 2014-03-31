@@ -2,8 +2,8 @@
   boolean isTraitForceOverride=!trait.getAnnotations(Traits.FORCEOVERRIDE_CLASSNODE).isEmpty();
   ClassNode helperClassNode=helpers.getHelper();
   ClassNode fieldHelperClassNode=helpers.getFieldHelper();
-  Map genericsSpec=Verifier.createGenericsSpec(cNode,new HashMap());
-  genericsSpec=Verifier.createGenericsSpec(trait,genericsSpec);
+  Map genericsSpec=GenericsUtils.createGenericsSpec(cNode,new HashMap());
+  genericsSpec=GenericsUtils.createGenericsSpec(trait,genericsSpec);
   for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
     boolean isForceOverride=isTraitForceOverride || Traits.isForceOverride(methodNode);
     String name=methodNode.getName();

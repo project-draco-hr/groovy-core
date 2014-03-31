@@ -6,9 +6,9 @@
     while (!remaining.isEmpty()) {
       ClassNode next=remaining.remove(0);
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
-        updatedGenericsSpec=Verifier.createGenericsSpec(next,updatedGenericsSpec);
+        updatedGenericsSpec=GenericsUtils.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
+          String md=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
           if (md.equals(descriptor))           return true;
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
@@ -23,9 +23,9 @@
     while (!remaining.isEmpty()) {
       ClassNode next=remaining.remove(0);
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
-        updatedGenericsSpec=Verifier.createGenericsSpec(next,updatedGenericsSpec);
+        updatedGenericsSpec=GenericsUtils.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
+          String md=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
           if (md.equals(descriptor))           return false;
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
