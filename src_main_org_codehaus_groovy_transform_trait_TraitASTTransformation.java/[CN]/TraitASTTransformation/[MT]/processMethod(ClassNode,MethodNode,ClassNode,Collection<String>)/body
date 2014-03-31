@@ -1,7 +1,7 @@
 {
   Parameter[] initialParams=methodNode.getParameters();
   Parameter[] newParams=new Parameter[initialParams.length + 1];
-  newParams[0]=new Parameter(traitClass.getPlainNodeReference(),TraitConstants.THIS_OBJECT);
+  newParams[0]=new Parameter(traitClass.getPlainNodeReference(),Traits.THIS_OBJECT);
   System.arraycopy(initialParams,0,newParams,1,initialParams.length);
   MethodNode mNode=new MethodNode(methodNode.getName(),ACC_PUBLIC | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),fieldHelper,knownFields));
   List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
@@ -10,6 +10,9 @@
   mNode.addAnnotations(copied);
   if (methodNode.isAbstract()) {
     mNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
+  }
+ else {
+    methodNode.addAnnotation(new AnnotationNode(Traits.IMPLEMENTED_CLASSNODE));
   }
   methodNode.setCode(null);
   methodNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);

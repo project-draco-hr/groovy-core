@@ -5,10 +5,10 @@
   if (innerClasses != null && innerClasses.hasNext()) {
     while (innerClasses.hasNext()) {
       ClassNode icn=innerClasses.next();
-      if (icn.getName().endsWith(TraitConstants.FIELD_HELPER)) {
+      if (icn.getName().endsWith(Traits.FIELD_HELPER)) {
         fieldHelperClassNode=icn;
       }
- else       if (icn.getName().endsWith(TraitConstants.TRAIT_HELPER)) {
+ else       if (icn.getName().endsWith(Traits.TRAIT_HELPER)) {
         helperClassNode=icn;
       }
     }
@@ -16,10 +16,10 @@
  else {
     try {
       final ClassLoader classLoader=trait.getTypeClass().getClassLoader();
-      String helperClassName=TraitConstants.helperClassName(trait);
+      String helperClassName=Traits.helperClassName(trait);
       helperClassNode=ClassHelper.make(classLoader.loadClass(helperClassName));
       try {
-        fieldHelperClassNode=ClassHelper.make(classLoader.loadClass(TraitConstants.fieldHelperClassName(trait)));
+        fieldHelperClassNode=ClassHelper.make(classLoader.loadClass(Traits.fieldHelperClassName(trait)));
       }
  catch (      ClassNotFoundException e) {
       }

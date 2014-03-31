@@ -5,6 +5,7 @@
     MethodNode found=null;
     for (    MethodNode mi : methods) {
       if (!Modifier.isAbstract(mi.getModifiers()))       continue;
+      if (Traits.hasDefaultImplementation(mi))       continue;
       if (mi.getDeclaringClass().equals(OBJECT_TYPE))       continue;
       if (OBJECT_TYPE.getDeclaredMethod(mi.getName(),mi.getParameters()) != null)       continue;
       if (found != null)       return null;

@@ -4,7 +4,7 @@
     return superClass;
   }
   Class result=Object.class;
-  Set<String> traits=new LinkedHashSet<String>();
+  Set<ClassNode> traits=new LinkedHashSet<ClassNode>();
   collectTraits(superClass,traits);
   if (interfaces != null) {
     for (    Class anInterface : interfaces) {
@@ -13,7 +13,12 @@
   }
   if (!traits.isEmpty()) {
     String name=superClass.getName() + "$TraitAdapter";
-    result=loader.parseClass("abstract class " + name + " implements "+ DefaultGroovyMethods.join((Iterable)traits,",")+ " {}");
+    ClassNode cn=new ClassNode(name,ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.OBJECT_TYPE,traits.toArray(new ClassNode[traits.size()]),null);
+    CompilationUnit cu=new CompilationUnit(loader);
+    cu.addClassNode(cn);
+    cu.compile(Phases.CLASS_GENERATION);
+    @SuppressWarnings("unchecked") List<GroovyClass> classes=(List<GroovyClass>)cu.getClasses();
+    result=loader.defineClass(name,classes.get(0).getBytes());
   }
   return result;
 }

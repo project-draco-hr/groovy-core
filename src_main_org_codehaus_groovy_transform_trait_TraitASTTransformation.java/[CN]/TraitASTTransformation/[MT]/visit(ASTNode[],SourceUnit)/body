@@ -1,12 +1,12 @@
 {
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode anno=(AnnotationNode)nodes[0];
-  if (!TraitConstants.TRAIT_CLASSNODE.equals(anno.getClassNode()))   return;
+  if (!Traits.TRAIT_CLASSNODE.equals(anno.getClassNode()))   return;
   unit=source;
   init(nodes,source);
   if (parent instanceof ClassNode) {
     ClassNode cNode=(ClassNode)parent;
-    checkNotInterface(cNode,TraitConstants.TRAIT_TYPE_NAME);
+    checkNotInterface(cNode,Traits.TRAIT_TYPE_NAME);
     checkNoConstructor(cNode);
     replaceExtendsByImplements(cNode);
     createHelperClass(cNode);

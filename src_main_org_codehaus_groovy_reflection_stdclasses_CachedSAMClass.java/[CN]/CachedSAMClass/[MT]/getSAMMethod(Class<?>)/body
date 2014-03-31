@@ -5,6 +5,7 @@
     Method res=null;
     for (    Method mi : methods) {
       if (!Modifier.isAbstract(mi.getModifiers()))       continue;
+      if (mi.getAnnotation(Traits.Implemented.class) != null)       continue;
       try {
         Object.class.getMethod(mi.getName(),mi.getParameterTypes());
         continue;

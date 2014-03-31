@@ -1,14 +1,14 @@
 {
-  boolean isItselfTrait=TraitConstants.isTrait(cNode);
+  boolean isItselfTrait=Traits.isTrait(cNode);
   SuperCallTraitTransformer superCallTransformer=new SuperCallTraitTransformer(unit);
   if (isItselfTrait) {
     checkTraitAllowed(cNode,unit);
     return;
   }
-  if (!cNode.getNameWithoutPackage().endsWith(TraitConstants.TRAIT_HELPER)) {
+  if (!cNode.getNameWithoutPackage().endsWith(Traits.TRAIT_HELPER)) {
     List<ClassNode> traits=findTraits(cNode);
     for (    ClassNode trait : traits) {
-      TraitHelpersTuple helpers=TraitConstants.findHelpers(trait);
+      TraitHelpersTuple helpers=Traits.findHelpers(trait);
       applyTrait(trait,cNode,helpers);
       superCallTransformer.visitClass(cNode);
     }

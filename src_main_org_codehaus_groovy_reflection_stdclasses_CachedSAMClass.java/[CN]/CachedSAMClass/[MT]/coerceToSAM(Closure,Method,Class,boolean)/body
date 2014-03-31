@@ -3,6 +3,10 @@
     return argument;
   }
   if (isInterface) {
+    if (Traits.isTrait(clazz)) {
+      Map<String,Closure> impl=Collections.singletonMap(method.getName(),argument);
+      return ProxyGenerator.INSTANCE.instantiateAggregate(impl,Collections.singletonList(clazz));
+    }
     return Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},new ConvertedClosure(argument));
   }
  else {

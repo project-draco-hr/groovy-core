@@ -15,7 +15,7 @@
         leftFieldName=((PropertyExpression)leftExpression).getPropertyAsString();
       }
       if (leftFieldName != null) {
-        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),leftFieldName + TraitConstants.DIRECT_SETTER_SUFFIX,new ArgumentListExpression(super.transform(rightExpression)));
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),leftFieldName + Traits.DIRECT_SETTER_SUFFIX,new ArgumentListExpression(super.transform(rightExpression)));
         mce.setSourcePosition(exp);
         mce.setImplicitThis(false);
         return mce;
@@ -41,7 +41,7 @@
     }
   }
  else   if (exp instanceof FieldExpression) {
-    MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),TraitConstants.helperGetterName(((FieldExpression)exp).getField()),ArgumentListExpression.EMPTY_ARGUMENTS);
+    MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),Traits.helperGetterName(((FieldExpression)exp).getField()),ArgumentListExpression.EMPTY_ARGUMENTS);
     mce.setSourcePosition(exp);
     mce.setImplicitThis(false);
     return mce;
@@ -50,7 +50,7 @@
     VariableExpression vexp=(VariableExpression)exp;
     Variable accessedVariable=vexp.getAccessedVariable();
     if (accessedVariable instanceof FieldNode) {
-      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),TraitConstants.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
+      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),Traits.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
       mce.setSourcePosition(exp);
       mce.setImplicitThis(false);
       return mce;
@@ -73,7 +73,7 @@
     if (pexp.isImplicitThis() || "this".equals(object.getText())) {
       String propName=pexp.getPropertyAsString();
       if (knownFields.contains(propName)) {
-        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),propName + TraitConstants.DIRECT_GETTER_SUFFIX,ArgumentListExpression.EMPTY_ARGUMENTS);
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),propName + Traits.DIRECT_GETTER_SUFFIX,ArgumentListExpression.EMPTY_ARGUMENTS);
         mce.setSourcePosition(exp);
         mce.setImplicitThis(false);
         return mce;

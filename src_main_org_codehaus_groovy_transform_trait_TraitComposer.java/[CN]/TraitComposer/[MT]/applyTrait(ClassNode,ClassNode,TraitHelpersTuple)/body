@@ -1,11 +1,11 @@
 {
-  boolean isTraitForceOverride=!trait.getAnnotations(TraitConstants.FORCEOVERRIDE_CLASSNODE).isEmpty();
+  boolean isTraitForceOverride=!trait.getAnnotations(Traits.FORCEOVERRIDE_CLASSNODE).isEmpty();
   ClassNode helperClassNode=helpers.getHelper();
   ClassNode fieldHelperClassNode=helpers.getFieldHelper();
   Map genericsSpec=Verifier.createGenericsSpec(cNode,new HashMap());
   genericsSpec=Verifier.createGenericsSpec(trait,genericsSpec);
   for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
-    boolean isForceOverride=isTraitForceOverride || TraitConstants.isForceOverride(methodNode);
+    boolean isForceOverride=isTraitForceOverride || Traits.isForceOverride(methodNode);
     String name=methodNode.getName();
     int access=methodNode.getModifiers();
     Parameter[] argumentTypes=methodNode.getParameters();
@@ -42,21 +42,21 @@
       cNode.addMethod(forwarder);
     }
   }
-  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),TraitConstants.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
+  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
   if (fieldHelperClassNode != null) {
     cNode.addInterface(fieldHelperClassNode);
     List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
     Collections.sort(declaredMethods,GETTER_FIRST_COMPARATOR);
     for (    MethodNode methodNode : declaredMethods) {
       String fieldName=methodNode.getName();
-      if (fieldName.endsWith(TraitConstants.DIRECT_GETTER_SUFFIX) || fieldName.endsWith(TraitConstants.DIRECT_SETTER_SUFFIX)) {
+      if (fieldName.endsWith(Traits.DIRECT_GETTER_SUFFIX) || fieldName.endsWith(Traits.DIRECT_SETTER_SUFFIX)) {
         int suffixIdx=fieldName.lastIndexOf("$");
         fieldName=fieldName.substring(0,suffixIdx);
         String operation=methodNode.getName().substring(suffixIdx + 1);
         boolean getter="get".equals(operation);
         ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
         if (getter) {
-          cNode.addField(TraitConstants.remappedFieldName(trait,fieldName),Opcodes.ACC_PRIVATE,returnType,null);
+          cNode.addField(Traits.remappedFieldName(trait,fieldName),Opcodes.ACC_PRIVATE,returnType,null);
         }
         Parameter[] newParams;
         if (getter) {
@@ -67,7 +67,7 @@
           ClassNode fixedType=originType.isGenericsPlaceHolder() ? ClassHelper.OBJECT_TYPE : AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
           newParams=new Parameter[]{new Parameter(fixedType,"val")};
         }
-        Expression fieldExpr=new VariableExpression(cNode.getField(TraitConstants.remappedFieldName(trait,fieldName)));
+        Expression fieldExpr=new VariableExpression(cNode.getField(Traits.remappedFieldName(trait,fieldName)));
         Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
         MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
         impl.addAnnotation(new AnnotationNode(ClassHelper.make(CompileStatic.class)));
