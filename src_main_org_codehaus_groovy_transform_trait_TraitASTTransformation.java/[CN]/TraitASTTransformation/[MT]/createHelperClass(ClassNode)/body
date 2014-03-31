@@ -19,15 +19,22 @@
     fieldHelper=new InnerClassNode(cNode,Traits.fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
   }
   List<MethodNode> methods=cNode.getMethods();
+  List<MethodNode> privateMethods=new LinkedList<MethodNode>();
   for (  final MethodNode methodNode : methods) {
     boolean declared=methodNode.getDeclaringClass() == cNode;
     if (declared) {
-      if (!methodNode.isSynthetic() && (methodNode.isPrivate() || methodNode.isProtected())) {
-        unit.addError(new SyntaxException("Cannot have " + (methodNode.isPrivate() ? "private" : "protected") + " method in a trait ("+ cNode.getName()+ "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
+      if (!methodNode.isSynthetic() && methodNode.isProtected()) {
+        unit.addError(new SyntaxException("Cannot have protected method in a trait (" + cNode.getName() + "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
         return;
       }
       helper.addMethod(processMethod(cNode,methodNode,fieldHelper,fieldNames));
+      if (methodNode.isPrivate()) {
+        privateMethods.add(methodNode);
+      }
     }
+  }
+  for (  MethodNode privateMethod : privateMethods) {
+    cNode.removeMethod(privateMethod);
   }
   for (  FieldNode field : fields) {
     processField(field,initializer,fieldHelper);

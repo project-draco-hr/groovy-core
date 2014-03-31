@@ -33,7 +33,34 @@
     MethodCallExpression call=(MethodCallExpression)exp;
     Expression obj=call.getObjectExpression();
     if (call.isImplicitThis() || obj.getText().equals("this")) {
-      MethodCallExpression transformed=new MethodCallExpression(weaved,call.getMethod(),transform(call.getArguments()));
+      Expression method=call.getMethod();
+      Expression arguments=call.getArguments();
+      if (method instanceof ConstantExpression) {
+        String methodName=method.getText();
+        List<MethodNode> methods=traitClass.getMethods(methodName);
+        for (        MethodNode methodNode : methods) {
+          if (methodName.equals(methodNode.getName()) && methodNode.isPrivate()) {
+            ArgumentListExpression newArgs=new ArgumentListExpression();
+            newArgs.addExpression(new VariableExpression(weaved));
+            if (arguments instanceof ArgumentListExpression) {
+              List<Expression> expressions=((ArgumentListExpression)arguments).getExpressions();
+              for (              Expression expression : expressions) {
+                newArgs.addExpression(expression);
+              }
+            }
+ else {
+              newArgs.addExpression(arguments);
+            }
+            MethodCallExpression transformed=new MethodCallExpression(new VariableExpression("this"),methodName,newArgs);
+            transformed.setSourcePosition(call);
+            transformed.setSafe(call.isSafe());
+            transformed.setSpreadSafe(call.isSpreadSafe());
+            transformed.setImplicitThis(true);
+            return transformed;
+          }
+        }
+      }
+      MethodCallExpression transformed=new MethodCallExpression(weaved,method,transform(arguments));
       transformed.setSourcePosition(call);
       transformed.setSafe(call.isSafe());
       transformed.setSpreadSafe(call.isSpreadSafe());
