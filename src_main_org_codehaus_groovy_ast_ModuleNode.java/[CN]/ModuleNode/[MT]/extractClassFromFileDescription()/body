@@ -1,5 +1,18 @@
 {
   String answer=getDescription();
+  try {
+    URI uri=new URI(answer);
+    String path=uri.getPath();
+    String schemeSpecific=uri.getSchemeSpecificPart();
+    if (path != null) {
+      answer=path;
+    }
+ else     if (schemeSpecific != null) {
+      answer=schemeSpecific;
+    }
+  }
+ catch (  URISyntaxException e) {
+  }
   int slashIdx=answer.lastIndexOf('/');
   int separatorIdx=answer.lastIndexOf(File.separatorChar);
   int dotIdx=answer.lastIndexOf('.');
