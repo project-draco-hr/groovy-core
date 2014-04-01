@@ -1,5 +1,5 @@
 {
   final Expression fieldExpr=new VariableExpression(fNode);
   final Expression otherExpr=new PropertyExpression(other,fNode.getName());
-  return new BooleanExpression(new BinaryExpression(new BinaryExpression(identicalExpr(fieldExpr,new VariableExpression("this")),LOGICAL_AND,differentExpr(otherExpr,other)),LOGICAL_OR,new BinaryExpression(differentExpr(fieldExpr,new VariableExpression("this")),LOGICAL_AND,identicalExpr(otherExpr,other))));
+  return new BooleanExpression(or(and(identicalX(fieldExpr,var("this")),differentX(otherExpr,other)),and(differentX(fieldExpr,var("this")),identicalX(otherExpr,other))));
 }

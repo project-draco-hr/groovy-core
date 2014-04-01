@@ -1,0 +1,15 @@
+{
+  final List<FieldNode> result;
+  if (cNode == ClassHelper.OBJECT_TYPE) {
+    result=new ArrayList<FieldNode>();
+  }
+ else {
+    result=getSuperNonPropertyFields(cNode.getSuperClass());
+  }
+  for (  FieldNode fNode : cNode.getFields()) {
+    if (!fNode.isStatic() && cNode.getProperty(fNode.getName()) == null) {
+      result.add(fNode);
+    }
+  }
+  return result;
+}
