@@ -1,13 +1,14 @@
 {
   version++;
-  if (strongMetaClass instanceof ExpandoMetaClass) {
-    ((ExpandoMetaClass)strongMetaClass).inRegistry=false;
+  MetaClass strongRef=strongMetaClass;
+  if (strongRef instanceof ExpandoMetaClass) {
+    ((ExpandoMetaClass)strongRef).inRegistry=false;
     modifiedExpandos.remove(this);
   }
   strongMetaClass=answer;
-  if (strongMetaClass instanceof ExpandoMetaClass) {
-    ((ExpandoMetaClass)strongMetaClass).inRegistry=true;
+  if (answer instanceof ExpandoMetaClass) {
+    ((ExpandoMetaClass)answer).inRegistry=true;
     modifiedExpandos.add(this);
   }
-  clearWeakMetaClass();
+  replaceWeakMetaClassRef(null);
 }
