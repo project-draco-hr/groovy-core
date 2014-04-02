@@ -1,0 +1,8 @@
+{
+  JsonDelegate delegate=new JsonDelegate();
+  Closure<?> cloned=(Closure<?>)c.clone();
+  cloned.setDelegate(delegate);
+  cloned.setResolveStrategy(Closure.DELEGATE_FIRST);
+  cloned.call();
+  return delegate.getContent();
+}

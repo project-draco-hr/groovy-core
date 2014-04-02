@@ -1,0 +1,54 @@
+{
+  int indentSize=0;
+  final CharBuf output=CharBuf.create((int)(jsonPayload.length() * 0.2));
+  JsonLexer lexer=new JsonLexer(new StringReader(jsonPayload));
+  Map<Integer,char[]> indentCache=new HashMap<Integer,char[]>();
+  while (lexer.hasNext()) {
+    JsonToken token=lexer.next();
+switch (token.getType()) {
+case OPEN_CURLY:
+      indentSize+=4;
+    output.addChars(Chr.array('{','\n')).addChars(getIndent(indentSize,indentCache));
+  break;
+case CLOSE_CURLY:
+indentSize-=4;
+output.addChar('\n');
+if (indentSize > 0) {
+output.addChars(getIndent(indentSize,indentCache));
+}
+output.addChar('}');
+break;
+case OPEN_BRACKET:
+indentSize+=4;
+output.addChars(Chr.array('[','\n')).addChars(getIndent(indentSize,indentCache));
+break;
+case CLOSE_BRACKET:
+indentSize-=4;
+output.addChar('\n');
+if (indentSize > 0) {
+output.addChars(getIndent(indentSize,indentCache));
+}
+output.addChar(']');
+break;
+case COMMA:
+output.addChars(Chr.array(',','\n')).addChars(getIndent(indentSize,indentCache));
+break;
+case COLON:
+output.addChars(Chr.array(':',' '));
+break;
+case STRING:
+String textStr=token.getText();
+String textWithoutQuotes=textStr.substring(1,textStr.length() - 1);
+if (textWithoutQuotes.length() > 0) {
+output.addJsonEscapedString(textWithoutQuotes);
+}
+ else {
+output.addQuoted(Chr.array());
+}
+break;
+default :
+output.addString(token.getText());
+}
+}
+return output.toString();
+}

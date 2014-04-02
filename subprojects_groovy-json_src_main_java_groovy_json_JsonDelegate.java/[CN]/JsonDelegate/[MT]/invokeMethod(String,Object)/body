@@ -1,0 +1,23 @@
+{
+  Object val=null;
+  if (args != null && Object[].class.isAssignableFrom(args.getClass())) {
+    Object[] arr=(Object[])args;
+    if (arr.length == 1) {
+      val=arr[0];
+    }
+ else     if (arr.length == 2 && arr[0] instanceof Collection && arr[1] instanceof Closure) {
+      Closure<?> closure=(Closure<?>)arr[1];
+      Iterator<?> iterator=((Collection)arr[0]).iterator();
+      List<Object> list=new ArrayList<Object>();
+      while (iterator.hasNext()) {
+        list.add(curryDelegateAndGetContent(closure,iterator.next()));
+      }
+      val=list;
+    }
+ else {
+      val=Arrays.asList(arr);
+    }
+  }
+  content.put(name,val);
+  return val;
+}

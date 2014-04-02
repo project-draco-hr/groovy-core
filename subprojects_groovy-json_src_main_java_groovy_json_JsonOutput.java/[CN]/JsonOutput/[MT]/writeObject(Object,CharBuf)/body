@@ -1,0 +1,64 @@
+{
+  if (object == null) {
+    buffer.addNull();
+  }
+ else {
+    Class<?> objectClass=object.getClass();
+    if (CharSequence.class.isAssignableFrom(objectClass)) {
+      writeCharSequence((CharSequence)object,buffer);
+    }
+ else     if (objectClass == Boolean.class) {
+      buffer.addBoolean((Boolean)object);
+    }
+ else     if (Number.class.isAssignableFrom(objectClass)) {
+      writeNumber(objectClass,(Number)object,buffer);
+    }
+ else     if (Date.class.isAssignableFrom(objectClass)) {
+      writeDate((Date)object,buffer);
+    }
+ else     if (Calendar.class.isAssignableFrom(objectClass)) {
+      writeDate(((Calendar)object).getTime(),buffer);
+    }
+ else     if (Map.class.isAssignableFrom(objectClass)) {
+      writeMap((Map)object,buffer);
+    }
+ else     if (Iterable.class.isAssignableFrom(objectClass)) {
+      writeIterator(((Iterable<?>)object).iterator(),buffer);
+    }
+ else     if (Iterator.class.isAssignableFrom(objectClass)) {
+      writeIterator((Iterator)object,buffer);
+    }
+ else     if (objectClass == Character.class) {
+      buffer.addJsonEscapedString(Chr.array((Character)object));
+    }
+ else     if (objectClass == URL.class) {
+      buffer.addJsonEscapedString(object.toString());
+    }
+ else     if (objectClass == UUID.class) {
+      buffer.addQuoted(object.toString());
+    }
+ else     if (Closure.class.isAssignableFrom(objectClass)) {
+      writeMap(JsonDelegate.cloneDelegateAndGetContent((Closure<?>)object),buffer);
+    }
+ else     if (Expando.class.isAssignableFrom(objectClass)) {
+      writeMap(((Expando)object).getProperties(),buffer);
+    }
+ else     if (Enumeration.class.isAssignableFrom(objectClass)) {
+      List<?> list=Collections.list((Enumeration<?>)object);
+      writeIterator(list.iterator(),buffer);
+    }
+ else     if (objectClass.isArray()) {
+      writeArray(objectClass,object,buffer);
+    }
+ else     if (Enum.class.isAssignableFrom(objectClass)) {
+      buffer.addQuoted(((Enum<?>)object).name());
+    }
+ else {
+      Map<?,?> properties=DefaultGroovyMethods.getProperties(object);
+      properties.remove("class");
+      properties.remove("declaringClass");
+      properties.remove("metaClass");
+      writeMap(properties,buffer);
+    }
+  }
+}

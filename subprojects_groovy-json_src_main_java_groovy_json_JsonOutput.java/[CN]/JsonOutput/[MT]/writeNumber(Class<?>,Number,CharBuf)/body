@@ -1,0 +1,43 @@
+{
+  if (numberClass == Integer.class) {
+    buffer.addInt((Integer)value);
+  }
+ else   if (numberClass == Long.class) {
+    buffer.addLong((Long)value);
+  }
+ else   if (numberClass == BigInteger.class) {
+    buffer.addBigInteger((BigInteger)value);
+  }
+ else   if (numberClass == BigDecimal.class) {
+    buffer.addBigDecimal((BigDecimal)value);
+  }
+ else   if (numberClass == Double.class) {
+    Double doubleValue=(Double)value;
+    if (doubleValue.isInfinite()) {
+      throw new JsonException("Number " + value + " can't be serialized as JSON: infinite are not allowed in JSON.");
+    }
+    if (doubleValue.isNaN()) {
+      throw new JsonException("Number " + value + " can't be serialized as JSON: NaN are not allowed in JSON.");
+    }
+    buffer.addDouble(doubleValue);
+  }
+ else   if (numberClass == Float.class) {
+    Float floatValue=(Float)value;
+    if (floatValue.isInfinite()) {
+      throw new JsonException("Number " + value + " can't be serialized as JSON: infinite are not allowed in JSON.");
+    }
+    if (floatValue.isNaN()) {
+      throw new JsonException("Number " + value + " can't be serialized as JSON: NaN are not allowed in JSON.");
+    }
+    buffer.addFloat(floatValue);
+  }
+ else   if (numberClass == Byte.class) {
+    buffer.addByte((Byte)value);
+  }
+ else   if (numberClass == Short.class) {
+    buffer.addShort((Short)value);
+  }
+ else {
+    buffer.addString(value.toString());
+  }
+}
