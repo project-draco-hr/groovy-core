@@ -6,19 +6,19 @@
   int m2=operandStack.getStackLength();
   MethodVisitor mv=controller.getMethodVisitor();
   if (BigDecimal_TYPE.equals(rType) && Integer_TYPE.equals(getWrapper(aType))) {
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/math/BigDecimal;Ljava/lang/Integer;)Ljava/lang/Number;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/math/BigDecimal;Ljava/lang/Integer;)Ljava/lang/Number;",false);
   }
  else   if (BigInteger_TYPE.equals(rType) && Integer_TYPE.equals(getWrapper(aType))) {
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/math/BigInteger;Ljava/lang/Integer;)Ljava/lang/Number;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/math/BigInteger;Ljava/lang/Integer;)Ljava/lang/Number;",false);
   }
  else   if (Long_TYPE.equals(getWrapper(rType)) && Integer_TYPE.equals(getWrapper(aType))) {
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Long;Ljava/lang/Integer;)Ljava/lang/Number;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Long;Ljava/lang/Integer;)Ljava/lang/Number;",false);
   }
  else   if (Integer_TYPE.equals(getWrapper(rType)) && Integer_TYPE.equals(getWrapper(aType))) {
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/Number;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/Number;",false);
   }
  else {
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","power","(Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;",false);
   }
   controller.getOperandStack().replace(Number_TYPE,m2 - m1);
 }

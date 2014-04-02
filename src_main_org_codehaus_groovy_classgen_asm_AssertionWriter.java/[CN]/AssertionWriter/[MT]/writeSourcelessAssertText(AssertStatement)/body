@@ -13,7 +13,7 @@
     mv.visitTypeInsn(NEW,"java/lang/StringBuffer");
     mv.visitInsn(DUP);
     mv.visitLdcInsn(expressionText + ". Values: ");
-    mv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V");
+    mv.visitMethodInsn(INVOKESPECIAL,"java/lang/StringBuffer","<init>","(Ljava/lang/String;)V",false);
     operandStack.push(ClassHelper.OBJECT_TYPE);
     int tempIndex=controller.getCompileStack().defineTemporaryVariable("assert",true);
     for (    String name : list) {
@@ -26,13 +26,13 @@
       }
       mv.visitVarInsn(ALOAD,tempIndex);
       mv.visitLdcInsn(text);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/Object;)Ljava/lang/StringBuffer;",false);
       mv.visitInsn(POP);
       mv.visitVarInsn(ALOAD,tempIndex);
       new VariableExpression(name).visit(controller.getAcg());
       operandStack.box();
-      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","toString","(Ljava/lang/Object;)Ljava/lang/String;");
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/InvokerHelper","toString","(Ljava/lang/Object;)Ljava/lang/String;",false);
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/StringBuffer","append","(Ljava/lang/String;)Ljava/lang/StringBuffer;",false);
       mv.visitInsn(POP);
       operandStack.remove(1);
     }

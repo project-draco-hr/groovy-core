@@ -7,17 +7,17 @@
   node.addSyntheticMethod("$getStaticMetaClass",ACC_PROTECTED,ClassHelper.make(MetaClass.class),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BytecodeSequence(new BytecodeInstruction(){
     public void visit(    MethodVisitor mv){
       mv.visitVarInsn(ALOAD,0);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;",false);
       if (BytecodeHelper.isClassLiteralPossible(node) || BytecodeHelper.isSameCompilationUnit(classNode,node)) {
         BytecodeHelper.visitClassLiteral(mv,node);
       }
  else {
-        mv.visitMethodInsn(INVOKESTATIC,classInternalName,"$get$$class$" + classInternalName.replaceAll("\\/","\\$"),"()Ljava/lang/Class;");
+        mv.visitMethodInsn(INVOKESTATIC,classInternalName,"$get$$class$" + classInternalName.replaceAll("\\/","\\$"),"()Ljava/lang/Class;",false);
       }
       Label l1=new Label();
       mv.visitJumpInsn(IF_ACMPEQ,l1);
       mv.visitVarInsn(ALOAD,0);
-      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","initMetaClass","(Ljava/lang/Object;)Lgroovy/lang/MetaClass;");
+      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","initMetaClass","(Ljava/lang/Object;)Lgroovy/lang/MetaClass;",false);
       mv.visitInsn(ARETURN);
       mv.visitLabel(l1);
       mv.visitFieldInsn(GETSTATIC,classInternalName,staticMetaClassFieldName,"Lorg/codehaus/groovy/reflection/ClassInfo;");
@@ -26,14 +26,14 @@
       Label l0=new Label();
       mv.visitJumpInsn(IFNONNULL,l0);
       mv.visitVarInsn(ALOAD,0);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;");
-      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/reflection/ClassInfo","getClassInfo","(Ljava/lang/Class;)Lorg/codehaus/groovy/reflection/ClassInfo;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"java/lang/Object","getClass","()Ljava/lang/Class;",false);
+      mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/reflection/ClassInfo","getClassInfo","(Ljava/lang/Class;)Lorg/codehaus/groovy/reflection/ClassInfo;",false);
       mv.visitInsn(DUP);
       mv.visitVarInsn(ASTORE,1);
       mv.visitFieldInsn(PUTSTATIC,classInternalName,staticMetaClassFieldName,"Lorg/codehaus/groovy/reflection/ClassInfo;");
       mv.visitLabel(l0);
       mv.visitVarInsn(ALOAD,1);
-      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/reflection/ClassInfo","getMetaClass","()Lgroovy/lang/MetaClass;");
+      mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/reflection/ClassInfo","getMetaClass","()Lgroovy/lang/MetaClass;",false);
       mv.visitInsn(ARETURN);
     }
   }
