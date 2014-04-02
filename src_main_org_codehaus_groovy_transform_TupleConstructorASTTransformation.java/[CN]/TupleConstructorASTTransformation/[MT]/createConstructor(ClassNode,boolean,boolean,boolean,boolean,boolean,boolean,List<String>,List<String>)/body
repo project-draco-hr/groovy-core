@@ -29,7 +29,7 @@
       superParams.add(var(name));
     }
  else {
-      body.addStatement(assignS(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),var(name)));
+      body.addStatement(assignS(prop(var("this"),name),var(name)));
     }
   }
   if (callSuper) {
@@ -39,7 +39,7 @@
     String name=fNode.getName();
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
-    body.addStatement(assignS(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),var(name)));
+    body.addStatement(assignS(prop(var("this"),name),var(name)));
   }
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
   if (params.size() > 0) {

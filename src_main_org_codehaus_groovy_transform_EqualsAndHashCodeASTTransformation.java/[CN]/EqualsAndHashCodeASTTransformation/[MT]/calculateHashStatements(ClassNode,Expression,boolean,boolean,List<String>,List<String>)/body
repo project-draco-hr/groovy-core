@@ -15,7 +15,7 @@
   }
   for (  FieldNode fNode : fList) {
     if (shouldSkip(fNode.getName(),excludes,includes))     continue;
-    final Expression fieldExpr=new VariableExpression(fNode);
+    final Expression fieldExpr=var(fNode);
     final Expression current=callX(HASHUTIL_TYPE,"updateHash",args(result,fieldExpr));
     body.addStatement(ifS(not(identicalX(fieldExpr,var("this"))),assignS(result,current)));
   }

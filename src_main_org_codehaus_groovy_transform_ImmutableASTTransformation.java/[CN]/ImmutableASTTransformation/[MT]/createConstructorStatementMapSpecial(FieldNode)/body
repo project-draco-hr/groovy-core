@@ -1,8 +1,8 @@
 {
-  final Expression fieldExpr=new VariableExpression(fNode);
+  final Expression fieldExpr=var(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
   if (initExpr == null)   initExpr=ConstantExpression.EMPTY_EXPRESSION;
   Expression namedArgs=findArg(fNode.getName());
-  Expression baseArgs=new VariableExpression("args");
+  Expression baseArgs=var("args");
   return ifElseS(equalsNullX(baseArgs),ifS(not(equalsNullX(initExpr)),assignS(fieldExpr,cloneCollectionExpr(initExpr))),ifElseS(equalsNullX(namedArgs),ifElseS(isTrueX(callX(baseArgs,"containsKey",constX(fNode.getName()))),assignS(fieldExpr,namedArgs),assignS(fieldExpr,cloneCollectionExpr(baseArgs))),ifElseS(isOneX(callX(baseArgs,"size")),assignS(fieldExpr,cloneCollectionExpr(namedArgs)),assignS(fieldExpr,cloneCollectionExpr(baseArgs)))));
 }
