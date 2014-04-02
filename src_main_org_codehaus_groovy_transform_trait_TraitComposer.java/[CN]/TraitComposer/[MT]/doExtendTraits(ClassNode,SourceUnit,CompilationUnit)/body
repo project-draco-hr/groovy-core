@@ -12,6 +12,10 @@
       TraitHelpersTuple helpers=Traits.findHelpers(trait);
       applyTrait(trait,cNode,helpers);
       superCallTransformer.visitClass(cNode);
+      if (unit != null) {
+        ASTTransformationCollectorCodeVisitor collector=new ASTTransformationCollectorCodeVisitor(unit,cu.getTransformLoader());
+        collector.visitClass(cNode);
+      }
     }
   }
 }

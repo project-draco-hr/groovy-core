@@ -62,7 +62,14 @@
         boolean getter="get".equals(operation);
         ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
         if (getter) {
-          cNode.addField(fieldName,Opcodes.ACC_PRIVATE,returnType,null);
+          FieldNode fieldNode=cNode.addField(fieldName,Opcodes.ACC_PRIVATE,returnType,null);
+          FieldNode helperField=fieldHelperClassNode.getField(fieldName);
+          if (helperField != null) {
+            List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+            List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+            AbstractASTTransformation.copyAnnotatedNodeAnnotations(helperField,copied,notCopied);
+            fieldNode.addAnnotations(copied);
+          }
         }
         Parameter[] newParams;
         if (getter) {
