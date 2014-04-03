@@ -12,7 +12,7 @@
       assertionTracker.sourceText=new SourceText(statement,controller.getSourceUnit(),janitor);
       mv.visitTypeInsn(NEW,"org/codehaus/groovy/runtime/powerassert/ValueRecorder");
       mv.visitInsn(DUP);
-      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","<init>","()V");
+      mv.visitMethodInsn(INVOKESPECIAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","<init>","()V",false);
       controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
       assertionTracker.recorderIndex=controller.getCompileStack().defineTemporaryVariable("recorder",true);
       mv.visitLabel(tryStart);
@@ -26,7 +26,7 @@
   Label exceptionThrower=operandStack.jump(IFEQ);
   if (rewriteAssert) {
     mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V",false);
   }
   Label afterAssert=new Label();
   mv.visitJumpInsn(GOTO,afterAssert);
@@ -34,7 +34,7 @@
   if (rewriteAssert) {
     mv.visitLdcInsn(assertionTracker.sourceText.getNormalizedText());
     mv.visitVarInsn(ALOAD,assertionTracker.recorderIndex);
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/powerassert/AssertionRenderer","render","(Ljava/lang/String;Lorg/codehaus/groovy/runtime/powerassert/ValueRecorder;)Ljava/lang/String;");
+    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/powerassert/AssertionRenderer","render","(Ljava/lang/String;Lorg/codehaus/groovy/runtime/powerassert/ValueRecorder;)Ljava/lang/String;",false);
   }
  else {
     writeSourcelessAssertText(statement);
@@ -53,7 +53,7 @@
     final Label catchAny=new Label();
     mv.visitLabel(catchAny);
     mv.visitVarInsn(ALOAD,savedTracker.recorderIndex);
-    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"org/codehaus/groovy/runtime/powerassert/ValueRecorder","clear","()V",false);
     mv.visitInsn(ATHROW);
     controller.getCompileStack().addExceptionBlock(tryStart,tryEnd,catchAny,null);
   }

@@ -6,7 +6,7 @@
   String ownerName=(field.getOwner().equals(controller.getClassNode())) ? controller.getInternalClassName() : BytecodeHelper.getClassInternalName(field.getOwner());
   if (holder) {
     mv.visitFieldInsn(GETSTATIC,ownerName,fldExp.getFieldName(),BytecodeHelper.getTypeDescription(type));
-    mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;");
+    mv.visitMethodInsn(INVOKEVIRTUAL,"groovy/lang/Reference","get","()Ljava/lang/Object;",false);
     controller.getOperandStack().push(ClassHelper.OBJECT_TYPE);
   }
  else {
