@@ -2,6 +2,9 @@
   List<String> includes=getMemberList(annotation,"includes");
   List<String> excludes=getMemberList(annotation,"excludes");
   checkIncludeExclude(annotation,excludes,includes,MY_TYPE_NAME);
+  if (classNode.isInterface()) {
+    addError(MY_TYPE_NAME + " cannot be applied to interface " + classNode.getName(),annotation);
+  }
   List<PropertyNode> properties=findProperties(annotation,classNode,includes,excludes);
   implementComparable(classNode);
   classNode.addMethod(new MethodNode("compareTo",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(OBJECT_TYPE,OBJ)),ClassNode.EMPTY_ARRAY,createCompareToMethodBody(classNode,properties)));
