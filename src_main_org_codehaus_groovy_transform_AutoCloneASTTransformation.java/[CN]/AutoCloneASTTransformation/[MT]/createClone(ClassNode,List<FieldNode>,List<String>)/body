@@ -4,13 +4,13 @@
   body.addStatement(declS(result,callSuperX("clone")));
   for (  FieldNode fieldNode : fieldNodes) {
     if (excludes.contains(fieldNode.getName()))     continue;
-    Expression fieldExpr=new VariableExpression(fieldNode);
+    Expression fieldExpr=var(fieldNode);
     Expression from=callX(fieldExpr,"clone");
-    Expression to=new PropertyExpression(result,fieldNode.getName());
+    Expression to=prop(result,fieldNode.getName());
     Statement doClone=assignS(to,from);
     body.addStatement(ifS(isInstanceOf(fieldExpr,CLONEABLE_TYPE),doClone));
   }
   body.addStatement(returnS(result));
-  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,body);
 }

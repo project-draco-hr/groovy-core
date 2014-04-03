@@ -3,7 +3,7 @@
   final Expression baos=var("baos");
   body.addStatement(declS(baos,ctorX(BAOS_TYPE)));
   final Expression it=var("it");
-  ClosureExpression writeClosure=new ClosureExpression(Parameter.EMPTY_ARRAY,block(stmt(callX(it,"writeObject",VariableExpression.THIS_EXPRESSION))));
+  ClosureExpression writeClosure=new ClosureExpression(Parameter.EMPTY_ARRAY,block(stmt(callX(it,"writeObject",var("this")))));
   writeClosure.setVariableScope(new VariableScope());
   body.addStatement(stmt(callX(baos,"withObjectOutputStream",args(writeClosure))));
   final Expression bais=var("bais");
@@ -15,6 +15,6 @@
   Expression classLoader=callX(klass,"getClassLoader");
   Expression result=callX(bais,"withObjectInputStream",args(classLoader,readClosure));
   body.addStatement(returnS(result));
-  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
+  ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,body);
 }

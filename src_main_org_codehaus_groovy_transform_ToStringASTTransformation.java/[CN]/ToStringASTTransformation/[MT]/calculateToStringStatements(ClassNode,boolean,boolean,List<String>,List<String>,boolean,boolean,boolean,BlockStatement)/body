@@ -2,7 +2,7 @@
   final Expression result=var("_result");
   body.addStatement(declS(result,ctorX(STRINGBUILDER_TYPE)));
   final VariableExpression first=var("$toStringFirst");
-  body.addStatement(declS(first,ConstantExpression.TRUE));
+  body.addStatement(declS(first,constX(Boolean.TRUE)));
   String className=(includePackage) ? cNode.getName() : cNode.getNameWithoutPackage();
   body.addStatement(appendS(result,constX(className + "(")));
   List<PropertyNode> pList=getInstanceProperties(cNode);
@@ -24,7 +24,7 @@
     appendPrefix(body,result,"super",includeNames);
     body.addStatement(appendS(result,callSuperX("toString")));
   }
-  body.addStatement(appendS(result,new ConstantExpression(")")));
+  body.addStatement(appendS(result,constX(")")));
   MethodCallExpression toString=callX(result,"toString");
   toString.setImplicitThis(false);
   return toString;

@@ -1,13 +1,13 @@
 {
   final BlockStatement body=new BlockStatement();
-  final Expression fieldExpr=new VariableExpression(fieldNode);
+  final Expression fieldExpr=var(fieldNode);
   final Expression resExpr=var("res",type);
   final MethodCallExpression callExpression=callX(fieldExpr,"get");
   callExpression.setSafe(true);
   body.addStatement(declS(resExpr,callExpression));
-  final Statement mainIf=ifElseS(notNullExpr(resExpr),stmt(resExpr),block(assignS(resExpr,initExpr),assignS(fieldExpr,ctorX(SOFT_REF,resExpr)),stmt(resExpr)));
+  final Statement mainIf=ifElseS(notNullX(resExpr),stmt(resExpr),block(assignS(resExpr,initExpr),assignS(fieldExpr,ctorX(SOFT_REF,resExpr)),stmt(resExpr)));
   if (fieldNode.isVolatile()) {
-    body.addStatement(ifElseS(notNullExpr(resExpr),stmt(resExpr),new SynchronizedStatement(syncTarget(fieldNode),block(assignS(resExpr,callExpression),mainIf))));
+    body.addStatement(ifElseS(notNullX(resExpr),stmt(resExpr),new SynchronizedStatement(syncTarget(fieldNode),block(assignS(resExpr,callExpression),mainIf))));
   }
  else {
     body.addStatement(mainIf);

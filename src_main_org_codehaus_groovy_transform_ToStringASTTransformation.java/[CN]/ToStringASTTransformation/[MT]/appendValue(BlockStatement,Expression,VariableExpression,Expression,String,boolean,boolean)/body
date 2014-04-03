@@ -1,6 +1,6 @@
 {
   final BlockStatement thenBlock=new BlockStatement();
-  final Statement appendValue=ignoreNulls ? ifS(notNullExpr(value),thenBlock) : thenBlock;
+  final Statement appendValue=ignoreNulls ? ifS(notNullX(value),thenBlock) : thenBlock;
   appendCommaIfNotFirst(thenBlock,result,first);
   appendPrefix(thenBlock,result,name,includeNames);
   thenBlock.addStatement(ifElseS(identicalX(value,VariableExpression.THIS_EXPRESSION),appendS(result,constX("(this)")),appendS(result,callX(INVOKER_TYPE,"toString",value))));
