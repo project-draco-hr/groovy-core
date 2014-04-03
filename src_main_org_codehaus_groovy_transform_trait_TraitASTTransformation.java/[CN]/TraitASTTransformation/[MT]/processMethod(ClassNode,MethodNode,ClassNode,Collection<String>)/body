@@ -6,10 +6,7 @@
   final int mod=methodNode.isPrivate() ? ACC_PRIVATE : ACC_PUBLIC;
   MethodNode mNode=new MethodNode(methodNode.getName(),mod | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),traitClass,fieldHelper,knownFields));
   mNode.setSourcePosition(methodNode);
-  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
-  List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
-  AbstractASTTransformation.copyAnnotatedNodeAnnotations(methodNode,copied,notCopied);
-  mNode.addAnnotations(copied);
+  mNode.addAnnotations(methodNode.getAnnotations());
   if (methodNode.isAbstract()) {
     mNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
   }

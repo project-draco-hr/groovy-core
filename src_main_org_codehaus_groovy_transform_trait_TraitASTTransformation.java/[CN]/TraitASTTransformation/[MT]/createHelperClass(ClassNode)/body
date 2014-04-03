@@ -40,19 +40,12 @@
     processField(field,initializer,fieldHelper);
   }
   cNode.getProperties().clear();
-  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
-  List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
-  copyAnnotatedNodeAnnotations(cNode,copied,notCopied);
-  if (!notCopied.isEmpty()) {
-    for (    AnnotationNode node : notCopied) {
-      unit.addError(new SyntaxException("Annotation not supported onto traits",node.getLineNumber(),node.getColumnNumber()));
-    }
-  }
-  helper.addAnnotations(copied);
+  copyClassAnnotations(cNode,helper);
   fields=new ArrayList<FieldNode>(cNode.getFields());
   for (  FieldNode field : fields) {
     cNode.removeField(field.getName());
   }
+  registerASTTranformations(helper);
   unit.getAST().addClass(helper);
   if (fieldHelper != null) {
     unit.getAST().addClass(fieldHelper);
