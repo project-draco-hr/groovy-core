@@ -6,7 +6,7 @@
   final InnerClassNode holderClass=new InnerClassNode(declaringClass,fullName,visibility,ClassHelper.OBJECT_TYPE);
   final String innerFieldName="INSTANCE";
   holderClass.addField(innerFieldName,ACC_PRIVATE | ACC_STATIC | ACC_FINAL,fieldType,initExpr);
-  final Expression innerField=prop(new ClassExpression(holderClass),innerFieldName);
+  final Expression innerField=propX(classX(holderClass),innerFieldName);
   declaringClass.getModule().addClass(holderClass);
   body.addStatement(returnS(innerField));
 }

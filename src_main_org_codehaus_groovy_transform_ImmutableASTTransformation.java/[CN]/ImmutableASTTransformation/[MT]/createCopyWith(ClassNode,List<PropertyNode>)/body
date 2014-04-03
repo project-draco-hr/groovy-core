@@ -1,12 +1,12 @@
 {
   BlockStatement body=new BlockStatement();
-  body.addStatement(ifS(or(equalsNullX(var("map",ClassHelper.MAP_TYPE)),eq(callX(var("map",HASHMAP_TYPE),"size"),constX(0))),returnS(var("this",cNode))));
-  body.addStatement(declS(var("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
-  body.addStatement(declS(var("construct",HASHMAP_TYPE),ctorX(HASHMAP_TYPE)));
+  body.addStatement(ifS(orX(equalsNullX(varX("map",ClassHelper.MAP_TYPE)),eqX(callX(varX("map",HASHMAP_TYPE),"size"),constX(0))),returnS(varX("this",cNode))));
+  body.addStatement(declS(varX("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
+  body.addStatement(declS(varX("construct",HASHMAP_TYPE),ctorX(HASHMAP_TYPE)));
   for (  final PropertyNode pNode : pList) {
     body.addStatement(createCheckForProperty(pNode));
   }
-  body.addStatement(returnS(ternaryX(isTrueX(var("dirty",ClassHelper.boolean_TYPE)),ctorX(cNode,args(var("construct",HASHMAP_TYPE))),var("this",cNode))));
+  body.addStatement(returnS(ternaryX(isTrueX(varX("dirty",ClassHelper.boolean_TYPE)),ctorX(cNode,args(varX("construct",HASHMAP_TYPE))),varX("this",cNode))));
   final ClassNode clonedNode=cNode.getPlainNodeReference();
   cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,params(new Parameter(new ClassNode(Map.class),"map")),null,body);
 }

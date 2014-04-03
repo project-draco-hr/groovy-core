@@ -1,12 +1,12 @@
 {
   List<Statement> statements=new ArrayList<Statement>();
-  statements.add(ifS(callThisX("is",vars(OBJ)),returnS(constX(0))));
-  statements.add(ifS(not(isInstanceOf(var(OBJ),newClass(classNode))),returnS(constX(-1))));
-  statements.add(declS(var(VALUE,ClassHelper.int_TYPE),constX(0)));
+  statements.add(ifS(callThisX("is",args(OBJ)),returnS(constX(0))));
+  statements.add(ifS(notX(isInstanceOfX(varX(OBJ),newClass(classNode))),returnS(constX(-1))));
+  statements.add(declS(varX(VALUE,ClassHelper.int_TYPE),constX(0)));
   for (  PropertyNode property : properties) {
     String name=property.getName();
-    statements.add(assignS(var(VALUE),cmp(prop(var("this"),name),prop(var(OBJ),name))));
-    statements.add(ifS(ne(var(VALUE),constX(0)),returnS(var(VALUE))));
+    statements.add(assignS(varX(VALUE),cmpX(propX(varX("this"),name),propX(varX(OBJ),name))));
+    statements.add(ifS(neX(varX(VALUE),constX(0)),returnS(varX(VALUE))));
   }
   if (properties.isEmpty()) {
     statements.add(returnS(constX(-1)));

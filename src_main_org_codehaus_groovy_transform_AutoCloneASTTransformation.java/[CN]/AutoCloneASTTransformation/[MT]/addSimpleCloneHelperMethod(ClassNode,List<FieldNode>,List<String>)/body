@@ -1,6 +1,6 @@
 {
   Parameter methodParam=new Parameter(GenericsUtils.nonGeneric(cNode),"other");
-  final Expression other=var(methodParam);
+  final Expression other=varX(methodParam);
   boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
   BlockStatement methodBody=new BlockStatement();
   if (hasParent) {
@@ -9,12 +9,12 @@
   for (  FieldNode fieldNode : fieldNodes) {
     String name=fieldNode.getName();
     if (excludes.contains(name))     continue;
-    Expression direct=prop(var("this"),name);
+    Expression direct=propX(varX("this"),name);
     Expression cloned=callX(direct,"clone");
-    Expression to=prop(other,name);
+    Expression to=propX(other,name);
     Statement assignCloned=assignS(to,cloned);
     Statement assignDirect=assignS(to,direct);
-    methodBody.addStatement(ifElseS(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+    methodBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
   }
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addMethod("cloneOrCopyMembers",ACC_PROTECTED,ClassHelper.VOID_TYPE,params(methodParam),exceptions,methodBody);

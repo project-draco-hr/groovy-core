@@ -35,9 +35,9 @@
       newParam.setInitialExpression(params[i].getInitialExpression());
       if (includeParameterAnnotations)       newParam.addAnnotations(copyAnnotatedNodeAnnotations(params[i]));
       newParams[i]=newParam;
-      args.addExpression(var(newParam));
+      args.addExpression(varX(newParam));
     }
-    MethodCallExpression mce=callX(var(fieldNode.getName(),correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType())),candidate.getName(),args);
+    MethodCallExpression mce=callX(varX(fieldNode.getName(),correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType())),candidate.getName(),args);
     mce.setSourcePosition(fieldNode);
     ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,candidate.getReturnType());
     MethodNode newMethod=owner.addMethod(candidate.getName(),candidate.getModifiers() & (~ACC_ABSTRACT) & (~ACC_NATIVE),returnType,newParams,candidate.getExceptions(),stmt(mce));

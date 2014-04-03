@@ -2,9 +2,9 @@
   BlockStatement block=new BlockStatement();
   for (  PropertyNode pNode : cNode.getProperties()) {
     if (pNode.isStatic())     continue;
-    Statement ifStatement=ifS(callX(namedArgs,"containsKey",constX(pNode.getName())),assignS(var(pNode),prop(namedArgs,pNode.getName())));
+    Statement ifStatement=ifS(callX(namedArgs,"containsKey",constX(pNode.getName())),assignS(varX(pNode),propX(namedArgs,pNode.getName())));
     block.addStatement(ifStatement);
   }
-  block.addStatement(stmt(callX(CHECK_METHOD_TYPE,"checkPropNames",args(var("this"),namedArgs))));
+  block.addStatement(stmt(callX(CHECK_METHOD_TYPE,"checkPropNames",args(varX("this"),namedArgs))));
   return block;
 }

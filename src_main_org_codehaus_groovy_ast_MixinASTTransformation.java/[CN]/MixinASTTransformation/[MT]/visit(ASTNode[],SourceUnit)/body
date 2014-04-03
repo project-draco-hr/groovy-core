@@ -1,7 +1,5 @@
 {
-  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
-  }
+  init(nodes,source);
   AnnotationNode node=(AnnotationNode)nodes[0];
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   if (!MY_TYPE.equals(node.getClassNode()))   return;
@@ -26,10 +24,10 @@
     final Parameter[] noparams=new Parameter[0];
     MethodNode clinit=annotatedClass.getDeclaredMethod("<clinit>",noparams);
     if (clinit == null) {
-      clinit=annotatedClass.addMethod("<clinit>",Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC,ClassHelper.VOID_TYPE,noparams,null,new BlockStatement());
+      clinit=annotatedClass.addMethod("<clinit>",ACC_PUBLIC | ACC_STATIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,noparams,null,new BlockStatement());
       clinit.setSynthetic(true);
     }
     final BlockStatement code=(BlockStatement)clinit.getCode();
-    code.addStatement(new ExpressionStatement(new MethodCallExpression(new PropertyExpression(new ClassExpression(annotatedClass),"metaClass"),"mixin",useClasses)));
+    code.addStatement(stmt(callX(propX(classX(annotatedClass),"metaClass"),"mixin",useClasses)));
   }
 }

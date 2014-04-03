@@ -1,7 +1,4 @@
 {
-  if (nodes == null) {
-    return;
-  }
   init(nodes,source);
   AnnotationNode annotationNode=(AnnotationNode)nodes[0];
   AnnotatedNode annotatedNode=(AnnotatedNode)nodes[1];
@@ -22,17 +19,16 @@
     if (methodNode.isStatic()) {
       modifiers=modifiers | FieldNode.ACC_STATIC;
     }
-    int protectedCacheSize=getIntMemberValue(annotationNode,PROTECTED_CACHE_SIZE_NAME);
-    int maxCacheSize=getIntMemberValue(annotationNode,MAX_CACHE_SIZE_NAME);
+    int protectedCacheSize=getMemberIntValue(annotationNode,PROTECTED_CACHE_SIZE_NAME);
+    int maxCacheSize=getMemberIntValue(annotationNode,MAX_CACHE_SIZE_NAME);
     MethodCallExpression memoizeClosureCallExpression=buildMemoizeClosureCallExpression(delegatingMethod,protectedCacheSize,maxCacheSize);
     String memoizedClosureFieldName=buildUniqueName(ownerClassNode,CLOSURE_LABEL,methodNode);
-    FieldNode memoizedClosureField=new FieldNode(memoizedClosureFieldName,modifiers,ClassHelper.CLOSURE_TYPE.getPlainNodeReference(),null,memoizeClosureCallExpression);
+    FieldNode memoizedClosureField=new FieldNode(memoizedClosureFieldName,modifiers,newClass(ClassHelper.CLOSURE_TYPE),null,memoizeClosureCallExpression);
     ownerClassNode.addField(memoizedClosureField);
     BlockStatement newCode=new BlockStatement();
-    ArgumentListExpression args=new ArgumentListExpression(methodNode.getParameters());
-    MethodCallExpression closureCallExpression=new MethodCallExpression(new FieldExpression(memoizedClosureField),CLOSURE_CALL_METHOD_NAME,args);
+    MethodCallExpression closureCallExpression=callX(fieldX(memoizedClosureField),CLOSURE_CALL_METHOD_NAME,args(methodNode.getParameters()));
     closureCallExpression.setImplicitThis(false);
-    newCode.addStatement(new ReturnStatement(closureCallExpression));
+    newCode.addStatement(returnS(closureCallExpression));
     methodNode.setCode(newCode);
     VariableScopeVisitor visitor=new VariableScopeVisitor(source);
     visitor.visitClass(ownerClassNode);

@@ -6,7 +6,7 @@
     initBody=new BlockStatement();
   }
   Parameter initParam=new Parameter(GenericsUtils.nonGeneric(cNode),"other");
-  final Expression other=var(initParam);
+  final Expression other=varX(initParam);
   boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
   if (hasParent) {
     initBody.addStatement(stmt(ctorX(ClassNode.SUPER,other)));
@@ -14,14 +14,14 @@
   for (  FieldNode fieldNode : list) {
     String name=fieldNode.getName();
     if (excludes.contains(name))     continue;
-    Expression direct=prop(other,name);
+    Expression direct=propX(other,name);
     Expression cloned=callX(direct,"clone");
-    Expression to=prop(var("this"),name);
+    Expression to=propX(varX("this"),name);
     Statement assignCloned=assignS(to,cloned);
     Statement assignDirect=assignS(to,direct);
-    initBody.addStatement(ifElseS(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+    initBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
   }
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addConstructor(ACC_PROTECTED,params(initParam),ClassNode.EMPTY_ARRAY,initBody);
-  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,block(stmt(ctorX(cNode,args(var("this"))))));
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,block(stmt(ctorX(cNode,args(varX("this"))))));
 }

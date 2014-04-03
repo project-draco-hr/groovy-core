@@ -1,9 +1,9 @@
 {
   final String name=fNode.getName();
-  final Expression fieldExpr=new PropertyExpression(new VariableExpression("this"),name);
+  final Expression fieldExpr=propX(varX("this"),name);
   Expression initExpr=fNode.getInitialValueExpression();
-  if (initExpr == null)   initExpr=new ConstantExpression(null);
+  if (initExpr == null)   initExpr=constX(null);
   fNode.setInitialValueExpression(null);
   Expression value=findArg(name);
-  return new IfStatement(equalsNullX(value),new IfStatement(equalsNullX(initExpr),EmptyStatement.INSTANCE,assignS(fieldExpr,initExpr)),assignS(fieldExpr,value));
+  return ifElseS(equalsNullX(value),ifS(notNullX(initExpr),assignS(fieldExpr,initExpr)),assignS(fieldExpr,value));
 }

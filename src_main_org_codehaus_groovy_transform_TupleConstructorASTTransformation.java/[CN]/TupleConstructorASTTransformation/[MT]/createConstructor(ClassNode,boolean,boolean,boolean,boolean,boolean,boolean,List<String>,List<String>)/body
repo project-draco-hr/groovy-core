@@ -26,10 +26,10 @@
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
     if (callSuper) {
-      superParams.add(var(name));
+      superParams.add(varX(name));
     }
  else {
-      body.addStatement(assignS(prop(var("this"),name),var(name)));
+      body.addStatement(assignS(propX(varX("this"),name),varX(name)));
     }
   }
   if (callSuper) {
@@ -39,7 +39,7 @@
     String name=fNode.getName();
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
-    body.addStatement(assignS(prop(var("this"),name),var(name)));
+    body.addStatement(assignS(propX(varX("this"),name),varX(name)));
   }
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
   if (params.size() > 0) {

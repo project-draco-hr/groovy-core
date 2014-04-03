@@ -15,7 +15,7 @@
   }
   if (foundNoArg == null) {
     final BlockStatement body=new BlockStatement();
-    body.addStatement(ifS(notNullX(var(field)),new ThrowStatement(ctorX(make(RuntimeException.class),args(constX("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ "."+ propertyName))))));
+    body.addStatement(ifS(notNullX(varX(field)),new ThrowStatement(ctorX(make(RuntimeException.class),args(constX("Can't instantiate singleton " + classNode.getName() + ". Use "+ classNode.getName()+ "."+ propertyName))))));
     classNode.addConstructor(new ConstructorNode(ACC_PRIVATE,body));
   }
 }

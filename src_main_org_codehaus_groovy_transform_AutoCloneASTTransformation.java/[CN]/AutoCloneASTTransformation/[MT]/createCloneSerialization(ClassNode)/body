@@ -1,12 +1,12 @@
 {
   final BlockStatement body=new BlockStatement();
-  final Expression baos=var("baos");
+  final Expression baos=varX("baos");
   body.addStatement(declS(baos,ctorX(BAOS_TYPE)));
-  final Expression it=var("it");
-  ClosureExpression writeClosure=new ClosureExpression(Parameter.EMPTY_ARRAY,block(stmt(callX(it,"writeObject",var("this")))));
+  final Expression it=varX("it");
+  ClosureExpression writeClosure=new ClosureExpression(Parameter.EMPTY_ARRAY,block(stmt(callX(it,"writeObject",varX("this")))));
   writeClosure.setVariableScope(new VariableScope());
   body.addStatement(stmt(callX(baos,"withObjectOutputStream",args(writeClosure))));
-  final Expression bais=var("bais");
+  final Expression bais=varX("bais");
   ConstructorCallExpression bytes=ctorX(BAIS_TYPE,args(callX(baos,"toByteArray")));
   body.addStatement(declS(bais,bytes));
   ClosureExpression readClosure=new ClosureExpression(new Parameter[]{},block(stmt(callX(it,"readObject"))));

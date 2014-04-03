@@ -3,22 +3,21 @@
   Parameter[] newParams=cloneParams(srcParams);
   List<Expression> argList=new ArrayList<Expression>(newParams.length);
   for (int i=0; i < srcParams.length; i++) {
-    argList.add(new VariableExpression(newParams[i]));
+    argList.add(varX(newParams[i]));
   }
-  ClosureExpression expression=new ClosureExpression(newParams,new ExpressionStatement(new MethodCallExpression(new VariableExpression("this"),privateMethod.getName(),new ArgumentListExpression(argList))));
+  ClosureExpression expression=new ClosureExpression(newParams,stmt(callThisX(privateMethod.getName(),args(argList))));
   MethodCallExpression mce;
   if (protectedCacheSize == 0 && maxCacheSize == 0) {
-    mce=new MethodCallExpression(expression,MEMOIZE_METHOD_NAME,MethodCallExpression.NO_ARGUMENTS);
+    mce=callX(expression,MEMOIZE_METHOD_NAME);
   }
  else   if (protectedCacheSize == 0) {
-    mce=new MethodCallExpression(expression,MEMOIZE_AT_MOST_METHOD_NAME,new ArgumentListExpression(new ConstantExpression(maxCacheSize)));
+    mce=callX(expression,MEMOIZE_AT_MOST_METHOD_NAME,args(constX(maxCacheSize)));
   }
  else   if (maxCacheSize == 0) {
-    mce=new MethodCallExpression(expression,MEMOIZE_AT_LEAST_METHOD_NAME,new ArgumentListExpression(new ConstantExpression(protectedCacheSize)));
+    mce=callX(expression,MEMOIZE_AT_LEAST_METHOD_NAME,args(constX(protectedCacheSize)));
   }
  else {
-    ArgumentListExpression args=new ArgumentListExpression(new Expression[]{new ConstantExpression(protectedCacheSize),new ConstantExpression(maxCacheSize)});
-    mce=new MethodCallExpression(expression,MEMOIZE_BETWEEN_METHOD_NAME,args);
+    mce=callX(expression,MEMOIZE_BETWEEN_METHOD_NAME,args(constX(protectedCacheSize),constX(maxCacheSize)));
   }
   mce.setImplicitThis(false);
   return mce;

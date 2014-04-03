@@ -3,8 +3,8 @@
   for (  PropertyNode pNode : list) {
     body.addStatement(createConstructorStatement(cNode,pNode,knownImmutableClasses,knownImmutables));
   }
-  body.addStatement(stmt(callX(SELF_TYPE,"checkPropNames",vars("this","args"))));
-  body.addStatement(ifS(equalsNullX(var("args")),assignS(var("args"),new MapExpression())));
+  body.addStatement(stmt(callX(SELF_TYPE,"checkPropNames",args("this","args"))));
+  body.addStatement(ifS(equalsNullX(varX("args")),assignS(varX("args"),new MapExpression())));
   createConstructorMapCommon(cNode,body);
   if (list.size() > 0) {
     createNoArgConstructor(cNode);

@@ -5,7 +5,7 @@
   Expression tempToString;
   if (cache) {
     final FieldNode cacheField=cNode.addField("$to$string",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.STRING_TYPE,null);
-    final Expression savedToString=var(cacheField);
+    final Expression savedToString=varX(cacheField);
     body.addStatement(ifS(equalsNullX(savedToString),assignS(savedToString,calculateToStringStatements(cNode,includeSuper,includeFields,excludes,includes,includeNames,ignoreNulls,includePackage,body))));
     tempToString=savedToString;
   }

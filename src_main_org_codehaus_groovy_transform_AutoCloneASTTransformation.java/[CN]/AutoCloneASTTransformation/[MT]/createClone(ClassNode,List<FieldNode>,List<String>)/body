@@ -1,14 +1,14 @@
 {
   final BlockStatement body=new BlockStatement();
-  final Expression result=var("_result");
+  final Expression result=varX("_result");
   body.addStatement(declS(result,callSuperX("clone")));
   for (  FieldNode fieldNode : fieldNodes) {
     if (excludes.contains(fieldNode.getName()))     continue;
-    Expression fieldExpr=var(fieldNode);
+    Expression fieldExpr=varX(fieldNode);
     Expression from=callX(fieldExpr,"clone");
-    Expression to=prop(result,fieldNode.getName());
+    Expression to=propX(result,fieldNode.getName());
     Statement doClone=assignS(to,from);
-    body.addStatement(ifS(isInstanceOf(fieldExpr,CLONEABLE_TYPE),doClone));
+    body.addStatement(ifS(isInstanceOfX(fieldExpr,CLONEABLE_TYPE),doClone));
   }
   body.addStatement(returnS(result));
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};

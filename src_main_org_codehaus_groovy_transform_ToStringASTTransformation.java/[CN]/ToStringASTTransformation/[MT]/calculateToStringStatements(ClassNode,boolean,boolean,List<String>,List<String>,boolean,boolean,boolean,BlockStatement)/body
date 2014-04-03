@@ -1,14 +1,14 @@
 {
-  final Expression result=var("_result");
+  final Expression result=varX("_result");
   body.addStatement(declS(result,ctorX(STRINGBUILDER_TYPE)));
-  final VariableExpression first=var("$toStringFirst");
+  final VariableExpression first=varX("$toStringFirst");
   body.addStatement(declS(first,constX(Boolean.TRUE)));
   String className=(includePackage) ? cNode.getName() : cNode.getNameWithoutPackage();
   body.addStatement(appendS(result,constX(className + "(")));
   List<PropertyNode> pList=getInstanceProperties(cNode);
   for (  PropertyNode pNode : pList) {
     if (shouldSkip(pNode.getName(),excludes,includes))     continue;
-    Expression getter=callX(INVOKER_TYPE,"getProperty",args(var("this"),constX(pNode.getName())));
+    Expression getter=callX(INVOKER_TYPE,"getProperty",args(varX("this"),constX(pNode.getName())));
     appendValue(body,result,first,getter,pNode.getName(),includeNames,ignoreNulls);
   }
   if (includeFields) {
@@ -16,7 +16,7 @@
     fList.addAll(getInstanceNonPropertyFields(cNode));
     for (    FieldNode fNode : fList) {
       if (shouldSkip(fNode.getName(),excludes,includes))       continue;
-      appendValue(body,result,first,var(fNode),fNode.getName(),includeNames,ignoreNulls);
+      appendValue(body,result,first,varX(fNode),fNode.getName(),includeNames,ignoreNulls);
     }
   }
   if (includeSuper) {

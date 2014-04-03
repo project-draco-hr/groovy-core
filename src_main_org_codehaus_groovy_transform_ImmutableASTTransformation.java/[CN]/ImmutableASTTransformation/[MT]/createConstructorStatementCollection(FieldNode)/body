@@ -1,8 +1,8 @@
 {
-  final Expression fieldExpr=var(fNode);
+  final Expression fieldExpr=varX(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
   if (initExpr == null)   initExpr=ConstantExpression.EMPTY_EXPRESSION;
   Expression collection=findArg(fNode.getName());
   ClassNode fieldType=fieldExpr.getType();
-  return ifElseS(equalsNullX(collection),ifS(not(equalsNullX(initExpr)),assignS(fieldExpr,cloneCollectionExpr(initExpr))),ifElseS(isInstanceOf(collection,CLONEABLE_TYPE),assignS(fieldExpr,cloneCollectionExpr(cloneArrayOrCloneableExpr(collection,fieldType))),assignS(fieldExpr,cloneCollectionExpr(collection))));
+  return ifElseS(equalsNullX(collection),ifS(notX(equalsNullX(initExpr)),assignS(fieldExpr,cloneCollectionExpr(initExpr))),ifElseS(isInstanceOfX(collection,CLONEABLE_TYPE),assignS(fieldExpr,cloneCollectionExpr(cloneArrayOrCloneableExpr(collection,fieldType))),assignS(fieldExpr,cloneCollectionExpr(collection))));
 }

@@ -1,7 +1,7 @@
 {
   Parameter[] parameters=params(new Parameter(LHMAP_TYPE,"__namedArgs"));
   BlockStatement code=new BlockStatement();
-  VariableExpression namedArgs=var("__namedArgs");
+  VariableExpression namedArgs=varX("__namedArgs");
   namedArgs.setAccessedVariable(parameters[0]);
   code.addStatement(ifElseS(equalsNullX(namedArgs),illegalArgumentBlock(message),processArgsBlock(cNode,namedArgs)));
   ConstructorNode init=new ConstructorNode(ACC_PUBLIC,parameters,ClassNode.EMPTY_ARRAY,code);

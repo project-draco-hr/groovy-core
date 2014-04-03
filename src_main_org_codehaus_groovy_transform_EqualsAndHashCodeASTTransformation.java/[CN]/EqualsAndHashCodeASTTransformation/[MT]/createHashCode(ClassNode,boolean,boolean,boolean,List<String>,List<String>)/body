@@ -4,7 +4,7 @@
   final BlockStatement body=new BlockStatement();
   if (cacheResult) {
     final FieldNode hashField=cNode.addField("$hash$code",ACC_PRIVATE | ACC_SYNTHETIC,ClassHelper.int_TYPE,null);
-    final Expression hash=var(hashField);
+    final Expression hash=varX(hashField);
     body.addStatement(ifS(isZeroX(hash),calculateHashStatements(cNode,hash,includeFields,callSuper,excludes,includes)));
     body.addStatement(returnS(hash));
   }
