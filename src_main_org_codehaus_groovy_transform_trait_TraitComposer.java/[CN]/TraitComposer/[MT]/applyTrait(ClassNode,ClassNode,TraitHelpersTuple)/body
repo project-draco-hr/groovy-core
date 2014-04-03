@@ -45,6 +45,12 @@
       ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,returnType);
       Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
       MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,fixedReturnType,params,exceptionNodes,new ExpressionStatement(forwardExpression));
+      List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+      List<AnnotationNode> notCopied=Collections.emptyList();
+      AbstractASTTransformation.copyAnnotatedNodeAnnotations(methodNode,copied,notCopied);
+      if (!copied.isEmpty()) {
+        forwarder.addAnnotations(copied);
+      }
       cNode.addMethod(forwarder);
     }
   }
