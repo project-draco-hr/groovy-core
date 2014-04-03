@@ -1,0 +1,132 @@
+{
+  if (exp instanceof BinaryExpression) {
+    Expression leftExpression=((BinaryExpression)exp).getLeftExpression();
+    Expression rightExpression=((BinaryExpression)exp).getRightExpression();
+    Token operation=((BinaryExpression)exp).getOperation();
+    if (operation.getText().equals("=")) {
+      String leftFieldName=null;
+      if (leftExpression instanceof VariableExpression && ((VariableExpression)leftExpression).getAccessedVariable() instanceof FieldNode) {
+        leftFieldName=((VariableExpression)leftExpression).getAccessedVariable().getName();
+      }
+ else       if (leftExpression instanceof FieldExpression) {
+        leftFieldName=((FieldExpression)leftExpression).getFieldName();
+      }
+ else       if (leftExpression instanceof PropertyExpression && (((PropertyExpression)leftExpression).isImplicitThis() || "this".equals(((PropertyExpression)leftExpression).getObjectExpression().getText()))) {
+        leftFieldName=((PropertyExpression)leftExpression).getPropertyAsString();
+      }
+      if (leftFieldName != null) {
+        String method=Traits.helperSetterName(new FieldNode(leftFieldName,0,ClassHelper.OBJECT_TYPE,weaved.getOriginType(),null));
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),method,new ArgumentListExpression(super.transform(rightExpression)));
+        mce.setSourcePosition(exp);
+        mce.setImplicitThis(false);
+        return mce;
+      }
+    }
+    Expression leftTransform=transform(leftExpression);
+    Expression rightTransform=transform(rightExpression);
+    Expression ret=exp instanceof DeclarationExpression ? new DeclarationExpression(leftTransform,operation,rightTransform) : new BinaryExpression(leftTransform,operation,rightTransform);
+    ret.setSourcePosition(exp);
+    ret.copyNodeMetaData(exp);
+    return ret;
+  }
+ else   if (exp instanceof MethodCallExpression) {
+    MethodCallExpression call=(MethodCallExpression)exp;
+    Expression obj=call.getObjectExpression();
+    if (call.isImplicitThis() || obj.getText().equals("this")) {
+      Expression method=call.getMethod();
+      Expression arguments=call.getArguments();
+      if (method instanceof ConstantExpression) {
+        String methodName=method.getText();
+        List<MethodNode> methods=traitClass.getMethods(methodName);
+        for (        MethodNode methodNode : methods) {
+          if (methodName.equals(methodNode.getName()) && methodNode.isPrivate()) {
+            ArgumentListExpression newArgs=new ArgumentListExpression();
+            newArgs.addExpression(new VariableExpression(weaved));
+            if (arguments instanceof ArgumentListExpression) {
+              List<Expression> expressions=((ArgumentListExpression)arguments).getExpressions();
+              for (              Expression expression : expressions) {
+                newArgs.addExpression(expression);
+              }
+            }
+ else {
+              newArgs.addExpression(arguments);
+            }
+            MethodCallExpression transformed=new MethodCallExpression(new VariableExpression("this"),methodName,newArgs);
+            transformed.setSourcePosition(call);
+            transformed.setSafe(call.isSafe());
+            transformed.setSpreadSafe(call.isSpreadSafe());
+            transformed.setImplicitThis(true);
+            return transformed;
+          }
+        }
+      }
+      MethodCallExpression transformed=new MethodCallExpression(weaved,method,transform(arguments));
+      transformed.setSourcePosition(call);
+      transformed.setSafe(call.isSafe());
+      transformed.setSpreadSafe(call.isSpreadSafe());
+      transformed.setImplicitThis(false);
+      return transformed;
+    }
+  }
+ else   if (exp instanceof FieldExpression) {
+    MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),Traits.helperGetterName(((FieldExpression)exp).getField()),ArgumentListExpression.EMPTY_ARGUMENTS);
+    mce.setSourcePosition(exp);
+    mce.setImplicitThis(false);
+    return mce;
+  }
+ else   if (exp instanceof VariableExpression) {
+    VariableExpression vexp=(VariableExpression)exp;
+    Variable accessedVariable=vexp.getAccessedVariable();
+    if (accessedVariable instanceof FieldNode) {
+      MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),Traits.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
+      mce.setSourcePosition(exp);
+      mce.setImplicitThis(false);
+      return mce;
+    }
+ else     if (accessedVariable instanceof PropertyNode) {
+      String propName=accessedVariable.getName();
+      if (knownFields.contains(propName)) {
+        String method=Traits.helperGetterName(new FieldNode(propName,0,ClassHelper.OBJECT_TYPE,weaved.getOriginType(),null));
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),method,ArgumentListExpression.EMPTY_ARGUMENTS);
+        mce.setSourcePosition(exp);
+        mce.setImplicitThis(false);
+        return mce;
+      }
+ else {
+        return new PropertyExpression(new VariableExpression(weaved),accessedVariable.getName());
+      }
+    }
+ else     if (accessedVariable instanceof DynamicVariable) {
+      return new PropertyExpression(new VariableExpression(weaved),accessedVariable.getName());
+    }
+    if (vexp.isThisExpression()) {
+      VariableExpression res=new VariableExpression(weaved);
+      res.setSourcePosition(exp);
+      return res;
+    }
+    if (vexp.isSuperExpression()) {
+      ExceptionUtils.sneakyThrow(new SyntaxException("Call to super is not allowed in a trait",vexp.getLineNumber(),vexp.getColumnNumber()));
+    }
+  }
+ else   if (exp instanceof PropertyExpression) {
+    PropertyExpression pexp=(PropertyExpression)exp;
+    Expression object=pexp.getObjectExpression();
+    if (pexp.isImplicitThis() || "this".equals(object.getText())) {
+      String propName=pexp.getPropertyAsString();
+      if (knownFields.contains(propName)) {
+        String method=Traits.helperGetterName(new FieldNode(propName,0,ClassHelper.OBJECT_TYPE,weaved.getOriginType(),null));
+        MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,weaved),method,ArgumentListExpression.EMPTY_ARGUMENTS);
+        mce.setSourcePosition(exp);
+        mce.setImplicitThis(false);
+        return mce;
+      }
+    }
+  }
+ else   if (exp instanceof ClosureExpression) {
+    MethodCallExpression mce=new MethodCallExpression(exp,"rehydrate",new ArgumentListExpression(new VariableExpression(weaved),new VariableExpression(weaved),new VariableExpression(weaved)));
+    mce.setImplicitThis(false);
+    mce.setSourcePosition(exp);
+    return mce;
+  }
+  return super.transform(exp);
+}

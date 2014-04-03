@@ -1,0 +1,19 @@
+{
+  if (cNode == null) {
+    return null;
+  }
+  if (cNode.isInterface()) {
+    MethodNode method=cNode.getMethod(name,params);
+    if (method != null && !method.isAbstract()) {
+      return method;
+    }
+  }
+  ClassNode[] interfaces=cNode.getInterfaces();
+  for (  ClassNode anInterface : interfaces) {
+    MethodNode res=findDefaultMethodFromInterface(anInterface,name,params);
+    if (res != null) {
+      return res;
+    }
+  }
+  return findDefaultMethodFromInterface(cNode.getSuperClass(),name,params);
+}

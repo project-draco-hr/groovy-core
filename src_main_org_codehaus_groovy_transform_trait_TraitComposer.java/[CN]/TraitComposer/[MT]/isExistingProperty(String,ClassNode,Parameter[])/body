@@ -1,0 +1,30 @@
+{
+  String propertyName=methodName;
+  boolean getter=false;
+  if (methodName.startsWith("get")) {
+    propertyName=propertyName.substring(3);
+    getter=true;
+  }
+ else   if (methodName.startsWith("is")) {
+    propertyName=propertyName.substring(2);
+    getter=true;
+  }
+ else   if (methodName.startsWith("set")) {
+    propertyName=propertyName.substring(3);
+  }
+ else {
+    return false;
+  }
+  if (getter && params.length > 0) {
+    return false;
+  }
+  if (!getter && params.length != 1) {
+    return false;
+  }
+  if (propertyName.length() == 0) {
+    return false;
+  }
+  propertyName=MetaClassHelper.convertPropertyName(propertyName);
+  PropertyNode pNode=cNode.getProperty(propertyName);
+  return pNode != null;
+}

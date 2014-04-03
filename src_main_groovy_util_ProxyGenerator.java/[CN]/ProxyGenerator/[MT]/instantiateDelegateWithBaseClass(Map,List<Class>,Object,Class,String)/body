@@ -14,7 +14,7 @@
   for (  Object o : map.keySet()) {
     keys.add(o.toString());
   }
-  CacheKey key=new CacheKey(base,keys,intfs,emptyMethods,true);
+  CacheKey key=new CacheKey(base,delegate.getClass(),keys,intfs,emptyMethods,true);
   ProxyGeneratorAdapter adapter=(ProxyGeneratorAdapter)adapterCache.get(key);
   if (adapter == null) {
     adapter=new ProxyGeneratorAdapter(map,base,intfs,delegate.getClass().getClassLoader(),emptyMethods,delegate.getClass());

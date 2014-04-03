@@ -1,0 +1,27 @@
+{
+  Expression objectExpression=transform(exp.getObjectExpression());
+  ClassNode traitReceiver=objectExpression.getNodeMetaData(SuperCallTraitTransformer.class);
+  if (traitReceiver != null) {
+    TraitHelpersTuple helpers=Traits.findHelpers(traitReceiver);
+    ClassExpression receiver=new ClassExpression(helpers.getHelper());
+    ArgumentListExpression newArgs=new ArgumentListExpression();
+    Expression arguments=exp.getArguments();
+    newArgs.addExpression(new VariableExpression("this"));
+    if (arguments instanceof TupleExpression) {
+      List<Expression> expressions=((TupleExpression)arguments).getExpressions();
+      for (      Expression expression : expressions) {
+        newArgs.addExpression(transform(expression));
+      }
+    }
+ else {
+      newArgs.addExpression(arguments);
+    }
+    MethodCallExpression result=new MethodCallExpression(receiver,exp.getMethod(),newArgs);
+    result.setImplicitThis(false);
+    result.setSpreadSafe(exp.isSpreadSafe());
+    result.setSafe(exp.isSafe());
+    result.setSourcePosition(exp);
+    return result;
+  }
+  return super.transform(exp);
+}

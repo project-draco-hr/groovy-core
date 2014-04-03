@@ -1,0 +1,53 @@
+{
+  String name=node.getName();
+  FieldNode field=node.getField();
+  int propNodeModifiers=node.getModifiers();
+  String getterName="get" + Verifier.capitalize(name);
+  String setterName="set" + Verifier.capitalize(name);
+  if ((propNodeModifiers & Modifier.VOLATILE) != 0) {
+    propNodeModifiers=propNodeModifiers - Modifier.VOLATILE;
+  }
+  if ((propNodeModifiers & Modifier.TRANSIENT) != 0) {
+    propNodeModifiers=propNodeModifiers - Modifier.TRANSIENT;
+  }
+  Statement getterBlock=node.getGetterBlock();
+  if (getterBlock == null) {
+    MethodNode getter=cNode.getGetterMethod(getterName);
+    if (getter == null && ClassHelper.boolean_TYPE == node.getType()) {
+      String secondGetterName="is" + Verifier.capitalize(name);
+      getter=cNode.getGetterMethod(secondGetterName);
+    }
+    if (!node.isPrivate() && methodNeedsReplacement(cNode,getter)) {
+      getterBlock=new ExpressionStatement(new FieldExpression(field));
+    }
+  }
+  Statement setterBlock=node.getSetterBlock();
+  if (setterBlock == null) {
+    MethodNode setter=cNode.getSetterMethod(setterName,false);
+    if (!node.isPrivate() && (propNodeModifiers & ACC_FINAL) == 0 && methodNeedsReplacement(cNode,setter)) {
+      setterBlock=new ExpressionStatement(new BinaryExpression(new FieldExpression(field),Token.newSymbol(Types.EQUAL,0,0),new VariableExpression("value")));
+    }
+  }
+  if (getterBlock != null) {
+    MethodNode getter=new MethodNode(getterName,propNodeModifiers,node.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,getterBlock);
+    getter.setSynthetic(true);
+    fixGenerics(getter,cNode);
+    cNode.addMethod(getter);
+    if (ClassHelper.boolean_TYPE == node.getType() || ClassHelper.Boolean_TYPE == node.getType()) {
+      String secondGetterName="is" + Verifier.capitalize(name);
+      MethodNode secondGetter=new MethodNode(secondGetterName,propNodeModifiers,node.getType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,getterBlock);
+      secondGetter.setSynthetic(true);
+      fixGenerics(secondGetter,cNode);
+      cNode.addMethod(secondGetter);
+    }
+  }
+  if (setterBlock != null) {
+    Parameter[] setterParameterTypes={new Parameter(node.getType(),"value")};
+    VariableExpression var=(VariableExpression)((BinaryExpression)((ExpressionStatement)setterBlock).getExpression()).getRightExpression();
+    var.setAccessedVariable(setterParameterTypes[0]);
+    MethodNode setter=new MethodNode(setterName,propNodeModifiers,ClassHelper.VOID_TYPE,setterParameterTypes,ClassNode.EMPTY_ARRAY,setterBlock);
+    setter.setSynthetic(true);
+    fixGenerics(setter,cNode);
+    cNode.addMethod(setter);
+  }
+}

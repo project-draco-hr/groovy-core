@@ -1,0 +1,11 @@
+{
+  LinkedHashSet<ClassNode> interfaces=new LinkedHashSet<ClassNode>();
+  collectAllInterfacesReverseOrder(cNode,interfaces);
+  List<ClassNode> traits=new LinkedList<ClassNode>();
+  for (  ClassNode candidate : interfaces) {
+    if (Traits.isAnnotatedWithTrait(candidate)) {
+      traits.add(candidate);
+    }
+  }
+  return traits;
+}

@@ -1,0 +1,9 @@
+{
+  Iterator<InnerClassNode> it=cNode.getInnerClasses();
+  while (it.hasNext()) {
+    InnerClassNode origin=it.next();
+    if ((origin.getModifiers() & ACC_STATIC) == 0) {
+      unit.addError(new SyntaxException("Cannot have non-static inner class inside a trait (" + origin.getName() + ")",origin.getLineNumber(),origin.getColumnNumber()));
+    }
+  }
+}

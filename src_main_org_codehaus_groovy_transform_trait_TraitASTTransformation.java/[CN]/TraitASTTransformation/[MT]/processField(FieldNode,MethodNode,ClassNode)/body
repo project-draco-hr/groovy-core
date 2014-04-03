@@ -1,0 +1,19 @@
+{
+  Expression initialExpression=field.getInitialExpression();
+  if (initialExpression != null) {
+    VariableExpression thisObject=new VariableExpression(initializer.getParameters()[0]);
+    BlockStatement code=(BlockStatement)initializer.getCode();
+    MethodCallExpression mce=new MethodCallExpression(new CastExpression(fieldHelper,thisObject),Traits.helperSetterName(field),initialExpression);
+    mce.setImplicitThis(false);
+    mce.setSourcePosition(initialExpression);
+    code.addStatement(new ExpressionStatement(mce));
+  }
+  fieldHelper.addMethod(Traits.helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
+  fieldHelper.addMethod(Traits.helperGetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null);
+  FieldNode dummyField=new FieldNode(Traits.remappedFieldName(field.getOwner(),field.getName()),ACC_STATIC | ACC_PUBLIC | ACC_FINAL| ACC_SYNTHETIC,field.getOriginType(),fieldHelper,null);
+  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+  List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+  copyAnnotatedNodeAnnotations(field,copied,notCopied);
+  dummyField.addAnnotations(copied);
+  fieldHelper.addField(dummyField);
+}

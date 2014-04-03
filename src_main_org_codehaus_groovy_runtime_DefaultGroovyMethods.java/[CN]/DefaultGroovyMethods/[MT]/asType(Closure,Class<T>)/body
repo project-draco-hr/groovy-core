@@ -1,5 +1,12 @@
 {
   if (clazz.isInterface() && !(clazz.isInstance(cl))) {
+    if (Traits.isTrait(clazz)) {
+      Method samMethod=CachedSAMClass.getSAMMethod(clazz);
+      if (samMethod != null) {
+        Map impl=Collections.singletonMap(samMethod.getName(),cl);
+        return (T)ProxyGenerator.INSTANCE.instantiateAggregate(impl,Collections.<Class>singletonList(clazz));
+      }
+    }
     return (T)Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},new ConvertedClosure(cl));
   }
   try {

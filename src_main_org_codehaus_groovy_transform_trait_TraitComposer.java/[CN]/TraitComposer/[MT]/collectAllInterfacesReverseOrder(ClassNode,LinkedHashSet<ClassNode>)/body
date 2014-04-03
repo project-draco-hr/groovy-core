@@ -1,0 +1,9 @@
+{
+  if (cNode.isInterface())   interfaces.add(cNode);
+  ClassNode[] directInterfaces=cNode.getInterfaces();
+  for (int i=directInterfaces.length - 1; i >= 0; i--) {
+    final ClassNode anInterface=directInterfaces[i];
+    interfaces.add(anInterface);
+    collectAllInterfacesReverseOrder(anInterface,interfaces);
+  }
+}

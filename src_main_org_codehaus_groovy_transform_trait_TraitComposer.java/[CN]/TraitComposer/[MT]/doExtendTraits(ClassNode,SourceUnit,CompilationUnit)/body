@@ -1,0 +1,21 @@
+{
+  if (cNode.isInterface())   return;
+  boolean isItselfTrait=Traits.isTrait(cNode);
+  SuperCallTraitTransformer superCallTransformer=new SuperCallTraitTransformer(unit);
+  if (isItselfTrait) {
+    checkTraitAllowed(cNode,unit);
+    return;
+  }
+  if (!cNode.getNameWithoutPackage().endsWith(Traits.TRAIT_HELPER)) {
+    List<ClassNode> traits=findTraits(cNode);
+    for (    ClassNode trait : traits) {
+      TraitHelpersTuple helpers=Traits.findHelpers(trait);
+      applyTrait(trait,cNode,helpers);
+      superCallTransformer.visitClass(cNode);
+      if (unit != null) {
+        ASTTransformationCollectorCodeVisitor collector=new ASTTransformationCollectorCodeVisitor(unit,cu.getTransformLoader());
+        collector.visitClass(cNode);
+      }
+    }
+  }
+}

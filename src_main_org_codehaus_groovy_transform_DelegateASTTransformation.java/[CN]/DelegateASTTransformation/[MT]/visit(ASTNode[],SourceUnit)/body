@@ -38,11 +38,16 @@
     if (skipInterfaces)     return;
     final Set<ClassNode> allInterfaces=getInterfacesAndSuperInterfaces(type);
     final Set<ClassNode> ownerIfaces=owner.getAllInterfaces();
+    Map genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
+    genericsSpec=createGenericsSpec(fieldNode.getType(),genericsSpec);
     for (    ClassNode iface : allInterfaces) {
       if (Modifier.isPublic(iface.getModifiers()) && !ownerIfaces.contains(iface)) {
         final ClassNode[] ifaces=owner.getInterfaces();
         final ClassNode[] newIfaces=new ClassNode[ifaces.length + 1];
-        System.arraycopy(ifaces,0,newIfaces,0,ifaces.length);
+        for (int i=0; i < ifaces.length; i++) {
+          final ClassNode classNode=ifaces[i];
+          newIfaces[i]=GenericsUtils.correctToGenericsSpecRecurse(genericsSpec,classNode);
+        }
         newIfaces[ifaces.length]=iface;
         owner.setInterfaces(newIfaces);
       }

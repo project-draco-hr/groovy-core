@@ -1,0 +1,24 @@
+{
+  List<AnnotationNode> annotationList=annotatedNode.getAnnotations();
+  for (  AnnotationNode annotation : annotationList) {
+    List<AnnotationNode> annotations=annotation.getClassNode().getAnnotations(RETENTION_CLASSNODE);
+    if (annotations.isEmpty())     continue;
+    if (hasClosureMember(annotation)) {
+      notCopied.add(annotation);
+      continue;
+    }
+    AnnotationNode retentionPolicyAnnotation=annotations.get(0);
+    Expression valueExpression=retentionPolicyAnnotation.getMember("value");
+    if (!(valueExpression instanceof PropertyExpression))     continue;
+    PropertyExpression propertyExpression=(PropertyExpression)valueExpression;
+    boolean processAnnotation=propertyExpression.getProperty() instanceof ConstantExpression && ("RUNTIME".equals(((ConstantExpression)(propertyExpression.getProperty())).getValue()) || "CLASS".equals(((ConstantExpression)(propertyExpression.getProperty())).getValue()));
+    if (processAnnotation) {
+      AnnotationNode newAnnotation=new AnnotationNode(annotation.getClassNode());
+      for (      Map.Entry<String,Expression> member : annotation.getMembers().entrySet()) {
+        newAnnotation.addMember(member.getKey(),member.getValue());
+      }
+      newAnnotation.setSourcePosition(annotatedNode);
+      copied.add(newAnnotation);
+    }
+  }
+}

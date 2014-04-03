@@ -1,0 +1,32 @@
+{
+  ClassNode helperClassNode=null;
+  ClassNode fieldHelperClassNode=null;
+  Iterator<InnerClassNode> innerClasses=trait.redirect().getInnerClasses();
+  if (innerClasses != null && innerClasses.hasNext()) {
+    while (innerClasses.hasNext()) {
+      ClassNode icn=innerClasses.next();
+      if (icn.getName().endsWith(Traits.FIELD_HELPER)) {
+        fieldHelperClassNode=icn;
+      }
+ else       if (icn.getName().endsWith(Traits.TRAIT_HELPER)) {
+        helperClassNode=icn;
+      }
+    }
+  }
+ else {
+    try {
+      final ClassLoader classLoader=trait.getTypeClass().getClassLoader();
+      String helperClassName=Traits.helperClassName(trait);
+      helperClassNode=ClassHelper.make(classLoader.loadClass(helperClassName));
+      try {
+        fieldHelperClassNode=ClassHelper.make(classLoader.loadClass(Traits.fieldHelperClassName(trait)));
+      }
+ catch (      ClassNotFoundException e) {
+      }
+    }
+ catch (    ClassNotFoundException e) {
+      throw new GroovyBugError("Couldn't find trait helper classes on compile classpath!",e);
+    }
+  }
+  return new TraitHelpersTuple(helperClassNode,fieldHelperClassNode);
+}

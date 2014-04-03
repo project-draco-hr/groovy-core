@@ -1,0 +1,10 @@
+{
+  ClassNode correctedType=correctToGenericsSpecRecurse(genericsSpec,mn.getReturnType());
+  Parameter[] origParameters=mn.getParameters();
+  Parameter[] newParameters=new Parameter[origParameters.length];
+  for (int i=0; i < origParameters.length; i++) {
+    Parameter origParameter=origParameters[i];
+    newParameters[i]=new Parameter(correctToGenericsSpecRecurse(genericsSpec,origParameter.getType()),origParameter.getName(),origParameter.getInitialExpression());
+  }
+  return new MethodNode(mn.getName(),mn.getModifiers(),correctedType,newParameters,mn.getExceptions(),mn.getCode());
+}

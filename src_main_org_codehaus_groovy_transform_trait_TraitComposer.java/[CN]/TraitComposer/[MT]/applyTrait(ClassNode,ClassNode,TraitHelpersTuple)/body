@@ -1,0 +1,91 @@
+{
+  boolean isTraitForceOverride=!trait.getAnnotations(Traits.FORCEOVERRIDE_CLASSNODE).isEmpty();
+  ClassNode helperClassNode=helpers.getHelper();
+  ClassNode fieldHelperClassNode=helpers.getFieldHelper();
+  Map genericsSpec=GenericsUtils.createGenericsSpec(cNode,new HashMap());
+  genericsSpec=GenericsUtils.createGenericsSpec(trait,genericsSpec);
+  for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
+    boolean isForceOverride=isTraitForceOverride || Traits.isForceOverride(methodNode);
+    String name=methodNode.getName();
+    int access=methodNode.getModifiers();
+    Parameter[] argumentTypes=methodNode.getParameters();
+    ClassNode[] exceptions=methodNode.getExceptions();
+    ClassNode returnType=methodNode.getReturnType();
+    boolean isAbstract=methodNode.isAbstract();
+    if (!isAbstract && argumentTypes.length > 0 && ((access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC) && !name.contains("$")) {
+      ArgumentListExpression argList=new ArgumentListExpression();
+      argList.addExpression(new VariableExpression("this"));
+      Parameter[] params=new Parameter[argumentTypes.length - 1];
+      for (int i=1; i < argumentTypes.length; i++) {
+        Parameter parameter=argumentTypes[i];
+        ClassNode originType=parameter.getOriginType();
+        ClassNode fixedType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
+        Parameter newParam=new Parameter(fixedType,"arg" + i);
+        List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+        List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+        AbstractASTTransformation.copyAnnotatedNodeAnnotations(parameter,copied,notCopied);
+        newParam.addAnnotations(copied);
+        params[i - 1]=newParam;
+        argList.addExpression(new VariableExpression(params[i - 1]));
+      }
+      MethodNode existingMethod=cNode.getMethod(name,params);
+      if (existingMethod == null) {
+        existingMethod=findDefaultMethodFromInterface(cNode,name,params);
+      }
+      if (!isForceOverride && (existingMethod != null || isExistingProperty(name,cNode,params))) {
+        continue;
+      }
+      if (isForceOverride && cNode.getDeclaredMethod(name,params) != null) {
+        continue;
+      }
+      ClassNode[] exceptionNodes=new ClassNode[exceptions == null ? 0 : exceptions.length];
+      System.arraycopy(exceptions,0,exceptionNodes,0,exceptionNodes.length);
+      MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),name,argList);
+      mce.setImplicitThis(false);
+      ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,returnType);
+      Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
+      MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,fixedReturnType,params,exceptionNodes,new ExpressionStatement(forwardExpression));
+      cNode.addMethod(forwarder);
+    }
+  }
+  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
+  if (fieldHelperClassNode != null) {
+    cNode.addInterface(fieldHelperClassNode);
+    List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
+    Collections.sort(declaredMethods,GETTER_FIRST_COMPARATOR);
+    for (    MethodNode methodNode : declaredMethods) {
+      String fieldName=methodNode.getName();
+      if (fieldName.endsWith(Traits.DIRECT_GETTER_SUFFIX) || fieldName.endsWith(Traits.DIRECT_SETTER_SUFFIX)) {
+        int suffixIdx=fieldName.lastIndexOf("$");
+        fieldName=fieldName.substring(0,suffixIdx);
+        String operation=methodNode.getName().substring(suffixIdx + 1);
+        boolean getter="get".equals(operation);
+        ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
+        if (getter) {
+          FieldNode fieldNode=cNode.addField(fieldName,Opcodes.ACC_PRIVATE,returnType,null);
+          FieldNode helperField=fieldHelperClassNode.getField(fieldName);
+          if (helperField != null) {
+            List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+            List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+            AbstractASTTransformation.copyAnnotatedNodeAnnotations(helperField,copied,notCopied);
+            fieldNode.addAnnotations(copied);
+          }
+        }
+        Parameter[] newParams;
+        if (getter) {
+          newParams=Parameter.EMPTY_ARRAY;
+        }
+ else {
+          ClassNode originType=methodNode.getParameters()[0].getOriginType();
+          ClassNode fixedType=originType.isGenericsPlaceHolder() ? ClassHelper.OBJECT_TYPE : AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
+          newParams=new Parameter[]{new Parameter(fixedType,"val")};
+        }
+        Expression fieldExpr=new VariableExpression(cNode.getField(fieldName));
+        Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
+        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
+        impl.addAnnotation(new AnnotationNode(ClassHelper.make(CompileStatic.class)));
+        cNode.addMethod(impl);
+      }
+    }
+  }
+}

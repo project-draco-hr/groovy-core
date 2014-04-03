@@ -1,0 +1,19 @@
+{
+  if (directMethodCallCandidate instanceof ExtensionMethodNode) {
+    ExtensionMethodNode emn=(ExtensionMethodNode)directMethodCallCandidate;
+    if ("withTraits".equals(emn.getName()) && "DefaultGroovyMethods".equals(emn.getExtensionMethodNode().getDeclaringClass().getNameWithoutPackage())) {
+      List<ClassNode> nodes=new LinkedList<ClassNode>();
+      Collections.addAll(nodes,receiver.getInterfaces());
+      for (      ClassNode arg : args) {
+        if (isClassClassNodeWrappingConcreteType(arg)) {
+          nodes.add(arg.getGenericsTypes()[0].getType());
+        }
+ else {
+          nodes.add(arg);
+        }
+      }
+      return new LowestUpperBoundClassNode(returnType.getName() + "Composed",OBJECT_TYPE,nodes.toArray(new ClassNode[nodes.size()]));
+    }
+  }
+  return returnType;
+}

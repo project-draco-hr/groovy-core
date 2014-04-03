@@ -1,0 +1,24 @@
+{
+  Parameter[] initialParams=methodNode.getParameters();
+  Parameter[] newParams=new Parameter[initialParams.length + 1];
+  newParams[0]=new Parameter(traitClass.getPlainNodeReference(),Traits.THIS_OBJECT);
+  System.arraycopy(initialParams,0,newParams,1,initialParams.length);
+  final int mod=methodNode.isPrivate() ? ACC_PRIVATE : ACC_PUBLIC;
+  MethodNode mNode=new MethodNode(methodNode.getName(),mod | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),traitClass,fieldHelper,knownFields));
+  mNode.setSourcePosition(methodNode);
+  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+  List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+  AbstractASTTransformation.copyAnnotatedNodeAnnotations(methodNode,copied,notCopied);
+  mNode.addAnnotations(copied);
+  if (methodNode.isAbstract()) {
+    mNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
+  }
+ else {
+    methodNode.addAnnotation(new AnnotationNode(Traits.IMPLEMENTED_CLASSNODE));
+  }
+  methodNode.setCode(null);
+  if (!methodNode.isPrivate()) {
+    methodNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
+  }
+  return mNode;
+}

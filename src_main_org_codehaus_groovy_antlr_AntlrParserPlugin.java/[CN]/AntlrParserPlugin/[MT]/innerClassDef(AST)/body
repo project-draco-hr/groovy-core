@@ -1,5 +1,8 @@
 {
   List<AnnotationNode> annotations=new ArrayList<AnnotationNode>();
+  if (isType(TRAIT_DEF,classDef)) {
+    annotations.add(new AnnotationNode(ClassHelper.make("groovy.transform.Trait")));
+  }
   AST node=classDef.getFirstChild();
   int modifiers=Opcodes.ACC_PUBLIC;
   if (isType(MODIFIERS,node)) {

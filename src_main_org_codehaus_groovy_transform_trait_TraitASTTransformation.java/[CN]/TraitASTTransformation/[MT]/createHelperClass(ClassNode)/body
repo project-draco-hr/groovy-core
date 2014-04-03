@@ -1,0 +1,60 @@
+{
+  ClassNode helper=new InnerClassNode(cNode,Traits.helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_ABSTRACT| ACC_SYNTHETIC,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
+  cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
+  checkInnerClasses(cNode);
+  MethodNode initializer=new MethodNode(Traits.STATIC_INIT_METHOD,ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode.getPlainNodeReference(),Traits.THIS_OBJECT)},ClassNode.EMPTY_ARRAY,new BlockStatement());
+  fixGenerics(initializer,cNode);
+  helper.addMethod(initializer);
+  generatePropertyMethods(cNode);
+  List<FieldNode> fields=new ArrayList<FieldNode>();
+  Set<String> fieldNames=new HashSet<String>();
+  for (  FieldNode field : cNode.getFields()) {
+    if (!"metaClass".equals(field.getName()) && (!field.isSynthetic() || field.getName().indexOf('$') < 0)) {
+      fields.add(field);
+      fieldNames.add(field.getName());
+    }
+  }
+  ClassNode fieldHelper=null;
+  if (!fields.isEmpty()) {
+    fieldHelper=new InnerClassNode(cNode,Traits.fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
+  }
+  List<MethodNode> methods=cNode.getMethods();
+  List<MethodNode> privateMethods=new LinkedList<MethodNode>();
+  for (  final MethodNode methodNode : methods) {
+    boolean declared=methodNode.getDeclaringClass() == cNode;
+    if (declared) {
+      if (!methodNode.isSynthetic() && methodNode.isProtected()) {
+        unit.addError(new SyntaxException("Cannot have protected method in a trait (" + cNode.getName() + "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
+        return;
+      }
+      helper.addMethod(processMethod(cNode,methodNode,fieldHelper,fieldNames));
+      if (methodNode.isPrivate()) {
+        privateMethods.add(methodNode);
+      }
+    }
+  }
+  for (  MethodNode privateMethod : privateMethods) {
+    cNode.removeMethod(privateMethod);
+  }
+  for (  FieldNode field : fields) {
+    processField(field,initializer,fieldHelper);
+  }
+  cNode.getProperties().clear();
+  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+  List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
+  copyAnnotatedNodeAnnotations(cNode,copied,notCopied);
+  if (!notCopied.isEmpty()) {
+    for (    AnnotationNode node : notCopied) {
+      unit.addError(new SyntaxException("Annotation not supported onto traits",node.getLineNumber(),node.getColumnNumber()));
+    }
+  }
+  helper.addAnnotations(copied);
+  fields=new ArrayList<FieldNode>(cNode.getFields());
+  for (  FieldNode field : fields) {
+    cNode.removeField(field.getName());
+  }
+  unit.getAST().addClass(helper);
+  if (fieldHelper != null) {
+    unit.getAST().addClass(fieldHelper);
+  }
+}
