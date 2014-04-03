@@ -1,0 +1,10 @@
+{
+  String propertyName=property.getName();
+  String className=classNode.getName() + "$" + StringGroovyMethods.capitalize(propertyName)+ "Comparator";
+  InnerClassNode cmpClass=new InnerClassNode(classNode,className,ACC_PRIVATE | ACC_STATIC,ABSTRACT_COMPARATOR_TYPE);
+  classNode.getModule().addClass(cmpClass);
+  cmpClass.addMethod(new MethodNode("compare",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(OBJECT_TYPE,ARG0),param(OBJECT_TYPE,ARG1)),ClassNode.EMPTY_ARRAY,createCompareToMethodBody(property)));
+  String fieldName="this$" + StringGroovyMethods.capitalize(propertyName) + "Comparator";
+  FieldNode cmpField=classNode.addField(fieldName,ACC_STATIC | ACC_FINAL | ACC_PRIVATE| ACC_SYNTHETIC,COMPARATOR_TYPE,ctorX(cmpClass));
+  classNode.addMethod(new MethodNode("comparatorBy" + StringGroovyMethods.capitalize(propertyName),ACC_PUBLIC | ACC_STATIC,COMPARATOR_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,returnS(field(cmpField))));
+}
