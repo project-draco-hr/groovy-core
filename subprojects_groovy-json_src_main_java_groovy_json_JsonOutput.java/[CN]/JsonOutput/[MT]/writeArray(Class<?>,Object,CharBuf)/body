@@ -1,0 +1,86 @@
+{
+  buffer.addChar('[');
+  if (Object[].class.isAssignableFrom(arrayClass)) {
+    Object[] objArray=(Object[])array;
+    if (objArray.length > 0) {
+      writeObject(objArray[0],buffer);
+      for (int i=1; i < objArray.length; i++) {
+        buffer.addChar(',');
+        writeObject(objArray[i],buffer);
+      }
+    }
+  }
+ else   if (int[].class.isAssignableFrom(arrayClass)) {
+    int[] intArray=(int[])array;
+    if (intArray.length > 0) {
+      buffer.addInt(intArray[0]);
+      for (int i=1; i < intArray.length; i++) {
+        buffer.addChar(',').addInt(intArray[i]);
+      }
+    }
+  }
+ else   if (long[].class.isAssignableFrom(arrayClass)) {
+    long[] longArray=(long[])array;
+    if (longArray.length > 0) {
+      buffer.addLong(longArray[0]);
+      for (int i=1; i < longArray.length; i++) {
+        buffer.addChar(',').addLong(longArray[i]);
+      }
+    }
+  }
+ else   if (boolean[].class.isAssignableFrom(arrayClass)) {
+    boolean[] booleanArray=(boolean[])array;
+    if (booleanArray.length > 0) {
+      buffer.addBoolean(booleanArray[0]);
+      for (int i=1; i < booleanArray.length; i++) {
+        buffer.addChar(',').addBoolean(booleanArray[i]);
+      }
+    }
+  }
+ else   if (char[].class.isAssignableFrom(arrayClass)) {
+    char[] charArray=(char[])array;
+    if (charArray.length > 0) {
+      buffer.addJsonEscapedString(Chr.array(charArray[0]));
+      for (int i=1; i < charArray.length; i++) {
+        buffer.addChar(',').addJsonEscapedString(Chr.array(charArray[i]));
+      }
+    }
+  }
+ else   if (double[].class.isAssignableFrom(arrayClass)) {
+    double[] doubleArray=(double[])array;
+    if (doubleArray.length > 0) {
+      buffer.addDouble(doubleArray[0]);
+      for (int i=1; i < doubleArray.length; i++) {
+        buffer.addChar(',').addDouble(doubleArray[i]);
+      }
+    }
+  }
+ else   if (float[].class.isAssignableFrom(arrayClass)) {
+    float[] floatArray=(float[])array;
+    if (floatArray.length > 0) {
+      buffer.addFloat(floatArray[0]);
+      for (int i=1; i < floatArray.length; i++) {
+        buffer.addChar(',').addFloat(floatArray[i]);
+      }
+    }
+  }
+ else   if (byte[].class.isAssignableFrom(arrayClass)) {
+    byte[] byteArray=(byte[])array;
+    if (byteArray.length > 0) {
+      buffer.addByte(byteArray[0]);
+      for (int i=1; i < byteArray.length; i++) {
+        buffer.addChar(',').addByte(byteArray[i]);
+      }
+    }
+  }
+ else   if (short[].class.isAssignableFrom(arrayClass)) {
+    short[] shortArray=(short[])array;
+    if (shortArray.length > 0) {
+      buffer.addShort(shortArray[0]);
+      for (int i=1; i < shortArray.length; i++) {
+        buffer.addChar(',').addShort(shortArray[i]);
+      }
+    }
+  }
+  buffer.addChar(']');
+}

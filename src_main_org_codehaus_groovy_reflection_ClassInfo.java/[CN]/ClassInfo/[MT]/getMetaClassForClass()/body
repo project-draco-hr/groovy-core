@@ -1,3 +1,9 @@
 {
-  return strongMetaClass != null ? strongMetaClass : weakMetaClass == null ? null : weakMetaClass.get();
+  MetaClass strongMc=strongMetaClass;
+  if (strongMc != null)   return strongMc;
+  MetaClass weakMc=getWeakMetaClass();
+  if (isValidWeakMetaClass(weakMc)) {
+    return weakMc;
+  }
+  return null;
 }

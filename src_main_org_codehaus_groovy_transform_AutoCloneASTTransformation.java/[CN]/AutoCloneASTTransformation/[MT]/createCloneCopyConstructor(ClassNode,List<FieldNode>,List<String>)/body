@@ -2,28 +2,26 @@
   BlockStatement initBody=new BlockStatement();
   if (cNode.getDeclaredConstructors().size() == 0) {
     initBody.addStatement(EmptyStatement.INSTANCE);
-    cNode.addConstructor(ACC_PUBLIC,new Parameter[0],ClassNode.EMPTY_ARRAY,initBody);
+    cNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,initBody);
     initBody=new BlockStatement();
   }
   Parameter initParam=new Parameter(GenericsUtils.nonGeneric(cNode),"other");
-  final Expression other=new VariableExpression(initParam);
+  final Expression other=var(initParam);
   boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
   if (hasParent) {
-    initBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,other)));
+    initBody.addStatement(stmt(ctorX(ClassNode.SUPER,other)));
   }
   for (  FieldNode fieldNode : list) {
     String name=fieldNode.getName();
     if (excludes.contains(name))     continue;
-    PropertyExpression direct=new PropertyExpression(other,name);
-    Expression cloned=new MethodCallExpression(direct,"clone",MethodCallExpression.NO_ARGUMENTS);
-    Expression to=new PropertyExpression(VariableExpression.THIS_EXPRESSION,name);
-    Statement assignCloned=assignStatement(to,cloned);
-    Statement assignDirect=assignStatement(to,direct);
-    initBody.addStatement(new IfStatement(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+    Expression direct=prop(other,name);
+    Expression cloned=callX(direct,"clone");
+    Expression to=prop(var("this"),name);
+    Statement assignCloned=assignS(to,cloned);
+    Statement assignDirect=assignS(to,direct);
+    initBody.addStatement(ifElseS(isInstanceOf(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
   }
-  ClassNode[] exceptions={ClassHelper.make(CloneNotSupportedException.class)};
-  cNode.addConstructor(ACC_PROTECTED,new Parameter[]{initParam},ClassNode.EMPTY_ARRAY,initBody);
-  final BlockStatement cloneBody=new BlockStatement();
-  cloneBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(cNode,new ArgumentListExpression(VariableExpression.THIS_EXPRESSION))));
-  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[0],exceptions,cloneBody);
+  ClassNode[] exceptions={make(CloneNotSupportedException.class)};
+  cNode.addConstructor(ACC_PROTECTED,params(initParam),ClassNode.EMPTY_ARRAY,initBody);
+  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,block(stmt(ctorX(cNode,args(var("this"))))));
 }

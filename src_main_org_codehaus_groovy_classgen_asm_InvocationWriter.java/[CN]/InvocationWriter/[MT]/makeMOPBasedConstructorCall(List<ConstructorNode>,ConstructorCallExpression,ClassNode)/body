@@ -60,14 +60,14 @@
       operandStack.remove(2);
     }
     mv.visitInsn(POP);
-    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor);
+    mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor,false);
     mv.visitJumpInsn(GOTO,afterSwitch);
   }
   mv.visitLabel(defaultLabel);
   mv.visitTypeInsn(NEW,"java/lang/IllegalArgumentException");
   mv.visitInsn(DUP);
   mv.visitLdcInsn("This class has been compiled with a super class which is binary incompatible with the current super class found on classpath. You should recompile this class with the new version.");
-  mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V");
+  mv.visitMethodInsn(INVOKESPECIAL,"java/lang/IllegalArgumentException","<init>","(Ljava/lang/String;)V",false);
   mv.visitInsn(ATHROW);
   mv.visitLabel(afterSwitch);
   if (!controller.isConstructor()) {

@@ -5,7 +5,7 @@
   mv.visitVarInsn(ALOAD,1);
   BytecodeHelper.doCast(mv,method.getParameterTypes()[0].getTheClass());
   loadParameters(method,2,mv);
-  mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(method.getDeclaringClass().getTheClass()),method.getName(),methodDescriptor);
+  mv.visitMethodInsn(INVOKESTATIC,BytecodeHelper.getClassInternalName(method.getDeclaringClass().getTheClass()),method.getName(),methodDescriptor,false);
   BytecodeHelper.box(mv,returnType);
   if (method.getReturnType() == void.class) {
     mv.visitInsn(ACONST_NULL);

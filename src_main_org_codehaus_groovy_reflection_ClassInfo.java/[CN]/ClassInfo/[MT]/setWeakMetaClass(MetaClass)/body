@@ -1,10 +1,9 @@
 {
   version++;
   strongMetaClass=null;
-  if (answer == null) {
-    weakMetaClass=null;
+  ManagedReference<MetaClass> newRef=null;
+  if (answer != null) {
+    newRef=new ManagedReference<MetaClass>(softBundle,answer);
   }
- else {
-    weakMetaClass=new ManagedReference<MetaClass>(softBundle,answer);
-  }
+  replaceWeakMetaClassRef(newRef);
 }

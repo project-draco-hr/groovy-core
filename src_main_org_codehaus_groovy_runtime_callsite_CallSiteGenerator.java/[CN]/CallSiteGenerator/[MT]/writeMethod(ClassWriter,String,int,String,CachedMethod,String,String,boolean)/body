@@ -4,7 +4,7 @@
   final Label tryStart=new Label();
   mv.visitLabel(tryStart);
   for (int i=0; i < argumentCount; ++i)   mv.visitVarInsn(Opcodes.ALOAD,i);
-  mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,superClass,"checkCall","(Ljava/lang/Object;" + parameterDescription + ")Z");
+  mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,superClass,"checkCall","(Ljava/lang/Object;" + parameterDescription + ")Z",false);
   Label l0=new Label();
   mv.visitJumpInsn(Opcodes.IFEQ,l0);
   Class callClass=cachedMethod.getDeclaringClass().getTheClass();
@@ -34,7 +34,7 @@
     }
     BytecodeHelper.doCast(mv,parameters[i]);
   }
-  mv.visitMethodInsn(invokeMethodCode,type,cachedMethod.getName(),descriptor);
+  mv.visitMethodInsn(invokeMethodCode,type,cachedMethod.getName(),descriptor,invokeMethodCode == Opcodes.INVOKEINTERFACE);
   BytecodeHelper.box(mv,cachedMethod.getReturnType());
   if (cachedMethod.getReturnType() == void.class) {
     mv.visitInsn(Opcodes.ACONST_NULL);
@@ -43,15 +43,15 @@
   mv.visitLabel(l0);
   for (int i=0; i < argumentCount; ++i)   mv.visitVarInsn(Opcodes.ALOAD,i);
   if (!useArray) {
-    mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray","(" + parameterDescription + ")[Ljava/lang/Object;");
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ArrayUtil","createArray","(" + parameterDescription + ")[Ljava/lang/Object;",false);
   }
-  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCall" + name,"(Lorg/codehaus/groovy/runtime/callsite/CallSite;L" + receiverType + ";[Ljava/lang/Object;)Ljava/lang/Object;");
+  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/callsite/CallSiteArray","defaultCall" + name,"(Lorg/codehaus/groovy/runtime/callsite/CallSite;L" + receiverType + ";[Ljava/lang/Object;)Ljava/lang/Object;",false);
   mv.visitInsn(Opcodes.ARETURN);
   final Label tryEnd=new Label();
   mv.visitLabel(tryEnd);
   final Label catchStart=new Label();
   mv.visitLabel(catchStart);
-  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;");
+  mv.visitMethodInsn(Opcodes.INVOKESTATIC,"org/codehaus/groovy/runtime/ScriptBytecodeAdapter","unwrap","(Lgroovy/lang/GroovyRuntimeException;)Ljava/lang/Throwable;",false);
   mv.visitInsn(Opcodes.ATHROW);
   mv.visitTryCatchBlock(tryStart,tryEnd,catchStart,GRE);
   mv.visitMaxs(0,0);

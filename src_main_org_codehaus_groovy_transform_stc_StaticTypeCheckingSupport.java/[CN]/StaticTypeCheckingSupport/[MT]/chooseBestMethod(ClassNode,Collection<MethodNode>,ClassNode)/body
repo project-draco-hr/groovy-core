@@ -74,7 +74,9 @@
           }
         }
  else {
-          dist+=excessArgumentsMatchesVargsParameter(params,safeArgs);
+          int excessArgumentsDistance=excessArgumentsMatchesVargsParameter(params,safeArgs);
+          if (excessArgumentsDistance < 0)           continue;
+          dist+=excessArgumentsDistance;
           if (dist >= 0 && !actualReceiverForDistance.equals(declaringClassForDistance))           dist+=getDistance(actualReceiverForDistance,declaringClassForDistance);
           dist+=256 - params.length;
           if (dist >= 0 && !isExtensionMethodNode) {

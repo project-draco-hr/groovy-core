@@ -1,7 +1,7 @@
 {
-  final Expression fieldExpr=new VariableExpression(fNode);
+  final Expression fieldExpr=var(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
-  if (initExpr == null)   initExpr=new ConstantExpression(null);
+  if (initExpr == null)   initExpr=ConstantExpression.EMPTY_EXPRESSION;
   Expression unknown=findArg(fNode.getName());
-  return new IfStatement(equalsNullExpr(unknown),new IfStatement(equalsNullExpr(initExpr),EmptyStatement.INSTANCE,assignStatement(fieldExpr,checkUnresolved(fNode,initExpr))),assignStatement(fieldExpr,checkUnresolved(fNode,unknown)));
+  return ifElseS(equalsNullX(unknown),ifS(not(equalsNullX(initExpr)),assignS(fieldExpr,checkUnresolved(fNode,initExpr))),assignS(fieldExpr,checkUnresolved(fNode,unknown)));
 }

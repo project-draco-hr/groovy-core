@@ -5,9 +5,9 @@
   for (  PropertyNode pNode : list) {
     Parameter param=new Parameter(pNode.getField().getType(),pNode.getField().getName());
     orderedParams[index++]=param;
-    argMap.addMapEntryExpression(new ConstantExpression(pNode.getName()),new VariableExpression(pNode.getName()));
+    argMap.addMapEntryExpression(constX(pNode.getName()),var(pNode.getName()));
   }
   final BlockStatement orderedBody=new BlockStatement();
-  orderedBody.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.THIS,new ArgumentListExpression(new CastExpression(HASHMAP_TYPE,argMap)))));
+  orderedBody.addStatement(stmt(ctorX(ClassNode.THIS,args(new CastExpression(HASHMAP_TYPE,argMap)))));
   doAddConstructor(cNode,new ConstructorNode(ACC_PUBLIC,orderedParams,ClassNode.EMPTY_ARRAY,orderedBody));
 }

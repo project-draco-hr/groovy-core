@@ -17,7 +17,7 @@
     operandStack.remove(parameters.length);
     ClassNode declaringClass=method.getDeclaringClass();
     int opcode=declaringClass.isInterface() ? INVOKEINTERFACE : INVOKESPECIAL;
-    mv.visitMethodInsn(opcode,BytecodeHelper.getClassInternalName(declaringClass),method.getName(),methodDescriptor);
+    mv.visitMethodInsn(opcode,BytecodeHelper.getClassInternalName(declaringClass),method.getName(),methodDescriptor,opcode == INVOKEINTERFACE);
     BytecodeHelper.doReturn(mv,method.getReturnType());
     mv.visitMaxs(0,0);
     mv.visitEnd();

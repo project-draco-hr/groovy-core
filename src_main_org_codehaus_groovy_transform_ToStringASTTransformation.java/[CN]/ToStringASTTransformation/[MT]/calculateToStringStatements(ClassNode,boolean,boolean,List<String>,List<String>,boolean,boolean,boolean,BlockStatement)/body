@@ -1,15 +1,14 @@
 {
-  final Expression result=new VariableExpression("_result");
-  final Expression init=new ConstructorCallExpression(STRINGBUILDER_TYPE,MethodCallExpression.NO_ARGUMENTS);
-  body.addStatement(declStatement(result,init));
-  final VariableExpression first=new VariableExpression("$toStringFirst");
-  body.addStatement(declStatement(first,ConstantExpression.TRUE));
+  final Expression result=var("_result");
+  body.addStatement(declS(result,ctorX(STRINGBUILDER_TYPE)));
+  final VariableExpression first=var("$toStringFirst");
+  body.addStatement(declS(first,constX(Boolean.TRUE)));
   String className=(includePackage) ? cNode.getName() : cNode.getNameWithoutPackage();
-  body.addStatement(append(result,new ConstantExpression(className + "(")));
+  body.addStatement(appendS(result,constX(className + "(")));
   List<PropertyNode> pList=getInstanceProperties(cNode);
   for (  PropertyNode pNode : pList) {
     if (shouldSkip(pNode.getName(),excludes,includes))     continue;
-    Expression getter=new StaticMethodCallExpression(INVOKER_TYPE,"getProperty",new TupleExpression(new VariableExpression("this"),new ConstantExpression(pNode.getName())));
+    Expression getter=callX(INVOKER_TYPE,"getProperty",args(var("this"),constX(pNode.getName())));
     appendValue(body,result,first,getter,pNode.getName(),includeNames,ignoreNulls);
   }
   if (includeFields) {
@@ -17,16 +16,16 @@
     fList.addAll(getInstanceNonPropertyFields(cNode));
     for (    FieldNode fNode : fList) {
       if (shouldSkip(fNode.getName(),excludes,includes))       continue;
-      appendValue(body,result,first,new VariableExpression(fNode),fNode.getName(),includeNames,ignoreNulls);
+      appendValue(body,result,first,var(fNode),fNode.getName(),includeNames,ignoreNulls);
     }
   }
   if (includeSuper) {
     appendCommaIfNotFirst(body,result,first);
     appendPrefix(body,result,"super",includeNames);
-    body.addStatement(append(result,new MethodCallExpression(VariableExpression.SUPER_EXPRESSION,"toString",MethodCallExpression.NO_ARGUMENTS)));
+    body.addStatement(appendS(result,callSuperX("toString")));
   }
-  body.addStatement(append(result,new ConstantExpression(")")));
-  MethodCallExpression toString=new MethodCallExpression(result,"toString",MethodCallExpression.NO_ARGUMENTS);
+  body.addStatement(appendS(result,constX(")")));
+  MethodCallExpression toString=callX(result,"toString");
   toString.setImplicitThis(false);
   return toString;
 }

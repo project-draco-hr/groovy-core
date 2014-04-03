@@ -1,0 +1,33 @@
+{
+  boolean isStatic=mNode.isStatic();
+  if (value != null && value.length() > 0 && !value.equalsIgnoreCase("$lock")) {
+    if (cNode.getDeclaredField(value) == null) {
+      addError("Error during " + MY_TYPE_NAME + " processing: lock field with name '"+ value+ "' not found in class "+ cNode.getName(),mNode);
+    }
+    FieldNode field=cNode.getDeclaredField(value);
+    if (field.isStatic() != isStatic) {
+      addError("Error during " + MY_TYPE_NAME + " processing: lock field with name '"+ value+ "' should "+ (isStatic ? "" : "not ")+ "be static",field);
+    }
+    return value;
+  }
+  if (isStatic) {
+    FieldNode field=cNode.getDeclaredField("$LOCK");
+    if (field == null) {
+      int visibility=ACC_PRIVATE | ACC_STATIC | ACC_FINAL;
+      cNode.addField("$LOCK",visibility,ClassHelper.OBJECT_TYPE,zeroLengthObjectArray());
+    }
+ else     if (!field.isStatic()) {
+      addError("Error during " + MY_TYPE_NAME + " processing: $LOCK field must be static",field);
+    }
+    return "$LOCK";
+  }
+  FieldNode field=cNode.getDeclaredField("$lock");
+  if (field == null) {
+    int visibility=ACC_PRIVATE | ACC_FINAL;
+    cNode.addField("$lock",visibility,ClassHelper.OBJECT_TYPE,zeroLengthObjectArray());
+  }
+ else   if (field.isStatic()) {
+    addError("Error during " + MY_TYPE_NAME + " processing: $lock field must not be static",field);
+  }
+  return "$lock";
+}

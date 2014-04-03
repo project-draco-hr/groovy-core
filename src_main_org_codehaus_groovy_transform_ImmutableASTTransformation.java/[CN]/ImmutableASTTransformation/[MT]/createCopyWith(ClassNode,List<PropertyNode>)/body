@@ -1,12 +1,12 @@
 {
   BlockStatement body=new BlockStatement();
-  body.addStatement(new IfStatement(new BooleanExpression(new BinaryExpression(equalsNullExpr(new VariableExpression("map",ClassHelper.MAP_TYPE)),new Token(Types.LOGICAL_OR,"||",-1,-1),new BinaryExpression(new MethodCallExpression(new VariableExpression("map",HASHMAP_TYPE),"size",ArgumentListExpression.EMPTY_ARGUMENTS),new Token(Types.COMPARE_EQUAL,"==",-1,-1),new ConstantExpression(0)))),new ReturnStatement(new VariableExpression("this",cNode)),EmptyStatement.INSTANCE));
-  body.addStatement(AbstractASTTransformUtil.declStatement(new VariableExpression("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
-  body.addStatement(AbstractASTTransformUtil.declStatement(new VariableExpression("construct",HASHMAP_TYPE),new ConstructorCallExpression(HASHMAP_TYPE,MethodCallExpression.NO_ARGUMENTS)));
+  body.addStatement(ifS(or(equalsNullX(var("map",ClassHelper.MAP_TYPE)),eq(callX(var("map",HASHMAP_TYPE),"size"),constX(0))),returnS(var("this",cNode))));
+  body.addStatement(declS(var("dirty",ClassHelper.boolean_TYPE),ConstantExpression.PRIM_FALSE));
+  body.addStatement(declS(var("construct",HASHMAP_TYPE),ctorX(HASHMAP_TYPE)));
   for (  final PropertyNode pNode : pList) {
     body.addStatement(createCheckForProperty(pNode));
   }
-  body.addStatement(new ReturnStatement(new TernaryExpression(AbstractASTTransformUtil.isTrueExpr(new VariableExpression("dirty",ClassHelper.boolean_TYPE)),new ConstructorCallExpression(cNode,new ArgumentListExpression(new Expression[]{new VariableExpression("construct",HASHMAP_TYPE)})),new VariableExpression("this",cNode))));
+  body.addStatement(returnS(ternaryX(isTrueX(var("dirty",ClassHelper.boolean_TYPE)),ctorX(cNode,args(var("construct",HASHMAP_TYPE))),var("this",cNode))));
   final ClassNode clonedNode=cNode.getPlainNodeReference();
-  cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,new Parameter[]{new Parameter(new ClassNode(Map.class),"map")},null,body);
+  cNode.addMethod(COPY_WITH_METHOD,ACC_PUBLIC | ACC_FINAL,clonedNode,params(new Parameter(new ClassNode(Map.class),"map")),null,body);
 }

@@ -3,9 +3,8 @@
   for (  PropertyNode pNode : list) {
     body.addStatement(createConstructorStatement(cNode,pNode,knownImmutableClasses,knownImmutables));
   }
-  Expression checkArgs=new ArgumentListExpression(new VariableExpression("this"),new VariableExpression("args"));
-  body.addStatement(new ExpressionStatement(new StaticMethodCallExpression(SELF_TYPE,"checkPropNames",checkArgs)));
-  body.addStatement(new IfStatement(equalsNullExpr(new VariableExpression("args")),assignStatement(new VariableExpression("args"),new MapExpression()),EmptyStatement.INSTANCE));
+  body.addStatement(stmt(callX(SELF_TYPE,"checkPropNames",vars("this","args"))));
+  body.addStatement(ifS(equalsNullX(var("args")),assignS(var("args"),new MapExpression())));
   createConstructorMapCommon(cNode,body);
   if (list.size() > 0) {
     createNoArgConstructor(cNode);

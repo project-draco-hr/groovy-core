@@ -26,20 +26,20 @@
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
     if (callSuper) {
-      superParams.add(new VariableExpression(name));
+      superParams.add(var(name));
     }
  else {
-      body.addStatement(assignStatement(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),new VariableExpression(name)));
+      body.addStatement(assignS(prop(var("this"),name),var(name)));
     }
   }
   if (callSuper) {
-    body.addStatement(new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,new ArgumentListExpression(superParams))));
+    body.addStatement(stmt(ctorX(ClassNode.SUPER,args(superParams))));
   }
   for (  FieldNode fNode : list) {
     String name=fNode.getName();
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
-    body.addStatement(assignStatement(new PropertyExpression(VariableExpression.THIS_EXPRESSION,name),new VariableExpression(name)));
+    body.addStatement(assignS(prop(var("this"),name),var(name)));
   }
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
   if (params.size() > 0) {
