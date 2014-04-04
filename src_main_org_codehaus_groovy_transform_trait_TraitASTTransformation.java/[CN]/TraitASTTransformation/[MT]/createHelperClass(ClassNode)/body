@@ -2,9 +2,8 @@
   ClassNode helper=new InnerClassNode(cNode,Traits.helperClassName(cNode),ACC_PUBLIC | ACC_STATIC | ACC_ABSTRACT| ACC_SYNTHETIC,ClassHelper.OBJECT_TYPE,ClassNode.EMPTY_ARRAY,null);
   cNode.setModifiers(ACC_PUBLIC | ACC_INTERFACE | ACC_ABSTRACT);
   checkInnerClasses(cNode);
-  MethodNode initializer=new MethodNode(Traits.STATIC_INIT_METHOD,ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(cNode.getPlainNodeReference(),Traits.THIS_OBJECT)},ClassNode.EMPTY_ARRAY,new BlockStatement());
-  fixGenerics(initializer,cNode);
-  helper.addMethod(initializer);
+  MethodNode initializer=createInitMethod(false,cNode,helper);
+  MethodNode staticInitializer=createInitMethod(true,cNode,helper);
   generatePropertyMethods(cNode);
   List<FieldNode> fields=new ArrayList<FieldNode>();
   Set<String> fieldNames=new HashSet<String>();
@@ -19,25 +18,25 @@
     fieldHelper=new InnerClassNode(cNode,Traits.fieldHelperClassName(cNode),ACC_STATIC | ACC_PUBLIC | ACC_INTERFACE| ACC_ABSTRACT,ClassHelper.OBJECT_TYPE);
   }
   List<MethodNode> methods=cNode.getMethods();
-  List<MethodNode> privateMethods=new LinkedList<MethodNode>();
+  List<MethodNode> nonPublicAPIMethods=new LinkedList<MethodNode>();
   for (  final MethodNode methodNode : methods) {
     boolean declared=methodNode.getDeclaringClass() == cNode;
     if (declared) {
-      if (!methodNode.isSynthetic() && methodNode.isProtected()) {
-        unit.addError(new SyntaxException("Cannot have protected method in a trait (" + cNode.getName() + "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
+      if (!methodNode.isSynthetic() && (methodNode.isProtected() || methodNode.getModifiers() == 0)) {
+        unit.addError(new SyntaxException("Cannot have protected/package private method in a trait (" + cNode.getName() + "#"+ methodNode.getTypeDescriptor()+ ")",methodNode.getLineNumber(),methodNode.getColumnNumber()));
         return;
       }
       helper.addMethod(processMethod(cNode,methodNode,fieldHelper,fieldNames));
-      if (methodNode.isPrivate()) {
-        privateMethods.add(methodNode);
+      if (methodNode.isPrivate() || methodNode.isStatic()) {
+        nonPublicAPIMethods.add(methodNode);
       }
     }
   }
-  for (  MethodNode privateMethod : privateMethods) {
+  for (  MethodNode privateMethod : nonPublicAPIMethods) {
     cNode.removeMethod(privateMethod);
   }
   for (  FieldNode field : fields) {
-    processField(field,initializer,fieldHelper);
+    processField(field,initializer,staticInitializer,fieldHelper);
   }
   cNode.getProperties().clear();
   copyClassAnnotations(cNode,helper);

@@ -44,7 +44,10 @@
       mce.setImplicitThis(false);
       ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,returnType);
       Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
-      MethodNode forwarder=new MethodNode(name,access ^ Opcodes.ACC_STATIC,fixedReturnType,params,exceptionNodes,new ExpressionStatement(forwardExpression));
+      if (!argumentTypes[0].getOriginType().equals(ClassHelper.CLASS_Type)) {
+        access=access ^ Opcodes.ACC_STATIC;
+      }
+      MethodNode forwarder=new MethodNode(name,access,fixedReturnType,params,exceptionNodes,new ExpressionStatement(forwardExpression));
       List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
       List<AnnotationNode> notCopied=Collections.emptyList();
       AbstractASTTransformation.copyAnnotatedNodeAnnotations(methodNode,copied,notCopied);
@@ -54,7 +57,8 @@
       cNode.addMethod(forwarder);
     }
   }
-  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
+  cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
+  cNode.addStaticInitializerStatements(Collections.<Statement>singletonList(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this"))))),false);
   if (fieldHelperClassNode != null) {
     cNode.addInterface(fieldHelperClassNode);
     List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
@@ -67,13 +71,18 @@
         String operation=methodNode.getName().substring(suffixIdx + 1);
         boolean getter="get".equals(operation);
         ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
+        int isStatic=0;
+        FieldNode helperField=fieldHelperClassNode.getField(fieldName);
+        if (helperField == null) {
+          helperField=fieldHelperClassNode.getField(Traits.STATIC_FIELD_PREFIX + fieldName);
+          isStatic=Opcodes.ACC_STATIC;
+        }
         if (getter) {
-          FieldNode fieldNode=cNode.addField(fieldName,Opcodes.ACC_PRIVATE,returnType,null);
-          FieldNode helperField=fieldHelperClassNode.getField(fieldName);
           if (helperField != null) {
             List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
             List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
             AbstractASTTransformation.copyAnnotatedNodeAnnotations(helperField,copied,notCopied);
+            FieldNode fieldNode=cNode.addField(fieldName,Opcodes.ACC_PRIVATE | isStatic,returnType,null);
             fieldNode.addAnnotations(copied);
           }
         }
@@ -88,7 +97,7 @@
         }
         Expression fieldExpr=new VariableExpression(cNode.getField(fieldName));
         Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
-        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
+        MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC | isStatic,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
         impl.addAnnotation(new AnnotationNode(ClassHelper.make(CompileStatic.class)));
         cNode.addMethod(impl);
       }

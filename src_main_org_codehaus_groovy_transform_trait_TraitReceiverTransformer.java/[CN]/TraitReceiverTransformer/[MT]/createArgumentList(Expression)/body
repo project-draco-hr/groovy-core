@@ -1,0 +1,14 @@
+{
+  ArgumentListExpression newArgs=new ArgumentListExpression();
+  newArgs.addExpression(new VariableExpression(weaved));
+  if (origCallArgs instanceof ArgumentListExpression) {
+    List<Expression> expressions=((ArgumentListExpression)origCallArgs).getExpressions();
+    for (    Expression expression : expressions) {
+      newArgs.addExpression(transform(expression));
+    }
+  }
+ else {
+    newArgs.addExpression(origCallArgs);
+  }
+  return newArgs;
+}

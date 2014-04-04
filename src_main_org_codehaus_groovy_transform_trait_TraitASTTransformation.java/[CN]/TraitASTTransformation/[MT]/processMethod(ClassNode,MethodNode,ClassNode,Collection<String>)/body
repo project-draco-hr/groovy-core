@@ -1,7 +1,7 @@
 {
   Parameter[] initialParams=methodNode.getParameters();
   Parameter[] newParams=new Parameter[initialParams.length + 1];
-  newParams[0]=new Parameter(traitClass.getPlainNodeReference(),Traits.THIS_OBJECT);
+  newParams[0]=createSelfParameter(traitClass,methodNode.isStatic());
   System.arraycopy(initialParams,0,newParams,1,initialParams.length);
   final int mod=methodNode.isPrivate() ? ACC_PRIVATE : ACC_PUBLIC;
   MethodNode mNode=new MethodNode(methodNode.getName(),mod | ACC_STATIC,methodNode.getReturnType(),newParams,methodNode.getExceptions(),processBody(new VariableExpression(newParams[0]),methodNode.getCode(),traitClass,fieldHelper,knownFields));
@@ -14,7 +14,7 @@
     methodNode.addAnnotation(new AnnotationNode(Traits.IMPLEMENTED_CLASSNODE));
   }
   methodNode.setCode(null);
-  if (!methodNode.isPrivate()) {
+  if (!methodNode.isPrivate() && !methodNode.isStatic()) {
     methodNode.setModifiers(ACC_PUBLIC | ACC_ABSTRACT);
   }
   return mNode;
