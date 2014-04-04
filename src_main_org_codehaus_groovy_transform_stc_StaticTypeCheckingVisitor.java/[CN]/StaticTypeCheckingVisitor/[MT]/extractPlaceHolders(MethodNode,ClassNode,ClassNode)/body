@@ -28,6 +28,9 @@
     resolvedPlaceholders=currentPlaceHolders;
     if (current.equals(declaringClass))     break;
     current=getNextSuperClass(current,declaringClass);
+    if (current == null && CLASS_Type.equals(declaringClass)) {
+      current=declaringClass;
+    }
     if (current == null) {
       String descriptor="<>";
       if (method != null)       descriptor=method.getTypeDescriptor();
