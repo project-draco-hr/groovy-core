@@ -9,7 +9,7 @@
     if (!cursorAtRow)     return;
     GroovyResultSet groovyRS=new GroovyResultSetProxy(results).getImpl();
     int i=0;
-    while (groovyRS.next() && (maxRows <= 0 || i++ < maxRows)) {
+    while ((maxRows <= 0 || i++ < maxRows) && groovyRS.next()) {
       rowClosure.call(groovyRS);
     }
   }

@@ -7,7 +7,7 @@
     boolean cursorAtRow=moveCursor(rs,offset);
     if (!cursorAtRow)     return null;
     int i=0;
-    while (rs.next() && (maxRows <= 0 || i++ < maxRows)) {
+    while ((maxRows <= 0 || i++ < maxRows) && rs.next()) {
       results.add(SqlGroovyMethods.toRowResult(rs));
     }
     return (results);
