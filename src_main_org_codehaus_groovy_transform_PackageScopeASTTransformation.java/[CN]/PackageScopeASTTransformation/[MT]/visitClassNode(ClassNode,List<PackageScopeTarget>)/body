@@ -1,11 +1,11 @@
 {
   String cName=cNode.getName();
   if (cNode.isInterface() && value.size() != 1 && value.get(0) != PackageScopeTarget.CLASS) {
-    throw new RuntimeException("Error processing interface '" + cName + "'. "+ MY_TYPE_NAME+ " not allowed for interfaces except when targeting Class level.");
+    addError("Error processing interface '" + cName + "'. "+ MY_TYPE_NAME+ " not allowed for interfaces except when targeting Class level.",cNode);
   }
   if (value.contains(groovy.transform.PackageScopeTarget.CLASS)) {
     if (cNode.isSyntheticPublic())     revertVisibility(cNode);
- else     throw new RuntimeException("Can't use " + MY_TYPE_NAME + " for class '"+ cNode.getName()+ "' which has explicit visibility.");
+ else     addError("Can't use " + MY_TYPE_NAME + " for class '"+ cNode.getName()+ "' which has explicit visibility.",cNode);
   }
   if (value.contains(groovy.transform.PackageScopeTarget.METHODS)) {
     final List<MethodNode> mList=cNode.getMethods();

@@ -1,7 +1,5 @@
 {
-  if (nodes.length != 2 || !(nodes[0] instanceof AnnotationNode) || !(nodes[1] instanceof AnnotatedNode)) {
-    throw new RuntimeException("Internal error: expecting [AnnotationNode, AnnotatedNode] but got: " + Arrays.asList(nodes));
-  }
+  init(nodes,source);
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   boolean legacyMode=LEGACY_TYPE_NAME.equals(node.getClassNode().getName());
@@ -15,7 +13,10 @@
     parent.getAnnotations();
   }
  else {
-    if (value != null)     throw new RuntimeException("Error during " + MY_TYPE_NAME + " processing: "+ TARGET_CLASS_NAME+ " only allowed at class level.");
+    if (value != null) {
+      addError("Error during " + MY_TYPE_NAME + " processing: "+ TARGET_CLASS_NAME+ " only allowed at class level.",parent);
+      return;
+    }
     if (parent instanceof MethodNode) {
       visitMethodNode((MethodNode)parent);
     }
