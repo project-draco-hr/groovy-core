@@ -1,31 +1,36 @@
 {
-  if (value != null && value.length() > 0 && !value.equalsIgnoreCase("$reentrantlock")) {
-    if (targetClass.getDeclaredField(value) == null) {
-      throw new RuntimeException("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' not found in class "+ targetClass.getName());
+  if (value != null && value.length() > 0 && !value.equalsIgnoreCase(DEFAULT_INSTANCE_LOCKNAME)) {
+    FieldNode existingLockField=targetClass.getDeclaredField(value);
+    if (existingLockField == null) {
+      addError("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' not found in class "+ targetClass.getName(),targetClass);
+      return null;
     }
-    if (targetClass.getDeclaredField(value).isStatic() != isStatic) {
-      throw new RuntimeException("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' should "+ (isStatic ? "" : "not ")+ "be static");
+    if (existingLockField.isStatic() != isStatic) {
+      addError("Error during " + myTypeName + " processing: lock field with name '"+ value+ "' should "+ (isStatic ? "" : "not ")+ "be static",existingLockField);
+      return null;
     }
     return value;
   }
   if (isStatic) {
-    FieldNode field=targetClass.getDeclaredField("$REENTRANTLOCK");
+    FieldNode field=targetClass.getDeclaredField(DEFAULT_STATIC_LOCKNAME);
     if (field == null) {
       int visibility=ACC_PRIVATE | ACC_STATIC | ACC_FINAL;
-      targetClass.addField("$REENTRANTLOCK",visibility,LOCK_TYPE,createLockObject());
+      targetClass.addField(DEFAULT_STATIC_LOCKNAME,visibility,LOCK_TYPE,createLockObject());
     }
  else     if (!field.isStatic()) {
-      throw new RuntimeException("Error during " + myTypeName + " processing: $REENTRANTLOCK field must be static");
+      addError("Error during " + myTypeName + " processing: "+ DEFAULT_STATIC_LOCKNAME+ " field must be static",field);
+      return null;
     }
-    return "$REENTRANTLOCK";
+    return DEFAULT_STATIC_LOCKNAME;
   }
-  FieldNode field=targetClass.getDeclaredField("$reentrantlock");
+  FieldNode field=targetClass.getDeclaredField(DEFAULT_INSTANCE_LOCKNAME);
   if (field == null) {
     int visibility=ACC_PRIVATE | ACC_FINAL;
-    targetClass.addField("$reentrantlock",visibility,LOCK_TYPE,createLockObject());
+    targetClass.addField(DEFAULT_INSTANCE_LOCKNAME,visibility,LOCK_TYPE,createLockObject());
   }
  else   if (field.isStatic()) {
-    throw new RuntimeException("Error during " + myTypeName + " processing: $reentrantlock field must not be static");
+    addError("Error during " + myTypeName + " processing: "+ DEFAULT_INSTANCE_LOCKNAME+ " field must not be static",field);
+    return null;
   }
-  return "$reentrantlock";
+  return DEFAULT_INSTANCE_LOCKNAME;
 }
