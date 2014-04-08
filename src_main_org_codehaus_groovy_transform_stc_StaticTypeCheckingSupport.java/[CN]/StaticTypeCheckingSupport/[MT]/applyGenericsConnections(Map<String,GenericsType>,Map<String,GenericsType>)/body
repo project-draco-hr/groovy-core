@@ -1,0 +1,38 @@
+{
+  if (connections == null)   return;
+  int count=0;
+  while (count < 10000) {
+    count++;
+    boolean checkForMorePlaceHolders=false;
+    for (    Map.Entry<String,GenericsType> entry : resolvedPlaceholders.entrySet()) {
+      String name=entry.getKey();
+      GenericsType replacement=connections.get(name);
+      if (replacement == null) {
+        GenericsType value=entry.getValue();
+        GenericsType newValue=applyGenericsContext(connections,value);
+        entry.setValue(newValue);
+        checkForMorePlaceHolders=checkForMorePlaceHolders || !equalIncludingGenerics(value,newValue);
+        continue;
+      }
+      GenericsType original=entry.getValue();
+      if (!original.isWildcard() && !original.isPlaceholder()) {
+        continue;
+      }
+ else       if (!replacement.isPlaceholder()) {
+        entry.setValue(replacement);
+        continue;
+      }
+      GenericsType connectedType=resolvedPlaceholders.get(replacement.getName());
+      if (replacement == connectedType)       continue;
+      if (connectedType == null) {
+        continue;
+      }
+ else {
+        entry.setValue(replacement);
+        checkForMorePlaceHolders=checkForMorePlaceHolders || !equalIncludingGenerics(original,replacement);
+      }
+    }
+    if (!checkForMorePlaceHolders)     break;
+  }
+  if (count >= 10000)   throw new GroovyBugError("unable to handle generics in " + resolvedPlaceholders + " with connections "+ connections);
+}

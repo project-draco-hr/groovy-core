@@ -1,0 +1,8 @@
+{
+  GenericsType[] gts=parameterUsage.getGenericsTypes();
+  if (gts == null)   return Collections.EMPTY_MAP;
+  GenericsType[] newGTs=applyGenericsContext(spec,gts);
+  ClassNode newTarget=parameterUsage.redirect().getPlainNodeReference();
+  newTarget.setGenericsTypes(newGTs);
+  return GenericsUtils.extractPlaceholders(newTarget);
+}

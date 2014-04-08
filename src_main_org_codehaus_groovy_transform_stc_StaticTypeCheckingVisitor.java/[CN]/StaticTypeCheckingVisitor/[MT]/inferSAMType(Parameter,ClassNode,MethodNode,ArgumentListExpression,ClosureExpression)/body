@@ -1,0 +1,35 @@
+{
+  Map<String,GenericsType> targetMethodDeclarationClassConnections=new HashMap<String,GenericsType>();
+  extractGenericsConnections(targetMethodDeclarationClassConnections,receiver,receiver.redirect());
+  Parameter[] parametersOfMethodContainingSAM=methodWithSAMParameter.getParameters();
+  for (int i=0; i < parametersOfMethodContainingSAM.length; i++) {
+    Expression callArg=originalMethodCallArguments.getExpression(i);
+    if (callArg == openBlock)     continue;
+    ClassNode parameterType=parametersOfMethodContainingSAM[i].getType();
+    extractGenericsConnections(targetMethodDeclarationClassConnections,getType(callArg),parameterType);
+  }
+  ClassNode paramTypeWithReceiverInformation=applyGenericsContext(targetMethodDeclarationClassConnections,param.getOriginType());
+  Map<String,GenericsType> SAMTypeConnections=new HashMap<String,GenericsType>();
+  ClassNode classForSAM=paramTypeWithReceiverInformation.redirect();
+  extractGenericsConnections(SAMTypeConnections,paramTypeWithReceiverInformation,classForSAM);
+  MethodNode methodForSAM=findSAM(classForSAM);
+  ClassNode[] parameterTypesForSAM=extractTypesFromParameters(methodForSAM.getParameters());
+  ClassNode[] blockParameterTypes=(ClassNode[])openBlock.getNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS);
+  if (blockParameterTypes == null) {
+    Parameter[] p=openBlock.getParameters();
+    if (p.length == 0 && parameterTypesForSAM.length != 0) {
+      blockParameterTypes=parameterTypesForSAM;
+    }
+ else {
+      blockParameterTypes=extractTypesFromParameters(p);
+    }
+  }
+  for (int i=0; i < blockParameterTypes.length; i++) {
+    extractGenericsConnections(SAMTypeConnections,blockParameterTypes[i],parameterTypesForSAM[i]);
+  }
+  for (int i=0; i < blockParameterTypes.length; i++) {
+    ClassNode resolvedParameter=applyGenericsContext(SAMTypeConnections,parameterTypesForSAM[i]);
+    blockParameterTypes[i]=resolvedParameter;
+  }
+  openBlock.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,blockParameterTypes);
+}

@@ -18,7 +18,8 @@
   if (parameterType.isUsingGenerics() && argumentType.isUsingGenerics()) {
     GenericsType gt=GenericsUtils.buildWildcardType(parameterType);
     if (!gt.isCompatibleWith(argumentType)) {
-      return false;
+      boolean samCoercion=isSAMType(parameterType) && argumentType.equals(CLOSURE_TYPE);
+      if (!samCoercion)       return false;
     }
   }
  else   if (parameterType.isArray() && argumentType.isArray()) {

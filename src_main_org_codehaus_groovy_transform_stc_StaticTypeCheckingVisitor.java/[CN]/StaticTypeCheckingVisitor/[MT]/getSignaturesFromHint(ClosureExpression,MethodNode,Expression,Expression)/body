@@ -1,0 +1,20 @@
+{
+  List<ClassNode[]> closureSignatures=null;
+  try {
+    CompilationUnit compilationUnit=typeCheckingContext.getCompilationUnit();
+    @SuppressWarnings("resource") GroovyClassLoader transformLoader=compilationUnit != null ? compilationUnit.getTransformLoader() : getSourceUnit().getClassLoader();
+    @SuppressWarnings("unchecked") Class<? extends ClosureSignatureHint> hint=(Class<? extends ClosureSignatureHint>)transformLoader.loadClass(hintClass.getText());
+    ClosureSignatureHint hintInstance=hint.newInstance();
+    closureSignatures=hintInstance.getClosureSignatures(selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod,typeCheckingContext.source,typeCheckingContext.compilationUnit,convertToStringArray(options),expression);
+  }
+ catch (  ClassNotFoundException e) {
+    throw new GroovyBugError(e);
+  }
+catch (  InstantiationException e) {
+    throw new GroovyBugError(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new GroovyBugError(e);
+  }
+  return closureSignatures;
+}

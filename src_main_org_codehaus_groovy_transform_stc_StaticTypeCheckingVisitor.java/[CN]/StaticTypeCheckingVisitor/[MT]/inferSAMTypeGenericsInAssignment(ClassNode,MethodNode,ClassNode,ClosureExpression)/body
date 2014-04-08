@@ -1,0 +1,16 @@
+{
+  GenericsType[] samGt=samUsage.getGenericsTypes();
+  GenericsType[] closureGt=closureType.getGenericsTypes();
+  if (samGt == null || closureGt == null)   return samUsage;
+  Map<String,GenericsType> connections=new HashMap<String,GenericsType>();
+  extractGenericsConnections(connections,closureType,sam.getReturnType());
+  Parameter[] closureParams=closureExpression.getParameters();
+  Parameter[] methodParams=sam.getParameters();
+  for (int i=0; i < closureParams.length; i++) {
+    ClassNode fromClosure=closureParams[i].getType();
+    ClassNode fromMethod=methodParams[i].getType();
+    extractGenericsConnections(connections,fromClosure,fromMethod);
+  }
+  ClassNode result=applyGenericsContext(connections,samUsage.redirect());
+  return result;
+}

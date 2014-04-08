@@ -14,6 +14,9 @@
     if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
       return right;
     }
+    if (rightRedirect.isDerivedFrom(CLOSURE_TYPE) && isSAMType(leftRedirect)) {
+      return inferSAMTypeGenericsInAssignment(left,findSAM(left),right,(ClosureExpression)expr.getRightExpression());
+    }
     if (leftExpression instanceof VariableExpression) {
       ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
       if (isPrimitiveType(right) && initialType.isDerivedFrom(Number_TYPE)) {

@@ -1,0 +1,27 @@
+{
+  if (gt.isPlaceholder()) {
+    String name=gt.getName();
+    GenericsType specType=spec.get(name);
+    if (specType != null)     return specType;
+    if (gt.getLowerBound() != null || gt.getUpperBounds() != null) {
+      GenericsType newType=new GenericsType(gt.getType(),applyGenericsContext(spec,gt.getUpperBounds()),applyGenericsContext(spec,gt.getLowerBound()));
+      newType.setPlaceholder(true);
+      return newType;
+    }
+ else {
+      return gt;
+    }
+  }
+ else   if (gt.isWildcard()) {
+    GenericsType newGT=new GenericsType(gt.getType(),applyGenericsContext(spec,gt.getUpperBounds()),applyGenericsContext(spec,gt.getLowerBound()));
+    newGT.setWildcard(true);
+    return newGT;
+  }
+  ClassNode type=gt.getType();
+  if (type.getGenericsTypes() == null)   return gt;
+  ClassNode newType=type.getPlainNodeReference();
+  newType.setGenericsPlaceHolder(type.isGenericsPlaceHolder());
+  newType.setGenericsTypes(applyGenericsContext(spec,type.getGenericsTypes()));
+  GenericsType newGT=new GenericsType(newType);
+  return newGT;
+}

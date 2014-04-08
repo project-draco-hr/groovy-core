@@ -1,110 +1,96 @@
 {
-  try {
+  List<ClassNode[]> closureSignatures=getSignaturesFromHint(expression,selectedMethod,hintClass,options);
+  List<ClassNode[]> candidates=new LinkedList<ClassNode[]>();
+  for (  ClassNode[] signature : closureSignatures) {
+    final int id=System.identityHashCode(expression);
+    ClassNode dummyResultNode=new ClassNode("cl$" + id,0,OBJECT_TYPE).getPlainNodeReference();
+    final GenericsType[] genericTypes=new GenericsType[signature.length];
+    for (int i=0; i < signature.length; i++) {
+      genericTypes[i]=new GenericsType(signature[i]);
+    }
+    dummyResultNode.setGenericsTypes(genericTypes);
+    MethodNode dummyMN=selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod;
+    dummyMN=new MethodNode(dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,dummyMN.getParameters(),dummyMN.getExceptions(),EmptyStatement.INSTANCE);
+    dummyMN.setDeclaringClass(selectedMethod.getDeclaringClass());
+    dummyMN.setGenericsTypes(selectedMethod.getGenericsTypes());
+    if (selectedMethod instanceof ExtensionMethodNode) {
+      ExtensionMethodNode orig=(ExtensionMethodNode)selectedMethod;
+      dummyMN=new ExtensionMethodNode(dummyMN,dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,orig.getParameters(),orig.getExceptions(),EmptyStatement.INSTANCE,orig.isStaticExtension());
+      dummyMN.setDeclaringClass(orig.getDeclaringClass());
+      dummyMN.setGenericsTypes(orig.getGenericsTypes());
+    }
+    ClassNode classNode=inferReturnTypeGenerics(receiver,dummyMN,arguments);
+    ClassNode[] inferred=new ClassNode[classNode.getGenericsTypes().length];
+    for (int i=0; i < classNode.getGenericsTypes().length; i++) {
+      GenericsType genericsType=classNode.getGenericsTypes()[i];
+      ClassNode value=createUsableClassNodeFromGenericsType(genericsType);
+      inferred[i]=value;
+    }
     Parameter[] closureParams=expression.getParameters();
-    CompilationUnit compilationUnit=typeCheckingContext.getCompilationUnit();
-    GroovyClassLoader transformLoader=compilationUnit != null ? compilationUnit.getTransformLoader() : getSourceUnit().getClassLoader();
-    @SuppressWarnings("unchecked") Class<? extends ClosureSignatureHint> hint=(Class<? extends ClosureSignatureHint>)transformLoader.loadClass(hintClass.getText());
-    ClosureSignatureHint hintInstance=hint.newInstance();
-    List<ClassNode[]> closureSignatures=hintInstance.getClosureSignatures(selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod,typeCheckingContext.source,typeCheckingContext.compilationUnit,convertToStringArray(options),expression);
-    List<ClassNode[]> candidates=new LinkedList<ClassNode[]>();
-    for (    ClassNode[] signature : closureSignatures) {
-      final int id=System.identityHashCode(expression);
-      ClassNode dummyResultNode=new ClassNode("cl$" + id,0,OBJECT_TYPE).getPlainNodeReference();
-      final GenericsType[] genericTypes=new GenericsType[signature.length];
-      for (int i=0; i < signature.length; i++) {
-        genericTypes[i]=new GenericsType(signature[i]);
-      }
-      dummyResultNode.setGenericsTypes(genericTypes);
-      MethodNode dummyMN=selectedMethod instanceof ExtensionMethodNode ? ((ExtensionMethodNode)selectedMethod).getExtensionMethodNode() : selectedMethod;
-      dummyMN=new MethodNode(dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,dummyMN.getParameters(),dummyMN.getExceptions(),EmptyStatement.INSTANCE);
-      dummyMN.setDeclaringClass(selectedMethod.getDeclaringClass());
-      dummyMN.setGenericsTypes(selectedMethod.getGenericsTypes());
-      if (selectedMethod instanceof ExtensionMethodNode) {
-        ExtensionMethodNode orig=(ExtensionMethodNode)selectedMethod;
-        dummyMN=new ExtensionMethodNode(dummyMN,dummyMN.getName(),dummyMN.getModifiers(),dummyResultNode,orig.getParameters(),orig.getExceptions(),EmptyStatement.INSTANCE,orig.isStaticExtension());
-        dummyMN.setDeclaringClass(orig.getDeclaringClass());
-        dummyMN.setGenericsTypes(orig.getGenericsTypes());
-      }
-      ClassNode classNode=inferReturnTypeGenerics(receiver,dummyMN,arguments);
-      ClassNode[] inferred=new ClassNode[classNode.getGenericsTypes().length];
-      for (int i=0; i < classNode.getGenericsTypes().length; i++) {
-        GenericsType genericsType=classNode.getGenericsTypes()[i];
-        ClassNode value=createUsableClassNodeFromGenericsType(genericsType);
-        inferred[i]=value;
-      }
-      if (signature.length == closureParams.length || (signature.length == 1 && closureParams.length == 0) || (closureParams.length > signature.length && inferred[inferred.length - 1].isArray())) {
-        candidates.add(inferred);
+    if (signature.length == closureParams.length || (signature.length == 1 && closureParams.length == 0) || (closureParams.length > signature.length && inferred[inferred.length - 1].isArray())) {
+      candidates.add(inferred);
+    }
+  }
+  Parameter[] closureParams=expression.getParameters();
+  if (candidates.size() > 1) {
+    Iterator<ClassNode[]> candIt=candidates.iterator();
+    while (candIt.hasNext()) {
+      ClassNode[] inferred=candIt.next();
+      final int length=closureParams.length;
+      for (int i=0; i < length; i++) {
+        Parameter closureParam=closureParams[i];
+        final ClassNode originType=closureParam.getOriginType();
+        ClassNode inferredType;
+        if (i < inferred.length - 1 || inferred.length == closureParams.length) {
+          inferredType=inferred[i];
+        }
+ else {
+          ClassNode lastArgInferred=inferred[inferred.length - 1];
+          if (lastArgInferred.isArray()) {
+            inferredType=lastArgInferred.getComponentType();
+          }
+ else {
+            candIt.remove();
+            continue;
+          }
+        }
+        if (!typeCheckMethodArgumentWithGenerics(originType,inferredType,i == length - 1)) {
+          candIt.remove();
+        }
       }
     }
     if (candidates.size() > 1) {
-      Iterator<ClassNode[]> candIt=candidates.iterator();
-      while (candIt.hasNext()) {
-        ClassNode[] inferred=candIt.next();
-        final int length=closureParams.length;
-        for (int i=0; i < length; i++) {
-          Parameter closureParam=closureParams[i];
-          final ClassNode originType=closureParam.getOriginType();
-          ClassNode inferredType;
-          if (i < inferred.length - 1 || inferred.length == closureParams.length) {
-            inferredType=inferred[i];
-          }
- else {
-            ClassNode lastArgInferred=inferred[inferred.length - 1];
-            if (lastArgInferred.isArray()) {
-              inferredType=lastArgInferred.getComponentType();
-            }
- else {
-              candIt.remove();
-              continue;
-            }
-          }
-          if (!typeCheckMethodArgumentWithGenerics(originType,inferredType,i == length - 1)) {
-            candIt.remove();
-          }
-        }
-      }
-      if (candidates.size() > 1) {
-        addError("Ambiguous prototypes for closure. More than one target method matches. Please use explicit argument types.",expression);
-      }
-    }
-    if (candidates.size() == 1) {
-      ClassNode[] inferred=candidates.get(0);
-      if (closureParams.length == 0 && inferred.length == 1) {
-        expression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,inferred);
-      }
- else {
-        final int length=closureParams.length;
-        for (int i=0; i < length; i++) {
-          Parameter closureParam=closureParams[i];
-          final ClassNode originType=closureParam.getOriginType();
-          ClassNode inferredType=OBJECT_TYPE;
-          if (i < inferred.length - 1 || inferred.length == closureParams.length) {
-            inferredType=inferred[i];
-          }
- else {
-            ClassNode lastArgInferred=inferred[inferred.length - 1];
-            if (lastArgInferred.isArray()) {
-              inferredType=lastArgInferred.getComponentType();
-            }
- else {
-              addError("Incorrect number of parameters. Expected " + inferred.length + " but found "+ closureParams.length,expression);
-            }
-          }
-          if (!typeCheckMethodArgumentWithGenerics(originType,inferredType,i == length - 1)) {
-            addError("Expected parameter of type " + inferredType.toString(false) + " but got "+ originType.toString(false),closureParam.getType());
-          }
-          typeCheckingContext.controlStructureVariables.put(closureParam,inferredType);
-        }
-      }
+      addError("Ambiguous prototypes for closure. More than one target method matches. Please use explicit argument types.",expression);
     }
   }
- catch (  ClassNotFoundException e) {
-    throw new GroovyBugError(e);
-  }
-catch (  InstantiationException e) {
-    throw new GroovyBugError(e);
-  }
-catch (  IllegalAccessException e) {
-    throw new GroovyBugError(e);
+  if (candidates.size() == 1) {
+    ClassNode[] inferred=candidates.get(0);
+    if (closureParams.length == 0 && inferred.length == 1) {
+      expression.putNodeMetaData(StaticTypesMarker.CLOSURE_ARGUMENTS,inferred);
+    }
+ else {
+      final int length=closureParams.length;
+      for (int i=0; i < length; i++) {
+        Parameter closureParam=closureParams[i];
+        final ClassNode originType=closureParam.getOriginType();
+        ClassNode inferredType=OBJECT_TYPE;
+        if (i < inferred.length - 1 || inferred.length == closureParams.length) {
+          inferredType=inferred[i];
+        }
+ else {
+          ClassNode lastArgInferred=inferred[inferred.length - 1];
+          if (lastArgInferred.isArray()) {
+            inferredType=lastArgInferred.getComponentType();
+          }
+ else {
+            addError("Incorrect number of parameters. Expected " + inferred.length + " but found "+ closureParams.length,expression);
+          }
+        }
+        if (!typeCheckMethodArgumentWithGenerics(originType,inferredType,i == length - 1)) {
+          addError("Expected parameter of type " + inferredType.toString(false) + " but got "+ originType.toString(false),closureParam.getType());
+        }
+        typeCheckingContext.controlStructureVariables.put(closureParam,inferredType);
+      }
+    }
   }
 }

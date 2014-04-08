@@ -1,0 +1,15 @@
+{
+  if (usage == null || declaration == null || declaration.length == 0)   return;
+  for (int i=0; i < usage.length; i++) {
+    ClassNode ui=usage[i];
+    ClassNode di=declaration[i];
+    if (di.isGenericsPlaceHolder()) {
+      GenericsType gt=new GenericsType(di);
+      gt.setPlaceholder(di.isGenericsPlaceHolder());
+      connections.put(ui.getGenericsTypes()[0].getName(),gt);
+    }
+ else     if (di.isUsingGenerics()) {
+      extractGenericsConnections(connections,ui.getGenericsTypes(),di.getGenericsTypes());
+    }
+  }
+}
