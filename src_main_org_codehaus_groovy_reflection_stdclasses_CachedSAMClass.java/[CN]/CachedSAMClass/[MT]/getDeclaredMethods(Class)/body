@@ -1,10 +1,14 @@
 {
-  Method[] methods=AccessController.doPrivileged(new PrivilegedAction<Method[]>(){
-    public Method[] run(){
-      return c.getDeclaredMethods();
+  try {
+    Method[] methods=AccessController.doPrivileged(new PrivilegedAction<Method[]>(){
+      public Method[] run(){
+        return c.getDeclaredMethods();
+      }
     }
-  }
 );
-  if (methods == null)   return new Method[0];
-  return methods;
+    if (methods != null)     return methods;
+  }
+ catch (  java.security.AccessControlException ace) {
+  }
+  return new Method[0];
 }
