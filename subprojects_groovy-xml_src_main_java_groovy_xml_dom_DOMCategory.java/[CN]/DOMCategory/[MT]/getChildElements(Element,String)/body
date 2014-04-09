@@ -11,7 +11,7 @@
     }
  else     if (node.getNodeType() == Node.TEXT_NODE) {
       String value=node.getNodeValue();
-      if ((isGlobalTrimIgnorableWhitespace() && value.trim().length() == 0) || isGlobalTrimWhitespace()) {
+      if ((!isGlobalKeepIgnorableWhitespace() && value.trim().length() == 0) || isGlobalTrimWhitespace()) {
         value=value.trim();
       }
       if ("*".equals(elementName) && value.length() > 0) {
