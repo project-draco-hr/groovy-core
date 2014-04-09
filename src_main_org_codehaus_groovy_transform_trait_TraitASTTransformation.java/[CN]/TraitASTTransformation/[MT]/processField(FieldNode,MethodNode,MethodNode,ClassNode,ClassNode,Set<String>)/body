@@ -3,8 +3,10 @@
   MethodNode selectedMethod=field.isStatic() ? staticInitializer : initializer;
   if (initialExpression != null) {
     VariableExpression thisObject=new VariableExpression(selectedMethod.getParameters()[0]);
+    ExpressionStatement initCode=new ExpressionStatement(initialExpression);
+    processBody(thisObject,initCode,trait,fieldHelper,knownFields);
     BlockStatement code=(BlockStatement)selectedMethod.getCode();
-    MethodCallExpression mce=new MethodCallExpression(new CastExpression(createReceiverType(field.isStatic(),fieldHelper),thisObject),Traits.helperSetterName(field),initialExpression);
+    MethodCallExpression mce=new MethodCallExpression(new CastExpression(createReceiverType(field.isStatic(),fieldHelper),thisObject),Traits.helperSetterName(field),initCode.getExpression());
     mce.setImplicitThis(false);
     mce.setSourcePosition(initialExpression);
     code.addStatement(new ExpressionStatement(mce));
