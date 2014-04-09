@@ -31,7 +31,7 @@
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
       MethodNode existingMethod=cNode.getMethod(name,params);
-      if (existingMethod == null) {
+      if (existingMethod == null || existingMethod.isAbstract()) {
         existingMethod=findDefaultMethodFromInterface(cNode,name,params);
       }
       if (!isForceOverride && (existingMethod != null || isExistingProperty(name,cNode,params))) {
