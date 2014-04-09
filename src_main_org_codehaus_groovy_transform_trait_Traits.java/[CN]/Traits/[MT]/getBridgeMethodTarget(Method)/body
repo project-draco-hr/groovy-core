@@ -1,0 +1,15 @@
+{
+  TraitBridge annotation=someMethod.getAnnotation(TraitBridge.class);
+  if (annotation == null) {
+    return null;
+  }
+  Class aClass=annotation.traitClass();
+  String desc=annotation.desc();
+  for (  Method method : aClass.getDeclaredMethods()) {
+    String methodDescriptor=BytecodeHelper.getMethodDescriptor(method.getReturnType(),method.getParameterTypes());
+    if (desc.equals(methodDescriptor)) {
+      return method;
+    }
+  }
+  return null;
+}

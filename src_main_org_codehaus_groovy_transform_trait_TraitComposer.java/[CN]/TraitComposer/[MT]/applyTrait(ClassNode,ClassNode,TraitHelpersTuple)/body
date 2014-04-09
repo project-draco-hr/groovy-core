@@ -15,6 +15,7 @@
     if (!isAbstract && argumentTypes.length > 0 && ((access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC) && !name.contains("$")) {
       ArgumentListExpression argList=new ArgumentListExpression();
       argList.addExpression(new VariableExpression("this"));
+      Parameter[] origParams=new Parameter[argumentTypes.length - 1];
       Parameter[] params=new Parameter[argumentTypes.length - 1];
       for (int i=1; i < argumentTypes.length; i++) {
         Parameter parameter=argumentTypes[i];
@@ -26,6 +27,7 @@
         AbstractASTTransformation.copyAnnotatedNodeAnnotations(parameter,copied,notCopied);
         newParam.addAnnotations(copied);
         params[i - 1]=newParam;
+        origParams[i - 1]=parameter;
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
       MethodNode existingMethod=cNode.getMethod(name,params);
@@ -54,6 +56,10 @@
       if (!copied.isEmpty()) {
         forwarder.addAnnotations(copied);
       }
+      AnnotationNode bridgeAnnotation=new AnnotationNode(Traits.TRAITBRIDGE_CLASSNODE);
+      bridgeAnnotation.addMember("traitClass",new ClassExpression(trait));
+      bridgeAnnotation.addMember("desc",new ConstantExpression(BytecodeHelper.getMethodDescriptor(methodNode.getReturnType(),origParams)));
+      forwarder.addAnnotation(bridgeAnnotation);
       cNode.addMethod(forwarder);
     }
   }
