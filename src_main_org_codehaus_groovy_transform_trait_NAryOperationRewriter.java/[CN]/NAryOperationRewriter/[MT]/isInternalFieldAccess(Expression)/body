@@ -1,0 +1,14 @@
+{
+  if (exp instanceof VariableExpression) {
+    Variable accessedVariable=((VariableExpression)exp).getAccessedVariable();
+    if (accessedVariable instanceof FieldNode) {
+      return knownFields.contains(accessedVariable.getName());
+    }
+  }
+  if (exp instanceof PropertyExpression) {
+    if (((PropertyExpression)exp).isImplicitThis() || "this".equals(((PropertyExpression)exp).getObjectExpression().getText())) {
+      return knownFields.contains(((PropertyExpression)exp).getProperty().getText());
+    }
+  }
+  return false;
+}

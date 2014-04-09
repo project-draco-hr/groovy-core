@@ -1,0 +1,10 @@
+{
+  if (isInternalFieldAccess(exp.getExpression())) {
+    Token operation=exp.getOperation();
+    sourceUnit.addError(new SyntaxException("Prefix expressions on trait fields/properties are not supported in traits.",operation.getStartLine(),operation.getStartColumn()));
+    return exp;
+  }
+ else {
+    return super.transform(exp);
+  }
+}

@@ -1,0 +1,12 @@
+{
+  final int op=exp.getOperation().getType();
+  int token=getOperationWithoutEqual(op);
+  if (token < 0) {
+    return super.transform(exp);
+  }
+  BinaryExpression operation=new BinaryExpression(exp.getLeftExpression(),Token.newSymbol(token,-1,-1),exp.getRightExpression());
+  operation.setSourcePosition(exp);
+  BinaryExpression result=new BinaryExpression(exp.getLeftExpression(),Token.newSymbol(EQUAL,-1,-1),operation);
+  result.setSourcePosition(exp);
+  return result;
+}
