@@ -5,8 +5,9 @@
   Map genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap());
   genericsSpec=createGenericsSpec(fieldNode.getType(),genericsSpec);
   if (!excludeTypes.isEmpty() || !includeTypes.isEmpty()) {
-    String correctedTypeDescriptor=correctToGenericsSpec(genericsSpec,candidate).getTypeDescriptor();
-    if (shouldSkipOnDescriptor(genericsSpec,correctedTypeDescriptor,excludeTypes,includeTypes))     return;
+    MethodNode correctedMethodNode=correctToGenericsSpec(genericsSpec,candidate);
+    boolean checkReturn=fieldNode.getType().getMethods().contains(candidate);
+    if (shouldSkipOnDescriptor(checkReturn,genericsSpec,correctedMethodNode,excludeTypes,includeTypes))     return;
   }
   for (  MethodNode mn : GROOVYOBJECT_TYPE.getMethods()) {
     if (mn.getTypeDescriptor().equals(candidate.getTypeDescriptor())) {

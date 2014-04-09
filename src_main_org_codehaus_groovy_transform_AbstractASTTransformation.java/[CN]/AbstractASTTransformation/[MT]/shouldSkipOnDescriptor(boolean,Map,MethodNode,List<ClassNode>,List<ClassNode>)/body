@@ -1,4 +1,6 @@
 {
+  String descriptor=mNode.getTypeDescriptor();
+  String descriptorNoReturn=GeneralUtils.makeDescriptorWithoutReturnType(mNode);
   for (  ClassNode cn : excludeTypes) {
     List<ClassNode> remaining=new LinkedList<ClassNode>();
     remaining.add(cn);
@@ -8,8 +10,15 @@
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
         updatedGenericsSpec=GenericsUtils.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
-          if (md.equals(descriptor))           return true;
+          MethodNode correctedMethodNode=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn);
+          if (checkReturn) {
+            String md=correctedMethodNode.getTypeDescriptor();
+            if (md.equals(descriptor))             return true;
+          }
+ else {
+            String md=GeneralUtils.makeDescriptorWithoutReturnType(correctedMethodNode);
+            if (md.equals(descriptorNoReturn))             return true;
+          }
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
       }
@@ -25,8 +34,15 @@
       if (!next.equals(ClassHelper.OBJECT_TYPE)) {
         updatedGenericsSpec=GenericsUtils.createGenericsSpec(next,updatedGenericsSpec);
         for (        MethodNode mn : next.getMethods()) {
-          String md=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn).getTypeDescriptor();
-          if (md.equals(descriptor))           return false;
+          MethodNode correctedMethodNode=GenericsUtils.correctToGenericsSpec(updatedGenericsSpec,mn);
+          if (checkReturn) {
+            String md=correctedMethodNode.getTypeDescriptor();
+            if (md.equals(descriptor))             return false;
+          }
+ else {
+            String md=GeneralUtils.makeDescriptorWithoutReturnType(correctedMethodNode);
+            if (md.equals(descriptorNoReturn))             return false;
+          }
         }
         remaining.addAll(Arrays.asList(next.getInterfaces()));
       }
