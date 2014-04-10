@@ -1,8 +1,9 @@
 {
-  ClassNode superClass=cNode.getSuperClass();
+  ClassNode superClass=cNode.getUnresolvedSuperClass();
   if (Traits.isTrait(superClass)) {
     cNode.setSuperClass(ClassHelper.OBJECT_TYPE);
-    cNode.addInterface(GenericsUtils.nonGeneric(superClass));
+    cNode.setUnresolvedSuperClass(ClassHelper.OBJECT_TYPE);
+    cNode.addInterface(superClass);
     resolveScope(cNode);
   }
 }
