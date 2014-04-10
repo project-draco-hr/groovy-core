@@ -1,0 +1,16 @@
+{
+  ErrorCollector nestedCollector=null;
+  for (Throwable next=e.getCause(); next != e && next != null; next=next.getCause()) {
+    if (!(next instanceof MultipleCompilationErrorsException))     continue;
+    MultipleCompilationErrorsException mcee=(MultipleCompilationErrorsException)next;
+    nestedCollector=mcee.collector;
+    break;
+  }
+  if (nestedCollector != null) {
+    getErrorCollector().addCollectorContents(nestedCollector);
+  }
+ else {
+    Exception err=e instanceof Exception ? ((Exception)e) : new RuntimeException(e);
+    getErrorCollector().addError(new ExceptionMessage(err,configuration.getDebug(),this));
+  }
+}
