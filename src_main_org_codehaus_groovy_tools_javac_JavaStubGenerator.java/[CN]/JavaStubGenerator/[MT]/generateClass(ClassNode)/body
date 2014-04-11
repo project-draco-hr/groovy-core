@@ -9,7 +9,8 @@
   toCompile.add(fileName);
   File file=new File(outputPath,fileName + ".java");
   FileOutputStream fos=new FileOutputStream(file);
-  PrintWriter out=new PrintWriter(fos);
+  Charset charset=Charset.forName(encoding);
+  PrintWriter out=new PrintWriter(new OutputStreamWriter(fos,charset));
   try {
     String packageName=classNode.getPackageName();
     if (packageName != null) {
