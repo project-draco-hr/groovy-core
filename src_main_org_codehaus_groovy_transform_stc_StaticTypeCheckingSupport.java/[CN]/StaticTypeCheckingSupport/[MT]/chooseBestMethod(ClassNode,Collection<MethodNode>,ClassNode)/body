@@ -32,7 +32,7 @@
         System.arraycopy(params,0,firstParams,0,firstParams.length);
         firstParamMatches=allParametersAndArgumentsMatch(firstParams,safeArgs) >= 0;
       }
-      int lastArgMatch=isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,safeArgs) : -1;
+      int lastArgMatch=allPMatch < 0 && isVargs(params) && firstParamMatches ? lastArgMatchesVarg(params,safeArgs) : -1;
       if (lastArgMatch >= 0) {
         lastArgMatch+=256 - params.length;
       }
