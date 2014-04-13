@@ -1,0 +1,11 @@
+{
+  String keyString=key.toString();
+  if (keyString.contains("{")) {
+    return key;
+  }
+  if (keyString.contains(":")) {
+    final int i=keyString.indexOf(":");
+    key=new QName(namespaceTagHints.get(keyString.substring(0,i)).toString(),keyString.substring(i + 1)).toString();
+  }
+  return key;
+}
