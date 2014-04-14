@@ -13,6 +13,15 @@
       type.setRedirect(val);
       return true;
     }
+    for (    ClassNode next : classToCheck.getAllInterfaces()) {
+      if (type.getName().contains(next.getName()))       continue;
+      name=next.getName() + "$" + type.getName();
+      val=ClassHelper.make(name);
+      if (resolve(val,false,false,false)) {
+        type.setRedirect(val);
+        return true;
+      }
+    }
   }
   if (!(currentClass instanceof InnerClassNode))   return false;
   LinkedList<ClassNode> outerClasses=new LinkedList<ClassNode>();
@@ -27,6 +36,15 @@
     if (resolveFromCompileUnit(val)) {
       type.setRedirect(val);
       return true;
+    }
+    for (    ClassNode next : testNode.getAllInterfaces()) {
+      if (type.getName().contains(next.getName()))       continue;
+      name=next.getName() + "$" + type.getName();
+      val=ClassHelper.make(name);
+      if (resolve(val,false,false,false)) {
+        type.setRedirect(val);
+        return true;
+      }
     }
   }
   return false;
