@@ -22,6 +22,9 @@
       return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags);
     }
   }
+ else   if ("getProxyTarget".equals(name) && "()Ljava/lang/Object;".equals(desc)) {
+    return createGetProxyTargetMethod(access,name,desc,signature,exceptions);
+  }
  else   if ("<init>".equals(name) && (Modifier.isPublic(access) || Modifier.isProtected(access))) {
     return createConstructor(access,name,desc,signature,exceptions);
   }

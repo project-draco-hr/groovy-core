@@ -6,6 +6,10 @@
   }
   final boolean addGroovyObjectSupport=!GroovyObject.class.isAssignableFrom(superClass);
   if (addGroovyObjectSupport)   interfacesSet.add("groovy/lang/GroovyObject");
+  if (generateDelegateField) {
+    classList.add(GeneratedGroovyProxy.class);
+    interfacesSet.add("groovy/lang/GeneratedGroovyProxy");
+  }
   super.visit(V1_5,ACC_PUBLIC,proxyName,signature,BytecodeHelper.getClassInternalName(superClass),interfacesSet.toArray(new String[interfacesSet.size()]));
   visitMethod(ACC_PUBLIC,"<init>","()V",null,null);
   addDelegateFields();
