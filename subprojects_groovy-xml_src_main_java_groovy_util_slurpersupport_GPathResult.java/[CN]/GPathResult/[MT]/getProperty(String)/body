@@ -9,7 +9,7 @@
     return depthFirst();
   }
  else   if (property.startsWith("@")) {
-    if (property.indexOf(":") != -1) {
+    if (property.contains(":") && !this.namespaceTagHints.isEmpty()) {
       final int i=property.indexOf(":");
       return new Attributes(this,"@" + property.substring(i + 1),property.substring(1,i),this.namespaceTagHints);
     }
@@ -18,7 +18,7 @@
     }
   }
  else {
-    if (property.indexOf(":") != -1) {
+    if (property.contains(":") && !this.namespaceTagHints.isEmpty()) {
       final int i=property.indexOf(":");
       return new NodeChildren(this,property.substring(i + 1),property.substring(0,i),this.namespaceTagHints);
     }
