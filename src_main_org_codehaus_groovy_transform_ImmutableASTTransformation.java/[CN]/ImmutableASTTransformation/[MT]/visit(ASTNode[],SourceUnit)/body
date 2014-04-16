@@ -9,7 +9,7 @@
     final List<String> knownImmutables=getKnownImmutables(node);
     ClassNode cNode=(ClassNode)parent;
     String cName=cNode.getName();
-    checkNotInterface(cNode,MY_TYPE_NAME);
+    if (!checkNotInterface(cNode,MY_TYPE_NAME))     return;
     makeClassFinal(cNode);
     final List<PropertyNode> pList=getInstanceProperties(cNode);
     for (    PropertyNode pNode : pList) {
