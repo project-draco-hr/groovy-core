@@ -1,0 +1,13 @@
+{
+  MethodNode existingMethod=cNode.getMethod(name,params);
+  if (existingMethod == null || existingMethod.isAbstract()) {
+    existingMethod=findDefaultMethodFromInterface(cNode,name,params);
+  }
+  if (!isForceOverride && (existingMethod != null || isExistingProperty(name,cNode,params))) {
+    return true;
+  }
+  if (isForceOverride && cNode.getDeclaredMethod(name,params) != null) {
+    return true;
+  }
+  return false;
+}

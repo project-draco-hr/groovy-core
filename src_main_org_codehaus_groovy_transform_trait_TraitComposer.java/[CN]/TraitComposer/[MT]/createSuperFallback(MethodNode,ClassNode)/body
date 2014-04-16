@@ -1,0 +1,16 @@
+{
+  ArgumentListExpression args=new ArgumentListExpression();
+  Parameter[] forwarderMethodParameters=forwarderMethod.getParameters();
+  for (  final Parameter forwarderMethodParameter : forwarderMethodParameters) {
+    args.addExpression(new VariableExpression(forwarderMethodParameter));
+  }
+  BinaryExpression instanceOfExpr=new BinaryExpression(new VariableExpression("this"),Token.newSymbol(Types.KEYWORD_INSTANCEOF,-1,-1),new ClassExpression(Traits.GENERATED_PROXY_CLASSNODE));
+  MethodCallExpression superCall=new MethodCallExpression(new VariableExpression("super"),forwarderMethod.getName(),args);
+  superCall.setImplicitThis(false);
+  CastExpression proxyReceiver=new CastExpression(Traits.GENERATED_PROXY_CLASSNODE,new VariableExpression("this"));
+  MethodCallExpression getProxy=new MethodCallExpression(proxyReceiver,"getProxyTarget",ArgumentListExpression.EMPTY_ARGUMENTS);
+  getProxy.setImplicitThis(true);
+  StaticMethodCallExpression proxyCall=new StaticMethodCallExpression(ClassHelper.make(InvokerHelper.class),"invokeMethod",new ArgumentListExpression(getProxy,new ConstantExpression(forwarderMethod.getName()),new ArrayExpression(ClassHelper.OBJECT_TYPE,args.getExpressions())));
+  IfStatement stmt=new IfStatement(new BooleanExpression(instanceOfExpr),new ExpressionStatement(new CastExpression(returnType,proxyCall)),new ExpressionStatement(superCall));
+  return stmt;
+}

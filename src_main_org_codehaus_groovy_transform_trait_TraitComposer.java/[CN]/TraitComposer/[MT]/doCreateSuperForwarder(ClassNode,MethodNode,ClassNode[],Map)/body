@@ -1,0 +1,25 @@
+{
+  Parameter[] parameters=forwarderMethod.getParameters();
+  String name=forwarderMethod.getName();
+  String superForwarderName=Traits.SUPER_TRAIT_METHOD_PREFIX + name;
+  if (targetNode.getDeclaredMethod(superForwarderName,parameters) != null) {
+    return;
+  }
+  Parameter[] superForwarderParams=new Parameter[parameters.length + 1];
+  superForwarderParams[0]=new Parameter(ClassHelper.CLASS_Type.getPlainNodeReference(),"clazz");
+  for (int i=0; i < parameters.length; i++) {
+    Parameter parameter=parameters[i];
+    ClassNode originType=parameter.getOriginType();
+    superForwarderParams[i + 1]=new Parameter(GenericsUtils.correctToGenericsSpecRecurse(genericsSpec,originType),parameter.getName());
+  }
+  BlockStatement body=new BlockStatement();
+  VariableExpression clazz=new VariableExpression(superForwarderParams[0]);
+  for (int i=0; i < interfacesToGenerateForwarderFor.length - 1; i++) {
+    final ClassNode current=interfacesToGenerateForwarderFor[i];
+    final ClassNode next=interfacesToGenerateForwarderFor[i + 1];
+    body.addStatement(createDelegatingForwarder(forwarderMethod,current,next,clazz));
+  }
+  ClassNode returnType=GenericsUtils.correctToGenericsSpecRecurse(genericsSpec,forwarderMethod.getReturnType());
+  body.addStatement(createSuperFallback(forwarderMethod,returnType));
+  MethodNode methodNode=targetNode.addMethod(superForwarderName,Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,returnType,superForwarderParams,ClassNode.EMPTY_ARRAY,body);
+}

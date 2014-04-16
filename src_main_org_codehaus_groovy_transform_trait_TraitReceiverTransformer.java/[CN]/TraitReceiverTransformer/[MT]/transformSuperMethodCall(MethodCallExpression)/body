@@ -1,0 +1,24 @@
+{
+  String method=call.getMethodAsString();
+  if (method == null) {
+    throwSuperError(call);
+  }
+  Expression arguments=transform(call.getArguments());
+  ArgumentListExpression superCallArgs=new ArgumentListExpression();
+  superCallArgs.addExpression(new ClassExpression(traitClass));
+  if (arguments instanceof ArgumentListExpression) {
+    ArgumentListExpression list=(ArgumentListExpression)arguments;
+    for (    Expression expression : list) {
+      superCallArgs.addExpression(expression);
+    }
+  }
+ else {
+    superCallArgs.addExpression(arguments);
+  }
+  MethodCallExpression transformed=new MethodCallExpression(weaved,Traits.SUPER_TRAIT_METHOD_PREFIX + method,superCallArgs);
+  transformed.setSourcePosition(call);
+  transformed.setSafe(call.isSafe());
+  transformed.setSpreadSafe(call.isSpreadSafe());
+  transformed.setImplicitThis(false);
+  return transformed;
+}

@@ -1,0 +1,9 @@
+{
+  ArgumentListExpression newArgs=createArgumentList(arguments);
+  MethodCallExpression transformed=new MethodCallExpression(new VariableExpression("this"),methodName,newArgs);
+  transformed.setSourcePosition(call);
+  transformed.setSafe(call.isSafe());
+  transformed.setSpreadSafe(call.isSpreadSafe());
+  transformed.setImplicitThis(true);
+  return transformed;
+}

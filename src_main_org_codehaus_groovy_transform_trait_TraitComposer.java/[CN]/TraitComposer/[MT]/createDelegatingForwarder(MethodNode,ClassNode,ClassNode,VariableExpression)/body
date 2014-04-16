@@ -1,0 +1,23 @@
+{
+  MethodCallExpression isExpression=new MethodCallExpression(clazz,"is",new ClassExpression(current));
+  isExpression.setImplicitThis(false);
+  TraitHelpersTuple helpers=Traits.findHelpers(next);
+  ArgumentListExpression args=new ArgumentListExpression();
+  args.addExpression(new VariableExpression("this"));
+  Parameter[] forwarderMethodParameters=forwarderMethod.getParameters();
+  for (  final Parameter forwarderMethodParameter : forwarderMethodParameters) {
+    args.addExpression(new VariableExpression(forwarderMethodParameter));
+  }
+  StaticMethodCallExpression delegateCall=new StaticMethodCallExpression(helpers.getHelper(),forwarderMethod.getName(),args);
+  IfStatement result;
+  if (ClassHelper.VOID_TYPE.equals(forwarderMethod.getReturnType())) {
+    BlockStatement stmt=new BlockStatement();
+    stmt.addStatement(new ExpressionStatement(delegateCall));
+    stmt.addStatement(new ReturnStatement(new ConstantExpression(null)));
+    result=new IfStatement(new BooleanExpression(isExpression),stmt,new EmptyStatement());
+  }
+ else {
+    result=new IfStatement(new BooleanExpression(isExpression),new ReturnStatement(delegateCall),new EmptyStatement());
+  }
+  return result;
+}

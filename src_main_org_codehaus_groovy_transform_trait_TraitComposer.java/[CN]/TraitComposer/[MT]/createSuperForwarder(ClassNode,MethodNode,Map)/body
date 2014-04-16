@@ -1,0 +1,19 @@
+{
+  List<ClassNode> interfaces=new ArrayList<ClassNode>(collectAllInterfacesReverseOrder(targetNode,new LinkedHashSet<ClassNode>()));
+  String name=forwarder.getName();
+  Parameter[] forwarderParameters=forwarder.getParameters();
+  LinkedHashSet<ClassNode> traits=new LinkedHashSet<ClassNode>();
+  List<MethodNode> superForwarders=new LinkedList<MethodNode>();
+  for (  ClassNode node : interfaces) {
+    if (Traits.isTrait(node)) {
+      MethodNode method=node.getDeclaredMethod(name,forwarderParameters);
+      if (method != null) {
+        traits.add(node);
+        superForwarders.add(method);
+      }
+    }
+  }
+  for (  MethodNode superForwarder : superForwarders) {
+    doCreateSuperForwarder(targetNode,superForwarder,traits.toArray(new ClassNode[traits.size()]),genericsSpec);
+  }
+}

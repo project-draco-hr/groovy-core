@@ -1,0 +1,24 @@
+{
+  ClassNode[] exceptionNodes=copyExceptions(helperMethod.getExceptions());
+  MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),helperMethod.getName(),helperMethodArgList);
+  mce.setImplicitThis(false);
+  ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,helperMethod.getReturnType());
+  Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
+  int access=helperMethod.getModifiers();
+  if (!helperMethodParams[0].getOriginType().equals(ClassHelper.CLASS_Type)) {
+    access=access ^ Opcodes.ACC_STATIC;
+  }
+  MethodNode forwarder=new MethodNode(helperMethod.getName(),access,fixedReturnType,forwarderParams,exceptionNodes,new ExpressionStatement(forwardExpression));
+  List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
+  List<AnnotationNode> notCopied=Collections.emptyList();
+  AbstractASTTransformation.copyAnnotatedNodeAnnotations(helperMethod,copied,notCopied);
+  if (!copied.isEmpty()) {
+    forwarder.addAnnotations(copied);
+  }
+  AnnotationNode bridgeAnnotation=new AnnotationNode(Traits.TRAITBRIDGE_CLASSNODE);
+  bridgeAnnotation.addMember("traitClass",new ClassExpression(trait));
+  bridgeAnnotation.addMember("desc",new ConstantExpression(BytecodeHelper.getMethodDescriptor(helperMethod.getReturnType(),traitMethodParams)));
+  forwarder.addAnnotation(bridgeAnnotation);
+  targetNode.addMethod(forwarder);
+  createSuperForwarder(targetNode,forwarder,genericsSpec);
+}

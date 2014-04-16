@@ -53,30 +53,11 @@
  else   if (exp instanceof MethodCallExpression) {
     MethodCallExpression call=(MethodCallExpression)exp;
     Expression obj=call.getObjectExpression();
-    if (call.isImplicitThis() || obj.getText().equals("this")) {
-      Expression method=call.getMethod();
-      Expression arguments=call.getArguments();
-      if (method instanceof ConstantExpression) {
-        String methodName=method.getText();
-        List<MethodNode> methods=traitClass.getMethods(methodName);
-        for (        MethodNode methodNode : methods) {
-          if (methodName.equals(methodNode.getName()) && methodNode.isPrivate()) {
-            ArgumentListExpression newArgs=createArgumentList(arguments);
-            MethodCallExpression transformed=new MethodCallExpression(new VariableExpression("this"),methodName,newArgs);
-            transformed.setSourcePosition(call);
-            transformed.setSafe(call.isSafe());
-            transformed.setSpreadSafe(call.isSpreadSafe());
-            transformed.setImplicitThis(true);
-            return transformed;
-          }
-        }
-      }
-      MethodCallExpression transformed=new MethodCallExpression(weaved,method,transform(arguments));
-      transformed.setSourcePosition(call);
-      transformed.setSafe(call.isSafe());
-      transformed.setSpreadSafe(call.isSpreadSafe());
-      transformed.setImplicitThis(false);
-      return transformed;
+    if (call.isImplicitThis() || "this".equals(obj.getText())) {
+      return transformMethodCallOnThis(call);
+    }
+ else     if ("super".equals(obj.getText())) {
+      return transformSuperMethodCall(call);
     }
   }
  else   if (exp instanceof FieldExpression) {
@@ -122,7 +103,7 @@
       return res;
     }
     if (vexp.isSuperExpression()) {
-      ExceptionUtils.sneakyThrow(new SyntaxException("Call to super is not allowed in a trait",vexp.getLineNumber(),vexp.getColumnNumber()));
+      throwSuperError(vexp);
     }
   }
  else   if (exp instanceof PropertyExpression) {

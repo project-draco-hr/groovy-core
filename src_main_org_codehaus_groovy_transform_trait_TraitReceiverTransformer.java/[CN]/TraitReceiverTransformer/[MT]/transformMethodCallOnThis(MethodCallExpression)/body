@@ -1,0 +1,19 @@
+{
+  Expression method=call.getMethod();
+  Expression arguments=call.getArguments();
+  if (method instanceof ConstantExpression) {
+    String methodName=method.getText();
+    List<MethodNode> methods=traitClass.getMethods(methodName);
+    for (    MethodNode methodNode : methods) {
+      if (methodName.equals(methodNode.getName()) && methodNode.isPrivate()) {
+        return transformPrivateMethodCall(call,arguments,methodName);
+      }
+    }
+  }
+  MethodCallExpression transformed=new MethodCallExpression(weaved,method,transform(arguments));
+  transformed.setSourcePosition(call);
+  transformed.setSafe(call.isSafe());
+  transformed.setSpreadSafe(call.isSpreadSafe());
+  transformed.setImplicitThis(false);
+  return transformed;
+}
