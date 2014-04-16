@@ -1,0 +1,16 @@
+{
+  LinkedHashSet<ClassNode> traitsAsList=Traits.collectAllInterfacesReverseOrder(receiver,new LinkedHashSet<ClassNode>());
+  ClassNode[] implementedTraits=traitsAsList.toArray(new ClassNode[traitsAsList.size()]);
+  ClassNode currentTrait=argumentTypes[0].getGenericsTypes()[0].getType();
+  ClassNode nextTrait=null;
+  for (int i=0; i < implementedTraits.length - 1; i++) {
+    ClassNode implementedTrait=implementedTraits[i];
+    if (implementedTrait.equals(currentTrait)) {
+      nextTrait=implementedTraits[i + 1];
+    }
+  }
+  ClassNode[] newArgs=new ClassNode[argumentTypes.length - 1];
+  System.arraycopy(argumentTypes,1,newArgs,0,newArgs.length);
+  ClassNode inferredReturnType=inferTraitMethodReturnType(nextTrait,name,newArgs);
+  return Arrays.asList(makeDynamic(call,inferredReturnType));
+}

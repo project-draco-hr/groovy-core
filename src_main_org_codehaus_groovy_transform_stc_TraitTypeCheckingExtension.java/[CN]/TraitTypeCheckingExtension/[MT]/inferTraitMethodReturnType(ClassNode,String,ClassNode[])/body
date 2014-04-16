@@ -1,0 +1,11 @@
+{
+  ClassNode result=ClassHelper.OBJECT_TYPE;
+  if (nextTrait != null) {
+    List<MethodNode> candidates=typeCheckingVisitor.findMethod(nextTrait,methodName,paramTypes);
+    if (candidates.size() == 1) {
+      result=candidates.get(0).getReturnType();
+    }
+  }
+  System.out.println("result = " + result.toString(false));
+  return result;
+}

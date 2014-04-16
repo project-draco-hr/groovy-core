@@ -1,0 +1,10 @@
+{
+  String nameWithoutPrefix=Traits.getNameWithoutSuperTrait(name);
+  if (nameWithoutPrefix != null && argumentTypes.length > 0) {
+    ClassNode firstArgType=argumentTypes[0];
+    if (ClassHelper.CLASS_Type.equals(firstArgType) && StaticTypeCheckingSupport.isClassClassNodeWrappingConcreteType(firstArgType)) {
+      return convertToDynamicCall(call,receiver,nameWithoutPrefix,argumentTypes);
+    }
+  }
+  return NOTFOUND;
+}
