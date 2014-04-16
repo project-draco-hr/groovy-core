@@ -10,7 +10,7 @@
   for (int i=0; i < parameters.length; i++) {
     Parameter parameter=parameters[i];
     ClassNode originType=parameter.getOriginType();
-    superForwarderParams[i + 1]=new Parameter(GenericsUtils.correctToGenericsSpecRecurse(genericsSpec,originType),parameter.getName());
+    superForwarderParams[i + 1]=new Parameter(correctToGenericsSpecRecurse(genericsSpec,originType),parameter.getName());
   }
   BlockStatement body=new BlockStatement();
   VariableExpression clazz=new VariableExpression(superForwarderParams[0]);
@@ -19,7 +19,7 @@
     final ClassNode next=interfacesToGenerateForwarderFor[i + 1];
     body.addStatement(createDelegatingForwarder(forwarderMethod,current,next,clazz));
   }
-  ClassNode returnType=GenericsUtils.correctToGenericsSpecRecurse(genericsSpec,forwarderMethod.getReturnType());
+  ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,forwarderMethod.getReturnType());
   body.addStatement(createSuperFallback(forwarderMethod,returnType));
   MethodNode methodNode=targetNode.addMethod(superForwarderName,Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,returnType,superForwarderParams,ClassNode.EMPTY_ARRAY,body);
 }

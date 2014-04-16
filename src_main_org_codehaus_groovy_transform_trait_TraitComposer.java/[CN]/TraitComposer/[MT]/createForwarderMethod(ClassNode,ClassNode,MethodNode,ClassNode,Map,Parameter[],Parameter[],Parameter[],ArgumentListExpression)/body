@@ -2,7 +2,7 @@
   ClassNode[] exceptionNodes=copyExceptions(helperMethod.getExceptions());
   MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),helperMethod.getName(),helperMethodArgList);
   mce.setImplicitThis(false);
-  ClassNode fixedReturnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,helperMethod.getReturnType());
+  ClassNode fixedReturnType=correctToGenericsSpecRecurse(genericsSpec,helperMethod.getReturnType());
   Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
   int access=helperMethod.getModifiers();
   if (!helperMethodParams[0].getOriginType().equals(ClassHelper.CLASS_Type)) {

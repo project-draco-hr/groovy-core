@@ -17,7 +17,7 @@
       for (int i=1; i < helperMethodParams.length; i++) {
         Parameter parameter=helperMethodParams[i];
         ClassNode originType=parameter.getOriginType();
-        ClassNode fixedType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
+        ClassNode fixedType=correctToGenericsSpecRecurse(genericsSpec,originType);
         Parameter newParam=new Parameter(fixedType,"arg" + i);
         List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
         List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
@@ -46,7 +46,7 @@
         fieldName=fieldName.substring(0,suffixIdx);
         String operation=methodNode.getName().substring(suffixIdx + 1);
         boolean getter="get".equals(operation);
-        ClassNode returnType=AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
+        ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,methodNode.getReturnType());
         int isStatic=0;
         boolean publicField=true;
         FieldNode helperField=fieldHelperClassNode.getField(Traits.FIELD_PREFIX + Traits.PUBLIC_FIELD_PREFIX + fieldName);
@@ -78,7 +78,7 @@
         }
  else {
           ClassNode originType=methodNode.getParameters()[0].getOriginType();
-          ClassNode fixedType=originType.isGenericsPlaceHolder() ? ClassHelper.OBJECT_TYPE : AbstractASTTransformation.correctToGenericsSpecRecurse(genericsSpec,originType);
+          ClassNode fixedType=originType.isGenericsPlaceHolder() ? ClassHelper.OBJECT_TYPE : correctToGenericsSpecRecurse(genericsSpec,originType);
           newParams=new Parameter[]{new Parameter(fixedType,"val")};
         }
         Expression fieldExpr=new VariableExpression(cNode.getField(fieldName));
