@@ -6,7 +6,7 @@
   }
   int accessFlags=access;
   visitedMethods.add(key);
-  if ((objectDelegateMethods.contains(name) || delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
+  if ((objectDelegateMethods.contains(name + desc) || delegatedClosures.containsKey(name) || (!"<init>".equals(name) && hasWildcard)) && !Modifier.isStatic(access) && !Modifier.isFinal(access)) {
     if (!GROOVYOBJECT_METHOD_NAMESS.contains(name)) {
       if (Modifier.isAbstract(access)) {
         accessFlags-=ACC_ABSTRACT;
@@ -15,7 +15,7 @@
         delegatedClosures.put(name,Boolean.TRUE);
         return makeDelegateToClosureCall(name,desc,signature,exceptions,accessFlags);
       }
-      if (generateDelegateField && objectDelegateMethods.contains(name)) {
+      if (generateDelegateField && objectDelegateMethods.contains(name + desc)) {
         return makeDelegateCall(name,desc,signature,exceptions,accessFlags);
       }
       delegatedClosures.put(name,Boolean.TRUE);

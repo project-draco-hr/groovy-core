@@ -9,7 +9,7 @@
     }
     for (    Method method : interfaceMethods) {
       if (!containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method) && !(containsEquivalentMethod(superClassMethods,method) && shouldOverrideMethod(delegateClass,method))) {
-        selectedMethods.add(method.getName());
+        selectedMethods.add(method.getName() + Type.getMethodDescriptor(method));
       }
     }
   }
@@ -17,7 +17,7 @@
   for (  Method method : additionalMethods) {
     if (method.getName().indexOf('$') != -1)     continue;
     if (!containsEquivalentMethod(interfaceMethods,method) && !containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method)) {
-      selectedMethods.add(method.getName());
+      selectedMethods.add(method.getName() + Type.getMethodDescriptor(method));
     }
   }
   return selectedMethods;
