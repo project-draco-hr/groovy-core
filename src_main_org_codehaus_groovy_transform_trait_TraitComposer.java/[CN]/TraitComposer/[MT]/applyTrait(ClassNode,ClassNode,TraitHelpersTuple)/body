@@ -21,7 +21,7 @@
         Parameter newParam=new Parameter(fixedType,"arg" + i);
         List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
         List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
-        AbstractASTTransformation.copyAnnotatedNodeAnnotations(parameter,copied,notCopied);
+        GeneralUtils.copyAnnotatedNodeAnnotations(parameter,copied,notCopied);
         newParam.addAnnotations(copied);
         params[i - 1]=newParam;
         origParams[i - 1]=parameter;
@@ -67,7 +67,7 @@
           if (helperField != null) {
             List<AnnotationNode> copied=new LinkedList<AnnotationNode>();
             List<AnnotationNode> notCopied=new LinkedList<AnnotationNode>();
-            AbstractASTTransformation.copyAnnotatedNodeAnnotations(helperField,copied,notCopied);
+            GeneralUtils.copyAnnotatedNodeAnnotations(helperField,copied,notCopied);
             FieldNode fieldNode=cNode.addField(fieldName,(publicField ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PRIVATE) | isStatic,returnType,null);
             fieldNode.addAnnotations(copied);
           }
