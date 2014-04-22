@@ -1,5 +1,15 @@
 {
   final Expression member=node.getMember(name);
-  if (member != null && member instanceof ClassExpression)   return member.getType();
+  if (member != null) {
+    if (member instanceof ClassExpression)     return member.getType();
+    if (member instanceof VariableExpression) {
+      addError("Error expecting to find class value for '" + name + "' but found variable: "+ member.getText()+ ". Missing import?",node);
+      return null;
+    }
+ else     if (member instanceof ConstantExpression) {
+      addError("Error expecting to find class value for '" + name + "' but found constant: "+ member.getText()+ "!",node);
+      return null;
+    }
+  }
   return defaultValue;
 }
