@@ -1,0 +1,12 @@
+{
+  Object memberValue=transform.getMemberValue(anno,memberName);
+  if (memberValue == null) {
+    memberValue=transform.getMemberClassValue(anno,memberName);
+  }
+  if (memberValue != null) {
+    String message=extraMessage.length() == 0 ? "" : " " + extraMessage;
+    transform.addError("Error during " + MY_TYPE_NAME + " processing: Annotation attribute '"+ memberName+ "' not supported by "+ getClass().getName()+ message,anno);
+    return true;
+  }
+  return false;
+}
