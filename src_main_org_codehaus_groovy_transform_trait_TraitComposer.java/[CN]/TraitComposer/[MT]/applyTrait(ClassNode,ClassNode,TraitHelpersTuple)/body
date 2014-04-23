@@ -1,11 +1,9 @@
 {
-  boolean isTraitForceOverride=!trait.getAnnotations(Traits.FORCEOVERRIDE_CLASSNODE).isEmpty();
   ClassNode helperClassNode=helpers.getHelper();
   ClassNode fieldHelperClassNode=helpers.getFieldHelper();
   Map genericsSpec=GenericsUtils.createGenericsSpec(cNode,new HashMap());
   genericsSpec=GenericsUtils.createGenericsSpec(trait,genericsSpec);
   for (  MethodNode methodNode : helperClassNode.getAllDeclaredMethods()) {
-    boolean isForceOverride=isTraitForceOverride || Traits.isForceOverride(methodNode);
     String name=methodNode.getName();
     Parameter[] helperMethodParams=methodNode.getParameters();
     boolean isAbstract=methodNode.isAbstract();
@@ -27,7 +25,7 @@
         origParams[i - 1]=parameter;
         argList.addExpression(new VariableExpression(params[i - 1]));
       }
-      if (shouldSkipMethod(cNode,name,params,isForceOverride)) {
+      if (shouldSkipMethod(cNode,name,params)) {
         continue;
       }
       createForwarderMethod(trait,cNode,methodNode,helperClassNode,genericsSpec,helperMethodParams,origParams,params,argList);

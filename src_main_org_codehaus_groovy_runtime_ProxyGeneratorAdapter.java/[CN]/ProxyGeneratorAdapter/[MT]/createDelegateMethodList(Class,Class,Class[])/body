@@ -8,7 +8,7 @@
       getInheritedMethods(thisInterface,interfaceMethods);
     }
     for (    Method method : interfaceMethods) {
-      if (!containsEquivalentMethod(OBJECT_METHODS,method) && !containsEquivalentMethod(GROOVYOBJECT_METHODS,method) && !(containsEquivalentMethod(superClassMethods,method) && shouldOverrideMethod(delegateClass,method))) {
+      if (!(containsEquivalentMethod(superClassMethods,method))) {
         selectedMethods.add(method.getName() + Type.getMethodDescriptor(method));
       }
     }
