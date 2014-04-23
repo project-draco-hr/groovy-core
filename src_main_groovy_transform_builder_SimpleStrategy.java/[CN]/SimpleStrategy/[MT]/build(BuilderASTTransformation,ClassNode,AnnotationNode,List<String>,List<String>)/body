@@ -1,0 +1,19 @@
+{
+  if (unsupportedAttribute(transform,anno,"builderClassName"))   return;
+  if (unsupportedAttribute(transform,anno,"buildMethodName"))   return;
+  if (unsupportedAttribute(transform,anno,"builderMethodName"))   return;
+  if (unsupportedAttribute(transform,anno,"forClass"))   return;
+  String prefix=transform.getMemberStringValue(anno,"prefix","set");
+  List<FieldNode> fields=getInstancePropertyFields(buildeeClass);
+  for (  String name : includes) {
+    checkKnownField(transform,anno,name,fields);
+  }
+  for (  FieldNode field : fields) {
+    String fieldName=field.getName();
+    if (!AbstractASTTransformation.shouldSkip(fieldName,includes,excludes)) {
+      String methodName=getSetterName(prefix,fieldName);
+      Parameter parameter=param(field.getType(),fieldName);
+      buildeeClass.addMethod(methodName,Opcodes.ACC_PUBLIC,newClass(buildeeClass),params(parameter),NO_EXCEPTIONS,block(stmt(assignX(fieldX(field),varX(parameter))),returnS(varX("this"))));
+    }
+  }
+}

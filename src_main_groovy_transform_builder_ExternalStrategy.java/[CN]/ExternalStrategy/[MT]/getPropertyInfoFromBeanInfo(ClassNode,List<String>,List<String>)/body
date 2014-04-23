@@ -1,0 +1,14 @@
+{
+  final List<PropertyInfo> result=new ArrayList<PropertyInfo>();
+  try {
+    BeanInfo beanInfo=Introspector.getBeanInfo(cNode.getTypeClass());
+    for (    PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+      if (AbstractASTTransformation.shouldSkip(descriptor.getName(),excludes,includes))       continue;
+      if (descriptor.isHidden() || descriptor.getWriteMethod() == null)       continue;
+      result.add(new PropertyInfo(descriptor.getName(),ClassHelper.make(descriptor.getPropertyType())));
+    }
+  }
+ catch (  IntrospectionException ignore) {
+  }
+  return result;
+}

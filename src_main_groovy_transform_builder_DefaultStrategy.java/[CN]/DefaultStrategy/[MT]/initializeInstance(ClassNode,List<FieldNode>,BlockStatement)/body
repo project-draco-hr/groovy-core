@@ -1,0 +1,8 @@
+{
+  Expression instance=varX("_the" + buildee.getNameWithoutPackage(),buildee);
+  body.addStatement(declS(instance,ctorX(buildee)));
+  for (  FieldNode field : fields) {
+    body.addStatement(stmt(assignX(propX(instance,field.getName()),varX(field))));
+  }
+  return instance;
+}

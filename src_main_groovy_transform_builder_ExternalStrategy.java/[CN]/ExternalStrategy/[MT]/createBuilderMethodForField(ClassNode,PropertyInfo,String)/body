@@ -1,0 +1,5 @@
+{
+  String propName=prop.getName().equals("class") ? "clazz" : prop.getName();
+  String setterName=getSetterName(prefix,prop.getName());
+  return new MethodNode(setterName,ACC_PUBLIC,newClass(builderClass),params(param(newClass(prop.getType()),propName)),NO_EXCEPTIONS,block(stmt(assignX(propX(varX("this"),constX(propName)),varX(propName))),returnS(varX("this",newClass(builderClass)))));
+}
