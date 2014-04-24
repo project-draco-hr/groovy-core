@@ -1,0 +1,12 @@
+{
+  String fieldName=fields.get(fieldPos).getName();
+  String setterName=getSetterName(prefix,fieldName);
+  GenericsType[] gtypes=new GenericsType[fields.size()];
+  List<Expression> argList=new ArrayList<Expression>();
+  for (int i=0; i < fields.size(); i++) {
+    gtypes[i]=i == fieldPos ? new GenericsType(ClassHelper.make(SET.class)) : makePlaceholder(i);
+    argList.add(i == fieldPos ? propX(varX("this"),constX(fieldName)) : varX(fields.get(i).getName()));
+  }
+  ClassNode returnType=makeClassSafeWithGenerics(builder,gtypes);
+  return new MethodNode(setterName,ACC_PUBLIC,returnType,params(param(fields.get(fieldPos).getType(),fieldName)),NO_EXCEPTIONS,block(stmt(assignX(propX(varX("this"),constX(fieldName)),varX(fieldName))),returnS(ctorX(returnType,args(argList)))));
+}

@@ -1,6 +1,11 @@
 {
-  if (cNode.getDeclaredConstructors().size() != 0) {
-    addError("Explicit constructors not allowed for " + MY_TYPE_NAME + " class: "+ cNode.getNameWithoutPackage(),cNode.getDeclaredConstructors().get(0));
+  List<ConstructorNode> declaredConstructors=cNode.getDeclaredConstructors();
+  for (  ConstructorNode constructorNode : declaredConstructors) {
+    if ((constructorNode.getModifiers() & ACC_SYNTHETIC) != 0) {
+      continue;
+    }
+    addError("Explicit constructors not allowed for " + MY_TYPE_NAME + " class: "+ cNode.getNameWithoutPackage(),constructorNode);
+    return false;
   }
   return true;
 }

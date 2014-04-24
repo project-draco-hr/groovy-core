@@ -1,0 +1,8 @@
+{
+  Expression instance=varX("_the" + sourceClass.getNameWithoutPackage(),sourceClass);
+  body.addStatement(declS(instance,ctorX(sourceClass)));
+  for (  PropertyInfo prop : props) {
+    body.addStatement(stmt(assignX(propX(instance,prop.getName()),varX(prop.getName().equals("class") ? "clazz" : prop.getName(),newClass(prop.getType())))));
+  }
+  return instance;
+}

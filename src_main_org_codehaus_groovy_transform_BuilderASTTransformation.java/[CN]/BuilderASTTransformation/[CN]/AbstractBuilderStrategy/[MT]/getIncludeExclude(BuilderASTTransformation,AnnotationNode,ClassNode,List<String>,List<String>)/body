@@ -1,0 +1,20 @@
+{
+  List<String> directExcludes=transform.getMemberList(anno,"excludes");
+  if (directExcludes != null)   excludes.addAll(directExcludes);
+  List<String> directIncludes=transform.getMemberList(anno,"includes");
+  if (directIncludes != null)   includes.addAll(directIncludes);
+  if (includes.isEmpty() && excludes.isEmpty()) {
+    if (transform.hasAnnotation(cNode,CanonicalASTTransformation.MY_TYPE)) {
+      AnnotationNode canonical=cNode.getAnnotations(CanonicalASTTransformation.MY_TYPE).get(0);
+      if (excludes.isEmpty()) {
+        List<String> canonicalExcludes=transform.getMemberList(canonical,"excludes");
+        if (canonicalExcludes != null)         excludes.addAll(canonicalExcludes);
+      }
+      if (includes.isEmpty()) {
+        List<String> canonicalIncludes=transform.getMemberList(canonical,"includes");
+        if (canonicalIncludes != null)         includes.addAll(canonicalIncludes);
+      }
+    }
+  }
+  return transform.checkIncludeExclude(anno,excludes,includes,MY_TYPE_NAME);
+}
