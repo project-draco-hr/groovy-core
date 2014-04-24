@@ -10,8 +10,8 @@
   List<FieldNode> filteredFields=selectFieldsFromExistingClass(fields,includes,excludes);
   int numFields=filteredFields.size();
   ClassNode builder=createInnerHelperClass(buildee,builderClassName,filteredFields);
-  createBuilderConstructors(builder,fields);
-  createBuildeeConstructors(buildee,builder,fields);
+  createBuilderConstructors(builder,filteredFields);
+  createBuildeeConstructors(transform,buildee,builder,filteredFields);
   buildee.getModule().addClass(builder);
   buildee.addMethod(createBuilderMethod(transform,anno,buildMethodName,builder,numFields));
   for (int i=0; i < numFields; i++) {
