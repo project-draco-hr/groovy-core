@@ -1,4 +1,9 @@
 {
+  if (!(annotatedNode instanceof ClassNode)) {
+    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
+    return;
+  }
+  ClassNode builder=(ClassNode)annotatedNode;
   String prefix=transform.getMemberStringValue(anno,"prefix","");
   ClassNode buildee=transform.getMemberClassValue(anno,"forClass");
   if (buildee == null) {

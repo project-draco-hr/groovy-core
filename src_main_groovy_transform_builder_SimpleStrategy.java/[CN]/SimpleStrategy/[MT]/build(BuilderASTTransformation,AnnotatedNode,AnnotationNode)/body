@@ -1,4 +1,9 @@
 {
+  if (!(annotatedNode instanceof ClassNode)) {
+    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
+    return;
+  }
+  ClassNode buildee=(ClassNode)annotatedNode;
   if (unsupportedAttribute(transform,anno,"builderClassName"))   return;
   if (unsupportedAttribute(transform,anno,"buildMethodName"))   return;
   if (unsupportedAttribute(transform,anno,"builderMethodName"))   return;

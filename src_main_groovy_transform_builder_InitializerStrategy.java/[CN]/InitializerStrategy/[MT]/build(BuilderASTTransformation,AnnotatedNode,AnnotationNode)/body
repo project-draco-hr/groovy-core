@@ -1,4 +1,9 @@
 {
+  if (!(annotatedNode instanceof ClassNode)) {
+    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
+    return;
+  }
+  ClassNode buildee=(ClassNode)annotatedNode;
   List<String> excludes=new ArrayList<String>();
   List<String> includes=new ArrayList<String>();
   if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
