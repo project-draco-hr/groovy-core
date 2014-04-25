@@ -1,25 +1,8 @@
 {
-  if (!(annotatedNode instanceof ClassNode)) {
-    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
-    return;
+  if (annotatedNode instanceof ClassNode) {
+    buildClass(transform,(ClassNode)annotatedNode,anno);
   }
-  ClassNode buildee=(ClassNode)annotatedNode;
-  List<String> excludes=new ArrayList<String>();
-  List<String> includes=new ArrayList<String>();
-  if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
-  String prefix=transform.getMemberStringValue(anno,"prefix","");
-  if (unsupportedAttribute(transform,anno,"forClass"))   return;
-  final int visibility=ACC_PUBLIC | ACC_STATIC | ACC_SYNTHETIC;
-  String builderClassName=transform.getMemberStringValue(anno,"builderClassName",buildee.getName() + "Builder");
-  final String fullName=buildee.getName() + "$" + builderClassName;
-  ClassNode builder=new InnerClassNode(buildee,fullName,visibility,ClassHelper.OBJECT_TYPE);
-  buildee.getModule().addClass(builder);
-  buildee.addMethod(createBuilderMethod(transform,anno,builder));
-  List<FieldNode> fields=getInstancePropertyFields(buildee);
-  List<FieldNode> filteredFields=selectFieldsFromExistingClass(fields,includes,excludes);
-  for (  FieldNode fieldNode : filteredFields) {
-    builder.addField(createFieldCopy(buildee,fieldNode));
-    builder.addMethod(createBuilderMethodForField(builder,fieldNode,prefix));
+ else   if (annotatedNode instanceof MethodNode) {
+    buildMethod(transform,(MethodNode)annotatedNode,anno);
   }
-  builder.addMethod(createBuildMethod(transform,anno,buildee,filteredFields));
 }

@@ -1,0 +1,14 @@
+{
+  String buildMethodName=transform.getMemberStringValue(anno,"buildMethodName","build");
+  final BlockStatement body=new BlockStatement();
+  ClassNode returnType;
+  if (mNode instanceof ConstructorNode) {
+    returnType=newClass(buildee);
+    body.addStatement(returnS(ctorX(newClass(mNode.getDeclaringClass()),args(params))));
+  }
+ else {
+    body.addStatement(returnS(callX(newClass(mNode.getDeclaringClass()),mNode.getName(),args(params))));
+    returnType=newClass(mNode.getReturnType());
+  }
+  return new MethodNode(buildMethodName,ACC_PUBLIC,returnType,NO_PARAMS,NO_EXCEPTIONS,body);
+}
