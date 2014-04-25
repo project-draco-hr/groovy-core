@@ -41,10 +41,10 @@
       }
       FieldNode field=current.getDeclaredField(propertyName);
       field=allowStaticAccessToMember(field,staticOnly);
-      if (storeField(field,isAttributeExpression,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
+      if (storeField(field,isAttributeExpression,pexp,current,visitor,receiver.getData()))       return true;
       PropertyNode propertyNode=current.getProperty(propertyName);
       propertyNode=allowStaticAccessToMember(propertyNode,staticOnly);
-      if (storeProperty(propertyNode,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
+      if (storeProperty(propertyNode,pexp,current,visitor,receiver.getData()))       return true;
       boolean isThisExpression=objectExpression instanceof VariableExpression && ((VariableExpression)objectExpression).isThisExpression();
       if (storeField(field,isThisExpression,pexp,receiver.getType(),visitor,receiver.getData()))       return true;
       MethodNode getter=current.getGetterMethod("get" + capName);
@@ -80,9 +80,9 @@
         }
       }
       foundGetterOrSetter=foundGetterOrSetter || setter != null || getter != null;
-      if (storeField(field,true,pexp,objectExpressionType,visitor,receiver.getData()))       return true;
+      if (storeField(field,true,pexp,current,visitor,receiver.getData()))       return true;
       if (current.getSuperClass() != null) {
-        queue.add(current.getSuperClass());
+        queue.add(current.getUnresolvedSuperClass());
       }
     }
     List<MethodNode> methods=findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),testClass,"get" + capName,ClassNode.EMPTY_ARRAY);
