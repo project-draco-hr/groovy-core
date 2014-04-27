@@ -1,12 +1,12 @@
 {
   String label=statement.getStatementLabel();
   if (label != null) {
-    for (Iterator iter=breakLabels.iterator(); iter.hasNext(); ) {
-      BreakStatement element=(BreakStatement)iter.next();
+    for (Iterator<BreakStatement> iter=breakLabels.iterator(); iter.hasNext(); ) {
+      BreakStatement element=iter.next();
       if (element.getLabel().equals(label))       iter.remove();
     }
-    for (Iterator iter=continueLabels.iterator(); iter.hasNext(); ) {
-      ContinueStatement element=(ContinueStatement)iter.next();
+    for (Iterator<ContinueStatement> iter=continueLabels.iterator(); iter.hasNext(); ) {
+      ContinueStatement element=iter.next();
       if (element.getLabel().equals(label))       iter.remove();
     }
     visitedLabels.add(label);
