@@ -5,7 +5,6 @@
   }
   Expression arguments=transform(call.getArguments());
   ArgumentListExpression superCallArgs=new ArgumentListExpression();
-  superCallArgs.addExpression(new ClassExpression(traitClass));
   if (arguments instanceof ArgumentListExpression) {
     ArgumentListExpression list=(ArgumentListExpression)arguments;
     for (    Expression expression : list) {
@@ -15,7 +14,7 @@
  else {
     superCallArgs.addExpression(arguments);
   }
-  MethodCallExpression transformed=new MethodCallExpression(weaved,Traits.SUPER_TRAIT_METHOD_PREFIX + method,superCallArgs);
+  MethodCallExpression transformed=new MethodCallExpression(weaved,Traits.getSuperTraitMethodName(traitClass,method),superCallArgs);
   transformed.setSourcePosition(call);
   transformed.setSafe(call.isSafe());
   transformed.setSpreadSafe(call.isSpreadSafe());

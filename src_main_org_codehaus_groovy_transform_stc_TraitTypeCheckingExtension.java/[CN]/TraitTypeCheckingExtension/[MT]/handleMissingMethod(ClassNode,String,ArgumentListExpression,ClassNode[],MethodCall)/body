@@ -1,10 +1,7 @@
 {
-  String nameWithoutPrefix=Traits.getNameWithoutSuperTrait(name);
-  if (nameWithoutPrefix != null && argumentTypes.length > 0) {
-    ClassNode firstArgType=argumentTypes[0];
-    if (ClassHelper.CLASS_Type.equals(firstArgType) && StaticTypeCheckingSupport.isClassClassNodeWrappingConcreteType(firstArgType)) {
-      return convertToDynamicCall(call,receiver,nameWithoutPrefix,argumentTypes);
-    }
+  String[] decomposed=Traits.decomposeSuperCallName(name);
+  if (decomposed != null) {
+    return convertToDynamicCall(call,receiver,decomposed,argumentTypes);
   }
   return NOTFOUND;
 }
