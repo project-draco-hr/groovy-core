@@ -24,13 +24,8 @@
       }
       GenericsType connectedType=resolvedPlaceholders.get(replacement.getName());
       if (replacement == connectedType)       continue;
-      if (connectedType == null) {
-        continue;
-      }
- else {
-        entry.setValue(replacement);
-        checkForMorePlaceHolders=checkForMorePlaceHolders || !equalIncludingGenerics(original,replacement);
-      }
+      entry.setValue(replacement);
+      checkForMorePlaceHolders=checkForMorePlaceHolders || !equalIncludingGenerics(original,replacement);
     }
     if (!checkForMorePlaceHolders)     break;
   }

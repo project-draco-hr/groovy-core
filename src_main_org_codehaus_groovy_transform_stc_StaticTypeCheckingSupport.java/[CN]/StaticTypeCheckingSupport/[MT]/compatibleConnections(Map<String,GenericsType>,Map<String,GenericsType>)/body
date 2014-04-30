@@ -1,0 +1,22 @@
+{
+  for (  Map.Entry<String,GenericsType> entry : connections.entrySet()) {
+    GenericsType resolved=resolvedMethodGenerics.get(entry.getKey());
+    if (resolved == null)     continue;
+    GenericsType connection=entry.getValue();
+    if (connection.isPlaceholder() && connection.getUpperBounds() == null && connection.getLowerBound() == null) {
+      continue;
+    }
+    GenericsType gt=connection;
+    if (!connection.isWildcard())     gt=buildWildcardType(connection);
+    ClassNode compareNode;
+    if (resolved.getLowerBound() != null || resolved.getUpperBounds() != null) {
+      compareNode=getCombinedBoundType(resolved);
+      compareNode=compareNode.redirect().getPlainNodeReference();
+    }
+ else {
+      compareNode=resolved.getType().getPlainNodeReference();
+    }
+    if (!gt.isCompatibleWith(compareNode))     return false;
+  }
+  return true;
+}

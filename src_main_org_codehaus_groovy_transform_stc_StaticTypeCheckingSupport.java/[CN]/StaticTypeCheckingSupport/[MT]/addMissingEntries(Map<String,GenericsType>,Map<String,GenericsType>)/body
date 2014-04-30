@@ -1,0 +1,9 @@
+{
+  for (  Entry<String,GenericsType> entry : connections.entrySet()) {
+    if (resolved.containsKey(entry.getKey()))     continue;
+    GenericsType gt=entry.getValue();
+    ClassNode cn=gt.getType();
+    if (cn.redirect() == UNKNOWN_PARAMETER_TYPE)     continue;
+    resolved.put(entry.getKey(),gt);
+  }
+}
