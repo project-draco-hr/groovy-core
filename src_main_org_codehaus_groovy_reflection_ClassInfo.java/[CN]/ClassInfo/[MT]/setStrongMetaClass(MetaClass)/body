@@ -3,12 +3,27 @@
   MetaClass strongRef=strongMetaClass;
   if (strongRef instanceof ExpandoMetaClass) {
     ((ExpandoMetaClass)strongRef).inRegistry=false;
-    modifiedExpandos.remove(this);
+synchronized (modifiedExpandos) {
+      for (Iterator<ClassInfo> it=modifiedExpandos.iterator(); it.hasNext(); ) {
+        ClassInfo info=it.next();
+        if (info == this) {
+          it.remove();
+        }
+      }
+    }
   }
   strongMetaClass=answer;
   if (answer instanceof ExpandoMetaClass) {
     ((ExpandoMetaClass)answer).inRegistry=true;
-    modifiedExpandos.add(this);
+synchronized (modifiedExpandos) {
+      for (Iterator<ClassInfo> it=modifiedExpandos.iterator(); it.hasNext(); ) {
+        ClassInfo info=it.next();
+        if (info == this) {
+          it.remove();
+        }
+      }
+      modifiedExpandos.add(this);
+    }
   }
   replaceWeakMetaClassRef(null);
 }

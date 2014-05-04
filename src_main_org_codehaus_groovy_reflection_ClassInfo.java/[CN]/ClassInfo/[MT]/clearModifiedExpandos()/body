@@ -1,7 +1,9 @@
 {
-  for (Iterator<ClassInfo> it=modifiedExpandos.iterator(); it.hasNext(); ) {
-    ClassInfo info=it.next();
-    it.remove();
-    info.setStrongMetaClass(null);
+synchronized (modifiedExpandos) {
+    for (Iterator<ClassInfo> it=modifiedExpandos.iterator(); it.hasNext(); ) {
+      ClassInfo info=it.next();
+      it.remove();
+      info.setStrongMetaClass(null);
+    }
   }
 }
