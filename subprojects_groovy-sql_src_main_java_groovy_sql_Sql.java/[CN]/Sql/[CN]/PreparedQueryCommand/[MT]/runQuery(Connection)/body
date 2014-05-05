@@ -1,5 +1,6 @@
 {
   PreparedStatement s=getPreparedStatement(connection,sql,params);
   statement=s;
+  if (getMaxRows() != 0)   statement.setMaxRows(getMaxRows());
   return s.executeQuery();
 }

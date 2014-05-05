@@ -1,5 +1,6 @@
 {
   AbstractQueryCommand command=createPreparedQueryCommand(sql,params);
+  command.setMaxRows(offset + maxRows);
   try {
     return asList(sql,command.execute(),offset,maxRows,metaClosure);
   }
