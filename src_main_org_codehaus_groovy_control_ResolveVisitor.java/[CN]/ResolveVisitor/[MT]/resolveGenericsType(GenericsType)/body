@@ -1,5 +1,5 @@
 {
-  if (genericsType.isResolved())   return;
+  if (genericsType.isResolved())   return true;
   currentClass.setUsingGenerics(true);
   ClassNode type=genericsType.getType();
   String name=type.getName();
@@ -27,6 +27,8 @@
   if (genericsType.getLowerBound() != null) {
     resolveOrFail(genericsType.getLowerBound(),genericsType);
   }
-  resolveGenericsTypes(type.getGenericsTypes());
-  genericsType.setResolved(genericsType.getType().isResolved());
+  if (resolveGenericsTypes(type.getGenericsTypes())) {
+    genericsType.setResolved(genericsType.getType().isResolved());
+  }
+  return genericsType.isResolved();
 }

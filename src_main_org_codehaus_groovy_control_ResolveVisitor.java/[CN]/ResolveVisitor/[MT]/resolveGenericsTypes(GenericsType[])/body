@@ -1,7 +1,9 @@
 {
-  if (types == null)   return;
+  if (types == null)   return true;
   currentClass.setUsingGenerics(true);
+  boolean resolved=true;
   for (  GenericsType type : types) {
-    resolveGenericsType(type);
+    resolved=resolveGenericsType(type) && resolved;
   }
+  return resolved;
 }
