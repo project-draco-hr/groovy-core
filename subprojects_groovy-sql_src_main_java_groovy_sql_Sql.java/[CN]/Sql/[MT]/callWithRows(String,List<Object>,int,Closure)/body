@@ -33,10 +33,24 @@
       indx++;
     }
     closure.call(results.toArray(new Object[inouts]));
-    if (processResultSet && (hasResultSet || statement.getMoreResults())) {
-      return asList(sql,statement.getResultSet());
+    List<List<GroovyRowResult>> resultSets=new ArrayList<List<GroovyRowResult>>();
+    if (processResultsSets == NO_RESULT_SETS) {
+      resultSets.add(new ArrayList<GroovyRowResult>());
+      return resultSets;
     }
-    return new ArrayList<GroovyRowResult>();
+    if (!hasResultSet) {
+      hasResultSet=statement.getMoreResults();
+    }
+    while (hasResultSet && (processResultsSets != NO_RESULT_SETS)) {
+      resultSets.add(asList(sql,statement.getResultSet()));
+      if (processResultsSets == FIRST_RESULT_SET) {
+        break;
+      }
+ else {
+        hasResultSet=statement.getMoreResults();
+      }
+    }
+    return resultSets;
   }
  catch (  SQLException e) {
     LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
