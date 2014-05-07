@@ -7,14 +7,7 @@
     if (filenames.length == 0) {
       System.err.println("Needs at least one filename");
     }
-    List filenameList=Arrays.asList(filenames);
-    Iterator i=filenameList.iterator();
-    while (i.hasNext()) {
-      String filename=(String)i.next();
-      File f=new File(filename);
-      String text=ResourceGroovyMethods.getText(f);
-      System.out.println(convert(filename,text,true,true));
-    }
+    Java2GroovyProcessor.processFiles(Arrays.asList(filenames));
   }
  catch (  Throwable t) {
     t.printStackTrace();
