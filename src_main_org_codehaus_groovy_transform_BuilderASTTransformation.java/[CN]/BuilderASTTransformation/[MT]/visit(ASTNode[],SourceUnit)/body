@@ -6,7 +6,8 @@
   if (parent instanceof ClassNode || parent instanceof MethodNode) {
     if (parent instanceof ClassNode && !checkNotInterface((ClassNode)parent,MY_TYPE_NAME))     return;
     if (parent instanceof MethodNode && !checkStatic((MethodNode)parent,MY_TYPE_NAME))     return;
-    final BuilderStrategy strategy=createBuilderStrategy(anno,source.getClassLoader());
+    final GroovyClassLoader classLoader=compilationUnit != null ? compilationUnit.getTransformLoader() : source.getClassLoader();
+    final BuilderStrategy strategy=createBuilderStrategy(anno,classLoader);
     if (strategy == null)     return;
     strategy.build(this,parent,anno);
   }
