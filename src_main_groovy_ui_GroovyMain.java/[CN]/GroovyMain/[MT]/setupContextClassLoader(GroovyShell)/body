@@ -1,0 +1,14 @@
+{
+  final Thread current=Thread.currentThread();
+class DoSetContext implements PrivilegedAction {
+    ClassLoader classLoader;
+    public DoSetContext(    ClassLoader loader){
+      classLoader=loader;
+    }
+    public Object run(){
+      current.setContextClassLoader(classLoader);
+      return null;
+    }
+  }
+  AccessController.doPrivileged(new DoSetContext(shell.getClassLoader()));
+}
