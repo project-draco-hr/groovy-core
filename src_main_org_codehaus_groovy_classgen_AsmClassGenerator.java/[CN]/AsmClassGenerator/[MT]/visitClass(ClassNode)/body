@@ -40,6 +40,11 @@
  else {
       visitAnnotations(classNode,cv);
     }
+    for (Iterator<InnerClassNode> iter=classNode.getInnerClasses(); iter.hasNext(); ) {
+      InnerClassNode innerClass=iter.next();
+      makeInnerClassEntry(innerClass);
+    }
+    makeInnerClassEntry(classNode);
     if (classNode.isInterface()) {
       ClassNode owner=classNode;
       if (owner instanceof InnerClassNode) {
@@ -58,11 +63,6 @@
       controller.getCallSiteWriter().generateCallSiteArray();
       createSyntheticStaticFields();
     }
-    for (Iterator<InnerClassNode> iter=classNode.getInnerClasses(); iter.hasNext(); ) {
-      InnerClassNode innerClass=iter.next();
-      makeInnerClassEntry(innerClass);
-    }
-    makeInnerClassEntry(classNode);
     cv.visitEnd();
   }
  catch (  GroovyRuntimeException e) {

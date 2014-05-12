@@ -3,14 +3,7 @@
   boolean needsSuper=!classNode.isInterface();
   modifiers=needsSuper ? modifiers | ACC_SUPER : modifiers & ~ACC_SUPER;
   modifiers=modifiers & ~ACC_STATIC;
-  if (classNode instanceof InnerClassNode) {
-    if (Modifier.isPrivate(modifiers)) {
-      modifiers=modifiers & ~Modifier.PRIVATE;
-    }
-    if (Modifier.isProtected(modifiers)) {
-      modifiers=(modifiers & ~Modifier.PROTECTED) | Modifier.PUBLIC;
-    }
-  }
+  modifiers=fixInnerClassModifiers(classNode,modifiers);
   if (classNode.isInterface()) {
     modifiers=modifiers & ~ACC_ENUM;
     modifiers=modifiers & ~ACC_FINAL;
