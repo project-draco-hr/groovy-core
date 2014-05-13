@@ -31,6 +31,9 @@
     if (op == KEYWORD_IN) {
       storeTargetMethod(expression,(MethodNode)reversedBinaryExpression.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
     }
+ else     if (op == LEFT_SQUARE_BRACKET && leftExpression instanceof VariableExpression && leftExpression.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE) == null) {
+      storeType(leftExpression,lType);
+    }
     if (resultType == null) {
       resultType=lType;
     }
