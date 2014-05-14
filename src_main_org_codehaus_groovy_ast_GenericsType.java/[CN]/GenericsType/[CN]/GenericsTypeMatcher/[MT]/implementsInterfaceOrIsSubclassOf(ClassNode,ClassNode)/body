@@ -3,6 +3,9 @@
   if (result) {
     return true;
   }
+  if (GROOVY_OBJECT_TYPE.equals(superOrInterface) && type.getCompileUnit() != null) {
+    return true;
+  }
   if (superOrInterface instanceof WideningCategories.LowestUpperBoundClassNode) {
     WideningCategories.LowestUpperBoundClassNode cn=(WideningCategories.LowestUpperBoundClassNode)superOrInterface;
     result=implementsInterfaceOrIsSubclassOf(type,cn.getSuperClass());

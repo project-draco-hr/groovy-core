@@ -8,8 +8,8 @@
   }
  else   if (exp instanceof VariableExpression) {
     VariableExpression vexp=(VariableExpression)exp;
-    if (vexp == VariableExpression.THIS_EXPRESSION)     return typeCheckingContext.getEnclosingClassNode();
-    if (vexp == VariableExpression.SUPER_EXPRESSION)     return typeCheckingContext.getEnclosingClassNode().getSuperClass();
+    if (vexp == VariableExpression.THIS_EXPRESSION)     return makeThis();
+    if (vexp == VariableExpression.SUPER_EXPRESSION)     return makeSuper();
     final Variable variable=vexp.getAccessedVariable();
     if (variable instanceof FieldNode) {
       checkOrMarkPrivateAccess((FieldNode)variable);

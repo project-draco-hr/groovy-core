@@ -1,0 +1,10 @@
+{
+  ClassNode ret=typeCheckingContext.getEnclosingClassNode();
+  if (typeCheckingContext.isInStaticContext) {
+    ClassNode staticRet=CLASS_Type.getPlainNodeReference();
+    GenericsType gt=new GenericsType(ret);
+    staticRet.setGenericsTypes(new GenericsType[]{gt});
+    ret=staticRet;
+  }
+  return ret;
+}

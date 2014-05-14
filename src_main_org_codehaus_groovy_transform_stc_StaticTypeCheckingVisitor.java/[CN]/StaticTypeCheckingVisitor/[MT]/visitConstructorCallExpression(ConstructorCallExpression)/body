@@ -23,6 +23,9 @@
     if (node.getParameters().length == 0 && args.length == 1 && implementsInterfaceOrIsSubclassOf(args[0],MAP_TYPE)) {
       node=typeCheckMapConstructor(call,receiver,arguments);
     }
+ else {
+      typeCheckMethodsWithGenericsOrFail(receiver,args,node,call);
+    }
     if (node != null)     storeTargetMethod(call,node);
   }
   extension.afterMethodCall(call);

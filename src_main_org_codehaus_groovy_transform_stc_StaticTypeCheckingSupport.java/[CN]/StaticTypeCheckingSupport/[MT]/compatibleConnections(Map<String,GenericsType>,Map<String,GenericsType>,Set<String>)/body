@@ -1,0 +1,19 @@
+{
+  for (  Map.Entry<String,GenericsType> entry : connections.entrySet()) {
+    GenericsType resolved=resolvedMethodGenerics.get(entry.getKey());
+    if (resolved == null)     continue;
+    GenericsType connection=entry.getValue();
+    if (connection.isPlaceholder() && connection.getUpperBounds() == null && connection.getLowerBound() == null) {
+      continue;
+    }
+    if (!compatibleConnection(resolved,connection)) {
+      if (!(resolved.isPlaceholder() || resolved.isWildcard()) && !fixedGenericsPlaceHolders.contains(entry.getKey()) && compatibleConnection(connection,resolved)) {
+        resolvedMethodGenerics.put(entry.getKey(),connection);
+      }
+ else {
+        return false;
+      }
+    }
+  }
+  return true;
+}

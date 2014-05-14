@@ -1,0 +1,11 @@
+{
+  Map<String,GenericsType> connections=new HashMap<String,GenericsType>();
+  if (ClassHelper.isPrimitiveType(wrappedArgument))   wrappedArgument=ClassHelper.getWrapper(wrappedArgument);
+  extractGenericsConnections(connections,wrappedArgument,type);
+  boolean failure=!compatibleConnections(connections,resolvedMethodGenerics,fixedGenericsPlaceHolders);
+  applyGenericsConnections(connections,resolvedMethodGenerics);
+  addMissingEntries(connections,resolvedMethodGenerics);
+  type=applyGenericsContext(resolvedMethodGenerics,type);
+  failure|=!typeCheckMethodArgumentWithGenerics(type,wrappedArgument,lastArg);
+  return failure;
+}

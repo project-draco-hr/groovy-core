@@ -2,10 +2,9 @@
   if (isUsingUncheckedGenerics(receiver)) {
     return true;
   }
-  if (CLASS_Type.equals(receiver) && receiver.isUsingGenerics() && candidateMethod.getDeclaringClass() != receiver && !(candidateMethod instanceof ExtensionMethodNode)) {
+  if (CLASS_Type.equals(receiver) && receiver.isUsingGenerics() && !candidateMethod.getDeclaringClass().equals(receiver)&& !(candidateMethod instanceof ExtensionMethodNode)) {
     return typeCheckMethodsWithGenerics(receiver.getGenericsTypes()[0].getType(),arguments,candidateMethod);
   }
-  boolean failure=false;
   Parameter[] parameters=candidateMethod.getParameters();
   GenericsType[] genericsTypes=candidateMethod.getGenericsTypes();
   boolean methodUsesGenerics=(genericsTypes != null && genericsTypes.length > 0);
@@ -15,28 +14,9 @@
     dgmArgs[0]=receiver;
     System.arraycopy(arguments,0,dgmArgs,1,arguments.length);
     MethodNode extensionMethodNode=((ExtensionMethodNode)candidateMethod).getExtensionMethodNode();
-    return typeCheckMethodsWithGenerics(extensionMethodNode.getDeclaringClass(),dgmArgs,extensionMethodNode);
+    return typeCheckMethodsWithGenerics(extensionMethodNode.getDeclaringClass(),dgmArgs,extensionMethodNode,true);
   }
-  Map<String,GenericsType> classGTs=GenericsUtils.extractPlaceholders(receiver);
-  if (parameters.length > arguments.length || parameters.length == 0) {
-    return true;
+ else {
+    return typeCheckMethodsWithGenerics(receiver,arguments,candidateMethod,false);
   }
-  Map<String,GenericsType> resolvedMethodGenerics=new HashMap<String,GenericsType>();
-  addMethodLevelDeclaredGenerics(candidateMethod,resolvedMethodGenerics);
-  for (  String key : resolvedMethodGenerics.keySet())   classGTs.remove(key);
-  applyGenericsConnections(classGTs,resolvedMethodGenerics);
-  for (int i=0; i < arguments.length; i++) {
-    int pindex=Math.min(i,parameters.length - 1);
-    Map<String,GenericsType> connections=new HashMap<String,GenericsType>();
-    ClassNode wrappedArgument=arguments[i];
-    ClassNode type=parameters[pindex].getType();
-    if (ClassHelper.isPrimitiveType(wrappedArgument))     wrappedArgument=ClassHelper.getWrapper(wrappedArgument);
-    extractGenericsConnections(connections,wrappedArgument,type);
-    failure|=!compatibleConnections(connections,resolvedMethodGenerics);
-    applyGenericsConnections(connections,resolvedMethodGenerics);
-    addMissingEntries(connections,resolvedMethodGenerics);
-    type=applyGenericsContext(resolvedMethodGenerics,type);
-    failure|=!typeCheckMethodArgumentWithGenerics(type,wrappedArgument,i >= parameters.length - 1);
-  }
-  return !failure;
 }
