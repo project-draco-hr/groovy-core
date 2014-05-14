@@ -1,0 +1,30 @@
+{
+  if (usage == null || declaration == null || declaration.length == 0)   return;
+  if (usage.length != declaration.length)   return;
+  for (int i=0; i < usage.length; i++) {
+    GenericsType ui=usage[i];
+    GenericsType di=declaration[i];
+    if (di.isPlaceholder()) {
+      spec.put(di.getName(),ui.getType());
+    }
+ else     if (di.isWildcard()) {
+      if (ui.isWildcard()) {
+        extractSuperClassGenerics(ui.getLowerBound(),di.getLowerBound(),spec);
+        extractSuperClassGenerics(ui.getUpperBounds(),di.getUpperBounds(),spec);
+      }
+ else {
+        ClassNode cu=ui.getType();
+        extractSuperClassGenerics(cu,di.getLowerBound(),spec);
+        ClassNode[] upperBounds=di.getUpperBounds();
+        if (upperBounds != null) {
+          for (          ClassNode cn : upperBounds) {
+            extractSuperClassGenerics(cu,cn,spec);
+          }
+        }
+      }
+    }
+ else {
+      extractSuperClassGenerics(ui.getType(),di.getType(),spec);
+    }
+  }
+}

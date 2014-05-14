@@ -1,0 +1,13 @@
+{
+  if (usage == null || declaration == null || declaration.length == 0)   return;
+  for (int i=0; i < usage.length; i++) {
+    ClassNode ui=usage[i];
+    ClassNode di=declaration[i];
+    if (di.isGenericsPlaceHolder()) {
+      spec.put(di.getGenericsTypes()[0].getName(),di);
+    }
+ else     if (di.isUsingGenerics()) {
+      extractSuperClassGenerics(ui.getGenericsTypes(),di.getGenericsTypes(),spec);
+    }
+  }
+}

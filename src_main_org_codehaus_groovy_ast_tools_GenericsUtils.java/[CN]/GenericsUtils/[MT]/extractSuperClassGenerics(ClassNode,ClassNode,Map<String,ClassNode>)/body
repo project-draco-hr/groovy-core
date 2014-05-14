@@ -1,0 +1,25 @@
+{
+  if (target == null || type == target)   return;
+  if (type.isArray() && target.isArray()) {
+    extractSuperClassGenerics(type.getComponentType(),target.getComponentType(),spec);
+  }
+ else   if (target.isGenericsPlaceHolder() || type.equals(target) || !StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(type,target)) {
+    if (target.isGenericsPlaceHolder()) {
+      spec.put(target.getGenericsTypes()[0].getName(),type);
+    }
+ else {
+      extractSuperClassGenerics(type.getGenericsTypes(),target.getGenericsTypes(),spec);
+    }
+  }
+ else {
+    Map<String,ClassNode> genSpec=createGenericsSpec(type,Collections.EMPTY_MAP);
+    ClassNode superClass=ClassHelper.getNextSuperClass(type,target);
+    if (superClass != null) {
+      ClassNode corrected=GenericsUtils.correctToGenericsSpecRecurse(genSpec,superClass);
+      extractSuperClassGenerics(corrected,target,spec);
+    }
+ else {
+      throw new GroovyBugError("The type " + type + " seems not to normally extend "+ target+ ". Sorry, I cannot handle this.");
+    }
+  }
+}
