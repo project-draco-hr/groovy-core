@@ -1,5 +1,10 @@
 {
-  map=new HashMap<String,Object>(items.length);
+  if (Sys.is1_7OrLater() && System.getProperty("jdk.map.althashing.threshold") != null) {
+    map=new HashMap<String,Object>(items.length);
+  }
+ else {
+    map=new TreeMap<String,Object>();
+  }
   for (  Entry<String,Value> miv : items) {
     if (miv == null) {
       break;
