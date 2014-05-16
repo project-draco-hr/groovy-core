@@ -1,0 +1,22 @@
+{
+  compilerConfiguration=new CompilerConfiguration();
+  templateConfiguration=tplConfig;
+  compilerConfiguration.addCompilationCustomizers(new TemplateASTTransformer(tplConfig));
+  compilerConfiguration.addCompilationCustomizers(new ASTTransformationCustomizer(Collections.singletonMap("extensions","groovy.text.markup.MarkupTemplateTypeCheckingExtension"),CompileStatic.class));
+  if (templateConfiguration.isAutoNewLine()) {
+    compilerConfiguration.addCompilationCustomizers(new CompilationCustomizer(CompilePhase.CONVERSION){
+      @Override public void call(      final SourceUnit source,      final GeneratorContext context,      final ClassNode classNode) throws CompilationFailedException {
+        new AutoNewLineTransformer(source).visitClass(classNode);
+      }
+    }
+);
+  }
+  groovyClassLoader=AccessController.doPrivileged(new PrivilegedAction<TemplateGroovyClassLoader>(){
+    public TemplateGroovyClassLoader run(){
+      return new TemplateGroovyClassLoader(parentLoader,compilerConfiguration);
+    }
+  }
+);
+  templateResolver=resolver == null ? new DefaultTemplateResolver() : resolver;
+  templateResolver.configure(groovyClassLoader,templateConfiguration);
+}
