@@ -1,0 +1,10 @@
+{
+  final boolean osc=typeCheckingContext.isInStaticContext;
+  try {
+    typeCheckingContext.isInStaticContext=node.isInStaticContext();
+    super.visitProperty(node);
+  }
+  finally {
+    typeCheckingContext.isInStaticContext=osc;
+  }
+}
