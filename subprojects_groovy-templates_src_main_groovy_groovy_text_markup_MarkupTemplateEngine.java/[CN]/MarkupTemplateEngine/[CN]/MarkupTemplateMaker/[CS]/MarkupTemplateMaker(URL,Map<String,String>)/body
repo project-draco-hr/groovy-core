@@ -1,4 +1,18 @@
 {
-  templateClass=groovyClassLoader.parseClass(new GroovyCodeSource(resource),modelTypes);
+  boolean cache=templateConfiguration.isCacheTemplates();
+  GroovyCodeSource codeSource;
+  if (cache) {
+    String key=resource.toExternalForm();
+    codeSource=codeSourceCache.get(key);
+    if (codeSource == null) {
+      codeSource=new GroovyCodeSource(resource);
+      codeSourceCache.put(key,codeSource);
+    }
+  }
+ else {
+    codeSource=new GroovyCodeSource(resource);
+  }
+  codeSource.setCachable(cache);
+  templateClass=groovyClassLoader.parseClass(codeSource,modelTypes);
   this.modeltypes=modelTypes;
 }
