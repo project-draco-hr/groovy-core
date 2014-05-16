@@ -1,15 +1,26 @@
 {
   boolean failure=false;
+  boolean skipBecauseOfInnerClassNotReceiver=isOuterClassOf(receiver,candidateMethod.getDeclaringClass());
   Parameter[] parameters=candidateMethod.getParameters();
-  Map<String,GenericsType> classGTs=GenericsUtils.extractPlaceholders(receiver);
+  Map<String,GenericsType> classGTs;
+  if (skipBecauseOfInnerClassNotReceiver) {
+    classGTs=Collections.EMPTY_MAP;
+  }
+ else {
+    classGTs=GenericsUtils.extractPlaceholders(receiver);
+  }
   if (parameters.length > arguments.length || parameters.length == 0) {
     return true;
   }
   Map<String,GenericsType> resolvedMethodGenerics=new HashMap<String,GenericsType>();
-  addMethodLevelDeclaredGenerics(candidateMethod,resolvedMethodGenerics);
+  if (!skipBecauseOfInnerClassNotReceiver) {
+    addMethodLevelDeclaredGenerics(candidateMethod,resolvedMethodGenerics);
+  }
   for (  String key : resolvedMethodGenerics.keySet())   classGTs.remove(key);
   applyGenericsConnections(classGTs,resolvedMethodGenerics);
-  failure|=inferenceCheck(Collections.EMPTY_SET,resolvedMethodGenerics,candidateMethod.getDeclaringClass(),receiver,false);
+  if (!skipBecauseOfInnerClassNotReceiver) {
+    failure|=inferenceCheck(Collections.EMPTY_SET,resolvedMethodGenerics,candidateMethod.getDeclaringClass(),receiver,false);
+  }
   Set<String> fixedGenericsPlaceHolders=extractResolvedPlaceHolders(resolvedMethodGenerics);
   for (int i=0; i < arguments.length; i++) {
     int pindex=Math.min(i,parameters.length - 1);
