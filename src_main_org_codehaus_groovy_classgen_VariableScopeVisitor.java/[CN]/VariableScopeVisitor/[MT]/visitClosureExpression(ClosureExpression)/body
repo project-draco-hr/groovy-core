@@ -16,7 +16,9 @@
     var.setInStaticContext(currentScope.isInStaticContext());
     currentScope.putDeclaredVariable(var);
   }
+  pushState(false);
   super.visitClosureExpression(expression);
+  popState();
   markClosureSharedVariables();
   popState();
 }

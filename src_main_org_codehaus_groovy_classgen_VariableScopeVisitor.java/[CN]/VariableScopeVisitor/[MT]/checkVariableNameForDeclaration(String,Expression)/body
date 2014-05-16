@@ -2,7 +2,10 @@
   if ("super".equals(name) || "this".equals(name))   return null;
   VariableScope scope=currentScope;
   Variable var=new DynamicVariable(name,currentScope.isInStaticContext());
+  Variable orig=var;
+  boolean crossingStaticContext=false;
   while (true) {
+    crossingStaticContext=crossingStaticContext || scope.isInStaticContext();
     Variable var1;
     var1=scope.getDeclaredVariable(var.getName());
     if (var1 != null) {
@@ -23,13 +26,16 @@
     if (classScope != null) {
       Variable member=findClassMember(classScope,var.getName());
       if (member != null) {
-        boolean staticScope=currentScope.isInStaticContext() || isSpecialConstructorCall;
+        boolean staticScope=crossingStaticContext || isSpecialConstructorCall;
         boolean staticMember=member.isInStaticContext();
         if (!(staticScope && !staticMember))         var=member;
       }
       break;
     }
     scope=scope.getParent();
+  }
+  if (var == orig && crossingStaticContext) {
+    var=new DynamicVariable(var.getName(),true);
   }
   VariableScope end=scope;
   scope=currentScope;
