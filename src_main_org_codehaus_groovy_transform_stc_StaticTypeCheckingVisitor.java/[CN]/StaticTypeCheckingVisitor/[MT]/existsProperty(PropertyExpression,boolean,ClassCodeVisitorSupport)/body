@@ -85,7 +85,7 @@
         queue.add(current.getUnresolvedSuperClass());
       }
     }
-    List<MethodNode> methods=findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),testClass,"get" + capName,ClassNode.EMPTY_ARRAY);
+    List<MethodNode> methods=findDGMMethodsByNameAndArguments(getTransformLoader(),testClass,"get" + capName,ClassNode.EMPTY_ARRAY);
     if (!methods.isEmpty()) {
       List<MethodNode> methodNodes=chooseBestMethod(testClass,methods,ClassNode.EMPTY_ARRAY);
       if (methodNodes.size() == 1) {

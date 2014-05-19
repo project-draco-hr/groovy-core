@@ -82,7 +82,7 @@
   if (methods.isEmpty()) {
     collectAllInterfaceMethodsByName(receiver,name,methods);
   }
-  findDGMMethodsByNameAndArguments(getSourceUnit().getClassLoader(),receiver,name,args,methods);
+  findDGMMethodsByNameAndArguments(getTransformLoader(),receiver,name,args,methods);
   List<MethodNode> chosen=chooseBestMethod(receiver,methods,args);
   if (!chosen.isEmpty())   return chosen;
   if (receiver instanceof InnerClassNode && ((InnerClassNode)receiver).isAnonymous() && methods.size() == 1 && args != null && "<init>".equals(name)) {
