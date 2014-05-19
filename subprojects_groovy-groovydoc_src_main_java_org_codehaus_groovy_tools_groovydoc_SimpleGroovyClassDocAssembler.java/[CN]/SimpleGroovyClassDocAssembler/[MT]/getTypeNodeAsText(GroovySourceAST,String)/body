@@ -1,6 +1,18 @@
 {
-  if (typeNode != null && typeNode.getType() == TYPE && typeNode.getNumberOfChildren() > 0) {
+  if (typeNode == null) {
+    return defaultText;
+  }
+  if (typeNode.getType() == TYPE) {
     return getAsText(typeNode,defaultText);
+  }
+ else   if (typeNode.getType() == TYPE_ARGUMENT) {
+    return getTypeNodeAsText((GroovySourceAST)typeNode.getFirstChild(),defaultText);
+  }
+ else   if (typeNode.getType() == WILDCARD_TYPE) {
+    AST next=typeNode.getNextSibling();
+    if (next == null)     return "?";
+    if (next.getType() == TYPE_UPPER_BOUNDS)     return "? extends " + getTypeNodeAsText((GroovySourceAST)next.getFirstChild(),defaultText);
+    if (next.getType() == TYPE_LOWER_BOUNDS)     return "? super " + getTypeNodeAsText((GroovySourceAST)next.getFirstChild(),defaultText);
   }
   return defaultText;
 }

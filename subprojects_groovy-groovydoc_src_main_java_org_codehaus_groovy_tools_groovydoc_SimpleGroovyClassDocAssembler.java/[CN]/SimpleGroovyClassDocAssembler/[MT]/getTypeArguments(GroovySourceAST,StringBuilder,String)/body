@@ -1,0 +1,15 @@
+{
+  if (child != null && child.getType() == TYPE_ARGUMENTS && child.getNumberOfChildren() > 0) {
+    result.append("<");
+    GroovySourceAST typeArgumentsChild=(GroovySourceAST)child.getFirstChild();
+    List<String> typeArgumentTypeParts=new ArrayList<String>();
+    while (typeArgumentsChild != null) {
+      if (typeArgumentsChild.getType() == TYPE_ARGUMENT && typeArgumentsChild.getNumberOfChildren() > 0) {
+        typeArgumentTypeParts.add(getTypeNodeAsText((GroovySourceAST)typeArgumentsChild.getFirstChild(),defaultText));
+      }
+      typeArgumentsChild=(GroovySourceAST)typeArgumentsChild.getNextSibling();
+    }
+    result.append(DefaultGroovyMethods.join(typeArgumentTypeParts,", "));
+    result.append(">");
+  }
+}
