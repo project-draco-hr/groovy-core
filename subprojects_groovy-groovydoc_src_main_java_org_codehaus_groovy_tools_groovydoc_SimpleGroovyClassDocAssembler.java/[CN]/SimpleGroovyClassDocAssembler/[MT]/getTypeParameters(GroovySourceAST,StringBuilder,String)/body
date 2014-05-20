@@ -1,0 +1,15 @@
+{
+  if (child != null && child.getType() == TYPE_PARAMETERS && child.getNumberOfChildren() > 0) {
+    result.append("<");
+    GroovySourceAST typeParametersNext=(GroovySourceAST)child.getFirstChild();
+    List<String> typeParameterParts=new ArrayList<String>();
+    while (typeParametersNext != null) {
+      if (typeParametersNext.getType() == TYPE_PARAMETER && typeParametersNext.getNumberOfChildren() > 0) {
+        typeParameterParts.add(getTypeNodeAsText((GroovySourceAST)typeParametersNext.getFirstChild(),defaultText));
+      }
+      typeParametersNext=(GroovySourceAST)typeParametersNext.getNextSibling();
+    }
+    result.append(DefaultGroovyMethods.join(typeParameterParts,", "));
+    result.append(">");
+  }
+}

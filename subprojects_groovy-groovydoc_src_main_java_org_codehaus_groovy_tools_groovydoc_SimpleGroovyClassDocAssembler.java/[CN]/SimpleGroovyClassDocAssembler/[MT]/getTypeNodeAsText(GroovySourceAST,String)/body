@@ -14,8 +14,12 @@
       next=typeNode.getFirstChild();
     }
     if (next == null)     return "?";
-    if (next.getType() == TYPE_UPPER_BOUNDS)     return "? extends " + getTypeNodeAsText((GroovySourceAST)next.getFirstChild(),defaultText);
-    if (next.getType() == TYPE_LOWER_BOUNDS)     return "? super " + getTypeNodeAsText((GroovySourceAST)next.getFirstChild(),defaultText);
+    String boundType=getTypeNodeAsText((GroovySourceAST)next.getFirstChild(),defaultText);
+    if (next.getType() == TYPE_UPPER_BOUNDS)     return "? extends " + boundType;
+    if (next.getType() == TYPE_LOWER_BOUNDS)     return "? super " + boundType;
+  }
+ else   if (typeNode.getType() == IDENT) {
+    return getAsTextCurrent(typeNode,defaultText);
   }
   return defaultText;
 }
