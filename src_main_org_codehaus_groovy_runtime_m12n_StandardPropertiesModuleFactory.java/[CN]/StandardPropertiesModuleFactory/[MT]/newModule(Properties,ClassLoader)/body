@@ -3,9 +3,6 @@
   if (factoryName != null) {
     try {
       Class<? extends PropertiesModuleFactory> factoryClass=(Class<? extends PropertiesModuleFactory>)classLoader.loadClass(factoryName);
-      System.err.println("Factory class classloader           = " + dump(factoryClass.getClassLoader()));
-      System.err.println("PropertiesModuleFactory classloader = " + dump(PropertiesModuleFactory.class.getClassLoader()));
-      System.err.println("ExtensionModule classloader         = " + dump(ExtensionModule.class.getClassLoader()));
       PropertiesModuleFactory delegate=factoryClass.newInstance();
       return delegate.newModule(properties,classLoader);
     }
