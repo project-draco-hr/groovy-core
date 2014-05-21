@@ -9,7 +9,6 @@
   if ((innerClass.getModifiers() & ACC_STATIC) != 0)   return;
   VariableScope scope=innerClass.getVariableScope();
   if (scope == null)   return;
-  boolean isStatic=scope.isInStaticContext();
   List<Expression> expressions=((TupleExpression)call.getArguments()).getExpressions();
   BlockStatement block=new BlockStatement();
   final int additionalParamCount=1 + scope.getReferencedLocalVariablesCount();
@@ -26,7 +25,7 @@
   block.addStatement(new ExpressionStatement(cce));
   pCount=0;
   expressions.add(pCount,VariableExpression.THIS_EXPRESSION);
-  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic).getPlainNodeReference();
+  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStaticThis(innerClass,scope)).getPlainNodeReference();
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
   parameters.add(pCount,thisParameter);
   thisField=innerClass.addField("this$0",PUBLIC_SYNTHETIC,outerClassType,null);
