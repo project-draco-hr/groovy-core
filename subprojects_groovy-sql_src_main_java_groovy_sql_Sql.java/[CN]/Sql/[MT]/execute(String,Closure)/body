@@ -1,0 +1,31 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    statement=getStatement(connection,sql);
+    boolean isResultSet=statement.execute(sql);
+    int updateCount=statement.getUpdateCount();
+    while (isResultSet || updateCount != -1) {
+      if (processResults.getMaximumNumberOfParameters() != 2) {
+        throw new SQLException("Incorrect number of parameters for processResults Closure");
+      }
+      if (isResultSet) {
+        ResultSet resultSet=statement.getResultSet();
+        List<GroovyRowResult> rowResult=resultSet == null ? null : asList(sql,resultSet);
+        processResults.call(isResultSet,rowResult);
+      }
+ else {
+        processResults.call(isResultSet,updateCount);
+      }
+      isResultSet=statement.getMoreResults();
+      updateCount=statement.getUpdateCount();
+    }
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}
