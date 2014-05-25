@@ -1,4 +1,7 @@
 {
+  if (returnGeneratedKeys == USE_COLUMN_NAMES && keyColumnNames != null) {
+    return connection.prepareStatement(sql,keyColumnNames.toArray(new String[keyColumnNames.size()]));
+  }
   if (returnGeneratedKeys != 0) {
     return connection.prepareStatement(sql,returnGeneratedKeys);
   }

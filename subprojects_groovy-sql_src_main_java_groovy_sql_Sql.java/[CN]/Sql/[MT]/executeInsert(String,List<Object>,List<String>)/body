@@ -1,0 +1,19 @@
+{
+  Connection connection=createConnection();
+  PreparedStatement statement=null;
+  try {
+    this.keyColumnNames=keyColumnNames;
+    statement=getPreparedStatement(connection,sql,params,USE_COLUMN_NAMES);
+    this.keyColumnNames=null;
+    this.updateCount=statement.executeUpdate();
+    ResultSet keys=statement.getGeneratedKeys();
+    return asList(sql,keys);
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}
