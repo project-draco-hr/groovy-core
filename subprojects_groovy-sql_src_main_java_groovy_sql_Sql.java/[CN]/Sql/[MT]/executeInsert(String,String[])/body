@@ -1,0 +1,17 @@
+{
+  Connection connection=createConnection();
+  Statement statement=null;
+  try {
+    statement=getStatement(connection,sql);
+    this.updateCount=statement.executeUpdate(sql,keyColumnNames);
+    ResultSet keys=statement.getGeneratedKeys();
+    return asList(sql,keys);
+  }
+ catch (  SQLException e) {
+    LOG.warning("Failed to execute: " + sql + " because: "+ e.getMessage());
+    throw e;
+  }
+ finally {
+    closeResources(connection,statement);
+  }
+}
