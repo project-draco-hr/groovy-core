@@ -4,6 +4,7 @@
     super.writeSpecialConstructorCall(call);
     return;
   }
+  controller.getCompileStack().pushInSpecialConstructorCall();
   ConstructorNode cn;
   if (mn instanceof ConstructorNode) {
     cn=(ConstructorNode)mn;
@@ -19,4 +20,5 @@
   loadArguments(args.getExpressions(),cn.getParameters());
   finnishConstructorCall(cn,ownerDescriptor,controller.getOperandStack().getStackLength() - before);
   controller.getOperandStack().remove(1);
+  controller.getCompileStack().pop();
 }
