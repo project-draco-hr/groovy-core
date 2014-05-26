@@ -28,6 +28,11 @@
     call.visit(controller.getAcg());
     return true;
   }
+  if (receiverType instanceof InnerClassNode && !receiverType.isStaticClass()) {
+    if (makeGetPropertyWithGetter(receiver,receiverType.getOuterClass(),methodName,safe,implicitThis)) {
+      return true;
+    }
+  }
   ClassNode superClass=receiverType.getSuperClass();
   if (superClass != null) {
     return makeGetPropertyWithGetter(receiver,superClass,methodName,safe,implicitThis);
