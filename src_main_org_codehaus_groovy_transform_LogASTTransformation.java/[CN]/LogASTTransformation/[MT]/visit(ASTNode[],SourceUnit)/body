@@ -2,7 +2,8 @@
   init(nodes,source);
   AnnotatedNode targetClass=(AnnotatedNode)nodes[1];
   AnnotationNode logAnnotation=(AnnotationNode)nodes[0];
-  final LoggingStrategy loggingStrategy=createLoggingStrategy(logAnnotation,source.getClassLoader());
+  final GroovyClassLoader classLoader=compilationUnit != null ? compilationUnit.getTransformLoader() : source.getClassLoader();
+  final LoggingStrategy loggingStrategy=createLoggingStrategy(logAnnotation,classLoader);
   if (loggingStrategy == null)   return;
   final String logFieldName=lookupLogFieldName(logAnnotation);
   final String categoryName=lookupCategoryName(logAnnotation);
