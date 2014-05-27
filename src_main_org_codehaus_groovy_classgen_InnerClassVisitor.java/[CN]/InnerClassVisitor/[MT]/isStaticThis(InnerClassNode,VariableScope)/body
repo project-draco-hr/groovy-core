@@ -1,7 +1,14 @@
 {
-  boolean ret=scope.isInStaticContext() || innerClass.isStaticClass();
+  if (inClosure)   return false;
+  boolean ret=innerClass.isStaticClass();
   if (innerClass.getEnclosingMethod() != null) {
     ret=ret || innerClass.getEnclosingMethod().isStatic();
+  }
+ else   if (currentField != null) {
+    ret=ret || currentField.isStatic();
+  }
+ else   if (currentMethod != null && "<clinit>".equals(currentMethod.getName())) {
+    ret=true;
   }
   return ret;
 }

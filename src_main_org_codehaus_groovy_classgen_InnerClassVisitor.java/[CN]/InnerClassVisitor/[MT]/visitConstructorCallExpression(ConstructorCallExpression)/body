@@ -25,7 +25,10 @@
   block.addStatement(new ExpressionStatement(cce));
   pCount=0;
   expressions.add(pCount,VariableExpression.THIS_EXPRESSION);
-  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStaticThis(innerClass,scope)).getPlainNodeReference();
+  boolean isStatic=isStaticThis(innerClass,scope);
+  ClassNode outerClassType=getClassNode(innerClass.getOuterClass(),isStatic);
+  if (!isStatic && inClosure)   outerClassType=ClassHelper.CLOSURE_TYPE;
+  outerClassType=outerClassType.getPlainNodeReference();
   Parameter thisParameter=new Parameter(outerClassType,"p" + pCount);
   parameters.add(pCount,thisParameter);
   thisField=innerClass.addField("this$0",PUBLIC_SYNTHETIC,outerClassType,null);
