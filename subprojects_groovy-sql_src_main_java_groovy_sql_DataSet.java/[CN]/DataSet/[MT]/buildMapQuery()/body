@@ -1,0 +1,23 @@
+{
+  StringBuilder buffer=new StringBuilder("insert into ");
+  buffer.append(table);
+  buffer.append(" (");
+  StringBuilder paramBuffer=new StringBuilder();
+  boolean first=true;
+  for (  String column : batchKeys) {
+    if (first) {
+      first=false;
+      paramBuffer.append(":");
+    }
+ else {
+      buffer.append(", ");
+      paramBuffer.append(", :");
+    }
+    paramBuffer.append(column);
+    buffer.append(column);
+  }
+  buffer.append(") values (");
+  buffer.append(paramBuffer.toString());
+  buffer.append(")");
+  return buffer.toString();
+}

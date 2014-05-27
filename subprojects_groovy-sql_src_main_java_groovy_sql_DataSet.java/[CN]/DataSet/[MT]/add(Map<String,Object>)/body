@@ -1,24 +1,17 @@
 {
-  StringBuilder buffer=new StringBuilder("insert into ");
-  buffer.append(table);
-  buffer.append(" (");
-  StringBuilder paramBuffer=new StringBuilder();
-  boolean first=true;
-  for (  String column : map.keySet()) {
-    if (first) {
-      first=false;
-      paramBuffer.append("?");
+  if (withinDataSetBatch) {
+    if (batchData.size() == 0) {
+      batchKeys=map.keySet();
     }
  else {
-      buffer.append(", ");
-      paramBuffer.append(", ?");
+      if (!map.keySet().equals(batchKeys)) {
+        throw new IllegalArgumentException("Inconsistent keys found for batch add!");
+      }
     }
-    buffer.append(column);
+    batchData.add(map);
+    return;
   }
-  buffer.append(") values (");
-  buffer.append(paramBuffer.toString());
-  buffer.append(")");
-  int answer=executeUpdate(buffer.toString(),new ArrayList<Object>(map.values()));
+  int answer=executeUpdate(buildListQuery(map),new ArrayList<Object>(map.values()));
   if (answer != 1) {
     LOG.warning("Should have updated 1 row not " + answer + " when trying to add: "+ map);
   }

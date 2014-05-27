@@ -1,0 +1,18 @@
+{
+  batchData=new ArrayList<Object>();
+  withinDataSetBatch=true;
+  closure.call(this);
+  withinDataSetBatch=false;
+  if (batchData.size() == 0) {
+    return new int[0];
+  }
+  Closure transformedClosure=new Closure(null){
+    public void doCall(    BatchingPreparedStatementWrapper stmt) throws SQLException {
+      for (      Object next : batchData) {
+        stmt.addBatch(new Object[]{next});
+      }
+    }
+  }
+;
+  return super.withBatch(batchSize,buildMapQuery(),transformedClosure);
+}
