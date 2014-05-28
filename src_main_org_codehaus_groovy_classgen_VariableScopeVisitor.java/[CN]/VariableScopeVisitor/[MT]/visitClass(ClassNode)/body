@@ -6,5 +6,11 @@
   pushState();
   prepareVisit(node);
   super.visitClass(node);
+  if (recurseInnerClasses) {
+    Iterator<InnerClassNode> innerClasses=node.getInnerClasses();
+    while (innerClasses.hasNext()) {
+      visitClass(innerClasses.next());
+    }
+  }
   popState();
 }
