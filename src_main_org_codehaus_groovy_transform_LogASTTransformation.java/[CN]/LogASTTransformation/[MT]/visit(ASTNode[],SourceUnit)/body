@@ -69,9 +69,5 @@
   }
 ;
   transformer.visitClass(classNode);
-  VariableScopeVisitor scopeVisitor=new VariableScopeVisitor(sourceUnit,true);
-  Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
-  while (innerClasses.hasNext()) {
-    scopeVisitor.visitClass(innerClasses.next());
-  }
+  new VariableScopeVisitor(sourceUnit,true).visitClass(classNode);
 }
