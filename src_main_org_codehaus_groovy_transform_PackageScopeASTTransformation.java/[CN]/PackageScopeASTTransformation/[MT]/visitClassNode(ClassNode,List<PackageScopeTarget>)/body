@@ -13,6 +13,12 @@
       if (mNode.isSyntheticPublic())       revertVisibility(mNode);
     }
   }
+  if (value.contains(groovy.transform.PackageScopeTarget.CONSTRUCTORS)) {
+    final List<ConstructorNode> cList=cNode.getDeclaredConstructors();
+    for (    MethodNode mNode : cList) {
+      if (mNode.isSyntheticPublic())       revertVisibility(mNode);
+    }
+  }
   if (value.contains(PackageScopeTarget.FIELDS)) {
     final List<PropertyNode> pList=cNode.getProperties();
     List<PropertyNode> foundProps=new ArrayList<PropertyNode>();
