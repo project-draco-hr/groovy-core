@@ -13,14 +13,35 @@
     if (TypeCheckingDSL.class.isAssignableFrom(clazz)) {
       script=(TypeCheckingDSL)clazz.newInstance();
     }
+ else     if (TypeCheckingExtension.class.isAssignableFrom(clazz)) {
+      try {
+        Constructor<?> declaredConstructor=clazz.getDeclaredConstructor(StaticTypeCheckingVisitor.class);
+        TypeCheckingExtension extension=(TypeCheckingExtension)declaredConstructor.newInstance(typeCheckingVisitor);
+        typeCheckingVisitor.addTypeCheckingExtension(extension);
+        extension.setup();
+        return;
+      }
+ catch (      InstantiationException e) {
+        addLoadingError(config);
+      }
+catch (      IllegalAccessException e) {
+        addLoadingError(config);
+      }
+catch (      NoSuchMethodException e) {
+        context.getErrorCollector().addFatalError(new SimpleMessage("Static type checking extension '" + scriptPath + "' could not be loaded because it doesn't have a constructor accepting StaticTypeCheckingVisitor.",config.getDebug(),typeCheckingVisitor.getSourceUnit()));
+      }
+catch (      InvocationTargetException e) {
+        addLoadingError(config);
+      }
+    }
   }
  catch (  ClassNotFoundException e) {
   }
 catch (  InstantiationException e) {
-    context.getErrorCollector().addFatalError(new SimpleMessage("Static type checking extension '" + scriptPath + "' could not be loaded.",config.getDebug(),typeCheckingVisitor.getSourceUnit()));
+    addLoadingError(config);
   }
 catch (  IllegalAccessException e) {
-    context.getErrorCollector().addFatalError(new SimpleMessage("Static type checking extension '" + scriptPath + "' could not be loaded.",config.getDebug(),typeCheckingVisitor.getSourceUnit()));
+    addLoadingError(config);
   }
   if (script == null) {
     ClassLoader cl=typeCheckingVisitor.getSourceUnit().getClassLoader();
