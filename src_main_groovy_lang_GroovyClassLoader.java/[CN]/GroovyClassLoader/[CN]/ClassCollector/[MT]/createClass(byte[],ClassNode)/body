@@ -1,6 +1,11 @@
 {
+  BytecodeProcessor bytecodePostprocessor=unit.getConfiguration().getBytecodePostprocessor();
+  byte[] fcode=code;
+  if (bytecodePostprocessor != null) {
+    fcode=bytecodePostprocessor.processBytecode(classNode.getName(),fcode);
+  }
   GroovyClassLoader cl=getDefiningClassLoader();
-  Class theClass=cl.defineClass(classNode.getName(),code,0,code.length,unit.getAST().getCodeSource());
+  Class theClass=cl.defineClass(classNode.getName(),fcode,0,fcode.length,unit.getAST().getCodeSource());
   this.loadedClasses.add(theClass);
   if (generatedClass == null) {
     ModuleNode mn=classNode.getModule();

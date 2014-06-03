@@ -1,7 +1,14 @@
 {
   if (!isInitialized()) {
     fillMethodIndex();
-    addProperties();
+    try {
+      addProperties();
+    }
+ catch (    Throwable e) {
+      if (!AndroidSupport.isRunningAndroid()) {
+        ExceptionUtils.sneakyThrow(e);
+      }
+    }
     initialized=true;
   }
 }
