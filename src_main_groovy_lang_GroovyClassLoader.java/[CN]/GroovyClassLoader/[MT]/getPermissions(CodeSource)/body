@@ -1,22 +1,27 @@
 {
   PermissionCollection perms;
   try {
-    perms=super.getPermissions(codeSource);
-  }
- catch (  SecurityException e) {
-    perms=new Permissions();
-  }
-  ProtectionDomain myDomain=AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>(){
-    public ProtectionDomain run(){
-      return getClass().getProtectionDomain();
+    try {
+      perms=super.getPermissions(codeSource);
     }
-  }
+ catch (    SecurityException e) {
+      perms=new Permissions();
+    }
+    ProtectionDomain myDomain=AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>(){
+      public ProtectionDomain run(){
+        return getClass().getProtectionDomain();
+      }
+    }
 );
-  PermissionCollection myPerms=myDomain.getPermissions();
-  if (myPerms != null) {
-    for (Enumeration<Permission> elements=myPerms.elements(); elements.hasMoreElements(); ) {
-      perms.add(elements.nextElement());
+    PermissionCollection myPerms=myDomain.getPermissions();
+    if (myPerms != null) {
+      for (Enumeration<Permission> elements=myPerms.elements(); elements.hasMoreElements(); ) {
+        perms.add(elements.nextElement());
+      }
     }
+  }
+ catch (  Throwable e) {
+    perms=new Permissions();
   }
   perms.setReadOnly();
   return perms;
