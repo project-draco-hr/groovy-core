@@ -13,6 +13,9 @@
  else   if ("target".equals(name) && !insideTask) {
     return onStartTarget(attrs,tagName,ns);
   }
+ else   if ("defineTarget".equals(name) && !insideTask) {
+    return onDefineTarget(attrs,"target",ns);
+  }
   try {
     antElementHandler.onStartElement(ns,tagName,tagName,attrs,antXmlContext);
   }
@@ -20,6 +23,6 @@
     log.log(Level.SEVERE,"Caught: " + e,e);
   }
   insideTask=true;
-  final RuntimeConfigurable wrapper=(RuntimeConfigurable)antXmlContext.getWrapperStack().lastElement();
+  final RuntimeConfigurable wrapper=antXmlContext.getWrapperStack().lastElement();
   return wrapper.getProxy();
 }

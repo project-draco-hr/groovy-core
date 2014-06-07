@@ -5,13 +5,8 @@
   try {
     antTargetHandler.onStartElement(ns,tagName,tagName,attrs,antXmlContext);
     final Target newTarget=getProject().getTargets().get(attrs.getValue("name"));
-    final Vector targets=new Vector();
-    for (final Enumeration deps=newTarget.getDependencies(); deps.hasMoreElements(); ) {
-      final String targetName=(String)deps.nextElement();
-      targets.add(project.getTargets().get(targetName));
-    }
-    getProject().executeSortedTargets(targets);
     antXmlContext.setCurrentTarget(newTarget);
+    definingTarget=newTarget;
     return newTarget;
   }
  catch (  final SAXParseException e) {
