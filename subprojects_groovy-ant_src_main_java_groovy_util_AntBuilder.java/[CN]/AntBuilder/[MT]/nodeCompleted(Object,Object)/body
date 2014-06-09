@@ -6,6 +6,10 @@
     log.finest("parent is not null: no perform on nodeCompleted");
     return;
   }
+  if (definingTarget != null && definingTarget == parent && node instanceof Task)   return;
+  if (definingTarget == node) {
+    definingTarget=null;
+  }
   if (node instanceof Task) {
     Task task=(Task)node;
     final String taskName=task.getTaskName();
