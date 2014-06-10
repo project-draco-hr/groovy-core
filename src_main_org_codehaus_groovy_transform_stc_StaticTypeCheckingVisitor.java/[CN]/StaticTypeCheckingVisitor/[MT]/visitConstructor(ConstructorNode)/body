@@ -1,0 +1,11 @@
+{
+  if (shouldSkipMethodNode(node)) {
+    return;
+  }
+  for (  Parameter parameter : node.getParameters()) {
+    if (parameter.getInitialExpression() != null) {
+      parameter.getInitialExpression().visit(this);
+    }
+  }
+  super.visitConstructor(node);
+}
