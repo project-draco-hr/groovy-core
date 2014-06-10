@@ -12,17 +12,5 @@
     }
     return;
   }
-  ClassNode parent=classNode;
-  int level=0;
-  for (; parent != null && parent != cn.getOuterClass(); parent=parent.getOuterClass()) {
-    level++;
-  }
-  if (parent == null)   return;
-  Expression argsExp=call.getArguments();
-  if (argsExp instanceof TupleExpression) {
-    TupleExpression argsListExp=(TupleExpression)argsExp;
-    Expression this0=VariableExpression.THIS_EXPRESSION;
-    for (int i=0; i != level; ++i)     this0=new PropertyExpression(this0,"this$0");
-    argsListExp.getExpressions().add(0,this0);
-  }
+  insertThis0ToSuperCall(call,cn);
 }
