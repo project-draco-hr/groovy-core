@@ -14,9 +14,17 @@
   }
   for (  FieldNode field : innerClass.getFields()) {
     final Expression expression=field.getInitialExpression();
+    pushState(field.isStatic());
     if (expression != null) {
+      if (expression instanceof VariableExpression) {
+        VariableExpression vexp=(VariableExpression)expression;
+        if (vexp.getAccessedVariable() instanceof Parameter) {
+          continue;
+        }
+      }
       expression.visit(this);
     }
+    popState();
   }
   for (  Statement statement : innerClass.getObjectInitializerStatements()) {
     statement.visit(this);
