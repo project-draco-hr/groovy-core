@@ -156,7 +156,7 @@
         if (areCategoryMethodCalls(mn,name,args)) {
           addCategoryMethodCallError(call);
         }
-        mn=disambiguateMethods(mn,call);
+        mn=disambiguateMethods(mn,chosenReceiver != null ? chosenReceiver.getType() : null,args,call);
         if (mn.size() == 1) {
           MethodNode directMethodCallCandidate=mn.get(0);
           if (chosenReceiver == null) {

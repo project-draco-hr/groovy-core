@@ -1,0 +1,15 @@
+{
+  if (methods.size() > 1 && receiver != null && argTypes != null) {
+    List<MethodNode> filteredWithGenerics=new LinkedList<MethodNode>();
+    for (    MethodNode methodNode : methods) {
+      if (typeCheckMethodsWithGenerics(receiver,argTypes,methodNode)) {
+        filteredWithGenerics.add(methodNode);
+      }
+    }
+    if (filteredWithGenerics.size() == 1) {
+      return filteredWithGenerics;
+    }
+    methods=extension.handleAmbiguousMethods(methods,expr);
+  }
+  return methods;
+}
