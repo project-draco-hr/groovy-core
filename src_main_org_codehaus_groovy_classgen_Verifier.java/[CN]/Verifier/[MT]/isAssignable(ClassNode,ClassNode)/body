@@ -1,9 +1,9 @@
 {
+  if (node.isArray() && testNode.isArray()) {
+    return isArrayAssignable(node.getComponentType(),testNode.getComponentType());
+  }
   if (testNode.isInterface()) {
     if (node.equals(testNode) || node.implementsInterface(testNode))     return true;
   }
- else {
-    if (node.isDerivedFrom(testNode))     return true;
-  }
-  return false;
+  return node.isDerivedFrom(testNode);
 }
