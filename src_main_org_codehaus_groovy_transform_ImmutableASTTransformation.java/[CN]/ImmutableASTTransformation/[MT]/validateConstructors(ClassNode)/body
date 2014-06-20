@@ -1,7 +1,8 @@
 {
   List<ConstructorNode> declaredConstructors=cNode.getDeclaredConstructors();
   for (  ConstructorNode constructorNode : declaredConstructors) {
-    if ((constructorNode.getModifiers() & ACC_SYNTHETIC) != 0) {
+    Object nodeMetaData=constructorNode.getNodeMetaData(IMMUTABLE_SAFE_FLAG);
+    if (nodeMetaData != null && ((Boolean)nodeMetaData)) {
       continue;
     }
     addError("Explicit constructors not allowed for " + MY_TYPE_NAME + " class: "+ cNode.getNameWithoutPackage(),constructorNode);

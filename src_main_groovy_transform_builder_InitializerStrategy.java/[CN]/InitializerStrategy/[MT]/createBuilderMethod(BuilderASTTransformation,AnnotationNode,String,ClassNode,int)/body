@@ -2,7 +2,7 @@
   String builderMethodName=transform.getMemberStringValue(anno,"builderMethodName","createInitializer");
   final BlockStatement body=new BlockStatement();
   body.addStatement(returnS(callX(builder,buildMethodName)));
-  final int visibility=ACC_PUBLIC | ACC_STATIC | ACC_SYNTHETIC;
+  final int visibility=ACC_PUBLIC | ACC_STATIC;
   ClassNode returnType=makeClassSafeWithGenerics(builder,unsetGenTypes(numFields));
   return new MethodNode(builderMethodName,visibility,returnType,NO_PARAMS,NO_EXCEPTIONS,body);
 }

@@ -4,7 +4,7 @@
   if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
   String prefix=transform.getMemberStringValue(anno,"prefix","");
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
-  final int visibility=ACC_PUBLIC | ACC_STATIC | ACC_SYNTHETIC;
+  final int visibility=ACC_PUBLIC | ACC_STATIC;
   String builderClassName=transform.getMemberStringValue(anno,"builderClassName",buildee.getName() + "Builder");
   final String fullName=buildee.getName() + "$" + builderClassName;
   ClassNode builder=new InnerClassNode(buildee,fullName,visibility,ClassHelper.OBJECT_TYPE);
