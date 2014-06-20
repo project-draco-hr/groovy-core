@@ -3,16 +3,16 @@
   MethodNode setter=classNode.getSetterMethod("set" + MetaClassHelper.capitalize(propertyName));
   if (setter != null) {
     Statement code=setter.getCode();
-    VariableExpression oldValue=new VariableExpression("$oldValue");
-    VariableExpression newValue=new VariableExpression("$newValue");
-    VariableExpression proposedValue=new VariableExpression(setter.getParameters()[0].getName());
+    Expression oldValue=varX("$oldValue");
+    Expression newValue=varX("$newValue");
+    Expression proposedValue=varX(setter.getParameters()[0].getName());
     BlockStatement block=new BlockStatement();
-    block.addStatement(new ExpressionStatement(new DeclarationExpression(oldValue,Token.newSymbol(Types.EQUALS,0,0),new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,ArgumentListExpression.EMPTY_ARGUMENTS))));
-    block.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"fireVetoableChange",new ArgumentListExpression(new Expression[]{new ConstantExpression(propertyName),oldValue,proposedValue}))));
+    block.addStatement(declS(oldValue,callThisX(getterName)));
+    block.addStatement(stmt(callThisX("fireVetoableChange",args(constX(propertyName),oldValue,proposedValue))));
     block.addStatement(code);
     if (bindable) {
-      block.addStatement(new ExpressionStatement(new DeclarationExpression(newValue,Token.newSymbol(Types.EQUALS,0,0),new MethodCallExpression(VariableExpression.THIS_EXPRESSION,getterName,ArgumentListExpression.EMPTY_ARGUMENTS))));
-      block.addStatement(new ExpressionStatement(new MethodCallExpression(VariableExpression.THIS_EXPRESSION,"firePropertyChange",new ArgumentListExpression(new Expression[]{new ConstantExpression(propertyName),oldValue,newValue}))));
+      block.addStatement(declS(newValue,callThisX(getterName)));
+      block.addStatement(stmt(callThisX("firePropertyChange",args(constX(propertyName),oldValue,newValue))));
     }
     setter.setCode(block);
   }

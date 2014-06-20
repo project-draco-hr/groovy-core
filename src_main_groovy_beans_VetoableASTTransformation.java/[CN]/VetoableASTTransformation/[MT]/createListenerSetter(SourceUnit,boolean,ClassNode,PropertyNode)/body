@@ -7,7 +7,7 @@
   }
   String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
   if (declaringClass.getMethods(setterName).isEmpty()) {
-    Expression fieldExpression=new FieldExpression(propertyNode.getField());
+    Expression fieldExpression=fieldX(propertyNode.getField());
     BlockStatement setterBlock=new BlockStatement();
     setterBlock.addStatement(createConstrainedStatement(propertyNode,fieldExpression));
     if (bindable) {
