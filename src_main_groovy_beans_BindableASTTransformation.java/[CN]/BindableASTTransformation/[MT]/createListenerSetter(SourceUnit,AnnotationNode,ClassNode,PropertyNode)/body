@@ -1,8 +1,7 @@
 {
   String setterName="set" + MetaClassHelper.capitalize(propertyNode.getName());
   if (classNode.getMethods(setterName).isEmpty()) {
-    Expression fieldExpression=new FieldExpression(propertyNode.getField());
-    Statement setterBlock=createBindableStatement(propertyNode,fieldExpression);
+    Statement setterBlock=createBindableStatement(propertyNode,fieldX(propertyNode.getField()));
     createSetterMethod(classNode,propertyNode,setterName,setterBlock);
   }
  else {
