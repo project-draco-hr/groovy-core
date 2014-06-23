@@ -1,16 +1,22 @@
 {
   final BlockStatement body=new BlockStatement();
-  final Expression result=varX("_result");
-  body.addStatement(declS(result,callSuperX("clone")));
+  final Expression result=varX("_result",cNode);
+  body.addStatement(declS(result,castX(cNode,callSuperX("clone"))));
   for (  FieldNode fieldNode : fieldNodes) {
     if (excludes.contains(fieldNode.getName()))     continue;
+    ClassNode fieldType=fieldNode.getType();
     Expression fieldExpr=varX(fieldNode);
-    Expression from=callX(fieldExpr,"clone");
     Expression to=propX(result,fieldNode.getName());
-    Statement doClone=assignS(to,from);
-    body.addStatement(ifS(isInstanceOfX(fieldExpr,CLONEABLE_TYPE),doClone));
+    Statement doClone=assignS(to,castX(fieldType,callX(fieldExpr,"clone")));
+    Statement doCloneDynamic=assignS(to,castX(fieldType,callCloneDynamicX(fieldExpr)));
+    if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
+      body.addStatement(doClone);
+    }
+ else     if (possiblyCloneable(fieldType)) {
+      body.addStatement(ifS(isInstanceOfX(fieldExpr,CLONEABLE_TYPE),doCloneDynamic));
+    }
   }
   body.addStatement(returnS(result));
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
-  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,body);
+  cNode.addMethod("clone",ACC_PUBLIC,GenericsUtils.nonGeneric(cNode),Parameter.EMPTY_ARRAY,exceptions,body);
 }
