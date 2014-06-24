@@ -1,0 +1,14 @@
+{
+  Map attributes=findAttributes(args);
+  for (Iterator<Map.Entry> iter=attributes.entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry entry=iter.next();
+    String key=String.valueOf(entry.getKey());
+    if (key.startsWith("xmlns:")) {
+      String prefix=key.substring(6);
+      String uri=String.valueOf(entry.getValue());
+      namespace(uri,prefix);
+      iter.remove();
+    }
+  }
+  return super.invokeMethod(methodName,args);
+}
