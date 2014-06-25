@@ -2,18 +2,20 @@
   final BlockStatement body=new BlockStatement();
   final Expression baos=varX("baos");
   body.addStatement(declS(baos,ctorX(BAOS_TYPE)));
-  Parameter oos=param(OOS_TYPE,"oos");
-  ClosureExpression writeClos=closureX(params(oos),block(stmt(callX(varX(oos),"writeObject",varX("this")))));
+  MethodCallExpression writeObject=callX(castX(OOS_TYPE,varX("it")),"writeObject",varX("this"));
+  writeObject.setImplicitThis(false);
+  ClosureExpression writeClos=closureX(block(stmt(writeObject)));
   writeClos.setVariableScope(new VariableScope());
   body.addStatement(stmt(callX(baos,"withObjectOutputStream",args(writeClos))));
   final Expression bais=varX("bais");
-  ConstructorCallExpression bytes=ctorX(BAIS_TYPE,args(callX(baos,"toByteArray")));
-  body.addStatement(declS(bais,bytes));
-  Parameter ois=param(OIS_TYPE,"ois");
-  ClosureExpression readClos=closureX(params(ois),block(stmt(callX(varX(ois),"readObject"))));
+  body.addStatement(declS(bais,ctorX(BAIS_TYPE,args(callX(baos,"toByteArray")))));
+  MethodCallExpression readObject=callX(castX(OIS_TYPE,varX("it")),"readObject");
+  readObject.setImplicitThis(false);
+  ClosureExpression readClos=closureX(block(stmt(castX(GenericsUtils.nonGeneric(cNode),readObject))));
   readClos.setVariableScope(new VariableScope());
   Expression classLoader=callX(callThisX("getClass"),"getClassLoader");
-  body.addStatement(returnS(castX(cNode,callX(bais,"withObjectInputStream",args(classLoader,readClos)))));
+  body.addStatement(returnS(callX(bais,"withObjectInputStream",args(classLoader,readClos))));
+  new VariableScopeVisitor(sourceUnit,true).visitClass(cNode);
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addMethod("clone",ACC_PUBLIC,GenericsUtils.nonGeneric(cNode),Parameter.EMPTY_ARRAY,exceptions,body);
 }
