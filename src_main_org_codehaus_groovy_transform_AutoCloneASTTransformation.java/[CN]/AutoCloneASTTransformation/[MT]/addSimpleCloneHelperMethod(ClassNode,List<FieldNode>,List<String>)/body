@@ -9,12 +9,21 @@
   for (  FieldNode fieldNode : fieldNodes) {
     String name=fieldNode.getName();
     if (excludes.contains(name))     continue;
+    ClassNode fieldType=fieldNode.getType();
     Expression direct=propX(varX("this"),name);
-    Expression cloned=callX(direct,"clone");
     Expression to=propX(other,name);
-    Statement assignCloned=assignS(to,cloned);
     Statement assignDirect=assignS(to,direct);
-    methodBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignCloned,assignDirect));
+    Statement assignCloned=assignS(to,castX(fieldType,callX(direct,"clone")));
+    Statement assignClonedDynamic=assignS(to,castX(fieldType,callCloneDynamicX(direct)));
+    if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
+      methodBody.addStatement(assignCloned);
+    }
+ else     if (!possiblyCloneable(fieldType)) {
+      methodBody.addStatement(assignDirect);
+    }
+ else {
+      methodBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignClonedDynamic,assignDirect));
+    }
   }
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
   cNode.addMethod("cloneOrCopyMembers",ACC_PROTECTED,ClassHelper.VOID_TYPE,params(methodParam),exceptions,methodBody);

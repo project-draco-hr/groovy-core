@@ -2,13 +2,8 @@
   if (cNode.getDeclaredConstructors().size() == 0) {
     cNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,block(EmptyStatement.INSTANCE));
   }
-  final BlockStatement cloneBody=new BlockStatement();
-  final Expression result=varX("_result");
-  final Expression noarg=ctorX(cNode);
-  cloneBody.addStatement(declS(result,noarg));
   addSimpleCloneHelperMethod(cNode,fieldNodes,excludes);
-  cloneBody.addStatement(stmt(callThisX("cloneOrCopyMembers",args(result))));
-  cloneBody.addStatement(returnS(result));
+  final Expression result=varX("_result",cNode);
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
-  cNode.addMethod("clone",ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,exceptions,cloneBody);
+  cNode.addMethod("clone",ACC_PUBLIC,GenericsUtils.nonGeneric(cNode),Parameter.EMPTY_ARRAY,exceptions,block(declS(result,ctorX(cNode)),stmt(callThisX("cloneOrCopyMembers",args(result))),returnS(result)));
 }
