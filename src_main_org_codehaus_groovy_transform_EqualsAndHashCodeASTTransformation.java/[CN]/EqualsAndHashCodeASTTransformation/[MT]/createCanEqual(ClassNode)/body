@@ -3,6 +3,6 @@
   if (hasExistingCanEqual && hasDeclaredMethod(cNode,"_canEqual",1))   return;
   final BlockStatement body=new BlockStatement();
   VariableExpression other=varX("other");
-  body.addStatement(returnS(isInstanceOfX(other,cNode)));
+  body.addStatement(returnS(isInstanceOfX(other,GenericsUtils.nonGeneric(cNode))));
   cNode.addMethod(new MethodNode(hasExistingCanEqual ? "_canEqual" : "canEqual",hasExistingCanEqual ? ACC_PRIVATE : ACC_PUBLIC,ClassHelper.boolean_TYPE,params(param(OBJECT_TYPE,other.getName())),ClassNode.EMPTY_ARRAY,body));
 }

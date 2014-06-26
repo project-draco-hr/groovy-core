@@ -7,14 +7,16 @@
   body.addStatement(ifS(equalsNullX(other),returnS(constX(Boolean.FALSE))));
   body.addStatement(ifS(sameX(varX("this"),other),returnS(constX(Boolean.TRUE))));
   if (useCanEqual) {
-    body.addStatement(ifS(notX(isInstanceOfX(other,cNode)),returnS(constX(Boolean.FALSE))));
-    body.addStatement(ifS(notX(callX(other,"canEqual",varX("this"))),returnS(constX(Boolean.FALSE))));
+    body.addStatement(ifS(notX(isInstanceOfX(other,GenericsUtils.nonGeneric(cNode))),returnS(constX(Boolean.FALSE))));
   }
  else {
-    body.addStatement(ifS(notX(hasClassX(other,cNode)),returnS(constX(Boolean.FALSE))));
+    body.addStatement(ifS(notX(hasClassX(other,GenericsUtils.nonGeneric(cNode))),returnS(constX(Boolean.FALSE))));
   }
-  VariableExpression otherTyped=varX("otherTyped");
-  body.addStatement(declS(otherTyped,new CastExpression(cNode,other)));
+  VariableExpression otherTyped=varX("otherTyped",GenericsUtils.nonGeneric(cNode));
+  body.addStatement(declS(otherTyped,new CastExpression(GenericsUtils.nonGeneric(cNode),other)));
+  if (useCanEqual) {
+    body.addStatement(ifS(notX(callX(otherTyped,"canEqual",varX("this"))),returnS(constX(Boolean.FALSE))));
+  }
   List<PropertyNode> pList=getInstanceProperties(cNode);
   for (  PropertyNode pNode : pList) {
     if (shouldSkip(pNode.getName(),excludes,includes))     continue;
