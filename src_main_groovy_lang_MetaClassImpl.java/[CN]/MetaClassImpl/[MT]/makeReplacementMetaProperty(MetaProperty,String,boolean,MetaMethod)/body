@@ -1,0 +1,43 @@
+{
+  if (mp == null) {
+    if (isGetter) {
+      return new MetaBeanProperty(propName,propertyMethod.getReturnType(),propertyMethod,null);
+    }
+ else {
+      return new MetaBeanProperty(propName,propertyMethod.getParameterTypes()[0].getTheClass(),null,propertyMethod);
+    }
+  }
+  if (mp instanceof CachedField) {
+    CachedField mfp=(CachedField)mp;
+    MetaBeanProperty mbp=new MetaBeanProperty(propName,mfp.getType(),isGetter ? propertyMethod : null,isGetter ? null : propertyMethod);
+    mbp.setField(mfp);
+    return mbp;
+  }
+ else   if (mp instanceof MultipleSetterProperty) {
+    MultipleSetterProperty msp=(MultipleSetterProperty)mp;
+    if (isGetter) {
+      msp.setGetter(propertyMethod);
+    }
+    return msp;
+  }
+ else   if (mp instanceof MetaBeanProperty) {
+    MetaBeanProperty mbp=(MetaBeanProperty)mp;
+    if (isGetter) {
+      mbp.setGetter(propertyMethod);
+      return mbp;
+    }
+ else     if (mbp.getSetter() == null || mbp.getSetter() == propertyMethod) {
+      mbp.setSetter(propertyMethod);
+      return mbp;
+    }
+ else {
+      MultipleSetterProperty msp=new MultipleSetterProperty(propName);
+      msp.setField(mbp.getField());
+      msp.setGetter(mbp.getGetter());
+      return msp;
+    }
+  }
+ else {
+    throw new GroovyBugError("unknown MetaProperty class used. Class is " + mp.getClass());
+  }
+}

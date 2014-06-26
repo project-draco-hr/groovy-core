@@ -1,0 +1,16 @@
+{
+  boolean mf=field == null || field.isStatic();
+  boolean mg=getter == null || getter.isStatic();
+  if (mf && mg)   return this;
+  if (mg) {
+    MultipleSetterProperty newMsp=new MultipleSetterProperty(name);
+    newMsp.setGetter(getter);
+    return newMsp;
+  }
+ else   if (mf) {
+    MultipleSetterProperty newMsp=new MultipleSetterProperty(name);
+    newMsp.setField(field);
+    return newMsp;
+  }
+  return null;
+}
