@@ -1,7 +1,12 @@
 {
   T answer=null;
+  boolean first=true;
   for (  T value : self) {
-    if (answer == null || comparator.compare(value,answer) > 0) {
+    if (first) {
+      first=false;
+      answer=value;
+    }
+ else     if (comparator.compare(value,answer) > 0) {
       answer=value;
     }
   }
