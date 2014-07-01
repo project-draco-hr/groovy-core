@@ -1,15 +1,15 @@
 {
   int modifiers=type.getModifiers();
   Collection answer;
-  if (object instanceof Collection && type.isAssignableFrom(HashSet.class) && (type == HashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
-    return new HashSet((Collection)object);
+  if (object instanceof Collection && type.isAssignableFrom(LinkedHashSet.class) && (type == LinkedHashSet.class || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+    return new LinkedHashSet((Collection)object);
   }
   if (object.getClass().isArray()) {
     if (type.isAssignableFrom(ArrayList.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
       answer=new ArrayList();
     }
- else     if (type.isAssignableFrom(HashSet.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
-      answer=new HashSet();
+ else     if (type.isAssignableFrom(LinkedHashSet.class) && (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers))) {
+      answer=new LinkedHashSet();
     }
  else {
       try {
