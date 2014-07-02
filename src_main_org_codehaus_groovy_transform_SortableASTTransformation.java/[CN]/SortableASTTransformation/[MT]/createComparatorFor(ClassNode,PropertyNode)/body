@@ -1,10 +1,11 @@
 {
-  String propertyName=property.getName();
-  String className=classNode.getName() + "$" + StringGroovyMethods.capitalize(propertyName)+ "Comparator";
-  InnerClassNode cmpClass=new InnerClassNode(classNode,className,ACC_PRIVATE | ACC_STATIC,ABSTRACT_COMPARATOR_TYPE);
+  String propName=property.getName();
+  String className=classNode.getName() + "$" + StringGroovyMethods.capitalize(propName)+ "Comparator";
+  ClassNode superClass=makeClassSafeWithGenerics(AbstractComparator.class,classNode);
+  InnerClassNode cmpClass=new InnerClassNode(classNode,className,ACC_PRIVATE | ACC_STATIC,superClass);
   classNode.getModule().addClass(cmpClass);
-  cmpClass.addMethod(new MethodNode("compare",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(OBJECT_TYPE,ARG0),param(OBJECT_TYPE,ARG1)),ClassNode.EMPTY_ARRAY,createCompareToMethodBody(property)));
-  String fieldName="this$" + StringGroovyMethods.capitalize(propertyName) + "Comparator";
+  cmpClass.addMethod(new MethodNode("compare",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(newClass(classNode),ARG0),param(newClass(classNode),ARG1)),ClassNode.EMPTY_ARRAY,createCompareMethodBody(property)));
+  String fieldName="this$" + StringGroovyMethods.capitalize(propName) + "Comparator";
   FieldNode cmpField=classNode.addField(fieldName,ACC_STATIC | ACC_FINAL | ACC_PRIVATE| ACC_SYNTHETIC,COMPARATOR_TYPE,ctorX(cmpClass));
-  classNode.addMethod(new MethodNode("comparatorBy" + StringGroovyMethods.capitalize(propertyName),ACC_PUBLIC | ACC_STATIC,COMPARATOR_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,returnS(fieldX(cmpField))));
+  classNode.addMethod(new MethodNode("comparatorBy" + StringGroovyMethods.capitalize(propName),ACC_PUBLIC | ACC_STATIC,COMPARATOR_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,returnS(fieldX(cmpField))));
 }

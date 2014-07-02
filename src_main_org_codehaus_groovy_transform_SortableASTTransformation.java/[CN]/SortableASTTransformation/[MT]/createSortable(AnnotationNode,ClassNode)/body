@@ -7,7 +7,7 @@
   }
   List<PropertyNode> properties=findProperties(annotation,classNode,includes,excludes);
   implementComparable(classNode);
-  classNode.addMethod(new MethodNode("compareTo",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(OBJECT_TYPE,OBJ)),ClassNode.EMPTY_ARRAY,createCompareToMethodBody(classNode,properties)));
+  classNode.addMethod(new MethodNode("compareTo",ACC_PUBLIC,ClassHelper.int_TYPE,params(param(newClass(classNode),OTHER)),ClassNode.EMPTY_ARRAY,createCompareToMethodBody(properties)));
   for (  PropertyNode property : properties) {
     createComparatorFor(classNode,property);
   }
