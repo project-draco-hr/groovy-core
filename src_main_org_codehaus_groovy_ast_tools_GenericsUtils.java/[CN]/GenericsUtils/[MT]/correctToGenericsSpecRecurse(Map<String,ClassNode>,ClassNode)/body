@@ -5,6 +5,11 @@
   if (type.isGenericsPlaceHolder()) {
     String name=type.getGenericsTypes()[0].getName();
     type=genericsSpec.get(name);
+    if (type != null && type.isGenericsPlaceHolder() && type.getGenericsTypes() == null) {
+      ClassNode placeholder=ClassHelper.makeWithoutCaching(type.getUnresolvedName());
+      placeholder.setGenericsPlaceHolder(true);
+      type=makeClassSafeWithGenerics(type,new GenericsType(placeholder));
+    }
   }
   if (type == null)   type=ClassHelper.OBJECT_TYPE;
   GenericsType[] oldgTypes=type.getGenericsTypes();
