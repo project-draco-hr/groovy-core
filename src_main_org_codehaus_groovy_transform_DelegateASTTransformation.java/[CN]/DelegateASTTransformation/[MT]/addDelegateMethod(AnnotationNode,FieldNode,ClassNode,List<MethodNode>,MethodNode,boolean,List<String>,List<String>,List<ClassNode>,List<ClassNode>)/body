@@ -2,7 +2,7 @@
   if (!candidate.isPublic() || candidate.isStatic() || 0 != (candidate.getModifiers() & ACC_SYNTHETIC))   return;
   if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !includeDeprecated)   return;
   if (shouldSkip(candidate.getName(),excludes,includes))   return;
-  Map<String,ClassNode> genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass(),new HashMap<String,ClassNode>());
+  Map<String,ClassNode> genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass());
   extractSuperClassGenerics(fieldNode.getType(),candidate.getDeclaringClass(),genericsSpec);
   if (!excludeTypes.isEmpty() || !includeTypes.isEmpty()) {
     MethodNode correctedMethodNode=correctToGenericsSpec(genericsSpec,candidate);
