@@ -1,0 +1,13 @@
+{
+  if (useCache) {
+    URL cachedURL=cache.get(templatePath);
+    if (cachedURL != null) {
+      return cachedURL;
+    }
+  }
+  URL url=super.resolveTemplate(templatePath);
+  if (useCache) {
+    cache.put(templatePath,url);
+  }
+  return url;
+}
