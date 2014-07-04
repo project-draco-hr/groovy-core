@@ -1,0 +1,8 @@
+{
+  ClassNode paramType=makeClassSafeWithGenerics(builder,setGenTypes(fields.size()));
+  List<Expression> argsList=new ArrayList<Expression>();
+  for (  FieldNode fieldNode : fields) {
+    argsList.add(propX(varX("initializer"),fieldNode.getName()));
+  }
+  return buildee.addConstructor(ACC_PUBLIC,params(param(paramType,"initializer")),NO_EXCEPTIONS,block(ctorThisS(args(argsList))));
+}
