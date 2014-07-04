@@ -1,8 +1,15 @@
 {
   final Expression fieldExpr=varX(fNode);
-  Expression initExpr=fNode.getInitialValueExpression();
-  if (initExpr == null)   initExpr=ConstantExpression.EMPTY_EXPRESSION;
+  final ClassNode fieldType=fieldExpr.getType();
+  final Expression initExpr=fNode.getInitialValueExpression();
+  final Statement assignInit;
+  if (initExpr == null || (initExpr instanceof ConstantExpression && ((ConstantExpression)initExpr).isNullExpression())) {
+    assignInit=assignS(fieldExpr,ConstantExpression.EMPTY_EXPRESSION);
+  }
+ else {
+    assignInit=assignS(fieldExpr,cloneCollectionExpr(initExpr,fieldType));
+  }
   Expression namedArgs=findArg(fNode.getName());
   Expression baseArgs=varX("args");
-  return ifElseS(equalsNullX(baseArgs),ifS(notX(equalsNullX(initExpr)),assignS(fieldExpr,cloneCollectionExpr(initExpr))),ifElseS(equalsNullX(namedArgs),ifElseS(isTrueX(callX(baseArgs,"containsKey",constX(fNode.getName()))),assignS(fieldExpr,namedArgs),assignS(fieldExpr,cloneCollectionExpr(baseArgs))),ifElseS(isOneX(callX(baseArgs,"size")),assignS(fieldExpr,cloneCollectionExpr(namedArgs)),assignS(fieldExpr,cloneCollectionExpr(baseArgs)))));
+  return ifElseS(equalsNullX(baseArgs),assignInit,ifElseS(equalsNullX(namedArgs),ifElseS(isTrueX(callX(baseArgs,"containsKey",constX(fNode.getName()))),assignS(fieldExpr,namedArgs),assignS(fieldExpr,cloneCollectionExpr(baseArgs,fieldType))),ifElseS(isOneX(callX(baseArgs,"size")),assignS(fieldExpr,cloneCollectionExpr(namedArgs,fieldType)),assignS(fieldExpr,cloneCollectionExpr(baseArgs,fieldType)))));
 }

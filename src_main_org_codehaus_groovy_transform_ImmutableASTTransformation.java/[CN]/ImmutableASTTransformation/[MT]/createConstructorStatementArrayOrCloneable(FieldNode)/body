@@ -2,7 +2,13 @@
   final Expression fieldExpr=varX(fNode);
   Expression initExpr=fNode.getInitialValueExpression();
   ClassNode fieldType=fNode.getType();
-  if (initExpr == null)   initExpr=ConstantExpression.EMPTY_EXPRESSION;
   final Expression array=findArg(fNode.getName());
-  return ifElseS(equalsNullX(array),ifElseS(equalsNullX(initExpr),assignS(fieldExpr,ConstantExpression.EMPTY_EXPRESSION),assignS(fieldExpr,cloneArrayOrCloneableExpr(initExpr,fieldType))),assignS(fieldExpr,cloneArrayOrCloneableExpr(array,fieldType)));
+  final Statement assignInit;
+  if (initExpr == null || (initExpr instanceof ConstantExpression && ((ConstantExpression)initExpr).isNullExpression())) {
+    assignInit=assignS(fieldExpr,ConstantExpression.EMPTY_EXPRESSION);
+  }
+ else {
+    assignInit=assignS(fieldExpr,cloneArrayOrCloneableExpr(initExpr,fieldType));
+  }
+  return ifElseS(equalsNullX(array),assignInit,assignS(fieldExpr,cloneArrayOrCloneableExpr(array,fieldType)));
 }
