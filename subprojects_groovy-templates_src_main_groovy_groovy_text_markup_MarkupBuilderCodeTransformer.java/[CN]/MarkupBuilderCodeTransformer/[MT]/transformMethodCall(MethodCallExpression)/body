@@ -19,5 +19,18 @@
     call.setSourcePosition(exp);
     return call;
   }
+ else   if (name != null && name.startsWith("$")) {
+    MethodCallExpression reformatted=new MethodCallExpression(exp.getObjectExpression(),name.substring(1),exp.getArguments());
+    reformatted.setImplicitThis(exp.isImplicitThis());
+    reformatted.setSafe(exp.isSafe());
+    reformatted.setSpreadSafe(exp.isSpreadSafe());
+    reformatted.setSourcePosition(exp);
+    ClosureExpression clos=new ClosureExpression(Parameter.EMPTY_ARRAY,new ExpressionStatement(reformatted));
+    clos.setVariableScope(new VariableScope());
+    MethodCallExpression stringOf=new MethodCallExpression(new VariableExpression("this"),"stringOf",clos);
+    stringOf.setImplicitThis(true);
+    stringOf.setSourcePosition(reformatted);
+    return stringOf;
+  }
   return super.transform(exp);
 }

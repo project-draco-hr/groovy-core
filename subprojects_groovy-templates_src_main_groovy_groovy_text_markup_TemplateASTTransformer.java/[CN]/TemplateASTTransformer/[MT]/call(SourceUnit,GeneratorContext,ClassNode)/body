@@ -3,5 +3,7 @@
     classNode.setSuperClass(ClassHelper.make(config.getBaseTemplateClass()));
     createConstructor(classNode);
     transformRunMethod(classNode,source);
+    VariableScopeVisitor visitor=new VariableScopeVisitor(source);
+    visitor.visitClass(classNode);
   }
 }

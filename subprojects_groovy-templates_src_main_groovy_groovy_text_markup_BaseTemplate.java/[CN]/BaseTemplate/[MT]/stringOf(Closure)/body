@@ -1,0 +1,11 @@
+{
+  Writer old=out;
+  StringWriter stringWriter=new StringWriter(32);
+  out=stringWriter;
+  Object result=cl.call();
+  if (result != null && result != this) {
+    stringWriter.append(result.toString());
+  }
+  out=old;
+  return stringWriter.toString();
+}
