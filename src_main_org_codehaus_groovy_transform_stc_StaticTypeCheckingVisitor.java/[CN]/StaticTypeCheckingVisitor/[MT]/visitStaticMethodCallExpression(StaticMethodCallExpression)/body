@@ -12,18 +12,10 @@
   Expression callArguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
-  boolean isWithCall=isWithCall(name,callArguments);
   final ClassNode receiver=call.getOwnerType();
   visitMethodCallArguments(receiver,argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
-  if (isWithCall) {
-    typeCheckingContext.lastImplicitItType=receiver;
-    checkClosureParameters(callArguments,receiver);
-  }
   try {
-    if (isWithCall) {
-      callArguments.visit(this);
-    }
     List<Receiver<String>> receivers=new LinkedList<Receiver<String>>();
     addReceivers(receivers,makeOwnerList(new ClassExpression(receiver)),false);
     List<MethodNode> mn=null;
@@ -66,9 +58,6 @@
     }
   }
   finally {
-    if (isWithCall) {
-      typeCheckingContext.lastImplicitItType=rememberLastItType;
-    }
     extension.afterMethodCall(call);
   }
 }

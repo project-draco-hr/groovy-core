@@ -2,14 +2,15 @@
   super.visitVariableExpression(vexp);
   if (storeTypeForThis(vexp))   return;
   if (storeTypeForSuper(vexp))   return;
-  if (typeCheckingContext.getEnclosingClosure() != null) {
+  TypeCheckingContext.EnclosingClosure enclosingClosure=typeCheckingContext.getEnclosingClosure();
+  if (enclosingClosure != null) {
     String name=vexp.getName();
     if (name.equals("owner") || name.equals("thisObject")) {
       storeType(vexp,typeCheckingContext.getEnclosingClassNode());
       return;
     }
  else     if ("delegate".equals(name)) {
-      DelegationMetadata md=getDelegationMetadata(typeCheckingContext.getEnclosingClosure().getClosureExpression());
+      DelegationMetadata md=getDelegationMetadata(enclosingClosure.getClosureExpression());
       ClassNode type=typeCheckingContext.getEnclosingClassNode();
       if (md != null)       type=md.getType();
       storeType(vexp,type);
@@ -19,9 +20,13 @@
   if (!(vexp.getAccessedVariable() instanceof DynamicVariable))   return;
   DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
   String dynName=dyn.getName();
-  PropertyExpression pe=new PropertyExpression(new VariableExpression("this"),dynName);
+  VariableExpression implicitThis=new VariableExpression("this");
+  PropertyExpression pe=new PropertyExpression(implicitThis,dynName);
   pe.setImplicitThis(true);
   if (visitPropertyExpressionSilent(pe,vexp)) {
+    ClassNode previousIt=vexp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+    vexp.copyNodeMetaData(implicitThis);
+    vexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,previousIt);
     storeType(vexp,getType(pe));
     Object val=pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
     if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,val);

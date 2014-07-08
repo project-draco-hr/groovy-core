@@ -38,15 +38,10 @@
   Expression callArguments=call.getArguments();
   ArgumentListExpression argumentList=InvocationWriter.makeArgumentList(callArguments);
   checkForbiddenSpreadArgument(argumentList);
-  boolean isWithCall=isWithCall(name,callArguments);
   final ClassNode receiver=getType(objectExpression);
   visitMethodCallArguments(receiver,argumentList,false,null);
   ClassNode[] args=getArgumentTypes(argumentList);
   final boolean isCallOnClosure=isClosureCall(name,objectExpression,callArguments);
-  if (isWithCall) {
-    typeCheckingContext.lastImplicitItType=receiver;
-    checkClosureParameters(callArguments,receiver);
-  }
   try {
     boolean callArgsVisited=false;
     if (isCallOnClosure) {
@@ -166,9 +161,6 @@
             }
           }
           ClassNode returnType=null;
-          if (isWithCall) {
-            returnType=getInferredReturnTypeFromWithClosureArgument(callArguments);
-          }
           if (returnType == null) {
             returnType=getType(directMethodCallCandidate);
           }
@@ -228,9 +220,6 @@
     }
   }
   finally {
-    if (isWithCall) {
-      typeCheckingContext.lastImplicitItType=rememberLastItType;
-    }
     typeCheckingContext.popEnclosingMethodCall();
     extension.afterMethodCall(call);
   }
