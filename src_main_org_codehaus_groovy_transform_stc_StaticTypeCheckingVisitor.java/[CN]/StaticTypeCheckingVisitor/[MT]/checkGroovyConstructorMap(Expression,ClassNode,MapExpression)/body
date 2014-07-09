@@ -6,7 +6,8 @@
     }
  else {
       AtomicReference<ClassNode> lookup=new AtomicReference<ClassNode>();
-      boolean hasProperty=existsProperty(new PropertyExpression(new VariableExpression("_",receiverType),keyExpr.getText()),false,new PropertyLookupVisitor(lookup));
+      PropertyExpression pexp=new PropertyExpression(new VariableExpression("_",receiverType),keyExpr.getText());
+      boolean hasProperty=existsProperty(pexp,false,new PropertyLookupVisitor(lookup));
       if (!hasProperty) {
         addStaticTypeError("No such property: " + keyExpr.getText() + " for class: "+ receiverType.getName(),receiver);
       }

@@ -77,7 +77,16 @@
       }
  else {
         if (setter != null) {
-          if (visitor != null && field != null)           visitor.visitField(field);
+          if (visitor != null) {
+            if (field != null) {
+              visitor.visitField(field);
+            }
+ else {
+              ClassNode setterType=setter.getParameters()[0].getOriginType();
+              FieldNode virtual=new FieldNode(propertyName,0,setterType,current,EmptyExpression.INSTANCE);
+              visitor.visitField(virtual);
+            }
+          }
           storeType(pexp,setter.getParameters()[0].getType());
           SetterInfo info=new SetterInfo(current,setter);
           BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
