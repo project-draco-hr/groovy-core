@@ -1,3 +1,14 @@
 {
-  return takeRight(asList(self),num);
+  if (!self.iterator().hasNext() || num <= 0) {
+    return self instanceof Collection ? createSimilarCollection((Collection<T>)self,0) : new ArrayList<T>();
+  }
+  Collection<T> selfCol=self instanceof Collection ? (Collection<T>)self : toList(self);
+  if (selfCol.size() <= num) {
+    Collection<T> ret=createSimilarCollection(selfCol,selfCol.size());
+    ret.addAll(selfCol);
+    return ret;
+  }
+  Collection<T> ret=createSimilarCollection(selfCol,num);
+  ret.addAll(asList((Iterable<T>)selfCol).subList(selfCol.size() - num,selfCol.size()));
+  return ret;
 }

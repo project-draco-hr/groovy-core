@@ -1,3 +1,5 @@
 {
-  return toList(take(self.iterator(),num));
+  Collection<T> result=self instanceof Collection ? createSimilarCollection((Collection<T>)self,num < 0 ? 0 : num) : new ArrayList<T>();
+  addAll(result,take(self.iterator(),num));
+  return result;
 }

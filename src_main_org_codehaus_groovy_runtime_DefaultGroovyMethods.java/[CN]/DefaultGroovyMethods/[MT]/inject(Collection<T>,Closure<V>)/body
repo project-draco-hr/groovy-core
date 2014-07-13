@@ -2,9 +2,11 @@
   if (self.isEmpty()) {
     throw new NoSuchElementException("Cannot call inject() on an empty collection without passing an initial value.");
   }
-  List<T> list=asList(self);
-  if (list.size() == 1) {
-    return list.get(0);
+  Iterator<T> iter=self.iterator();
+  T head=iter.next();
+  Collection<T> tail=tail(self);
+  if (!tail.iterator().hasNext()) {
+    return head;
   }
-  return (T)inject(drop(list,1),head(list),closure);
+  return (T)inject((Collection)tail,head,closure);
 }
