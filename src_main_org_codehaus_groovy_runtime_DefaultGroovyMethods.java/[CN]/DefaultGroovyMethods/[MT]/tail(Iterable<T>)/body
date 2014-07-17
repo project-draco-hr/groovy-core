@@ -1,8 +1,8 @@
 {
-  List<T> result=toList(self);
-  if (result.isEmpty()) {
-    throw new NoSuchElementException("Cannot access tail() for an empty Iterable");
+  if (!self.iterator().hasNext()) {
+    throw new NoSuchElementException("Cannot access tail() for an empty iterable");
   }
-  result.remove(0);
+  Collection<T> result=createSimilarCollection(self);
+  addAll(result,tail(self.iterator()));
   return result;
 }

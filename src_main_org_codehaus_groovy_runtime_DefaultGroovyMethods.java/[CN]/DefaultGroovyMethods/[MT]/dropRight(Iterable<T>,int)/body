@@ -1,3 +1,14 @@
 {
-  return dropRight(asList(self),num);
+  Collection<T> selfCol=self instanceof Collection ? (Collection<T>)self : toList(self);
+  if (selfCol.size() <= num) {
+    return createSimilarCollection(selfCol,0);
+  }
+  if (num <= 0) {
+    Collection<T> ret=createSimilarCollection(selfCol,selfCol.size());
+    ret.addAll(selfCol);
+    return ret;
+  }
+  Collection<T> ret=createSimilarCollection(selfCol,selfCol.size() - num);
+  ret.addAll(asList((Iterable<T>)selfCol).subList(0,selfCol.size() - num));
+  return ret;
 }

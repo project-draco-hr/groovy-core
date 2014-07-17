@@ -1,8 +1,15 @@
 {
-  List<T> result=toList(self);
-  if (result.isEmpty()) {
+  if (!self.iterator().hasNext()) {
     throw new NoSuchElementException("Cannot access init() for an empty Iterable");
   }
-  result.remove(result.size() - 1);
+  Collection<T> result;
+  if (self instanceof Collection) {
+    Collection<T> selfCol=(Collection<T>)self;
+    result=createSimilarCollection(selfCol,selfCol.size() - 1);
+  }
+ else {
+    result=new ArrayList<T>();
+  }
+  addAll(result,init(self.iterator()));
   return result;
 }

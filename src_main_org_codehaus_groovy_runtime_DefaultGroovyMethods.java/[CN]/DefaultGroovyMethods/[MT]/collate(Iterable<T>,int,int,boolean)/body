@@ -1,3 +1,20 @@
 {
-  return collate(asList(self),size,step,keepRemainder);
+  List<T> selfList=asList(self);
+  List<List<T>> answer=new ArrayList<List<T>>();
+  if (size <= 0 || selfList.size() == 0) {
+    answer.add(selfList);
+  }
+ else {
+    for (int pos=0; pos < selfList.size() && pos > -1; pos+=step) {
+      if (!keepRemainder && pos > selfList.size() - size) {
+        break;
+      }
+      List<T> element=new ArrayList<T>();
+      for (int offs=pos; offs < pos + size && offs < selfList.size(); offs++) {
+        element.add(selfList.get(offs));
+      }
+      answer.add(element);
+    }
+  }
+  return answer;
 }

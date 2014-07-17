@@ -1,3 +1,6 @@
 {
-  return toList(dropWhile(self.iterator(),condition));
+  Collection<T> selfCol=self instanceof Collection ? (Collection<T>)self : toList(self);
+  Collection<T> result=createSimilarCollection(selfCol);
+  addAll(result,dropWhile(self.iterator(),condition));
+  return result;
 }
