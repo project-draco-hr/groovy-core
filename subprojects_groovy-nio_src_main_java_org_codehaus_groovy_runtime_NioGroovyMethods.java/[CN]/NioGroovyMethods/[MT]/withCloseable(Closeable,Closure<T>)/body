@@ -1,12 +1,3 @@
 {
-  try {
-    T result=action.call(self);
-    Closeable temp=self;
-    self=null;
-    temp.close();
-    return result;
-  }
-  finally {
-    DefaultGroovyMethodsSupport.closeWithWarning(self);
-  }
+  return IOGroovyMethods.withCloseable(self,action);
 }
