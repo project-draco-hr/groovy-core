@@ -1,9 +1,7 @@
 {
   checkDir(self);
   try (DirectoryStream<Path> stream=Files.newDirectoryStream(self)){
-    Iterator<Path> itr=stream.iterator();
-    while (itr.hasNext()) {
-      Path path=itr.next();
+    for (    Path path : stream) {
       if (Files.isDirectory(path)) {
         if (fileType != FileType.FILES)         closure.call(path);
         eachFileRecurse(path,fileType,closure);

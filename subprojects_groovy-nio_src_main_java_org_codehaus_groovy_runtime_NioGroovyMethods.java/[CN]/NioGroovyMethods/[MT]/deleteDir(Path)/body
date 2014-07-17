@@ -2,9 +2,7 @@
   if (!Files.exists(self))   return true;
   if (!Files.isDirectory(self))   return false;
   try (DirectoryStream<Path> stream=Files.newDirectoryStream(self)){
-    Iterator<Path> itr=stream.iterator();
-    while (itr.hasNext()) {
-      Path path=itr.next();
+    for (    Path path : stream) {
       if (Files.isDirectory(path)) {
         if (!deleteDir(path)) {
           return false;

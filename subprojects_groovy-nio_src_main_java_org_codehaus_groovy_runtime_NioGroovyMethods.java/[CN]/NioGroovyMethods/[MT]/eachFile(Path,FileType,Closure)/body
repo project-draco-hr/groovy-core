@@ -1,9 +1,7 @@
 {
   checkDir(self);
   try (DirectoryStream<Path> stream=Files.newDirectoryStream(self)){
-    Iterator<Path> itr=stream.iterator();
-    while (itr.hasNext()) {
-      Path path=itr.next();
+    for (    Path path : stream) {
       if (fileType == FileType.ANY || (fileType != FileType.FILES && Files.isDirectory(path)) || (fileType != FileType.DIRECTORIES && Files.isRegularFile(path))) {
         closure.call(path);
       }
