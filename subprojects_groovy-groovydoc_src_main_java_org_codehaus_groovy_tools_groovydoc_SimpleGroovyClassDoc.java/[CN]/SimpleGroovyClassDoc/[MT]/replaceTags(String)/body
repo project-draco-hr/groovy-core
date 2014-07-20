@@ -1,5 +1,11 @@
 {
   String result=comment.replaceAll("(?m)^\\s*\\*","");
+  String relativeRootPath=getRelativeRootPath();
+  if (!relativeRootPath.endsWith("/")) {
+    relativeRootPath+="/";
+  }
+  result=result.replaceAll(DOCROOT_PATTERN2,relativeRootPath);
+  result=result.replaceAll(DOCROOT_PATTERN,relativeRootPath);
   result=replaceAllTags(result,"","",LINK_REGEX);
   result=encodeAngleBracketsInTagBody(result,LITERAL_REGEX);
   result=replaceAllTags(result,"","",LITERAL_REGEX);
