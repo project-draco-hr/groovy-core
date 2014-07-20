@@ -1,10 +1,10 @@
 {
-  String name=propNames.get(methodName);
+  String name=PROP_NAMES.get(methodName);
   if (name != null)   return name;
-synchronized (propNames) {
+synchronized (PROP_NAMES) {
     String stripped=methodName.startsWith("is") ? methodName.substring(2) : methodName.substring(3);
     String propName=java.beans.Introspector.decapitalize(stripped);
-    propNames.put(methodName,propName);
+    PROP_NAMES.put(methodName,propName);
     return propName;
   }
 }
