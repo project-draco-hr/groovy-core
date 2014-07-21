@@ -3,6 +3,8 @@
   String methodName=target.getName();
   CompileStack compileStack=controller.getCompileStack();
   OperandStack operandStack=controller.getOperandStack();
+  ClassNode declaringClass=target.getDeclaringClass();
+  ClassNode classNode=controller.getClassNode();
   MethodVisitor mv=controller.getMethodVisitor();
   int opcode=INVOKEVIRTUAL;
   if (target.isStatic()) {
@@ -11,14 +13,12 @@
  else   if (target.isPrivate() || ((receiver instanceof VariableExpression && ((VariableExpression)receiver).isSuperExpression()))) {
     opcode=INVOKESPECIAL;
   }
- else   if (target.getDeclaringClass().isInterface()) {
+ else   if (declaringClass.isInterface()) {
     opcode=INVOKEINTERFACE;
   }
   int argumentsToRemove=0;
   if (opcode != INVOKESTATIC) {
     if (receiver != null) {
-      ClassNode declaringClass=target.getDeclaringClass();
-      ClassNode classNode=controller.getClassNode();
       if (implicitThis && !classNode.isDerivedFrom(declaringClass) && !classNode.implementsInterface(declaringClass)&& classNode instanceof InnerClassNode) {
         compileStack.pushImplicitThis(false);
         if (controller.isInClosure()) {
@@ -43,7 +43,11 @@
   }
   int stackSize=operandStack.getStackLength();
   loadArguments(args.getExpressions(),target.getParameters());
-  String owner=BytecodeHelper.getClassInternalName(target.getDeclaringClass());
+  String owner=BytecodeHelper.getClassInternalName(declaringClass);
+  ClassNode receiverType=receiver != null ? controller.getTypeChooser().resolveType(receiver,classNode) : target.getDeclaringClass();
+  if (opcode == INVOKEVIRTUAL && target.isPublic() && (!Modifier.isPublic(declaringClass.getModifiers()) && !receiverType.equals(declaringClass)) && receiverType.isDerivedFrom(declaringClass) && !receiverType.getPackageName().equals(classNode.getPackageName())) {
+    owner=BytecodeHelper.getClassInternalName(receiverType);
+  }
   String desc=BytecodeHelper.getMethodDescriptor(target.getReturnType(),target.getParameters());
   mv.visitMethodInsn(opcode,owner,methodName,desc,opcode == INVOKEINTERFACE);
   ClassNode ret=target.getReturnType().redirect();
