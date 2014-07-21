@@ -1,6 +1,9 @@
 {
   checkInitalised();
   SingleKeyHashMap propertyMap=classPropertyIndex.getNullable(theCachedClass);
+  if (propertyMap == null) {
+    propertyMap=new SingleKeyHashMap();
+  }
   List ret=new ArrayList(propertyMap.size());
   for (ComplexKeyHashMap.EntryIterator iter=propertyMap.getEntrySetIterator(); iter.hasNext(); ) {
     MetaProperty element=(MetaProperty)((SingleKeyHashMap.Entry)iter.next()).value;
