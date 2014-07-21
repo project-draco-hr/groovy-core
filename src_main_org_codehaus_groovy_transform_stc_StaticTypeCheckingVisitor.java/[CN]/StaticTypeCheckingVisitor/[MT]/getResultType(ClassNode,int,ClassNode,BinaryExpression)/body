@@ -2,11 +2,12 @@
   ClassNode leftRedirect=left.redirect();
   ClassNode rightRedirect=right.redirect();
   Expression leftExpression=expr.getLeftExpression();
+  Expression rightExpression=expr.getRightExpression();
   if (op == ASSIGN || op == ASSIGNMENT_OPERATOR) {
     if (leftRedirect.isArray() && implementsInterfaceOrIsSubclassOf(rightRedirect,Collection_TYPE))     return leftRedirect;
     if (leftRedirect.implementsInterface(Collection_TYPE) && rightRedirect.implementsInterface(Collection_TYPE)) {
-      if (expr.getRightExpression() instanceof ListExpression) {
-        List<Expression> list=((ListExpression)expr.getRightExpression()).getExpressions();
+      if (rightExpression instanceof ListExpression) {
+        List<Expression> list=((ListExpression)rightExpression).getExpressions();
         if (list.isEmpty())         return left;
       }
       return right;
@@ -14,8 +15,8 @@
     if (rightRedirect.implementsInterface(Collection_TYPE) && rightRedirect.isDerivedFrom(leftRedirect)) {
       return right;
     }
-    if (rightRedirect.isDerivedFrom(CLOSURE_TYPE) && isSAMType(leftRedirect)) {
-      return inferSAMTypeGenericsInAssignment(left,findSAM(left),right,(ClosureExpression)expr.getRightExpression());
+    if (rightRedirect.isDerivedFrom(CLOSURE_TYPE) && isSAMType(leftRedirect) && rightExpression instanceof ClosureExpression) {
+      return inferSAMTypeGenericsInAssignment(left,findSAM(left),right,(ClosureExpression)rightExpression);
     }
     if (leftExpression instanceof VariableExpression) {
       ClassNode initialType=getOriginalDeclarationType(leftExpression).redirect();
@@ -35,11 +36,11 @@
     return boolean_TYPE;
   }
  else   if (isArrayOp(op)) {
-    BinaryExpression newExpr=new BinaryExpression(expr.getLeftExpression(),expr.getOperation(),expr.getRightExpression());
+    BinaryExpression newExpr=new BinaryExpression(expr.getLeftExpression(),expr.getOperation(),rightExpression);
     newExpr.setSourcePosition(expr);
     MethodNode method=findMethodOrFail(newExpr,left.getPlainNodeReference(),"getAt",right.getPlainNodeReference());
     if (method != null && implementsInterfaceOrIsSubclassOf(right,RANGE_TYPE)) {
-      return inferReturnTypeGenerics(left,method,expr.getRightExpression());
+      return inferReturnTypeGenerics(left,method,rightExpression);
     }
     return method != null ? inferComponentType(left,right) : null;
   }
@@ -99,7 +100,7 @@
     if (isAssignment(op))     return left;
     if (isCompareToBoolean(op))     return boolean_TYPE;
     if (op == COMPARE_TO)     return int_TYPE;
-    return inferReturnTypeGenerics(left,method,new ArgumentListExpression(expr.getRightExpression()));
+    return inferReturnTypeGenerics(left,method,new ArgumentListExpression(rightExpression));
   }
   return null;
 }
