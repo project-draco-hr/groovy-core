@@ -1,0 +1,7 @@
+{
+  PrintWriter pw=out instanceof PrintWriter ? (PrintWriter)out : new PrintWriter(out);
+  TraceClassVisitor visitor=new TraceClassVisitor(pw);
+  ClassReader reader=new ClassReader(original);
+  reader.accept(visitor,0);
+  return original;
+}

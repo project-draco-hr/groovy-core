@@ -18,17 +18,7 @@
   }
 );
   if (DEBUG_BYTECODE) {
-    compilerConfiguration.setBytecodePostprocessor(new BytecodeProcessor(){
-      @Override public byte[] processBytecode(      final String name,      final byte[] original){
-        Writer writer=new StringWriter();
-        TraceClassVisitor visitor=new TraceClassVisitor(new PrintWriter(writer));
-        ClassReader reader=new ClassReader(original);
-        reader.accept(visitor,0);
-        System.err.println(writer);
-        return original;
-      }
-    }
-);
+    compilerConfiguration.setBytecodePostprocessor(BytecodeDumper.STANDARD_ERR);
   }
   templateResolver=resolver == null ? new DefaultTemplateResolver() : resolver;
   templateResolver.configure(groovyClassLoader,templateConfiguration);
