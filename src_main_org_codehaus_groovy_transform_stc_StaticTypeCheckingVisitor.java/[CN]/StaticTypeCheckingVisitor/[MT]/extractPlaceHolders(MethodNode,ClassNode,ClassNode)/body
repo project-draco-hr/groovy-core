@@ -10,10 +10,15 @@
   }
   ClassNode current=receiver;
   while (true) {
+    boolean continueLoop=true;
     Map<String,GenericsType> currentPlaceHolders=new HashMap<String,GenericsType>();
-    GenericsUtils.extractPlaceholders(current,currentPlaceHolders);
-    if (method != null && declaringClass.equals(current)) {
-      addMethodLevelDeclaredGenerics(method,currentPlaceHolders);
+    if (isGenericsPlaceHolderOrArrayOf(declaringClass) || declaringClass.equals(current)) {
+      extractGenericsConnections(currentPlaceHolders,current,declaringClass);
+      if (method != null)       addMethodLevelDeclaredGenerics(method,currentPlaceHolders);
+      continueLoop=false;
+    }
+ else {
+      GenericsUtils.extractPlaceholders(current,currentPlaceHolders);
     }
     if (resolvedPlaceholders != null) {
       Set<Map.Entry<String,GenericsType>> entries=currentPlaceHolders.entrySet();
@@ -26,7 +31,7 @@
       }
     }
     resolvedPlaceholders=currentPlaceHolders;
-    if (current.equals(declaringClass))     break;
+    if (!continueLoop)     break;
     current=getNextSuperClass(current,declaringClass);
     if (current == null && CLASS_Type.equals(declaringClass)) {
       current=declaringClass;
