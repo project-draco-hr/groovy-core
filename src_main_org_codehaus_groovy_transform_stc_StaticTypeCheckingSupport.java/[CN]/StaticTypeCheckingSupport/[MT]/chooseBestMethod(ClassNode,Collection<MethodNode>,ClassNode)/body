@@ -96,5 +96,16 @@
       }
     }
   }
+  if (bestChoices.size() > 1) {
+    List<MethodNode> onlyExtensionMethods=new LinkedList<MethodNode>();
+    for (    MethodNode choice : bestChoices) {
+      if (choice instanceof ExtensionMethodNode) {
+        onlyExtensionMethods.add(choice);
+      }
+    }
+    if (onlyExtensionMethods.size() == 1) {
+      return onlyExtensionMethods;
+    }
+  }
   return bestChoices;
 }
