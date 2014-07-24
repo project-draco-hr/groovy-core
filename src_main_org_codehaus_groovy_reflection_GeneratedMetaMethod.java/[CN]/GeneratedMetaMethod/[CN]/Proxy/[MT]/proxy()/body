@@ -1,6 +1,8 @@
 {
   if (proxy == null) {
-    createProxy();
+synchronized (this) {
+      if (proxy != null)       createProxy();
+    }
   }
   return proxy;
 }
