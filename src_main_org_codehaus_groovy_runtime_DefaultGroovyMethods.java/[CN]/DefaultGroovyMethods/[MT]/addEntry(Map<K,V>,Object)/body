@@ -2,9 +2,11 @@
   if (newEntry instanceof Map) {
     leftShift(result,(Map)newEntry);
   }
- else   if (newEntry instanceof List && ((List)newEntry).size() == 2) {
+ else   if (newEntry instanceof List) {
     List list=(List)newEntry;
-    leftShift(result,new MapEntry(list.get(0),list.get(1)));
+    Object key=list.size() == 0 ? null : list.get(0);
+    Object value=list.size() <= 1 ? null : list.get(1);
+    leftShift(result,new MapEntry(key,value));
   }
  else {
     leftShift(result,asType(newEntry,Map.Entry.class));
