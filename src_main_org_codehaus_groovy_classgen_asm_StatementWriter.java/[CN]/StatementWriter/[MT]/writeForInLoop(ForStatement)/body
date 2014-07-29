@@ -4,7 +4,7 @@
   CompileStack compileStack=controller.getCompileStack();
   MethodVisitor mv=controller.getMethodVisitor();
   OperandStack operandStack=controller.getOperandStack();
-  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabel());
+  compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabels());
   BytecodeVariable variable=compileStack.defineVariable(loop.getVariable(),false);
   MethodCallExpression iterator=new MethodCallExpression(loop.getCollectionExpression(),"iterator",new ArgumentListExpression());
   iterator.visit(controller.getAcg());

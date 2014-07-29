@@ -1,15 +1,21 @@
 {
-  String label=statement.getStatementLabel();
-  if (label != null) {
-    for (Iterator<BreakStatement> iter=breakLabels.iterator(); iter.hasNext(); ) {
-      BreakStatement element=iter.next();
-      if (element.getLabel().equals(label))       iter.remove();
+  List<String> labels=statement.getStatementLabels();
+  if (labels != null) {
+    for (    String label : labels) {
+      if (breakLabels != null) {
+        for (Iterator<BreakStatement> iter=breakLabels.iterator(); iter.hasNext(); ) {
+          if (iter.next().getLabel().equals(label))           iter.remove();
+        }
+      }
+      if (continueLabels != null) {
+        for (Iterator<ContinueStatement> iter=continueLabels.iterator(); iter.hasNext(); ) {
+          if (iter.next().getLabel().equals(label))           iter.remove();
+        }
+      }
+      if (visitedLabels != null) {
+        visitedLabels.add(label);
+      }
     }
-    for (Iterator<ContinueStatement> iter=continueLabels.iterator(); iter.hasNext(); ) {
-      ContinueStatement element=iter.next();
-      if (element.getLabel().equals(label))       iter.remove();
-    }
-    visitedLabels.add(label);
   }
   super.visitStatement(statement);
 }
