@@ -10,7 +10,7 @@
     }
   }
   if (node.isEnum() || node.isInterface())   return;
-  addDispatcherMethods(node);
+  if (node.getInnerClasses().hasNext())   addDispatcherMethods(node);
   if (innerClass == null)   return;
   super.visitClass(node);
   addDefaultMethods(innerClass);
