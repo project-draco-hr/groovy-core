@@ -3,6 +3,7 @@
   if (classNode.declaresInterface(ClassHelper.GENERATED_CLOSURE_Type)) {
     return;
   }
-  visitMopMethodList(classNode.getMethods(),true);
-  visitMopMethodList(classNode.getSuperClass().getAllDeclaredMethods(),false);
+  Set<MopKey> currentClassSignatures=buildCurrentClassSignatureSet(classNode.getMethods());
+  visitMopMethodList(classNode.getMethods(),true,Collections.EMPTY_SET);
+  visitMopMethodList(classNode.getSuperClass().getAllDeclaredMethods(),false,currentClassSignatures);
 }

@@ -1,8 +1,7 @@
 {
   HashMap<MopKey,MethodNode> mops=new HashMap<MopKey,MethodNode>();
   LinkedList<MethodNode> mopCalls=new LinkedList<MethodNode>();
-  for (  Object method : methods) {
-    MethodNode mn=(MethodNode)method;
+  for (  MethodNode mn : methods) {
     if ((mn.getModifiers() & (ACC_ABSTRACT | ACC_BRIDGE)) != 0)     continue;
     if (mn.isStatic())     continue;
     boolean isPrivate=Modifier.isPrivate(mn.getModifiers());
@@ -13,6 +12,7 @@
       continue;
     }
     if (methodName.startsWith("<"))     continue;
+    if (!useOnlyIfDeclaredHereToo.contains(new MopKey(methodName,mn.getParameters())))     continue;
     String name=getMopMethodName(mn,isThis);
     MopKey key=new MopKey(name,mn.getParameters());
     if (mops.containsKey(key))     continue;
