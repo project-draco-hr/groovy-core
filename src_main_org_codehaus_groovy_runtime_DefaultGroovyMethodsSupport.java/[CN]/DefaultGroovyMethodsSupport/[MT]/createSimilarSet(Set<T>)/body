@@ -1,6 +1,19 @@
 {
   if (orig instanceof SortedSet) {
-    return new TreeSet<T>(((SortedSet)orig).comparator());
+    Comparator comparator=((SortedSet)orig).comparator();
+    if (orig instanceof ConcurrentSkipListSet) {
+      return new ConcurrentSkipListSet<T>(comparator);
+    }
+ else {
+      return new TreeSet<T>(comparator);
+    }
   }
-  return new LinkedHashSet<T>();
+ else {
+    if (orig instanceof CopyOnWriteArraySet) {
+      return new CopyOnWriteArraySet<T>();
+    }
+ else {
+      return new LinkedHashSet<T>();
+    }
+  }
 }

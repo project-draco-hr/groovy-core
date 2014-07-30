@@ -1,0 +1,33 @@
+{
+  if (orig instanceof ArrayBlockingQueue) {
+    ArrayBlockingQueue queue=(ArrayBlockingQueue)orig;
+    return new ArrayBlockingQueue<T>(queue.size() + queue.remainingCapacity());
+  }
+ else   if (orig instanceof ArrayDeque) {
+    return new ArrayDeque<T>();
+  }
+ else   if (orig instanceof ConcurrentLinkedQueue) {
+    return new ConcurrentLinkedQueue<T>();
+  }
+ else   if (orig instanceof DelayQueue) {
+    return new DelayQueue();
+  }
+ else   if (orig instanceof LinkedBlockingDeque) {
+    return new LinkedBlockingDeque<T>();
+  }
+ else   if (orig instanceof LinkedBlockingQueue) {
+    return new LinkedBlockingQueue<T>();
+  }
+ else   if (orig instanceof PriorityBlockingQueue) {
+    return new PriorityBlockingQueue<T>();
+  }
+ else   if (orig instanceof PriorityQueue) {
+    return new PriorityQueue<T>(11,((PriorityQueue)orig).comparator());
+  }
+ else   if (orig instanceof SynchronousQueue) {
+    return new SynchronousQueue<T>();
+  }
+ else {
+    return new LinkedList<T>();
+  }
+}
