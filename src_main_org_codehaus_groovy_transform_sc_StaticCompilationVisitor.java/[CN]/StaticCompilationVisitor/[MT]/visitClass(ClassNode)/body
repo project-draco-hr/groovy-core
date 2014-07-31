@@ -1,12 +1,19 @@
 {
   boolean skip=shouldSkipClassNode(node);
+  if (!skip && !anyMethodSkip(node)) {
+    node.putNodeMetaData(MopWriter.Factory.class,StaticCompilationMopWriter.FACTORY);
+  }
   ClassNode oldCN=classNode;
   classNode=node;
   Iterator<InnerClassNode> innerClasses=classNode.getInnerClasses();
   while (innerClasses.hasNext()) {
     InnerClassNode innerClassNode=innerClasses.next();
-    innerClassNode.putNodeMetaData(STATIC_COMPILE_NODE,!(skip || isSkippedInnerClass(innerClassNode)));
+    boolean innerStaticCompile=!(skip || isSkippedInnerClass(innerClassNode));
+    innerClassNode.putNodeMetaData(STATIC_COMPILE_NODE,innerStaticCompile);
     innerClassNode.putNodeMetaData(WriterControllerFactory.class,node.getNodeMetaData(WriterControllerFactory.class));
+    if (innerStaticCompile && !anyMethodSkip(innerClassNode)) {
+      innerClassNode.putNodeMetaData(MopWriter.Factory.class,StaticCompilationMopWriter.FACTORY);
+    }
   }
   super.visitClass(node);
   addPrivateFieldAndMethodAccessors(node);
