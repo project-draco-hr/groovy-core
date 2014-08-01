@@ -3,11 +3,17 @@
   if (params != 1) {
     return max(self,new ClosureComparator<T>(closure));
   }
+  boolean first=true;
   T answer=null;
   Object answerValue=null;
   for (  T item : self) {
     Object value=closure.call(item);
-    if (answer == null || ScriptBytecodeAdapter.compareLessThan(answerValue,value)) {
+    if (first) {
+      first=false;
+      answer=item;
+      answerValue=value;
+    }
+ else     if (ScriptBytecodeAdapter.compareLessThan(answerValue,value)) {
       answer=item;
       answerValue=value;
     }
