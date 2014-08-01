@@ -2,6 +2,9 @@
   validate(codeSource);
   Class answer;
   CompilationUnit unit=createCompilationUnit(config,codeSource.getCodeSource());
+  if (recompile != null && recompile || recompile == null && config.getRecompileGroovySource()) {
+    unit.addFirstPhaseOperation(TimestampAdder.INSTANCE,CompilePhase.CLASS_GENERATION.getPhaseNumber());
+  }
   SourceUnit su=null;
   File file=codeSource.getFile();
   if (file != null) {
