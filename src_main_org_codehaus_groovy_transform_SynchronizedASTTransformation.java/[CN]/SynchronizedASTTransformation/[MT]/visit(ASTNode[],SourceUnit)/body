@@ -1,6 +1,5 @@
 {
   init(nodes,source);
-  init(nodes,source);
   AnnotatedNode parent=(AnnotatedNode)nodes[1];
   AnnotationNode node=(AnnotationNode)nodes[0];
   if (!MY_TYPE.equals(node.getClassNode()))   return;
@@ -9,6 +8,7 @@
     MethodNode mNode=(MethodNode)parent;
     ClassNode cNode=mNode.getDeclaringClass();
     String lockExpr=determineLock(value,cNode,mNode);
+    if (lockExpr == null)     return;
     Statement origCode=mNode.getCode();
     Statement newCode=new SynchronizedStatement(varX(lockExpr),origCode);
     mNode.setCode(newCode);

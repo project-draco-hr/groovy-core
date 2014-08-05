@@ -3,10 +3,12 @@
   if (value != null && value.length() > 0 && !value.equalsIgnoreCase("$lock")) {
     if (cNode.getDeclaredField(value) == null) {
       addError("Error during " + MY_TYPE_NAME + " processing: lock field with name '"+ value+ "' not found in class "+ cNode.getName(),mNode);
+      return null;
     }
     FieldNode field=cNode.getDeclaredField(value);
     if (field.isStatic() != isStatic) {
       addError("Error during " + MY_TYPE_NAME + " processing: lock field with name '"+ value+ "' should "+ (isStatic ? "" : "not ")+ "be static",field);
+      return null;
     }
     return value;
   }
