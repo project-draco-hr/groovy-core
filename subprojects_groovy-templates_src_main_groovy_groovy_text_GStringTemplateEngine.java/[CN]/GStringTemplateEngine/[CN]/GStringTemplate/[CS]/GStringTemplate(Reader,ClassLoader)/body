@@ -47,7 +47,7 @@
     templateExpressions.append("\"\"\"");
   }
   templateExpressions.append("}}");
-  final GroovyClassLoader loader=parentLoader instanceof GroovyClassLoader ? (GroovyClassLoader)parentLoader : ((GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
+  final GroovyClassLoader loader=reuseClassLoader && parentLoader instanceof GroovyClassLoader ? (GroovyClassLoader)parentLoader : ((GroovyClassLoader)AccessController.doPrivileged(new PrivilegedAction(){
     public Object run(){
       return new GroovyClassLoader(parentLoader);
     }
