@@ -1,36 +1,45 @@
 {
-  BlockStatement initBody=new BlockStatement();
   if (cNode.getDeclaredConstructors().size() == 0) {
-    initBody.addStatement(EmptyStatement.INSTANCE);
-    cNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,initBody);
-    initBody=new BlockStatement();
+    BlockStatement noArgBody=new BlockStatement();
+    noArgBody.addStatement(EmptyStatement.INSTANCE);
+    cNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,noArgBody);
   }
-  Parameter initParam=param(GenericsUtils.nonGeneric(cNode),"other");
-  final Expression other=varX(initParam);
-  boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
-  if (hasParent) {
-    initBody.addStatement(stmt(ctorX(ClassNode.SUPER,other)));
+  boolean hasThisCons=false;
+  for (  ConstructorNode consNode : cNode.getDeclaredConstructors()) {
+    Parameter[] parameters=consNode.getParameters();
+    if (parameters.length == 1 && parameters[0].getType().equals(cNode)) {
+      hasThisCons=true;
+    }
   }
-  for (  FieldNode fieldNode : list) {
-    String name=fieldNode.getName();
-    if (excludes.contains(name))     continue;
-    ClassNode fieldType=fieldNode.getType();
-    Expression direct=propX(other,name);
-    Expression to=propX(varX("this"),name);
-    Statement assignDirect=assignS(to,direct);
-    Statement assignCloned=assignS(to,castX(fieldType,callX(direct,"clone")));
-    Statement assignClonedDynamic=assignS(to,castX(fieldType,callCloneDynamicX(direct)));
-    if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
-      initBody.addStatement(assignCloned);
+  if (!hasThisCons) {
+    BlockStatement initBody=new BlockStatement();
+    Parameter initParam=param(GenericsUtils.nonGeneric(cNode),"other");
+    final Expression other=varX(initParam);
+    boolean hasParent=cNode.getSuperClass() != ClassHelper.OBJECT_TYPE;
+    if (hasParent) {
+      initBody.addStatement(stmt(ctorX(ClassNode.SUPER,other)));
     }
- else     if (!possiblyCloneable(fieldType)) {
-      initBody.addStatement(assignDirect);
-    }
+    for (    FieldNode fieldNode : list) {
+      String name=fieldNode.getName();
+      if (excludes.contains(name))       continue;
+      ClassNode fieldType=fieldNode.getType();
+      Expression direct=propX(other,name);
+      Expression to=propX(varX("this"),name);
+      Statement assignDirect=assignS(to,direct);
+      Statement assignCloned=assignS(to,castX(fieldType,callX(direct,"clone")));
+      Statement assignClonedDynamic=assignS(to,castX(fieldType,callCloneDynamicX(direct)));
+      if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
+        initBody.addStatement(assignCloned);
+      }
+ else       if (!possiblyCloneable(fieldType)) {
+        initBody.addStatement(assignDirect);
+      }
  else {
-      initBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignClonedDynamic,assignDirect));
+        initBody.addStatement(ifElseS(isInstanceOfX(direct,CLONEABLE_TYPE),assignClonedDynamic,assignDirect));
+      }
     }
+    cNode.addConstructor(ACC_PROTECTED,params(initParam),ClassNode.EMPTY_ARRAY,initBody);
   }
   ClassNode[] exceptions={make(CloneNotSupportedException.class)};
-  cNode.addConstructor(ACC_PROTECTED,params(initParam),ClassNode.EMPTY_ARRAY,initBody);
   cNode.addMethod("clone",ACC_PUBLIC,GenericsUtils.nonGeneric(cNode),Parameter.EMPTY_ARRAY,exceptions,block(stmt(ctorX(cNode,args(varX("this"))))));
 }
