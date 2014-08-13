@@ -1,0 +1,22 @@
+{
+  RuntimeException result=e;
+  ErrorCollector collector=e.getErrorCollector();
+  @SuppressWarnings({"unchecked"}) List<Message> errors=(List<Message>)collector.getErrors();
+  if (errors.size() > 0) {
+    Message firstMessage=errors.get(0);
+    if (firstMessage instanceof SyntaxErrorMessage) {
+      @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"}) SyntaxException syntaxException=((SyntaxErrorMessage)firstMessage).getCause();
+      Position errorPosition=new Position(syntaxException.getLine(),syntaxException.getStartColumn());
+      StringSection precedingSection=findPrecedingSection(errorPosition,sections);
+      if (precedingSection != null) {
+        offsetPositionFromSection(errorPosition,precedingSection);
+        if (sections.get(sections.size() - 1) == precedingSection) {
+          errorPosition.column=precedingSection.lastSourcePosition.column;
+        }
+        String message=mangleExceptionMessage(e.getMessage(),errorPosition);
+        result=new GroovyRuntimeException(message);
+      }
+    }
+  }
+  return result;
+}

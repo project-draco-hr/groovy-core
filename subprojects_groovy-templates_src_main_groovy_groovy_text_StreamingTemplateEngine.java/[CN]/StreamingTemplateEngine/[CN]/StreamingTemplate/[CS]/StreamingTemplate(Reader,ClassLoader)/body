@@ -1,0 +1,66 @@
+{
+  final StringBuilder target=new StringBuilder();
+  List<StringSection> sections=new ArrayList<StringSection>();
+  Position sourcePosition=new Position(1,1);
+  Position targetPosition=new Position(1,1);
+  Position lastSourcePosition=new Position(1,1);
+  StringSection currentSection=new StringSection(sourcePosition);
+  StringBuilder lookAhead=new StringBuilder(10);
+  append(target,targetPosition,SCRIPT_HEAD);
+  try {
+    while (true) {
+      lastSourcePosition.set(sourcePosition);
+      int c=read(source,sourcePosition,lookAhead);
+      if (c == '\\') {
+        handleEscaping(source,sourcePosition,currentSection,lookAhead);
+        continue;
+      }
+ else       if (c == '<') {
+        c=read(source,sourcePosition,lookAhead);
+        if (c == '%') {
+          c=read(source,sourcePosition);
+          clear(lookAhead);
+          if (c == '=') {
+            finishStringSection(sections,currentSection,target,lastSourcePosition,targetPosition);
+            parseExpression(source,target,sourcePosition,targetPosition);
+            currentSection=new StringSection(sourcePosition);
+            continue;
+          }
+ else {
+            finishStringSection(sections,currentSection,target,lastSourcePosition,targetPosition);
+            parseSection(c,source,target,sourcePosition,targetPosition);
+            currentSection=new StringSection(sourcePosition);
+            continue;
+          }
+        }
+ else {
+          currentSection.data.append('<');
+        }
+      }
+ else       if (c == '$') {
+        c=read(source,sourcePosition);
+        clear(lookAhead);
+        if (c == '{') {
+          finishStringSection(sections,currentSection,target,lastSourcePosition,targetPosition);
+          parseGString(source,target,sourcePosition,targetPosition);
+          currentSection=new StringSection(sourcePosition);
+          continue;
+        }
+ else {
+          currentSection.data.append('$');
+        }
+      }
+      currentSection.data.append((char)c);
+      clear(lookAhead);
+    }
+  }
+ catch (  FinishedReadingException e) {
+    if (lookAhead.length() > 0) {
+      currentSection.data.append(lookAhead);
+    }
+  }
+  finishStringSection(sections,currentSection,target,sourcePosition,targetPosition);
+  append(target,targetPosition,SCRIPT_TAIL);
+  scriptSource=target.toString();
+  this.template=createTemplateClosure(sections,parentLoader,target);
+}
