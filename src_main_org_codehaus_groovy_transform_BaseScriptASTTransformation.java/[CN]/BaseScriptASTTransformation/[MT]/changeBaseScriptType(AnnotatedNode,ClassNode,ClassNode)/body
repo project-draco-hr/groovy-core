@@ -18,4 +18,8 @@
       cNode.addMethod(methodNode);
     }
   }
+  if (cNode.getSuperClass().getDeclaredConstructor(CONTEXT_CTOR_PARAMETERS) == null) {
+    ConstructorNode orphanedConstructor=cNode.getDeclaredConstructor(CONTEXT_CTOR_PARAMETERS);
+    cNode.removeConstructor(orphanedConstructor);
+  }
 }
