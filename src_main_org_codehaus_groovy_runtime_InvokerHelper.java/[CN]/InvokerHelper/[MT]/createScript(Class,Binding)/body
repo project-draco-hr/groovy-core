@@ -1,26 +1,32 @@
 {
-  Script script=null;
+  Script script;
   if (scriptClass == null) {
-    script=new Script(){
-      public Object run(){
-        return null;
-      }
-    }
-;
+    script=new NullScript(context);
   }
  else {
     try {
-      final GroovyObject object=(GroovyObject)scriptClass.newInstance();
-      if (object instanceof Script) {
-        script=(Script)object;
+      if (Script.class.isAssignableFrom(scriptClass)) {
+        try {
+          Constructor constructor=scriptClass.getConstructor(Binding.class);
+          script=(Script)constructor.newInstance(context);
+        }
+ catch (        NoSuchMethodException e) {
+          script=(Script)scriptClass.newInstance();
+          script.setBinding(context);
+        }
       }
  else {
-        script=new Script(){
+        final GroovyObject object=(GroovyObject)scriptClass.newInstance();
+        script=new Script(context){
           public Object run(){
-            Object args=getBinding().getVariables().get("args");
             Object argsToPass=EMPTY_MAIN_ARGS;
-            if (args != null && args instanceof String[]) {
-              argsToPass=args;
+            try {
+              Object args=getProperty("args");
+              if (args instanceof String[]) {
+                argsToPass=args;
+              }
+            }
+ catch (            MissingPropertyException e) {
             }
             object.invokeMethod("main",argsToPass);
             return null;
@@ -40,6 +46,5 @@
       throw new GroovyRuntimeException("Failed to create Script instance for class: " + scriptClass + ". Reason: "+ e,e);
     }
   }
-  script.setBinding(context);
   return script;
 }

@@ -1,20 +1,30 @@
 {
+  context.setProperty("args",args);
   if (scriptClass == null) {
     return null;
   }
   if (Script.class.isAssignableFrom(scriptClass)) {
-    Script script=null;
     try {
-      script=(Script)scriptClass.newInstance();
+      Constructor constructor=scriptClass.getConstructor(Binding.class);
+      Script script=(Script)constructor.newInstance(context);
+      return script.run();
     }
  catch (    InstantiationException e) {
     }
 catch (    IllegalAccessException e) {
     }
-    if (script != null) {
-      script.setBinding(context);
-      script.setProperty("args",args);
-      return script.run();
+catch (    NoSuchMethodException e) {
+      try {
+        Script script=(Script)scriptClass.newInstance();
+        script.setBinding(context);
+        return script.run();
+      }
+ catch (      InstantiationException e1) {
+      }
+catch (      IllegalAccessException e1) {
+      }
+    }
+catch (    InvocationTargetException e) {
     }
   }
   try {

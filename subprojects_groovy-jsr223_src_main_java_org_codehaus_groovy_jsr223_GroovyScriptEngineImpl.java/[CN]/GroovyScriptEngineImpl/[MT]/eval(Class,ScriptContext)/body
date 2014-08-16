@@ -33,8 +33,7 @@ synchronized (ctx) {
       return scriptClass;
     }
  else {
-      Script scriptObject=(Script)scriptClass.newInstance();
-      scriptObject.setBinding(binding);
+      Script scriptObject=InvokerHelper.createScript(scriptClass,binding);
       Method[] methods=scriptClass.getMethods();
       for (      Method m : methods) {
         String name=m.getName();
