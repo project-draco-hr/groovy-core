@@ -1,9 +1,9 @@
 {
   Object memberValue=transform.getMemberValue(anno,memberName);
-  if (memberValue != null && memberValue.equals("<strategyDefault>"))   return false;
+  if (memberValue != null && memberValue instanceof String && isUndefined((String)memberValue))   return false;
   if (memberValue == null) {
     memberValue=transform.getMemberClassValue(anno,memberName);
-    if (memberValue != null && ((ClassNode)memberValue).getName().equals(Builder.ForClassNotSet.class.getName())) {
+    if (memberValue != null && isUndefined((ClassNode)memberValue)) {
       memberValue=null;
     }
   }
