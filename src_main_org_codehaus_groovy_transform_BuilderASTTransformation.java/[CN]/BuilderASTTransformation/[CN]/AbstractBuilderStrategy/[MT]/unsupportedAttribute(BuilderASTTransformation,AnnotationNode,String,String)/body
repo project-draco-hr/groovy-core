@@ -1,7 +1,11 @@
 {
   Object memberValue=transform.getMemberValue(anno,memberName);
+  if (memberValue != null && memberValue.equals("<strategyDefault>"))   return false;
   if (memberValue == null) {
     memberValue=transform.getMemberClassValue(anno,memberName);
+    if (memberValue != null && ((ClassNode)memberValue).getName().equals(Builder.ForClassNotSet.class.getName())) {
+      memberValue=null;
+    }
   }
   if (memberValue != null) {
     String message=extraMessage.length() == 0 ? "" : " " + extraMessage;
