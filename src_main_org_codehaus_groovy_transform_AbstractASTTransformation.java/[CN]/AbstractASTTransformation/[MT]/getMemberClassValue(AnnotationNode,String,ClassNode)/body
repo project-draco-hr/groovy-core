@@ -1,8 +1,10 @@
 {
   final Expression member=node.getMember(name);
   if (member != null) {
-    if (member instanceof ClassExpression)     return member.getType();
-    if (member instanceof VariableExpression) {
+    if (member instanceof ClassExpression) {
+      if (!isUndefined(member.getType()))       return member.getType();
+    }
+ else     if (member instanceof VariableExpression) {
       addError("Error expecting to find class value for '" + name + "' but found variable: "+ member.getText()+ ". Missing import?",node);
       return null;
     }

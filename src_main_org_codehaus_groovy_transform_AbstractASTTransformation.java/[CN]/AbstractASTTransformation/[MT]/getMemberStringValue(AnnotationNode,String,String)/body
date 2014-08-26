@@ -2,6 +2,7 @@
   final Expression member=node.getMember(name);
   if (member != null && member instanceof ConstantExpression) {
     Object result=((ConstantExpression)member).getValue();
+    if (result != null && result instanceof String && isUndefined((String)result))     result=null;
     if (result != null)     return result.toString();
   }
   return defaultValue;

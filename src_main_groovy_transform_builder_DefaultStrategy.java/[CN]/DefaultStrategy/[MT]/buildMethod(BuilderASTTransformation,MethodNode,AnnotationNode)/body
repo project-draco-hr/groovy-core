@@ -2,11 +2,11 @@
   if (transform.getMemberValue(anno,"includes") != null || transform.getMemberValue(anno,"includes") != null) {
     transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: includes/excludes only allowed on classes",anno);
   }
-  String prefix=getBuilderMemberStringValue(transform,anno,"prefix","");
+  String prefix=transform.getMemberStringValue(anno,"prefix","");
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
   final int visibility=ACC_PUBLIC | ACC_STATIC;
   ClassNode buildee=mNode.getDeclaringClass();
-  String builderClassName=getBuilderMemberStringValue(transform,anno,"builderClassName",buildee.getName() + "Builder");
+  String builderClassName=transform.getMemberStringValue(anno,"builderClassName",buildee.getName() + "Builder");
   final String fullName=buildee.getName() + "$" + builderClassName;
   ClassNode builder=new InnerClassNode(buildee,fullName,visibility,ClassHelper.OBJECT_TYPE);
   buildee.getModule().addClass(builder);

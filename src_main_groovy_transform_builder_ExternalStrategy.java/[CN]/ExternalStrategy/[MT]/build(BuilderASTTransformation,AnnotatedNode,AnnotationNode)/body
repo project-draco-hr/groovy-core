@@ -4,8 +4,8 @@
     return;
   }
   ClassNode builder=(ClassNode)annotatedNode;
-  String prefix=getBuilderMemberStringValue(transform,anno,"prefix","");
-  ClassNode buildee=getBuilderMemberClassValue(transform,anno,"forClass");
+  String prefix=transform.getMemberStringValue(anno,"prefix","");
+  ClassNode buildee=transform.getMemberClassValue(anno,"forClass");
   if (buildee == null) {
     transform.addError("Error during " + MY_TYPE_NAME + " processing: 'forClass' must be specified for "+ getClass().getName(),anno);
     return;
