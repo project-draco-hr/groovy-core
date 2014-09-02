@@ -1,6 +1,6 @@
 {
   this.classNode=node;
-  if ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0) {
+  if (Traits.isTrait(node) || ((classNode.getModifiers() & Opcodes.ACC_INTERFACE) > 0)) {
     ConstructorNode dummy=new ConstructorNode(0,null);
     addInitialization(node,dummy);
     node.visitContents(this);
