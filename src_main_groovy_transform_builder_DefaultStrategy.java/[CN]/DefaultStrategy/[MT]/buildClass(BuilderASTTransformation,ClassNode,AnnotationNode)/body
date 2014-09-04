@@ -13,8 +13,12 @@
   List<FieldNode> fields=getInstancePropertyFields(buildee);
   List<FieldNode> filteredFields=selectFieldsFromExistingClass(fields,includes,excludes);
   for (  FieldNode fieldNode : filteredFields) {
-    builder.addField(createFieldCopy(buildee,fieldNode));
-    builder.addMethod(createBuilderMethodForProp(builder,new PropertyInfo(fieldNode.getName(),fieldNode.getType()),prefix));
+    Map<String,ClassNode> genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass());
+    extractSuperClassGenerics(fieldNode.getType(),buildee,genericsSpec);
+    ClassNode correctedType=correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType());
+    String fieldName=fieldNode.getName();
+    builder.addField(createFieldCopy(buildee,fieldName,correctedType));
+    builder.addMethod(createBuilderMethodForProp(builder,new PropertyInfo(fieldName,correctedType),prefix));
   }
   builder.addMethod(createBuildMethod(transform,anno,buildee,filteredFields));
 }

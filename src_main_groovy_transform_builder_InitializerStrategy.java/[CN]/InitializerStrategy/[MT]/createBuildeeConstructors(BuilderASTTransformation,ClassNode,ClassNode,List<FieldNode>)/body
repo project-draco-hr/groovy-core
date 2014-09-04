@@ -1,11 +1,11 @@
 {
   ClassNode paramType=makeClassSafeWithGenerics(builder,setGenTypes(fields.size()));
   List<Expression> argsList=new ArrayList<Expression>();
+  Parameter initParam=param(paramType,"initializer");
   for (  FieldNode fieldNode : fields) {
-    argsList.add(propX(varX("initializer"),fieldNode.getName()));
+    argsList.add(propX(varX(initParam),fieldNode.getName()));
   }
-  Expression args=new ArgumentListExpression(argsList);
-  ConstructorNode initializer=buildee.addConstructor(ACC_PUBLIC,params(param(paramType,"initializer")),NO_EXCEPTIONS,block(ctorThisS(args)));
+  ConstructorNode initializer=buildee.addConstructor(ACC_PUBLIC,params(initParam),NO_EXCEPTIONS,block(ctorThisS(args(argsList))));
   if (transform.hasAnnotation(buildee,ImmutableASTTransformation.MY_TYPE)) {
     initializer.putNodeMetaData(ImmutableASTTransformation.IMMUTABLE_SAFE_FLAG,Boolean.TRUE);
   }
@@ -13,6 +13,6 @@
     final BlockStatement body=new BlockStatement();
     body.addStatement(ctorSuperS());
     initializeFields(fields,body);
-    buildee.addConstructor(ACC_PRIVATE | ACC_SYNTHETIC,getParams(fields),NO_EXCEPTIONS,body);
+    buildee.addConstructor(ACC_PRIVATE | ACC_SYNTHETIC,getParams(fields,buildee),NO_EXCEPTIONS,body);
   }
 }

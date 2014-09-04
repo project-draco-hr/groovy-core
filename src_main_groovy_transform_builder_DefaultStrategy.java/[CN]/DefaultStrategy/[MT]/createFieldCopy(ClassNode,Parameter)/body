@@ -1,3 +1,6 @@
 {
-  return new FieldNode(param.getName(),ACC_PRIVATE,ClassHelper.make(param.getType().getName()),buildee,param.getInitialExpression());
+  Map<String,ClassNode> genericsSpec=createGenericsSpec(buildee);
+  extractSuperClassGenerics(param.getType(),buildee,genericsSpec);
+  ClassNode correctedParamType=correctToGenericsSpecRecurse(genericsSpec,param.getType());
+  return new FieldNode(param.getName(),ACC_PRIVATE,correctedParamType,buildee,param.getInitialExpression());
 }

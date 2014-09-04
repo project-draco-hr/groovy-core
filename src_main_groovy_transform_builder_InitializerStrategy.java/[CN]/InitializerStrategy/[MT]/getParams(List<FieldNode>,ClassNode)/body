@@ -1,0 +1,11 @@
+{
+  Parameter[] parameters=new Parameter[fields.size()];
+  for (int i=0; i < parameters.length; i++) {
+    FieldNode fNode=fields.get(i);
+    Map<String,ClassNode> genericsSpec=createGenericsSpec(fNode.getDeclaringClass());
+    extractSuperClassGenerics(fNode.getType(),cNode,genericsSpec);
+    ClassNode correctedType=correctToGenericsSpecRecurse(genericsSpec,fNode.getType());
+    parameters[i]=new Parameter(correctedType,fNode.getName());
+  }
+  return parameters;
+}
