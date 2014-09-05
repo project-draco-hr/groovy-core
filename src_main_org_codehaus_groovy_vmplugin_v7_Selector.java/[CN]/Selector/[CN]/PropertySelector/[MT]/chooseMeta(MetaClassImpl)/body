@@ -20,7 +20,11 @@
     return;
   }
   if (method != null || mci == null)   return;
-  MetaProperty res=mci.getEffectiveGetMetaProperty(this.sender,receiver,name,false);
+  Class chosenSender=this.sender;
+  if (mci.getTheClass() != chosenSender && GroovyCategorySupport.hasCategoryInCurrentThread()) {
+    chosenSender=mci.getTheClass();
+  }
+  MetaProperty res=mci.getEffectiveGetMetaProperty(chosenSender,receiver,name,false);
   if (res instanceof MethodMetaProperty) {
     MethodMetaProperty mmp=(MethodMetaProperty)res;
     method=mmp.getMetaMethod();
