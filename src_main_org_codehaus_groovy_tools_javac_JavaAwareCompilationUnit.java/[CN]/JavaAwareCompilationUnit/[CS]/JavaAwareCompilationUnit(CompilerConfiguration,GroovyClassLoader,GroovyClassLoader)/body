@@ -19,6 +19,13 @@
     }
   }
 ,Phases.CONVERSION);
+  addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
+    public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
+      ASTTransformationCollectorCodeVisitor collector=new ASTTransformationCollectorCodeVisitor(source,JavaAwareCompilationUnit.this.getTransformLoader());
+      collector.visitClass(classNode);
+    }
+  }
+,Phases.SEMANTIC_ANALYSIS);
   addPhaseOperation(new PrimaryClassNodeOperation(){
     public void call(    SourceUnit source,    GeneratorContext context,    ClassNode classNode) throws CompilationFailedException {
       try {
