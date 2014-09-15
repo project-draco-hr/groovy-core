@@ -1,3 +1,18 @@
 {
-  return unexpand(self.toString(),tabStop);
+  String s=self.toString();
+  if (s.length() == 0)   return s;
+  try {
+    StringBuilder builder=new StringBuilder();
+    for (    String line : readLines((CharSequence)s)) {
+      builder.append(unexpandLine(line,tabStop));
+      builder.append("\n");
+    }
+    if (!s.endsWith("\n")) {
+      builder.deleteCharAt(builder.length() - 1);
+    }
+    return builder.toString();
+  }
+ catch (  IOException e) {
+  }
+  return s;
 }

@@ -1,3 +1,14 @@
 {
-  return center(self.toString(),numberOfChars,padding.toString());
+  String s=self.toString();
+  String padding1=padding.toString();
+  int numChars=numberOfChars.intValue();
+  if (numChars <= s.length()) {
+    return s;
+  }
+ else {
+    int charsToAdd=numChars - s.length();
+    String semiPad=charsToAdd % 2 == 1 ? getPadding(padding1,charsToAdd / 2 + 1) : getPadding(padding1,charsToAdd / 2);
+    if (charsToAdd % 2 == 0)     return semiPad + s + semiPad;
+ else     return semiPad.substring(0,charsToAdd / 2) + s + semiPad;
+  }
 }

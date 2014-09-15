@@ -1,3 +1,14 @@
 {
-  return replaceFirst(self.toString(),pattern,closure);
+  final String s=self.toString();
+  final Matcher matcher=pattern.matcher(s);
+  if (matcher.find()) {
+    final StringBuffer sb=new StringBuffer(s.length() + 16);
+    String replacement=getReplacement(matcher,closure);
+    matcher.appendReplacement(sb,Matcher.quoteReplacement(replacement));
+    matcher.appendTail(sb);
+    return sb.toString();
+  }
+ else {
+    return s;
+  }
 }

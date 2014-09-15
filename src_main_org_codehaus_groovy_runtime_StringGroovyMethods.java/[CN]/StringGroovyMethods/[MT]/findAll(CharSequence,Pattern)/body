@@ -1,3 +1,14 @@
 {
-  return new ArrayList<CharSequence>(findAll(self.toString(),pattern));
+  Matcher matcher=pattern.matcher(self.toString());
+  boolean hasGroup=hasGroup(matcher);
+  List<String> list=new ArrayList<String>();
+  for (Iterator iter=iterator(matcher); iter.hasNext(); ) {
+    if (hasGroup) {
+      list.add((String)((List)iter.next()).get(0));
+    }
+ else {
+      list.add((String)iter.next());
+    }
+  }
+  return new ArrayList<String>(list);
 }
