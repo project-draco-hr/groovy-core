@@ -15,6 +15,9 @@
   if (!copied.isEmpty()) {
     forwarder.addAnnotations(copied);
   }
+  if (originalMethod != null) {
+    forwarder.setGenericsTypes(originalMethod.getGenericsTypes());
+  }
   AnnotationNode bridgeAnnotation=new AnnotationNode(Traits.TRAITBRIDGE_CLASSNODE);
   bridgeAnnotation.addMember("traitClass",new ClassExpression(trait));
   bridgeAnnotation.addMember("desc",new ConstantExpression(BytecodeHelper.getMethodDescriptor(helperMethod.getReturnType(),traitMethodParams)));
