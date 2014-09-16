@@ -26,17 +26,12 @@
   }
   if (ret == null)   return null;
   if (ret instanceof MetaMethod)   return (MetaMethod)ret;
+  if (!isGetter)   return ret;
   MetaMethod method=null;
   int distance=-1;
   for (Iterator iter=((List)ret).iterator(); iter.hasNext(); ) {
     MetaMethod element=(MetaMethod)iter.next();
-    Class c;
-    if (isGetter) {
-      c=element.getReturnType();
-    }
- else {
-      c=element.getParameterTypes()[0].getTheClass();
-    }
+    Class c=element.getReturnType();
     int localDistance=distanceToObject(c);
     if (distance == -1 || distance > localDistance) {
       distance=localDistance;

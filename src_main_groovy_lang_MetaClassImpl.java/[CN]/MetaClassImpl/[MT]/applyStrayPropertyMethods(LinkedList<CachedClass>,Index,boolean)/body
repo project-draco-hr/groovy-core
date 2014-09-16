@@ -9,10 +9,18 @@
       boolean isBooleanGetter=methodName.startsWith("is");
       boolean isSetter=methodName.startsWith("set");
       if (!isGetter && !isSetter)       continue;
-      MetaMethod propertyMethod=findPropertyMethod(isThis ? e.methods : e.methodsForSuper,isGetter,isBooleanGetter);
-      if (propertyMethod == null)       continue;
+      Object propertyMethods=filterPropertyMethod(isThis ? e.methods : e.methodsForSuper,isGetter,isBooleanGetter);
+      if (propertyMethods == null)       continue;
       String propName=getPropName(methodName);
-      createMetaBeanProperty(propertyIndex,propName,isGetter,propertyMethod);
+      if (propertyMethods instanceof MetaMethod) {
+        createMetaBeanProperty(propertyIndex,propName,isGetter,(MetaMethod)propertyMethods);
+      }
+ else {
+        LinkedList<MetaMethod> methods=(LinkedList<MetaMethod>)propertyMethods;
+        for (        MetaMethod m : methods) {
+          createMetaBeanProperty(propertyIndex,propName,isGetter,m);
+        }
+      }
     }
   }
 }

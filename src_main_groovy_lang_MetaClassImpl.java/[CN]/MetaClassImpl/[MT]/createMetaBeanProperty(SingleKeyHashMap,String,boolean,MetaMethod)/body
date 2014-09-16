@@ -1,5 +1,7 @@
 {
   MetaProperty mp=(MetaProperty)propertyIndex.get(propName);
-  mp=makeReplacementMetaProperty(mp,propName,isGetter,propertyMethod);
-  propertyIndex.put(propName,mp);
+  MetaProperty newMp=makeReplacementMetaProperty(mp,propName,isGetter,propertyMethod);
+  if (newMp != mp) {
+    propertyIndex.put(propName,newMp);
+  }
 }
