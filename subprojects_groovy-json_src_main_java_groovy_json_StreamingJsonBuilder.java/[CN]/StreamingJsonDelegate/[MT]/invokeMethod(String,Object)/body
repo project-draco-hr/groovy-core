@@ -1,0 +1,28 @@
+{
+  if (args != null && Object[].class.isAssignableFrom(args.getClass())) {
+    try {
+      if (!first) {
+        writer.write(",");
+      }
+ else {
+        first=false;
+      }
+      writer.write(JsonOutput.toJson(name));
+      writer.write(":");
+      Object[] arr=(Object[])args;
+      if (arr.length == 1) {
+        writer.write(JsonOutput.toJson(arr[0]));
+      }
+ else       if (isCollectionWithClosure(arr)) {
+        writeCollectionWithClosure(writer,(Collection)arr[0],(Closure)arr[1]);
+      }
+ else {
+        writer.write(JsonOutput.toJson(Arrays.asList(arr)));
+      }
+    }
+ catch (    IOException ioe) {
+      throw new JsonException(ioe);
+    }
+  }
+  return this;
+}
