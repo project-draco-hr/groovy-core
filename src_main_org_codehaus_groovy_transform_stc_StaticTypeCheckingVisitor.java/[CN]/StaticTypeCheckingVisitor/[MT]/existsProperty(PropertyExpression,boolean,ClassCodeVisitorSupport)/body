@@ -62,8 +62,9 @@
       getter=allowStaticAccessToMember(getter,staticOnly);
       if (getter == null)       getter=current.getGetterMethod("is" + capName);
       getter=allowStaticAccessToMember(getter,staticOnly);
-      MethodNode setter=current.getSetterMethod("set" + capName,false);
-      setter=allowStaticAccessToMember(setter,staticOnly);
+      final String setterName="set" + capName;
+      List<MethodNode> setters=findSetters(current,setterName,false);
+      setters=allowStaticAccessToMember(setters,staticOnly);
       if (visitor != null && getter != null)       visitor.visitMethod(getter);
       if (readMode) {
         if (getter != null) {
@@ -76,30 +77,35 @@
         }
       }
  else {
-        if (setter != null) {
+        if (!setters.isEmpty()) {
           if (visitor != null) {
             if (field != null) {
               visitor.visitField(field);
             }
  else {
-              ClassNode setterType=setter.getParameters()[0].getOriginType();
-              FieldNode virtual=new FieldNode(propertyName,0,setterType,current,EmptyExpression.INSTANCE);
-              visitor.visitField(virtual);
+              for (              MethodNode setter : setters) {
+                ClassNode setterType=setter.getParameters()[0].getOriginType();
+                FieldNode virtual=new FieldNode(propertyName,0,setterType,current,EmptyExpression.INSTANCE);
+                visitor.visitField(virtual);
+              }
             }
           }
-          storeType(pexp,setter.getParameters()[0].getType());
-          SetterInfo info=new SetterInfo(current,setter);
+          SetterInfo info=new SetterInfo(current,setterName,setters);
           BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
-          if (enclosingBinaryExpression != null)           putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
+          if (enclosingBinaryExpression != null) {
+            putSetterInfo(enclosingBinaryExpression.getLeftExpression(),info);
+          }
           String delegationData=receiver.getData();
-          if (delegationData != null)           pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
+          if (delegationData != null) {
+            pexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,delegationData);
+          }
           return true;
         }
  else         if (getter != null) {
           pexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,true);
         }
       }
-      foundGetterOrSetter=foundGetterOrSetter || setter != null || getter != null;
+      foundGetterOrSetter=foundGetterOrSetter || !setters.isEmpty() || getter != null;
       if (storeField(field,true,pexp,current,visitor,receiver.getData()))       return true;
       if (current.getSuperClass() != null) {
         queue.add(current.getUnresolvedSuperClass());

@@ -6,6 +6,13 @@
     Variable v=(Variable)member;
     isStatic=Modifier.isStatic(v.getModifiers());
   }
+ else   if (member instanceof List) {
+    List<MethodNode> list=(List<MethodNode>)member;
+    if (list.size() == 1) {
+      return (T)Arrays.asList(allowStaticAccessToMember(list.get(0),staticOnly));
+    }
+    return (T)Collections.emptyList();
+  }
  else {
     MethodNode mn=(MethodNode)member;
     isStatic=mn.isStatic();

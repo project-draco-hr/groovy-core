@@ -1,0 +1,13 @@
+{
+  if (visitor instanceof AsmClassGenerator) {
+    if (variable == null) {
+      AsmClassGenerator acg=(AsmClassGenerator)visitor;
+      WriterController controller=acg.getController();
+      variable=new ExpressionAsVariableSlot(controller,expression);
+    }
+    variable.visit(visitor);
+  }
+ else {
+    expression.visit(visitor);
+  }
+}

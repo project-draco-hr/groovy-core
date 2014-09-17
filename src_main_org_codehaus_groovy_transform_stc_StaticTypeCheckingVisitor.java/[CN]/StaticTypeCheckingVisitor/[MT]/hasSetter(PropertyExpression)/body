@@ -17,10 +17,10 @@
     while (!queue.isEmpty()) {
       ClassNode current=queue.removeFirst();
       current=current.redirect();
-      MethodNode setterMethod=current.getSetterMethod("set" + capName,false);
-      if (setterMethod != null) {
-        storeType(pexp,setterMethod.getParameters()[0].getType());
-        return new SetterInfo(current,setterMethod);
+      String setterName="set" + capName;
+      List<MethodNode> setterMethods=findSetters(current,setterName,false);
+      if (!setterMethods.isEmpty()) {
+        return new SetterInfo(current,setterName,setterMethods);
       }
       if (!isAttributeExpression && current.getSuperClass() != null) {
         queue.add(current.getSuperClass());

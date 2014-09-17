@@ -5,20 +5,30 @@
     final Expression leftExpression=expression.getLeftExpression();
     final Expression rightExpression=expression.getRightExpression();
     int op=expression.getOperation().getType();
-    if (rightExpression instanceof ClosureExpression) {
-      leftExpression.visit(this);
-      SetterInfo setterInfo=removeSetterInfo(leftExpression);
-      if (setterInfo != null) {
-        VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
-        MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
-        visitMethodCallExpression(call);
+    leftExpression.visit(this);
+    SetterInfo setterInfo=removeSetterInfo(leftExpression);
+    if (setterInfo != null) {
+      VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
+      MethodCallExpression call=new MethodCallExpression(ve,setterInfo.name,rightExpression);
+      call.setImplicitThis(false);
+      visitMethodCallExpression(call);
+      MethodNode directSetterCandidate=call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+      if (directSetterCandidate != null) {
+        for (        MethodNode setter : setterInfo.setters) {
+          if (setter == directSetterCandidate) {
+            leftExpression.putNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,directSetterCandidate);
+            storeType(leftExpression,getType(rightExpression));
+            break;
+          }
+        }
       }
  else {
-        rightExpression.visit(this);
+        ClassNode firstSetterType=setterInfo.setters.iterator().next().getParameters()[0].getOriginType();
+        addAssignmentError(firstSetterType,getType(rightExpression),expression);
+        return;
       }
     }
  else {
-      leftExpression.visit(this);
       rightExpression.visit(this);
     }
     ClassNode lType=getType(leftExpression);

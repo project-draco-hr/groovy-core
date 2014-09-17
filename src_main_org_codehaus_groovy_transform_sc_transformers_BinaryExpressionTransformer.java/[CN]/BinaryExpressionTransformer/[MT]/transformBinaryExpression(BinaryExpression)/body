@@ -4,6 +4,12 @@
   int operationType=operation.getType();
   Expression rightExpression=bin.getRightExpression();
   Expression leftExpression=bin.getLeftExpression();
+  if (operationType == Types.EQUAL && leftExpression instanceof PropertyExpression) {
+    MethodNode directMCT=leftExpression.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+    if (directMCT != null) {
+      return transformPropertyAssignmentToSetterCall((PropertyExpression)leftExpression,rightExpression,directMCT);
+    }
+  }
   if (operationType == Types.COMPARE_EQUAL || operationType == Types.COMPARE_NOT_EQUAL) {
     CompareToNullExpression compareToNullExpression=null;
     if (isNullConstant(leftExpression)) {
