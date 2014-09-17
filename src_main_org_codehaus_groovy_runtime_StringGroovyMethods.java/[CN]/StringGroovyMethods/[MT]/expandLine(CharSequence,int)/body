@@ -1,3 +1,12 @@
 {
-  return expandLine(self.toString(),tabStop);
+  String s=self.toString();
+  int index;
+  while ((index=s.indexOf('\t')) != -1) {
+    StringBuilder builder=new StringBuilder(s);
+    int count=tabStop - index % tabStop;
+    builder.deleteCharAt(index);
+    for (int i=0; i < count; i++)     builder.insert(index," ");
+    s=builder.toString();
+  }
+  return s;
 }

@@ -1,3 +1,22 @@
 {
-  return normalize(self.toString());
+  final String s=self.toString();
+  int nx=s.indexOf('\r');
+  if (nx < 0) {
+    return s;
+  }
+  final int len=s.length();
+  final StringBuilder sb=new StringBuilder(len);
+  int i=0;
+  do {
+    sb.append(s,i,nx);
+    sb.append('\n');
+    if ((i=nx + 1) >= len)     break;
+    if (s.charAt(i) == '\n') {
+      if (++i >= len)       break;
+    }
+    nx=s.indexOf('\r',i);
+  }
+ while (nx > 0);
+  sb.append(s,i,len);
+  return sb.toString();
 }

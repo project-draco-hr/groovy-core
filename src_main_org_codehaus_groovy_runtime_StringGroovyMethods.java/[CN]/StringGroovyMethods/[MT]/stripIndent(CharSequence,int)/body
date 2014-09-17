@@ -1,3 +1,20 @@
 {
-  return stripIndent(self);
+  String s=self.toString();
+  if (s.length() == 0 || numChars <= 0)   return s;
+  try {
+    StringBuilder builder=new StringBuilder();
+    for (    String line : readLines((CharSequence)s)) {
+      if (!isAllWhitespace((CharSequence)line)) {
+        builder.append(stripIndentFromLine(line,numChars));
+      }
+      builder.append("\n");
+    }
+    if (!s.endsWith("\n")) {
+      builder.deleteCharAt(builder.length() - 1);
+    }
+    return builder.toString();
+  }
+ catch (  IOException e) {
+  }
+  return s;
 }

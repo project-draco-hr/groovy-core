@@ -1,3 +1,11 @@
 {
-  return minus(self.toString(),target);
+  String s=self.toString();
+  String text=DefaultGroovyMethods.toString(target);
+  int index=s.indexOf(text);
+  if (index == -1)   return s;
+  int end=index + text.length();
+  if (s.length() > end) {
+    return s.substring(0,index) + s.substring(end);
+  }
+  return s.substring(0,index);
 }
