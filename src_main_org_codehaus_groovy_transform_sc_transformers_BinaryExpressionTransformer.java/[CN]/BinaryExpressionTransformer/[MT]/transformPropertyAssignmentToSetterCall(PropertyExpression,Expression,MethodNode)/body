@@ -1,10 +1,4 @@
 {
   Expression arg=staticCompilationTransformer.transform(rightExpression);
-  TemporaryVariableExpression tmp=new TemporaryVariableExpression(arg);
-  MethodCallExpression setting=new MethodCallExpression(leftExpression.getObjectExpression(),directMCT.getName(),tmp);
-  setting.setImplicitThis(false);
-  setting.setSourcePosition(leftExpression);
-  setting.setMethodTarget(directMCT);
-  ListOfExpressionsExpression seq=new ListOfExpressionsExpression(Arrays.asList(tmp,setting,tmp));
-  return seq;
+  return StaticPropertyAccessHelper.transformToSetterCall(leftExpression.getObjectExpression(),directMCT,arg,false,false,false,true,leftExpression);
 }

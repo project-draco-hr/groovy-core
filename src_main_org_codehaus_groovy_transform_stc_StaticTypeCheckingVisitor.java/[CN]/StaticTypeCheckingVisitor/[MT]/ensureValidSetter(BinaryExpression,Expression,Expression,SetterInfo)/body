@@ -1,0 +1,22 @@
+{
+  VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
+  MethodCallExpression call=new MethodCallExpression(ve,setterInfo.name,rightExpression);
+  call.setImplicitThis(false);
+  visitMethodCallExpression(call);
+  MethodNode directSetterCandidate=call.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
+  if (directSetterCandidate != null) {
+    for (    MethodNode setter : setterInfo.setters) {
+      if (setter == directSetterCandidate) {
+        leftExpression.putNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET,directSetterCandidate);
+        storeType(leftExpression,getType(rightExpression));
+        break;
+      }
+    }
+  }
+ else {
+    ClassNode firstSetterType=setterInfo.setters.iterator().next().getParameters()[0].getOriginType();
+    addAssignmentError(firstSetterType,getType(rightExpression),expression);
+    return true;
+  }
+  return false;
+}
