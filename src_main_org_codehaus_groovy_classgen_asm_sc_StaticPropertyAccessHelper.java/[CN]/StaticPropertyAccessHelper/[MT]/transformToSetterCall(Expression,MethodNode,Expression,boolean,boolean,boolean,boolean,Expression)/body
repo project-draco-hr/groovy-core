@@ -1,0 +1,39 @@
+{
+  if (requiresReturnValue) {
+    final TemporaryVariableExpression tmp=new TemporaryVariableExpression(arguments);
+    MethodCallExpression call=new MethodCallExpression(receiver,setterMethod.getName(),tmp){
+      @Override public void visit(      final GroovyCodeVisitor visitor){
+        super.visit(visitor);
+        if (visitor instanceof AsmClassGenerator) {
+          ((AsmClassGenerator)visitor).getController().getOperandStack().pop();
+        }
+      }
+    }
+;
+    call.setImplicitThis(implicitThis);
+    call.setSafe(safe);
+    call.setSpreadSafe(spreadSafe);
+    call.setMethodTarget(setterMethod);
+    call.setSourcePosition(location);
+    ListOfExpressionsExpression result=new ListOfExpressionsExpression(Arrays.asList(tmp,call)){
+      @Override public void visit(      final GroovyCodeVisitor visitor){
+        super.visit(visitor);
+        if (visitor instanceof AsmClassGenerator) {
+          tmp.remove(((AsmClassGenerator)visitor).getController());
+        }
+      }
+    }
+;
+    result.setSourcePosition(location);
+    return result;
+  }
+ else {
+    MethodCallExpression call=new MethodCallExpression(receiver,setterMethod.getName(),arguments);
+    call.setImplicitThis(implicitThis);
+    call.setSafe(safe);
+    call.setSpreadSafe(spreadSafe);
+    call.setMethodTarget(setterMethod);
+    call.setSourcePosition(location);
+    return call;
+  }
+}

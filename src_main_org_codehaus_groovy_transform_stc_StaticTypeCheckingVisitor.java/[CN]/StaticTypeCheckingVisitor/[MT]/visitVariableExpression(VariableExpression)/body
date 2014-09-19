@@ -2,6 +2,21 @@
   super.visitVariableExpression(vexp);
   if (storeTypeForThis(vexp))   return;
   if (storeTypeForSuper(vexp))   return;
+  if (vexp.getAccessedVariable() instanceof PropertyNode) {
+    if (tryVariableExpressionAsProperty(vexp,vexp.getName())) {
+      BinaryExpression enclosingBinaryExpression=typeCheckingContext.getEnclosingBinaryExpression();
+      if (enclosingBinaryExpression != null) {
+        Expression leftExpression=enclosingBinaryExpression.getLeftExpression();
+        Expression rightExpression=enclosingBinaryExpression.getRightExpression();
+        SetterInfo setterInfo=removeSetterInfo(leftExpression);
+        if (setterInfo != null) {
+          if (!ensureValidSetter(vexp,leftExpression,rightExpression,setterInfo)) {
+            return;
+          }
+        }
+      }
+    }
+  }
   TypeCheckingContext.EnclosingClosure enclosingClosure=typeCheckingContext.getEnclosingClosure();
   if (enclosingClosure != null) {
     String name=vexp.getName();
@@ -20,20 +35,7 @@
   if (!(vexp.getAccessedVariable() instanceof DynamicVariable))   return;
   DynamicVariable dyn=(DynamicVariable)vexp.getAccessedVariable();
   String dynName=dyn.getName();
-  VariableExpression implicitThis=new VariableExpression("this");
-  PropertyExpression pe=new PropertyExpression(implicitThis,dynName);
-  pe.setImplicitThis(true);
-  if (visitPropertyExpressionSilent(pe,vexp)) {
-    ClassNode previousIt=vexp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
-    vexp.copyNodeMetaData(implicitThis);
-    vexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,previousIt);
-    storeType(vexp,getType(pe));
-    Object val=pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
-    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,val);
-    val=pe.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
-    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,val);
-    return;
-  }
+  if (tryVariableExpressionAsProperty(vexp,dynName))   return;
   if (!extension.handleUnresolvedVariableExpression(vexp)) {
     addStaticTypeError("The variable [" + vexp.getName() + "] is undeclared.",vexp);
   }

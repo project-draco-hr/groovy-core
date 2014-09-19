@@ -1,6 +1,9 @@
 {
   if (lhs instanceof VariableExpression) {
     Variable var=findTargetVariable((VariableExpression)lhs);
+    if (var instanceof PropertyNode) {
+      return getType(lhs);
+    }
     if (var instanceof DynamicVariable)     return getType(lhs);
     return var.getOriginType();
   }

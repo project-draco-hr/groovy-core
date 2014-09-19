@@ -52,11 +52,7 @@
       }
     }
     if (setterMethod != null) {
-      MethodCallExpression call=new MethodCallExpression(receiver,setter,arguments);
-      call.setImplicitThis(implicitThis);
-      call.setSafe(safe);
-      call.setSpreadSafe(spreadSafe);
-      call.setMethodTarget(setterMethod);
+      Expression call=StaticPropertyAccessHelper.transformToSetterCall(receiver,setterMethod,arguments,implicitThis,safe,spreadSafe,true,message);
       call.visit(controller.getAcg());
       return true;
     }

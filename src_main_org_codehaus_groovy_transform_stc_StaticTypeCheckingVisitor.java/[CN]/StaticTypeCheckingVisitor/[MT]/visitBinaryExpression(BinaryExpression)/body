@@ -5,20 +5,14 @@
     final Expression leftExpression=expression.getLeftExpression();
     final Expression rightExpression=expression.getRightExpression();
     int op=expression.getOperation().getType();
-    if (rightExpression instanceof ClosureExpression) {
-      leftExpression.visit(this);
-      SetterInfo setterInfo=removeSetterInfo(leftExpression);
-      if (setterInfo != null) {
-        VariableExpression ve=new VariableExpression("%",setterInfo.receiverType);
-        MethodCallExpression call=new MethodCallExpression(ve,setterInfo.setter.getName(),rightExpression);
-        visitMethodCallExpression(call);
-      }
- else {
-        rightExpression.visit(this);
+    leftExpression.visit(this);
+    SetterInfo setterInfo=removeSetterInfo(leftExpression);
+    if (setterInfo != null) {
+      if (ensureValidSetter(expression,leftExpression,rightExpression,setterInfo)) {
+        return;
       }
     }
  else {
-      leftExpression.visit(this);
       rightExpression.visit(this);
     }
     ClassNode lType=getType(leftExpression);
