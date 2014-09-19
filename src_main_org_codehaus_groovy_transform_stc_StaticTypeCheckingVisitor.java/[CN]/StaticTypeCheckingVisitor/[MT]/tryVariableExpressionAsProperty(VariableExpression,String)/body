@@ -1,0 +1,17 @@
+{
+  VariableExpression implicitThis=new VariableExpression("this");
+  PropertyExpression pe=new PropertyExpression(implicitThis,dynName);
+  pe.setImplicitThis(true);
+  if (visitPropertyExpressionSilent(pe,vexp)) {
+    ClassNode previousIt=vexp.getNodeMetaData(StaticTypesMarker.INFERRED_TYPE);
+    vexp.copyNodeMetaData(implicitThis);
+    vexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,previousIt);
+    storeType(vexp,getType(pe));
+    Object val=pe.getNodeMetaData(StaticTypesMarker.READONLY_PROPERTY);
+    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.READONLY_PROPERTY,val);
+    val=pe.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
+    if (val != null)     vexp.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,val);
+    return true;
+  }
+  return false;
+}
