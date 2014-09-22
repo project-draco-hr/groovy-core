@@ -1,5 +1,15 @@
 {
-  Map<MethodNode,MethodNode> bridges=target.getDeclaringClass().redirect().getNodeMetaData(PRIVATE_BRIDGE_METHODS);
+  ClassNode lookupClassNode;
+  if (target.isProtected()) {
+    lookupClassNode=controller.getClassNode();
+    if (controller.isInClosure()) {
+      lookupClassNode=lookupClassNode.getOuterClass();
+    }
+  }
+ else {
+    lookupClassNode=target.getDeclaringClass().redirect();
+  }
+  Map<MethodNode,MethodNode> bridges=lookupClassNode.getNodeMetaData(PRIVATE_BRIDGE_METHODS);
   MethodNode bridge=bridges == null ? null : bridges.get(target);
   if (bridge != null) {
     Expression fixedReceiver=receiver;
