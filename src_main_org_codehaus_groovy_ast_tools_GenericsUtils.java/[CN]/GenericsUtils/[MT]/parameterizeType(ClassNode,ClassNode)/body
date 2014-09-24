@@ -1,6 +1,9 @@
 {
-  if (hint.isArray() && target.isArray()) {
-    return parameterizeType(hint.getComponentType(),target.getComponentType()).makeArray();
+  if (hint.isArray()) {
+    if (target.isArray()) {
+      return parameterizeType(hint.getComponentType(),target.getComponentType()).makeArray();
+    }
+    return target;
   }
   if (!target.equals(hint) && StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(target,hint)) {
     ClassNode nextSuperClass=ClassHelper.getNextSuperClass(target,hint);
