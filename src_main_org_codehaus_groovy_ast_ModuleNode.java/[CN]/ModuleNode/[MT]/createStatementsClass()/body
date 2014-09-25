@@ -9,7 +9,13 @@
   methodNode.setIsScriptBody();
   classNode.addMethod(methodNode);
   classNode.addConstructor(ACC_PUBLIC,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new BlockStatement());
-  Statement stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new VariableExpression("context"))));
+  Statement stmt;
+  if (classNode.getSuperClass().getDeclaredConstructor(SCRIPT_CONTEXT_CTOR) != null) {
+    stmt=new ExpressionStatement(new ConstructorCallExpression(ClassNode.SUPER,new ArgumentListExpression(new VariableExpression("context"))));
+  }
+ else {
+    stmt=new ExpressionStatement(new MethodCallExpression(new VariableExpression("super"),"setBinding",new ArgumentListExpression(new VariableExpression("context"))));
+  }
   classNode.addConstructor(ACC_PUBLIC,new Parameter[]{new Parameter(ClassHelper.make(Binding.class),"context")},ClassNode.EMPTY_ARRAY,stmt);
   for (  MethodNode node : methods) {
     int modifiers=node.getModifiers();
