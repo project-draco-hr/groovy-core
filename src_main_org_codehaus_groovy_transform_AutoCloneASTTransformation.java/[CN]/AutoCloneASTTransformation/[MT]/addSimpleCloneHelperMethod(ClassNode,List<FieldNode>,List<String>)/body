@@ -13,9 +13,9 @@
     Expression direct=propX(varX("this"),name);
     Expression to=propX(other,name);
     Statement assignDirect=assignS(to,direct);
-    Statement assignCloned=assignS(to,castX(fieldType,callX(direct,"clone")));
+    Statement assignCloned=assignS(to,castX(fieldType,callCloneDirectX(direct)));
     Statement assignClonedDynamic=assignS(to,castX(fieldType,callCloneDynamicX(direct)));
-    if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
+    if (isCloneableType(fieldType)) {
       methodBody.addStatement(assignCloned);
     }
  else     if (!possiblyCloneable(fieldType)) {

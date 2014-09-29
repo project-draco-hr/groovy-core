@@ -7,9 +7,9 @@
     ClassNode fieldType=fieldNode.getType();
     Expression fieldExpr=varX(fieldNode);
     Expression to=propX(result,fieldNode.getName());
-    Statement doClone=assignS(to,castX(fieldType,callX(fieldExpr,"clone")));
+    Statement doClone=assignS(to,castX(fieldType,callCloneDirectX(fieldExpr)));
     Statement doCloneDynamic=assignS(to,castX(fieldType,callCloneDynamicX(fieldExpr)));
-    if (isOrImplements(fieldType,CLONEABLE_TYPE)) {
+    if (isCloneableType(fieldType)) {
       body.addStatement(doClone);
     }
  else     if (possiblyCloneable(fieldType)) {
