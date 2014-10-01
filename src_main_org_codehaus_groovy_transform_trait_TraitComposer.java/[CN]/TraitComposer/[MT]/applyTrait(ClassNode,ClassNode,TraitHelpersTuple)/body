@@ -42,7 +42,7 @@
   }
   cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
   cNode.addStaticInitializerStatements(Collections.<Statement>singletonList(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this"))))),false);
-  if (fieldHelperClassNode != null) {
+  if (fieldHelperClassNode != null && !cNode.declaresInterface(fieldHelperClassNode)) {
     cNode.addInterface(fieldHelperClassNode);
     List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
     Collections.sort(declaredMethods,GETTER_FIRST_COMPARATOR);
