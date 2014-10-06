@@ -28,7 +28,11 @@
     MethodCallExpression mce=new MethodCallExpression(receiver,"putAt",ae);
     mce.setSourcePosition(parent);
     visitor.visitMethodCallExpression(mce);
+    OperandStack operandStack=controller.getOperandStack();
+    int height=operandStack.getStackLength();
     mce.visit(controller.getAcg());
+    operandStack.pop();
+    operandStack.remove(operandStack.getStackLength() - height);
     rhsValueLoader.visit(controller.getAcg());
   }
 }
