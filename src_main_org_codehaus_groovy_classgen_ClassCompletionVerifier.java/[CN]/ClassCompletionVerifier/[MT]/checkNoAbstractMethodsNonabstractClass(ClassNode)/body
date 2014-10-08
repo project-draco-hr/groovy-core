@@ -3,6 +3,12 @@
   List<MethodNode> abstractMethods=node.getAbstractMethods();
   if (abstractMethods == null)   return;
   for (  MethodNode method : abstractMethods) {
-    addError("Can't have an abstract method in a non-abstract class." + " The " + getDescription(node) + " must be declared abstract or"+ " the "+ getDescription(method)+ " must be implemented.",node);
+    MethodNode sameArgsMethod=node.getMethod(method.getName(),method.getParameters());
+    if (sameArgsMethod == null) {
+      addError("Can't have an abstract method in a non-abstract class." + " The " + getDescription(node) + " must be declared abstract or"+ " the "+ getDescription(method)+ " must be implemented.",node);
+    }
+ else {
+      addError("Abstract " + getDescription(method) + " is not implemented but a "+ "method of the same name but different return type is defined: "+ (sameArgsMethod.isStatic() ? "static " : "")+ getDescription(sameArgsMethod),method);
+    }
   }
 }

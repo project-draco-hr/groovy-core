@@ -1,0 +1,22 @@
+{
+  Map<String,MethodNode> result=new HashMap<String,MethodNode>();
+  for (  ClassNode iface : node.getInterfaces()) {
+    Map<String,MethodNode> ifaceMethodsMap=iface.getDeclaredMethodsMap();
+    for (    String methSig : ifaceMethodsMap.keySet()) {
+      if (!result.containsKey(methSig)) {
+        MethodNode methNode=ifaceMethodsMap.get(methSig);
+        result.put(methSig,methNode);
+      }
+    }
+  }
+  for (  MethodNode methodNode : node.getMethods()) {
+    MethodNode mn=result.get(methodNode.getTypeDescriptor());
+    if (mn != null && methodNode.isStatic() && !methodNode.isStaticConstructor()) {
+      ClassNode cn=mn.getDeclaringClass().getOuterClass();
+      if (cn == null || !Traits.isTrait(cn)) {
+        addError("Method '" + mn.getName() + "' is already defined in "+ getDescription(node)+ ". You cannot have "+ "both a static and a non static method with the same signature",methodNode);
+      }
+    }
+    result.put(methodNode.getTypeDescriptor(),methodNode);
+  }
+}
