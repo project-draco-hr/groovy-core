@@ -9,7 +9,7 @@
   TypeChooser typeChooser=controller.getTypeChooser();
   Expression collectionExpression=loop.getCollectionExpression();
   ClassNode collectionType=typeChooser.resolveType(collectionExpression,controller.getClassNode());
-  if (collectionType.implementsInterface(ITERABLE_CLASSNODE)) {
+  if (StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(collectionType,ITERABLE_CLASSNODE)) {
     MethodCallExpression iterator=new MethodCallExpression(collectionExpression,"iterator",new ArgumentListExpression());
     iterator.setMethodTarget(collectionType.getMethod("iterator",Parameter.EMPTY_ARRAY));
     iterator.setImplicitThis(false);
