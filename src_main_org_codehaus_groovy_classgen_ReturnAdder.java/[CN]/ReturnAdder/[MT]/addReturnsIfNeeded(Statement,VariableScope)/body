@@ -44,6 +44,15 @@
   }
   if (statement instanceof TryCatchStatement) {
     TryCatchStatement trys=(TryCatchStatement)statement;
+    final boolean[] missesReturn=new boolean[1];
+    new ReturnAdder(new ReturnStatementListener(){
+      @Override public void returnStatementAdded(      ReturnStatement returnStatement){
+        missesReturn[0]=true;
+      }
+    }
+).addReturnsIfNeeded(trys.getFinallyStatement(),scope);
+    boolean hasFinally=!(trys.getFinallyStatement() instanceof EmptyStatement);
+    if (hasFinally && !missesReturn[0])     return trys;
     final Statement tryStatement=addReturnsIfNeeded(trys.getTryStatement(),scope);
     if (doAdd)     trys.setTryStatement(tryStatement);
     final int len=trys.getCatchStatements().size();
