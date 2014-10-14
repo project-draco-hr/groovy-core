@@ -1,0 +1,18 @@
+{
+  if (!method.isAccessible()) {
+    AccessController.doPrivileged(new PrivilegedAction(){
+      @Override public Object run(){
+        method.setAccessible(true);
+        return null;
+      }
+    }
+);
+  }
+  Class declaringClass=method.getDeclaringClass();
+  try {
+    return LOOKUP_Constructor.newInstance(declaringClass,MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,declaringClass).bindTo(receiver);
+  }
+ catch (  ReflectiveOperationException e) {
+    throw new GroovyBugError(e);
+  }
+}
