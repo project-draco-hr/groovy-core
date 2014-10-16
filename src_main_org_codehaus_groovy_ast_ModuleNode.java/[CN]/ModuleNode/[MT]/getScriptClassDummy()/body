@@ -10,7 +10,7 @@
   if (getDescription() == null) {
     throw new RuntimeException("Cannot generate main(String[]) class for statements when we have no file description");
   }
-  name+=extractClassFromFileDescription();
+  name+=GeneratorContext.encodeAsValidClassName(extractClassFromFileDescription());
   ClassNode classNode;
   if (isPackageInfo()) {
     classNode=new ClassNode(name,ACC_ABSTRACT | ACC_INTERFACE,ClassHelper.OBJECT_TYPE);

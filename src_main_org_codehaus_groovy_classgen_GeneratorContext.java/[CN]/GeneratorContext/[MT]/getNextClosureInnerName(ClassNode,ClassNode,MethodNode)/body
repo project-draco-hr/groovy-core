@@ -1,13 +1,13 @@
 {
   String methodName="";
   if (enclosingMethod != null) {
-    methodName=enclosingMethod.getName() + "_";
+    methodName=enclosingMethod.getName();
     if (enclosingClass.isDerivedFrom(ClassHelper.CLOSURE_TYPE)) {
       methodName="";
     }
-    methodName=methodName.replace('<','_');
-    methodName=methodName.replace('>','_');
-    methodName=methodName.replaceAll(" ","_");
+ else {
+      methodName="_" + encodeAsValidClassName(methodName);
+    }
   }
-  return "_" + methodName + "closure"+ closureClassIdx++;
+  return methodName + "_closure" + closureClassIdx++;
 }
