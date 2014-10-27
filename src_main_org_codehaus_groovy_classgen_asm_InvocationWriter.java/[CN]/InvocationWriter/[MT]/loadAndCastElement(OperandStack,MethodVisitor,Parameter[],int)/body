@@ -1,0 +1,11 @@
+{
+  operandStack.push(ClassHelper.OBJECT_TYPE);
+  mv.visitInsn(DUP);
+  BytecodeHelper.pushConstant(mv,p);
+  mv.visitInsn(AALOAD);
+  operandStack.push(ClassHelper.OBJECT_TYPE);
+  ClassNode type=parameters[p].getType();
+  operandStack.doGroovyCast(type);
+  operandStack.swap();
+  operandStack.remove(2);
+}

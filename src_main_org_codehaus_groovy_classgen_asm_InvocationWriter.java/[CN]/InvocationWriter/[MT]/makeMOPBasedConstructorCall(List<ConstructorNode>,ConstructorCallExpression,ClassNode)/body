@@ -48,18 +48,24 @@
     ConstructorNode cn=constructorIt.next();
     String descriptor=BytecodeHelper.getMethodDescriptor(ClassHelper.VOID_TYPE,cn.getParameters());
     Parameter[] parameters=cn.getParameters();
-    for (int p=0; p < parameters.length; p++) {
-      operandStack.push(ClassHelper.OBJECT_TYPE);
-      mv.visitInsn(DUP);
-      BytecodeHelper.pushConstant(mv,p);
-      mv.visitInsn(AALOAD);
-      operandStack.push(ClassHelper.OBJECT_TYPE);
-      ClassNode type=parameters[p].getType();
-      operandStack.doGroovyCast(type);
-      operandStack.swap();
-      operandStack.remove(2);
+    int lengthWithoutVargs=parameters.length;
+    if (parameters.length > 0 && parameters[parameters.length - 1].getType().isArray()) {
+      lengthWithoutVargs--;
     }
-    mv.visitInsn(POP);
+    for (int p=0; p < lengthWithoutVargs; p++) {
+      loadAndCastElement(operandStack,mv,parameters,p);
+    }
+    if (parameters.length > lengthWithoutVargs) {
+      ClassNode type=parameters[lengthWithoutVargs].getType();
+      BytecodeHelper.pushConstant(mv,lengthWithoutVargs);
+      controller.getAcg().visitClassExpression(new ClassExpression(type));
+      operandStack.remove(1);
+      castToVargsArray.call(mv);
+      BytecodeHelper.doCast(mv,type);
+    }
+ else {
+      mv.visitInsn(POP);
+    }
     mv.visitMethodInsn(INVOKESPECIAL,BytecodeHelper.getClassInternalName(callNode),"<init>",descriptor,false);
     mv.visitJumpInsn(GOTO,afterSwitch);
   }
