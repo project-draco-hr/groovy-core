@@ -1,0 +1,10 @@
+{
+  ClassNode ret=trait;
+  LinkedHashSet<ClassNode> selfTypes=new LinkedHashSet<ClassNode>();
+  Traits.collectSelfTypes(ret,selfTypes);
+  if (!selfTypes.isEmpty()) {
+    selfTypes.add(ret);
+    ret=new UnionTypeClassNode(selfTypes.toArray(new ClassNode[selfTypes.size()]));
+  }
+  return ret;
+}
