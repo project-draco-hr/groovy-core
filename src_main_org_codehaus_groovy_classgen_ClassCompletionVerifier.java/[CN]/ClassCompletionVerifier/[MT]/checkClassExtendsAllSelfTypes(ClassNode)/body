@@ -1,0 +1,18 @@
+{
+  int modifiers=node.getModifiers();
+  if (!isInterface(modifiers)) {
+    for (    ClassNode anInterface : GeneralUtils.getInterfacesAndSuperInterfaces(node)) {
+      if (Traits.isTrait(anInterface)) {
+        LinkedHashSet<ClassNode> selfTypes=new LinkedHashSet<ClassNode>();
+        for (        ClassNode type : Traits.collectSelfTypes(anInterface,selfTypes,true,false)) {
+          if (type.isInterface() && !node.implementsInterface(type)) {
+            addError(getDescription(node) + " implements " + getDescription(anInterface)+ " but does not implement self type "+ getDescription(type),anInterface);
+          }
+ else           if (!type.isInterface() && !node.isDerivedFrom(type)) {
+            addError(getDescription(node) + " implements " + getDescription(anInterface)+ " but does not extend self type "+ getDescription(type),anInterface);
+          }
+        }
+      }
+    }
+  }
+}

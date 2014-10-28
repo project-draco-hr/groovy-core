@@ -1,0 +1,32 @@
+{
+  if (Traits.isTrait(receiver)) {
+    List<AnnotationNode> annotations=receiver.getAnnotations(SELFTYPE_CLASSNODE);
+    for (    AnnotationNode annotation : annotations) {
+      Expression value=annotation.getMember("value");
+      if (value instanceof ClassExpression) {
+        selfTypes.add(value.getType());
+      }
+ else       if (value instanceof ListExpression) {
+        List<Expression> expressions=((ListExpression)value).getExpressions();
+        for (        Expression expression : expressions) {
+          if (expression instanceof ClassExpression) {
+            selfTypes.add(expression.getType());
+          }
+        }
+      }
+    }
+  }
+  if (checkInterfaces) {
+    ClassNode[] interfaces=receiver.getInterfaces();
+    for (    ClassNode anInterface : interfaces) {
+      collectSelfTypes(anInterface,selfTypes,true,checkSuper);
+    }
+  }
+  if (checkSuper) {
+    ClassNode superClass=receiver.getSuperClass();
+    if (superClass != null) {
+      collectSelfTypes(superClass,selfTypes,checkInterfaces,true);
+    }
+  }
+  return selfTypes;
+}
