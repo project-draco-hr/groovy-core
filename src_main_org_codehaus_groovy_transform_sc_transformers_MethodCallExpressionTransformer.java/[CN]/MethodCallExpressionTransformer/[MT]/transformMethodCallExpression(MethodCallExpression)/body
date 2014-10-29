@@ -1,4 +1,8 @@
 {
+  ClassNode superCallReceiver=expr.getNodeMetaData(StaticTypesMarker.SUPER_MOP_METHOD_REQUIRED);
+  if (superCallReceiver != null) {
+    return transformMethodCallExpression(transformToMopSuperCall(superCallReceiver,expr));
+  }
   Expression objectExpression=expr.getObjectExpression();
   ClassNode type=staticCompilationTransformer.getTypeChooser().resolveType(objectExpression,staticCompilationTransformer.getClassNode());
   if (isCallOnClosure(expr)) {
