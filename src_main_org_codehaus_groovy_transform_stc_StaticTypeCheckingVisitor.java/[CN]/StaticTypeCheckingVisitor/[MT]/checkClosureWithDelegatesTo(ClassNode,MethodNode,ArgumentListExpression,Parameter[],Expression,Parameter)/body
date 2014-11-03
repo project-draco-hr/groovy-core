@@ -5,6 +5,7 @@
       Expression value=annotation.getMember("value");
       Expression strategy=annotation.getMember("strategy");
       Expression genericTypeIndex=annotation.getMember("genericTypeIndex");
+      Expression type=annotation.getMember("type");
       Integer stInt=Closure.OWNER_FIRST;
       if (strategy != null) {
         stInt=(Integer)evaluateExpression(new CastExpression(ClassHelper.Integer_TYPE,strategy),typeCheckingContext.source.getConfiguration());
@@ -14,6 +15,19 @@
           addStaticTypeError("Cannot use @DelegatesTo(genericTypeIndex=" + genericTypeIndex.getText() + ") without @DelegatesTo.Target because generic argument types are not available at runtime",value);
         }
         expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(value.getType(),stInt,typeCheckingContext.delegationMetadata));
+      }
+ else       if (type != null && !"".equals(type.getText()) && type instanceof ConstantExpression) {
+        String typeString=type.getText();
+        ClassNode[] resolved=GenericsUtils.parseClassNodesFromString(typeString,getSourceUnit(),typeCheckingContext.compilationUnit,mn,type);
+        if (resolved != null) {
+          if (resolved.length == 1) {
+            resolved=resolveGenericsFromTypeHint(receiver,arguments,mn,resolved);
+            expression.putNodeMetaData(StaticTypesMarker.DELEGATION_METADATA,new DelegationMetadata(resolved[0],stInt,typeCheckingContext.delegationMetadata));
+          }
+ else {
+            addStaticTypeError("Incorrect type hint found in method " + (mn),type);
+          }
+        }
       }
  else {
         final List<Expression> expressions=arguments.getExpressions();

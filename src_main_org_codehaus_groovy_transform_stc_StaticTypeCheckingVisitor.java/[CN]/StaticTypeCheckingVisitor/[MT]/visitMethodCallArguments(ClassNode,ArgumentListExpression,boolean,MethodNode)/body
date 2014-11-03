@@ -11,7 +11,7 @@
     if (visitClosures && expression instanceof ClosureExpression || !visitClosures && !(expression instanceof ClosureExpression)) {
       if (i < params.length && visitClosures) {
         Parameter param=params[i];
-        checkClosureWithDelegatesTo(newArgs,params,expression,param);
+        checkClosureWithDelegatesTo(receiver,selectedMethod,newArgs,params,expression,param);
         if (selectedMethod instanceof ExtensionMethodNode) {
           if (i > 0) {
             inferClosureParameterTypes(receiver,arguments,(ClosureExpression)expression,param,selectedMethod);

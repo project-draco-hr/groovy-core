@@ -1,0 +1,39 @@
+{
+  for (  GenericsType value : new HashSet<GenericsType>(connections.values())) {
+    if (!value.isPlaceholder() && !value.isWildcard()) {
+      ClassNode valueType=value.getType();
+      List<ClassNode> deepNodes=new LinkedList<ClassNode>();
+      ClassNode unresolvedSuperClass=valueType.getUnresolvedSuperClass();
+      if (unresolvedSuperClass != null && unresolvedSuperClass.isUsingGenerics()) {
+        deepNodes.add(unresolvedSuperClass);
+      }
+      for (      ClassNode node : valueType.getUnresolvedInterfaces()) {
+        if (node.isUsingGenerics()) {
+          deepNodes.add(node);
+        }
+      }
+      if (!deepNodes.isEmpty()) {
+        for (        GenericsType genericsType : resolvedPlaceholders.values()) {
+          ClassNode lowerBound=genericsType.getLowerBound();
+          if (lowerBound != null) {
+            for (            ClassNode deepNode : deepNodes) {
+              if (lowerBound.equals(deepNode)) {
+                extractGenericsConnections(connections,deepNode,lowerBound);
+              }
+            }
+          }
+          ClassNode[] upperBounds=genericsType.getUpperBounds();
+          if (upperBounds != null) {
+            for (            ClassNode upperBound : upperBounds) {
+              for (              ClassNode deepNode : deepNodes) {
+                if (upperBound.equals(deepNode)) {
+                  extractGenericsConnections(connections,deepNode,upperBound);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

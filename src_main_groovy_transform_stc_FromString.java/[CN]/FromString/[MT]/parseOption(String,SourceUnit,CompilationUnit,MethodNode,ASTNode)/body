@@ -1,37 +1,3 @@
 {
-  GroovyLexer lexer=new GroovyLexer(new StringReader("DummyNode<" + option + ">"));
-  final GroovyRecognizer rn=GroovyRecognizer.make(lexer);
-  try {
-    rn.classOrInterfaceType(true);
-    final AtomicReference<ClassNode> ref=new AtomicReference<ClassNode>();
-    AntlrParserPlugin plugin=new AntlrParserPlugin(){
-      @Override public ModuleNode buildAST(      final SourceUnit sourceUnit,      final ClassLoader classLoader,      final Reduction cst) throws ParserException {
-        ref.set(makeTypeWithArguments(rn.getAST()));
-        return null;
-      }
-    }
-;
-    plugin.buildAST(null,null,null);
-    ClassNode parsedNode=ref.get();
-    GenericsType[] parsedNodeGenericsTypes=parsedNode.getGenericsTypes();
-    if (parsedNodeGenericsTypes == null) {
-      return null;
-    }
-    ClassNode[] signature=new ClassNode[parsedNodeGenericsTypes.length];
-    for (int i=0; i < parsedNodeGenericsTypes.length; i++) {
-      final GenericsType genericsType=parsedNodeGenericsTypes[i];
-      signature[i]=resolveClassNode(sourceUnit,compilationUnit,mn,usage,genericsType.getType());
-    }
-    return signature;
-  }
- catch (  RecognitionException e) {
-    sourceUnit.addError(new IncorrectTypeHintException(mn,e,usage.getLineNumber(),usage.getColumnNumber()));
-  }
-catch (  TokenStreamException e) {
-    sourceUnit.addError(new IncorrectTypeHintException(mn,e,usage.getLineNumber(),usage.getColumnNumber()));
-  }
-catch (  ParserException e) {
-    sourceUnit.addError(new IncorrectTypeHintException(mn,e,usage.getLineNumber(),usage.getColumnNumber()));
-  }
-  return null;
+  return GenericsUtils.parseClassNodesFromString(option,sourceUnit,compilationUnit,mn,usage);
 }
