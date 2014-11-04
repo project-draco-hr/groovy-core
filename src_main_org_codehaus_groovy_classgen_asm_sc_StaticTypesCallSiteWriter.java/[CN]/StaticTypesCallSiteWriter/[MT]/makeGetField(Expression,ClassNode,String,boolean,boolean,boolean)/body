@@ -1,0 +1,47 @@
+{
+  FieldNode field=receiverType.getField(fieldName);
+  if (field != null && isDirectAccessAllowed(field,controller.getClassNode(),samePackage)) {
+    CompileStack compileStack=controller.getCompileStack();
+    MethodVisitor mv=controller.getMethodVisitor();
+    ClassNode replacementType=field.getOriginType();
+    OperandStack operandStack=controller.getOperandStack();
+    if (field.isStatic()) {
+      mv.visitFieldInsn(GETSTATIC,BytecodeHelper.getClassInternalName(field.getOwner()),fieldName,BytecodeHelper.getTypeDescription(replacementType));
+      operandStack.push(replacementType);
+    }
+ else {
+      if (implicitThis) {
+        compileStack.pushImplicitThis(implicitThis);
+      }
+      receiver.visit(controller.getAcg());
+      if (implicitThis)       compileStack.popImplicitThis();
+      Label exit=new Label();
+      if (safe) {
+        mv.visitInsn(DUP);
+        Label doGet=new Label();
+        mv.visitJumpInsn(IFNONNULL,doGet);
+        mv.visitJumpInsn(GOTO,exit);
+        mv.visitLabel(doGet);
+      }
+      if (!operandStack.getTopOperand().isDerivedFrom(field.getOwner())) {
+        mv.visitTypeInsn(CHECKCAST,BytecodeHelper.getClassInternalName(field.getOwner()));
+      }
+      mv.visitFieldInsn(GETFIELD,BytecodeHelper.getClassInternalName(field.getOwner()),fieldName,BytecodeHelper.getTypeDescription(replacementType));
+      if (safe) {
+        if (ClassHelper.isPrimitiveType(replacementType)) {
+          operandStack.replace(replacementType);
+          operandStack.box();
+          replacementType=operandStack.getTopOperand();
+        }
+        mv.visitLabel(exit);
+      }
+    }
+    operandStack.replace(replacementType);
+    return true;
+  }
+  ClassNode superClass=receiverType.getSuperClass();
+  if (superClass != null) {
+    return makeGetField(receiver,superClass,fieldName,safe,implicitThis,false);
+  }
+  return false;
+}

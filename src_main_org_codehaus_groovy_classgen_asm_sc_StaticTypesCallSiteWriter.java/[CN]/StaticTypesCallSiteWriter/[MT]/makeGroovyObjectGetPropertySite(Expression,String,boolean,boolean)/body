@@ -31,7 +31,7 @@
     }
   }
   if (makeGetPropertyWithGetter(receiver,receiverType,property,safe,implicitThis))   return;
-  if (makeGetField(receiver,receiverType,property,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
+  if (makeGetField(receiver,receiverType,property,safe,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   MethodCallExpression call=new MethodCallExpression(receiver,"getProperty",new ArgumentListExpression(new ConstantExpression(property)));
   call.setImplicitThis(implicitThis);
   call.setSafe(safe);
