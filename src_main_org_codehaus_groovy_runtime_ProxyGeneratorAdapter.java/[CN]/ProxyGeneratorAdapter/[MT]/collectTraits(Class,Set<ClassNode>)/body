@@ -1,6 +1,14 @@
 {
   Annotation annotation=clazz.getAnnotation(Trait.class);
   if (annotation != null) {
-    traits.add(ClassHelper.make(clazz));
+    ClassNode trait=ClassHelper.make(clazz);
+    traits.add(trait);
+    LinkedHashSet<ClassNode> selfTypes=new LinkedHashSet<ClassNode>();
+    Traits.collectSelfTypes(trait,selfTypes,true,true);
+    for (    ClassNode selfType : selfTypes) {
+      if (Traits.isTrait(selfType)) {
+        traits.add(selfType);
+      }
+    }
   }
 }
