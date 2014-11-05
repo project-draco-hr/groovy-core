@@ -1,0 +1,20 @@
+{
+  String result=original;
+  int index=result.indexOf("@ line ");
+  if (index != -1) {
+    result=result.substring(0,index);
+  }
+  int count=0;
+  index=0;
+  for (  char c : result.toCharArray()) {
+    if (c == ':') {
+      count++;
+      if (count == 2) {
+        result=result.substring(index + 2);
+        break;
+      }
+    }
+    index++;
+  }
+  return "Template parse error '" + result + "' at line "+ p.row+ ", column "+ p.column;
+}
