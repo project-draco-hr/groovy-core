@@ -1,0 +1,17 @@
+{
+  writer.write("[");
+  boolean first=true;
+  for (  Object it : coll) {
+    if (!first) {
+      writer.write(",");
+    }
+ else {
+      first=false;
+    }
+    writer.write("{");
+    curryDelegateAndGetContent(writer,closure,it);
+    writer.write("}");
+  }
+  writer.write("]");
+  return writer;
+}

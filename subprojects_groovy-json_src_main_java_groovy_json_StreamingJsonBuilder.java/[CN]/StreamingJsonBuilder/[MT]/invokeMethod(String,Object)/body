@@ -1,0 +1,69 @@
+{
+  boolean notExpectedArgs=false;
+  if (args != null && Object[].class.isAssignableFrom(args.getClass())) {
+    Object[] arr=(Object[])args;
+    try {
+      if (arr.length == 0) {
+        writer.write(JsonOutput.toJson(Collections.singletonMap(name,Collections.emptyMap())));
+      }
+ else       if (arr.length == 1) {
+        if (arr[0] instanceof Closure) {
+          writer.write("{");
+          writer.write(JsonOutput.toJson(name));
+          writer.write(":");
+          call((Closure)arr[0]);
+          writer.write("}");
+        }
+ else         if (arr[0] instanceof Map) {
+          writer.write(JsonOutput.toJson(Collections.singletonMap(name,(Map)arr[0])));
+        }
+ else {
+          notExpectedArgs=true;
+        }
+      }
+ else       if (arr.length == 2 && arr[0] instanceof Map && arr[1] instanceof Closure) {
+        writer.write("{");
+        writer.write(JsonOutput.toJson(name));
+        writer.write(":{");
+        boolean first=true;
+        Map map=(Map)arr[0];
+        for (        Object it : map.entrySet()) {
+          if (!first) {
+            writer.write(",");
+          }
+ else {
+            first=false;
+          }
+          Map.Entry entry=(Map.Entry)it;
+          writer.write(JsonOutput.toJson(entry.getKey()));
+          writer.write(":");
+          writer.write(JsonOutput.toJson(entry.getValue()));
+        }
+        StreamingJsonDelegate.cloneDelegateAndGetContent(writer,(Closure)arr[1],map.size() == 0);
+        writer.write("}}");
+      }
+ else       if (StreamingJsonDelegate.isCollectionWithClosure(arr)) {
+        writer.write("{");
+        writer.write(JsonOutput.toJson(name));
+        writer.write(":");
+        call((Collection)arr[0],(Closure)arr[1]);
+        writer.write("}");
+      }
+ else {
+        notExpectedArgs=true;
+      }
+    }
+ catch (    IOException ioe) {
+      throw new JsonException(ioe);
+    }
+  }
+ else {
+    notExpectedArgs=true;
+  }
+  if (!notExpectedArgs) {
+    return this;
+  }
+ else {
+    throw new JsonException("Expected no arguments, a single map, a single closure, or a map and closure as arguments.");
+  }
+}
