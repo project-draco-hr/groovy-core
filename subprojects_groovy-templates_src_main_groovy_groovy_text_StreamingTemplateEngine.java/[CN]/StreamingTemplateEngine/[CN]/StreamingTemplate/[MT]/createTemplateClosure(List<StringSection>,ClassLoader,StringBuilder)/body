@@ -1,0 +1,31 @@
+{
+  final GroovyClassLoader loader=AccessController.doPrivileged(new PrivilegedAction<GroovyClassLoader>(){
+    public GroovyClassLoader run(){
+      return new GroovyClassLoader(parentLoader);
+    }
+  }
+);
+  final Class groovyClass;
+  try {
+    groovyClass=loader.parseClass(new GroovyCodeSource(target.toString(),TEMPLATE_SCRIPT_PREFIX + counter++ + ".groovy","x"));
+  }
+ catch (  MultipleCompilationErrorsException e) {
+    throw mangleMultipleCompilationErrorsException(e,sections);
+  }
+catch (  Exception e) {
+    throw new GroovyRuntimeException("Failed to parse template script (your template may contain an error or be trying to use expressions not currently supported): " + e.getMessage());
+  }
+  Closure result;
+  try {
+    final GroovyObject object=(GroovyObject)groovyClass.newInstance();
+    Closure chicken=(Closure)object.invokeMethod("getTemplate",null);
+    result=chicken.curry(new Object[]{this,sections});
+  }
+ catch (  InstantiationException e) {
+    throw new ClassNotFoundException(e.getMessage());
+  }
+catch (  IllegalAccessException e) {
+    throw new ClassNotFoundException(e.getMessage());
+  }
+  return result;
+}

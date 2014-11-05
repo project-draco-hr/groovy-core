@@ -1,0 +1,44 @@
+{
+  int c=read(source,sourcePosition,lookAhead);
+  if (c == '\\') {
+    source.mark(3);
+    int d=read(source,sourcePosition,lookAhead);
+    c=read(source,sourcePosition,lookAhead);
+    clear(lookAhead);
+    if ((d == '$' && c == '{') || (d == '<' && c == '%')) {
+      source.reset();
+      currentSection.data.append('\\');
+      return;
+    }
+ else {
+      currentSection.data.append('\\');
+      currentSection.data.append('\\');
+      currentSection.data.append((char)d);
+    }
+  }
+ else   if (c == '$') {
+    c=read(source,sourcePosition,lookAhead);
+    if (c == '{') {
+      currentSection.data.append('$');
+    }
+ else {
+      currentSection.data.append('\\');
+      currentSection.data.append('$');
+    }
+  }
+ else   if (c == '<') {
+    c=read(source,sourcePosition,lookAhead);
+    if (c == '%') {
+      currentSection.data.append('<');
+    }
+ else {
+      currentSection.data.append('\\');
+      currentSection.data.append('<');
+    }
+  }
+ else {
+    currentSection.data.append('\\');
+  }
+  currentSection.data.append((char)c);
+  clear(lookAhead);
+}

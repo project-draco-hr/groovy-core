@@ -1,0 +1,30 @@
+{
+  int c;
+  if (useLastRead) {
+    c=lastRead;
+    useLastRead=false;
+    lastRead=-1;
+  }
+ else {
+    c=reader.read();
+    if (c == '\r') {
+      c=reader.read();
+      if (c != '\n') {
+        lastRead=c;
+        useLastRead=true;
+        c='\r';
+      }
+    }
+  }
+  if (c == -1) {
+    throw finishedReadingException;
+  }
+  if (c == '\n') {
+    position.row++;
+    position.column=1;
+  }
+ else {
+    position.column++;
+  }
+  return c;
+}
