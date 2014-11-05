@@ -11,7 +11,7 @@
     mce.setSourcePosition(initialExpression);
     code.addStatement(new ExpressionStatement(mce));
   }
-  fieldHelper.addMethod(Traits.helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
+  fieldHelper.addMethod(Traits.helperSetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),new Parameter[]{new Parameter(field.getOriginType(),"val")},ClassNode.EMPTY_ARRAY,null);
   fieldHelper.addMethod(Traits.helperGetterName(field),ACC_PUBLIC | ACC_ABSTRACT,field.getOriginType(),Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,null);
   String dummyFieldName=(field.isStatic() ? Traits.STATIC_FIELD_PREFIX : Traits.FIELD_PREFIX) + (field.isPublic() ? Traits.PUBLIC_FIELD_PREFIX : Traits.PRIVATE_FIELD_PREFIX) + Traits.remappedFieldName(field.getOwner(),field.getName());
   FieldNode dummyField=new FieldNode(dummyFieldName,ACC_STATIC | ACC_PUBLIC | ACC_FINAL| ACC_SYNTHETIC,field.getOriginType(),fieldHelper,null);
