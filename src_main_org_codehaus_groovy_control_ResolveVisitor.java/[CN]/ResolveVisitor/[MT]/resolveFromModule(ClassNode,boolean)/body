@@ -21,35 +21,45 @@
   if (testModuleImports) {
     if (resolveAliasFromModule(type))     return true;
     if (module.hasPackageName()) {
-      ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(module.getPackageName(),name);
-      if (resolve(tmp,false,false,false)) {
-        ambiguousClass(type,tmp,name);
-        type.setRedirect(tmp.redirect());
-        return true;
+      if (!resolutionFailedCache.contains(module.getPackageName() + name)) {
+        ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(module.getPackageName(),name);
+        if (resolve(tmp,false,false,false)) {
+          ambiguousClass(type,tmp,name);
+          type.setRedirect(tmp.redirect());
+          return true;
+        }
+        resolutionFailedCache.add(tmp.getName());
       }
     }
     for (    ImportNode importNode : module.getStaticImports().values()) {
       if (importNode.getFieldName().equals(name)) {
-        ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
+        String cName=importNode.getType().getName() + "$" + name;
+        if (resolutionFailedCache.contains(cName))         continue;
+        ClassNode tmp=ClassHelper.make(cName);
         if (resolve(tmp,false,false,true)) {
           if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
             type.setRedirect(tmp.redirect());
             return true;
           }
         }
+        resolutionFailedCache.add(cName);
       }
     }
     for (    ImportNode importNode : module.getStarImports()) {
       String packagePrefix=importNode.getPackageName();
+      if (resolutionFailedCache.contains(packagePrefix + name))       continue;
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(packagePrefix,name);
       if (resolve(tmp,false,false,true)) {
         ambiguousClass(type,tmp,name);
         type.setRedirect(tmp.redirect());
         return true;
       }
+      resolutionFailedCache.add(tmp.getName());
     }
     for (    ImportNode importNode : module.getStaticStarImports().values()) {
-      ClassNode tmp=ClassHelper.make(importNode.getClassName() + "$" + name);
+      String cName=importNode.getClassName() + "$" + name;
+      if (resolutionFailedCache.contains(cName))       continue;
+      ClassNode tmp=ClassHelper.make(cName);
       if (resolve(tmp,false,false,true)) {
         if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
           ambiguousClass(type,tmp,name);
@@ -57,6 +67,7 @@
           return true;
         }
       }
+      resolutionFailedCache.add(tmp.getName());
     }
   }
   return false;

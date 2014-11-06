@@ -2,16 +2,17 @@
   testDefaultImports&=!type.hasPackageName();
   testDefaultImports&=!(type instanceof LowerCaseClass);
   if (testDefaultImports) {
-    for (int i=0, size=DEFAULT_IMPORTS.length; i < size; i++) {
-      String packagePrefix=DEFAULT_IMPORTS[i];
-      String name=type.getName();
+    String name=type.getName();
+    for (    String packagePrefix : DEFAULT_IMPORTS) {
+      String className=packagePrefix + name;
+      if (resolutionFailedCache.contains(className))       continue;
       ConstructedClassWithPackage tmp=new ConstructedClassWithPackage(packagePrefix,name);
       if (resolve(tmp,false,false,false)) {
         type.setRedirect(tmp.redirect());
         return true;
       }
+      resolutionFailedCache.add(className);
     }
-    String name=type.getName();
     if (name.equals("BigInteger")) {
       type.setRedirect(ClassHelper.BigInteger_TYPE);
       return true;

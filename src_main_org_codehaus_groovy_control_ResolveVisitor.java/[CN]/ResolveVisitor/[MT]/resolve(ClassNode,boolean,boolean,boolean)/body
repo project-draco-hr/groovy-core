@@ -1,4 +1,5 @@
 {
+  final String name=type.getName();
   resolveGenericsTypes(type.getGenericsTypes());
   if (type.isResolved() || type.isPrimaryClassNode())   return true;
   if (type.isArray()) {
@@ -11,16 +12,19 @@
     return resolved;
   }
   if (currentClass == type)   return true;
-  if (genericParameterNames.get(type.getName()) != null) {
-    GenericsType gt=genericParameterNames.get(type.getName());
+  if (genericParameterNames.get(name) != null) {
+    GenericsType gt=genericParameterNames.get(name);
     type.setRedirect(gt.getType());
     type.setGenericsTypes(new GenericsType[]{gt});
     type.setGenericsPlaceHolder(true);
     return true;
   }
-  if (currentClass.getNameWithoutPackage().equals(type.getName())) {
+  if (currentClass.getNameWithoutPackage().equals(name)) {
     type.setRedirect(currentClass);
     return true;
   }
-  return resolveNestedClass(type) || resolveFromModule(type,testModuleImports) || resolveFromCompileUnit(type)|| resolveFromDefaultImports(type,testDefaultImports)|| resolveFromStaticInnerClasses(type,testStaticInnerClasses)|| resolveToOuter(type);
+  if (resolveNestedClass(type) || resolveFromModule(type,testModuleImports) || resolveFromCompileUnit(type)|| resolveFromDefaultImports(type,testDefaultImports)|| resolveFromStaticInnerClasses(type,testStaticInnerClasses)|| resolveToOuter(type)) {
+    return true;
+  }
+  return false;
 }
