@@ -19,7 +19,7 @@ catch (  Exception e) {
   try {
     final GroovyObject object=(GroovyObject)groovyClass.newInstance();
     Closure chicken=(Closure)object.invokeMethod("getTemplate",null);
-    result=chicken.curry(new Object[]{this,sections});
+    result=chicken.curry(this,sections);
   }
  catch (  InstantiationException e) {
     throw new ClassNotFoundException(e.getMessage());

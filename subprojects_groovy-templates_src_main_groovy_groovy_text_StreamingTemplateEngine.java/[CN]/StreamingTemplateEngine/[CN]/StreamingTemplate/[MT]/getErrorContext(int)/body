@@ -1,0 +1,20 @@
+{
+  int minLine=Math.max(0,actualLine - 1);
+  int maxLine=actualLine + 1;
+  LineNumberReader r=new LineNumberReader(new StringReader(templateSource.toString()));
+  int lineNr;
+  StringBuilder result=new StringBuilder();
+  while ((lineNr=r.getLineNumber() + 1) <= maxLine) {
+    String line=r.readLine();
+    if (lineNr < minLine)     continue;
+    String nr=Integer.toString(lineNr);
+    if (lineNr == actualLine) {
+      nr=" --> " + nr;
+    }
+    result.append(padLeft(nr,10));
+    result.append(": ");
+    result.append(line);
+    result.append('\n');
+  }
+  return result.toString();
+}
