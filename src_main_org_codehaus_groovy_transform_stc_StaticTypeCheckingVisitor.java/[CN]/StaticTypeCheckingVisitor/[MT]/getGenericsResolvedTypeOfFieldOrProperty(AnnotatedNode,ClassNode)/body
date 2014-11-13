@@ -1,0 +1,7 @@
+{
+  if (!type.isUsingGenerics())   return type;
+  Map<String,GenericsType> connections=new HashMap();
+  extractGenericsConnections(connections,typeCheckingContext.getEnclosingClassNode(),an.getDeclaringClass());
+  type=applyGenericsContext(connections,type);
+  return type;
+}
