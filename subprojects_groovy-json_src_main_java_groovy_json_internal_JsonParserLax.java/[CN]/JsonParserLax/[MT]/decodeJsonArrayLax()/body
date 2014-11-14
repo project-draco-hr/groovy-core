@@ -19,21 +19,31 @@
     skipWhiteSpace();
     Object arrayItem=decodeValueInternal();
     list.add(arrayItem);
-    skipWhiteSpace();
-    char c=__currentChar;
-    if (c == ',') {
-      __index++;
+    boolean doStop=false;
+    done:     do {
+      skipWhiteSpace();
+switch (__currentChar) {
+case '/':
+        handleComment();
       continue;
-    }
- else     if (c == ']') {
-      __index++;
-      break;
-    }
- else {
-      String charString=charDescription(c);
-      complain(String.format("expecting a ',' or a ']', " + " but got \nthe current character of  %s " + " on array index of %s \n",charString,list.size()));
-    }
-  }
+case '#':
+    handleBashComment();
+  continue;
+case ',':
+__index++;
+break done;
+case ']':
+__index++;
+doStop=true;
+break done;
+default :
+String charString=charDescription(__currentChar);
+complain(String.format("expecting a ',' or a ']', " + " but got \nthe current character of  %s " + " on array index of %s \n",charString,list.size()));
+}
+}
  while (this.hasMore());
-  return value;
+if (doStop) break;
+}
+ while (this.hasMore());
+return value;
 }
