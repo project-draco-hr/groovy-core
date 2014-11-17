@@ -2,13 +2,7 @@
   receiver.visit(visitor);
   if (visitor instanceof AsmClassGenerator) {
     ClassNode topOperand=controller.getOperandStack().getTopOperand();
-    ClassNode type;
-    if (target instanceof ExtensionMethodNode) {
-      type=((ExtensionMethodNode)target).getExtensionMethodNode().getDeclaringClass();
-    }
- else {
-      type=target.getDeclaringClass();
-    }
+    ClassNode type=getType();
     if (ClassHelper.GSTRING_TYPE.equals(topOperand) && ClassHelper.STRING_TYPE.equals(type)) {
       controller.getOperandStack().doGroovyCast(type);
       return;

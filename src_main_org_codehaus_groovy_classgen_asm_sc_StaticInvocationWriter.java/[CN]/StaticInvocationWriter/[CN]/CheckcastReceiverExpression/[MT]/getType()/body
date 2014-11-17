@@ -1,3 +1,21 @@
 {
-  return controller.getTypeChooser().resolveType(receiver,controller.getClassNode());
+  if (resolvedType != null) {
+    return resolvedType;
+  }
+  ClassNode type;
+  if (target instanceof ExtensionMethodNode) {
+    type=((ExtensionMethodNode)target).getExtensionMethodNode().getDeclaringClass();
+  }
+ else {
+    type=getWrapper(controller.getTypeChooser().resolveType(receiver,controller.getClassNode()));
+    ClassNode declaringClass=target.getDeclaringClass();
+    if (type.getClass() != ClassNode.class && type.getClass() != InnerClassNode.class) {
+      type=declaringClass;
+    }
+    if (OBJECT_TYPE.equals(type) && !OBJECT_TYPE.equals(declaringClass)) {
+      type=declaringClass;
+    }
+  }
+  resolvedType=type;
+  return type;
 }

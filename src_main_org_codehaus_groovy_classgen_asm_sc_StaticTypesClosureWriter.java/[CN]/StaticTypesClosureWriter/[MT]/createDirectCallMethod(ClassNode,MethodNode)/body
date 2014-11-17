@@ -1,10 +1,10 @@
 {
   Parameter args=new Parameter(ClassHelper.OBJECT_TYPE,"args");
-  MethodCallExpression doCall1arg=new MethodCallExpression(new VariableExpression("this"),"doCall",new ArgumentListExpression(new VariableExpression(args)));
+  MethodCallExpression doCall1arg=new MethodCallExpression(new VariableExpression("this",closureClass),"doCall",new ArgumentListExpression(new VariableExpression(args)));
   doCall1arg.setImplicitThis(true);
   doCall1arg.setMethodTarget(doCallMethod);
   closureClass.addMethod(new MethodNode("call",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,new Parameter[]{args},ClassNode.EMPTY_ARRAY,new ReturnStatement(doCall1arg)));
-  MethodCallExpression doCallNoArgs=new MethodCallExpression(new VariableExpression("this"),"doCall",new ArgumentListExpression(new ConstantExpression(null)));
+  MethodCallExpression doCallNoArgs=new MethodCallExpression(new VariableExpression("this",closureClass),"doCall",new ArgumentListExpression(new ConstantExpression(null)));
   doCallNoArgs.setImplicitThis(true);
   doCallNoArgs.setMethodTarget(doCallMethod);
   closureClass.addMethod(new MethodNode("call",Opcodes.ACC_PUBLIC,ClassHelper.OBJECT_TYPE,Parameter.EMPTY_ARRAY,ClassNode.EMPTY_ARRAY,new ReturnStatement(doCallNoArgs)));
