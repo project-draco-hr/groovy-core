@@ -45,9 +45,12 @@
   }
   int stackSize=operandStack.getStackLength();
   String owner=BytecodeHelper.getClassInternalName(declaringClass);
-  ClassNode receiverType=receiver != null ? controller.getTypeChooser().resolveType(receiver,classNode) : target.getDeclaringClass();
+  ClassNode receiverType=receiver != null ? controller.getTypeChooser().resolveType(receiver,classNode) : declaringClass;
+  if (opcode == INVOKEVIRTUAL && ClassHelper.OBJECT_TYPE.equals(declaringClass)) {
+    receiverType=declaringClass;
+  }
   if (opcode == INVOKEVIRTUAL) {
-    if (!receiverType.equals(declaringClass) && !receiverType.isArray() && !receiverType.isInterface()&& !ClassHelper.isPrimitiveType(receiverType)&& receiverType.isDerivedFrom(declaringClass)) {
+    if (!receiverType.equals(declaringClass) && !ClassHelper.OBJECT_TYPE.equals(declaringClass) && !receiverType.isArray()&& !receiverType.isInterface()&& !ClassHelper.isPrimitiveType(receiverType)&& receiverType.isDerivedFrom(declaringClass)) {
       owner=BytecodeHelper.getClassInternalName(receiverType);
       ClassNode top=operandStack.getTopOperand();
       if (!receiverType.equals(top)) {
