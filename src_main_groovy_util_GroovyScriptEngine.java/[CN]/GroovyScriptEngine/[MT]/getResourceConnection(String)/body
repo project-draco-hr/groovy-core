@@ -5,7 +5,8 @@
     URL scriptURL=null;
     try {
       scriptURL=new URL(root,resourceName);
-      groovyScriptConn=openConnection(scriptURL);
+      groovyScriptConn=scriptURL.openConnection();
+      groovyScriptConn.getInputStream();
       break;
     }
  catch (    MalformedURLException e) {
@@ -18,6 +19,7 @@
       }
     }
 catch (    IOException e1) {
+      groovyScriptConn=null;
       String message="Cannot open URL: " + root + resourceName;
       groovyScriptConn=null;
       if (se == null) {
