@@ -41,7 +41,11 @@
     }
   }
   cNode.addObjectInitializerStatements(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.INIT_METHOD,new ArgumentListExpression(new VariableExpression("this")))));
-  cNode.addStaticInitializerStatements(Collections.<Statement>singletonList(new ExpressionStatement(new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new VariableExpression("this"))))),false);
+  MethodCallExpression staticInitCall=new MethodCallExpression(new ClassExpression(helperClassNode),Traits.STATIC_INIT_METHOD,new ArgumentListExpression(new ClassExpression(cNode)));
+  MethodNode staticInitMethod=new MethodNode(Traits.STATIC_INIT_METHOD,Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC,ClassHelper.VOID_TYPE,new Parameter[]{new Parameter(ClassHelper.CLASS_Type,"clazz")},ClassNode.EMPTY_ARRAY,EmptyStatement.INSTANCE);
+  staticInitMethod.setDeclaringClass(helperClassNode);
+  staticInitCall.setMethodTarget(staticInitMethod);
+  cNode.addStaticInitializerStatements(Collections.<Statement>singletonList(new ExpressionStatement(staticInitCall)),false);
   if (fieldHelperClassNode != null && !cNode.declaresInterface(fieldHelperClassNode)) {
     cNode.addInterface(fieldHelperClassNode);
     List<MethodNode> declaredMethods=fieldHelperClassNode.getAllDeclaredMethods();
@@ -91,7 +95,9 @@
         Expression fieldExpr=new VariableExpression(cNode.getField(fieldName));
         Statement body=getter ? new ReturnStatement(fieldExpr) : new ExpressionStatement(new BinaryExpression(fieldExpr,Token.newSymbol(Types.EQUAL,0,0),new VariableExpression(newParams[0])));
         MethodNode impl=new MethodNode(methodNode.getName(),Opcodes.ACC_PUBLIC | isStatic,returnType,newParams,ClassNode.EMPTY_ARRAY,body);
-        impl.addAnnotation(new AnnotationNode(COMPILESTATIC_CLASSNODE));
+        AnnotationNode an=new AnnotationNode(COMPILESTATIC_CLASSNODE);
+        impl.addAnnotation(an);
+        cNode.addTransform(StaticCompileTransformation.class,an);
         cNode.addMethod(impl);
       }
     }
