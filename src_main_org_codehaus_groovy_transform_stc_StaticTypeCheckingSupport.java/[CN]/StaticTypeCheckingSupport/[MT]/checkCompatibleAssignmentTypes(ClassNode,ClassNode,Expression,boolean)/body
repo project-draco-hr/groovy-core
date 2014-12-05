@@ -3,7 +3,7 @@
   ClassNode rightRedirect=right.redirect();
   if (leftRedirect == rightRedirect)   return true;
   if (leftRedirect.isArray() && rightRedirect.isArray()) {
-    return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType(),rightExpression,allowConstructorCoercion);
+    return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType(),rightExpression,false);
   }
   if (right == VOID_TYPE || right == void_WRAPPER_TYPE) {
     return left == VOID_TYPE || left == void_WRAPPER_TYPE;
@@ -33,7 +33,7 @@
   if (leftRedirect.isDerivedFrom(Enum_Type) && (rightRedirect == GSTRING_TYPE || rightRedirect == STRING_TYPE)) {
     return true;
   }
-  if (allowConstructorCoercion && (rightRedirect.implementsInterface(MAP_TYPE) || rightRedirect.implementsInterface(Collection_TYPE) || rightRedirect.equals(MAP_TYPE)|| rightRedirect.equals(Collection_TYPE)|| rightRedirect.isArray())) {
+  if (allowConstructorCoercion && isGroovyConstructorCompatible(rightExpression)) {
     if (leftRedirect.isArray() && rightRedirect.isArray()) {
       return checkCompatibleAssignmentTypes(leftRedirect.getComponentType(),rightRedirect.getComponentType());
     }
