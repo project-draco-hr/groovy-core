@@ -73,10 +73,11 @@
     if (accessedVariable instanceof FieldNode) {
       FieldNode fn=(FieldNode)accessedVariable;
       Expression receiver=createFieldHelperReceiver();
+      MethodCallExpression mce;
       if (fn.isStatic()) {
-        receiver=new PropertyExpression(createFieldHelperReceiver(),"class");
+        receiver=new TernaryExpression(new BooleanExpression(new BinaryExpression(receiver,Token.newSymbol(Types.KEYWORD_INSTANCEOF,-1,-1),new ClassExpression(ClassHelper.CLASS_Type))),receiver,new MethodCallExpression(createFieldHelperReceiver(),"getClass",ArgumentListExpression.EMPTY_ARGUMENTS));
       }
-      MethodCallExpression mce=new MethodCallExpression(receiver,Traits.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
+      mce=new MethodCallExpression(receiver,Traits.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
       mce.setSourcePosition(exp);
       mce.setImplicitThis(false);
       return mce;
