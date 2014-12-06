@@ -1,0 +1,36 @@
+{
+synchronized (lazyInitLock) {
+    if (!lazyInitDone) {
+      if (classData.superName != null) {
+        setSuperClass(resolveClassNode(AsmDecompiler.fromInternalName(classData.superName)));
+      }
+      ClassNode[] interfaces=new ClassNode[classData.interfaceNames.length];
+      for (int i=0; i < classData.interfaceNames.length; i++) {
+        interfaces[i]=resolveClassNode(AsmDecompiler.fromInternalName(classData.interfaceNames[i]));
+      }
+      setInterfaces(interfaces);
+      for (      MethodStub method : classData.methods) {
+        Type[] argumentTypes=Type.getArgumentTypes(method.desc);
+        Parameter[] parameters=new Parameter[argumentTypes.length];
+        for (int i=0; i < argumentTypes.length; i++) {
+          parameters[i]=new Parameter(resolveType(argumentTypes[i]),"param" + i);
+        }
+        ClassNode[] exceptions=new ClassNode[method.exceptions.length];
+        for (int i=0; i < method.exceptions.length; i++) {
+          exceptions[i]=resolveClassNode(AsmDecompiler.fromInternalName(method.exceptions[i]));
+        }
+        if ("<init>".equals(method.methodName)) {
+          addConstructor(new ConstructorNode(method.accessModifiers,parameters,exceptions,null));
+        }
+ else {
+          ClassNode returnType=resolveType(Type.getReturnType(method.desc));
+          addMethod(new MethodNode(method.methodName,method.accessModifiers,returnType,parameters,exceptions,null));
+        }
+      }
+      for (      FieldStub field : classData.fields) {
+        addField(new FieldNode(field.fieldName,field.accessModifiers,resolveType(Type.getType(field.desc)),this,null));
+      }
+      lazyInitDone=true;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  if (type.getSort() == Type.ARRAY) {
+    ClassNode result=resolveNonArrayType(type.getElementType());
+    for (int i=0; i < type.getDimensions(); i++) {
+      result=result.makeArray();
+    }
+    return result;
+  }
+  return resolveNonArrayType(type);
+}
