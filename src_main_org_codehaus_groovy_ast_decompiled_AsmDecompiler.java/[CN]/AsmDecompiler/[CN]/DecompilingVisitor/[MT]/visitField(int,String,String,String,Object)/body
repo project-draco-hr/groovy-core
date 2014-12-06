@@ -1,4 +1,10 @@
 {
-  result.fields.add(new FieldStub(name,access,desc,signature));
-  return null;
+  final FieldStub stub=new FieldStub(name,access,desc,signature);
+  result.fields.add(stub);
+  return new FieldVisitor(api){
+    @Override public AnnotationVisitor visitAnnotation(    String desc,    boolean visible){
+      return readAnnotationMembers(stub.addAnnotation(desc));
+    }
+  }
+;
 }

@@ -9,26 +9,32 @@ synchronized (lazyInitLock) {
         interfaces[i]=resolveClassNode(AsmDecompiler.fromInternalName(classData.interfaceNames[i]));
       }
       setInterfaces(interfaces);
+      addAnnotations(classData,this);
       for (      MethodStub method : classData.methods) {
         Type[] argumentTypes=Type.getArgumentTypes(method.desc);
         Parameter[] parameters=new Parameter[argumentTypes.length];
         for (int i=0; i < argumentTypes.length; i++) {
           parameters[i]=new Parameter(resolveType(argumentTypes[i]),"param" + i);
         }
+        for (        Map.Entry<Integer,List<AnnotationStub>> entry : method.parameterAnnotations.entrySet()) {
+          for (          AnnotationStub stub : entry.getValue()) {
+            parameters[entry.getKey()].addAnnotation(createAnnotationNode(stub));
+          }
+        }
         ClassNode[] exceptions=new ClassNode[method.exceptions.length];
         for (int i=0; i < method.exceptions.length; i++) {
           exceptions[i]=resolveClassNode(AsmDecompiler.fromInternalName(method.exceptions[i]));
         }
         if ("<init>".equals(method.methodName)) {
-          addConstructor(new ConstructorNode(method.accessModifiers,parameters,exceptions,null));
+          addConstructor(addAnnotations(method,new ConstructorNode(method.accessModifiers,parameters,exceptions,null)));
         }
  else {
           ClassNode returnType=resolveType(Type.getReturnType(method.desc));
-          addMethod(new MethodNode(method.methodName,method.accessModifiers,returnType,parameters,exceptions,null));
+          addMethod(addAnnotations(method,new MethodNode(method.methodName,method.accessModifiers,returnType,parameters,exceptions,null)));
         }
       }
       for (      FieldStub field : classData.fields) {
-        addField(new FieldNode(field.fieldName,field.accessModifiers,resolveType(Type.getType(field.desc)),this,null));
+        addField(addAnnotations(field,new FieldNode(field.fieldName,field.accessModifiers,resolveType(Type.getType(field.desc)),this,null)));
       }
       lazyInitDone=true;
     }

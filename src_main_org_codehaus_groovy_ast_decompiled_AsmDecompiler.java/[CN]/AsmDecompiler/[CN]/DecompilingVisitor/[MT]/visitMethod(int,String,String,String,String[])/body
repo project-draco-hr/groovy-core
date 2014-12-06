@@ -1,6 +1,22 @@
 {
   if (!"<clinit>".equals(name)) {
-    result.methods.add(new MethodStub(name,access,desc,signature,exceptions != null ? exceptions : EMPTY_STRING_ARRAY));
+    final MethodStub stub=new MethodStub(name,access,desc,signature,exceptions != null ? exceptions : EMPTY_STRING_ARRAY);
+    result.methods.add(stub);
+    return new MethodVisitor(api){
+      @Override public AnnotationVisitor visitAnnotation(      String desc,      boolean visible){
+        return readAnnotationMembers(stub.addAnnotation(desc));
+      }
+      @Override public AnnotationVisitor visitParameterAnnotation(      int parameter,      String desc,      boolean visible){
+        List<AnnotationStub> list=stub.parameterAnnotations.get(parameter);
+        if (list == null) {
+          stub.parameterAnnotations.put(parameter,list=new ArrayList<AnnotationStub>());
+        }
+        AnnotationStub annotationStub=new AnnotationStub(desc);
+        list.add(annotationStub);
+        return readAnnotationMembers(annotationStub);
+      }
+    }
+;
   }
   return null;
 }
