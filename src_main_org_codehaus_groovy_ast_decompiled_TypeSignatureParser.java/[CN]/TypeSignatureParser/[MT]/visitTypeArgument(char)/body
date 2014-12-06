@@ -1,0 +1,18 @@
+{
+  return new TypeSignatureParser(resolver){
+    @Override void finished(    ClassNode result){
+      if (wildcard == INSTANCEOF) {
+        arguments.add(new GenericsType(result));
+        return;
+      }
+      ClassNode base=ClassHelper.makeWithoutCaching("?");
+      base.setRedirect(ClassHelper.OBJECT_TYPE);
+      ClassNode[] upper=wildcard == EXTENDS ? new ClassNode[]{result} : null;
+      ClassNode lower=wildcard == SUPER ? result : null;
+      GenericsType t=new GenericsType(base,upper,lower);
+      t.setWildcard(true);
+      arguments.add(t);
+    }
+  }
+;
+}
