@@ -1,10 +1,10 @@
 {
   if (value instanceof TypeWrapper) {
-    return new ClassExpression(resolveType(Type.getType(((TypeWrapper)value).desc)));
+    return new ClassExpression(resolver.resolveType(Type.getType(((TypeWrapper)value).desc)));
   }
   if (value instanceof EnumConstantWrapper) {
     EnumConstantWrapper wrapper=(EnumConstantWrapper)value;
-    return new PropertyExpression(new ClassExpression(resolveType(Type.getType(wrapper.enumDesc))),wrapper.constant);
+    return new PropertyExpression(new ClassExpression(resolver.resolveType(Type.getType(wrapper.enumDesc))),wrapper.constant);
   }
   if (value instanceof AnnotationStub) {
     return new AnnotationConstantExpression(createAnnotationNode((AnnotationStub)value));
