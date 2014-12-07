@@ -1,9 +1,6 @@
 {
   if (currentTypeParameter != null) {
-    ClassNode[] upperBounds=parameterBounds.toArray(new ClassNode[parameterBounds.size()]);
-    ClassNode param=ClassHelper.make(currentTypeParameter);
-    param.setGenericsPlaceHolder(true);
-    typeParameters.add(new GenericsType(param,upperBounds,null));
+    typeParameters.add(createFormalTypeParameter(currentTypeParameter,parameterBounds));
     currentTypeParameter=null;
     parameterBounds.clear();
   }
