@@ -2,8 +2,14 @@
   GenericsType[] typeParameters=null;
   Type[] argumentTypes=Type.getArgumentTypes(method.desc);
   final ClassNode[] parameterTypes=new ClassNode[argumentTypes.length];
+  for (int i=0; i < argumentTypes.length; i++) {
+    parameterTypes[i]=resolver.resolveType(argumentTypes[i]);
+  }
   final ClassNode[] exceptions=new ClassNode[method.exceptions.length];
-  final Reference<ClassNode> returnType=new Reference<ClassNode>();
+  for (int i=0; i < method.exceptions.length; i++) {
+    exceptions[i]=resolver.resolveClass(AsmDecompiler.fromInternalName(method.exceptions[i]));
+  }
+  final Reference<ClassNode> returnType=new Reference<ClassNode>(resolver.resolveType(Type.getReturnType(method.desc)));
   if (method.signature != null) {
     FormalParameterParser v=new FormalParameterParser(resolver){
       int paramIndex=0;
@@ -37,14 +43,6 @@
     new SignatureReader(method.signature).accept(v);
     typeParameters=v.getTypeParameters();
   }
- else {
-    for (int i=0; i < argumentTypes.length; i++) {
-      parameterTypes[i]=resolver.resolveType(argumentTypes[i]);
-    }
-    for (int i=0; i < method.exceptions.length; i++) {
-      exceptions[i]=resolver.resolveClass(AsmDecompiler.fromInternalName(method.exceptions[i]));
-    }
-  }
   Parameter[] parameters=new Parameter[parameterTypes.length];
   for (int i=0; i < parameterTypes.length; i++) {
     parameters[i]=new Parameter(parameterTypes[i],"param" + i);
@@ -59,9 +57,6 @@
     result=new ConstructorNode(method.accessModifiers,parameters,exceptions,null);
   }
  else {
-    if (returnType.get() == null) {
-      returnType.set(resolver.resolveType(Type.getReturnType(method.desc)));
-    }
     result=new MethodNode(method.methodName,method.accessModifiers,returnType.get(),parameters,exceptions,null);
     if (method.annotationDefault != null) {
       result.setCode(new ReturnStatement(new ConstantExpression(method.annotationDefault)));
