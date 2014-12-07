@@ -22,6 +22,9 @@
   }
 ;
   new SignatureReader(signature).accept(v);
-  classNode.setGenericsTypes(v.getTypeParameters());
+  GenericsType[] typeParameters=v.getTypeParameters();
+  if (typeParameters.length > 0) {
+    classNode.setGenericsTypes(typeParameters);
+  }
   classNode.setInterfaces(interfaces.toArray(new ClassNode[interfaces.size()]));
 }
