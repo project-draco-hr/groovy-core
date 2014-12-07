@@ -4,7 +4,7 @@ synchronized (lazyInitLock) {
       ClassSignatureParser.configureClass(this,this.classData,this.resolver);
       addAnnotations(classData,this);
       for (      MethodStub method : classData.methods) {
-        MethodNode node=addAnnotations(method,parseMethodSignature(method));
+        MethodNode node=addAnnotations(method,MemberSignatureParser.createMethodNode(resolver,method));
         if (node instanceof ConstructorNode) {
           addConstructor((ConstructorNode)node);
         }
