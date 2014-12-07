@@ -1,0 +1,15 @@
+{
+  final Reference<ClassNode> type=new Reference<ClassNode>();
+  if (field.signature != null) {
+    new SignatureReader(field.signature).accept(new TypeSignatureParser(resolver){
+      @Override void finished(      ClassNode result){
+        type.set(result);
+      }
+    }
+);
+  }
+ else {
+    type.set(resolver.resolveType(Type.getType(field.desc)));
+  }
+  return new FieldNode(field.fieldName,field.accessModifiers,type.get(),owner,null);
+}

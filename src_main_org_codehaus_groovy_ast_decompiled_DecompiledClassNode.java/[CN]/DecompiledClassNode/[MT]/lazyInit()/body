@@ -13,7 +13,7 @@ synchronized (lazyInitLock) {
         }
       }
       for (      FieldStub field : classData.fields) {
-        addField(addAnnotations(field,new FieldNode(field.fieldName,field.accessModifiers,resolver.resolveType(Type.getType(field.desc)),this,null)));
+        addField(addAnnotations(field,MemberSignatureParser.createFieldNode(field,resolver,this)));
       }
       lazyInitDone=true;
     }
