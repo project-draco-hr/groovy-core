@@ -63,6 +63,10 @@
       returnType.set(resolver.resolveType(Type.getReturnType(method.desc)));
     }
     result=new MethodNode(method.methodName,method.accessModifiers,returnType.get(),parameters,exceptions,null);
+    if (method.annotationDefault != null) {
+      result.setCode(new ReturnStatement(new ConstantExpression(method.annotationDefault)));
+      result.setAnnotationDefault(true);
+    }
   }
   result.setGenericsTypes(typeParameters);
   return result;
