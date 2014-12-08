@@ -1,7 +1,7 @@
 {
-  ClassNodeResolver.LookupResult lookupResult=resolver.resolveName(className,unit);
-  if (lookupResult == null || lookupResult.getClassNode() == null) {
+  ClassNode classNode=resolveClassNullable(className);
+  if (classNode == null) {
     throw new NoClassDefFoundError(className);
   }
-  return lookupResult.getClassNode();
+  return classNode;
 }
