@@ -1,8 +1,6 @@
 {
 synchronized (lazyInitLock) {
-    if (!lazyInitDone) {
-      ClassSignatureParser.configureClass(this,this.classData,this.resolver);
-      addAnnotations(classData,this);
+    if (!membersInitialized) {
       for (      MethodStub method : classData.methods) {
         MethodNode node=addAnnotations(method,MemberSignatureParser.createMethodNode(resolver,method));
         if (node instanceof ConstructorNode) {
@@ -15,7 +13,7 @@ synchronized (lazyInitLock) {
       for (      FieldStub field : classData.fields) {
         addField(addAnnotations(field,MemberSignatureParser.createFieldNode(field,resolver,this)));
       }
-      lazyInitDone=true;
+      membersInitialized=true;
     }
   }
 }
