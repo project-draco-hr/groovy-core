@@ -7,7 +7,8 @@
     return new PropertyExpression(new ClassExpression(resolver.resolveType(Type.getType(wrapper.enumDesc))),wrapper.constant);
   }
   if (value instanceof AnnotationStub) {
-    return new AnnotationConstantExpression(createAnnotationNode((AnnotationStub)value,resolver));
+    AnnotationNode annotationNode=createAnnotationNode((AnnotationStub)value,resolver);
+    return annotationNode != null ? new AnnotationConstantExpression(annotationNode) : ConstantExpression.NULL;
   }
   if (value != null && value.getClass().isArray()) {
     ListExpression elementExprs=new ListExpression();
