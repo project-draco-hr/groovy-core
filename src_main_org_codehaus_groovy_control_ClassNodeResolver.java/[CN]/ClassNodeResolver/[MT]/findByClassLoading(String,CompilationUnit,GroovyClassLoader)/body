@@ -1,0 +1,19 @@
+{
+  Class cls;
+  try {
+    cls=loader.loadClass(name,false,true);
+  }
+ catch (  ClassNotFoundException cnfe) {
+    LookupResult lr=tryAsScript(name,compilationUnit,null);
+    return lr;
+  }
+catch (  CompilationFailedException cfe) {
+    throw new GroovyBugError("The lookup for " + name + " caused a failed compilaton. There should not have been any compilation from this call.");
+  }
+  if (cls == null)   return null;
+  ClassNode cn=ClassHelper.make(cls);
+  if (cls.getClassLoader() != loader) {
+    return tryAsScript(name,compilationUnit,cn);
+  }
+  return new LookupResult(null,cn);
+}
