@@ -1,13 +1,11 @@
 {
-  ClassNode base=TypeSignatureParser.createTypeVariableReference(name);
   ClassNode redirect=base.redirect();
   base.setRedirect(null);
   GenericsType gt;
-  if (bounds.isEmpty()) {
+  if (cBounds == null || cBounds.length == 0) {
     gt=new GenericsType(base);
   }
  else {
-    ClassNode[] cBounds=bounds.toArray(new ClassNode[bounds.size()]);
     gt=new GenericsType(base,cBounds,null);
     gt.setName(base.getName());
     gt.setPlaceholder(true);

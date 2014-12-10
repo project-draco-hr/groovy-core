@@ -1,6 +1,8 @@
 {
   if (currentTypeParameter != null) {
-    typeParameters.add(createFormalTypeParameter(currentTypeParameter,parameterBounds));
+    ClassNode ref=Java5.configureTypeVariableReference(currentTypeParameter);
+    ClassNode[] boundNodes=parameterBounds.toArray(new ClassNode[parameterBounds.size()]);
+    typeParameters.add(Java5.configureTypeVariableDefinition(ref,boundNodes));
     currentTypeParameter=null;
     parameterBounds.clear();
   }
