@@ -1,5 +1,9 @@
 {
   node.setDeclaringClass(this);
-  redirect().methodsList.add(node);
-  redirect().methods.put(node.getName(),node);
+  ClassNode base=redirect();
+  if (base.methodsList.isEmpty()) {
+    base.methodsList=new ArrayList<MethodNode>();
+  }
+  base.methodsList.add(node);
+  base.methods.put(node.getName(),node);
 }
