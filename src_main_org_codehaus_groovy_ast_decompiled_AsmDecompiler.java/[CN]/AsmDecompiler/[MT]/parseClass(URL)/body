@@ -1,0 +1,11 @@
+{
+  SoftReference<ClassStub> ref=StubCache.map.get(url);
+  ClassStub stub=ref == null ? null : ref.get();
+  if (stub == null) {
+    DecompilingVisitor visitor=new DecompilingVisitor();
+    new ClassReader(new BufferedInputStream(url.openStream())).accept(visitor,ClassReader.SKIP_FRAMES);
+    stub=visitor.result;
+    StubCache.map.put(url,new SoftReference<ClassStub>(stub));
+  }
+  return stub;
+}
