@@ -5,6 +5,9 @@
   ClassNode fixedReturnType=correctToGenericsSpecRecurse(genericsSpec,helperMethod.getReturnType());
   Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
   int access=helperMethod.getModifiers();
+  if (Modifier.isPrivate(access)) {
+    return;
+  }
   if (!helperMethodParams[0].getOriginType().equals(ClassHelper.CLASS_Type)) {
     access=access ^ Opcodes.ACC_STATIC;
   }
