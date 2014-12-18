@@ -2,6 +2,9 @@
   if (a == null || b == null) {
     return null;
   }
+  if (a.isArray() && b.isArray()) {
+    return lowestUpperBound(a.getComponentType(),b.getComponentType(),interfacesImplementedByA,interfacesImplementedByB).makeArray();
+  }
   if (a.equals(OBJECT_TYPE) || b.equals(OBJECT_TYPE)) {
     GenericsType[] gta=a.getGenericsTypes();
     GenericsType[] gtb=b.getGenericsTypes();
