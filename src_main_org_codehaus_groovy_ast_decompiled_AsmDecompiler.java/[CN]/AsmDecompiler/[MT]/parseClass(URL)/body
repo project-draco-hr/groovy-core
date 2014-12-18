@@ -3,7 +3,13 @@
   ClassStub stub=ref == null ? null : ref.get();
   if (stub == null) {
     DecompilingVisitor visitor=new DecompilingVisitor();
-    new ClassReader(new BufferedInputStream(url.openStream())).accept(visitor,ClassReader.SKIP_FRAMES);
+    InputStream stream=url.openStream();
+    try {
+      new ClassReader(new BufferedInputStream(stream)).accept(visitor,ClassReader.SKIP_FRAMES);
+    }
+  finally {
+      stream.close();
+    }
     stub=visitor.result;
     StubCache.map.put(url,new SoftReference<ClassStub>(stub));
   }
