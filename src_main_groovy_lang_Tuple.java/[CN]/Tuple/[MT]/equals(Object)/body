@@ -1,6 +1,12 @@
 {
-  if (that instanceof Tuple) {
-    return equals((Tuple)that);
+  if (this == o)   return true;
+  if (o == null || !(o instanceof Tuple))   return false;
+  Tuple that=(Tuple)o;
+  if (size() != that.size())   return false;
+  for (int i=0; i < contents.length; i++) {
+    if (!DefaultTypeTransformation.compareEqual(contents[i],that.contents[i])) {
+      return false;
+    }
   }
-  return false;
+  return true;
 }
