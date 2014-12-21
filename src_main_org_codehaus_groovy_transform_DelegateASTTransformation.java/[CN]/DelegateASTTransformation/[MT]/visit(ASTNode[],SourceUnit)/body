@@ -18,8 +18,8 @@
     for (    ClassNode next : type.getAllInterfaces()) {
       fieldMethods.addAll(getAllMethods(next));
     }
-    final boolean skipInterfaces=hasBooleanValue(node.getMember(MEMBER_INTERFACES),false);
-    final boolean includeDeprecated=hasBooleanValue(node.getMember(MEMBER_DEPRECATED),true) || (type.isInterface() && !skipInterfaces);
+    final boolean skipInterfaces=memberHasValue(node,MEMBER_INTERFACES,false);
+    final boolean includeDeprecated=memberHasValue(node,MEMBER_DEPRECATED,true) || (type.isInterface() && !skipInterfaces);
     List<String> excludes=getMemberList(node,MEMBER_EXCLUDES);
     List<String> includes=getMemberList(node,MEMBER_INCLUDES);
     List<ClassNode> excludeTypes=getClassList(node,MEMBER_EXCLUDE_TYPES);

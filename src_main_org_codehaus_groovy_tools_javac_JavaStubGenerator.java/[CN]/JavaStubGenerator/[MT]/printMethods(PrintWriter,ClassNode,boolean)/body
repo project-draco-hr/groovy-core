@@ -13,13 +13,24 @@
     }
     printMethod(out,classNode,method);
   }
-  for (  ClassNode node : classNode.getInterfaces()) {
+  for (  ClassNode node : classNode.getAllInterfaces()) {
     if (Traits.isTrait(node)) {
       List<MethodNode> traitMethods=node.getMethods();
       for (      MethodNode traitMethod : traitMethods) {
         MethodNode method=classNode.getMethod(traitMethod.getName(),traitMethod.getParameters());
         if (method == null) {
-          printMethod(out,classNode,traitMethod);
+          for (          MethodNode methodNode : propertyMethods) {
+            if (methodNode.getName().equals(traitMethod.getName())) {
+              boolean sameParams=sameParameterTypes(methodNode);
+              if (sameParams) {
+                method=methodNode;
+                break;
+              }
+            }
+          }
+          if (method == null) {
+            printMethod(out,classNode,traitMethod);
+          }
         }
       }
     }
