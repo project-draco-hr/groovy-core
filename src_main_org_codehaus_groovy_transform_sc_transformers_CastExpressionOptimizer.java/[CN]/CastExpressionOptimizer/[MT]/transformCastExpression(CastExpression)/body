@@ -1,0 +1,14 @@
+{
+  if (cast.isCoerce()) {
+    Expression expression=cast.getExpression();
+    ClassNode exprInferredType=transformer.getTypeChooser().resolveType(expression,transformer.getClassNode());
+    ClassNode castType=cast.getType();
+    if (isOptimizable(exprInferredType,castType)) {
+      CastExpression trn=new CastExpression(castType,transformer.transform(expression));
+      trn.setSourcePosition(cast);
+      trn.copyNodeMetaData(cast);
+      return trn;
+    }
+  }
+  return transformer.superTransform(cast);
+}
