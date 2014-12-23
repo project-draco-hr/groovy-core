@@ -9,12 +9,18 @@
   for (  char c : result.toCharArray()) {
     if (c == ':') {
       count++;
-      if (count == 2) {
+      if (count == 3) {
         result=result.substring(index + 2);
         break;
       }
     }
     index++;
   }
-  return "Template parse error '" + result + "' at line "+ p.row+ ", column "+ p.column;
+  String msg="Template parse error '" + result + "' at line "+ p.row+ ", column "+ p.column;
+  try {
+    msg+="\n" + getErrorContext(p.row);
+  }
+ catch (  IOException e) {
+  }
+  return msg;
 }

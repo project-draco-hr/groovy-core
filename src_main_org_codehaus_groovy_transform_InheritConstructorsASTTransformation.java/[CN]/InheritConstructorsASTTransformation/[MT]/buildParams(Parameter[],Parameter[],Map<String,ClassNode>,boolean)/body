@@ -1,0 +1,13 @@
+{
+  List<Expression> theArgs=new ArrayList<Expression>();
+  for (int i=0; i < origParams.length; i++) {
+    Parameter p=origParams[i];
+    ClassNode newType=correctToGenericsSpecRecurse(genericsSpec,p.getType());
+    params[i]=p.hasInitialExpression() ? param(newType,p.getName(),p.getInitialExpression()) : param(newType,p.getName());
+    if (copyParameterAnnotations) {
+      params[i].addAnnotations(copyAnnotatedNodeAnnotations(origParams[i],MY_TYPE_NAME));
+    }
+    theArgs.add(varX(p.getName(),newType));
+  }
+  return theArgs;
+}

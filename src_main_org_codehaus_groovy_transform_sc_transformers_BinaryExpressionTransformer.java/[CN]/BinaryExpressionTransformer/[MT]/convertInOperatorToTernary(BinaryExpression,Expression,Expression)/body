@@ -1,0 +1,8 @@
+{
+  MethodCallExpression call=new MethodCallExpression(rightExpression,"isCase",leftExpression);
+  call.setMethodTarget((MethodNode)bin.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
+  call.setSourcePosition(bin);
+  call.copyNodeMetaData(bin);
+  TernaryExpression tExp=new TernaryExpression(new BooleanExpression(new BinaryExpression(rightExpression,Token.newSymbol("==",-1,-1),new ConstantExpression(null))),new BinaryExpression(leftExpression,Token.newSymbol("==",-1,-1),new ConstantExpression(null)),call);
+  return staticCompilationTransformer.transform(tExp);
+}

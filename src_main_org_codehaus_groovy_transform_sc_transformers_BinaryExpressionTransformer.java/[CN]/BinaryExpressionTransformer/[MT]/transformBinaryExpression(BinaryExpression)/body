@@ -1,9 +1,19 @@
 {
-  Object[] list=(Object[])bin.getNodeMetaData(BINARY_EXP_TARGET);
+  Object[] list=bin.getNodeMetaData(BINARY_EXP_TARGET);
   Token operation=bin.getOperation();
   int operationType=operation.getType();
   Expression rightExpression=bin.getRightExpression();
   Expression leftExpression=bin.getLeftExpression();
+  if (bin instanceof DeclarationExpression && leftExpression instanceof VariableExpression) {
+    ClassNode declarationType=((VariableExpression)leftExpression).getOriginType();
+    if (rightExpression instanceof ConstantExpression) {
+      ClassNode unwrapper=ClassHelper.getUnwrapper(declarationType);
+      ClassNode wrapper=ClassHelper.getWrapper(declarationType);
+      if (!rightExpression.getType().equals(declarationType) && wrapper.isDerivedFrom(ClassHelper.Number_TYPE) && WideningCategories.isDoubleCategory(unwrapper)) {
+        return optimizeConstantInitialization(bin,operation,(ConstantExpression)rightExpression,leftExpression,declarationType);
+      }
+    }
+  }
   if (operationType == Types.EQUAL && leftExpression instanceof PropertyExpression) {
     MethodNode directMCT=leftExpression.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET);
     if (directMCT != null) {
@@ -24,12 +34,7 @@
     }
   }
  else   if (operationType == Types.KEYWORD_IN) {
-    MethodCallExpression call=new MethodCallExpression(rightExpression,"isCase",leftExpression);
-    call.setMethodTarget((MethodNode)bin.getNodeMetaData(StaticTypesMarker.DIRECT_METHOD_CALL_TARGET));
-    call.setSourcePosition(bin);
-    call.copyNodeMetaData(bin);
-    TernaryExpression tExp=new TernaryExpression(new BooleanExpression(new BinaryExpression(rightExpression,Token.newSymbol("==",-1,-1),new ConstantExpression(null))),new BinaryExpression(leftExpression,Token.newSymbol("==",-1,-1),new ConstantExpression(null)),call);
-    return staticCompilationTransformer.transform(tExp);
+    return convertInOperatorToTernary(bin,rightExpression,leftExpression);
   }
   if (list != null) {
     if (operationType == Types.COMPARE_TO) {

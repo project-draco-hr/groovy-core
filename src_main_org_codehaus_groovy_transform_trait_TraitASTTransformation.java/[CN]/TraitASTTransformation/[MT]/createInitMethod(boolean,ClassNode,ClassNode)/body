@@ -2,8 +2,5 @@
   MethodNode initializer=new MethodNode(isStatic ? Traits.STATIC_INIT_METHOD : Traits.INIT_METHOD,ACC_STATIC | ACC_PUBLIC | ACC_SYNTHETIC,ClassHelper.VOID_TYPE,new Parameter[]{createSelfParameter(cNode,isStatic)},ClassNode.EMPTY_ARRAY,new BlockStatement());
   fixGenerics(initializer,cNode);
   helper.addMethod(initializer);
-  AnnotationNode an=new AnnotationNode(TraitComposer.COMPILESTATIC_CLASSNODE);
-  initializer.addAnnotation(an);
-  cNode.addTransform(StaticCompileTransformation.class,an);
   return initializer;
 }
