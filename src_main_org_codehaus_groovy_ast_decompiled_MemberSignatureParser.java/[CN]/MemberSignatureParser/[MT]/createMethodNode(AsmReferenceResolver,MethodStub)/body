@@ -16,7 +16,8 @@
       @Override public SignatureVisitor visitParameterType(){
         return new TypeSignatureParser(resolver){
           @Override void finished(          ClassNode result){
-            parameterTypes[paramIndex++]=result;
+            parameterTypes[paramIndex]=applyErasure(result,parameterTypes[paramIndex]);
+            paramIndex++;
           }
         }
 ;
@@ -24,7 +25,7 @@
       @Override public SignatureVisitor visitReturnType(){
         return new TypeSignatureParser(resolver){
           @Override void finished(          ClassNode result){
-            returnType[0]=result;
+            returnType[0]=applyErasure(result,returnType[0]);
           }
         }
 ;
@@ -33,7 +34,8 @@
       @Override public SignatureVisitor visitExceptionType(){
         return new TypeSignatureParser(resolver){
           @Override void finished(          ClassNode result){
-            exceptions[exceptionIndex++]=result;
+            exceptions[exceptionIndex]=applyErasure(result,exceptions[exceptionIndex]);
+            exceptionIndex++;
           }
         }
 ;

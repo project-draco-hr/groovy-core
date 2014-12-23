@@ -3,7 +3,7 @@
   if (field.signature != null) {
     new SignatureReader(field.signature).accept(new TypeSignatureParser(resolver){
       @Override void finished(      ClassNode result){
-        type[0]=result;
+        type[0]=applyErasure(result,type[0]);
       }
     }
 );
