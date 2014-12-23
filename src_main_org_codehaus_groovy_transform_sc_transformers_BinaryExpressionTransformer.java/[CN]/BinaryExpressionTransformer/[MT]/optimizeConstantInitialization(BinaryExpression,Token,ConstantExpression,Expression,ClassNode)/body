@@ -1,0 +1,9 @@
+{
+  ConstantExpression cexp=new ConstantExpression(convertConstant((Number)constant.getValue(),ClassHelper.getWrapper(declarationType)),true);
+  cexp.setType(declarationType);
+  cexp.setSourcePosition(constant);
+  DeclarationExpression result=new DeclarationExpression(leftExpression,operation,cexp);
+  result.setSourcePosition(originalDeclaration);
+  result.copyNodeMetaData(originalDeclaration);
+  return result;
+}

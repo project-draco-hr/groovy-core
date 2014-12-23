@@ -1,5 +1,4 @@
 {
-  StaticCompilationTransformer transformer=new StaticCompilationTransformer(source);
   AnnotationNode annotationInformation=(AnnotationNode)nodes[0];
   AnnotatedNode node=(AnnotatedNode)nodes[1];
   StaticTypeCheckingVisitor visitor=null;
@@ -35,6 +34,7 @@
   if (visitor != null) {
     visitor.performSecondPass();
   }
+  StaticCompilationTransformer transformer=new StaticCompilationTransformer(source,visitor);
   if (node instanceof ClassNode) {
     transformer.visitClass((ClassNode)node);
   }
