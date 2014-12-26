@@ -3,9 +3,9 @@
     return;
   }
   if (!isDeclaration && var.isClosureSharedVariable()) {
-    assignmentCount.put(var,VariableState.is_var);
+    getState().put(var,VariableState.is_var);
   }
-  VariableState count=assignmentCount.get(var);
+  VariableState count=getState().get(var);
   if (count == null) {
     count=uninitialized ? VariableState.is_uninitialized : VariableState.is_final;
     if (var instanceof Parameter) {
@@ -15,7 +15,7 @@
  else {
     count=count.getNext();
   }
-  assignmentCount.put(var,count);
+  getState().put(var,count);
   if (count == VariableState.is_var && callback != null) {
     callback.variableNotFinal(var,expression);
   }

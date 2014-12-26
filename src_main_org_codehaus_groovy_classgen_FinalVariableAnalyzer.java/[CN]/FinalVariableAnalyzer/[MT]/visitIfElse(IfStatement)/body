@@ -1,0 +1,31 @@
+{
+  visitStatement(ifElse);
+  ifElse.getBooleanExpression().visit(this);
+  Map<Variable,VariableState> ifState=pushState();
+  ifElse.getIfBlock().visit(this);
+  popState();
+  Statement elseBlock=ifElse.getElseBlock();
+  Map<Variable,VariableState> elseState=pushState();
+  if (elseBlock instanceof EmptyStatement) {
+    visitEmptyStatement((EmptyStatement)elseBlock);
+  }
+ else {
+    elseBlock.visit(this);
+  }
+  popState();
+  Map<Variable,VariableState> curState=getState();
+  for (  Map.Entry<Variable,VariableState> entry : ifState.entrySet()) {
+    Variable key=entry.getKey();
+    VariableState ifValue=entry.getValue();
+    VariableState merged=ifValue;
+    if (elseState.containsKey(key)) {
+      VariableState elseValue=elseState.get(key);
+      merged=(ifValue.isFinal && elseValue.isFinal) ? VariableState.is_final : VariableState.is_var;
+    }
+    VariableState oldState=curState.get(key);
+    if (oldState != null) {
+      merged=(merged.isFinal && oldState == VariableState.is_uninitialized) ? VariableState.is_final : VariableState.is_var;
+    }
+    curState.put(key,merged);
+  }
+}
