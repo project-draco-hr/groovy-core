@@ -5,11 +5,11 @@
     if (leftExpression instanceof Variable) {
       boolean isDeclaration=expression instanceof DeclarationExpression;
       boolean uninitialized=isDeclaration && expression.getRightExpression() == EmptyExpression.INSTANCE;
-      recordAssignment((Variable)leftExpression,isDeclaration,uninitialized,expression);
+      recordAssignment((Variable)leftExpression,isDeclaration,uninitialized,false,expression);
       if (leftExpression instanceof VariableExpression) {
         Variable accessed=((VariableExpression)leftExpression).getAccessedVariable();
         if (accessed != leftExpression) {
-          recordAssignment(accessed,isDeclaration,uninitialized,expression);
+          recordAssignment(accessed,isDeclaration,uninitialized,false,expression);
         }
       }
     }

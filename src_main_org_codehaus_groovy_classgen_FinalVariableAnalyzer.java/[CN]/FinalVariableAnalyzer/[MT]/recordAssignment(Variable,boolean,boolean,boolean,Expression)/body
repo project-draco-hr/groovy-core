@@ -15,6 +15,9 @@
  else {
     count=count.getNext();
   }
+  if (forceVariable) {
+    count=VariableState.is_var;
+  }
   getState().put(var,count);
   if (count == VariableState.is_var && callback != null) {
     callback.variableNotFinal(var,expression);
