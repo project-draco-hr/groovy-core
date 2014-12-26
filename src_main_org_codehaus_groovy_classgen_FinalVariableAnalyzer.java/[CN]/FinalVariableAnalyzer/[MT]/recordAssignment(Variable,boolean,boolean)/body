@@ -1,0 +1,16 @@
+{
+  if (!isDeclaration && var.isClosureSharedVariable()) {
+    assignmentCount.put(var,VariableState.is_var);
+  }
+  VariableState count=assignmentCount.get(var);
+  if (count == null) {
+    count=uninitialized ? VariableState.is_uninitialized : VariableState.is_final;
+    if (var instanceof Parameter) {
+      count=VariableState.is_var;
+    }
+    assignmentCount.put(var,count);
+  }
+ else {
+    assignmentCount.put(var,count.getNext());
+  }
+}
