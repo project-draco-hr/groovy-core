@@ -8,10 +8,11 @@
   if (unsupportedAttribute(transform,anno,"buildMethodName"))   return;
   if (unsupportedAttribute(transform,anno,"builderMethodName"))   return;
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
+  boolean useSetters=transform.memberHasValue(anno,"useSetters",true);
   List<String> excludes=new ArrayList<String>();
   List<String> includes=new ArrayList<String>();
   if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
-  String prefix=transform.getMemberStringValue(anno,"prefix","set");
+  String prefix=getMemberStringValue(anno,"prefix","set");
   List<FieldNode> fields=getInstancePropertyFields(buildee);
   for (  String name : includes) {
     checkKnownField(transform,anno,name,fields);
@@ -21,7 +22,7 @@
     if (!AbstractASTTransformation.shouldSkip(fieldName,excludes,includes)) {
       String methodName=getSetterName(prefix,fieldName);
       Parameter parameter=param(field.getType(),fieldName);
-      buildee.addMethod(methodName,Opcodes.ACC_PUBLIC,newClass(buildee),params(parameter),NO_EXCEPTIONS,block(stmt(assignX(fieldX(field),varX(parameter))),returnS(varX("this"))));
+      buildee.addMethod(methodName,Opcodes.ACC_PUBLIC,newClass(buildee),params(parameter),NO_EXCEPTIONS,block(stmt(useSetters && !field.isFinal() ? callThisX(getSetterName("set",fieldName),varX(parameter)) : assignX(fieldX(field),varX(parameter))),returnS(varX("this"))));
     }
   }
 }
