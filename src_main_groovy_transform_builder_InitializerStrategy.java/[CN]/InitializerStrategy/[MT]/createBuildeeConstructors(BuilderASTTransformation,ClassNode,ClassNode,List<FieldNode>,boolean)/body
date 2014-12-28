@@ -3,7 +3,7 @@
   if (transform.hasAnnotation(buildee,ImmutableASTTransformation.MY_TYPE)) {
     initializer.putNodeMetaData(ImmutableASTTransformation.IMMUTABLE_SAFE_FLAG,Boolean.TRUE);
   }
- else {
+ else   if (needsConstructor) {
     final BlockStatement body=new BlockStatement();
     body.addStatement(ctorSuperS());
     initializeFields(fields,body);

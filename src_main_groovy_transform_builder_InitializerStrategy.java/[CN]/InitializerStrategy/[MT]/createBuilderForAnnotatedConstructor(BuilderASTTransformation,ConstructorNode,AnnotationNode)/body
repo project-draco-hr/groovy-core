@@ -1,19 +1,8 @@
 {
   ClassNode buildee=annotatedConstructor.getDeclaringClass();
-  String prefix=transform.getMemberStringValue(anno,"prefix","");
-  if (unsupportedAttribute(transform,anno,"forClass"))   return;
-  String builderClassName=transform.getMemberStringValue(anno,"builderClassName",buildee.getName() + "Initializer");
-  String buildMethodName=transform.getMemberStringValue(anno,"buildMethodName","create");
-  Parameter[] parameters=getParamsFromConstructor(annotatedConstructor);
-  int numFields=parameters.length;
-  ClassNode builder=createInnerHelperClass(buildee,builderClassName,numFields);
+  Parameter[] parameters=annotatedConstructor.getParameters();
+  annotatedConstructor.setModifiers(ACC_PRIVATE | ACC_SYNTHETIC);
+  ClassNode builder=createInnerHelperClass(buildee,getBuilderClassName(buildee,anno),parameters.length);
   List<FieldNode> convertedFields=convertParamsToFields(builder,parameters);
-  createBuilderConstructors(builder,buildee,convertedFields);
-  createBuildeeConstructor(transform,buildee,builder,convertedFields);
-  buildee.getModule().addClass(builder);
-  buildee.addMethod(createBuilderMethod(transform,anno,buildMethodName,builder,numFields));
-  for (int i=0; i < numFields; i++) {
-    builder.addMethod(createBuilderMethodForField(builder,convertedFields,prefix,i));
-  }
-  builder.addMethod(createBuildMethod(builder,buildMethodName,convertedFields));
+  buildMe(transform,buildee,anno,convertedFields,builder,false);
 }
