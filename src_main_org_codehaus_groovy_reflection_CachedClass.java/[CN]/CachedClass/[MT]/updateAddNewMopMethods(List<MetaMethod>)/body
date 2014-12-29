@@ -3,4 +3,8 @@
   res.addAll(Arrays.asList(classInfo.newMetaMethods));
   res.addAll(arr);
   classInfo.newMetaMethods=res.toArray(new MetaMethod[res.size()]);
+  Class theClass=classInfo.getCachedClass().getTheClass();
+  if (theClass == Closure.class || theClass == Class.class) {
+    ClosureMetaClass.resetCachedMetaClasses();
+  }
 }
