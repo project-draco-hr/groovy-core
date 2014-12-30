@@ -57,7 +57,11 @@
  else {
       if (index >= length && !done) {
         ensureBuffer();
+        boolean hasAlreadyFoundEscape=foundEscape;
         char results2[]=findNextChar(match,esc);
+        if (hasAlreadyFoundEscape) {
+          foundEscape=true;
+        }
         return Chr.add(results,results2);
       }
  else {
