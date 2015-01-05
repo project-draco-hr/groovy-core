@@ -1,0 +1,10 @@
+{
+  Map<String,ClassNode> ret=new HashMap<String,ClassNode>(oldSpec);
+  GenericsType[] sgts=current.getGenericsTypes();
+  if (sgts != null) {
+    for (    GenericsType sgt : sgts) {
+      ret.put(sgt.getName(),correctToGenericsSpec(ret,sgt));
+    }
+  }
+  return ret;
+}
