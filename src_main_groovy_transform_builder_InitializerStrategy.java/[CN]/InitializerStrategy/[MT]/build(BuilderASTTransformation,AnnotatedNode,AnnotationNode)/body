@@ -1,27 +1,13 @@
 {
-  if (!(annotatedNode instanceof ClassNode)) {
+  if (!(annotatedNode instanceof ClassNode || annotatedNode instanceof MethodNode)) {
     transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
     return;
   }
-  ClassNode buildee=(ClassNode)annotatedNode;
-  List<String> excludes=new ArrayList<String>();
-  List<String> includes=new ArrayList<String>();
-  if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
-  String prefix=transform.getMemberStringValue(anno,"prefix","");
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
-  String builderClassName=transform.getMemberStringValue(anno,"builderClassName",buildee.getName() + "Initializer");
-  String buildMethodName=transform.getMemberStringValue(anno,"buildMethodName","create");
-  List<FieldNode> fields=getInstancePropertyFields(buildee);
-  List<FieldNode> filteredFields=selectFieldsFromExistingClass(fields,includes,excludes);
-  int numFields=filteredFields.size();
-  ClassNode builder=createInnerHelperClass(buildee,builderClassName,filteredFields);
-  createBuilderConstructors(builder,buildee,filteredFields);
-  createBuildeeConstructors(transform,buildee,builder,filteredFields);
-  buildee.getModule().addClass(builder);
-  buildee.addMethod(createBuilderMethod(transform,anno,buildMethodName,builder,numFields));
-  for (int i=0; i < numFields; i++) {
-    builder.addField(createFieldCopy(buildee,filteredFields.get(i)));
-    builder.addMethod(createBuilderMethodForField(builder,filteredFields,prefix,i));
+  if (annotatedNode instanceof ClassNode) {
+    createBuilderForAnnotatedClass(transform,(ClassNode)annotatedNode,anno);
   }
-  builder.addMethod(createBuildMethod(builder,buildMethodName,filteredFields));
+ else   if (annotatedNode instanceof ConstructorNode) {
+    createBuilderForAnnotatedConstructor(transform,(ConstructorNode)annotatedNode,anno);
+  }
 }

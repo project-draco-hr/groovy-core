@@ -1,0 +1,12 @@
+{
+  ConstructorNode initializer=createInitializerConstructor(buildee,builder,fields);
+  if (transform.hasAnnotation(buildee,ImmutableASTTransformation.MY_TYPE)) {
+    initializer.putNodeMetaData(ImmutableASTTransformation.IMMUTABLE_SAFE_FLAG,Boolean.TRUE);
+  }
+ else   if (needsConstructor) {
+    final BlockStatement body=new BlockStatement();
+    body.addStatement(ctorSuperS());
+    initializeFields(fields,body);
+    buildee.addConstructor(ACC_PRIVATE | ACC_SYNTHETIC,getParams(fields,buildee),NO_EXCEPTIONS,body);
+  }
+}

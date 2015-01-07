@@ -1,0 +1,11 @@
+{
+  List<FieldNode> fieldNodes=new ArrayList<FieldNode>();
+  for (  Parameter parameter : parameters) {
+    Map<String,ClassNode> genericsSpec=createGenericsSpec(builder);
+    ClassNode correctedType=correctToGenericsSpecRecurse(genericsSpec,parameter.getType());
+    FieldNode fieldNode=new FieldNode(parameter.getName(),parameter.getModifiers(),correctedType,builder,DEFAULT_INITIAL_VALUE);
+    fieldNodes.add(fieldNode);
+    builder.addField(fieldNode);
+  }
+  return fieldNodes;
+}
