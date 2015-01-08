@@ -1,10 +1,15 @@
 {
-  super.visitBinaryExpression(expression);
-  if (StaticTypeCheckingSupport.isAssignment(expression.getOperation().getType())) {
-    Expression leftExpression=expression.getLeftExpression();
+  boolean assignment=StaticTypeCheckingSupport.isAssignment(expression.getOperation().getType());
+  boolean isDeclaration=expression instanceof DeclarationExpression;
+  Expression leftExpression=expression.getLeftExpression();
+  Expression rightExpression=expression.getRightExpression();
+  leftExpression.visit(this);
+  inAssignment=assignment;
+  rightExpression.visit(this);
+  inAssignment=false;
+  if (assignment) {
     if (leftExpression instanceof Variable) {
-      boolean isDeclaration=expression instanceof DeclarationExpression;
-      boolean uninitialized=isDeclaration && expression.getRightExpression() == EmptyExpression.INSTANCE;
+      boolean uninitialized=isDeclaration && rightExpression == EmptyExpression.INSTANCE;
       recordAssignment((Variable)leftExpression,isDeclaration,uninitialized,false,expression);
       if (leftExpression instanceof VariableExpression) {
         Variable accessed=((VariableExpression)leftExpression).getAccessedVariable();

@@ -1,0 +1,13 @@
+{
+  super.visitConstructorOrMethod(node,isConstructor);
+  if (callback != null) {
+    Map<Variable,VariableState> state=getState();
+    for (    VariableExpression declaredFinalVariable : declaredFinalVariables) {
+      VariableState variableState=state.get(declaredFinalVariable);
+      if (variableState == null || variableState != VariableState.is_final) {
+        callback.variableNotAlwaysInitialized(declaredFinalVariable);
+      }
+    }
+  }
+  declaredFinalVariables.clear();
+}
