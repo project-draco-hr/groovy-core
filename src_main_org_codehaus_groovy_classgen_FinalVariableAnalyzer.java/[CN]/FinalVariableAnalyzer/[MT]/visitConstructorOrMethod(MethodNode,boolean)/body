@@ -1,13 +1,15 @@
 {
+  Set<VariableExpression> old=declaredFinalVariables;
+  declaredFinalVariables=new HashSet<VariableExpression>();
   super.visitConstructorOrMethod(node,isConstructor);
   if (callback != null) {
     Map<Variable,VariableState> state=getState();
     for (    VariableExpression declaredFinalVariable : declaredFinalVariables) {
-      VariableState variableState=state.get(declaredFinalVariable);
+      VariableState variableState=state.get(declaredFinalVariable.getAccessedVariable());
       if (variableState == null || variableState != VariableState.is_final) {
         callback.variableNotAlwaysInitialized(declaredFinalVariable);
       }
     }
   }
-  declaredFinalVariables.clear();
+  declaredFinalVariables=old;
 }
