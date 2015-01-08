@@ -6,5 +6,6 @@
   List<FieldNode> filteredFields=filterFields(fields,includes,excludes);
   ClassNode builder=createInnerHelperClass(buildee,getBuilderClassName(buildee,anno),filteredFields.size());
   addFields(buildee,filteredFields,builder);
-  buildMe(transform,buildee,anno,filteredFields,builder,true);
+  buildCommon(buildee,anno,filteredFields,builder);
+  createBuildeeConstructors(transform,buildee,builder,filteredFields,true);
 }

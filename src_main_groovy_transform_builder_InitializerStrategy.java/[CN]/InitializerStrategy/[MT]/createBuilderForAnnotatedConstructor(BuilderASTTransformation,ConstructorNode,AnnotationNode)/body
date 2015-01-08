@@ -1,8 +1,0 @@
-{
-  ClassNode buildee=annotatedConstructor.getDeclaringClass();
-  Parameter[] parameters=annotatedConstructor.getParameters();
-  annotatedConstructor.setModifiers(ACC_PRIVATE | ACC_SYNTHETIC);
-  ClassNode builder=createInnerHelperClass(buildee,getBuilderClassName(buildee,anno),parameters.length);
-  List<FieldNode> convertedFields=convertParamsToFields(builder,parameters);
-  buildMe(transform,buildee,anno,convertedFields,builder,false);
-}
