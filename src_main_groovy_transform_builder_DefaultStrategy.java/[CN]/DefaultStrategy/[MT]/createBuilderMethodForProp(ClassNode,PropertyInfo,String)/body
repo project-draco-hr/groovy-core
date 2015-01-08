@@ -1,5 +1,6 @@
 {
+  ClassNode fieldType=pinfo.getType();
   String fieldName=pinfo.getName();
   String setterName=getSetterName(prefix,fieldName);
-  return new MethodNode(setterName,ACC_PUBLIC,newClass(builder),params(param(pinfo.getType(),fieldName)),NO_EXCEPTIONS,block(stmt(assignX(propX(varX("this"),constX(fieldName)),varX(fieldName,pinfo.getType()))),returnS(varX("this",builder))));
+  return new MethodNode(setterName,ACC_PUBLIC,newClass(builder),params(param(fieldType,fieldName)),NO_EXCEPTIONS,block(stmt(assignX(propX(varX("this"),constX(fieldName)),varX(fieldName,fieldType))),returnS(varX("this",builder))));
 }
