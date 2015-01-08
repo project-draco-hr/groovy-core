@@ -1,13 +1,9 @@
 {
-  if (!(annotatedNode instanceof ClassNode || annotatedNode instanceof MethodNode)) {
-    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: building for "+ annotatedNode.getClass().getSimpleName()+ " not supported by "+ getClass().getSimpleName(),annotatedNode);
-    return;
-  }
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
   if (annotatedNode instanceof ClassNode) {
     createBuilderForAnnotatedClass(transform,(ClassNode)annotatedNode,anno);
   }
- else   if (annotatedNode instanceof ConstructorNode) {
-    createBuilderForAnnotatedConstructor(transform,(ConstructorNode)annotatedNode,anno);
+ else   if (annotatedNode instanceof MethodNode) {
+    createBuilderForAnnotatedMethod(transform,(MethodNode)annotatedNode,anno);
   }
 }

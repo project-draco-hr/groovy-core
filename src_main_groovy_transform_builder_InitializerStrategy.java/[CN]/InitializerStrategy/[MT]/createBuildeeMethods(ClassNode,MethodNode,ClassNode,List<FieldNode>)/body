@@ -1,0 +1,11 @@
+{
+  ClassNode paramType=makeClassSafeWithGenerics(builder,setGenTypes(fields.size()));
+  List<Expression> argsList=new ArrayList<Expression>();
+  Parameter initParam=param(paramType,"initializer");
+  for (  FieldNode fieldNode : fields) {
+    argsList.add(propX(varX(initParam),fieldNode.getName()));
+  }
+  String newName="$" + mNode.getName();
+  buildee.addMethod(mNode.getName(),PUBLIC_STATIC,mNode.getReturnType(),params(param(paramType,"initializer")),NO_EXCEPTIONS,block(stmt(callX(buildee,newName,args(argsList)))));
+  renameMethod(buildee,mNode,newName);
+}
