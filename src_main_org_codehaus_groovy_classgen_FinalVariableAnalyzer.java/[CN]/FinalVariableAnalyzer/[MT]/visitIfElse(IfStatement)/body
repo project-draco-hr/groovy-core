@@ -14,18 +14,26 @@
   }
   popState();
   Map<Variable,VariableState> curState=getState();
-  for (  Map.Entry<Variable,VariableState> entry : ifState.entrySet()) {
-    Variable key=entry.getKey();
-    VariableState ifValue=entry.getValue();
-    VariableState merged=ifValue;
-    if (elseState.containsKey(key)) {
-      VariableState elseValue=elseState.get(key);
-      merged=(ifValue.isFinal && elseValue.isFinal) ? VariableState.is_final : VariableState.is_var;
+  Set<Variable> allVars=new HashSet<Variable>();
+  allVars.addAll(curState.keySet());
+  allVars.addAll(ifState.keySet());
+  allVars.addAll(elseState.keySet());
+  for (  Variable var : allVars) {
+    VariableState beforeValue=curState.get(var);
+    VariableState ifValue=ifState.get(var);
+    VariableState elseValue=elseState.get(var);
+    VariableState mergedIfElse;
+    mergedIfElse=ifValue != null && elseValue != null && ifValue.isFinal && elseValue.isFinal ? VariableState.is_final : VariableState.is_var;
+    if (beforeValue == null) {
+      curState.put(var,mergedIfElse);
     }
-    VariableState oldState=curState.get(key);
-    if (oldState != null) {
-      merged=(merged.isFinal && oldState == VariableState.is_uninitialized) ? VariableState.is_final : VariableState.is_var;
+ else {
+      if (beforeValue == VariableState.is_uninitialized) {
+        curState.put(var,mergedIfElse);
+      }
+ else       if (ifValue != null || elseValue != null) {
+        curState.put(var,VariableState.is_var);
+      }
     }
-    curState.put(key,merged);
   }
 }

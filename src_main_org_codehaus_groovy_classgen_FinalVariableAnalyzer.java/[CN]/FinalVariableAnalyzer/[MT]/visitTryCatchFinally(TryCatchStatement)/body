@@ -1,0 +1,25 @@
+{
+  visitStatement(statement);
+  Map<Variable,VariableState> beforeTryCatch=new HashMap<Variable,VariableState>(getState());
+  statement.getTryStatement().visit(this);
+  for (  CatchStatement catchStatement : statement.getCatchStatements()) {
+    catchStatement.visit(this);
+  }
+  Statement finallyStatement=statement.getFinallyStatement();
+  Map<Variable,VariableState> afterTryCatchState=new HashMap<Variable,VariableState>(getState());
+  if (finallyStatement instanceof EmptyStatement) {
+    visitEmptyStatement((EmptyStatement)finallyStatement);
+  }
+ else {
+    finallyStatement.visit(this);
+  }
+  Map<Variable,VariableState> afterFinally=new HashMap<Variable,VariableState>(getState());
+  for (  Map.Entry<Variable,VariableState> entry : afterFinally.entrySet()) {
+    Variable var=entry.getKey();
+    VariableState afterFinallyState=entry.getValue();
+    VariableState beforeTryCatchState=beforeTryCatch.get(var);
+    if (afterFinallyState == VariableState.is_final && beforeTryCatchState != VariableState.is_final && afterTryCatchState.get(var) != beforeTryCatchState) {
+      getState().put(var,beforeTryCatchState == null ? VariableState.is_uninitialized : beforeTryCatchState);
+    }
+  }
+}

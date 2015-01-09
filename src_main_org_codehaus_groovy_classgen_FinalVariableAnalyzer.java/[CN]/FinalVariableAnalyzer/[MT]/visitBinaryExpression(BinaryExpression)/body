@@ -17,12 +17,6 @@
     if (leftExpression instanceof Variable) {
       boolean uninitialized=isDeclaration && rightExpression == EmptyExpression.INSTANCE;
       recordAssignment((Variable)leftExpression,isDeclaration,uninitialized,false,expression);
-      if (leftExpression instanceof VariableExpression) {
-        Variable accessed=((VariableExpression)leftExpression).getAccessedVariable();
-        if (accessed != leftExpression) {
-          recordAssignment(accessed,isDeclaration,uninitialized,false,expression);
-        }
-      }
     }
   }
 }
