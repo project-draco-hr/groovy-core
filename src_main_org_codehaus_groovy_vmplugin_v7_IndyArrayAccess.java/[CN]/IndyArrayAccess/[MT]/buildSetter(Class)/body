@@ -1,0 +1,12 @@
+{
+  MethodHandle set=MethodHandles.arrayElementSetter(arrayClass);
+  MethodHandle fallback=MethodHandles.explicitCastArguments(set,set.type().changeParameterType(0,Object.class));
+  fallback=MethodHandles.dropArguments(fallback,3,int.class);
+  MethodType reorderType=fallback.type().insertParameterTypes(0,int.class).dropParameterTypes(4,5);
+  fallback=MethodHandles.permuteArguments(fallback,reorderType,1,0,3,0);
+  fallback=MethodHandles.foldArguments(fallback,normalizeIndex);
+  fallback=MethodHandles.explicitCastArguments(fallback,set.type());
+  MethodHandle guard=MethodHandles.dropArguments(notNegative,0,arrayClass);
+  MethodHandle handle=MethodHandles.guardWithTest(guard,set,fallback);
+  return handle;
+}
