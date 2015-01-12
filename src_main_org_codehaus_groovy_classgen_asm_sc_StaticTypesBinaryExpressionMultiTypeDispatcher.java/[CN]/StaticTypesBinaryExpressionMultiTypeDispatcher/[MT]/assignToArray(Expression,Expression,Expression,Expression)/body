@@ -6,16 +6,7 @@
   BinaryExpressionWriter bew=binExpWriter[operationType];
   AsmClassGenerator acg=getController().getAcg();
   if (bew.arraySet(true) && arrayType.isArray()) {
-    OperandStack operandStack=getController().getOperandStack();
-    receiver.visit(acg);
-    operandStack.doGroovyCast(arrayType);
-    index.visit(acg);
-    operandStack.doGroovyCast(int_TYPE);
-    rhsValueLoader.visit(acg);
-    operandStack.doGroovyCast(arrayComponentType);
-    bew.arraySet(false);
-    operandStack.remove(3);
-    rhsValueLoader.visit(acg);
+    super.assignToArray(parent,receiver,index,rhsValueLoader);
   }
  else {
     WriterController controller=getController();
