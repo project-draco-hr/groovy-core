@@ -1,0 +1,25 @@
+{
+  if (transform.getMemberValue(anno,"includes") != null || transform.getMemberValue(anno,"includes") != null) {
+    transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: includes/excludes only allowed on classes",anno);
+  }
+  if (mNode instanceof ConstructorNode) {
+    mNode.setModifiers(ACC_PRIVATE | ACC_SYNTHETIC);
+  }
+ else {
+    if ((mNode.getModifiers() & ACC_STATIC) == 0) {
+      transform.addError("Error during " + BuilderASTTransformation.MY_TYPE_NAME + " processing: method builders only allowed on static methods",anno);
+    }
+    mNode.setModifiers(ACC_PRIVATE | ACC_SYNTHETIC | ACC_STATIC);
+  }
+  ClassNode buildee=mNode.getDeclaringClass();
+  Parameter[] parameters=mNode.getParameters();
+  ClassNode builder=createInnerHelperClass(buildee,getBuilderClassName(buildee,anno),parameters.length);
+  List<FieldNode> convertedFields=convertParamsToFields(builder,parameters);
+  buildCommon(buildee,anno,convertedFields,builder);
+  if (mNode instanceof ConstructorNode) {
+    createBuildeeConstructors(transform,buildee,builder,convertedFields,false);
+  }
+ else {
+    createBuildeeMethods(buildee,mNode,builder,convertedFields);
+  }
+}

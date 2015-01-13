@@ -1,0 +1,10 @@
+{
+  final String fullName=buildee.getName() + "$" + builderClassName;
+  ClassNode builder=new InnerClassNode(buildee,fullName,PUBLIC_STATIC,OBJECT_TYPE);
+  GenericsType[] gtypes=new GenericsType[fieldsSize];
+  for (int i=0; i < gtypes.length; i++) {
+    gtypes[i]=makePlaceholder(i);
+  }
+  builder.setGenericsTypes(gtypes);
+  return builder;
+}

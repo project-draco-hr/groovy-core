@@ -3,6 +3,7 @@
   if (!candidate.getAnnotations(DEPRECATED_TYPE).isEmpty() && !includeDeprecated)   return;
   if (shouldSkip(candidate.getName(),excludes,includes))   return;
   Map<String,ClassNode> genericsSpec=createGenericsSpec(fieldNode.getDeclaringClass());
+  genericsSpec=addMethodGenerics(candidate,genericsSpec);
   extractSuperClassGenerics(fieldNode.getType(),candidate.getDeclaringClass(),genericsSpec);
   if (!excludeTypes.isEmpty() || !includeTypes.isEmpty()) {
     MethodNode correctedMethodNode=correctToGenericsSpec(genericsSpec,candidate);
@@ -30,8 +31,10 @@
     final ArgumentListExpression args=new ArgumentListExpression();
     final Parameter[] params=candidate.getParameters();
     final Parameter[] newParams=new Parameter[params.length];
+    List<String> currentMethodGenPlaceholders=genericPlaceholderNames(candidate);
     for (int i=0; i < newParams.length; i++) {
-      Parameter newParam=new Parameter(correctToGenericsSpecRecurse(genericsSpec,params[i].getType()),getParamName(params,i,fieldNode.getName()));
+      ClassNode newParamType=correctToGenericsSpecRecurse(genericsSpec,params[i].getType(),currentMethodGenPlaceholders);
+      Parameter newParam=new Parameter(newParamType,getParamName(params,i,fieldNode.getName()));
       newParam.setInitialExpression(params[i].getInitialExpression());
       if (memberHasValue(node,MEMBER_PARAMETER_ANNOTATIONS,true)) {
         newParam.addAnnotations(copyAnnotatedNodeAnnotations(params[i],MY_TYPE_NAME));
@@ -41,7 +44,7 @@
     }
     MethodCallExpression mce=callX(varX(fieldNode.getName(),correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType())),candidate.getName(),args);
     mce.setSourcePosition(fieldNode);
-    ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,candidate.getReturnType());
+    ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,candidate.getReturnType(),currentMethodGenPlaceholders);
     MethodNode newMethod=owner.addMethod(candidate.getName(),candidate.getModifiers() & (~ACC_ABSTRACT) & (~ACC_NATIVE),returnType,newParams,candidate.getExceptions(),stmt(mce));
     newMethod.setGenericsTypes(candidate.getGenericsTypes());
     if (memberHasValue(node,MEMBER_METHOD_ANNOTATIONS,true)) {

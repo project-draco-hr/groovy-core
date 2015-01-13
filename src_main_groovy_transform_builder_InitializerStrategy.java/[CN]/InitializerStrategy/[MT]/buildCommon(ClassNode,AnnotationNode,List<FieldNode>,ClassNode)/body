@@ -1,0 +1,12 @@
+{
+  String prefix=getMemberStringValue(anno,"prefix","");
+  String buildMethodName=getMemberStringValue(anno,"buildMethodName","create");
+  createBuilderConstructors(builder,buildee,fieldNodes);
+  buildee.getModule().addClass(builder);
+  String builderMethodName=getMemberStringValue(anno,"builderMethodName","createInitializer");
+  buildee.addMethod(createBuilderMethod(buildMethodName,builder,fieldNodes.size(),builderMethodName));
+  for (int i=0; i < fieldNodes.size(); i++) {
+    builder.addMethod(createBuilderMethodForField(builder,fieldNodes,prefix,i));
+  }
+  builder.addMethod(createBuildMethod(builder,buildMethodName,fieldNodes));
+}

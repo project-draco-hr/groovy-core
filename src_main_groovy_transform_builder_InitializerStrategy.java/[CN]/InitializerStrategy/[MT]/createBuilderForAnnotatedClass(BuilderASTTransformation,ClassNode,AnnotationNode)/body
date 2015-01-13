@@ -1,0 +1,11 @@
+{
+  List<String> excludes=new ArrayList<String>();
+  List<String> includes=new ArrayList<String>();
+  if (!getIncludeExclude(transform,anno,buildee,excludes,includes))   return;
+  List<FieldNode> fields=getInstancePropertyFields(buildee);
+  List<FieldNode> filteredFields=filterFields(fields,includes,excludes);
+  ClassNode builder=createInnerHelperClass(buildee,getBuilderClassName(buildee,anno),filteredFields.size());
+  addFields(buildee,filteredFields,builder);
+  buildCommon(buildee,anno,filteredFields,builder);
+  createBuildeeConstructors(transform,buildee,builder,filteredFields,true);
+}
