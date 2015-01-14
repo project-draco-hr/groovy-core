@@ -35,6 +35,9 @@
     ClassNode testClass=receiver.getType();
     LinkedList<ClassNode> queue=new LinkedList<ClassNode>();
     queue.add(testClass);
+    if (isPrimitiveType(testClass)) {
+      queue.add(getWrapper(testClass));
+    }
     while (!queue.isEmpty()) {
       ClassNode current=queue.removeFirst();
       if (handledNodes.contains(current))       continue;

@@ -11,7 +11,7 @@
   }
   TypeChooser typeChooser=controller.getTypeChooser();
   ClassNode classNode=controller.getClassNode();
-  ClassNode receiverType=(ClassNode)receiver.getNodeMetaData(StaticCompilationMetadataKeys.PROPERTY_OWNER);
+  ClassNode receiverType=receiver.getNodeMetaData(StaticCompilationMetadataKeys.PROPERTY_OWNER);
   if (receiverType == null) {
     receiverType=typeChooser.resolveType(receiver,classNode);
   }
@@ -29,6 +29,9 @@
   if (isClassClassNodeWrappingConcreteType(receiverType)) {
     isClassReceiver=true;
     receiverType=receiverType.getGenericsTypes()[0].getType();
+  }
+  if (isPrimitiveType(receiverType)) {
+    receiverType=getWrapper(receiverType);
   }
   MethodVisitor mv=controller.getMethodVisitor();
   if (receiverType.isArray() && methodName.equals("length")) {
