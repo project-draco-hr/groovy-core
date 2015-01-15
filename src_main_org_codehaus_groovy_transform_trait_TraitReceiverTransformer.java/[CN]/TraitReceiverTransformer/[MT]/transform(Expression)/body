@@ -14,23 +14,19 @@
       }
  else       if (leftExpression instanceof PropertyExpression && (((PropertyExpression)leftExpression).isImplicitThis() || "this".equals(((PropertyExpression)leftExpression).getObjectExpression().getText()))) {
         leftFieldName=((PropertyExpression)leftExpression).getPropertyAsString();
-        FieldNode fn=weavedType.getDeclaredField(leftFieldName);
-        if (fn == null && ClassHelper.CLASS_Type.equals(weavedType)) {
-          GenericsType[] genericsTypes=weavedType.getGenericsTypes();
-          if (genericsTypes != null && genericsTypes.length == 1) {
-            fn=genericsTypes[0].getType().getDeclaredField(leftFieldName);
-          }
-        }
+        FieldNode fn=tryGetFieldNode(weavedType,leftFieldName);
         if (fieldHelper == null || fn == null && !fieldHelper.hasPossibleMethod(Traits.helperSetterName(new FieldNode(leftFieldName,0,ClassHelper.OBJECT_TYPE,weavedType,null)),rightExpression)) {
-          return new BinaryExpression(new PropertyExpression(new VariableExpression(weaved),leftFieldName),operation,transform(rightExpression));
+          return createAssignmentToField(rightExpression,operation,leftFieldName);
         }
       }
       if (leftFieldName != null) {
         FieldNode fn=weavedType.getDeclaredField(leftFieldName);
+        FieldNode staticField=tryGetFieldNode(weavedType,leftFieldName);
         if (fn == null) {
           fn=new FieldNode(leftFieldName,0,ClassHelper.OBJECT_TYPE,weavedType,null);
         }
         Expression receiver=createFieldHelperReceiver();
+        boolean isStatic=staticField != null && staticField.isStatic();
         if (fn.isStatic()) {
           receiver=new PropertyExpression(receiver,"class");
         }
@@ -38,6 +34,7 @@
         MethodCallExpression mce=new MethodCallExpression(receiver,method,new ArgumentListExpression(super.transform(rightExpression)));
         mce.setSourcePosition(exp);
         mce.setImplicitThis(false);
+        markDynamicCall(mce,staticField,isStatic);
         return mce;
       }
     }
@@ -75,6 +72,7 @@
     MethodCallExpression mce=new MethodCallExpression(createFieldHelperReceiver(),Traits.helperGetterName(field),ArgumentListExpression.EMPTY_ARGUMENTS);
     mce.setSourcePosition(exp);
     mce.setImplicitThis(false);
+    markDynamicCall(mce,field,field.isStatic());
     return mce;
   }
  else   if (exp instanceof VariableExpression) {
@@ -84,12 +82,14 @@
       FieldNode fn=(FieldNode)accessedVariable;
       Expression receiver=createFieldHelperReceiver();
       MethodCallExpression mce;
-      if (fn.isStatic()) {
-        receiver=new TernaryExpression(new BooleanExpression(new BinaryExpression(receiver,Token.newSymbol(Types.KEYWORD_INSTANCEOF,-1,-1),new ClassExpression(ClassHelper.CLASS_Type))),receiver,new MethodCallExpression(createFieldHelperReceiver(),"getClass",ArgumentListExpression.EMPTY_ARGUMENTS));
+      boolean isStatic=fn.isStatic();
+      if (isStatic) {
+        receiver=createStaticReceiver(receiver);
       }
-      mce=new MethodCallExpression(receiver,Traits.helperGetterName((FieldNode)accessedVariable),ArgumentListExpression.EMPTY_ARGUMENTS);
+      mce=new MethodCallExpression(receiver,Traits.helperGetterName(fn),ArgumentListExpression.EMPTY_ARGUMENTS);
       mce.setSourcePosition(exp);
       mce.setImplicitThis(false);
+      markDynamicCall(mce,fn,isStatic);
       return mce;
     }
  else     if (accessedVariable instanceof PropertyNode) {
