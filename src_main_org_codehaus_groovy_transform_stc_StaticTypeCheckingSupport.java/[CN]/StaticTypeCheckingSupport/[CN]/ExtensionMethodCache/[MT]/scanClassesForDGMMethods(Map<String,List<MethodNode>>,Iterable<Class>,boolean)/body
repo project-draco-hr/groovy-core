@@ -1,0 +1,23 @@
+{
+  for (  Class dgmLikeClass : allClasses) {
+    ClassNode cn=ClassHelper.makeWithoutCaching(dgmLikeClass,true);
+    for (    MethodNode metaMethod : cn.getMethods()) {
+      Parameter[] types=metaMethod.getParameters();
+      if (metaMethod.isStatic() && metaMethod.isPublic() && types.length > 0 && metaMethod.getAnnotations(Deprecated_TYPE).isEmpty()) {
+        Parameter[] parameters=new Parameter[types.length - 1];
+        System.arraycopy(types,1,parameters,0,parameters.length);
+        ExtensionMethodNode node=new ExtensionMethodNode(metaMethod,metaMethod.getName(),metaMethod.getModifiers(),metaMethod.getReturnType(),parameters,ClassNode.EMPTY_ARRAY,null,isStatic);
+        node.setGenericsTypes(metaMethod.getGenericsTypes());
+        ClassNode declaringClass=types[0].getType();
+        String declaringClassName=declaringClass.getName();
+        node.setDeclaringClass(declaringClass);
+        List<MethodNode> nodes=accumulator.get(declaringClassName);
+        if (nodes == null) {
+          nodes=new LinkedList<MethodNode>();
+          accumulator.put(declaringClassName,nodes);
+        }
+        nodes.add(node);
+      }
+    }
+  }
+}
