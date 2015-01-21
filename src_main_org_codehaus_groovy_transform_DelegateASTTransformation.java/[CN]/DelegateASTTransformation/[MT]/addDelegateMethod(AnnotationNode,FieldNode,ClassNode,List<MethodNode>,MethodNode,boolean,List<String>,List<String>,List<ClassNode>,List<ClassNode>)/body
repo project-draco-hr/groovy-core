@@ -42,7 +42,8 @@
       newParams[i]=newParam;
       args.addExpression(varX(newParam));
     }
-    MethodCallExpression mce=callX(varX(fieldNode.getName(),correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType())),candidate.getName(),args);
+    boolean alsoLazy=!fieldNode.getAnnotations(LAZY_TYPE).isEmpty();
+    MethodCallExpression mce=callX(alsoLazy ? propX(varX("this"),fieldNode.getName().substring(1)) : varX(fieldNode.getName(),correctToGenericsSpecRecurse(genericsSpec,fieldNode.getType())),candidate.getName(),args);
     mce.setSourcePosition(fieldNode);
     ClassNode returnType=correctToGenericsSpecRecurse(genericsSpec,candidate.getReturnType(),currentMethodGenPlaceholders);
     MethodNode newMethod=owner.addMethod(candidate.getName(),candidate.getModifiers() & (~ACC_ABSTRACT) & (~ACC_NATIVE),returnType,newParams,candidate.getExceptions(),stmt(mce));
