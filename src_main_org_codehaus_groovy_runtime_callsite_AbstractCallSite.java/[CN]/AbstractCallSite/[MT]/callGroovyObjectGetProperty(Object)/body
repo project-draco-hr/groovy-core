@@ -1,3 +1,13 @@
 {
-  return acceptGroovyObjectGetProperty(receiver).getProperty(receiver);
+  if (receiver == null) {
+    try {
+      return InvokerHelper.getProperty(NullObject.getNullObject(),name);
+    }
+ catch (    GroovyRuntimeException gre) {
+      throw ScriptBytecodeAdapter.unwrap(gre);
+    }
+  }
+ else {
+    return acceptGroovyObjectGetProperty(receiver).getProperty(receiver);
+  }
 }
