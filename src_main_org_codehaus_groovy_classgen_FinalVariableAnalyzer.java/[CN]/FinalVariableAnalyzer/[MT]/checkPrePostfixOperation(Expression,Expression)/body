@@ -1,0 +1,11 @@
+{
+  if (variable instanceof Variable) {
+    recordAssignment((Variable)variable,false,false,true,originalExpression);
+    if (variable instanceof VariableExpression) {
+      Variable accessed=((VariableExpression)variable).getAccessedVariable();
+      if (accessed != variable) {
+        recordAssignment(accessed,false,false,true,originalExpression);
+      }
+    }
+  }
+}
