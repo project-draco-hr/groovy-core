@@ -4,7 +4,19 @@
   this.statementWriter=new StaticTypesStatementWriter(this);
   this.typeChooser=new StaticTypesTypeChooser();
   this.invocationWriter=new StaticInvocationWriter(this);
-  this.binaryExprHelper=new StaticTypesBinaryExpressionMultiTypeDispatcher(this);
   this.closureWriter=new StaticTypesClosureWriter(this);
   this.unaryExpressionHelper=new StaticTypesUnaryExpressionHelper(this);
+  boolean useIndy=getBytecodeVersion() > Opcodes.V1_6 && indyBinHelper != null;
+  boolean binHelperSet=false;
+  if (useIndy) {
+    try {
+      this.binaryExprHelper=(BinaryExpressionMultiTypeDispatcher)indyBinHelper.newInstance(this);
+      binHelperSet=true;
+    }
+ catch (    Exception any) {
+    }
+  }
+  if (!binHelperSet) {
+    this.binaryExprHelper=new StaticTypesBinaryExpressionMultiTypeDispatcher(this);
+  }
 }
