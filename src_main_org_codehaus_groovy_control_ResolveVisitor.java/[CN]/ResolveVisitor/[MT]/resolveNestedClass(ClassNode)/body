@@ -1,11 +1,27 @@
 {
   Map<String,ClassNode> hierClasses=new LinkedHashMap<String,ClassNode>();
+  ClassNode val;
+  String name;
   for (ClassNode classToCheck=currentClass; classToCheck != ClassHelper.OBJECT_TYPE; classToCheck=classToCheck.getSuperClass()) {
     if (classToCheck == null || hierClasses.containsKey(classToCheck.getName()))     break;
     hierClasses.put(classToCheck.getName(),classToCheck);
   }
-  if (resolveFromInnerClass(type,hierClasses.values())) {
-    return true;
+  for (  ClassNode classToCheck : hierClasses.values()) {
+    name=classToCheck.getName() + "$" + type.getName();
+    val=ClassHelper.make(name);
+    if (resolveFromCompileUnit(val)) {
+      type.setRedirect(val);
+      return true;
+    }
+    for (    ClassNode next : classToCheck.getAllInterfaces()) {
+      if (type.getName().contains(next.getName()))       continue;
+      name=next.getName() + "$" + type.getName();
+      val=ClassHelper.make(name);
+      if (resolve(val,false,false,false)) {
+        type.setRedirect(val);
+        return true;
+      }
+    }
   }
   if (!(currentClass instanceof InnerClassNode))   return false;
   LinkedList<ClassNode> outerClasses=new LinkedList<ClassNode>();
@@ -14,8 +30,22 @@
     outerClasses.addFirst(outer);
     outer=outer.getOuterClass();
   }
-  if (resolveFromInnerClass(type,outerClasses)) {
-    return true;
+  for (  ClassNode testNode : outerClasses) {
+    name=testNode.getName() + "$" + type.getName();
+    val=ClassHelper.make(name);
+    if (resolveFromCompileUnit(val)) {
+      type.setRedirect(val);
+      return true;
+    }
+    for (    ClassNode next : testNode.getAllInterfaces()) {
+      if (type.getName().contains(next.getName()))       continue;
+      name=next.getName() + "$" + type.getName();
+      val=ClassHelper.make(name);
+      if (resolve(val,false,false,false)) {
+        type.setRedirect(val);
+        return true;
+      }
+    }
   }
   return false;
 }
