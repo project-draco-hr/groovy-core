@@ -1,4 +1,5 @@
 {
+  if (type instanceof ConstructedNestedClass)   return false;
   if (type instanceof LowerCaseClass) {
     return resolveAliasFromModule(type);
   }
@@ -30,7 +31,7 @@
     }
     for (    ImportNode importNode : module.getStaticImports().values()) {
       if (importNode.getFieldName().equals(name)) {
-        ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + name);
+        ClassNode tmp=new ConstructedNestedClass(importNode.getType(),name);
         if (resolve(tmp,false,false,true)) {
           if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
             type.setRedirect(tmp.redirect());
@@ -49,7 +50,7 @@
       }
     }
     for (    ImportNode importNode : module.getStaticStarImports().values()) {
-      ClassNode tmp=ClassHelper.make(importNode.getClassName() + "$" + name);
+      ClassNode tmp=new ConstructedNestedClass(importNode.getType(),name);
       if (resolve(tmp,false,false,true)) {
         if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
           ambiguousClass(type,tmp,name);
