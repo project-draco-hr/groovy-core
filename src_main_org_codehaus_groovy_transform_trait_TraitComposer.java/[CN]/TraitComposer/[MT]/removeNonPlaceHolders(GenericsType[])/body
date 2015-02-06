@@ -1,0 +1,16 @@
+{
+  if (oldTypes == null || oldTypes.length == 0)   return oldTypes;
+  ArrayList<GenericsType> l=new ArrayList<GenericsType>(Arrays.asList(oldTypes));
+  Iterator<GenericsType> it=l.iterator();
+  boolean modified=false;
+  while (it.hasNext()) {
+    GenericsType gt=it.next();
+    if (!gt.isPlaceholder()) {
+      it.remove();
+      modified=true;
+    }
+  }
+  if (!modified)   return oldTypes;
+  if (l.size() == 0)   return null;
+  return l.toArray(new GenericsType[l.size()]);
+}

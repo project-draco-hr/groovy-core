@@ -1,0 +1,11 @@
+{
+  if (types == null || types.length == 1)   return types;
+  ClassNode[] newTypes=new ClassNode[types.length];
+  boolean modified=false;
+  for (int i=0; i < types.length; i++) {
+    newTypes[i]=correctToGenericsSpecRecurse(genericsSpec,types[i],new ArrayList<String>());
+    modified=modified || (types[i] != newTypes[i]);
+  }
+  if (!modified)   return types;
+  return newTypes;
+}
