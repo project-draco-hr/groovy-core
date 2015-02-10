@@ -1,0 +1,11 @@
+{
+  if (origin instanceof MethodCallExpression && receiver instanceof VariableExpression && ((VariableExpression)receiver).isSuperExpression()) {
+    ClassNode superClass=receiver.getNodeMetaData(StaticCompilationMetadataKeys.PROPERTY_OWNER);
+    if (superClass != null && !controller.getCompileStack().isLHS()) {
+      MethodCallExpression mce=(MethodCallExpression)origin;
+      MethodNode node=superClass.getDeclaredMethod(mce.getMethodAsString(),Parameter.EMPTY_ARRAY);
+      mce.setMethodTarget(node);
+    }
+  }
+  return super.makeDirectCall(origin,receiver,message,arguments,adapter,implicitThis,containsSpreadExpression);
+}
