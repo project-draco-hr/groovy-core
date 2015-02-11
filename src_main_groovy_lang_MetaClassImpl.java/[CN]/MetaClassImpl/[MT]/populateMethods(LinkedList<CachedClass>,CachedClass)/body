@@ -1,9 +1,9 @@
 {
-  Iterator iter=superClasses.iterator();
   MetaMethodIndex.Header header=metaMethodIndex.getHeader(firstGroovySuper.getTheClass());
   CachedClass c;
+  Iterator<CachedClass> iter=superClasses.iterator();
   for (; iter.hasNext(); ) {
-    c=(CachedClass)iter.next();
+    c=iter.next();
     CachedMethod[] cachedMethods=c.getMethods();
     for (    CachedMethod metaMethod : cachedMethods) {
       addToAllMethodsIfPublic(metaMethod);
@@ -20,7 +20,7 @@
   }
   MetaMethodIndex.Header last=header;
   for (; iter.hasNext(); ) {
-    c=(CachedClass)iter.next();
+    c=iter.next();
     header=metaMethodIndex.getHeader(c.getTheClass());
     if (last != null) {
       metaMethodIndex.copyNonPrivateMethods(last,header);
