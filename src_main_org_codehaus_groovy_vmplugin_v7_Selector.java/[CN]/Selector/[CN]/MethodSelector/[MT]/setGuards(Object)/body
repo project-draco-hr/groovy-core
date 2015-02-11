@@ -39,7 +39,7 @@
       if (LOG_ENABLED)       LOG.info("added same class check at pos " + i);
     }
     Class[] drops=new Class[i];
-    for (int j=0; j < drops.length; j++)     drops[j]=pt[j];
+    System.arraycopy(pt,0,drops,0,drops.length);
     test=MethodHandles.dropArguments(test,0,drops);
     handle=MethodHandles.guardWithTest(test,handle,fallback);
   }
