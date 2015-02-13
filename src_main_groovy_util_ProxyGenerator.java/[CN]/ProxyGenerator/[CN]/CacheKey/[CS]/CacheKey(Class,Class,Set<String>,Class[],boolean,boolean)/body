@@ -5,9 +5,11 @@
   this.emptyMethods=emptyMethods;
   this.interfaces=interfaces == null ? null : new ClassReference[interfaces.length];
   if (interfaces != null) {
-    Arrays.sort(interfaces,CLASSNAME_COMPARATOR);
-    for (int i=0; i < interfaces.length; i++) {
-      Class anInterface=interfaces[i];
+    Class[] interfacesCopy=new Class[interfaces.length];
+    System.arraycopy(interfaces,0,interfacesCopy,0,interfaces.length);
+    Arrays.sort(interfacesCopy,INTERFACE_COMPARATOR);
+    for (int i=0; i < interfacesCopy.length; i++) {
+      Class anInterface=interfacesCopy[i];
       this.interfaces[i]=new ClassReference(anInterface);
     }
   }
