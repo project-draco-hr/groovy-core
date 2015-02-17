@@ -1,0 +1,12 @@
+{
+  FieldNode field=expr.getNodeMetaData(StaticTypesMarker.PV_FIELDS_ACCESS);
+  if (field != null) {
+    VariableExpression receiver=new VariableExpression("this");
+    PropertyExpression pexp=new PropertyExpression(receiver,expr.getName());
+    pexp.setImplicitThis(true);
+    receiver.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,field.getDeclaringClass());
+    pexp.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,field.getOriginType());
+    return pexp;
+  }
+  return null;
+}

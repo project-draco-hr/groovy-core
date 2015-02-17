@@ -1,5 +1,12 @@
 {
   FieldNode field=receiverType.getField(fieldName);
+  ClassNode outerClass=receiverType.getOuterClass();
+  if (field == null && implicitThis && outerClass != null && !receiverType.isStaticClass()) {
+    PropertyExpression pexp=new PropertyExpression(new ClassExpression(outerClass),"this");
+    pexp.setImplicitThis(true);
+    pexp.setSourcePosition(receiver);
+    return makeGetPrivateFieldWithBridgeMethod(pexp,outerClass,fieldName,safe,true);
+  }
   ClassNode classNode=controller.getClassNode();
   if (field != null && Modifier.isPrivate(field.getModifiers()) && (StaticInvocationWriter.isPrivateBridgeMethodsCallAllowed(receiverType,classNode) || StaticInvocationWriter.isPrivateBridgeMethodsCallAllowed(classNode,receiverType)) && !receiverType.equals(classNode)) {
     Map<String,MethodNode> accessors=(Map<String,MethodNode>)receiverType.redirect().getNodeMetaData(StaticCompilationMetadataKeys.PRIVATE_FIELDS_ACCESSORS);
