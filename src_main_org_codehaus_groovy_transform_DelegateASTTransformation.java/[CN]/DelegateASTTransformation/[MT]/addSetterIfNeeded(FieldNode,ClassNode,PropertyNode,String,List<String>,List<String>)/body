@@ -1,6 +1,6 @@
 {
   String setterName="set" + Verifier.capitalize(name);
-  if ((prop.getModifiers() & ACC_FINAL) == 0 && owner.getSetterMethod(setterName) == null) {
+  if ((prop.getModifiers() & ACC_FINAL) == 0 && owner.getSetterMethod(setterName) == null && !shouldSkipPropertyMethod(name,setterName,excludes,includes)) {
     owner.addMethod(setterName,ACC_PUBLIC,ClassHelper.VOID_TYPE,params(new Parameter(GenericsUtils.nonGeneric(prop.getType()),"value")),null,assignS(propX(varX(fieldNode),name),varX("value")));
   }
 }
