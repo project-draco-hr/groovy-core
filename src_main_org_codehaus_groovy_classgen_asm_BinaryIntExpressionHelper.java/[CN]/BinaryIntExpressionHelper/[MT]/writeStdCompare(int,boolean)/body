@@ -2,14 +2,13 @@
   type=type - COMPARE_NOT_EQUAL;
   if (type < 0 || type > 7)   return false;
   if (!simulate) {
-    MethodVisitor mv=controller.getMethodVisitor();
-    OperandStack operandStack=controller.getOperandStack();
+    MethodVisitor mv=getController().getMethodVisitor();
+    OperandStack operandStack=getController().getOperandStack();
     int bytecode=stdCompareCodes[type];
     Label l1=new Label();
     mv.visitJumpInsn(bytecode,l1);
     mv.visitInsn(ICONST_1);
     Label l2=new Label();
-    ;
     mv.visitJumpInsn(GOTO,l2);
     mv.visitLabel(l1);
     mv.visitInsn(ICONST_0);

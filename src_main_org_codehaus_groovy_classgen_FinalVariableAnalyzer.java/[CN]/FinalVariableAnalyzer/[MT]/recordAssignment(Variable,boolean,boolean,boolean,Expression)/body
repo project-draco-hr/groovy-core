@@ -1,0 +1,25 @@
+{
+  if (var == null) {
+    return;
+  }
+  if (!isDeclaration && var.isClosureSharedVariable()) {
+    getState().put(var,VariableState.is_var);
+  }
+  VariableState variableState=getState().get(var);
+  if (variableState == null) {
+    variableState=uninitialized ? VariableState.is_uninitialized : VariableState.is_final;
+    if (getTarget(var) instanceof Parameter) {
+      variableState=VariableState.is_var;
+    }
+  }
+ else {
+    variableState=variableState.getNext();
+  }
+  if (forceVariable) {
+    variableState=VariableState.is_var;
+  }
+  getState().put(var,variableState);
+  if (variableState == VariableState.is_var && callback != null) {
+    callback.variableNotFinal(var,expression);
+  }
+}

@@ -41,9 +41,7 @@
     exit("no configuration file or main class specified");
   }
   String[] newArgs=new String[args.length - argsOffset];
-  for (int i=0; i < newArgs.length; i++) {
-    newArgs[i]=args[i + argsOffset];
-  }
+  System.arraycopy(args,0 + argsOffset,newArgs,0,newArgs.length);
   if (conf != null) {
     try {
       lc.configure(new FileInputStream(conf));

@@ -1,0 +1,10 @@
+{
+  superClasses=DefaultGroovyMethods.reverse(superClasses);
+  MetaMethodIndex.Header last=null;
+  for (  final CachedClass c : superClasses) {
+    MetaMethodIndex.Header methodIndex=metaMethodIndex.getHeader(c.getTheClass());
+    if (last != null)     metaMethodIndex.copyNonPrivateNonNewMetaMethods(last,methodIndex);
+    last=methodIndex;
+    if (c == firstGroovyClass)     break;
+  }
+}

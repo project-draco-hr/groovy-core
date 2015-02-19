@@ -1,0 +1,21 @@
+{
+  if (!validateConstructors(cNode))   return;
+  List<PropertyNode> list=getInstanceProperties(cNode);
+  if (includeSuperProperties) {
+    ClassNode next=cNode.getSuperClass();
+    while (next != null) {
+      List<PropertyNode> tail=list;
+      list=getInstanceProperties(next);
+      list.addAll(tail);
+      next=next.getSuperClass();
+    }
+  }
+  boolean specialHashMapCase=list.size() == 1 && list.get(0).getField().getType().equals(HASHMAP_TYPE);
+  if (specialHashMapCase) {
+    createConstructorMapSpecial(cNode,list);
+  }
+ else {
+    createConstructorMap(cNode,list,knownImmutableClasses,knownImmutables);
+    createConstructorOrdered(cNode,list);
+  }
+}

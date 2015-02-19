@@ -20,6 +20,7 @@
       if (includes == null || includes.isEmpty())       includes=getMemberList(canonical,"includes");
     }
     if (!checkIncludeExclude(anno,excludes,includes,MY_TYPE_NAME))     return;
+    if (hasAnnotation(cNode,ImmutableASTTransformation.MY_TYPE))     return;
     createConstructor(cNode,includeFields,includeProperties,includeSuperFields,includeSuperProperties,callSuper,force,excludes,includes);
   }
 }

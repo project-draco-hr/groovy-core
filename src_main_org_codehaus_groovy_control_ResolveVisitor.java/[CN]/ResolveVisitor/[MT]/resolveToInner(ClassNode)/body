@@ -1,5 +1,6 @@
 {
   if (type instanceof ConstructedClassWithPackage)   return false;
+  if (type instanceof ConstructedNestedClass)   return false;
   String name=type.getName();
   String saved=name;
   while (true) {
@@ -9,7 +10,7 @@
     type.setName(name);
     if (resolve(type))     return true;
   }
-  if (resolveToInnerEnum(type))   return true;
+  if (resolveToNestedOfCurrent(type))   return true;
   type.setName(saved);
   return false;
 }

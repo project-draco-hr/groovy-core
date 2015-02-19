@@ -1,0 +1,12 @@
+{
+  super.visitVariableExpression(expression);
+  if (inAssignment) {
+    Map<Variable,VariableState> state=getState();
+    Variable key=expression.getAccessedVariable();
+    VariableState variableState=state.get(key);
+    if (variableState == VariableState.is_uninitialized) {
+      variableState=VariableState.is_var;
+      state.put(key,variableState);
+    }
+  }
+}

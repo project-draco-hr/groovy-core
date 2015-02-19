@@ -3,5 +3,11 @@
   if (decomposed != null) {
     return convertToDynamicCall(call,receiver,decomposed,argumentTypes);
   }
+  if (call instanceof MethodCallExpression) {
+    ClassNode dynamic=((MethodCallExpression)call).getNodeMetaData(TraitASTTransformation.DO_DYNAMIC);
+    if (dynamic != null) {
+      return Collections.singletonList(makeDynamic(call,dynamic));
+    }
+  }
   return NOTFOUND;
 }

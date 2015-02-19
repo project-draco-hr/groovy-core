@@ -1,0 +1,22 @@
+{
+  boolean assignment=StaticTypeCheckingSupport.isAssignment(expression.getOperation().getType());
+  boolean isDeclaration=expression instanceof DeclarationExpression;
+  Expression leftExpression=expression.getLeftExpression();
+  Expression rightExpression=expression.getRightExpression();
+  if (isDeclaration && leftExpression instanceof VariableExpression) {
+    VariableExpression var=(VariableExpression)leftExpression;
+    if (Modifier.isFinal(var.getModifiers())) {
+      declaredFinalVariables.add(var);
+    }
+  }
+  leftExpression.visit(this);
+  inAssignment=assignment;
+  rightExpression.visit(this);
+  inAssignment=false;
+  if (assignment) {
+    if (leftExpression instanceof Variable) {
+      boolean uninitialized=isDeclaration && rightExpression == EmptyExpression.INSTANCE;
+      recordAssignment((Variable)leftExpression,isDeclaration,uninitialized,false,expression);
+    }
+  }
+}

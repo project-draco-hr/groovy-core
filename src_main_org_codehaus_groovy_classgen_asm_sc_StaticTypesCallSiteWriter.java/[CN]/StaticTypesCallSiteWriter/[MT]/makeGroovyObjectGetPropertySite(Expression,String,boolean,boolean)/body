@@ -31,6 +31,7 @@
     }
   }
   if (makeGetPropertyWithGetter(receiver,receiverType,property,safe,implicitThis))   return;
+  if (makeGetPrivateFieldWithBridgeMethod(receiver,receiverType,property,safe,true))   return;
   if (makeGetField(receiver,receiverType,property,safe,implicitThis,samePackages(receiverType.getPackageName(),classNode.getPackageName())))   return;
   MethodCallExpression call=new MethodCallExpression(receiver,"getProperty",new ArgumentListExpression(new ConstantExpression(property)));
   call.setImplicitThis(implicitThis);

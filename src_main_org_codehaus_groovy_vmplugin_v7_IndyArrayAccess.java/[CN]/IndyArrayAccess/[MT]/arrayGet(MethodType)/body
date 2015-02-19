@@ -1,0 +1,8 @@
+{
+  Class key=type.parameterType(0);
+  MethodHandle res=getterMap.get(key);
+  if (res != null)   return res;
+  res=buildGetter(key);
+  res=MethodHandles.explicitCastArguments(res,type);
+  return res;
+}

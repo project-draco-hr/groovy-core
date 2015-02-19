@@ -1,0 +1,10 @@
+{
+  FieldNode fn=weavedType.getDeclaredField(fieldName);
+  if (fn == null && ClassHelper.CLASS_Type.equals(weavedType)) {
+    GenericsType[] genericsTypes=weavedType.getGenericsTypes();
+    if (genericsTypes != null && genericsTypes.length == 1) {
+      fn=genericsTypes[0].getType().getDeclaredField(fieldName);
+    }
+  }
+  return fn;
+}

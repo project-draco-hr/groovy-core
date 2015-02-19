@@ -7,7 +7,7 @@
   Expression value=node.getMember("value");
   if (parent instanceof ClassNode) {
     List<groovy.transform.PackageScopeTarget> targets;
-    if (value == null)     targets=Arrays.asList(legacyMode ? PackageScopeTarget.FIELDS : PackageScopeTarget.CLASS);
+    if (value == null)     targets=Collections.singletonList(legacyMode ? PackageScopeTarget.FIELDS : PackageScopeTarget.CLASS);
  else     targets=determineTargets(value);
     visitClassNode((ClassNode)parent,targets);
     parent.getAnnotations();

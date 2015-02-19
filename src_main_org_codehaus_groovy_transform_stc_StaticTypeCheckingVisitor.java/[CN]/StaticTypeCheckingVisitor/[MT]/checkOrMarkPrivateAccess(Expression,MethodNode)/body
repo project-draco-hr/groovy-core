@@ -1,0 +1,18 @@
+{
+  if (mn == null) {
+    return;
+  }
+  ClassNode declaringClass=mn.getDeclaringClass();
+  ClassNode enclosingClassNode=typeCheckingContext.getEnclosingClassNode();
+  if (declaringClass != enclosingClassNode || typeCheckingContext.getEnclosingClosure() != null) {
+    int mods=mn.getModifiers();
+    boolean sameModule=declaringClass.getModule() == enclosingClassNode.getModule();
+    String packageName=declaringClass.getPackageName();
+    if (packageName == null) {
+      packageName="";
+    }
+    if ((Modifier.isPrivate(mods) && sameModule) || (Modifier.isProtected(mods) && !packageName.equals(enclosingClassNode.getPackageName()))) {
+      addPrivateFieldOrMethodAccess(source,sameModule ? declaringClass : enclosingClassNode,StaticTypesMarker.PV_METHODS_ACCESS,mn);
+    }
+  }
+}

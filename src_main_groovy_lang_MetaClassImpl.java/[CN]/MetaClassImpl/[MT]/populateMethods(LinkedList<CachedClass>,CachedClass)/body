@@ -1,0 +1,41 @@
+{
+  MetaMethodIndex.Header header=metaMethodIndex.getHeader(firstGroovySuper.getTheClass());
+  CachedClass c;
+  Iterator<CachedClass> iter=superClasses.iterator();
+  for (; iter.hasNext(); ) {
+    c=iter.next();
+    CachedMethod[] cachedMethods=c.getMethods();
+    for (    CachedMethod metaMethod : cachedMethods) {
+      addToAllMethodsIfPublic(metaMethod);
+      if (!metaMethod.isPrivate() || c == firstGroovySuper)       addMetaMethodToIndex(metaMethod,header);
+    }
+    MetaMethod[] cachedMethods1=getNewMetaMethods(c);
+    for (    final MetaMethod method : cachedMethods1) {
+      if (!newGroovyMethodsSet.contains(method)) {
+        newGroovyMethodsSet.add(method);
+        addMetaMethodToIndex(method,header);
+      }
+    }
+    if (c == firstGroovySuper)     break;
+  }
+  MetaMethodIndex.Header last=header;
+  for (; iter.hasNext(); ) {
+    c=iter.next();
+    header=metaMethodIndex.getHeader(c.getTheClass());
+    if (last != null) {
+      metaMethodIndex.copyNonPrivateMethods(last,header);
+    }
+    last=header;
+    for (    CachedMethod metaMethod : c.getMethods()) {
+      addToAllMethodsIfPublic(metaMethod);
+      addMetaMethodToIndex(metaMethod,header);
+    }
+    for (    final MetaMethod method : getNewMetaMethods(c)) {
+      if (method.getName().equals("<init>") && !method.getDeclaringClass().equals(theCachedClass))       continue;
+      if (!newGroovyMethodsSet.contains(method)) {
+        newGroovyMethodsSet.add(method);
+        addMetaMethodToIndex(method,header);
+      }
+    }
+  }
+}

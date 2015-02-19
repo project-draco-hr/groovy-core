@@ -4,6 +4,7 @@
   boolean normalEqualParameters=equalParametersNormal(overridingMethod,oldMethod);
   boolean genericEqualParameters=equalParametersWithGenerics(overridingMethod,oldMethod,genericsSpec);
   if (!normalEqualParameters && !genericEqualParameters)   return null;
+  genericsSpec=GenericsUtils.addMethodGenerics(overridingMethod,genericsSpec);
   ClassNode mr=overridingMethod.getReturnType();
   ClassNode omr=oldMethod.getReturnType();
   boolean equalReturnType=mr.equals(omr);

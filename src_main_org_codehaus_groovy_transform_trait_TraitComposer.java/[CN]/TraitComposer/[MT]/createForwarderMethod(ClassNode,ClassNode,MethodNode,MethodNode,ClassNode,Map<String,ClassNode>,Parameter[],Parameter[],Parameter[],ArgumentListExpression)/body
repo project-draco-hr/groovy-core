@@ -1,7 +1,8 @@
 {
-  ClassNode[] exceptionNodes=copyExceptions(helperMethod.getExceptions());
   MethodCallExpression mce=new MethodCallExpression(new ClassExpression(helperClassNode),helperMethod.getName(),helperMethodArgList);
   mce.setImplicitThis(false);
+  genericsSpec=GenericsUtils.addMethodGenerics(helperMethod,genericsSpec);
+  ClassNode[] exceptionNodes=correctToGenericsSpecRecurse(genericsSpec,copyExceptions(helperMethod.getExceptions()));
   ClassNode fixedReturnType=correctToGenericsSpecRecurse(genericsSpec,helperMethod.getReturnType());
   Expression forwardExpression=genericsSpec.isEmpty() ? mce : new CastExpression(fixedReturnType,mce);
   int access=helperMethod.getModifiers();
@@ -20,7 +21,9 @@
     forwarder.addAnnotations(copied);
   }
   if (originalMethod != null) {
-    forwarder.setGenericsTypes(originalMethod.getGenericsTypes());
+    GenericsType[] newGt=GenericsUtils.applyGenericsContextToPlaceHolders(genericsSpec,originalMethod.getGenericsTypes());
+    newGt=removeNonPlaceHolders(newGt);
+    forwarder.setGenericsTypes(newGt);
   }
   AnnotationNode bridgeAnnotation=new AnnotationNode(Traits.TRAITBRIDGE_CLASSNODE);
   bridgeAnnotation.addMember("traitClass",new ClassExpression(trait));

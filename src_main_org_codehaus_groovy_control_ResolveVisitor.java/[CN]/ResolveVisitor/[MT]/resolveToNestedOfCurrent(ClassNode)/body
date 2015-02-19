@@ -1,0 +1,12 @@
+{
+  if (type instanceof ConstructedNestedClass)   return false;
+  String name=type.getName();
+  if (currentClass != type && !name.contains(".") && type.getClass().equals(ClassNode.class)) {
+    ClassNode tmp=new ConstructedNestedClass(currentClass,name);
+    if (resolve(tmp)) {
+      type.setRedirect(tmp);
+      return true;
+    }
+  }
+  return false;
+}

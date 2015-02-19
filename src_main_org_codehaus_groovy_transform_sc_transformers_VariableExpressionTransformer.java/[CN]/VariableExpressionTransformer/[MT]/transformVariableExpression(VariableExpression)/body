@@ -1,14 +1,11 @@
 {
-  Object val=expr.getNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER);
-  if (val == null)   return expr;
-  VariableExpression implicitThis=new VariableExpression("this");
-  PropertyExpression pexp=new PropertyExpression(implicitThis,expr.getName());
-  pexp.copyNodeMetaData(expr);
-  pexp.setImplicitThis(true);
-  ClassNode owner=expr.getNodeMetaData(StaticCompilationMetadataKeys.PROPERTY_OWNER);
-  if (owner != null) {
-    implicitThis.putNodeMetaData(StaticTypesMarker.INFERRED_TYPE,owner);
-    implicitThis.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,val);
+  Expression trn=tryTransformPrivateFieldAccess(expr);
+  if (trn != null) {
+    return trn;
   }
-  return pexp;
+  trn=tryTransformDelegateToProperty(expr);
+  if (trn != null) {
+    return trn;
+  }
+  return expr;
 }

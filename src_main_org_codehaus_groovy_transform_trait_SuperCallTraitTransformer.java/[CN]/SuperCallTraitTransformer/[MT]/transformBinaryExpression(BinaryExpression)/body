@@ -1,0 +1,28 @@
+{
+  Expression trn=super.transform(exp);
+  if (trn instanceof BinaryExpression) {
+    BinaryExpression bin=(BinaryExpression)trn;
+    Expression leftExpression=bin.getLeftExpression();
+    if (bin.getOperation().getType() == Types.EQUAL && leftExpression instanceof PropertyExpression) {
+      ClassNode traitReceiver=((PropertyExpression)leftExpression).getObjectExpression().getNodeMetaData(SuperCallTraitTransformer.class);
+      if (traitReceiver != null) {
+        TraitHelpersTuple helpers=Traits.findHelpers(traitReceiver);
+        ClassNode helper=helpers.getHelper();
+        String setterName=MetaProperty.getSetterName(((PropertyExpression)leftExpression).getPropertyAsString());
+        List<MethodNode> methods=helper.getMethods(setterName);
+        for (        MethodNode method : methods) {
+          Parameter[] parameters=method.getParameters();
+          if (parameters.length == 2 && parameters[0].getType().equals(traitReceiver)) {
+            ArgumentListExpression args=new ArgumentListExpression(new VariableExpression("this"),transform(exp.getRightExpression()));
+            MethodCallExpression setterCall=new MethodCallExpression(new ClassExpression(helper),setterName,args);
+            setterCall.setMethodTarget(method);
+            setterCall.setImplicitThis(false);
+            return setterCall;
+          }
+        }
+        return bin;
+      }
+    }
+  }
+  return trn;
+}

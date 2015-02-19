@@ -15,7 +15,7 @@
     if (aliasedNode == null) {
       importNode=module.getStaticImports().get(pname);
       if (importNode != null && importNode != currImportNode) {
-        ClassNode tmp=ClassHelper.make(importNode.getType().getName() + "$" + importNode.getFieldName());
+        ClassNode tmp=new ConstructedNestedClass(importNode.getType(),importNode.getFieldName());
         if (resolve(tmp,false,false,true)) {
           if ((tmp.getModifiers() & Opcodes.ACC_STATIC) != 0) {
             type.setRedirect(tmp.redirect());

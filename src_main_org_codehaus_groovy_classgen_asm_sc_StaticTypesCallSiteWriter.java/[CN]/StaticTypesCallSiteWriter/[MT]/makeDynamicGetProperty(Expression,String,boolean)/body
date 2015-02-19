@@ -1,0 +1,8 @@
+{
+  MethodNode target=safe ? INVOKERHELPER_GETPROPERTYSAFE_METHOD : INVOKERHELPER_GETPROPERTY_METHOD;
+  MethodCallExpression mce=new MethodCallExpression(new ClassExpression(INVOKERHELPER_TYPE),target.getName(),new ArgumentListExpression(receiver,new ConstantExpression(methodName)));
+  mce.setSafe(false);
+  mce.setImplicitThis(false);
+  mce.setMethodTarget(target);
+  mce.visit(controller.getAcg());
+}
