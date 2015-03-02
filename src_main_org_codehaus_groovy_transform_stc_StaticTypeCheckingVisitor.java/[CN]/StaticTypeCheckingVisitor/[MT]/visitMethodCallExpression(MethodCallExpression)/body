@@ -156,14 +156,8 @@
           MethodNode directMethodCallCandidate=mn.get(0);
           if (chosenReceiver == null) {
             chosenReceiver=Receiver.make(directMethodCallCandidate.getDeclaringClass());
-            if (chosenReceiver == null) {
-              chosenReceiver=owners.get(0);
-            }
           }
-          ClassNode returnType=null;
-          if (returnType == null) {
-            returnType=getType(directMethodCallCandidate);
-          }
+          ClassNode returnType=getType(directMethodCallCandidate);
           if (isUsingGenericsOrIsArrayUsingGenerics(returnType)) {
             visitMethodCallArguments(chosenReceiver.getType(),argumentList,true,directMethodCallCandidate);
             ClassNode irtg=inferReturnTypeGenerics(chosenReceiver.getType(),directMethodCallCandidate,callArguments);
@@ -181,7 +175,7 @@
             returnType=adjustWithTraits(directMethodCallCandidate,chosenReceiver.getType(),args,returnType);
             storeType(call,returnType);
             storeTargetMethod(call,directMethodCallCandidate);
-            String data=chosenReceiver != null ? chosenReceiver.getData() : null;
+            String data=chosenReceiver.getData();
             if (data != null) {
               call.putNodeMetaData(StaticTypesMarker.IMPLICIT_RECEIVER,data);
             }
