@@ -1,0 +1,8 @@
+{
+  FieldNode field=exp.getField();
+  MethodCallExpression mce=new MethodCallExpression(createFieldHelperReceiver(),Traits.helperGetterName(field),ArgumentListExpression.EMPTY_ARGUMENTS);
+  mce.setSourcePosition(exp);
+  mce.setImplicitThis(false);
+  markDynamicCall(mce,field,field.isStatic());
+  return mce;
+}

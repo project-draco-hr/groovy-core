@@ -1,0 +1,45 @@
+{
+  Expression leftExpression=exp.getLeftExpression();
+  Expression rightExpression=exp.getRightExpression();
+  Token operation=exp.getOperation();
+  if (operation.getText().equals("=")) {
+    String leftFieldName=null;
+    if (leftExpression instanceof VariableExpression && ((VariableExpression)leftExpression).getAccessedVariable() instanceof FieldNode) {
+      leftFieldName=((VariableExpression)leftExpression).getAccessedVariable().getName();
+    }
+ else     if (leftExpression instanceof FieldExpression) {
+      leftFieldName=((FieldExpression)leftExpression).getFieldName();
+    }
+ else     if (leftExpression instanceof PropertyExpression && (((PropertyExpression)leftExpression).isImplicitThis() || "this".equals(((PropertyExpression)leftExpression).getObjectExpression().getText()))) {
+      leftFieldName=((PropertyExpression)leftExpression).getPropertyAsString();
+      FieldNode fn=tryGetFieldNode(weavedType,leftFieldName);
+      if (fieldHelper == null || fn == null && !fieldHelper.hasPossibleMethod(Traits.helperSetterName(new FieldNode(leftFieldName,0,ClassHelper.OBJECT_TYPE,weavedType,null)),rightExpression)) {
+        return createAssignmentToField(rightExpression,operation,leftFieldName);
+      }
+    }
+    if (leftFieldName != null) {
+      FieldNode fn=weavedType.getDeclaredField(leftFieldName);
+      FieldNode staticField=tryGetFieldNode(weavedType,leftFieldName);
+      if (fn == null) {
+        fn=new FieldNode(leftFieldName,0,ClassHelper.OBJECT_TYPE,weavedType,null);
+      }
+      Expression receiver=createFieldHelperReceiver();
+      boolean isStatic=staticField != null && staticField.isStatic();
+      if (fn.isStatic()) {
+        receiver=new PropertyExpression(receiver,"class");
+      }
+      String method=Traits.helperSetterName(fn);
+      MethodCallExpression mce=new MethodCallExpression(receiver,method,new ArgumentListExpression(super.transform(rightExpression)));
+      mce.setSourcePosition(exp);
+      mce.setImplicitThis(false);
+      markDynamicCall(mce,staticField,isStatic);
+      return mce;
+    }
+  }
+  Expression leftTransform=transform(leftExpression);
+  Expression rightTransform=transform(rightExpression);
+  Expression ret=exp instanceof DeclarationExpression ? new DeclarationExpression(leftTransform,operation,rightTransform) : new BinaryExpression(leftTransform,operation,rightTransform);
+  ret.setSourcePosition(exp);
+  ret.copyNodeMetaData(exp);
+  return ret;
+}

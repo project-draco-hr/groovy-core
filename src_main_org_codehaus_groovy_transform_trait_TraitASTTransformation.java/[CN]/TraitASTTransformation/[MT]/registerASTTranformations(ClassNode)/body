@@ -1,4 +1,13 @@
 {
   ASTTransformationCollectorCodeVisitor collector=new ASTTransformationCollectorCodeVisitor(unit,compilationUnit.getTransformLoader());
   collector.visitClass(helper);
+  compilationUnit.addPhaseOperation(new CompilationUnit.PrimaryClassNodeOperation(){
+    @Override public void call(    final SourceUnit source,    final GeneratorContext context,    final ClassNode classNode) throws CompilationFailedException {
+      if (classNode == helper) {
+        PostTypeCheckingExpressionReplacer replacer=new PostTypeCheckingExpressionReplacer(source);
+        replacer.visitClass(helper);
+      }
+    }
+  }
+,CompilePhase.INSTRUCTION_SELECTION.getPhaseNumber());
 }
