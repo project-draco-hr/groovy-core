@@ -4,7 +4,10 @@
   if (beanProperty == null) {
     MetaProperty metaProperty=super.getMetaProperty(propertyName);
     if (metaProperty instanceof MetaBeanProperty) {
-      beanProperty=(MetaBeanProperty)metaProperty;
+      boolean staticProp=Modifier.isStatic(metaProperty.getModifiers());
+      if (isStatic == staticProp) {
+        beanProperty=(MetaBeanProperty)metaProperty;
+      }
     }
   }
   if (beanProperty == null) {

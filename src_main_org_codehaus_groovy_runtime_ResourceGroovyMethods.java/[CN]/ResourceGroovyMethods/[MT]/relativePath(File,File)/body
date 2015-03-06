@@ -1,0 +1,27 @@
+{
+  String fromPath=self.getCanonicalPath();
+  String toPath=to.getCanonicalPath();
+  String[] fromPathStack=getPathStack(fromPath);
+  String[] toPathStack=getPathStack(toPath);
+  if (0 < toPathStack.length && 0 < fromPathStack.length) {
+    if (!fromPathStack[0].equals(toPathStack[0])) {
+      return getPath(Arrays.asList(toPathStack));
+    }
+  }
+ else {
+    return getPath(Arrays.asList(toPathStack));
+  }
+  int minLength=Math.min(fromPathStack.length,toPathStack.length);
+  int same=1;
+  while (same < minLength && fromPathStack[same].equals(toPathStack[same])) {
+    same++;
+  }
+  List<String> relativePathStack=new ArrayList<String>();
+  for (int i=same; i < fromPathStack.length; i++) {
+    relativePathStack.add("..");
+  }
+  for (int i=same; i < toPathStack.length; i++) {
+    relativePathStack.add(toPathStack[i]);
+  }
+  return getPath(relativePathStack);
+}

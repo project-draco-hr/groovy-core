@@ -22,6 +22,7 @@
   if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
   if (getGenericsWithoutArray(returnType) == null)   return returnType;
   Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclaration(receiver,getDeclaringClass(method,arguments),method,method.isStatic());
+  GenericsUtils.extractPlaceholders(receiver,resolvedPlaceholders);
   if (resolvedPlaceholders.isEmpty())   return returnType;
   Map<String,GenericsType> placeholdersFromContext=extractGenericsParameterMapOfThis(typeCheckingContext.getEnclosingMethod());
   applyGenericsConnections(placeholdersFromContext,resolvedPlaceholders);
@@ -40,7 +41,7 @@
         actualType=actualType.getComponentType();
       }
       if (isUsingGenericsOrIsArrayUsingGenerics(type)) {
-        if (implementsInterfaceOrIsSubclassOf(actualType,CLOSURE_TYPE) && !implementsInterfaceOrIsSubclassOf(type,CLOSURE_TYPE)) {
+        if (implementsInterfaceOrIsSubclassOf(actualType,CLOSURE_TYPE) && isSAMType(type)) {
           Map<String,GenericsType> pholders=applyGenericsContextToParameterClass(resolvedPlaceholders,type);
           actualType=convertClosureTypeToSAMType(expressions.get(i),actualType,type,pholders);
         }

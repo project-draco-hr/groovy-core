@@ -42,7 +42,7 @@ class MOPIter extends MethodIndexAction {
           if (useThis ^ Modifier.isPrivate(method.getModifiers()))           return;
           String mopName=method.getMopName();
           String[] decomposedMopName=decomposeMopName(mopName);
-          int distance=Integer.valueOf(decomposedMopName[1]);
+          int distance=Integer.parseInt(decomposedMopName[1]);
           while (distance > 0) {
             String fixedMopName=decomposedMopName[0] + distance + decomposedMopName[2];
             int index=Arrays.binarySearch(mopMethods,fixedMopName,CachedClass.CachedMethodComparatorWithString.INSTANCE);
