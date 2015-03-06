@@ -1,0 +1,13 @@
+{
+  if (classData.fields != null) {
+    for (    FieldStub field : classData.fields) {
+      if (Modifier.isStatic(field.accessModifiers)) {
+        Long timestamp=Verifier.getTimestampFromFieldName(field.fieldName);
+        if (timestamp != null) {
+          return timestamp;
+        }
+      }
+    }
+  }
+  return Long.MAX_VALUE;
+}
