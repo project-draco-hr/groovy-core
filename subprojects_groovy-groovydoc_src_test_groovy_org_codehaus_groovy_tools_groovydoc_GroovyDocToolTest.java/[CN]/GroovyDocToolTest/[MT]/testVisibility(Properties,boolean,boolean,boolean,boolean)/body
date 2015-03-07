@@ -1,0 +1,14 @@
+{
+  htmlTool=makeHtmltool(new ArrayList<LinkArgument>(),props);
+  List<String> srcList=new ArrayList<String>();
+  String base="org/codehaus/groovy/tools/groovydoc/testfiles/ExampleVisibility";
+  srcList.add(base + "G.groovy");
+  srcList.add(base + "J.java");
+  htmlTool.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  htmlTool.renderToOutput(output,MOCK_DIR);
+  String javaExampleClass=output.getText(MOCK_DIR + "/" + base+ "J.html");
+  assertMethodVisibility(base,output,javaExampleClass,a,b,c,d);
+  String groovyExampleClass=output.getText(MOCK_DIR + "/" + base+ "G.html");
+  assertMethodVisibility(base,output,groovyExampleClass,a,b,c,d);
+}

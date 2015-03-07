@@ -32,7 +32,13 @@ break;
 currentModifier=currentModifier.getNextSibling();
 }
 if (!hasNonPublicVisibility && isGroovy && !(memberOrClass instanceof GroovyFieldDoc)) {
+if (isPackageScope(modifiers)) {
+memberOrClass.setPackagePrivate(true);
+hasNonPublicVisibility=true;
+}
+ else {
 memberOrClass.setPublic(true);
+}
 }
  else if (!hasNonPublicVisibility && !hasPublicVisibility && !isGroovy) {
 if (insideInterface(memberOrClass) || insideAnnotationDef(memberOrClass)) {
@@ -40,6 +46,12 @@ memberOrClass.setPublic(true);
 }
  else {
 memberOrClass.setPackagePrivate(true);
+}
+}
+if (memberOrClass instanceof GroovyFieldDoc && isGroovy && !hasNonPublicVisibility & !hasPublicVisibility) {
+if (isPackageScope(modifiers)) {
+memberOrClass.setPackagePrivate(true);
+hasNonPublicVisibility=true;
 }
 }
 if (memberOrClass instanceof GroovyFieldDoc && !hasNonPublicVisibility && !hasPublicVisibility&& isGroovy) return true;
