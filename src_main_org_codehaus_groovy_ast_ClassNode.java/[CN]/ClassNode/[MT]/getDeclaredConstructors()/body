@@ -1,6 +1,6 @@
 {
-  if (!redirect().lazyInitDone)   redirect().lazyClassInit();
-  final ClassNode r=redirect();
-  if (r.constructors == null)   r.constructors=new ArrayList<ConstructorNode>();
-  return r.constructors;
+  if (redirect != null)   return redirect().getDeclaredConstructors();
+  lazyClassInit();
+  if (constructors == null)   constructors=new ArrayList<ConstructorNode>();
+  return constructors;
 }

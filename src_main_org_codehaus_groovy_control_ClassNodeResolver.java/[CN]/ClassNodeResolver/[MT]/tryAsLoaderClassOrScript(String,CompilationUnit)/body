@@ -1,20 +1,14 @@
 {
   GroovyClassLoader loader=compilationUnit.getClassLoader();
-  Class cls;
-  try {
-    cls=loader.loadClass(name,false,true);
+  Map<String,Boolean> options=compilationUnit.configuration.getOptimizationOptions();
+  boolean useAsm=!Boolean.FALSE.equals(options.get("asmResolving"));
+  boolean useClassLoader=!Boolean.FALSE.equals(options.get("classLoaderResolving"));
+  LookupResult result=useAsm ? findDecompiled(name,compilationUnit,loader) : null;
+  if (result != null) {
+    return result;
   }
- catch (  ClassNotFoundException cnfe) {
-    LookupResult lr=tryAsScript(name,compilationUnit,null);
-    return lr;
+  if (!useClassLoader) {
+    return tryAsScript(name,compilationUnit,null);
   }
-catch (  CompilationFailedException cfe) {
-    throw new GroovyBugError("The lookup for " + name + " caused a failed compilaton. There should not have been any compilation from this call.",cfe);
-  }
-  if (cls == null)   return null;
-  if (cls.getClassLoader() != loader) {
-    return tryAsScript(name,compilationUnit,cls);
-  }
-  ClassNode cn=ClassHelper.make(cls);
-  return new LookupResult(null,cn);
+  return findByClassLoading(name,compilationUnit,loader);
 }

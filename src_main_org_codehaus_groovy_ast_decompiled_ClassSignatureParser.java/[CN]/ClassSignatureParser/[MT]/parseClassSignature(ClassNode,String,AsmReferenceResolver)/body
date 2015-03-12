@@ -1,0 +1,30 @@
+{
+  final List<ClassNode> interfaces=new ArrayList<ClassNode>();
+  FormalParameterParser v=new FormalParameterParser(resolver){
+    @Override public SignatureVisitor visitSuperclass(){
+      flushTypeParameter();
+      return new TypeSignatureParser(resolver){
+        @Override void finished(        ClassNode result){
+          classNode.setSuperClass(result);
+        }
+      }
+;
+    }
+    @Override public SignatureVisitor visitInterface(){
+      flushTypeParameter();
+      return new TypeSignatureParser(resolver){
+        @Override void finished(        ClassNode result){
+          interfaces.add(result);
+        }
+      }
+;
+    }
+  }
+;
+  new SignatureReader(signature).accept(v);
+  GenericsType[] typeParameters=v.getTypeParameters();
+  if (typeParameters.length > 0) {
+    classNode.setGenericsTypes(typeParameters);
+  }
+  classNode.setInterfaces(interfaces.toArray(new ClassNode[interfaces.size()]));
+}

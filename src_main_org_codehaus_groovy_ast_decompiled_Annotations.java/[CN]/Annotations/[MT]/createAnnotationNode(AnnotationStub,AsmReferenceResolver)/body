@@ -1,0 +1,11 @@
+{
+  ClassNode classNode=resolver.resolveClassNullable(Type.getType(annotation.className).getClassName());
+  if (classNode == null) {
+    return null;
+  }
+  AnnotationNode node=new DecompiledAnnotationNode(classNode);
+  for (  Map.Entry<String,Object> entry : annotation.members.entrySet()) {
+    node.addMember(entry.getKey(),annotationValueToExpression(entry.getValue(),resolver));
+  }
+  return node;
+}

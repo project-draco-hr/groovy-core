@@ -1,0 +1,14 @@
+{
+  if (stub.signature != null) {
+    parseClassSignature(classNode,stub.signature,resolver);
+    return;
+  }
+  if (stub.superName != null) {
+    classNode.setSuperClass(resolver.resolveClass(AsmDecompiler.fromInternalName(stub.superName)));
+  }
+  ClassNode[] interfaces=new ClassNode[stub.interfaceNames.length];
+  for (int i=0; i < stub.interfaceNames.length; i++) {
+    interfaces[i]=resolver.resolveClass(AsmDecompiler.fromInternalName(stub.interfaceNames[i]));
+  }
+  classNode.setInterfaces(interfaces);
+}

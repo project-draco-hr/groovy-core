@@ -1,5 +1,6 @@
 {
   if (!useRedirect)   return interfaces;
-  if (!redirect().lazyInitDone)   redirect().lazyClassInit();
-  return redirect().interfaces;
+  if (redirect != null)   return redirect().getUnresolvedInterfaces(true);
+  lazyClassInit();
+  return interfaces;
 }

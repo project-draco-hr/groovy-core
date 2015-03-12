@@ -1,0 +1,29 @@
+{
+  if (value instanceof TypeWrapper) {
+    return new ClassExpression(resolver.resolveType(Type.getType(((TypeWrapper)value).desc)));
+  }
+  if (value instanceof EnumConstantWrapper) {
+    EnumConstantWrapper wrapper=(EnumConstantWrapper)value;
+    return new PropertyExpression(new ClassExpression(resolver.resolveType(Type.getType(wrapper.enumDesc))),wrapper.constant);
+  }
+  if (value instanceof AnnotationStub) {
+    AnnotationNode annotationNode=createAnnotationNode((AnnotationStub)value,resolver);
+    return annotationNode != null ? new AnnotationConstantExpression(annotationNode) : ConstantExpression.NULL;
+  }
+  if (value != null && value.getClass().isArray()) {
+    ListExpression elementExprs=new ListExpression();
+    int len=Array.getLength(value);
+    for (int i=0; i != len; ++i) {
+      elementExprs.addExpression(annotationValueToExpression(Array.get(value,i),resolver));
+    }
+    return elementExprs;
+  }
+  if (value instanceof List) {
+    ListExpression elementExprs=new ListExpression();
+    for (    Object o : (List)value) {
+      elementExprs.addExpression(annotationValueToExpression(o,resolver));
+    }
+    return elementExprs;
+  }
+  return new ConstantExpression(value);
+}

@@ -1,8 +1,6 @@
 {
   ClassNode type=definition.getClassNode();
-  if (!type.isResolved())   return;
-  Class clazz=type.getTypeClass();
-  if (clazz == Retention.class) {
+  if ("java.lang.annotation.Retention".equals(type.getName())) {
     Expression exp=definition.getMember("value");
     if (!(exp instanceof PropertyExpression))     return;
     PropertyExpression pe=(PropertyExpression)exp;
@@ -10,7 +8,7 @@
     RetentionPolicy policy=RetentionPolicy.valueOf(name);
     setRetentionPolicy(policy,root);
   }
- else   if (clazz == Target.class) {
+ else   if ("java.lang.annotation.Target".equals(type.getName())) {
     Expression exp=definition.getMember("value");
     if (!(exp instanceof ListExpression))     return;
     ListExpression le=(ListExpression)exp;

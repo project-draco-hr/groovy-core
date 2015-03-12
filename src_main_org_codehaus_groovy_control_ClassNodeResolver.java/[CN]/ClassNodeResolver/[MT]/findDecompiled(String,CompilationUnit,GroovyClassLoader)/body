@@ -1,0 +1,23 @@
+{
+  ClassNode node=ClassHelper.make(name);
+  if (node.isResolved()) {
+    return new LookupResult(null,node);
+  }
+  DecompiledClassNode asmClass=null;
+  String fileName=name.replace('.','/') + ".class";
+  URL resource=loader.getResource(fileName);
+  if (resource != null) {
+    try {
+      asmClass=new DecompiledClassNode(AsmDecompiler.parseClass(resource),new AsmReferenceResolver(this,compilationUnit));
+    }
+ catch (    IOException e) {
+    }
+  }
+  if (asmClass != null) {
+    if (isFromAnotherClassLoader(loader,fileName)) {
+      return tryAsScript(name,compilationUnit,asmClass);
+    }
+    return new LookupResult(null,asmClass);
+  }
+  return null;
+}

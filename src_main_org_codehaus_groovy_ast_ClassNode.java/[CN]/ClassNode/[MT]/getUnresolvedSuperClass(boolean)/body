@@ -1,5 +1,6 @@
 {
   if (!useRedirect)   return superClass;
-  if (!redirect().lazyInitDone)   redirect().lazyClassInit();
-  return redirect().superClass;
+  if (redirect != null)   return redirect().getUnresolvedSuperClass(true);
+  lazyClassInit();
+  return superClass;
 }
