@@ -1,0 +1,6 @@
+{
+  for (  FieldNode field : fields) {
+    String name=field.getName();
+    body.addStatement(stmt(useSetters && !field.isFinal() ? callThisX(getSetterName(name),varX(param(field.getType(),name))) : assignX(propX(varX("this"),field.getName()),varX(param(field.getType(),name)))));
+  }
+}

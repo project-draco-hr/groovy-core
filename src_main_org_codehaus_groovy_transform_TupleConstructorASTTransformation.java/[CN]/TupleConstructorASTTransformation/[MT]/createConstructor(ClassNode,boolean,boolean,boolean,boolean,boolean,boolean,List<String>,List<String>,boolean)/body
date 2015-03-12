@@ -25,11 +25,17 @@
     String name=fNode.getName();
     if (shouldSkip(name,excludes,includes))     continue;
     params.add(createParam(fNode,name));
+    boolean hasSetter=cNode.getProperty(name) != null && !fNode.isFinal();
     if (callSuper) {
       superParams.add(varX(name));
     }
  else {
-      body.addStatement(assignS(propX(varX("this"),name),varX(name)));
+      if (useSetters && hasSetter) {
+        body.addStatement(stmt(callThisX(getSetterName(name),varX(name))));
+      }
+ else {
+        body.addStatement(assignS(propX(varX("this"),name),varX(name)));
+      }
     }
   }
   if (callSuper) {
@@ -40,7 +46,13 @@
     if (shouldSkip(name,excludes,includes))     continue;
     Parameter nextParam=createParam(fNode,name);
     params.add(nextParam);
-    body.addStatement(assignS(propX(varX("this"),name),varX(nextParam)));
+    boolean hasSetter=cNode.getProperty(name) != null && !fNode.isFinal();
+    if (useSetters && hasSetter) {
+      body.addStatement(stmt(callThisX(getSetterName(name),varX(nextParam))));
+    }
+ else {
+      body.addStatement(assignS(propX(varX("this"),name),varX(nextParam)));
+    }
   }
   cNode.addConstructor(new ConstructorNode(ACC_PUBLIC,params.toArray(new Parameter[params.size()]),ClassNode.EMPTY_ARRAY,body));
   if (params.size() > 0) {

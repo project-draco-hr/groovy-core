@@ -1,9 +1,10 @@
 {
   if (unsupportedAttribute(transform,anno,"forClass"))   return;
+  boolean useSetters=transform.memberHasValue(anno,"useSetters",true);
   if (annotatedNode instanceof ClassNode) {
-    createBuilderForAnnotatedClass(transform,(ClassNode)annotatedNode,anno);
+    createBuilderForAnnotatedClass(transform,(ClassNode)annotatedNode,anno,useSetters);
   }
  else   if (annotatedNode instanceof MethodNode) {
-    createBuilderForAnnotatedMethod(transform,(MethodNode)annotatedNode,anno);
+    createBuilderForAnnotatedMethod(transform,(MethodNode)annotatedNode,anno,useSetters);
   }
 }

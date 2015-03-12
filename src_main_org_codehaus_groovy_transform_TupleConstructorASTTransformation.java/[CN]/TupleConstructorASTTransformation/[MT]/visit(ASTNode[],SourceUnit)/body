@@ -12,6 +12,7 @@
     boolean includeSuperProperties=memberHasValue(anno,"includeSuperProperties",true);
     boolean callSuper=memberHasValue(anno,"callSuper",true);
     boolean force=memberHasValue(anno,"force",true);
+    boolean useSetters=memberHasValue(anno,"useSetters",true);
     List<String> excludes=getMemberList(anno,"excludes");
     List<String> includes=getMemberList(anno,"includes");
     if (hasAnnotation(cNode,CanonicalASTTransformation.MY_TYPE)) {
@@ -21,6 +22,6 @@
     }
     if (!checkIncludeExclude(anno,excludes,includes,MY_TYPE_NAME))     return;
     if (hasAnnotation(cNode,ImmutableASTTransformation.MY_TYPE))     return;
-    createConstructor(cNode,includeFields,includeProperties,includeSuperFields,includeSuperProperties,callSuper,force,excludes,includes);
+    createConstructor(cNode,includeFields,includeProperties,includeSuperFields,includeSuperProperties,callSuper,force,excludes,includes,useSetters);
   }
 }
