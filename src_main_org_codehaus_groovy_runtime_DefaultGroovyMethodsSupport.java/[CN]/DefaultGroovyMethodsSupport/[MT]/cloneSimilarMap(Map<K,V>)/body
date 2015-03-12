@@ -1,12 +1,36 @@
 {
   Map<K,V> answer=(Map<K,V>)cloneObject(orig);
   if (answer != null)   return answer;
-  if (orig instanceof TreeMap)   return new TreeMap<K,V>(orig);
-  if (orig instanceof Properties) {
-    Map<K,V> map=(Map<K,V>)new Properties();
-    map.putAll(orig);
-    return map;
+  if (orig instanceof SortedMap) {
+    if (orig instanceof ConcurrentSkipListMap) {
+      return new ConcurrentSkipListMap<K,V>(orig);
+    }
+ else {
+      return new TreeMap<K,V>(orig);
+    }
   }
-  if (orig instanceof Hashtable)   return new Hashtable<K,V>(orig);
-  return new LinkedHashMap<K,V>(orig);
+ else {
+    if (orig instanceof ConcurrentHashMap) {
+      return new ConcurrentHashMap<K,V>(orig);
+    }
+ else     if (orig instanceof Hashtable) {
+      if (orig instanceof Properties) {
+        Map<K,V> map=(Map<K,V>)new Properties();
+        map.putAll(orig);
+        return map;
+      }
+ else {
+        return new Hashtable<K,V>(orig);
+      }
+    }
+ else     if (orig instanceof IdentityHashMap) {
+      return new IdentityHashMap<K,V>(orig);
+    }
+ else     if (orig instanceof WeakHashMap) {
+      return new WeakHashMap<K,V>(orig);
+    }
+ else {
+      return new LinkedHashMap<K,V>(orig);
+    }
+  }
 }

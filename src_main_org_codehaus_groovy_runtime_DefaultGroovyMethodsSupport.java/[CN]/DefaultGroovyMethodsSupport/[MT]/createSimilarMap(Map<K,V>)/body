@@ -1,12 +1,33 @@
 {
   if (orig instanceof SortedMap) {
-    return new TreeMap<K,V>(((SortedMap)orig).comparator());
+    Comparator comparator=((SortedMap)orig).comparator();
+    if (orig instanceof ConcurrentSkipListMap) {
+      return new ConcurrentSkipListMap<K,V>(comparator);
+    }
+ else {
+      return new TreeMap<K,V>(comparator);
+    }
   }
-  if (orig instanceof Properties) {
-    return (Map<K,V>)new Properties();
+ else {
+    if (orig instanceof ConcurrentHashMap) {
+      return new ConcurrentHashMap<K,V>();
+    }
+ else     if (orig instanceof Hashtable) {
+      if (orig instanceof Properties) {
+        return (Map<K,V>)new Properties();
+      }
+ else {
+        return new Hashtable<K,V>();
+      }
+    }
+ else     if (orig instanceof IdentityHashMap) {
+      return new IdentityHashMap<K,V>();
+    }
+ else     if (orig instanceof WeakHashMap) {
+      return new WeakHashMap<K,V>();
+    }
+ else {
+      return new LinkedHashMap<K,V>();
+    }
   }
-  if (orig instanceof Hashtable) {
-    return new Hashtable<K,V>();
-  }
-  return new LinkedHashMap<K,V>();
 }
