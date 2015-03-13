@@ -14,5 +14,8 @@
     }
     return inferredType;
   }
+  if (target instanceof VariableExpression && ((VariableExpression)target).isThisExpression()) {
+    return current;
+  }
   return super.resolveType(exp,current);
 }
