@@ -1,0 +1,11 @@
+{
+  List<String> srcList=new ArrayList<String>();
+  String base="org/codehaus/groovy/tools/groovydoc/testfiles/MultiCatchExample";
+  srcList.add(base + ".java");
+  xmlToolForTests.add(srcList);
+  MockOutputTool output=new MockOutputTool();
+  xmlToolForTests.renderToOutput(output,MOCK_DIR);
+  String doc=output.getText(MOCK_DIR + "/org/codehaus/groovy/tools/groovydoc/testfiles/MultiCatchExample.html");
+  assertNotNull("No GroovyDoc found for " + base,doc);
+  assertTrue(doc,doc.indexOf("foo has a multi-catch exception inside") > 0);
+}
