@@ -1,4 +1,10 @@
 {
+  if (bin instanceof DeclarationExpression) {
+    Expression optimized=transformDeclarationExpression(bin);
+    if (optimized != null) {
+      return optimized;
+    }
+  }
   Object[] list=bin.getNodeMetaData(BINARY_EXP_TARGET);
   Token operation=bin.getOperation();
   int operationType=operation.getType();
