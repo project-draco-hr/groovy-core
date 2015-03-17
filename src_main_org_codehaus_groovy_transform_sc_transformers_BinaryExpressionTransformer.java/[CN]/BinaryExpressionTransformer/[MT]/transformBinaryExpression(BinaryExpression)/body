@@ -76,6 +76,11 @@
     String name=(String)list[1];
     Expression left=staticCompilationTransformer.transform(leftExpression);
     Expression right=staticCompilationTransformer.transform(rightExpression);
+    BinaryExpression optimized=tryOptimizeCharComparison(left,right,bin);
+    if (optimized != null) {
+      optimized.removeNodeMetaData(BINARY_EXP_TARGET);
+      return transformBinaryExpression(optimized);
+    }
     call=new MethodCallExpression(left,name,new ArgumentListExpression(right));
     call.setImplicitThis(false);
     call.setMethodTarget(node);

@@ -1,0 +1,17 @@
+{
+  int op=bin.getOperation().getType();
+  if (isCompareToBoolean(op) || op == COMPARE_EQUAL || op == COMPARE_NOT_EQUAL) {
+    Character cLeft=tryCharConstant(left);
+    Character cRight=tryCharConstant(right);
+    if (cLeft != null || cRight != null) {
+      Expression oLeft=cLeft == null ? left : new ConstantExpression(cLeft,true);
+      oLeft.setSourcePosition(left);
+      Expression oRight=cRight == null ? right : new ConstantExpression(cRight,true);
+      oRight.setSourcePosition(right);
+      bin.setLeftExpression(oLeft);
+      bin.setRightExpression(oRight);
+      return bin;
+    }
+  }
+  return null;
+}
