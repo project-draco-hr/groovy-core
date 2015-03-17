@@ -5,34 +5,17 @@
   MethodVisitor mv=controller.getMethodVisitor();
   OperandStack operandStack=controller.getOperandStack();
   compileStack.pushLoop(loop.getVariableScope(),loop.getStatementLabels());
-  BytecodeVariable variable=compileStack.defineVariable(loop.getVariable(),false);
   TypeChooser typeChooser=controller.getTypeChooser();
   Expression collectionExpression=loop.getCollectionExpression();
   ClassNode collectionType=typeChooser.resolveType(collectionExpression,controller.getClassNode());
-  if (StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(collectionType,ITERABLE_CLASSNODE)) {
-    MethodCallExpression iterator=new MethodCallExpression(collectionExpression,"iterator",new ArgumentListExpression());
-    iterator.setMethodTarget(collectionType.getMethod("iterator",Parameter.EMPTY_ARRAY));
-    iterator.setImplicitThis(false);
-    iterator.visit(controller.getAcg());
+  Parameter loopVariable=loop.getVariable();
+  int size=operandStack.getStackLength();
+  if (collectionType.isArray() && loopVariable.getOriginType().equals(collectionType.getComponentType())) {
+    writeOptimizedForEachLoop(compileStack,operandStack,mv,loop,collectionExpression,collectionType,loopVariable);
   }
  else {
-    collectionExpression.visit(controller.getAcg());
-    mv.visitMethodInsn(INVOKESTATIC,"org/codehaus/groovy/runtime/DefaultGroovyMethods","iterator","(Ljava/lang/Object;)Ljava/util/Iterator;",false);
-    operandStack.replace(ClassHelper.Iterator_TYPE);
+    writeIteratorBasedForEachLoop(compileStack,operandStack,mv,loop,collectionExpression,collectionType,loopVariable);
   }
-  final int iteratorIdx=compileStack.defineTemporaryVariable("iterator",ClassHelper.Iterator_TYPE,true);
-  Label continueLabel=compileStack.getContinueLabel();
-  Label breakLabel=compileStack.getBreakLabel();
-  mv.visitLabel(continueLabel);
-  mv.visitVarInsn(ALOAD,iteratorIdx);
-  writeIteratorHasNext(mv);
-  mv.visitJumpInsn(IFEQ,breakLabel);
-  mv.visitVarInsn(ALOAD,iteratorIdx);
-  writeIteratorNext(mv);
-  operandStack.push(ClassHelper.OBJECT_TYPE);
-  operandStack.storeVar(variable);
-  loop.getLoopBlock().visit(controller.getAcg());
-  mv.visitJumpInsn(GOTO,continueLabel);
-  mv.visitLabel(breakLabel);
+  operandStack.popDownTo(size);
   compileStack.pop();
 }

@@ -1,0 +1,27 @@
+{
+  BytecodeVariable variable=compileStack.defineVariable(loopVariable,false);
+  Label continueLabel=compileStack.getContinueLabel();
+  Label breakLabel=compileStack.getBreakLabel();
+  AsmClassGenerator acg=controller.getAcg();
+  collectionExpression.visit(acg);
+  mv.visitInsn(DUP);
+  int array=compileStack.defineTemporaryVariable("$arr",collectionType,true);
+  mv.visitInsn(ARRAYLENGTH);
+  operandStack.push(ClassHelper.int_TYPE);
+  int arrayLen=compileStack.defineTemporaryVariable("$len",ClassHelper.int_TYPE,true);
+  mv.visitInsn(ICONST_0);
+  operandStack.push(ClassHelper.int_TYPE);
+  int loopIdx=compileStack.defineTemporaryVariable("$idx",ClassHelper.int_TYPE,true);
+  mv.visitLabel(continueLabel);
+  mv.visitVarInsn(ILOAD,loopIdx);
+  mv.visitVarInsn(ILOAD,arrayLen);
+  mv.visitJumpInsn(IF_ICMPGE,breakLabel);
+  loadFromArray(mv,variable,array,loopIdx);
+  loop.getLoopBlock().visit(acg);
+  mv.visitIincInsn(loopIdx,1);
+  mv.visitJumpInsn(GOTO,continueLabel);
+  mv.visitLabel(breakLabel);
+  compileStack.removeVar(loopIdx);
+  compileStack.removeVar(arrayLen);
+  compileStack.removeVar(array);
+}

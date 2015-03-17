@@ -1,0 +1,45 @@
+{
+  mv.visitVarInsn(ALOAD,array);
+  mv.visitVarInsn(ILOAD,iteratorIdx);
+  ClassNode varType=variable.getType();
+  boolean primitiveType=ClassHelper.isPrimitiveType(varType);
+  boolean isByte=ClassHelper.byte_TYPE.equals(varType);
+  boolean isShort=ClassHelper.short_TYPE.equals(varType);
+  boolean isInt=ClassHelper.int_TYPE.equals(varType);
+  boolean isLong=ClassHelper.long_TYPE.equals(varType);
+  boolean isFloat=ClassHelper.float_TYPE.equals(varType);
+  boolean isDouble=ClassHelper.double_TYPE.equals(varType);
+  boolean isChar=ClassHelper.char_TYPE.equals(varType);
+  boolean isBoolean=ClassHelper.boolean_TYPE.equals(varType);
+  int index=variable.getIndex();
+  if (primitiveType) {
+    if (isByte) {
+      mv.visitInsn(BALOAD);
+      mv.visitVarInsn(ISTORE,index);
+    }
+    if (isShort) {
+      mv.visitInsn(SALOAD);
+      mv.visitVarInsn(ISTORE,index);
+    }
+    if (isInt || isChar || isBoolean) {
+      mv.visitInsn(isChar ? CALOAD : isBoolean ? BALOAD : IALOAD);
+      mv.visitVarInsn(ISTORE,index);
+    }
+    if (isLong) {
+      mv.visitInsn(LALOAD);
+      mv.visitVarInsn(LSTORE,index);
+    }
+    if (isFloat) {
+      mv.visitInsn(FALOAD);
+      mv.visitVarInsn(FSTORE,index);
+    }
+    if (isDouble) {
+      mv.visitInsn(DALOAD);
+      mv.visitVarInsn(DSTORE,index);
+    }
+  }
+ else {
+    mv.visitInsn(AALOAD);
+    mv.visitVarInsn(ASTORE,index);
+  }
+}
