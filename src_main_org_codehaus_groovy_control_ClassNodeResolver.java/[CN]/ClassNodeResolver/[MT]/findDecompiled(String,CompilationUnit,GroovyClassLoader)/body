@@ -9,6 +9,9 @@
   if (resource != null) {
     try {
       asmClass=new DecompiledClassNode(AsmDecompiler.parseClass(resource),new AsmReferenceResolver(this,compilationUnit));
+      if (!asmClass.getName().equals(name)) {
+        asmClass=null;
+      }
     }
  catch (    IOException e) {
     }
