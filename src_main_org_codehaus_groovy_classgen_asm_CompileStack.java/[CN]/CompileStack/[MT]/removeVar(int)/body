@@ -2,6 +2,10 @@
   final BytecodeVariable head=(BytecodeVariable)temporaryVariables.removeFirst();
   if (head.getIndex() != tempIndex) {
     temporaryVariables.addFirst(head);
-    throw new GroovyBugError("CompileStack#removeVar: tried to remove a temporary " + "variable with index " + tempIndex + " in wrong order. "+ "Current temporary variables="+ temporaryVariables);
+    MethodNode methodNode=controller.getMethodNode();
+    if (methodNode == null) {
+      methodNode=controller.getConstructorNode();
+    }
+    throw new GroovyBugError("In method " + (methodNode != null ? methodNode.getText() : "<unknown>") + ", "+ "CompileStack#removeVar: tried to remove a temporary "+ "variable with index "+ tempIndex+ " in wrong order. "+ "Current temporary variables="+ temporaryVariables);
   }
 }
