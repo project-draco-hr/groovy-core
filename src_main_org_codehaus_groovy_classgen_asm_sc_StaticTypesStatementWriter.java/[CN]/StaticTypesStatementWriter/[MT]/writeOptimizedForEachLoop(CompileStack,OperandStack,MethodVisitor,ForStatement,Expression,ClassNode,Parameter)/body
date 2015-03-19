@@ -19,8 +19,8 @@
   mv.visitVarInsn(ILOAD,arrayLen);
   mv.visitJumpInsn(IF_ICMPGE,breakLabel);
   loadFromArray(mv,variable,array,loopIdx);
-  loop.getLoopBlock().visit(acg);
   mv.visitIincInsn(loopIdx,1);
+  loop.getLoopBlock().visit(acg);
   mv.visitJumpInsn(GOTO,continueLabel);
   mv.visitLabel(breakLabel);
 }
