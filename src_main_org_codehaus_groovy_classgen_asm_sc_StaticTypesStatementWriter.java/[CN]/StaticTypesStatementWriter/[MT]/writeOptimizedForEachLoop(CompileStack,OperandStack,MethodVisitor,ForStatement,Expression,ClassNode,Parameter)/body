@@ -6,6 +6,8 @@
   collectionExpression.visit(acg);
   mv.visitInsn(DUP);
   int array=compileStack.defineTemporaryVariable("$arr",collectionType,true);
+  mv.visitJumpInsn(IFNULL,breakLabel);
+  mv.visitVarInsn(ALOAD,array);
   mv.visitInsn(ARRAYLENGTH);
   operandStack.push(ClassHelper.int_TYPE);
   int arrayLen=compileStack.defineTemporaryVariable("$len",ClassHelper.int_TYPE,true);
