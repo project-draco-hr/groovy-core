@@ -51,5 +51,11 @@
   if (GROOVY_OBJECT_TYPE.equals(leftRedirect) && isBeingCompiled(right)) {
     return true;
   }
+  if (left.isGenericsPlaceHolder()) {
+    GenericsType[] genericsTypes=left.getGenericsTypes();
+    if (genericsTypes != null && genericsTypes.length == 1) {
+      return genericsTypes[0].isCompatibleWith(right);
+    }
+  }
   return false;
 }
