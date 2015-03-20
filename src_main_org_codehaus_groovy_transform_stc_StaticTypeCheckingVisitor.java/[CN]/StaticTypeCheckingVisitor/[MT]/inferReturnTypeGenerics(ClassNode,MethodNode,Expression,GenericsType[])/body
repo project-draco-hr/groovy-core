@@ -1,0 +1,64 @@
+{
+  ClassNode returnType=method.getReturnType();
+  if (method instanceof ExtensionMethodNode && (isUsingGenericsOrIsArrayUsingGenerics(returnType))) {
+    ExtensionMethodNode emn=(ExtensionMethodNode)method;
+    MethodNode dgmMethod=emn.getExtensionMethodNode();
+    ClassNode dc=emn.getDeclaringClass();
+    ArgumentListExpression argList=new ArgumentListExpression();
+    VariableExpression vexp=new VariableExpression("$foo",receiver);
+    vexp.setNodeMetaData(ExtensionMethodDeclaringClass.class,dc);
+    argList.addExpression(vexp);
+    if (arguments instanceof ArgumentListExpression) {
+      List<Expression> expressions=((ArgumentListExpression)arguments).getExpressions();
+      for (      Expression arg : expressions) {
+        argList.addExpression(arg);
+      }
+    }
+ else {
+      argList.addExpression(arguments);
+    }
+    return inferReturnTypeGenerics(receiver,dgmMethod,argList);
+  }
+  if (!isUsingGenericsOrIsArrayUsingGenerics(returnType))   return returnType;
+  if (getGenericsWithoutArray(returnType) == null)   return returnType;
+  Map<String,GenericsType> resolvedPlaceholders=resolvePlaceHoldersFromDeclaration(receiver,getDeclaringClass(method,arguments),method,method.isStatic());
+  GenericsUtils.extractPlaceholders(receiver,resolvedPlaceholders);
+  resolvePlaceholdersFromExplicitTypeHints(method,explicitTypeHints,resolvedPlaceholders);
+  if (resolvedPlaceholders.isEmpty())   return returnType;
+  Map<String,GenericsType> placeholdersFromContext=extractGenericsParameterMapOfThis(typeCheckingContext.getEnclosingMethod());
+  applyGenericsConnections(placeholdersFromContext,resolvedPlaceholders);
+  Parameter[] parameters=method.getParameters();
+  boolean isVargs=isVargs(parameters);
+  ArgumentListExpression argList=InvocationWriter.makeArgumentList(arguments);
+  List<Expression> expressions=argList.getExpressions();
+  int paramLength=parameters.length;
+  if (expressions.size() >= paramLength) {
+    for (int i=0; i < paramLength; i++) {
+      boolean lastArg=i == paramLength - 1;
+      ClassNode type=parameters[i].getType();
+      ClassNode actualType=getType(expressions.get(i));
+      while (!type.isUsingGenerics() && type.isArray() && actualType.isArray()) {
+        type=type.getComponentType();
+        actualType=actualType.getComponentType();
+      }
+      if (isUsingGenericsOrIsArrayUsingGenerics(type)) {
+        if (implementsInterfaceOrIsSubclassOf(actualType,CLOSURE_TYPE) && isSAMType(type)) {
+          Map<String,GenericsType> pholders=applyGenericsContextToParameterClass(resolvedPlaceholders,type);
+          actualType=convertClosureTypeToSAMType(expressions.get(i),actualType,type,pholders);
+        }
+        if (isVargs && lastArg && actualType.isArray()) {
+          actualType=actualType.getComponentType();
+        }
+        if (isVargs && lastArg && type.isArray()) {
+          type=type.getComponentType();
+        }
+        actualType=wrapTypeIfNecessary(actualType);
+        Map<String,GenericsType> connections=new HashMap<String,GenericsType>();
+        extractGenericsConnections(connections,actualType,type);
+        extractGenericsConnectionsForSuperClassAndInterfaces(resolvedPlaceholders,connections);
+        applyGenericsConnections(connections,resolvedPlaceholders);
+      }
+    }
+  }
+  return applyGenericsContext(resolvedPlaceholders,returnType);
+}

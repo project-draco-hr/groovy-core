@@ -1,0 +1,15 @@
+{
+  if (explicitTypeHints != null) {
+    GenericsType[] methodGenericTypes=method.getGenericsTypes();
+    if (methodGenericTypes != null && methodGenericTypes.length == explicitTypeHints.length) {
+      for (int i=0; i < explicitTypeHints.length; i++) {
+        GenericsType methodGenericType=methodGenericTypes[i];
+        GenericsType explicitTypeHint=explicitTypeHints[i];
+        resolvedPlaceholders.put(methodGenericType.getName(),explicitTypeHint);
+      }
+      for (      GenericsType typeHint : explicitTypeHints) {
+        System.err.println("Type hint = " + typeHint);
+      }
+    }
+  }
+}
