@@ -54,7 +54,8 @@
         isThisOrSuper=((VariableExpression)receiver).isThisExpression() || ((VariableExpression)receiver).isSuperExpression();
       }
       if (!implicitThis && !isThisOrSuper && StaticTypeCheckingSupport.implementsInterfaceOrIsSubclassOf(node,target.getDeclaringClass())) {
-        controller.getSourceUnit().addError(new SyntaxException("Method " + target.getName() + " is protected in "+ target.getDeclaringClass().toString(false),receiver.getLineNumber(),receiver.getColumnNumber(),receiver.getLastLineNumber(),receiver.getLastColumnNumber()));
+        ASTNode src=receiver == null ? args : receiver;
+        controller.getSourceUnit().addError(new SyntaxException("Method " + target.getName() + " is protected in "+ target.getDeclaringClass().toString(false),src.getLineNumber(),src.getColumnNumber(),src.getLastLineNumber(),src.getLastColumnNumber()));
       }
     }
     if (receiver != null) {
