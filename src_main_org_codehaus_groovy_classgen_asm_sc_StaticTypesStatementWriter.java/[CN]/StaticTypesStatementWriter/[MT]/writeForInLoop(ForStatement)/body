@@ -13,6 +13,9 @@
   if (collectionType.isArray() && loopVariable.getOriginType().equals(collectionType.getComponentType())) {
     writeOptimizedForEachLoop(compileStack,operandStack,mv,loop,collectionExpression,collectionType,loopVariable);
   }
+ else   if (ENUMERATION_CLASSNODE.equals(collectionType)) {
+    writeEnumerationBasedForEachLoop(compileStack,operandStack,mv,loop,collectionExpression,collectionType,loopVariable);
+  }
  else {
     writeIteratorBasedForEachLoop(compileStack,operandStack,mv,loop,collectionExpression,collectionType,loopVariable);
   }
