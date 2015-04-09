@@ -1,0 +1,11 @@
+{
+  ClassNode owner=pNode.getDeclaringClass();
+  if (annotatedNode.equals(owner)) {
+    String getterName="get" + MetaClassHelper.capitalize(pNode.getName());
+    if (ClassHelper.boolean_TYPE.equals(pNode.getOriginType())) {
+      getterName="is" + MetaClassHelper.capitalize(pNode.getName());
+    }
+    return callX(new VariableExpression("this"),getterName,ArgumentListExpression.EMPTY_ARGUMENTS);
+  }
+  return propX(new VariableExpression("this"),pNode.getName());
+}

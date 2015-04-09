@@ -20,7 +20,7 @@
   }
   for (  PropertyNode pNode : pList) {
     if (shouldSkip(pNode.getName(),excludes,includes))     continue;
-    Expression getter=callX(INVOKER_TYPE,"getProperty",args(varX("this"),constX(pNode.getName())));
+    Expression getter=getterX(cNode,pNode);
     appendValue(body,result,first,getter,pNode.getName(),includeNames,ignoreNulls);
   }
   if (includeFields) {

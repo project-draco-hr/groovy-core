@@ -1,0 +1,20 @@
+{
+  MethodNode methodTarget=call.getMethodTarget();
+  if (methodTarget instanceof ExtensionMethodNode && "is".equals(methodTarget.getName()) && methodTarget.getParameters().length == 1) {
+    methodTarget=((ExtensionMethodNode)methodTarget).getExtensionMethodNode();
+    ClassNode owner=methodTarget.getDeclaringClass();
+    if (DGM_CLASSNODE.equals(owner)) {
+      Expression args=call.getArguments();
+      if (args instanceof ArgumentListExpression) {
+        ArgumentListExpression arguments=(ArgumentListExpression)args;
+        List<Expression> exprs=arguments.getExpressions();
+        if (exprs.size() == 1) {
+          CompareIdentityExpression cid=new CompareIdentityExpression(call.getObjectExpression(),exprs.get(0));
+          cid.setSourcePosition(call);
+          return cid;
+        }
+      }
+    }
+  }
+  return null;
+}
